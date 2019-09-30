@@ -20,7 +20,7 @@ class Inception(nn.Module):
 
         super().__init__()
         self.bottleneck = nn.Conv1d(c_in, bottleneck, 1) if bottleneck and c_in > 1 else noop
-        mts_feat = 1 if c_in==1 else bottleneck or c_in
+        mts_feat = bottleneck or c_in
         conv_layers = []
         kss = [ks // (2**i) for i in range(3)]
         # ensure odd kss until nn.Conv1d with padding='same' is available in pytorch 1.3
@@ -60,7 +60,7 @@ class InceptionBlock(nn.Module):
         res = 0
         for d in range(depth):
             inc_mods.append(
-                Inception(c_in if d == 0 else nb_filters * 4, bottleneck=bottleneck,ks=ks,
+                Inception(c_in if d == 0 else nb_filters * 4, bottleneck=bottleneck if d > 0 else 0,ks=ks,
                           nb_filters=nb_filters))
             if self.residual and d % 3 == 2:
                 res_layers.append(shortcut(c_in if res == 0 else nb_filters * 4, nb_filters * 4))
