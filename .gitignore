@@ -1,0 +1,33 @@
+*.jpg
+*.npy
+*.arff
+*.png
+*.pyc
+*.pth
+*.txt
+*.csv
+
+
+# Packages #
+###########
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Folders #
+##########
+coursev3_2/
+data/models/
+data/UCR/
+data/trading/images
+sequentia/models/
+tests/
+old/
+
+.ipynb_checkpoints
+
