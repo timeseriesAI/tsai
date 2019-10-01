@@ -5,6 +5,7 @@ from .nb_TSDataAugmentation import *
 from .nb_TSImageData import *
 from .nb_TSCallbacks import *
 from .nb_TSCharts import *
+from .nb_TSTrain import *
 from .nb_colorfuldim import *
 from .nb_initialization import *
 from .nb_optimizers import *

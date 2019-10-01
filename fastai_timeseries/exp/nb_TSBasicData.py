@@ -6,8 +6,12 @@ from fastai.data_block import *
 from fastai.core import *
 
 
-try: from exp.nb_TSUtilities import *
-except ImportError: from .nb_TSUtilities import *
+try:
+    from exp.nb_TSUtilities import *
+    from exp.nb_TSDatasets import *
+except ImportError:
+    from .nb_TSUtilities import *
+    from .nb_TSDatasets import *
 
 
 class TimeSeriesItem(ItemBase):
@@ -55,38 +59,38 @@ class TimeSeriesItem(ItemBase):
 class TSDataBunch(DataBunch):
 
 
-    def get_stats(self, ds):
-        ds = To3dArray(ds)
+    def get_stats(self):
+        train = To3dArray(self.label_list.train.items)
         if self.type == 'normalize':
             if self.subtype == 'all_samples':
-                ds_min = ds.min(keepdims=True)
-                ds_max = ds.max(keepdims=True)
+                train_min = train.min(keepdims=True)
+                train_max = train.max(keepdims=True)
             elif self.subtype == 'per_sample':
-                ds_min = ds.min(axis=(1, 2), keepdims=True)
-                ds_max = ds.max(axis=(1, 2), keepdims=True)
+                train_min = train.min(axis=(1, 2), keepdims=True)
+                train_max = train.max(axis=(1, 2), keepdims=True)
             elif self.subtype == 'per_channel':
-                ds_min = ds.min(axis=(0, 2), keepdims=True)
-                ds_max = ds.max(axis=(0, 2), keepdims=True)
+                train_min = train.min(axis=(0, 2), keepdims=True)
+                train_max = train.max(axis=(0, 2), keepdims=True)
             else:
                 print('***** Please, select a valid  scaling_subtype *****')
                 return
-            self.min, self.max = ds_min, ds_max
+            self.min, self.max = train_min, train_max
             return self
 
         elif self.type == 'standardize':
             if self.subtype == 'all_samples':
-                ds_mean = ds.mean(keepdims=True)
-                ds_std = ds.std(keepdims=True)
+                train_mean = train.mean(keepdims=True)
+                train_std = train.std(keepdims=True)
             elif self.subtype == 'per_sample':
-                ds_mean = ds.mean(axis=(1, 2), keepdims=True)
-                ds_std = ds.std(axis=(1, 2), keepdims=True)
+                train_mean = train.mean(axis=(1, 2), keepdims=True)
+                train_std = train.std(axis=(1, 2), keepdims=True)
             elif self.subtype == 'per_channel':
-                ds_mean = ds.mean(axis=(0, 2), keepdims=True)
-                ds_std = ds.std(axis=(0, 2), keepdims=True)
+                train_mean = train.mean(axis=(0, 2), keepdims=True)
+                train_std = train.std(axis=(0, 2), keepdims=True)
             else:
                 print('***** Please, select a valid  scaling_subtype *****')
                 return
-            self.mean, self.std = ds_mean, ds_std
+            self.mean, self.std = train_mean, train_std
             return self
 
         else:
@@ -97,15 +101,13 @@ class TSDataBunch(DataBunch):
         self.type = scale_type
         self.subtype = scale_subtype
         self.range = scale_range
-        self.get_stats(self.label_list.train.items)
+        self.get_stats()
         if self.type == 'standardize':
             self.label_list.train.x.items = (self.label_list.train.x.items -
                                              self.mean) / self.std
-            if self.subtype == 'per_sample': self.get_stats(self.label_list.valid.items)
             self.label_list.valid.x.items = (self.label_list.valid.x.items -
                                              self.mean) / self.std
             if self.label_list.test is not None:
-                if self.subtype == 'per_sample': self.get_stats(self.label_list.test.items)
                 self.label_list.test.x.items = (self.label_list.test.x.items -
                                                 self.mean) / self.std
             return self
@@ -113,19 +115,18 @@ class TSDataBunch(DataBunch):
             self.label_list.train.x.items = (
                 ((self.label_list.train.x.items - self.min)) /
                 (self.max - self.min)) * (self.range[1] - self.range[0]) + self.range[0]
-            if self.subtype == 'per_sample': self.get_stats(self.label_list.valid.items)
             self.label_list.valid.x.items = (
                 ((self.label_list.valid.x.items - self.min)) /
                 (self.max - self.min)) * (self.range[1] - self.range[0]) + self.range[0]
             if self.label_list.test is not None:
-                if self.subtype == 'per_sample': self.get_stats(self.label_list.test.items)
                 self.label_list.test.x.items = (
                     ((self.label_list.test.x.items - self.min)) /
                     (self.max - self.min)) * (self.range[1] - self.range[0]) + self.range[0]
             return self
         else: return print('Select a correct type', self.type)
 
-        
+
+
 class TSPreProcessor(PreProcessor):
 
     def __init__(self, ds: ItemList): self.ds = ds

@@ -67,19 +67,20 @@ def get_UCR_multivariate_list():
 
 
 
-def get_UCR_univariate(sel_dataset, parent_dir='data/UCR'):
+def get_UCR_univariate(sel_dataset, parent_dir='data/UCR', verbose=False):
     if sel_dataset not in get_UCR_univariate_list():
-        print('This dataset does not exist. Please select one from this list:')
-        print(get_UCR_univariate_list())
+        if verbose:
+            print('This dataset does not exist. Please select one from this list:')
+            print(get_UCR_univariate_list())
         return None, None, None, None
-    print('Dataset:', sel_dataset)
+    if verbose: print('Dataset:', sel_dataset)
     fname_train = sel_dataset + "_TRAIN.txt"
     fname_test = sel_dataset + "_TEST.txt"
     src_website = 'http://www.timeseriesclassification.com/Downloads/'
     tgt_dir = Path(parent_dir) / sel_dataset
     if not os.path.isdir(tgt_dir):
         extract_from_zip_url(
-            src_website + sel_dataset + '.zip', target_dir=tgt_dir, verbose=True)
+            src_website + sel_dataset + '.zip', target_dir=tgt_dir, verbose=verbose)
     data_train = np.loadtxt(os.path.join(tgt_dir, fname_train), delimiter=None)
     data_test = np.loadtxt(os.path.join(tgt_dir, fname_test), delimiter=None)
 
@@ -91,28 +92,30 @@ def get_UCR_univariate(sel_dataset, parent_dir='data/UCR'):
     X_train = To3dArray(X_train)
     X_test = To3dArray(X_test)
 
-    print('Successfully extracted dataset')
-    print('X_train:', X_train.shape)
-    print('y_train:', y_train.shape)
-    print('X_valid:', X_test.shape)
-    print('y_valid:', y_test.shape)
+    if verbose:
+        print('Successfully extracted dataset')
+        print('X_train:', X_train.shape)
+        print('y_train:', y_train.shape)
+        print('X_valid:', X_test.shape)
+        print('y_valid:', y_test.shape)
     return X_train, y_train, X_test, y_test
 
 
 
-def get_UCR_multivariate(sel_dataset, parent_dir='data/UCR'):
+def get_UCR_multivariate(sel_dataset, parent_dir='data/UCR', verbose=False):
     if sel_dataset.lower() == 'mphoneme': sel_dataset = 'Phoneme'
     if sel_dataset not in get_UCR_multivariate_list():
-        print('This dataset does not exist. Please select one from this list:')
-        print(get_UCR_multivariate_list())
+        if verbose:
+            print('This dataset does not exist. Please select one from this list:')
+            print(get_UCR_multivariate_list())
         return None, None, None, None
-    print('Dataset:', sel_dataset)
+    if verbose: print('Dataset:', sel_dataset)
     src_website = 'http://www.timeseriesclassification.com/Downloads/'
     tgt_dir = Path(parent_dir) / sel_dataset
 
     if not os.path.isdir(tgt_dir):
         extract_from_zip_url(
-            src_website + sel_dataset + '.zip', target_dir=tgt_dir, verbose=True)
+            src_website + sel_dataset + '.zip', target_dir=tgt_dir, verbose=verbose)
 
     X_train_ = []
     X_test_ = []
@@ -146,17 +149,18 @@ def get_UCR_multivariate(sel_dataset, parent_dir='data/UCR'):
     y_train = np.array([int(float(x)) for x in train_df.iloc[:, -1]])
     y_test = np.array([int(float(x)) for x in test_df.iloc[:, -1]])
 
-    print('Successfully extracted dataset')
-    print('X_train:', X_train.shape)
-    print('y_train:', y_train.shape)
-    print('X_valid:', X_test.shape)
-    print('y_valid:', y_test.shape)
+    if verbose:
+        print('Successfully extracted dataset')
+        print('X_train:', X_train.shape)
+        print('y_train:', y_train.shape)
+        print('X_valid:', X_test.shape)
+        print('y_valid:', y_test.shape)
     return X_train, y_train, X_test, y_test
 
 
-def get_UCR_data(dsid, parent_dir='data/UCR'):
-    if dsid in get_UCR_univariate_list(): return get_UCR_univariate(dsid)
-    else: return get_UCR_multivariate(dsid)
+def get_UCR_data(dsid, parent_dir='data/UCR', verbose=False):
+    if dsid in get_UCR_univariate_list(): return get_UCR_univariate(dsid, verbose=verbose)
+    else: return get_UCR_multivariate(dsid, verbose=verbose)
 
 
 def create_seq_optimized(n_samples=1000, seq_len=100, channels=True, seed=1):
