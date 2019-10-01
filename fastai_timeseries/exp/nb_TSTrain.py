@@ -58,7 +58,7 @@ def run_UCR_test(iters, epochs, datasets, arch,
                                columns=['dataset', 'iter', 'epochs', 'loss', 'val_loss',
                                         'accuracy', 'accuracy_train_loss',
                                         'max_accuracy', 'time (s)'])
-                  .sort_values('accuracy_train_loss', ascending=False).reset_index(drop=True))
+                  )
             df = df.astype({'loss': float, 'val_loss': float, 'accuracy': float,
                             'accuracy_train_loss': float, 'max_accuracy': float})
             display(df)
