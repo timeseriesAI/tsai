@@ -2,121 +2,44 @@
 
 from fastai.torch_core import *
 from fastai.callback import *
-#from fastai.callbacks.mixup import MixUpLoss
+from fastai.callbacks.mixup import *
 from fastai.basic_train import Learner, LearnerCallback
 
-class MixUpCallback1D(LearnerCallback):
-    "Callback that creates the mixed-up input and target."
-    def __init__(self, learn:Learner, alpha:float=0.4, stack_x:bool=False, stack_y:bool=True):
-        super().__init__(learn)
-        self.alpha,self.stack_x,self.stack_y = alpha,stack_x,stack_y
-
-    def on_train_begin(self, **kwargs):
-        if self.stack_y: self.learn.loss_func = MixUpLoss1D(self.learn.loss_func)
-
-    def on_batch_begin(self, last_input, last_target, train, **kwargs):
-        "Applies mixup to `last_input` and `last_target` if `train`."
-        if not train: return
-
-        lambd = np.random.beta(self.alpha, self.alpha, last_target.size(0))
-        lambd = np.concatenate([lambd[:,None], 1-lambd[:,None]], 1).max(1)
-        lambd = last_input.new(lambd)
-        shuffle = torch.randperm(last_target.size(0)).to(last_input.device)
-        x1, y1 = last_input[shuffle], last_target[shuffle]
-
-        if self.stack_x:
-            new_input = [last_input, last_input[shuffle], lambd]
-        else:
-            if last_input.ndim == 4:
-                new_input = (last_input * lambd.view(lambd.size(0),1,1,1) + x1 * (1-lambd).view(lambd.size(0),1,1,1))
-            elif last_input.ndim == 3:
-                new_input = (last_input * lambd.view(lambd.size(0),1,1) + x1 * (1-lambd).view(lambd.size(0),1,1))
-
-        if self.stack_y:
-            new_target = torch.cat([last_target[:,None].float(), y1[:,None].float(), lambd[:,None].float()], 1)
-        else:
-            if len(last_target.shape) == 2:
-                lambd = lambd.unsqueeze(1).float()
-            new_target = last_target.float() * lambd + y1.float() * (1-lambd)
-
-        return {'last_input': new_input, 'last_target': new_target}
-
-    def on_train_end(self, **kwargs):
-        if self.stack_y: self.learn.loss_func = self.learn.loss_func.get_old()
+try: from exp.nb_TSBasicData import TimeSeriesItem
+except: from .nb_TSBasicData import TimeSeriesItem
 
 
-class MixUpLoss1D(nn.Module):
-    "Adapt the loss function `crit` to go with mixup."
-
-    def __init__(self, crit, reduction='mean'):
-        super().__init__()
-        if hasattr(crit, 'reduction'):
-            self.crit = crit
-            self.old_red = crit.reduction
-            setattr(self.crit, 'reduction', 'none')
-        else:
-            self.crit = partial(crit, reduction='none')
-            self.old_crit = crit
-        self.reduction = reduction
-
-    def forward(self, output, target):
-        if len(target.size()) == 2:
-            loss1, loss2 = self.crit(output,target[:,0].long()), self.crit(output,target[:,1].long())
-            d = (loss1 * target[:,2] + loss2 * (1-target[:,2])).mean()
-        else:  d = self.crit(output, target)
-        if self.reduction == 'mean': return d.mean()
-        elif self.reduction == 'sum':            return d.sum()
-        return d
-
-    def get_old(self):
-        if hasattr(self, 'old_crit'):  return self.old_crit
-        elif hasattr(self, 'old_red'):
-            setattr(self.crit, 'reduction', self.old_red)
-            return self.crit
-
-
-def mixup1D(learn:Learner, alpha:float=0.4, stack_x:bool=False, stack_y:bool=True) -> Learner:
-    "Add mixup https://arxiv.org/abs/1710.09412 to `learn`."
-    learn.callback_fns.append(partial(MixUpCallback1D, alpha=alpha, stack_x=stack_x, stack_y=stack_y))
-    return learn
-
-Learner.mixup1D = mixup1D
-
-
-from fastai.torch_core import *
-from fastai.callback import *
-from fastai.callbacks.mixup import MixUpLoss
-from fastai.basic_train import Learner, LearnerCallback
-
-class CutXCallback1D(LearnerCallback):
+class CutXCallback(LearnerCallback):
     "Callback that creates the cut mixed-up input and target."
     def __init__(self, learn:Learner, alpha:float=1., stack_y:bool=True, mix:bool=True,
-                 ch:bool=False, α:float=.125, true_λ:bool=True):
+                 ch:bool=False):
         super().__init__(learn)
+        if mix: self.__name__ = 'CutMix'
+        else:  self.__name__ = 'CutOut'
 
-        self.alpha,self.stack_y,self.mix,self.ch,self.α,self.true_λ = alpha,stack_y,mix,ch,α,true_λ
+        self.alpha,self.stack_y,self.mix,self.ch,self.alpha = alpha,stack_y,mix,ch,alpha
 
     def on_train_begin(self, **kwargs):
         if self.stack_y: self.learn.loss_func = MixUpLoss(self.learn.loss_func)
 
     def on_batch_begin(self, last_input, last_target, train, **kwargs):
         "Applies mixup to `last_input` and `last_target` if `train`."
-        if not train: return
+        if not train or self.alpha == 0: return
         last_input_ndim = last_input.ndim
-        λ = np.random.beta(self.alpha, self.alpha)
-        λ = max(λ, 1- λ)
+        lamb = np.random.beta(self.alpha, self.alpha)
+        lamb = max(lamb, 1- lamb)
         shuffle = torch.randperm(last_target.size(0)).to(last_input.device)
         x1, y1 = last_input[shuffle], last_target[shuffle]
-        bbx1, bby1, bbx2, bby2 = rand_bbox2(last_input.size(), λ, last_input_ndim)
+        bbx1, bby1, bbx2, bby2 = rand_bbox2(last_input.size(), lamb, last_input_ndim)
         new_input = last_input.clone()
-        λ = last_input.new([λ])
+        lamb = last_input.new([lamb])
         if self.ch:
             all_samples = tuple(np.arange(last_input.shape[0]))
             if shuffle.is_cuda: shuffle = tuple(shuffle.cpu().numpy())
             else: shuffle = tuple(shuffle.numpy())
             input_ch = new_input.shape[-2]
             out_ch = tuple(np.random.choice(np.arange(input_ch),
-                                            int(np.random.beta(self.α, 1) * input_ch),
+                                            int(np.random.beta(self.alpha, 1) * input_ch),
                                             replace=False))
             subseq = tuple(np.arange(last_input.shape[-1])[bbx1:bbx2])
         if self.mix:
@@ -131,23 +54,20 @@ class CutXCallback1D(LearnerCallback):
                 new_input[:, ..., bby1:bby2, bbx1:bbx2] = 0
 
         if self.mix:
-            if self.true_λ:
-                if self.ch:
-                    λ_ = 1 - ((bbx2 - bbx1) * len(out_ch) / (last_input.size(-1) * last_input.size(-2)))
-                else:
-                    λ_ = 1 - ((bbx2 - bbx1) * (bby2 - bby1) / (last_input.size(-1) * last_input.size(-2)))
-                λ = last_input.new([λ_])
-
-            else: λ = last_input.new([λ])
+            if self.ch:
+                lamb_ = 1 - ((bbx2 - bbx1) * len(out_ch) / (last_input.size(-1) * last_input.size(-2)))
+            else:
+                lamb_ = 1 - ((bbx2 - bbx1) * (bby2 - bby1) / (last_input.size(-1) * last_input.size(-2)))
+            lamb = last_input.new([lamb_])
 
 
             if self.stack_y:
                 new_target = torch.cat([last_target[:,None].float(), y1[:,None].float(),
-                                    λ.repeat(last_input.shape[0])[:,None].float()], 1)
+                                    lamb.repeat(last_input.shape[0])[:,None].float()], 1)
             else:
                 if len(last_target.shape) == 2:
-                    λ = λ.unsqueeze(1).float()
-                new_target = last_target.float() * λ + y1.float() * (1-λ)
+                    lamb = lamb.unsqueeze(1).float()
+                new_target = last_target.float() * lamb + y1.float() * (1-lamb)
         else:
             new_target = last_target
 
@@ -157,13 +77,13 @@ class CutXCallback1D(LearnerCallback):
         if self.stack_y: self.learn.loss_func = self.learn.loss_func.get_old()
 
 
-def rand_bbox2(last_input_size, λ, ndim):
+def rand_bbox2(last_input_size, lamb, ndim):
     '''lambd is always between .5 and 1'''
 
     W = last_input_size[-1]
     H = last_input_size[-2]
     if ndim == 4:
-        cut_rat = np.sqrt(1. - λ) # 0. - .707
+        cut_rat = np.sqrt(1. - lamb) # 0. - .707
         cut_w = np.int(W * cut_rat)
         cut_h = np.int(H * cut_rat)
 
@@ -177,12 +97,11 @@ def rand_bbox2(last_input_size, λ, ndim):
         bby2 = np.clip(cy + cut_h // 2, 0, H)
 
     elif ndim == 3:
-        cut_rat = (1. - λ) # 0. - .5
+        cut_rat = (1. - lamb) # 0. - .5
         cut_w = np.int(W * cut_rat)
 
         # uniform
         cx = np.random.randint(W)
-
         bbx1 = np.clip(cx - cut_w // 2, 0, W)
         bby1 = 0
         bbx2 = np.clip(cx + cut_w // 2, 0, W)
@@ -191,62 +110,62 @@ def rand_bbox2(last_input_size, λ, ndim):
     return bbx1, bby1, bbx2, bby2
 
 
-def cutmix1D(learn:Learner, alpha:float=1., stack_y:bool=True, true_λ:bool=True) -> Learner:
-    "Add mixup https://arxiv.org/abs/1710.09412 to `learn`."
-    learn.callback_fns.append(partial(CutXCallback1D, alpha=alpha, stack_y=stack_y, mix=True, true_λ=true_λ))
+def cutmix(learn:Learner, alpha:float=1., stack_y:bool=True) -> Learner:
+    learn.callback_fns.append(partial(CutXCallback, alpha=alpha, stack_y=stack_y, mix=True))
     return learn
 
-def cutout1D(learn:Learner, alpha:float=1., stack_y:bool=True, true_λ:bool=True) -> Learner:
-    "Add mixup https://arxiv.org/abs/1710.09412 to `learn`."
-    learn.callback_fns.append(partial(CutXCallback1D, alpha=alpha, stack_y=stack_y, mix=False, true_λ=true_λ))
+def cutout(learn:Learner, alpha:float=1., stack_y:bool=True) -> Learner:
+    learn.callback_fns.append(partial(CutXCallback, alpha=alpha, stack_y=stack_y, mix=False))
     return learn
 
-def channelcutmix1D(learn:Learner, alpha:float=1., stack_y:bool=True, ch:bool=True, α:float=.125, true_λ:bool=True) -> Learner:
-    "Add mixup https://arxiv.org/abs/1710.09412 to `learn`."
-    learn.callback_fns.append(partial(CutXCallback1D, alpha=alpha, stack_y=stack_y, mix=True, ch=ch, α=α, true_λ=true_λ))
+def chcutmix(learn:Learner, alpha:float=1., stack_y:bool=True, ch:bool=True) -> Learner:
+    learn.callback_fns.append(partial(CutXCallback, alpha=alpha, stack_y=stack_y, mix=True, ch=ch))
     return learn
 
-def channelcutout1D(learn:Learner, alpha:float=1., stack_y:bool=True, ch:bool=True, α:float=.125, true_λ:bool=True) -> Learner:
+
+def chcutout(learn:Learner, alpha:float=1., stack_y:bool=True, ch:bool=True) -> Learner:
     "Add mixup https://arxiv.org/abs/1710.09412 to `learn`."
-    learn.callback_fns.append(partial(CutXCallback1D, alpha=alpha, stack_y=stack_y, mix=False, ch=ch, α=α, true_λ=true_λ))
+    learn.callback_fns.append(partial(CutXCallback, alpha=alpha, stack_y=stack_y, mix=False, ch=ch))
     return learn
 
-Learner.cutmix1D = cutmix1D
-Learner.cutout1D = cutout1D
-Learner.chcutmix1D = channelcutmix1D
-Learner.chcutout1D = channelcutout1D
+Learner.cutmix = cutmix
+Learner.cutout = cutout
+Learner.chcutmix = chcutmix
+Learner.chcutout = chcutout
 
-
-from fastai.torch_core import *
-from fastai.callback import *
-from fastai.callbacks.mixup import MixUpLoss
-from fastai.basic_train import Learner, LearnerCallback
 
 class CutMixCallback(LearnerCallback):
-    "Callback that creates the cut mixed-up input and target."
-    def __init__(self, learn:Learner, α:float=1., stack_y:bool=True, true_λ:bool=True):
+    '''Adapted from :
+    paper: https://arxiv.org/abs/1905.04899
+    github: https://github.com/clovaai/CutMix-PyTorch
+    and mixup in the fastai library.'''
+
+    def __init__(self, learn:Learner, alpha:float=1., stack_y:bool=True):
         super().__init__(learn)
-        self.α,self.stack_y,self.true_λ = α,stack_y,true_λ
+        self.alpha,self.stack_y = alpha,stack_y
 
     def on_train_begin(self, **kwargs):
         if self.stack_y: self.learn.loss_func = MixUpLoss(self.learn.loss_func)
 
     def on_batch_begin(self, last_input, last_target, train, **kwargs):
         "Applies cutmix to `last_input` and `last_target` if `train`."
-        if not train: return
-        λ = np.random.beta(self.α, self.α)
+        if not train or self.alpha == 0: return
+        λ = np.random.beta(self.alpha, self.alpha)
         λ = max(λ, 1- λ)
-        shuffle = torch.randperm(last_target.size(0)).to(last_input.device)
-        x1, y1 = last_input[shuffle], last_target[shuffle]
+        bs = last_target.size(0)
+        idx = torch.randperm(bs).to(last_input.device)
+        x1, y1 = last_input[idx], last_target[idx]
+
         #Get new input
-        last_input_size = last_input.shape
-        bbx1, bby1, bbx2, bby2 = rand_bbox(last_input.size(), λ)
+        last_input_size = last_input.size()
+        bbx1, bby1, bbx2, bby2 = rand_bbox(last_input_size, λ)
         new_input = last_input.clone()
-        new_input[:, ..., bby1:bby2, bbx1:bbx2] = last_input[shuffle, ..., bby1:bby2, bbx1:bbx2]
+        new_input[..., bby1:bby2, bbx1:bbx2] = x1[..., bby1:bby2, bbx1:bbx2]
+        #λ = last_input.new([λ])
+        λ = 1 - ((bbx2 - bbx1) * (bby2 - bby1) / (last_input_size[-1] * last_input_size[-2]))
         λ = last_input.new([λ])
-        if self.true_λ:
-            λ = 1 - ((bbx2 - bbx1) * (bby2 - bby1) / (last_input_size[-1] * last_input_size[-2]))
-            λ = last_input.new([λ])
+
+        # modify last target
         if self.stack_y:
             new_target = torch.cat([last_target.unsqueeze(1).float(), y1.unsqueeze(1).float(),
                                     λ.repeat(last_input_size[0]).unsqueeze(1).float()], 1)
@@ -254,6 +173,7 @@ class CutMixCallback(LearnerCallback):
             if len(last_target.shape) == 2:
                 λ = λ.unsqueeze(1).float()
             new_target = last_target.float() * λ + y1.float() * (1-λ)
+
         return {'last_input': new_input, 'last_target': new_target}
 
     def on_train_end(self, **kwargs):
@@ -276,22 +196,21 @@ def rand_bbox(last_input_size, λ):
     bbx1 = np.clip(cx - cut_w // 2, 0, W)
     bby1 = np.clip(cy - cut_h // 2, 0, H)
     bbx2 = np.clip(cx + cut_w // 2, 0, W)
-    bby2 = np.clip(cy + cut_h // 2, 0, H)
+    if len(last_input_size) == 4:
+        bby2 = np.clip(cy + cut_h // 2, 0, H)
+    else: bby2 = last_input_size[1]
 
     return bbx1, bby1, bbx2, bby2
 
 
-def cutmix(learn:Learner, α:float=1., stack_x:bool=False, stack_y:bool=True, true_λ:bool=True) -> Learner:
-    "Add mixup https://arxiv.org/pdf/1905.04899.pdf to `learn`."
-    learn.callback_fns.append(partial(CutMixCallback, α=α, stack_y=stack_y, true_λ=true_λ))
+def cutmix(learn:Learner, alpha:float=1., stack_x:bool=False, stack_y:bool=True) -> Learner:
+    "Add cutmix https://arxiv.org/pdf/1905.04899.pdf to `learn`."
+    learn.callback_fns.append(partial(CutMixCallback, alpha=alpha, stack_y=stack_y))
     return learn
 
+setattr(cutmix, 'cb_fn', CutMixCallback)
 Learner.cutmix = cutmix
 
-
-from fastai.torch_core import *
-from fastai.callback import *
-from fastai.basic_train import Learner, LearnerCallback
 
 class RicapLoss(nn.Module):
     "Adapt the loss function `crit` to go with ricap data augmentations."
@@ -325,53 +244,137 @@ class RicapLoss(nn.Module):
             return self.crit
 
 class RicapCallback(LearnerCallback):
-    "Callback that creates the ricap input and target."
-    def __init__(self, learn:Learner, β:float=.3, stack_y:bool=True):
+    '''Adapted from :
+    paper: https://arxiv.org/abs/1811.09030
+    github: https://github.com/4uiiurz1/pytorch-ricap
+    and mixup in the fastai library.'''
+    def __init__(self, learn:Learner, beta:float=.3, stack_y:bool=True):
         super().__init__(learn)
-        self.β,self.stack_y = β,stack_y
+        self.beta,self.stack_y = beta,stack_y
 
     def on_train_begin(self, **kwargs):
         if self.stack_y: self.learn.loss_func = RicapLoss(self.learn.loss_func)
 
     def on_batch_begin(self, last_input, last_target, train, **kwargs):
         "Applies ricap to `last_input` and `last_target` if `train`."
-        if not train: return
+        if not train or self.beta == 0: return
+
+        # get the image size
         I_x, I_y = last_input.size()[2:]
-        w = int(np.round(I_x * np.random.beta(self.β, self.β)))
-        h = int(np.round(I_y * np.random.beta(self.β, self.β)))
+
+        # draw a boundary position (w, h)
+        w = int(np.round(I_x * np.random.beta(self.beta, self.beta)))
+        h = int(np.round(I_y * np.random.beta(self.beta, self.beta)))
         w_ = [w, I_x - w, w, I_x - w]
         h_ = [h, h, I_y - h, I_y - h]
+
+        # select and crop four images
         cropped_images = {}
         bs = last_input.size(0)
         c_ = torch.zeros((bs, 4)).float().to(last_input.device)
         W_ = torch.zeros(4).float().to(last_input.device)
         for k in range(4):
-            idx = torch.randperm(bs)
+            idx = torch.randperm(bs).to(last_input.device)
             x_k = np.random.randint(0, I_x - w_[k] + 1)
             y_k = np.random.randint(0, I_y - h_[k] + 1)
             cropped_images[k] = last_input[idx][:, :, x_k:x_k + w_[k], y_k:y_k + h_[k]]
             c_[:, k] = last_target[idx].float()
             W_[k] = w_[k] * h_[k] / (I_x * I_y)
+
+        # patch cropped images
         patched_images = torch.cat(
             (torch.cat((cropped_images[0], cropped_images[1]), 2),
-             torch.cat((cropped_images[2], cropped_images[3]), 2)), 3)  #.cuda()
+             torch.cat((cropped_images[2], cropped_images[3]), 2)), 3).to(last_input.device)
+
+        # modify last target
         if self.stack_y:
                 new_target = torch.cat((last_target[:,None].float(), c_,
                                         W_[None].repeat(last_target.size(0), 1)), dim=1)
         else:
             new_target = c_ * W_
+
         return {'last_input': patched_images, 'last_target': new_target}
 
     def on_train_end(self, **kwargs):
         if self.stack_y: self.learn.loss_func = self.learn.loss_func.get_old()
 
 
-def ricap(learn:Learner, stack_y:bool=True) -> Learner:
+def ricap(learn:Learner, beta:float=.3, stack_y:bool=True) -> Learner:
     "Add ricap https://arxiv.org/pdf/1811.09030.pdf to `learn`."
-    learn.callback_fns.append(partial(RicapCallback, stack_y=stack_y))
+    learn.callback_fns.append(partial(RicapCallback, beta=beta, stack_y=stack_y))
     return learn
 
+setattr(ricap, 'cb_fn', RicapCallback)
 Learner.ricap = ricap
+
+from fastai.train import mixup
+setattr(mixup, 'cb_fn', MixUpCallback)
+
+
+def get_fn(a):
+    while True:
+        if hasattr(a, 'func'): a = a.func
+        else: break
+    return a
+
+
+def show_tfms(learn, rows=3, cols=3, figsize=(8, 8)):
+    xb, yb = learn.data.one_batch()
+    rand_int = np.random.randint(len(xb))
+    ndim = xb.ndim
+    tfms = learn.data.train_ds.tfms
+
+    if ndim == 4:
+        rand_item = Image(xb[rand_int])
+        for i in range(len(xb)): xb[i] = Image(xb[i]).apply_tfms(tfms).data
+        cb_tfms = 0
+        for cb in learn.callback_fns:
+            if hasattr(cb, 'keywords') and hasattr(get_fn(cb), 'on_batch_begin'):
+                cb_fn = partial(get_fn(cb), **cb.keywords)
+                try:
+                    fig = plt.subplots(rows, cols, figsize=figsize, sharex=True, sharey=True)[1].flatten()
+                    plt.suptitle(get_fn(cb).__name__, size=14)
+                    [Image(cb_fn(learn).on_batch_begin(xb, yb, True)['last_input'][0]).show(ax=ax)
+                        for i, ax in enumerate(fig)]
+                    plt.show()
+                    cb_tfms += 1
+                    break
+                except:
+                    plt.close('all')
+
+    elif ndim == 3:
+        rand_item = TimeSeriesItem(xb[rand_int])
+        cb_tfms = 0
+        for cb in learn.callback_fns:
+            if hasattr(cb, 'keywords') and hasattr(get_fn(cb), 'on_batch_begin'):
+                cb_fn = partial(get_fn(cb), **cb.keywords)
+                try:
+                    fig = plt.subplots(rows, cols, figsize=figsize, sharex=True, sharey=True)[1].flatten()
+                    plt.suptitle(get_fn(cb).__name__, size=14)
+                    [TimeSeriesItem(cb_fn(learn).on_batch_begin(xb, yb, True)['last_input'][0]).show(ax=ax)
+                        for i, ax in enumerate(fig)]
+                    plt.show()
+                    cb_tfms += 1
+                    break
+                except:
+                    plt.close('all')
+
+    if cb_tfms == 0:
+        if tfms is not None:
+            t_ = []
+            for t in learn.data.train_ds.tfms: t_.append(get_fn(t).__name__)
+            title = f"{str(t_)[1:-1]} transforms applied"
+            fig = plt.subplots(rows, cols, figsize=figsize, sharex=True, sharey=True)[1].flatten()
+            [rand_item.apply_tfms(tfms).show(ax=ax) for i, ax in enumerate(fig)]
+            plt.suptitle(title, size=14)
+            plt.show()
+        else:
+            print('No transformation has been applied')
+            rand_item.show()
+
+    return learn
+
+Learner.show_tfms = show_tfms
 
 from torch.utils.data.sampler import WeightedRandomSampler
 
@@ -438,3 +441,149 @@ def reduce_lr_on_plateau(learn: Learner, monitor='valid_loss', mode='auto',
     return learn
 
 Learner.reduce_lr_on_plateau = reduce_lr_on_plateau
+
+
+import math
+
+class TfmScheduler(LearnerCallback):
+
+    def __init__(self,
+                 learn: Learner,
+                 tfm_fn: Callable,
+                 sch_param: Union[str, StrList],
+                 sch_val: Union[StartOptEnd, List],
+                 sch_iter: Optional[StartOptEnd] = None,
+                 sch_func: Optional[AnnealFunc] = None,
+                 plot: bool = False,
+                 test: bool = False,
+                 **kwargs: Any):
+
+        super().__init__(learn)
+        self.learn = learn
+        self.batches = math.ceil(len(learn.data.train_ds)/learn.data.train_dl.batch_size)
+        sch_param = listify(sch_param)
+        if isinstance(sch_param, (float, int)): sch_val = (0, sch_val)
+        sch_val = tuplify(sch_val)
+        if len(sch_param) != len(sch_val): sch_val = sch_val * len(sch_param)
+        assert len(sch_param) == len(sch_val)
+        if sch_iter is None: sch_iter = (0., 1.)
+        sch_iter = tuplify(sch_iter)
+        if len(sch_param) != len(sch_iter): sch_iter = sch_iter * len(sch_param)
+        assert len(sch_param) == len(sch_iter)
+        self.tfm_fn,self.sch_param,self.sch_val,self.sch_iter,self.test = tfm_fn,sch_param,sch_val,sch_iter,test
+        if sch_func is None: sch_func = annealing_linear
+        sch_func = listify(sch_func)
+        if len(sch_param) != len(sch_func): sch_func = sch_func * len(sch_param)
+        assert len(sch_param) == len(sch_func)
+        self.sch_func = sch_func
+        self.plot = plot
+        if not isinstance(self.tfm_fn, functools.partial): self.tfm_fn = partial(self.tfm_fn)
+        self.fn = get_fn(self.tfm_fn)
+        if hasattr(self.fn, 'cb_fn'): self.fn = self.fn.cb_fn
+        if hasattr(self.fn, 'on_batch_begin'): self.cb = True
+        else: self.cb = False
+
+
+    def on_train_begin(self, n_epochs: int, epoch: int, **kwargs: Any):
+        if self.cb: self.fn(self.learn).on_train_begin()
+        total_iters = n_epochs * self.batches
+        self.scheduler = [None] * len(self.sch_param)
+        for i in range(len(self.sch_param)):
+            p = self.sch_param[i]
+            v = self.sch_val[i]
+            iters = self.sch_iter[i]
+            func = self.sch_func[i]
+            self.scheduler[i] = MyScheduler(total_iters, v, sch_iter=iters, sch_func=func)
+            s = self.scheduler[i]
+            a = s.start_val
+            a_ = []
+            first_iter = -1
+            last_iter = 1
+            for i in range(total_iters):
+                a = s.step()
+                if i > 0 and first_iter == -1 and a != a_[-1]: first_iter = (i - 1) / total_iters
+                elif first_iter != -1 and last_iter == 1 and a == a_[-1]: last_iter = i / total_iters
+                a_.append(a)
+            s.restart()
+            text = '{} between {} and {} in iters {:.2f} to {:.2f}'.format(
+                p, round(min(a_), 5), round(max(a_), 5), first_iter, last_iter)
+            print('\n',text)
+            if self.plot:
+                plt.plot(a_)
+                plt.title(text)
+                plt.show()
+
+    def on_batch_begin(self, last_input, last_target, train, **kwargs):
+        if self.test: return {'stop_epoch': True, 'stop_training': True, 'skip_validate': True}
+        if train:
+            for i, (p, v) in enumerate(zip(self.sch_param, self.sch_val)):
+                new_v = self.scheduler[i].step()
+                self.tfm_fn.keywords[p] = new_v
+            kw = self.tfm_fn.keywords
+            if self.cb:
+                return self.fn(self.learn, **kw).on_batch_begin(
+                    last_input=last_input,last_target=last_target,train=train)
+            else:
+                new_input = self.fn(last_input, **kw)
+                return {'last_input': new_input, 'last_target': last_target}
+        else: return
+
+    def on_train_end(self, **kwargs):
+        if self.cb: self.fn(self.learn).on_train_end()
+
+
+class MyScheduler():
+    "Used to \"step\" from start,end (`vals`) over `n_iter` iterations on a schedule defined by `func`"
+    def __init__(self, total_iters:int, sch_val:StartOptEnd, sch_iter:Optional[StartOptEnd]=None,
+                 sch_func:Optional[AnnealFunc]=None):
+        self.total_iters = total_iters
+        self.start_val,self.end_val = (sch_val[0],sch_val[1]) if is_tuple(sch_val) else (0, sch_val)
+        if sch_iter is None: self.start_iter,self.end_iter = (0, total_iters)
+        else:
+            self.start_iter,self.end_iter = (sch_iter[0],sch_iter[1]) if is_tuple(sch_iter) else (0, sch_iter)
+            if self.start_iter == 1 or isinstance(self.start_iter, float):
+                self.start_iter = int(self.start_iter * total_iters)
+            if self.end_iter == 1 or isinstance(self.end_iter, float):
+                self.end_iter = int(self.end_iter * total_iters)
+        self.eff_iters = self.end_iter - self.start_iter
+        if sch_func is None: self.sch_func = annealing_linear
+        else: self.sch_func = sch_func
+        self.n = 0
+
+    def restart(self): self.n = 0
+
+    def step(self)->Number:
+        "Return next value along annealed schedule."
+        self.eff_n = min(max(0, self.n - self.start_iter), self.eff_iters)
+        out = self.sch_func(self.start_val, self.end_val, min(1, self.eff_n/(self.eff_iters - 1)))
+        self.n += 1
+        return out
+
+
+def cosine_annealing(start:Number, end:Number, pct:float, pct_start=.3, **kwargs)->Number:
+    "Cosine anneal from `start` to `end` as pct goes from 0.0 to 1.0."
+    if pct <= pct_start:
+        return annealing_cos(start, end, pct/pct_start)
+    else:
+        return annealing_cos(end, start, (pct - pct_start)/(1 - pct_start))
+
+def inv_annealing_poly(start:Number, end:Number, pct:float, degree:Number, **kwargs)->Number:
+    "Helper function for `inv_anneal_poly`."
+    return start + (end - start) * (pct)**degree
+
+def inv_annealing_cos(start:Number, end:Number, pct:float, **kwargs)->Number:
+    "Cosine anneal from `start` to `end` as pct goes from 0.0 to 1.0."
+    cos_out = np.cos(np.pi * pct) + 1
+    return start + (end - start)/2 * cos_out
+
+def tuplify(a):
+    if not isinstance(a, list): a = [a]
+    for i, x in enumerate(a):
+        if not isinstance(x, tuple): a[i] = (0, x)
+    return a
+
+def get_fn(a):
+    while True:
+        if hasattr(a, 'func'): a = a.func
+        else: break
+    return a

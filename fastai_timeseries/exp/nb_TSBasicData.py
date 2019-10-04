@@ -42,18 +42,31 @@ class TimeSeriesItem(ItemBase):
         return TimeSeriesItem(item)
 
     def show(self, ax=None, title=None, **kwargs):
-        ax.plot(self.data.transpose_(0, 1))
-        ax.title.set_text(title)
-        ax.tick_params(
-            axis='both',
-            which='both',
-            bottom='off',
-            top='off',
-            labelbottom='off',
-            right='off',
-            left='off',
-            labelleft='off')
-        return ax
+        if ax is None:
+            plt.plot(self.data.transpose_(0, 1))
+            plt.show()
+        else:
+            ax.plot(self.data.transpose_(0, 1))
+            ax.title.set_text(title)
+            ax.tick_params(
+                axis='both',
+                which='both',
+                bottom='off',
+                top='off',
+                labelbottom='off',
+                right='off',
+                left='off',
+                labelleft='off')
+            return ax
+
+
+def get_class_weights(target):
+    if isinstance(target, np.ndarray): target = torch.Tensor(target).to(dtype=torch.int64)
+    # Compute samples weight (each sample should get its own weight)
+    class_sample_count = torch.tensor(
+        [(target == t).sum() for t in torch.unique(target, sorted=True)])
+    weights = 1. / class_sample_count.float()
+    return (weights / weights.sum()).to(device)
 
 
 class TSDataBunch(DataBunch):

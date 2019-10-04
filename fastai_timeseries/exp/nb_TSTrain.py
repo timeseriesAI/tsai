@@ -31,7 +31,8 @@ def run_UCR_test(iters, epochs, datasets, arch,
                  opt_func=functools.partial(torch.optim.Adam, betas=(0.9, 0.99)),
                  loss_func=None, **arch_kwargs):
     ds_, acc_, acces_, accmax_, iter_, time_, epochs_, loss_, val_loss_   = [], [], [], [], [], [], [], [], []
-    for ds in listify(datasets):
+    datasets = listify(datasets)
+    for ds in datasets:
         db = create_UCR_databunch(ds)
         for i in range(iters):
             print('\n', ds, i)
@@ -46,20 +47,20 @@ def run_UCR_test(iters, epochs, datasets, arch,
             learn.fit_one_cycle(epochs, max_lr=max_lr, pct_start=pct_start, moms=(.95, .85) if warmup else (.95, .95),
                                 div_factor=25.0 if warmup else 1., wd=wd)
             duration = time.time() - start_time
-            time_.append('{:.0f}s'.format(duration))
+            time_.append('{:.0f}'.format(duration))
             early_stop = math.ceil(np.argmin(learn.recorder.losses) / len(learn.data.train_dl))
             acc_.append(learn.recorder.metrics[-1][0].item())
             acces_.append(learn.recorder.metrics[early_stop - 1][0].item())
             accmax_.append(np.max(learn.recorder.metrics))
             loss_.append(learn.recorder.losses[-1].item())
             val_loss_.append(learn.recorder.val_losses[-1].item())
-            clear_output()
+            if len(datasets) * iters >1: clear_output()
             df = (pd.DataFrame(np.stack((ds_, iter_, epochs_, loss_, val_loss_ ,acc_, acces_, accmax_, time_)).T,
                                columns=['dataset', 'iter', 'epochs', 'loss', 'val_loss',
-                                        'accuracy', 'accuracy_train_loss',
+                                        'accuracy', 'accuracy_ts',
                                         'max_accuracy', 'time (s)'])
                   )
             df = df.astype({'loss': float, 'val_loss': float, 'accuracy': float,
-                            'accuracy_train_loss': float, 'max_accuracy': float})
+                            'accuracy_ts': float, 'max_accuracy': float})
             display(df)
-    return df
+    return learn, df

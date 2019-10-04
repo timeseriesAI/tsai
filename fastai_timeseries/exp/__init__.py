@@ -6,8 +6,8 @@ from .nb_TSImageData import *
 from .nb_TSCallbacks import *
 from .nb_TSCharts import *
 from .nb_TSTrain import *
-from .nb_colorfuldim import *
-from .nb_initialization import *
-from .nb_optimizers import *
-from .nb_ImageDataAugmentation import *
-from .nb_new_data_augmentation import *
+from .nb_ColorfulDim import *
+from .nb_Initialization import *
+from .nb_Optimizers import *
+#from .nb_ImageDataAugmentation import *
+#from .nb_NewDataAugmentation import *
