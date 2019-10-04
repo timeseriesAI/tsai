@@ -19,11 +19,11 @@ The 3 components of this library will keep growing in the future as new techniqu
 ## Notebooks
 
 #### 1. Introduction to Time Series Classification (TSC): 
-    This is an intro that nb that shows you how you can achieve high performance in 4 simple steps.
+- This is an intro that nb that shows you how you can achieve high performance in 4 simple steps.
 
 #### 2. UCR_TCS:
-    The UCR datasets are broadly used in TSC problems as s bechmark to measure performance. This notebook will allow you to test any of the available datasets, with the model of your choice and any training scheme. You can easily tweak any of them to try to beat a SOTA.
+- The UCR datasets are broadly used in TSC problems as s bechmark to measure performance. This notebook will allow you to test any of the available datasets, with the model of your choice and any training scheme. You can easily tweak any of them to try to beat a SOTA.
 
 #### 3. New TS data augmentations: 
-    You will see how you can apply successful data augmentation techniques (like mixup, cutout, and cutmix) to time series problems.
+- You will see how you can apply successful data augmentation techniques (like mixup, cutout, and cutmix) to time series problems.
 
