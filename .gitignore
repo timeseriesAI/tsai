@@ -1,4 +1,4 @@
-*.jpg
+#*.jpg
 *.npy
 *.arff
 *.png
