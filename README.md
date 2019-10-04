@@ -6,11 +6,11 @@ timeseriesAI is a library built on top of fastai/ Pytorch to help you apply Deep
 
 The library contains 3 major components: 
 
-1. Notebooks 📒: they are very practical, and show you how certain techniques can be easily applied. 
+1. **Notebooks** 📒: they are very practical, and show you how certain techniques can be easily applied. 
 
-2. fastai_timeseries 🏃🏽‍♀️: it's an extension of fastai's library that focuses on time series/ sequential problems. 
+2. **fastai_timeseries** 🏃🏽‍♀️: it's an extension of fastai's library that focuses on time series/ sequential problems. 
 
-3. torchtimeseries.models 👫: it's a collection of some state-of-the-art time series/ sequential models.
+3. **torchtimeseries.models** 👫: it's a collection of some state-of-the-art time series/ sequential models.
 
 
 The 3 components of this library will keep growing in the future as new techniques are added and/or new state-of-the-art models appear. In those cases, I will keep adding notebooks to demonstrate how you can apply them in a practical way.
