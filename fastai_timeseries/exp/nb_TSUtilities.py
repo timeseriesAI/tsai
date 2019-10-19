@@ -23,6 +23,7 @@ import sklearn
 from sklearn import metrics
 from sklearn.metrics import accuracy_score, precision_score, recall_score, matthews_corrcoef, f1_score
 path = Path(os.getcwd())
+from numbers import Integral
 from IPython.display import display, HTML, clear_output
 display(HTML("<style>.container { width:100% !important; }</style>"))
 
@@ -334,7 +335,6 @@ def get_weighted_sampler(target):
 def history_output(learn, max_lr, epochs, t0, t1):
 
     print('\ndataset                 :', learn.data.dsid)
-    print(learn.data.kwargs)
     #print('shape                   :', learn.data.train_ds[0][0].data.shape[-2:])
     print('model                   :', learn.model.__name__)
     print('epochs                  :', epochs)
@@ -345,28 +345,29 @@ def history_output(learn, max_lr, epochs, t0, t1):
           str(datetime.timedelta(seconds=(t1 - t0).seconds)))
     metrics = np.array(learn.recorder.metrics)
     metrics_names = learn.recorder.metrics_names
-    train_losses = learn.recorder.losses
-    best_train_epoch = np.nanargmin(train_losses)
-    val_losses = learn.recorder.val_losses
-    best_val_epoch = np.nanargmin(val_losses)
+    train_loss = learn.recorder.losses
+    best_train_epoch = np.nanargmin(train_loss)
+    val_loss = learn.recorder.val_losses
+    best_val_epoch = np.nanargmin(val_loss)
     epochs10p = min(5, max(1, int(.1 * epochs)))
     n_batches = len(learn.data.train_dl)
+    b_per_eopch = math.ceil(len(learn.data.train_ds) / learn.data.train_dl.batch_size)
 
 
     print('\ntrain loss:')
     print('min train loss          : {:.5f}     epoch: {:}'.format(
-        np.min(train_losses), (best_train_epoch + 1) // n_batches))
+        np.min(train_loss), (best_train_epoch + 1) // n_batches))
     print('final loss              : {:.5f}     epoch: {:}'.format(
-        train_losses[-1], len(train_losses) // n_batches))
+        train_loss[-1], len(train_loss) // n_batches))
     print('final avg loss          : {:.5f} +/- {:.5f} in last {:} epochs'.format(
-        np.mean(train_losses[-epochs10p*n_batches:]), np.std(train_losses[-epochs10p*n_batches:]), epochs10p))
+        np.mean(train_loss[-epochs10p*n_batches:]), np.std(train_loss[-epochs10p*n_batches:]), epochs10p))
     print('\nval loss:')
     print('min val loss            : {:.5f}     epoch: {:}'.format(
-        np.min(val_losses), best_val_epoch + 1))
+        np.min(val_loss), best_val_epoch + 1))
     print('final loss              : {:.5f}     epoch: {:}'.format(
-        val_losses[-1], len(val_losses)))
+        val_loss[-1], len(val_loss)))
     print('final avg loss          : {:.5f} +/- {:.5f} in last {:} epochs'.format(
-        np.mean(val_losses[-epochs10p:]), np.std(val_losses[-epochs10p:]), epochs10p))
+        np.mean(val_loss[-epochs10p:]), np.std(val_loss[-epochs10p:]), epochs10p))
     if len(metrics) > 0:
         for i in range(0, metrics.shape[1]):
             metric = metrics[:, i]
@@ -377,7 +378,7 @@ def history_output(learn, max_lr, epochs, t0, t1):
                     np.nanmax(metric),
                     np.nanargmax(metric) + 1))
                 print('early stopping metric   : {:.5f}     epoch: {:}'.format(
-                    metric[best_val_epoch], best_val_epoch + 1))
+                    metric[best_train_epoch // b_per_eopch], best_train_epoch // b_per_eopch + 1))
                 print('final metric            : {:.5f}     epoch: {:}'.format(
                     metric[-1], len(metric)))
                 print('final avg metric        : {:.5f} +/- {:.5f} in last {:} epochs'.format(

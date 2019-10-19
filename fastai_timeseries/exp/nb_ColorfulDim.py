@@ -191,7 +191,7 @@ class ActivationsHistogram(HookCallback):
             ratioH=-self.hMin/(self.hMax-self.hMin)
             zeroPosH = imgH*ratioH
             main_ax.plot(dead * l.shape[1],'r', linewidth=2) # X Axis
-            main_ax.plot([0,imgW],[zeroPosH,zeroPosH],'black') # X Axis
+            main_ax.plot([0,imgW],[zeroPosH,zeroPosH],'black', linewidth=.5) # X Axis
             if (showEpochs):
                 start = 0
                 nEpochs = len(self.activations_histogram.stats_epoch)

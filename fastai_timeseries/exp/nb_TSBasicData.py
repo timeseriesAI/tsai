@@ -14,6 +14,8 @@ except ImportError:
     from .nb_TSDatasets import *
 
 
+from fastai.core import *
+
 class TimeSeriesItem(ItemBase):
     "`ItemBase` suitable for time series"
 
@@ -59,18 +61,9 @@ class TimeSeriesItem(ItemBase):
                 labelleft='off')
             return ax
 
-
-def get_class_weights(target):
-    if isinstance(target, np.ndarray): target = torch.Tensor(target).to(dtype=torch.int64)
-    # Compute samples weight (each sample should get its own weight)
-    class_sample_count = torch.tensor(
-        [(target == t).sum() for t in torch.unique(target, sorted=True)])
-    weights = 1. / class_sample_count.float()
-    return (weights / weights.sum()).to(device)
-
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 class TSDataBunch(DataBunch):
-
 
     def get_stats(self):
         train = To3dArray(self.label_list.train.items)
@@ -87,7 +80,8 @@ class TSDataBunch(DataBunch):
             else:
                 print('***** Please, select a valid  scaling_subtype *****')
                 return
-            self.min, self.max = train_min, train_max
+            #self.min, self.max = train_min, train_max
+            self.stats = train_min, train_max
             return self
 
         elif self.type == 'standardize':
@@ -103,40 +97,54 @@ class TSDataBunch(DataBunch):
             else:
                 print('***** Please, select a valid  scaling_subtype *****')
                 return
-            self.mean, self.std = train_mean, train_std
+            #self.mean, self.std = train_mean, train_std
+            self.stats = train_mean, train_std
             return self
 
         else:
             print('***** Please, select a valid  scaling_type *****')
             return
 
-    def scale(self, scale_type='standardize', scale_subtype='per_channel', scale_range=(-1, 1)) -> None:
+    def normalize(self, scale_type='standardize', scale_subtype='per_channel', scale_range=(-1, 1)) -> None:
         self.type = scale_type
         self.subtype = scale_subtype
         self.range = scale_range
         self.get_stats()
         if self.type == 'standardize':
+            mean, std = self.stats
             self.label_list.train.x.items = (self.label_list.train.x.items -
-                                             self.mean) / self.std
+                                             mean) / std
             self.label_list.valid.x.items = (self.label_list.valid.x.items -
-                                             self.mean) / self.std
+                                             mean) / std
             if self.label_list.test is not None:
                 self.label_list.test.x.items = (self.label_list.test.x.items -
-                                                self.mean) / self.std
+                                                mean) / std
             return self
         elif self.type == 'normalize':
+            min, max = self.stats
             self.label_list.train.x.items = (
-                ((self.label_list.train.x.items - self.min)) /
-                (self.max - self.min)) * (self.range[1] - self.range[0]) + self.range[0]
+                ((self.label_list.train.x.items - min)) /
+                (max - min)) * (self.range[1] - self.range[0]) + self.range[0]
             self.label_list.valid.x.items = (
-                ((self.label_list.valid.x.items - self.min)) /
-                (self.max - self.min)) * (self.range[1] - self.range[0]) + self.range[0]
+                ((self.label_list.valid.x.items - min)) /
+                (max - min)) * (self.range[1] - self.range[0]) + self.range[0]
             if self.label_list.test is not None:
                 self.label_list.test.x.items = (
-                    ((self.label_list.test.x.items - self.min)) /
-                    (self.max - self.min)) * (self.range[1] - self.range[0]) + self.range[0]
+                    ((self.label_list.test.x.items - min)) /
+                    (max - min)) * (self.range[1] - self.range[0]) + self.range[0]
             return self
         else: return print('Select a correct type', self.type)
+
+    @property
+    def cw(self)->None: return self._get_cw(self.train_dl)
+
+    def _get_cw(self, train_dl):
+        target = torch.Tensor(train_dl.dataset.y.items).to(dtype=torch.int64)
+        # Compute samples weight (each sample should get its own weight)
+        class_sample_count = torch.tensor(
+            [(target == t).sum() for t in torch.unique(target, sorted=True)])
+        weights = 1. / class_sample_count.float()
+        return (weights / weights.sum()).to(device)
 
 
 
@@ -209,9 +217,15 @@ class TimeSeriesList(ItemList):
     @classmethod
     def from_df(cls, df, path='.', cols=None, feat=None, processor=None, **kwargs) -> 'ItemList':
         "Create an `ItemList` in `path` from the inputs in the `cols` of `df`."
-        if cols is 0:
+        """
+        df:     pandas dataframe containing all data
+        cols:   columns with the time series data
+        feat:   for multivariate time series the column that contains the features
+        """
+        if cols is None:
             inputs = df
         else:
+            if feat not in cols: cols = list(cols) + listify(feat)
             col_idxs = df_names_to_idx(list(cols), df)
             inputs = df.iloc[:, col_idxs]
         assert inputs.isna().sum().sum(
@@ -309,8 +323,10 @@ class MixedTimeSeriesList(ItemList):
 def df2array(df, feat=None):
     if feat is None:
         return df.values[:, None]
-    for i, ch in enumerate(df[feat].unique()):
-        data_i = df[df[feat] == ch].values[:, None]
+    for i, ch in enumerate(sorted(df[feat].unique())):
+        cols = list(df.columns.values)
+        cols.remove(feat)
+        data_i = df[cols][df[feat] == ch].values[:, None]
         if i == 0: data = data_i
         else: data = np.concatenate((data, data_i), axis=1)
     return data
