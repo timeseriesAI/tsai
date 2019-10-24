@@ -583,62 +583,6 @@ def show_multi_img_tfms(learn, rows=3, cols=3, figsize=(8, 8)):
             plt.close('all')
     return learn
 
-def show_tfms(learn, rows=3, cols=3, figsize=(8, 8)):
-    xb, yb = learn.data.one_batch()
-    rand_int = np.random.randint(len(xb))
-    ndim = xb.ndim
-    tfms = learn.data.train_ds.tfms
 
-    if ndim == 4:
-        rand_item = Image(xb[rand_int])
-        for i in range(len(xb)): xb[i] = Image(xb[i]).apply_tfms(tfms).data
-        cb_tfms = 0
-        for cb in learn.callback_fns:
-            if hasattr(cb, 'keywords') and hasattr(get_fn(cb), 'on_batch_begin'):
-                cb_fn = partial(get_fn(cb), **cb.keywords)
-                try:
-                    fig = plt.subplots(rows, cols, figsize=figsize, sharex=True, sharey=True)[1].flatten()
-                    plt.suptitle(get_fn(cb).__name__, size=14)
-                    [Image(cb_fn(learn).on_batch_begin(xb, yb, True)['last_input'][0]).show(ax=ax)
-                        for i, ax in enumerate(fig)]
-                    plt.show()
-                    cb_tfms += 1
-                    break
-                except:
-                    plt.close('all')
-
-    elif ndim == 3:
-        rand_item = TimeSeriesItem(xb[rand_int])
-        cb_tfms = 0
-        for cb in learn.callback_fns:
-            if hasattr(cb, 'keywords') and hasattr(get_fn(cb), 'on_batch_begin'):
-                cb_fn = partial(get_fn(cb), **cb.keywords)
-                try:
-                    fig = plt.subplots(rows, cols, figsize=figsize, sharex=True, sharey=True)[1].flatten()
-                    plt.suptitle(get_fn(cb).__name__, size=14)
-                    [TimeSeriesItem(cb_fn(learn).on_batch_begin(xb, yb, True)['last_input'][0]).show(ax=ax)
-                        for i, ax in enumerate(fig)]
-                    plt.show()
-                    cb_tfms += 1
-                    break
-                except:
-                    plt.close('all')
-
-    if cb_tfms == 0:
-        if tfms is not None:
-            t_ = []
-            for t in learn.data.train_ds.tfms: t_.append(get_fn(t).__name__)
-            title = f"{str(t_)[1:-1]} transforms applied"
-            fig = plt.subplots(rows, cols, figsize=figsize, sharex=True, sharey=True)[1].flatten()
-            [rand_item.apply_tfms(tfms).show(ax=ax) for i, ax in enumerate(fig)]
-            plt.suptitle(title, size=14)
-            plt.show()
-        else:
-            print('No transformation has been applied')
-            rand_item.show()
-
-    return learn
-
-Learner.show_tfms = show_tfms
 Learner.show_multi_img_tfms = show_multi_img_tfms
 Learner.show_single_img_tfms = show_single_img_tfms

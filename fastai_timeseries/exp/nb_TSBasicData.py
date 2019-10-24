@@ -13,10 +13,10 @@ except ImportError:
     from .nb_TSUtilities import *
     from .nb_TSDatasets import *
 
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-from fastai.core import *
 
-class TimeSeriesItem(ItemBase):
+class TSItem(ItemBase):
     "`ItemBase` suitable for time series"
 
     def __init__(self, item, *args, **kwargs):
@@ -34,21 +34,23 @@ class TimeSeriesItem(ItemBase):
     def clone(self):
         return self.__class__(self.data.clone())
 
-    def apply_tfms(self, tfms, **kwargs):
+    def apply_tfms(self, tfms=None, **kwargs):
+        if tfms is None: return self
         x = self.clone()
-        for tfm in tfms:
-            x.data = tfm(x.data)
+        for tfm in tfms: x.data = tfm(x.data)
         return x
 
     def reconstruct(self, item):
-        return TimeSeriesItem(item)
+        return TSItem(item)
 
     def show(self, ax=None, title=None, **kwargs):
+        x = self.clone()
         if ax is None:
-            plt.plot(self.data.transpose_(0, 1))
+            plt.plot(x.data.transpose_(0, 1))
+            plt.title(title)
             plt.show()
         else:
-            ax.plot(self.data.transpose_(0, 1))
+            ax.plot(x.data.transpose_(0, 1))
             ax.title.set_text(title)
             ax.tick_params(
                 axis='both',
@@ -61,82 +63,107 @@ class TimeSeriesItem(ItemBase):
                 labelleft='off')
             return ax
 
+class TimeSeriesItem(TSItem): pass
+
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 class TSDataBunch(DataBunch):
 
-    def get_stats(self):
-        train = To3dArray(self.label_list.train.items)
-        if self.type == 'normalize':
-            if self.subtype == 'all_samples':
-                train_min = train.min(keepdims=True)
-                train_max = train.max(keepdims=True)
-            elif self.subtype == 'per_sample':
+    def scale(self, scale_type='standardize', scale_subtype='per_channel', scale_range=(-1, 1)) -> None:
+        self.scale_type = scale_type
+        self.scale_subtype = scale_subtype
+        self.scale_range = scale_range
+        if scale_type is None:
+            self.stats = None
+            return self
+
+        if scale_subtype == 'per_sample':
+            train = To3dArray(self.train_ds.x.items)
+            valid = To3dArray(self.valid_ds.x.items)
+            if self.test_ds is not None: test = To3dArray(self.test_ds.x.items)
+
+            if self.scale_type == 'normalize':
                 train_min = train.min(axis=(1, 2), keepdims=True)
                 train_max = train.max(axis=(1, 2), keepdims=True)
-            elif self.subtype == 'per_channel':
+                self.train_ds.x.items = (
+                    ((train - train_min)) /
+                    (train_max - train_min)) * (self.scale_range[1] - self.scale_range[0]) + self.scale_range[0]
+                valid_min = valid.min(axis=(1, 2), keepdims=True)
+                valid_max = valid.max(axis=(1, 2), keepdims=True)
+                self.valid_ds.x.items = (
+                    ((valid - valid_min)) /
+                    (valid_max - valid_min)) * (self.scale_range[1] - self.scale_range[0]) + self.scale_range[0]
+                if self.test_ds is not None:
+                    test_min = test.min(axis=(1, 2), keepdims=True)
+                    test_max = test.max(axis=(1, 2), keepdims=True)
+                    self.test_ds.x.items = (
+                        ((test - test_min)) /
+                        (test_max - test_min)) * (self.scale_range[1] - self.scale_range[0]) + self.scale_range[0]
+                self.stats = None
+                return self
+
+            elif self.scale_type == 'standardize':
+                train_mean = train.mean(axis=(1, 2), keepdims=True)
+                train_std = train.std(axis=(1, 2), keepdims=True)
+                self.train_ds.x.items = (train - train_mean) / train_std
+                valid_mean = valid.mean(axis=(1, 2), keepdims=True)
+                valid_std = valid.std(axis=(1, 2), keepdims=True)
+                self.valid_ds.x.items = (valid - valid_mean) / valid_std
+                if self.test_ds is not None:
+                    test_mean = test.mean(axis=(1, 2), keepdims=True)
+                    test_std = test.std(axis=(1, 2), keepdims=True)
+                    self.test_ds.x.items = (test - test_mean) / test_std
+                self.stats = None
+                return self
+
+        elif self.scale_type == 'standardize':
+            train = To3dArray(self.train_ds.x.items)
+            if self.scale_subtype == 'all_samples':
+                train_mean = train.mean(keepdims=True)
+                train_std = train.std(keepdims=True)
+            elif self.scale_subtype == 'per_channel':
+                train_mean = train.mean(axis=(0, 2), keepdims=True)
+                train_std = train.std(axis=(0, 2), keepdims=True)
+            else:
+                print('***** Please, select a valid  scale_subtype *****')
+                return
+            self.stats = train_mean, train_std
+            self.train_ds.x.items = (self.train_ds.x.items - train_mean) / train_std
+            self.valid_ds.x.items = (self.valid_ds.x.items - train_mean) / train_std
+            if self.test_ds is not None:
+                self.test_ds.x.items = (self.test_ds.x.items - train_mean) / train_std
+            return self
+
+        elif self.scale_type == 'normalize':
+            train = To3dArray(self.train_ds.x.items)
+            if self.scale_subtype == 'all_samples':
+                train_min = train.min(keepdims=True)
+                train_max = train.max(keepdims=True)
+            elif self.scale_subtype == 'per_channel':
                 train_min = train.min(axis=(0, 2), keepdims=True)
                 train_max = train.max(axis=(0, 2), keepdims=True)
             else:
                 print('***** Please, select a valid  scaling_subtype *****')
                 return
-            #self.min, self.max = train_min, train_max
             self.stats = train_min, train_max
+            self.train_ds.x.items = (
+                ((self.train_ds.x.items - train_min)) /
+                (train_max - train_min)) * (self.scale_range[1] - self.scale_range[0]) + self.scale_range[0]
+            self.valid_ds.x.items = (
+                ((self.valid_ds.x.items - train_min)) /
+                (train_max - train_min)) * (self.scale_range[1] - self.scale_range[0]) + self.scale_range[0]
+            if self.test_ds is not None:
+                self.test_ds.x.items = (
+                    ((self.test_ds.x.items - train_min)) /
+                    (train_max - train_min)) * (self.scale_range[1] - self.scale_range[0]) + self.scale_range[0]
             return self
-
-        elif self.type == 'standardize':
-            if self.subtype == 'all_samples':
-                train_mean = train.mean(keepdims=True)
-                train_std = train.std(keepdims=True)
-            elif self.subtype == 'per_sample':
-                train_mean = train.mean(axis=(1, 2), keepdims=True)
-                train_std = train.std(axis=(1, 2), keepdims=True)
-            elif self.subtype == 'per_channel':
-                train_mean = train.mean(axis=(0, 2), keepdims=True)
-                train_std = train.std(axis=(0, 2), keepdims=True)
-            else:
-                print('***** Please, select a valid  scaling_subtype *****')
-                return
-            #self.mean, self.std = train_mean, train_std
-            self.stats = train_mean, train_std
-            return self
-
-        else:
-            print('***** Please, select a valid  scaling_type *****')
-            return
-
-    def normalize(self, scale_type='standardize', scale_subtype='per_channel', scale_range=(-1, 1)) -> None:
-        self.type = scale_type
-        self.subtype = scale_subtype
-        self.range = scale_range
-        self.get_stats()
-        if self.type == 'standardize':
-            mean, std = self.stats
-            self.label_list.train.x.items = (self.label_list.train.x.items -
-                                             mean) / std
-            self.label_list.valid.x.items = (self.label_list.valid.x.items -
-                                             mean) / std
-            if self.label_list.test is not None:
-                self.label_list.test.x.items = (self.label_list.test.x.items -
-                                                mean) / std
-            return self
-        elif self.type == 'normalize':
-            min, max = self.stats
-            self.label_list.train.x.items = (
-                ((self.label_list.train.x.items - min)) /
-                (max - min)) * (self.range[1] - self.range[0]) + self.range[0]
-            self.label_list.valid.x.items = (
-                ((self.label_list.valid.x.items - min)) /
-                (max - min)) * (self.range[1] - self.range[0]) + self.range[0]
-            if self.label_list.test is not None:
-                self.label_list.test.x.items = (
-                    ((self.label_list.test.x.items - min)) /
-                    (max - min)) * (self.range[1] - self.range[0]) + self.range[0]
-            return self
-        else: return print('Select a correct type', self.type)
+        else: return print('Select a correct type', self.scale_type)
 
     @property
     def cw(self)->None: return self._get_cw(self.train_dl)
+
+    @property
+    def dbtype(self)->str: return '1D'
 
     def _get_cw(self, train_dl):
         target = torch.Tensor(train_dl.dataset.y.items).to(dtype=torch.int64)
@@ -147,6 +174,16 @@ class TSDataBunch(DataBunch):
         return (weights / weights.sum()).to(device)
 
 
+def show_counts(databunch):
+    labels, counts = np.unique(databunch.train_ds.y.items, return_counts=True)
+    plt.bar(labels, counts)
+    plt.title('labels')
+    plt.xticks(labels)
+    plt.show()
+
+DataBunch.show_counts = show_counts
+
+
 
 class TSPreProcessor(PreProcessor):
 
@@ -154,6 +191,8 @@ class TSPreProcessor(PreProcessor):
 
     def process(self, ds: ItemList):
         ds.features, ds.seq_len = self.ds.get(0).data.size(-2), self.ds.get(0).data.size(-1)
+        ds.f = ds.features
+        ds.s = ds.seq_len
 
 
 class TimeSeriesList(ItemList):
@@ -171,8 +210,8 @@ class TimeSeriesList(ItemList):
 
     def get(self, i):
         item = super().get(i)
-        if self.mask is None: return TimeSeriesItem(To2dTensor(item))
-        else: return[TimeSeriesItem(To2dTensor(item[m])) for m in self.mask]
+        if self.mask is None: return TSItem(To2dTensor(item))
+        else: return[TSItem(To2dTensor(item[m])) for m in self.mask]
 
 
     def show_xys(self, xs, ys, figsize=(10, 10), **kwargs):
@@ -217,15 +256,9 @@ class TimeSeriesList(ItemList):
     @classmethod
     def from_df(cls, df, path='.', cols=None, feat=None, processor=None, **kwargs) -> 'ItemList':
         "Create an `ItemList` in `path` from the inputs in the `cols` of `df`."
-        """
-        df:     pandas dataframe containing all data
-        cols:   columns with the time series data
-        feat:   for multivariate time series the column that contains the features
-        """
-        if cols is None:
+        if cols is 0:
             inputs = df
         else:
-            if feat not in cols: cols = list(cols) + listify(feat)
             col_idxs = df_names_to_idx(list(cols), df)
             inputs = df.iloc[:, col_idxs]
         assert inputs.isna().sum().sum(
@@ -238,6 +271,8 @@ class TimeSeriesList(ItemList):
             processor=processor,
             **kwargs)
         return res
+
+class TSList(TimeSeriesList): pass
 
 
 
@@ -256,8 +291,8 @@ class MixedTimeSeriesList(ItemList):
 
     def get(self, i):
         item = super().get(i)
-        if self.mask is None: return TimeSeriesItem(To2dTensor(item))
-        else: return[TimeSeriesItem(To2dTensor(item[m])) for m in self.mask]
+        if self.mask is None: return TSItem(To2dTensor(item))
+        else: return[TSItem(To2dTensor(item[m])) for m in self.mask]
 
 
     def show_xys(self, xs, ys, figsize=(10, 10), **kwargs):
@@ -323,10 +358,8 @@ class MixedTimeSeriesList(ItemList):
 def df2array(df, feat=None):
     if feat is None:
         return df.values[:, None]
-    for i, ch in enumerate(sorted(df[feat].unique())):
-        cols = list(df.columns.values)
-        cols.remove(feat)
-        data_i = df[cols][df[feat] == ch].values[:, None]
+    for i, ch in enumerate(df[feat].unique()):
+        data_i = df[df[feat] == ch].values[:, None]
         if i == 0: data = data_i
         else: data = np.concatenate((data, data_i), axis=1)
     return data

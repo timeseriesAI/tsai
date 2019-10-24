@@ -61,10 +61,6 @@ def decompress_from_url(url, target_dir=None, verbose=False):
 
 
 
-
-
-
-
 def get_UCR_univariate_list():
     return [
         'ACSF1', 'Adiac', 'AllGestureWiimoteX', 'AllGestureWiimoteY',
@@ -121,18 +117,19 @@ def get_UCR_multivariate_list():
 
 def get_UCR_univariate(sel_dataset, parent_dir='data/UCR', verbose=False):
     if sel_dataset not in get_UCR_univariate_list():
-        if verbose:
-            print('This dataset does not exist. Please select one from this list:')
-            print(get_UCR_univariate_list())
+        print('This dataset does not exist. Please select one from this list:')
+        print(get_UCR_univariate_list())
         return None, None, None, None
     if verbose: print('Dataset:', sel_dataset)
     fname_train = sel_dataset + "_TRAIN.txt"
     fname_test = sel_dataset + "_TEST.txt"
     src_website = 'http://www.timeseriesclassification.com/Downloads/'
     tgt_dir = Path(parent_dir) / sel_dataset
+    if verbose: print('Download and decompressing data...')
     if not os.path.isdir(tgt_dir):
         decompress_from_url(
             src_website + sel_dataset + '.zip', target_dir=tgt_dir, verbose=verbose)
+    if verbose: print('...data downloaded and decompressed')
     data_train = np.loadtxt(os.path.join(tgt_dir, fname_train), delimiter=None)
     data_test = np.loadtxt(os.path.join(tgt_dir, fname_test), delimiter=None)
 
@@ -157,21 +154,22 @@ def get_UCR_univariate(sel_dataset, parent_dir='data/UCR', verbose=False):
 def get_UCR_multivariate(sel_dataset, parent_dir='data/UCR', verbose=False):
     if sel_dataset.lower() == 'mphoneme': sel_dataset = 'Phoneme'
     if sel_dataset not in get_UCR_multivariate_list():
-        if verbose:
-            print('This dataset does not exist. Please select one from this list:')
-            print(get_UCR_multivariate_list())
+        print('This dataset does not exist. Please select one from this list:')
+        print(get_UCR_multivariate_list())
         return None, None, None, None
     if verbose: print('Dataset:', sel_dataset)
     src_website = 'http://www.timeseriesclassification.com/Downloads/'
     tgt_dir = Path(parent_dir) / sel_dataset
 
+    if verbose: print('Download and decompressing data...')
     if not os.path.isdir(tgt_dir):
         decompress_from_url(
             src_website + sel_dataset + '.zip', target_dir=tgt_dir, verbose=verbose)
-
+    if verbose: print('...data downloaded and decompressed')
+    if verbose: print('Extracting data...')
     X_train_ = []
     X_test_ = []
-    for i in range(1000):
+    for i in range(10000):
         if not os.path.isfile(
                 f'{parent_dir}/{sel_dataset}/{sel_dataset}Dimension'
                 + str(i + 1) + '_TRAIN.arff'):
@@ -191,6 +189,7 @@ def get_UCR_multivariate(sel_dataset, parent_dir='data/UCR', verbose=False):
         X_train_.append(train_df.iloc[:, :-1].values)
         X_test_.append(test_df.iloc[:, :-1].values)
 
+    if verbose: print('...extraction complete')
     X_train = np.stack(X_train_, axis=-1)
     X_test = np.stack(X_test_, axis=-1)
 
@@ -212,7 +211,14 @@ def get_UCR_multivariate(sel_dataset, parent_dir='data/UCR', verbose=False):
 
 def get_UCR_data(dsid, parent_dir='data/UCR', verbose=False):
     if dsid in get_UCR_univariate_list(): return get_UCR_univariate(dsid, verbose=verbose)
-    else: return get_UCR_multivariate(dsid, verbose=verbose)
+    elif dsid in get_UCR_multivariate_list(): return get_UCR_multivariate(dsid, verbose=verbose)
+    else:
+        print('This dataset does not exist. Please select one from these lists:')
+        print('\nunivariate datasets')
+        print(get_UCR_univariate_list())
+        print('\nmultivariate datasets')
+        print(get_UCR_multivariate_list())
+        return None, None, None, None
 
 
 def create_seq_optimized(n_samples=1000, seq_len=100, channels=True, seed=1):
