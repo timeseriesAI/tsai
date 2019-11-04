@@ -32,12 +32,13 @@ The 3 components of this library will keep growing in the future as new techniqu
 
 #### 5. Multivariate ROCKET on GPU 🚀: 
 - On October 29, 2019, there was a major milestone in the area of Time Series Classification. 
-A new method, called ROCKET (RandOm Convolutional KErnel Transform) developed by Dempster et al. was released ([paper](https://arxiv.org/pdf/1910.13051)) together with the code they used.
+A new method, called ROCKET (RandOm Convolutional KErnel Transform) was released (Dempster A, Petitjean F, Webb GI (2019) [ROCKET: Exceptionally fast and accurate time series classification using random convolutional kernels](https://arxiv.org/pdf/1910.13051)) together with the code they used.
 This new method not only beat the previous recognized state of the art (HIVE-COTE) on a TSC benchmark, but it does it in record time, many orders of magnitude faster than any other method. 
 I’ve been using it for a couple of days and the results are IMPRESSIVE!! 
 The release code however has 2 limitations:
   - it can only handle univariate time series
   - it doesn’t support GPU
+  Dempster A, Petitjean F, Webb GI (2019) ROCKET: Exceptionally fast and accurate time series classification using random convolutional kernels, arXiv:1910.13051.
 
 - I have developed ROCKET with GPU support in Pytorch that you can now use it with univariate of multivariate time series. In this notebook you will see how you can use ROCKET in your time series problems.
 
