@@ -69,95 +69,111 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 class TSDataBunch(DataBunch):
 
-    def scale(self, scale_type='standardize', scale_subtype='per_channel', scale_range=(-1, 1)) -> None:
+    def scale(self, scale_type='standardize', scale_by_channel=False, scale_by_sample=False,
+          scale_range=(-1, 1)) -> None:
         self.scale_type = scale_type
-        self.scale_subtype = scale_subtype
+        self.scale_by_channel = scale_by_channel
+        self.scale_by_sample = scale_by_sample
         self.scale_range = scale_range
         if scale_type is None:
             self.stats = None
             return self
+        assert scale_type in ['normalize', 'standardize', 'robustscale'], print('Select a correct type', scale_type)
 
-        if scale_subtype == 'per_sample':
-            train = To3dArray(self.train_ds.x.items)
-            valid = To3dArray(self.valid_ds.x.items)
-            if self.test_ds is not None: test = To3dArray(self.test_ds.x.items)
+        train = self.train_ds.x.items.astype(float)
+        valid = self.valid_ds.x.items.astype(float)
+        if self.test_ds is not None: test = self.test_ds.x.items.astype(float)
 
-            if self.scale_type == 'normalize':
-                train_min = train.min(axis=(1, 2), keepdims=True)
-                train_max = train.max(axis=(1, 2), keepdims=True)
-                self.train_ds.x.items = (
-                    ((train - train_min)) /
-                    (train_max - train_min)) * (self.scale_range[1] - self.scale_range[0]) + self.scale_range[0]
-                valid_min = valid.min(axis=(1, 2), keepdims=True)
-                valid_max = valid.max(axis=(1, 2), keepdims=True)
-                self.valid_ds.x.items = (
-                    ((valid - valid_min)) /
-                    (valid_max - valid_min)) * (self.scale_range[1] - self.scale_range[0]) + self.scale_range[0]
+        if scale_by_channel and scale_by_sample: axis = -1 # mean
+        elif scale_by_channel: axis = (0, 2) # mean for the entire dataset by channel
+        elif scale_by_sample: axis = (1, 2)  # mean for each sample
+        else: axis = None
+
+
+        if scale_by_sample:
+            self.stats = None
+            if scale_type == 'normalize':
+                train_min = np.nanmin(train, axis=axis, keepdims=True)
+                train_max = np.nanmax(train, axis=axis, keepdims=True)
+                self.train_ds.x.items = (((train - train_min)) / (train_max - train_min)) *\
+                (self.scale_range[1] - self.scale_range[0]) + self.scale_range[0]
+                valid_min = np.nanmin(valid, axis=axis, keepdims=True)
+                valid_max = np.nanmax(valid, axis=axis, keepdims=True)
+                self.valid_ds.x.items = (((valid - valid_min)) / (valid_max - valid_min)) *\
+                (self.scale_range[1] - self.scale_range[0]) + self.scale_range[0]
                 if self.test_ds is not None:
-                    test_min = test.min(axis=(1, 2), keepdims=True)
-                    test_max = test.max(axis=(1, 2), keepdims=True)
-                    self.test_ds.x.items = (
-                        ((test - test_min)) /
-                        (test_max - test_min)) * (self.scale_range[1] - self.scale_range[0]) + self.scale_range[0]
-                self.stats = None
+                    test_min = np.nanmin(test, axis=axis, keepdims=True)
+                    test_max = np.nanmax(test, axis=axis, keepdims=True)
+                    self.test_ds.x.items = (((test - test_min)) / (test_max - test_min)) *\
+                    (self.scale_range[1] - self.scale_range[0]) + self.scale_range[0]
                 return self
 
-            elif self.scale_type == 'standardize':
-                train_mean = train.mean(axis=(1, 2), keepdims=True)
-                train_std = train.std(axis=(1, 2), keepdims=True)
+            elif scale_type == 'standardize':
+                train_mean = np.nanmean(train, axis=axis, keepdims=True)
+                train_std = np.nanstd(train, axis=axis, keepdims=True) + 1e-8
                 self.train_ds.x.items = (train - train_mean) / train_std
-                valid_mean = valid.mean(axis=(1, 2), keepdims=True)
-                valid_std = valid.std(axis=(1, 2), keepdims=True)
+                valid_mean = np.nanmean(valid, axis=axis, keepdims=True)
+                valid_std = np.nanstd(valid, axis=axis, keepdims=True) + 1e-8
                 self.valid_ds.x.items = (valid - valid_mean) / valid_std
                 if self.test_ds is not None:
-                    test_mean = test.mean(axis=(1, 2), keepdims=True)
-                    test_std = test.std(axis=(1, 2), keepdims=True)
+                    test_mean = np.nanmean(test, axis=axis, keepdims=True)
+                    test_std = np.nanstd(test, axis=axis, keepdims=True) + 1e-8
                     self.test_ds.x.items = (test - test_mean) / test_std
-                self.stats = None
                 return self
 
-        elif self.scale_type == 'standardize':
-            train = To3dArray(self.train_ds.x.items)
-            if self.scale_subtype == 'all_samples':
-                train_mean = train.mean(keepdims=True)
-                train_std = train.std(keepdims=True)
-            elif self.scale_subtype == 'per_channel':
-                train_mean = train.mean(axis=(0, 2), keepdims=True)
-                train_std = train.std(axis=(0, 2), keepdims=True)
-            else:
-                print('***** Please, select a valid  scale_subtype *****')
-                return
-            self.stats = train_mean, train_std
-            self.train_ds.x.items = (self.train_ds.x.items - train_mean) / train_std
-            self.valid_ds.x.items = (self.valid_ds.x.items - train_mean) / train_std
-            if self.test_ds is not None:
-                self.test_ds.x.items = (self.test_ds.x.items - train_mean) / train_std
-            return self
+            elif scale_type == 'robustscale':
+                train_median = np.nanmedian(train, axis=axis, keepdims=True)
+                train_perc_25 = np.nanpercentile(train, 25, axis=axis, keepdims=True)
+                train_perc_75 = np.nanpercentile(train, 75, axis=axis, keepdims=True)
+                train_scale = train_perc_75 - train_perc_25
+                self.train_ds.x.items = (train - train_median) / train_scale
 
-        elif self.scale_type == 'normalize':
-            train = To3dArray(self.train_ds.x.items)
-            if self.scale_subtype == 'all_samples':
-                train_min = train.min(keepdims=True)
-                train_max = train.max(keepdims=True)
-            elif self.scale_subtype == 'per_channel':
-                train_min = train.min(axis=(0, 2), keepdims=True)
-                train_max = train.max(axis=(0, 2), keepdims=True)
-            else:
-                print('***** Please, select a valid  scaling_subtype *****')
-                return
-            self.stats = train_min, train_max
-            self.train_ds.x.items = (
-                ((self.train_ds.x.items - train_min)) /
-                (train_max - train_min)) * (self.scale_range[1] - self.scale_range[0]) + self.scale_range[0]
-            self.valid_ds.x.items = (
-                ((self.valid_ds.x.items - train_min)) /
-                (train_max - train_min)) * (self.scale_range[1] - self.scale_range[0]) + self.scale_range[0]
-            if self.test_ds is not None:
-                self.test_ds.x.items = (
-                    ((self.test_ds.x.items - train_min)) /
-                    (train_max - train_min)) * (self.scale_range[1] - self.scale_range[0]) + self.scale_range[0]
-            return self
-        else: return print('Select a correct type', self.scale_type)
+                valid_median = np.nanmedian(valid, axis=axis, keepdims=True)
+                valid_perc_25 = np.nanpercentile(valid, 25, axis=axis, keepdims=True)
+                valid_perc_75 = np.nanpercentile(valid, 75, axis=axis, keepdims=True)
+                valid_scale = valid_perc_75 - valid_perc_25
+                self.valid_ds.x.items = (valid - valid_median) / valid_scale
+
+                if self.test_ds is not None:
+                    test_median = np.nanmedian(test, axis=axis, keepdims=True)
+                    test_perc_25 = np.nanpercentile(test, 25, axis=axis, keepdims=True)
+                    test_perc_75 = np.nanpercentile(test, 75, axis=axis, keepdims=True)
+                    test_scale = test_perc_75 - test_perc_25
+                    self.test_ds.x.items = (test - test_median) / test_scale
+                return self
+
+        else:
+            if scale_type == 'normalize':
+                train_min = np.nanmin(train, axis=axis, keepdims=True)
+                train_max = np.nanmax(train, axis=axis, keepdims=True)
+                self.stats = train_min, train_max
+                self.train_ds.x.items = (((self.train_ds.x.items - train_min)) / (train_max - train_min)) *\
+                (self.scale_range[1] - self.scale_range[0]) + self.scale_range[0]
+                self.valid_ds.x.items = (((self.valid_ds.x.items - train_min)) /  (train_max - train_min)) *\
+                (self.scale_range[1] - self.scale_range[0]) + self.scale_range[0]
+                if self.test_ds is not None:
+                    self.test_ds.x.items = (((self.test_ds.x.items - train_min)) / (train_max - train_min)) *\
+                    (self.scale_range[1] - self.scale_range[0]) + self.scale_range[0]
+                return self
+            elif scale_type == 'standardize':
+                train_mean = np.nanmean(train, axis=axis, keepdims=True)
+                train_std = np.nanstd(train, axis=axis, keepdims=True) + 1e-8
+                self.stats = train_mean, train_std
+                self.train_ds.x.items = (self.train_ds.x.items - train_mean) / train_std
+                self.valid_ds.x.items = (self.valid_ds.x.items - train_mean) / train_std
+                if self.test_ds is not None:
+                    self.test_ds.x.items = (self.test_ds.x.items - train_mean) / train_std
+                return self
+            elif scale_type == 'robustscale':
+                train_median = np.nanmedian(train, axis=axis, keepdims=True)
+                train_perc_25 = np.nanpercentile(train, 25, axis=axis, keepdims=True)
+                train_perc_75 = np.nanpercentile(train, 75, axis=axis, keepdims=True)
+                train_scale = train_perc_75 - train_perc_25
+                self.stats = train_median, train_scale
+                self.train_ds.x.items = (train - train_median) / train_scale
+                self.valid_ds.x.items = (valid - train_median) / train_scale
+                if self.test_ds is not None:  self.test_ds.x.items = (test - train_median) / train_scale
+                return self
 
     @property
     def cw(self)->None: return self._get_cw(self.train_dl)
@@ -256,9 +272,11 @@ class TimeSeriesList(ItemList):
     @classmethod
     def from_df(cls, df, path='.', cols=None, feat=None, processor=None, **kwargs) -> 'ItemList':
         "Create an `ItemList` in `path` from the inputs in the `cols` of `df`."
-        if cols is 0:
+        if cols is None:
             inputs = df
         else:
+            cols = listify(cols)
+            if feat is not None and feat not in cols: cols = cols + listify(feat)
             col_idxs = df_names_to_idx(list(cols), df)
             inputs = df.iloc[:, col_idxs]
         assert inputs.isna().sum().sum(

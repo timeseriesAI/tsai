@@ -15,17 +15,6 @@ except ImportError:
 import time
 
 
-def create_UCR_databunch(dsid, bs=64, scale_type='standardize', scale_subtype='per_channel',
-                         scale_range =(-1, 1), cpus=defaults.cpus, device=defaults.device, verbose=False):
-    X_train, y_train, X_valid, y_valid = get_UCR_data(dsid, verbose=verbose)
-    db = (ItemLists('.', TimeSeriesList(X_train), TimeSeriesList(X_valid))
-          .label_from_lists(y_train, y_valid)
-          .databunch(bs=min(bs, len(X_train)), val_bs=min(len(X_valid), bs * 2), num_workers=cpus, device=device)
-          .scale(scale_type=scale_type, scale_subtype=scale_subtype, scale_range=scale_range)
-         )
-    return db
-
-
 def run_UCR_test(iters, epochs, datasets, arch,
                  bs=64, max_lr=3e-3, pct_start=.7, warmup=False, wd=1e-2,
                  metrics=[accuracy], mixup=False,

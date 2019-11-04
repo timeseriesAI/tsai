@@ -9,5 +9,6 @@ from .nb_TSTrain import *
 from .nb_ColorfulDim import *
 from .nb_Initialization import *
 from .nb_Optimizers import *
+from .rocket_functions import *
 #from .nb_ImageDataAugmentation import *
 #from .nb_NewDataAugmentation import *

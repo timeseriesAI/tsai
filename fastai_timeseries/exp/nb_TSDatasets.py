@@ -9,6 +9,9 @@ from scipy.io import arff
 try: from exp.nb_TSUtilities import *
 except ImportError: from .nb_TSUtilities import *
 
+try: from exp.nb_TSBasicData import *
+except ImportError: from .nb_TSBasicData import *
+
 
 import os
 import tempfile
@@ -62,67 +65,64 @@ def decompress_from_url(url, target_dir=None, verbose=False):
 
 
 def get_UCR_univariate_list():
-    return [
+    return sorted([
         'ACSF1', 'Adiac', 'AllGestureWiimoteX', 'AllGestureWiimoteY',
-        'AllGestureWiimoteZ', 'ArrowHead', 'Beef', 'BeetleFly', 'BirdChicken',
-        'BME', 'Car', 'CBF', 'Chinatown', 'ChlorineConcentration',
-        'CinCECGtorso', 'Coffee', 'Computers', 'CricketX', 'CricketY',
-        'CricketZ', 'Crop', 'DiatomSizeReduction',
+        'AllGestureWiimoteZ', 'ArrowHead', 'AsphaltObstacles', 'BME', 'Beef',
+        'BeetleFly', 'BirdChicken', 'CBF', 'Car', 'Chinatown',
+        'ChlorineConcentration', 'CinCECGTorso', 'Coffee', 'Computers',
+        'CricketX', 'CricketY', 'CricketZ', 'Crop', 'DiatomSizeReduction',
         'DistalPhalanxOutlineAgeGroup', 'DistalPhalanxOutlineCorrect',
         'DistalPhalanxTW', 'DodgerLoopDay', 'DodgerLoopGame',
-        'DodgerLoopWeekend', 'Earthquakes', 'ECG200', 'ECG5000', 'ECGFiveDays',
-        'ElectricDevices', 'EOGHorizontalSignal', 'EOGVerticalSignal',
-        'EthanolLevel', 'FaceAll', 'FaceFour', 'FacesUCR', 'FiftyWords',
-        'Fish', 'FordA', 'FordB', 'FreezerRegularTrain', 'FreezerSmallTrain',
-        'Fungi', 'GestureMidAirD1', 'GestureMidAirD2', 'GestureMidAirD3',
-        'GesturePebbleZ1', 'GesturePebbleZ2', 'GunPoint', 'GunPointAgeSpan',
-        'GunPointMaleVersusFemale', 'GunPointOldVersusYoung', 'Ham',
-        'HandOutlines', 'Haptics', 'Herring', 'HouseTwenty', 'InlineSkate',
-        'InsectEPGRegularTrain', 'InsectEPGSmallTrain', 'InsectWingbeatSound',
-        'ItalyPowerDemand', 'LargeKitchenAppliances', 'Lightning2',
-        'Lightning7', 'Mallat', 'Meat', 'MedicalImages', 'MelbournePedestrian',
-        'MiddlePhalanxOutlineAgeGroup', 'MiddlePhalanxOutlineCorrect',
-        'MiddlePhalanxTW', 'MixedShapes', 'MixedShapesSmallTrain',
-        'MoteStrain', 'NonInvasiveFetalECGThorax1',
-        'NonInvasiveFetalECGThorax2', 'OliveOil', 'OSULeaf',
-        'PhalangesOutlinesCorrect', 'Phoneme', 'PickupGestureWiimoteZ',
-        'PigAirwayPressure', 'PigArtPressure', 'PigCVP', 'PLAID', 'Plane',
-        'PowerCons', 'ProximalPhalanxOutlineAgeGroup',
+        'DodgerLoopWeekend', 'ECG200', 'ECG5000', 'ECGFiveDays',
+        'EOGHorizontalSignal', 'EOGVerticalSignal', 'Earthquakes',
+        'ElectricDevices', 'EthanolLevel', 'FaceAll', 'FaceFour', 'FacesUCR',
+        'FiftyWords', 'Fish', 'FordA', 'FordB', 'FreezerRegularTrain',
+        'FreezerSmallTrain', 'Fungi', 'GestureMidAirD1', 'GestureMidAirD2',
+        'GestureMidAirD3', 'GesturePebbleZ1', 'GesturePebbleZ2', 'GunPoint',
+        'GunPointAgeSpan', 'GunPointMaleVersusFemale',
+        'GunPointOldVersusYoung', 'Ham', 'HandOutlines', 'Haptics', 'Herring',
+        'HouseTwenty', 'InlineSkate', 'InsectEPGRegularTrain',
+        'InsectEPGSmallTrain', 'InsectWingbeatSound', 'ItalyPowerDemand',
+        'LargeKitchenAppliances', 'Lightning2', 'Lightning7', 'Mallat', 'Meat',
+        'MedicalImages', 'MelbournePedestrian', 'MiddlePhalanxOutlineAgeGroup',
+        'MiddlePhalanxOutlineCorrect', 'MiddlePhalanxTW',
+        'MixedShapesRegularTrain', 'MixedShapesSmallTrain', 'MoteStrain',
+        'NonInvasiveFetalECGThorax1', 'NonInvasiveFetalECGThorax2', 'OSULeaf',
+        'OliveOil', 'PLAID', 'PhalangesOutlinesCorrect', 'Phoneme',
+        'PickupGestureWiimoteZ', 'PigAirwayPressure', 'PigArtPressure',
+        'PigCVP', 'Plane', 'PowerCons', 'ProximalPhalanxOutlineAgeGroup',
         'ProximalPhalanxOutlineCorrect', 'ProximalPhalanxTW',
         'RefrigerationDevices', 'Rock', 'ScreenType', 'SemgHandGenderCh2',
         'SemgHandMovementCh2', 'SemgHandSubjectCh2', 'ShakeGestureWiimoteZ',
         'ShapeletSim', 'ShapesAll', 'SmallKitchenAppliances', 'SmoothSubspace',
-        'SonyAIBORobotSurface1', 'SonyAIBORobotSurface2', 'StarlightCurves',
+        'SonyAIBORobotSurface1', 'SonyAIBORobotSurface2', 'StarLightCurves',
         'Strawberry', 'SwedishLeaf', 'Symbols', 'SyntheticControl',
         'ToeSegmentation1', 'ToeSegmentation2', 'Trace', 'TwoLeadECG',
         'TwoPatterns', 'UMD', 'UWaveGestureLibraryAll', 'UWaveGestureLibraryX',
         'UWaveGestureLibraryY', 'UWaveGestureLibraryZ', 'Wafer', 'Wine',
         'WordSynonyms', 'Worms', 'WormsTwoClass', 'Yoga'
-    ]
+    ])
 
 
 def get_UCR_multivariate_list():
-    return [
+    return sorted([
         'ArticularyWordRecognition', 'AtrialFibrillation', 'BasicMotions',
-        'CharacterTrajectories', 'Cricket', 'DuckDuckGeese', 'EigenWorms',
-        'Epilepsy', 'EthanolConcentration', 'ERing', 'FaceDetection',
+        'CharacterTrajectories', 'Cricket', 'DuckDuckGeese', 'ERing',
+        'EigenWorms', 'Epilepsy', 'EthanolConcentration', 'FaceDetection',
         'FingerMovements', 'HandMovementDirection', 'Handwriting', 'Heartbeat',
-        'JapaneseVowels', 'Libras', 'LSST', 'InsectWingbeat', 'MotorImagery',
-        'NATOPS', 'PenDigits', 'PEMS-SF', 'PhonemeSpectra', 'RacketSports',
+        'InsectWingbeat', 'JapaneseVowels', 'LSST', 'Libras', 'MotorImagery',
+        'NATOPS', 'PEMS-SF', 'PenDigits', 'PhonemeSpectra', 'RacketSports',
         'SelfRegulationSCP1', 'SelfRegulationSCP2', 'SpokenArabicDigits',
         'StandWalkJump', 'UWaveGestureLibrary'
-    ]
+    ])
 
 
-
-def get_UCR_univariate(sel_dataset, parent_dir='data/UCR', verbose=False):
-    if sel_dataset not in get_UCR_univariate_list():
+def get_UCR_univariate(sel_dataset, parent_dir='data/UCR', verbose=False, drop_na=False, check=True):
+    if check and sel_dataset not in get_UCR_univariate_list():
         print('This dataset does not exist. Please select one from this list:')
         print(get_UCR_univariate_list())
         return None, None, None, None
     if verbose: print('Dataset:', sel_dataset)
-    fname_train = sel_dataset + "_TRAIN.txt"
-    fname_test = sel_dataset + "_TEST.txt"
     src_website = 'http://www.timeseriesclassification.com/Downloads/'
     tgt_dir = Path(parent_dir) / sel_dataset
     if verbose: print('Download and decompressing data...')
@@ -130,13 +130,23 @@ def get_UCR_univariate(sel_dataset, parent_dir='data/UCR', verbose=False):
         decompress_from_url(
             src_website + sel_dataset + '.zip', target_dir=tgt_dir, verbose=verbose)
     if verbose: print('...data downloaded and decompressed')
-    data_train = np.loadtxt(os.path.join(tgt_dir, fname_train), delimiter=None)
-    data_test = np.loadtxt(os.path.join(tgt_dir, fname_test), delimiter=None)
+    fname_train = sel_dataset + "_TRAIN.arff"
+    fname_test = sel_dataset + "_TEST.arff"
 
-    X_train = data_train[:, 1:].astype(np.float32)
-    y_train = data_train[:, 0].ravel().astype(np.int)
-    X_test = data_test[:, 1:].astype(np.float32)
-    y_test = data_test[:, 0].ravel().astype(np.int)
+    train_df = pd.DataFrame(arff.loadarff(os.path.join(tgt_dir, fname_train))[0])
+    test_df = pd.DataFrame(arff.loadarff(os.path.join(tgt_dir, fname_test))[0])
+    unique_cats = train_df.iloc[:, -1].unique()
+    mapping = dict(zip(unique_cats, np.arange(len(unique_cats))))
+    train_df = train_df.replace({train_df.columns.values[-1]: mapping})
+    test_df = test_df.replace({test_df.columns.values[-1]: mapping})
+    if drop_na:
+        train_df.dropna(axis=1, inplace=True)
+        test_df.dropna(axis=1, inplace=True)
+
+    X_train = train_df.iloc[:, :-1].values.astype(np.float32)
+    X_test = test_df.iloc[:, :-1].values.astype(np.float32)
+    y_train = train_df.iloc[:, -1].values.astype(int)
+    y_test = test_df.iloc[:, -1].values.astype(int)
 
     X_train = To3dArray(X_train)
     X_test = To3dArray(X_test)
@@ -146,14 +156,14 @@ def get_UCR_univariate(sel_dataset, parent_dir='data/UCR', verbose=False):
         print('X_train:', X_train.shape)
         print('y_train:', y_train.shape)
         print('X_valid:', X_test.shape)
-        print('y_valid:', y_test.shape)
+        print('y_valid:', y_test.shape, '\n')
     return X_train, y_train, X_test, y_test
 
 
 
-def get_UCR_multivariate(sel_dataset, parent_dir='data/UCR', verbose=False):
+def get_UCR_multivariate(sel_dataset, parent_dir='data/UCR', verbose=False, check=True):
     if sel_dataset.lower() == 'mphoneme': sel_dataset = 'Phoneme'
-    if sel_dataset not in get_UCR_multivariate_list():
+    if check and sel_dataset not in get_UCR_multivariate_list():
         print('This dataset does not exist. Please select one from this list:')
         print(get_UCR_multivariate_list())
         return None, None, None, None
@@ -205,20 +215,33 @@ def get_UCR_multivariate(sel_dataset, parent_dir='data/UCR', verbose=False):
         print('X_train:', X_train.shape)
         print('y_train:', y_train.shape)
         print('X_valid:', X_test.shape)
-        print('y_valid:', y_test.shape)
+        print('y_valid:', y_test.shape, '\n')
     return X_train, y_train, X_test, y_test
 
 
-def get_UCR_data(dsid, parent_dir='data/UCR', verbose=False):
-    if dsid in get_UCR_univariate_list(): return get_UCR_univariate(dsid, verbose=verbose)
-    elif dsid in get_UCR_multivariate_list(): return get_UCR_multivariate(dsid, verbose=verbose)
+def get_UCR_data(dsid, parent_dir='data/UCR', verbose=False, check=True):
+    if dsid in get_UCR_univariate_list():
+        return get_UCR_univariate(dsid, verbose=verbose, check=check)
+    elif dsid in get_UCR_multivariate_list():
+        return get_UCR_multivariate(dsid, verbose=verbose, check=check)
     else:
-        print('This dataset does not exist. Please select one from these lists:')
+        print(f'This {dsid} dataset does not exist. Please select one from these lists:')
         print('\nunivariate datasets')
         print(get_UCR_univariate_list())
         print('\nmultivariate datasets')
-        print(get_UCR_multivariate_list())
+        print(get_UCR_multivariate_list(), '\n')
         return None, None, None, None
+
+
+def create_UCR_databunch(dsid, bs=64, scale_type='standardize', scale_by_channel=False,
+                         scale_by_sample=False, scale_range =(-1, 1), verbose=False, check=True):
+    X_train, y_train, X_valid, y_valid = get_UCR_data(dsid, verbose=verbose, check=check)
+    data = (ItemLists('.', TSList(X_train), TSList(X_valid)).label_from_lists(y_train, y_valid)
+            .databunch(bs=min(bs, len(X_train)), val_bs=min(bs, len(X_valid)))
+            .scale(scale_type=scale_type, scale_by_channel=scale_by_channel,
+                   scale_by_sample=scale_by_sample, scale_range=scale_range)
+         )
+    return data
 
 
 def create_seq_optimized(n_samples=1000, seq_len=100, channels=True, seed=1):
