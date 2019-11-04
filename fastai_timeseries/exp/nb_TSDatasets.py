@@ -239,7 +239,7 @@ def create_UCR_databunch(dsid, bs=64, scale_type='standardize', scale_by_channel
     data = (ItemLists('.', TSList(X_train), TSList(X_valid)).label_from_lists(y_train, y_valid)
             .databunch(bs=min(bs, len(X_train)), val_bs=min(bs, len(X_valid)))
             .scale(scale_type=scale_type, scale_by_channel=scale_by_channel,
-                   scale_by_sample=scale_by_sample, scale_range=scale_range)
+                   scale_by_sample=scale_by_sample,scale_range=scale_range)
          )
     return data
 
