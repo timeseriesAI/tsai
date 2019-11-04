@@ -36,8 +36,8 @@ A new method, called ROCKET (RandOm Convolutional KErnel Transform) developed by
 This new method not only beat the previous recognized state of the art (HIVE-COTE) on a TSC benchmark, but it does it in record time, many orders of magnitude faster than any other method. 
 I’ve been using it for a couple of days and the results are IMPRESSIVE!! 
 The release code however has 2 limitations:
-- it can only handle univariate time series
-- it doesn’t support GPU
+  - it can only handle univariate time series
+  - it doesn’t support GPU
 
-I have developed ROCKET in Pytorch and you can now use it with univariate of multivariate time series, and with a GPU. In this notebook you will see how you can use ROCKET in your time series problems.
+- I have developed ROCKET in Pytorch and you can now use it with univariate of multivariate time series, and with a GPU. In this notebook you will see how you can use ROCKET in your time series problems.
 
