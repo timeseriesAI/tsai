@@ -38,5 +38,6 @@ I’ve been using it for a couple of days and the results are IMPRESSIVE!!
 The release code however has 2 limitations:
 - it can only handle univariate time series
 - it doesn’t support GPU
+
 I have developed ROCKET in Pytorch and you can now use it with univariate of multivariate time series, and with a GPU. In this notebook you will see how you can use ROCKET in your time series problems.
 
