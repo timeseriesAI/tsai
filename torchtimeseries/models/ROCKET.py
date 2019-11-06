@@ -5,6 +5,7 @@
 
 import torch
 import torch.nn as nn
+import numpy as np
 
 class ROCKET(nn.Module):
     def __init__(self, c_in, seq_len, n_kernels=10000, kss=[7, 9, 11]):
