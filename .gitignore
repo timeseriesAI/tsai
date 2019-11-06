@@ -1,7 +1,7 @@
 #*.jpg
 *.npy
 *.arff
-###*.png
+#*.png
 *.pyc
 *.pth
 *.txt
