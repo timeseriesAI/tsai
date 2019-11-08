@@ -38,7 +38,6 @@ I’ve been using it for a couple of days and the results are IMPRESSIVE!!
 The release code however has 2 limitations:
   - it can only handle univariate time series
   - it doesn’t support GPU
-  Dempster A, Petitjean F, Webb GI (2019) ROCKET: Exceptionally fast and accurate time series classification using random convolutional kernels, arXiv:1910.13051.
 
 - I have developed ROCKET with GPU support in Pytorch that you can now use it with univariate of multivariate time series. In this notebook you will see how you can use ROCKET in your time series problems.
 
