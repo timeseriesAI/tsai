@@ -125,7 +125,7 @@ def get_UCR_univariate(sel_dataset, parent_dir='data/UCR', verbose=False, drop_n
     if verbose: print('Dataset:', sel_dataset)
     src_website = 'http://www.timeseriesclassification.com/Downloads/'
     tgt_dir = Path(parent_dir) / sel_dataset
-    if verbose: print('Download and decompressing data...')
+    if verbose: print('Downloading and decompressing data...')
     if not os.path.isdir(tgt_dir):
         decompress_from_url(
             src_website + sel_dataset + '.zip', target_dir=tgt_dir, verbose=verbose)

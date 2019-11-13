@@ -9,6 +9,11 @@ from functools import partial
 try: from exp.nb_TSUtilities import *
 except ImportError: from .nb_TSUtilities import *
 
+try: from exp.nb_TSBasicData import *
+except ImportError: from .nb_TSBasicData import *
+
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
+
 
 def shuffle_HLs(ts, **kwargs):
     line = copy(ts)
@@ -27,194 +32,206 @@ def shuffle_HLs(ts, **kwargs):
 setattr(shuffle_HLs, 'use_on_y', False)
 
 
-def window_slice(a, α=.9, **kwargs):
-    if α == 1.0: return a
-    new_a = a.clone()
-    seq_len = new_a.shape[-1]
-    win_len = int(seq_len * α)
-    start = np.random.randint(0, seq_len - win_len)
-    new_a = new_a[:, start : start + win_len]
-    return new_a
-
-setattr(window_slice, 'use_on_y', False)
-
-
-def channelout(a, α=1):
-    new_a = a.clone()
-    input_ch = new_a.shape[0]
-    out_ch = np.random.choice(np.arange(input_ch), int(np.random.beta(α, 1) * input_ch), replace=False)
-    new_a[out_ch] = 0
-    return new_a
-
-setattr(channelout, 'use_on_y', False)
-
-
-def mult_scale(a, α=.2):
-    mult = (np.random.rand() - .5) * 2 * α
-    new_a = a.clone()
-    return new_a * (1 + mult)
-
-setattr(mult_scale, 'use_on_y', False)
-
-
-def rand_lookback(a, α=2., β=.75):
-    new_a = a.clone()
-    lookback_per = int(np.random.beta(1, α) * new_a.shape[-1] * β)
-    new_a[:, :lookback_per] = 0
-    return new_a
-
-setattr(rand_lookback, 'use_on_y', False)
-
-
-
-
-def rotate_ch(a):
-    new_a = a.clone()
-    n_ch = new_a.shape[-2]
-    ch_order = np.random.choice(np.arange(n_ch), n_ch, replace=False)
-    new_a = new_a[ch_order]
-    return new_a
-
-setattr(rotate_ch, 'use_on_y', False)
-
-
 def get_diff(a):
     return np.concatenate((np.zeros(a.shape[-2])[:, None], np.diff(a)), axis=1).astype(np.float32)
 
 setattr(get_diff, 'use_on_y', False)
 
 
-def XYaug(tensor, x_perc=.1, y_perc=.1, num_masks=1, replace_with='mean', same_xy=False, **kwargs):
-    # x_perc and y_perc must be a float or int
+class TSTransform():
+    "Utility class for adding probability and wrapping support to transform `func`."
+    _wrap=None
+    order=0
+    def __init__(self, func:Callable, order:Optional[int]=None):
+        "Create a transform for `func` and assign it an priority `order`, attach to `TS` class."
+        if order is not None: self.order=order
+        self.func=func
+        self.func.__name__ = func.__name__[1:] #To remove the _ that begins every transform function.
+        functools.update_wrapper(self, self.func)
+        self.func.__annotations__['return'] = TSItem
+        self.params = copy(func.__annotations__)
+        self.def_args = _get_default_args(func)
+        setattr(TSItem, func.__name__, lambda x, *args, **kwargs: self.calc(x, *args, **kwargs))
 
-    tensor = ToTensor(tensor)
-    len_x = tensor.shape[-1]
-    len_y = tensor.shape[-2]
-    if x_perc >= 1: x_perc = x_perc / 100
-    X = int(len_x * x_perc)
-    if y_perc >= 1: y_perc = y_perc / 100
-    Y = int(len_y * y_perc)
-    if X == 0 and Y == 0: return tensor
-    assert replace_with in(['zero', 'mask_mean', 'mean']), \
-        "select a valid replace_with value! ('zero', 'mask_mean', 'mean')"
-    if same_xy and len_x != len_y:
-        assert same_xy == False, 'tensor is not squared. Change same_xy to False'
-        assert replace_with != 'mask_mean', 'same_xy, choose mean or zero replace_with'
-    if replace_with == 'zero': mask_value = 0
-    elif replace_with == 'mean': mask_value = tensor.mean()
-    cloned = tensor.clone().float()
-    for i in range(0, num_masks):
-        if X != 0:
-            x = random.randrange(0, X)
-            if x != 0:
-                x_zero = random.randrange(0, len_x - x)
-                if replace_with == 'mask_mean': mask_value = tensor[:, x_zero:x_zero + x].mean()
-                cloned[..., x_zero:x_zero + x] = mask_value
-                if same_xy:
-                    cloned[..., x_zero:x_zero + x, :] = mask_value
-                    Y = 0
-        if Y != 0:
-            y = random.randrange(0, Y)
-            if y != 0:
-                y_zero = random.randrange(0, len_y - y)
-                if replace_with == 'mask_mean': mask_value = tensor[y_zero:y_zero + y].mean()
-                cloned[..., y_zero:y_zero + y, :] = mask_value
-    return cloned
+    def __call__(self, *args:Any, p:float=1., is_random:bool=True, use_on_y:bool=False, **kwargs:Any)->TSItem:
+        "Calc now if `args` passed; else create a transform called prob `p` if `random`."
+        if args: return self.calc(*args, **kwargs)
+        else: return RandTransform(self, kwargs=kwargs, is_random=is_random, use_on_y=use_on_y, p=p)
 
-xyaug = partial(XYaug)
+    def calc(self, x:TSItem, *args:Any, **kwargs:Any)->Image:
+        "Apply to image `x`, wrapping it if necessary."
+        if self._wrap: return getattr(x, self._wrap)(self.func, *args, **kwargs)
+        else:          return self.func(x, *args, **kwargs)
+
+    @property
+    def name(self)->str: return self.__class__.__name__
+
+    def __repr__(self)->str: return f'{self.name} ({self.func.__name__})'
 
 
-def warp1d(ts, wtype='lin', kind='linear', comp=20):
-    # wtype: lin, geo
-    # kind: 'linear', 'nearest', 'slinear', 'zero', 'slinear', 'quadratic', 'cubic'
-    tsa = To2dArray(ts)
-    seq_len = tsa.shape[-1]
-    f = scipy.interpolate.interp1d(
-        np.arange(seq_len),
-        tsa,
-        kind=kind,
-        axis=-1,
-        copy=True,
-        bounds_error=None,
-        assume_sorted=False)
-    x_coord = np.random.randint(1, seq_len)
-    #x_coord = normal_choice(np.arange(1, seq_len))
-    comp_factor = np.random.randint(100 - comp, 101 + comp) / 100
-    steps = max(0, min(seq_len, int(x_coord * comp_factor)))
-    if wtype == 'lin': new_x = np.linspace(0, x_coord, steps)
-    else: new_x = np.geomspace(1, x_coord + 1, steps) - 1
-    if len(new_x) < seq_len:
-        if wtype == 'lin': new_x = np.append(new_x, np.linspace(x_coord, seq_len - 1, seq_len - steps + 1)[1:])
-        else: new_x = np.append(new_x, np.geomspace(x_coord, seq_len - 1, seq_len - steps + 1)[1:])
-    new_x = np.clip(new_x, 0, seq_len - 1)
-    new_y = f(new_x)
-    return ts.new(new_y)
-
-setattr(warp1d, 'use_on_y', False)
-
-def warp_noise(ts, kind='linear'):
-    # kind: 'linear', 'nearest', 'slinear', 'zero', 'slinear', 'quadratic', 'cubic'
-    tsa = To2dArray(ts)
-    seq_len = tsa.shape[-1]
-    f = scipy.interpolate.interp1d(
-        np.arange(seq_len),
-        tsa,
-        kind=kind,
-        axis=-1,
-        copy=True,
-        bounds_error=None,
-        assume_sorted=False)
-    new_x = np.clip(get_noisy_x(seq_len), 0, seq_len - 1)
-    new_y = f(new_x)
-    return ts.new(new_y)
-
-setattr(warp_noise, 'use_on_y', False)
-
-def warp_peak_ts(ts, wtype='lin', kind='linear', comp=20):
-    # wtype: lin, geo
-    # kind: 'linear', 'nearest', 'slinear', 'zero', 'slinear', 'quadratic', 'cubic'
-    tsa = To2dArray(ts)
-    seq_len = tsa.shape[-1]
-    f = scipy.interpolate.interp1d(
-        np.arange(seq_len),
-        tsa,
-        kind=kind,
-        axis=-1,
-        copy=True,
-        bounds_error=None,
-        assume_sorted=False)
-    x_coord = max(1, np.argmax(tsa.max(axis=0)))
-    comp_factor = np.random.randint(100 - comp, 101 + comp) / 100
-    steps = max(0, min(seq_len, int(x_coord * comp_factor)))
-    if wtype=='lin': new_x = np.linspace(0, x_coord, steps)
-    else: new_x = np.geomspace(1, x_coord + 1, steps) - 1
-    if steps < seq_len:
-        if wtype=='lin': new_x = np.append(new_x, np.linspace(x_coord, seq_len - 1, seq_len - steps + 1)[1:])
-        else: new_x = np.append(new_x, np.geomspace(x_coord, seq_len - 1, seq_len - steps + 1)[1:])
-    new_x = np.clip(new_x, 0, seq_len - 1)
-    new_y = f(new_x)
-    return ts.new(new_y)
-
-setattr(warp_peak_ts, 'use_on_y', False)
-
-def get_noisy_x(seq_len):
-    noise = np.sort(np.random.rand(seq_len))
-    noise = (noise - noise.min())
-    noise = (noise / noise.max()) * (seq_len - 1)
-    return noise
+def _get_default_args(func:Callable):
+    return {k: v.default
+            for k, v in inspect.signature(func).parameters.items()
+            if v.default is not inspect.Parameter.empty}
 
 
-from random import normalvariate
+
+def _ynoise(ts, alpha=.05, add=True):
+    seq_len = ts.shape[-1]
+    if add:
+        noise = torch.normal(0, alpha, (1, ts.shape[-1]), dtype=ts.dtype, device=ts.device)
+        return ts + noise
+    else:
+        scale = torch.ones(seq_len) + torch.normal(0, alpha, (1, ts.shape[-1]), dtype=ts.dtype, device=ts.device)
+        return ts * scale
+
+TSynoise = TSTransform(_ynoise)
+TSmagnoise = TSTransform(_ynoise)
+
+from scipy.interpolate import CubicSpline
+def random_curve_generator(ts, alpha=.1, order=4, noise=None):
+    seq_len = ts.shape[-1]
+    x = np.linspace(- seq_len, 2 * seq_len - 1, 3 * (order - 1) + 1, dtype=int)
+    x2 = np.random.normal(loc=1.0, scale=alpha, size=len(x))
+    f = CubicSpline(x, x2, axis=1)
+    return f(np.arange(seq_len))
+
+def random_cum_curve_generator(ts, alpha=.1, order=4, noise=None):
+    x = random_curve_generator(ts, alpha=alpha, order=order, noise=noise).cumsum()
+    x -= x[0]
+    x /= x[-1]
+    x = np.clip(x, 0, 1)
+    return x * (ts.shape[-1] - 1)
+
+def random_cum_noise_generator(ts, alpha=.1, noise=None):
+    seq_len = ts.shape[-1]
+    x = (np.ones(seq_len) + np.random.normal(loc=0, scale=alpha, size=seq_len)).cumsum()
+    x -= x[0]
+    x /= x[-1]
+    x = np.clip(x, 0, 1)
+    return x * (ts.shape[-1] - 1)
+
+from scipy.interpolate import CubicSpline
+def _xwarp(ts, alpha=.05, order=4):
+    f = CubicSpline(np.arange(ts.shape[-1]), ts, axis=1)
+    new_x = random_cum_curve_generator(ts, alpha=alpha, order=order)
+    return ts.new(f(new_x))
+
+TSxwarp = TSTransform(_xwarp)
+TStimewarp = TSTransform(_xwarp)
+
+from scipy.interpolate import CubicSpline
+def _ywarp(ts, alpha=.05, order=4):
+    f2 = CubicSpline(np.arange(ts.shape[-1]), ts, axis=1)
+    y_mult = random_curve_generator(ts, alpha=alpha, order=order)
+    return ts * ts.new(y_mult)
+
+TSywarp = TSTransform(_ywarp)
+TSmagwarp = TSTransform(_ywarp)
+
+from scipy.interpolate import CubicSpline
+def _scale(ts, alpha=.1):
+    rand = 1 - torch.rand(1)[0] * 2
+    scale = 1 + torch.abs(rand) * alpha
+    if rand < 0: scale = 1 / scale
+    return ts * scale
+
+TSmagscale = TSTransform(_scale)
+
+from scipy.interpolate import CubicSpline
+def _xnoisewarp(ts, alpha=.1):
+    f = CubicSpline(np.arange(ts.shape[-1]), ts, axis=1)
+    new_x = random_cum_noise_generator(ts, alpha=alpha)
+    return ts.new(f(new_x))
+
+TSxnoisewarp = TSTransform(_xnoisewarp)
+TStimenoise = TSTransform(_xnoisewarp)
+
+def get_TS_xy_tfms():
+    return [[TStimewarp(p=.5), TSmagwarp(p=.5), TStimenoise(p=.5), TSmagnoise(p=.5)], []]
 
 
-def normal_choice(lst, mean=None, stddev=None):
-    if mean is None:
-        # if mean is not specified, use center of list
-        mean = (len(lst) - 1) / 2
-    if stddev is None:
-        # if stddev is not specified, let list be -3 .. +3 standard deviations
-        stddev = len(lst) / 6
-    while True:
-        index = int(normalvariate(mean, stddev) + 0.5)
-        if 0 <= index < len(lst):
-            return lst[index]
+def _rand_lookback(ts, alpha=.2):
+    new_ts = ts.clone()
+    lambd = np.random.beta(alpha, alpha)
+    lambd = min(lambd, 1 - lambd)
+    lookback_per = int(lambd * new_ts.shape[-1])
+    new_ts[:, :lookback_per] = 0
+    return new_ts
+
+TSlookback = TSTransform(_rand_lookback)
+
+def _random_channel_out(ts, alpha=.2):
+    input_ch = ts.shape[0]
+    if input_ch == 1: return ts
+    new_ts = ts.clone()
+    out_ch = np.random.choice(np.arange(input_ch),
+                              min(input_ch - 1, int(np.random.beta(alpha, 1) * input_ch)),
+                              replace=False)
+    new_ts[out_ch] = 0
+    return new_ts
+
+TSchannelout = TSTransform(_random_channel_out)
+
+def _cutout(ts, perc=.1):
+    if perc >= 1 or perc <= 0: return ts
+    seq_len = ts.shape[-1]
+    new_ts = ts.clone()
+    win_len = int(perc * seq_len)
+    start = np.random.randint(-win_len + 1, seq_len)
+    end = start + win_len
+    start = max(0, start)
+    end = min(end, seq_len)
+    new_ts[..., start:end] = 0
+    return new_ts
+
+TScutout= TSTransform(_cutout)
+
+def _timesteps_out(ts, perc=.1):
+    if perc >= 1 or perc <= 0: return ts
+    seq_len = ts.shape[-1]
+    timesteps = np.sort(np.random.choice(np.arange(seq_len), int(seq_len * (1 - perc)), replace=False))
+    return ts[..., timesteps]
+
+TStimestepsout = TSTransform(_timesteps_out)
+
+def _crop(ts, perc=.9):
+    if perc >= 1 or perc <= 0: return ts
+    seq_len = ts.shape[-1]
+    win_len = int(seq_len * perc)
+    new_ts = torch.zeros((ts.shape[-2], win_len))
+    start = np.random.randint(-win_len + 1, seq_len)
+    end = start + win_len
+    start = max(0, start)
+    end = min(end, seq_len)
+    new_ts[:, - end + start :] = ts[:, start : end]
+    return new_ts
+
+TScrop = TSTransform(_crop)
+
+def _window_slice(ts, perc=.9):
+    if perc == 1.0 or perc == 0: return ts
+    seq_len = ts.shape[-1]
+    win_len = int(seq_len * perc)
+    start = np.random.randint(0, seq_len - win_len)
+    return ts[:, start : start + win_len]
+
+TSwindowslice = TSTransform(_window_slice)
+
+def _random_zoom(ts, alpha=.2):
+    if alpha == 1.0: return a
+    seq_len = ts.shape[-1]
+    lambd = np.random.beta(alpha, alpha)
+    lambd = max(lambd, 1 - lambd)
+    win_len = int(seq_len * lambd)
+    if win_len == seq_len: start = 0
+    else: start = np.random.randint(0, seq_len - win_len)
+    y = ts[:, start : start + win_len]
+    f = CubicSpline(np.arange(y.shape[-1]), y, axis=1)
+    return ts.new(f(np.linspace(0, win_len - 1, num=seq_len)))
+
+TSzoom = TSTransform(_random_zoom)
+
+def get_TS_remove_tfms():
+    return [[TSlookback(p=.5), TStimestepsout(p=.5), TSchannelout(p=.5), TScutout(p=.5),
+            TScrop(p=.5), TSwindowslice(p=.5), TSzoom(p=.5)], []]

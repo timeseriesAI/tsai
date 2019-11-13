@@ -224,18 +224,19 @@ def get_fn(a):
         else: break
     return a
 
-
 def show_tfms(learn, rows=3, cols=3, figsize=(8, 8)):
     xb, yb = learn.data.one_batch()
-    xb = xb.to(device)
-    yb = yb.to(device)
+    xb = xb.to('cpu')
+    yb = yb.to('cpu')
     rand_int = np.random.randint(len(xb))
     ndim = xb.ndim
     tfms = learn.data.train_ds.tfms
 
     if ndim == 4:
         rand_item = Image(xb[rand_int])
-        #for i in range(len(xb)): xb[i] = Image(xb[i]).apply_tfms(tfms).data.to(device)
+        #print('\noriginal image:')
+        #display(rand_item)
+        for i in range(len(xb)): xb[i] = Image(xb[i]).apply_tfms(tfms).data.to(device)
         cb_tfms = 0
         for cb in learn.callback_fns:
             if get_fn(cb).__name__ == 'Recorder': continue
@@ -243,9 +244,10 @@ def show_tfms(learn, rows=3, cols=3, figsize=(8, 8)):
                 cb_fn = partial(get_fn(cb), **cb.keywords)
                 try:
                     fig = plt.subplots(rows, cols, figsize=figsize, sharex=True, sharey=True)[1].flatten()
-                    plt.suptitle(get_fn(cb).__name__ + str(cb.keywords), size=14)
+                    plt.suptitle(get_fn(cb).__name__, cb.keywords, size=14)
                     [rand_item.show(ax=ax) if i == 0 else (Image(Tensor2ImgTensor(cb_fn(learn).on_batch_begin(xb, yb, True)['last_input'][rand_int]))
                      .apply_tfms(tfms).show(ax=ax)) for i, ax in enumerate(fig)]
+                    #print(get_fn(cb).__name__, cb.keywords)
                     fig[0].set_title('original')
                     plt.show()
                     cb_tfms += 1
@@ -262,7 +264,7 @@ def show_tfms(learn, rows=3, cols=3, figsize=(8, 8)):
                 cb_fn = partial(get_fn(cb), **cb.keywords)
                 try:
                     fig = plt.subplots(rows, cols, figsize=figsize, sharex=True, sharey=True)[1].flatten()
-                    plt.suptitle(get_fn(cb).__name__ + str(cb.keywords), size=14)
+                    plt.suptitle(get_fn(cb).__name__ , size=14)
                     [rand_item.show(ax=ax) if i == 0 else (TSItem(cb_fn(learn).on_batch_begin(xb, yb, True)['last_input'][rand_int])
                      .apply_tfms(tfms).show(ax=ax)) for i, ax in enumerate(fig)]
                     fig[0].set_title('original')
@@ -272,19 +274,19 @@ def show_tfms(learn, rows=3, cols=3, figsize=(8, 8)):
                 except:
                     plt.close('all')
 
-    if cb_tfms == 0:
-        if tfms is not None:
-            t_ = []
-            for t in learn.data.train_ds.tfms: t_.append(get_fn(t).__name__)
-            fig = plt.subplots(rows, cols, figsize=figsize, sharex=True, sharey=True)[1].flatten()
-            [rand_item.show(ax=ax) if i == 0 else rand_item.apply_tfms(tfms).show(ax=ax) for i, ax in enumerate(fig)]
-            fig[0].set_title('original')
-            title = f"{str(t_)[1:-1]} transforms applied"
-            plt.suptitle(title, size=14)
-            plt.show()
-        else:
-            print('No transformation has been applied')
-            rand_item.show()
+
+    if tfms is not None:
+        t_ = []
+        for t in learn.data.train_ds.tfms: t_.append(get_fn(t).__name__)
+        fig = plt.subplots(rows, cols, figsize=figsize, sharex=True, sharey=True)[1].flatten()
+        [rand_item.show(ax=ax) if i == 0 else rand_item.apply_tfms(tfms).show(ax=ax) for i, ax in enumerate(fig)]
+        fig[0].set_title('original')
+        title = f"{str(t_)[1:-1]} transforms applied"
+        plt.suptitle(title, size=14)
+        plt.show()
+    elif cb_tfms == 0:
+        print('No transformation has been applied')
+        rand_item.show()
 
     return learn
 
