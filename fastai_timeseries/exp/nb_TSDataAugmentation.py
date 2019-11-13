@@ -75,6 +75,31 @@ def _get_default_args(func:Callable):
             if v.default is not inspect.Parameter.empty}
 
 
+# 1) Those that slightly modify the time series in the x and/ or y-axes:
+# - TSmagnoise == TSjittering (1)
+# - TSmagscale (1)
+# - TSmagwarp (1)
+# - TStimenoise (1)
+# - TStimewarp (1)
+
+# 2) And those that remove certain part of the time series (a section or channel):
+# - TSlookback
+# - TStimestepsout (1)
+# - TSchannelout
+# - TScutout (2)
+# - TScrop (1)
+# - TSwindowslice (3)
+# - TSzoom (1)
+
+# All of them can be used independently or in combination. In this section, you'll see how these transforms work.
+
+# (1) Adapted from/ inspired by Um, T. T., Pfister, F. M. J., Pichler, D., Endo, S., Lang, M., Hirche, S., ... & Kulić, D. (2017). Data augmentation of wearable sensor data for parkinson's disease monitoring using convolutional neural networks. arXiv preprint arXiv:1706.00527. (includes: Jittering, Scaling, Magnitude-Warping, Time-warping, Random Sampling, among others.
+
+# (2) Inspired by DeVries, T., & Taylor, G. W. (2017). Improved regularization of convolutional neural networks with cutout. arXiv preprint arXiv:1708.04552.
+
+# (3) Inspired by Le Guennec, A., Malinowski, S., & Tavenard, R. (2016, September). Data augmentation for time series classification using convolutional neural networks.
+
+
 
 def _ynoise(ts, alpha=.05, add=True):
     seq_len = ts.shape[-1]
@@ -87,6 +112,7 @@ def _ynoise(ts, alpha=.05, add=True):
 
 TSynoise = TSTransform(_ynoise)
 TSmagnoise = TSTransform(_ynoise)
+TSjittering = TSTransform(_ynoise)
 
 from scipy.interpolate import CubicSpline
 def random_curve_generator(ts, alpha=.1, order=4, noise=None):
