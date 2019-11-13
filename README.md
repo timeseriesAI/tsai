@@ -28,7 +28,7 @@ The 3 components of this library will keep growing in the future as new techniqu
 - You will see how you can apply successful data augmentation techniques (like mixup, cutout, and cutmix) to time series problems.
 
 #### 4. The importance of scaling ⚖️: 
-- In thi snotebook you'll learn more about the options to scale your data and the impact it may have on performance, which is huge!
+- In this notebook you'll learn more about the options to scale your data and the impact it may have on performance, which is huge!
 
 #### 5. Multivariate ROCKET on GPU 🚀: 
 - On October 29, 2019, there was a major milestone in the area of Time Series Classification. 
@@ -40,4 +40,7 @@ The release code however has 2 limitations:
   - it doesn’t support GPU
 
 - I have developed ROCKET with GPU support in Pytorch that you can now use it with univariate of multivariate time series. In this notebook you will see how you can use ROCKET in your time series problems.
+
+#### 6. TS data augmentations: single-item transforms 👯
+- In this notebook, you'll find some TS transforms that can be used to augment your data. Most of the transforms are adapted from/ inspired by research papers on time series augmentation. Transforms include:  TSjittering, TSmagscale, TSmagwarp, TStimenoise, TStimewarp, TSlookback, TStimestepsout, TSchannelout, TScutout, TScrop, TSwindowslice and TSzoom.
 
