@@ -531,8 +531,7 @@ class RandAugment():
         '''
         tfms: list of tfms to select from
         N: number of tfms applied each time
-        magnitude: sets the magnitude of the
-        p: probability that any tfm is applied
+        kwargs: tfm kwargs
         '''
         tfms = listify(tfms)
         if isinstance(tfms[0], list): tfms = tfms[0]
