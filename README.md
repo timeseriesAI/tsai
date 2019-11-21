@@ -41,7 +41,7 @@ The release code however has 2 limitations:
 
 - I have developed ROCKET with GPU support in Pytorch that you can now use it with univariate of multivariate time series. In this notebook you will see how you can use ROCKET in your time series problems.
 
-#### 6. TS data augmentations: single-item transforms 👯 - UPDATED with new tfms, batch tfms and RandAugment
+#### 6. TS data augmentations: single-item transforms 👯 - UPDATED with new tfms, GPU tfms and RandAugment
 - In this notebook, you'll find some TS transforms that can be used to augment your data. Most of the transforms are adapted from/ inspired by research papers on time series augmentation. Transforms include:  TSjittering, TSmagscale, TSmagwarp, TStimenoise, TStimewarp, TSlookback, TStimestepsout, TSchannelout, TScutout, TScrop, TSwindowslice and TSzoom.
 
 - UPDATED: I have now updated all tfms so that we can use them as regular tfms, or pass them to a DataLoader and use them as a batch transform (which is much faster). I have also included RandAugment (a new technique developed by Google to eliminate the data augmentation search phase). This applies a random data augmentation to each individual batch.
