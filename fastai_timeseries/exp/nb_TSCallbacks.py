@@ -276,13 +276,15 @@ def show_tfms(learn, rows=3, cols=3, figsize=(8, 8)):
 
 
     if tfms is not None:
-        t_ = []
-        for t in learn.data.train_ds.tfms: t_.append(get_fn(t).__name__)
         fig = plt.subplots(rows, cols, figsize=figsize, sharex=True, sharey=True)[1].flatten()
         [rand_item.show(ax=ax) if i == 0 else rand_item.apply_tfms(tfms).show(ax=ax) for i, ax in enumerate(fig)]
         fig[0].set_title('original')
-        title = f"{str(t_)[1:-1]} transforms applied"
-        plt.suptitle(title, size=14)
+        try:
+            t_ = []
+            for t in learn.data.train_ds.tfms: t_.append(get_fn(t).__name__)
+            title = f"{str(t_)[1:-1]} transforms applied"
+            plt.suptitle(title, size=14)
+        except: pass
         plt.show()
     elif cb_tfms == 0:
         print('No transformation has been applied')
@@ -291,6 +293,34 @@ def show_tfms(learn, rows=3, cols=3, figsize=(8, 8)):
     return learn
 
 Learner.show_tfms = show_tfms
+
+def show_tfms_db(data, rows=3, cols=3, figsize=(8, 8)):
+    xb, yb = data.one_batch()
+    xb = xb.to('cpu')
+    yb = yb.to('cpu')
+    rand_int = np.random.randint(len(xb))
+    ndim = xb.ndim
+    tfms = data.train_ds.tfms
+
+    if ndim == 4: rand_item = Image(xb[rand_int])
+    elif ndim == 3:rand_item = TSItem(xb[rand_int])
+    if tfms is not None:
+        fig = plt.subplots(rows, cols, figsize=figsize, sharex=True, sharey=True)[1].flatten()
+        [rand_item.show(ax=ax) if i == 0 else rand_item.apply_tfms(tfms).show(ax=ax) for i, ax in enumerate(fig)]
+        fig[0].set_title('original')
+        try:
+            t_ = []
+            for t in learn.data.train_ds.tfms: t_.append(get_fn(t).__name__)
+            title = f"{str(t_)[1:-1]} transforms applied"
+            plt.suptitle(title, size=14)
+        except: pass
+        plt.show()
+    else:
+        print('No transformation has been applied')
+        rand_item.show()
+    return
+
+DataBunch.show_tfms = show_tfms_db
 
 from torch.utils.data.sampler import WeightedRandomSampler
 

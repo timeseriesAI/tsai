@@ -31,7 +31,6 @@ def shuffle_HLs(ts, **kwargs):
 
 setattr(shuffle_HLs, 'use_on_y', False)
 
-
 def get_diff(a):
     return np.concatenate((np.zeros(a.shape[-2])[:, None], np.diff(a)), axis=1).astype(np.float32)
 
@@ -49,14 +48,12 @@ class TSTransform():
         self.func.__name__ = func.__name__[1:] #To remove the _ that begins every transform function.
         functools.update_wrapper(self, self.func)
         self.func.__annotations__['return'] = TSItem
-        self.params = copy(func.__annotations__)
-        self.def_args = _get_default_args(func)
         setattr(TSItem, func.__name__, lambda x, *args, **kwargs: self.calc(x, *args, **kwargs))
 
     def __call__(self, *args:Any, p:float=1., is_random:bool=True, use_on_y:bool=False, **kwargs:Any)->TSItem:
         "Calc now if `args` passed; else create a transform called prob `p` if `random`."
         if args: return self.calc(*args, **kwargs)
-        else: return RandTransform(self, kwargs=kwargs, is_random=is_random, use_on_y=use_on_y, p=p)
+        else: return TSRandTransform(self, kwargs=kwargs, is_random=is_random, use_on_y=use_on_y, p=p)
 
     def calc(self, x:TSItem, *args:Any, **kwargs:Any)->Image:
         "Apply to image `x`, wrapping it if necessary."
@@ -66,198 +63,492 @@ class TSTransform():
     @property
     def name(self)->str: return self.__class__.__name__
 
-    def __repr__(self)->str: return f'{self.name} ({self.func.__name__})'
+    def __repr__(self)->str: return f'{self.name}({self.func.__name__})'
 
 
-def _get_default_args(func:Callable):
-    return {k: v.default
-            for k, v in inspect.signature(func).parameters.items()
-            if v.default is not inspect.Parameter.empty}
+@dataclass
+class TSRandTransform():
+    "Wrap `Transform` to add randomized execution."
+    tfm: Transform
+    kwargs: dict
+    p: float = 1.0
+    do_run: bool = True
+    is_random: bool = True
+    use_on_y: bool = False
+
+#     def __post_init__(self):
+#         functools.update_wrapper(self, self.tfm)
+
+    def __call__(self, x:TSItem, *args, **kwargs) -> TSItem:
+        "Randomly execute our tfm on `x`."
+        self.do_run = rand_bool(self.p)
+        return self.tfm(x, *args, **kwargs) if self.do_run else x
 
 
 # 1) Those that slightly modify the time series in the x and/ or y-axes:
 # - TSmagnoise == TSjittering (1)
 # - TSmagscale (1)
+# - TSdimmagscale (1)
 # - TSmagwarp (1)
 # - TStimenoise (1)
 # - TStimewarp (1)
+# - TSzoomin (3)
+# - TSrandtimesteps
+# - TSzoomout (3)
+# - TSrandomzoom
 
-# 2) And those that remove certain part of the time series (a section or channel):
+
+# 2) And those that hide certain part of the time series, setting the values to zero or just removing them:
 # - TSlookback
-# - TStimestepsout (1)
-# - TSchannelout
+# - TStimestepsout (1) * modifies the output shape
+# - TStimestepszero (1)
+# - TSdimout = TSchannelout
 # - TScutout (2)
 # - TScrop (1)
-# - TSwindowslice (3)
-# - TSzoom (1)
+# - TSrandomcrop (3)
+# - TScentercrop (3)
+# - TSmaskout
+
 
 # All of them can be used independently or in combination. In this section, you'll see how these transforms work.
 
-# (1) Adapted from/ inspired by Um, T. T., Pfister, F. M. J., Pichler, D., Endo, S., Lang, M., Hirche, S., ... & Kulić, D. (2017). Data augmentation of wearable sensor data for parkinson's disease monitoring using convolutional neural networks. arXiv preprint arXiv:1706.00527. (includes: Jittering, Scaling, Magnitude-Warping, Time-warping, Random Sampling, among others.
+# (1) Adapted from/ inspired by Um, T. T., Pfister, F. M. J., Pichler, D., Endo, S., Lang, M., Hirche, S., ... & Kulić, D. (2017).
+# Data augmentation of wearable sensor data for parkinson's disease monitoring using convolutional neural networks. arXiv preprint arXiv:1706.00527. (includes: Jittering, Scaling, Magnitude-Warping, Time-warping, Random Sampling, among others.
 
-# (2) Inspired by DeVries, T., & Taylor, G. W. (2017). Improved regularization of convolutional neural networks with cutout. arXiv preprint arXiv:1708.04552.
+# (2) Inspired by DeVries, T., & Taylor, G. W. (2017).
+# Improved regularization of convolutional neural networks with cutout. arXiv preprint arXiv:1708.04552.
 
-# (3) Inspired by Le Guennec, A., Malinowski, S., & Tavenard, R. (2016, September). Data augmentation for time series classification using convolutional neural networks.
+# (3) Inspired by Buslaev, A., Parinov, A., Khvedchenya, E., Iglovikov, V. I., & Kalinin, A. A. (2018).
+# Albumentations: fast and flexible image augmentations. arXiv preprint arXiv:1809.06839.
 
-
-
-def _ynoise(ts, alpha=.05, add=True):
-    seq_len = ts.shape[-1]
-    if add:
-        noise = torch.normal(0, alpha, (1, ts.shape[-1]), dtype=ts.dtype, device=ts.device)
-        return ts + noise
-    else:
-        scale = torch.ones(seq_len) + torch.normal(0, alpha, (1, ts.shape[-1]), dtype=ts.dtype, device=ts.device)
-        return ts * scale
-
-TSynoise = TSTransform(_ynoise)
-TSmagnoise = TSTransform(_ynoise)
-TSjittering = TSTransform(_ynoise)
 
 from scipy.interpolate import CubicSpline
-def random_curve_generator(ts, alpha=.1, order=4, noise=None):
+def random_curve_generator(ts, magnitude=.1, order=4, noise=None):
     seq_len = ts.shape[-1]
-    x = np.linspace(- seq_len, 2 * seq_len - 1, 3 * (order - 1) + 1, dtype=int)
-    x2 = np.random.normal(loc=1.0, scale=alpha, size=len(x))
-    f = CubicSpline(x, x2, axis=1)
+    x = np.linspace(-seq_len, 2 * seq_len - 1, 3 * (order - 1) + 1, dtype=int)
+    x2 = np.random.normal(loc=1.0, scale=magnitude, size=len(x))
+    f = CubicSpline(x, x2, axis=-1)
     return f(np.arange(seq_len))
 
-def random_cum_curve_generator(ts, alpha=.1, order=4, noise=None):
-    x = random_curve_generator(ts, alpha=alpha, order=order, noise=noise).cumsum()
+
+def random_cum_curve_generator(ts, magnitude=.1, order=4, noise=None):
+    x = random_curve_generator(ts, magnitude=magnitude, order=order, noise=noise).cumsum()
     x -= x[0]
     x /= x[-1]
     x = np.clip(x, 0, 1)
     return x * (ts.shape[-1] - 1)
 
-def random_cum_noise_generator(ts, alpha=.1, noise=None):
+
+def random_cum_noise_generator(ts, magnitude=.1, noise=None):
     seq_len = ts.shape[-1]
-    x = (np.ones(seq_len) + np.random.normal(loc=0, scale=alpha, size=seq_len)).cumsum()
+    x = (np.ones(seq_len) + np.random.normal(loc=0, scale=magnitude, size=seq_len)).cumsum()
     x -= x[0]
     x /= x[-1]
     x = np.clip(x, 0, 1)
     return x * (ts.shape[-1] - 1)
 
-from scipy.interpolate import CubicSpline
-def _xwarp(ts, alpha=.05, order=4):
-    f = CubicSpline(np.arange(ts.shape[-1]), ts, axis=1)
-    new_x = random_cum_curve_generator(ts, alpha=alpha, order=order)
-    return ts.new(f(new_x))
 
-TSxwarp = TSTransform(_xwarp)
-TStimewarp = TSTransform(_xwarp)
+def _magnoise(x, magnitude=.1, add=True):
+    if magnitude <= 0: return x
+    y = None
+    if isinstance(x, list):
+        y = x[1]
+        x = x[0]
+    seq_len = x.shape[-1]
+    noise = torch.normal(0, magnitude, (1, seq_len), dtype=x.dtype, device=x.device)
+    if add:
+        output = x + noise
+        return output if y is None else [output, y]
+    else:
+        output = x * (1 + noise)
+        return output if y is None else [output, y]
 
-from scipy.interpolate import CubicSpline
-def _ywarp(ts, alpha=.05, order=4):
-    f2 = CubicSpline(np.arange(ts.shape[-1]), ts, axis=1)
-    y_mult = random_curve_generator(ts, alpha=alpha, order=order)
-    return ts * ts.new(y_mult)
+TSmagnoise = TSTransform(_magnoise)
+TSjittering = TSTransform(_magnoise)
 
-TSywarp = TSTransform(_ywarp)
-TSmagwarp = TSTransform(_ywarp)
-
-from scipy.interpolate import CubicSpline
-def _scale(ts, alpha=.1):
-    rand = 1 - torch.rand(1)[0] * 2
-    scale = 1 + torch.abs(rand) * alpha
-    if rand < 0: scale = 1 / scale
-    return ts * scale
-
-TSmagscale = TSTransform(_scale)
 
 from scipy.interpolate import CubicSpline
-def _xnoisewarp(ts, alpha=.1):
-    f = CubicSpline(np.arange(ts.shape[-1]), ts, axis=1)
-    new_x = random_cum_noise_generator(ts, alpha=alpha)
-    return ts.new(f(new_x))
+def _timewarp(x, magnitude=.1, order=4):
+    '''This is a slow batch tfm'''
+    if magnitude <= 0: return x
+    y = None
+    if isinstance(x, list):
+        y = x[1]
+        x = x[0]
+    seq_len = x.shape[-1]
 
-TSxnoisewarp = TSTransform(_xnoisewarp)
-TStimenoise = TSTransform(_xnoisewarp)
+    f = CubicSpline(np.arange(seq_len), x, axis=-1)
+    new_x = random_cum_curve_generator(x, magnitude=magnitude, order=order)
+    output = x.new(f(new_x))
+    return output if y is None else [output, y]
 
-def get_TS_xy_tfms():
-    return [[TStimewarp(p=.5), TSmagwarp(p=.5), TStimenoise(p=.5), TSmagnoise(p=.5)], []]
+TStimewarp = TSTransform(_timewarp)
 
 
-def _rand_lookback(ts, alpha=.2):
-    new_ts = ts.clone()
-    lambd = np.random.beta(alpha, alpha)
-    lambd = min(lambd, 1 - lambd)
-    lookback_per = int(lambd * new_ts.shape[-1])
-    new_ts[:, :lookback_per] = 0
-    return new_ts
+def _magwarp(x, magnitude=.1, order=4):
+    if magnitude <= 0: return x
+    y = None
+    if isinstance(x, list):
+        y = x[1]
+        x = x[0]
+    y_mult = random_curve_generator(x, magnitude=magnitude, order=order)
+    output = x * x.new(y_mult)
+    return output if y is None else [output, y]
 
-TSlookback = TSTransform(_rand_lookback)
+TSmagwarp = TSTransform(_magwarp)
 
-def _random_channel_out(ts, alpha=.2):
-    input_ch = ts.shape[0]
-    if input_ch == 1: return ts
-    new_ts = ts.clone()
-    out_ch = np.random.choice(np.arange(input_ch),
-                              min(input_ch - 1, int(np.random.beta(alpha, 1) * input_ch)),
-                              replace=False)
-    new_ts[out_ch] = 0
-    return new_ts
 
-TSchannelout = TSTransform(_random_channel_out)
+def _magscale(x, magnitude=.1):
+    if magnitude <= 0: return x
+    y = None
+    if isinstance(x, list):
+        y = x[1]
+        x = x[0]
+    scale = 1 + torch.rand(1) * magnitude
+    if np.random.rand() < .5: scale = 1 / scale
+    output = x * scale.to(device)
+    return output if y is None else [output, y]
 
-def _cutout(ts, perc=.1):
-    if perc >= 1 or perc <= 0: return ts
-    seq_len = ts.shape[-1]
-    new_ts = ts.clone()
-    win_len = int(perc * seq_len)
-    start = np.random.randint(-win_len + 1, seq_len)
-    end = start + win_len
-    start = max(0, start)
-    end = min(end, seq_len)
-    new_ts[..., start:end] = 0
-    return new_ts
+TSmagscale = TSTransform(_magscale)
 
-TScutout= TSTransform(_cutout)
 
-def _timesteps_out(ts, perc=.1):
-    if perc >= 1 or perc <= 0: return ts
-    seq_len = ts.shape[-1]
-    timesteps = np.sort(np.random.choice(np.arange(seq_len), int(seq_len * (1 - perc)), replace=False))
-    return ts[..., timesteps]
+def _dimmagscale(x, magnitude=.1):
+    '''This tfm applies magscale to each dimension independently'''
+    if magnitude <= 0: return x
+    y = None
+    if isinstance(x, list):
+        y = x[1]
+        x = x[0]
+    scale = (1 + torch.rand((x.shape[-2], 1)) * magnitude)
+    if np.random.rand() < .5: scale = 1 / scale
+    output = x * scale.to(device)
+    return output if y is None else [output, y]
 
-TStimestepsout = TSTransform(_timesteps_out)
+TSdimmagscale = TSTransform(_dimmagscale)
 
-def _crop(ts, perc=.9):
-    if perc >= 1 or perc <= 0: return ts
-    seq_len = ts.shape[-1]
-    win_len = int(seq_len * perc)
-    new_ts = torch.zeros((ts.shape[-2], win_len))
-    start = np.random.randint(-win_len + 1, seq_len)
-    end = start + win_len
-    start = max(0, start)
-    end = min(end, seq_len)
-    new_ts[:, - end + start :] = ts[:, start : end]
-    return new_ts
 
-TScrop = TSTransform(_crop)
+from scipy.interpolate import CubicSpline
+def _timenoise(x, magnitude=.1):
+    '''This is a slow batch tfm'''
+    if magnitude <= 0: return x
+    y = None
+    if isinstance(x, list):
+        y = x[1]
+        x = x[0]
+    f = CubicSpline(np.arange(x.shape[-1]), x, axis=-1)
+    new_x = random_cum_noise_generator(x, magnitude=magnitude)
+    output = x.new(f(new_x))
+    return output if y is None else [output, y]
 
-def _window_slice(ts, perc=.9):
-    if perc == 1.0 or perc == 0: return ts
-    seq_len = ts.shape[-1]
-    win_len = int(seq_len * perc)
-    start = np.random.randint(0, seq_len - win_len)
-    return ts[:, start : start + win_len]
+TStimenoise = TSTransform(_timenoise)
 
-TSwindowslice = TSTransform(_window_slice)
 
-def _random_zoom(ts, alpha=.2):
-    if alpha == 1.0: return a
-    seq_len = ts.shape[-1]
-    lambd = np.random.beta(alpha, alpha)
+from scipy.interpolate import CubicSpline
+def _zoomin(x, magnitude=.2):
+    '''This is a slow batch tfm'''
+    if magnitude == 0: return x
+    y = None
+    if isinstance(x, list):
+        y = x[1]
+        x = x[0]
+    seq_len = x.shape[-1]
+    lambd = np.random.beta(magnitude, magnitude)
     lambd = max(lambd, 1 - lambd)
     win_len = int(seq_len * lambd)
     if win_len == seq_len: start = 0
     else: start = np.random.randint(0, seq_len - win_len)
-    y = ts[:, start : start + win_len]
-    f = CubicSpline(np.arange(y.shape[-1]), y, axis=1)
-    return ts.new(f(np.linspace(0, win_len - 1, num=seq_len)))
+    x2 = x[..., start : start + win_len]
+    f = CubicSpline(np.arange(x2.shape[-1]), x2, axis=-1)
+    output = x.new(f(np.linspace(0, win_len - 1, num=seq_len)))
+    return output if y is None else [output, y]
 
-TSzoom = TSTransform(_random_zoom)
+TSzoomin = TSTransform(_zoomin)
 
-def get_TS_remove_tfms():
-    return [[TSlookback(p=.5), TStimestepsout(p=.5), TSchannelout(p=.5), TScutout(p=.5),
-            TScrop(p=.5), TSwindowslice(p=.5), TSzoom(p=.5)], []]
+
+from scipy.interpolate import CubicSpline
+def _zoomout(x, magnitude=.2):
+    '''This is a slow batch tfm'''
+    if magnitude == 0: return x
+    y = None
+    if isinstance(x, list):
+        y = x[1]
+        x = x[0]
+    seq_len = x.shape[-1]
+    lambd = np.random.beta(magnitude, magnitude)
+    lambd = max(lambd, 1 - lambd)
+    f = CubicSpline(np.arange(x.shape[-1]), x, axis=-1)
+    new_x = torch.zeros_like(x, dtype=x.dtype, device=x.device)
+    win_len = int(seq_len * lambd)
+    new_x[..., -win_len:] = x.new(f(np.linspace(0, seq_len - 1, num=win_len)))
+    output = new_x
+    return output if y is None else [output, y]
+
+TSzoomout = TSTransform(_zoomout)
+
+
+def _randomzoom(x, magnitude=.2):
+    if magnitude == 0: return x
+    if np.random.rand() <= .5: return _zoomin(x, magnitude=magnitude)
+    else: return _zoomout(x, magnitude=magnitude)
+
+TSrandomzoom = TSTransform(_randomzoom)
+
+
+def _randtimestep(x, magnitude=.1):
+    if magnitude >= 1 or magnitude <= 0: return x
+    y = None
+    if isinstance(x, list):
+        y = x[1]
+        x = x[0]
+    seq_len = x.shape[-1]
+    new_seq_len = int(seq_len * (1 - magnitude))
+    timesteps = np.sort(np.random.choice(np.arange(seq_len),
+                                         new_seq_len,
+                                         replace=False))
+    new_x = x.clone()[..., timesteps]
+    f = CubicSpline(np.arange(new_x.shape[-1]), new_x, axis=-1)
+    output = x.new(f(np.linspace(0, new_seq_len - 1, num=seq_len)))
+    return output if y is None else [output, y]
+
+TSrandtimestep = TSTransform(_randtimestep)
+
+
+def _lookback(x, magnitude=.2):
+    if magnitude <= 0: return x
+    y = None
+    if isinstance(x, list):
+        y = x[1]
+        x = x[0]
+    seq_len = x.shape[-1]
+    new_x = x.clone()
+    lambd = np.random.beta(magnitude, magnitude)
+    lambd = min(lambd, 1 - lambd)
+    lookback_per = int(lambd * seq_len)
+    new_x[:, :lookback_per] = 0
+    output = new_x
+    return output if y is None else [output, y]
+
+TSlookback = TSTransform(_lookback)
+
+def _dimout(ts, magnitude=.2):
+    if magnitude <= 0: return x
+    y = None
+    if isinstance(ts, list):
+        y = ts[1]
+        x = ts[0]
+    else: x = ts
+    input_ch = x.shape[0]
+    if input_ch == 1: return ts
+    new_x = x.clone()
+    out_ch = np.random.choice(np.arange(input_ch),
+                              min(input_ch - 1, int(np.random.beta(magnitude, 1) * input_ch)),
+                              replace=False)
+    new_x[out_ch] = 0
+    output = new_x
+    return output if y is None else [output, y]
+
+TSdimout = TSTransform(_dimout)
+TSchannelout = TSTransform(_dimout)
+
+def _cutout(x, magnitude=.1):
+    if magnitude >= 1 or magnitude <= 0: return x
+    y = None
+    if isinstance(x, list):
+        y = x[1]
+        x = x[0]
+    seq_len = x.shape[-1]
+    new_x = x.clone()
+    win_len = int(magnitude * seq_len)
+    start = np.random.randint(-win_len + 1, seq_len)
+    end = start + win_len
+    start = max(0, start)
+    end = min(end, seq_len)
+    new_x[..., start:end] = 0
+    output = new_x
+    return output if y is None else [output, y]
+
+TScutout= TSTransform(_cutout)
+
+
+def _timestepout(x, magnitude=.1):
+    '''This tfm modifies the output size'''
+    if magnitude >= 1 or magnitude <= 0: return x
+    y = None
+    if isinstance(x, list):
+        y = x[1]
+        x = x[0]
+    seq_len = x.shape[-1]
+    timesteps = np.sort(np.random.choice(np.arange(seq_len),
+                                         int(seq_len * (1 - magnitude)),
+                                         replace=False))
+    new_x = x.clone()
+    output = new_x[..., timesteps]
+    return output if y is None else [output, y]
+
+TStimestepout = TSTransform(_timestepout)
+
+def _timestepzero(x, magnitude=.1):
+    if magnitude >= 1 or magnitude <= 0: return x
+    y = None
+    if isinstance(x, list):
+        y = x[1]
+        x = x[0]
+    seq_len = x.shape[-1]
+    timesteps = np.sort(np.random.choice(np.arange(seq_len),
+                                         int(seq_len * magnitude),
+                                         replace=False))
+    new_x = x.clone()
+    new_x[..., timesteps] = 0
+    output = new_x
+    return output if y is None else [output, y]
+
+TStimestepzero = TSTransform(_timestepzero)
+
+
+def _crop(x, magnitude=.1):
+    if magnitude >= 1 or magnitude <= 0: return x
+    y = None
+    if isinstance(x, list):
+        y = x[1]
+        x = x[0]
+    seq_len = x.shape[-1]
+    win_len = int(seq_len * (1. - magnitude))
+    start = np.random.randint(- win_len//2, seq_len - win_len//2)
+    end = start + win_len
+    start = max(0, start)
+    end = min(end, seq_len)
+    new_x = torch.zeros_like(x, dtype=x.dtype, device=x.device)
+    new_x[..., start - end :] = x[..., start : end]
+    output = new_x
+    return output if y is None else [output, y]
+
+TScrop = TSTransform(_crop)
+
+
+def _randomcrop(x, magnitude=.2):
+    if magnitude >= 1 or magnitude <= 0: return x
+    y = None
+    if isinstance(x, list):
+        y = x[1]
+        x = x[0]
+    seq_len = x.shape[-1]
+    lambd = np.random.beta(magnitude, magnitude)
+    lambd = max(lambd, 1 - lambd)
+    win_len = int(seq_len * lambd)
+    start = np.random.randint(- win_len//2, seq_len - win_len//2)
+    end = start + win_len
+    start = max(0, start)
+    end = min(end, seq_len)
+    new_x = torch.zeros_like(x, dtype=x.dtype, device=x.device)
+    new_x[..., start - end :] = x[..., start : end]
+    output = new_x
+    return output if y is None else [output, y]
+
+TSrandomcrop = TSTransform(_randomcrop)
+
+
+def _centercrop(x, magnitude=.2):
+    if magnitude >= 1 or magnitude <= 0: return x
+    y = None
+    if isinstance(x, list):
+        y = x[1]
+        x = x[0]
+    seq_len = x.shape[-1]
+    lambd = np.random.beta(magnitude, magnitude)
+    lambd = max(lambd, 1 - lambd)
+    win_len = int(seq_len * lambd)
+    start = seq_len // 2 - win_len // 2
+    end = start + win_len
+    start = max(0, start)
+    end = min(end, seq_len)
+    new_x = torch.zeros_like(x, dtype=x.dtype, device=x.device)
+    new_x[..., start - end :] = x[..., start : end]
+    output = new_x
+    return output if y is None else [output, y]
+
+TScentercrop = TSTransform(_centercrop)
+
+
+def _maskout(x, magnitude=.1):
+    if magnitude >= 1 or magnitude <= 0: return x
+    y = None
+    if isinstance(x, list):
+        y = x[1]
+        x = x[0]
+    seq_len = x.shape[-1]
+    mask = torch.rand_like(x) <= magnitude
+    new_x = x.clone()
+    new_x[mask] = 0
+    output = new_x
+    return output if y is None else [output, y]
+
+TSmaskout = TSTransform(_maskout)
+
+
+def TS_geometric_tfms(**kwargs):
+    return [[
+        TStimewarp(**kwargs),
+        TSmagwarp(**kwargs),
+        TStimenoise(**kwargs),
+        TSmagnoise(**kwargs),
+        TSmagscale(**kwargs),
+        TSdimmagscale(**kwargs),
+        TSzoomin(**kwargs),
+        TSzoomout(**kwargs),
+        TSrandomzoom(**kwargs),
+        TSrandtimestep(**kwargs),
+    ], []]
+
+TS_xy_tfms = TS_geometric_tfms
+
+
+def TS_erasing_tfms(**kwargs):
+    return [[
+
+        TSdimout(**kwargs),
+        TScutout(**kwargs),
+        TStimestepzero(**kwargs),
+        TScrop(**kwargs),
+        TSrandomcrop(**kwargs),
+        TSmaskout(**kwargs)
+    ], []]
+
+TS_zero_tfms = TS_erasing_tfms
+
+
+def TS_tfms(**kwargs):
+    return [TS_geometric_tfms(**kwargs)[0] + TS_erasing_tfms(**kwargs)[0], []]
+
+
+def all_TS_tfms(**kwargs):
+    return [TS_tfms(**kwargs)[0] +
+            [TStimestepout(**kwargs), TSlookback(**kwargs), TScentercrop(**kwargs)],
+            []]
+
+
+class RandAugment():
+    def __init__(self, tfms, N=1, **kwargs):
+        '''
+        tfms: list of tfms to select from
+        N: number of tfms applied each time
+        magnitude: sets the magnitude of the
+        p: probability that any tfm is applied
+        '''
+        tfms = listify(tfms)
+        if isinstance(tfms[0], list): tfms = tfms[0]
+        self.tfms = tfms
+        self.N = N
+        self.kwargs = kwargs
+
+    def __call__(self, x):
+        if self.N is None: sel_tfms = self.tfms
+        else: sel_tfms = np.random.choice(self.tfms, self.N, replace=False)
+        tfms = [partial(tfm, p=1., **self.kwargs) for tfm in sel_tfms]
+        for tfm in tfms: x = tfm(x)
+        return x
+
+def randaugment(learn:Learner, tfms:list=TS_tfms(), N:int=1, **kwargs)->Learner:
+    learn.data.train_dl.tfms = RandAugment(tfms, N=N, **kwargs)
+    return learn
+
+Learner.randaugment = randaugment

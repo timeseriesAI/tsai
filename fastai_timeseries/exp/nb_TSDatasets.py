@@ -152,7 +152,7 @@ def get_UCR_univariate(sel_dataset, parent_dir='data/UCR', verbose=False, drop_n
     X_test = To3dArray(X_test)
 
     if verbose:
-        print('Successfully extracted dataset')
+        print('Successfully extracted dataset\n')
         print('X_train:', X_train.shape)
         print('y_train:', y_train.shape)
         print('X_valid:', X_test.shape)
@@ -171,7 +171,7 @@ def get_UCR_multivariate(sel_dataset, parent_dir='data/UCR', verbose=False, chec
     src_website = 'http://www.timeseriesclassification.com/Downloads/'
     tgt_dir = Path(parent_dir) / sel_dataset
 
-    if verbose: print('Download and decompressing data...')
+    if verbose: print('Downloading and decompressing data...')
     if not os.path.isdir(tgt_dir):
         decompress_from_url(
             src_website + sel_dataset + '.zip', target_dir=tgt_dir, verbose=verbose)
@@ -211,7 +211,7 @@ def get_UCR_multivariate(sel_dataset, parent_dir='data/UCR', verbose=False, chec
     y_test = np.array([int(float(x)) for x in test_df.iloc[:, -1]])
 
     if verbose:
-        print('Successfully extracted dataset')
+        print('Successfully extracted dataset\n')
         print('X_train:', X_train.shape)
         print('y_train:', y_train.shape)
         print('X_valid:', X_test.shape)
