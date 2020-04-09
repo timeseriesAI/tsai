@@ -1,6 +1,11 @@
-# timeseriesAI v2
+# timeseries
+> Practical Deep Learning for Time Series / Sequential Data using fastai v2/ Pytorch.
 
-timeseriesAI is a library built on top of fastai v2/ Pytorch to help you apply Deep Learning to your time series/ sequential datasets, in particular Time Series Classification (TSC) and Time Series Regression (TSR) problems.
 
-timeseriesAI v1 supported by fastai v1 has been moved to this [url](https://github.com/timeseriesAI/timeseriesAI1).
+Work in progress
 
+## Install
+
+`pip install timeseries`
+
+## How to use

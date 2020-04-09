@@ -7,24 +7,30 @@ entries:
 - folders:
   - folderitems:
     - output: web,pdf
-      title: Export to modules
-      url: /export.html
+      title: Overview
+      url: /
     - output: web,pdf
-      title: Convert to html
-      url: /export2html.html
+      title: Utilities
+      url: /utils
     - output: web,pdf
-      title: Show doc
-      url: /showdoc.html
+      title: Core
+      url: /core
     - output: web,pdf
-      title: Test functions
-      url: /test.html
+      title: Data
+      url: /data
     - output: web,pdf
-      title: Core functions
-      url: /core.html
+      title: Layers
+      url: /layers
     - output: web,pdf
-      title: Command line functions
-      url: /cli.html
+      title: ResNet
+      url: /ResNet
+    - output: web,pdf
+      title: InceptionTime
+      url: /InceptionTime
+    - output: web,pdf
+      title: DeepConvRNN
+      url: /DeepConvRNN_dev
     output: web
-    title: Notebook
+    title: timeseries
   output: web
   title: Sidebar

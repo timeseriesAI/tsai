@@ -1,10 +1,12 @@
 {
-  "Notebook": {
-    "Export to modules": "/export",
-    "Convert to html": "/export2html",
-    "Show doc": "/showdoc",
-    "Test functions": "/test",
-    "Core functions": "/core",
-    "Command line functions": "/cli"
+  "timeseries": {
+    "Overview": "/",
+    "Utilities": "/utils",
+    "Core": "/core",
+    "Data": "/data",
+    "Layers": "/layers",
+    "ResNet": "/ResNet",
+    "InceptionTime": "/InceptionTime",
+    "DeepConvRNN": "/DeepConvRNN_dev"
   }
 }
