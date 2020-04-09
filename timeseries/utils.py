@@ -7,7 +7,11 @@ __all__ = ['ToTensor', 'ToArray', 'To3DTensor', 'To2DTensor', 'To1DTensor', 'To3
            'cpus']
 
 # Cell
-from timeseries import *
+# from timeseries.all import *
+
+# Cell
+from fastai2.imports import *
+import torch
 
 # Cell
 def ToTensor(o):
@@ -125,7 +129,6 @@ def Todtype(dtype):
     return _to_type
 
 # Cell
-import math
 def bytes2size(size_bytes):
     if size_bytes == 0: return "0B"
     size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
@@ -134,11 +137,11 @@ def bytes2size(size_bytes):
     s = round(size_bytes / p, 2)
     return "%s %s" % (s, size_name[i])
 
-def bytes2GB(bytes):
-    return round(bytes / math.pow(1024, 3), 2)
+def bytes2GB(byts):
+    return round(byts / math.pow(1024, 3), 2)
 
 # Cell
-def delete_all_in_dir(tgt_dir:str, exception:Union[str, tuple]=None):
+def delete_all_in_dir(tgt_dir, exception=None):
     if exception is not None and len(L(exception)) > 1: exception = tuple(exception)
     for file in os.listdir(tgt_dir):
         if exception is not None and file.endswith(exception): continue

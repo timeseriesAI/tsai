@@ -2,14 +2,19 @@
 
 __all__ = ['NumpyTensor', 'ToNumpyTensor', 'TSTensor', 'ToTSTensor', 'NumpyTensorBlock', 'TSTensorBlock', 'Dataset',
            'NumpyDatasets', 'TSDatasets', 'add_ds', 'NumpyDataLoader', 'show_tuple', 'TSDataLoader', 'NumpyDataLoaders',
-           'TSDataLoaders', 'load_learner_all']
+           'TSDataLoaders', 'save_all', 'load_learner_all']
 
 # Cell
-from timeseries import *
+from fastai2.imports import *
+from fastai2.torch_core import *
+from fastai2.data.core import *
+from fastai2.learner import Learner
+# from fastai2.basics import *
+from fastcore.transform import *
 
 # Cell
 class NumpyTensor(TensorBase):
-    '''Returns a tensor of type torch.float32 and class NumpyTensor that has a show method'''
+    "Returns a `tensor` of type torch.float32 and class `NumpyTensor` that has a show method"
     def __new__(cls, o, **kwargs):
         if isinstance(o, (list, L)): o = np.stack(o)
         res = tensor(o)
@@ -35,6 +40,7 @@ class NumpyTensor(TensorBase):
         return ax
 
 class ToNumpyTensor(Transform):
+    "Transforms np.ndarray to NumpyTensor"
     def encodes(self, o:np.ndarray): return NumpyTensor(o)
 
 # Cell
@@ -91,7 +97,7 @@ class NumpyDatasets(Datasets):
         self.tls = L(tls if tls else [TfmdLists(item, t, **kwargs) for item,t in zip(items,self.tfms)])
         self.n_inp = (1 if len(self.tls)==1 else len(self.tls)-1) if n_inp is None else n_inp
         if len(self.tls[0]) > 0:
-            # type(tl[0]).__name__ == 'memmap' is added to avoid loding larger than RAM
+            # type(tl[0]).__name__ == 'memmap' is added to avoid loading in memory larger than RAM datasets
             self.ptls = L([tl if not self.inplace else tl[:] if type(tl[0]).__name__ == 'memmap' else stack(tl[:]) for tl in self.tls])
             self.types = [ifnone(_typ, type(tl[0]) if isinstance(tl[0], torch.Tensor) else tensor) for tl,_typ in zip(self.tls, [self._xtype, self._ytype])]
 
@@ -255,8 +261,7 @@ class TSDataLoaders(NumpyDataLoaders):
     _dl_type = TSDataLoader
 
 # Cell
-@patch
-def save_all(self:Learner, path='export', dls_fname='dls', model_fname='model', learner_fname='learner'):
+def save_all(self, path='export', dls_fname='dls', model_fname='model', learner_fname='learner'):
 
     path = Path(path)
     if not os.path.exists(path): os.makedirs(path)
@@ -276,6 +281,8 @@ def save_all(self:Learner, path='export', dls_fname='dls', model_fname='model', 
     print(f"dls_fname     = '{dls_fname}'")
     print(f"model_fname   = '{model_fname}.pth'")
     print(f"learner_fname = '{learner_fname}.pkl'")
+
+Learner.save_all = save_all
 
 
 def load_learner_all(path='export', dls_fname='dls', model_fname='model', learner_fname='learner', cpu=True):
