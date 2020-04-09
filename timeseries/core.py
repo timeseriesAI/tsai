@@ -2,7 +2,7 @@
 
 __all__ = ['NumpyTensor', 'ToNumpyTensor', 'TSTensor', 'ToTSTensor', 'NumpyTensorBlock', 'TSTensorBlock', 'Dataset',
            'NumpyDatasets', 'TSDatasets', 'add_ds', 'NumpyDataLoader', 'show_tuple', 'TSDataLoader', 'NumpyDataLoaders',
-           'TSDataLoaders', 'save_all', 'load_learner_all']
+           'TSDataLoaders', 'save_all', 'load_learner_all', 'save_all', 'load_learner_all']
 
 # Cell
 from fastai2.imports import *
@@ -259,6 +259,39 @@ class NumpyDataLoaders(DataLoaders):
 class TSDataLoaders(NumpyDataLoaders):
     _xblock = TSTensorBlock
     _dl_type = TSDataLoader
+
+# Cell
+def save_all(self:Learner, path='export', dls_fname='dls', model_fname='model', learner_fname='learner'):
+
+    path = Path(path)
+    if not os.path.exists(path): os.makedirs(path)
+
+    # Save the dls
+    torch.save(self.dls, path/dls_fname)
+
+    # Saves the model along with optimizer
+    self.model_dir = path
+    self.save(model_fname)
+
+    # Export learn without the items and the optimizer state for inference
+    self.export(path/f'{learner_fname}.pkl')
+
+    print(f'Learner saved:')
+    print(f"path          = '{path}'")
+    print(f"dls_fname     = '{dls_fname}'")
+    print(f"model_fname   = '{model_fname}.pth'")
+    print(f"learner_fname = '{learner_fname}.pkl'")
+
+Learner.save_all = save_all
+
+
+def load_learner_all(path='export', dls_fname='dls', model_fname='model', learner_fname='learner', cpu=True):
+    path = Path(path)
+    learn = load_learner(path/f'{learner_fname}.pkl', cpu=cpu)
+    learn.load(f'{model_fname}')
+    dls = torch.load(path/dls_fname)
+    learn.dls = dls
+    return learn
 
 # Cell
 def save_all(self, path='export', dls_fname='dls', model_fname='model', learner_fname='learner'):
