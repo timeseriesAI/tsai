@@ -27,7 +27,7 @@ data/UCR/
 data/trading/images
 sequentia/models/
 tests/
-#old/
+/old/*
 
 .ipynb_checkpoints
 
