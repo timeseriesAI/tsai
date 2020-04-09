@@ -143,3 +143,5 @@ checklink/cookies.txt
 data/*
 */old/*
 */export/*
+*_dev.*
+
