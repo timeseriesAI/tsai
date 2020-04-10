@@ -2,7 +2,7 @@ SRC = $(wildcard nbs/*.ipynb)
 
 all: timeseriesAI docs
 
-timeseriesAI2: $(SRC)
+timeseriesAI: $(SRC)
 	nbdev_build_lib
 	touch timeseriesAI
 
