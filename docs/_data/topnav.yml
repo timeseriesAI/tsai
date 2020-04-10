@@ -2,7 +2,7 @@ topnav:
 - title: Topnav
   items:
     - title: GitHub
-      external_url: https://github.com/timeseriesAI/timeseriesAI2
+      external_url: https://github.com/timeseriesAI/timeseriesAI
 
 #Topnav dropdowns
 topnav_dropdowns:

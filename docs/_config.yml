@@ -1,9 +1,9 @@
-repository: timeseriesAI/timeseriesAI2
+repository: timeseriesAI/timeseriesAI
 output: web
-topnav_title: timeseriesAI2
-site_title: timeseriesAI2
+topnav_title: timeseriesAI
+site_title: timeseriesAI
 company_name: Ignacio Oguiza
-description: Practical Deep Learning for Time Series / Sequential Data using fastai2/ Pytorch
+description: Practical Deep Learning for Time Series / Sequential Data using fastai v2/ Pytorch
 # Set to false to disable KaTeX math
 use_math: true
 # Add Google analytics id if you have one and want to use it here

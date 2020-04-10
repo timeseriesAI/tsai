@@ -1,10 +1,10 @@
 SRC = $(wildcard nbs/*.ipynb)
 
-all: timeseriesAI2 docs
+all: timeseriesAI docs
 
 timeseriesAI2: $(SRC)
 	nbdev_build_lib
-	touch timeseriesAI2
+	touch timeseriesAI
 
 docs_serve: docs
 	cd docs && bundle exec jekyll serve
