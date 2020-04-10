@@ -1,5 +1,5 @@
 {
-  "timeseries": {
+  "tsai": {
     "Overview": "/",
     "Utilities": "/utils",
     "Core": "/core",

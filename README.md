@@ -1,11 +1,13 @@
-# timeseries
-> Practical Deep Learning for Time Series / Sequential Data using fastai v2/ Pytorch.
+# tsai
+> A Practical Deep Learning for Time Series / Sequential Data library built with fastai v2/ Pytorch.
 
 
 Work in progress
 
 ## Install
 
-`pip install timeseries`
+`pip install tsai`
 
 ## How to use
+
+TBD

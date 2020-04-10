@@ -31,6 +31,6 @@ entries:
       title: DeepConvRNN
       url: /DeepConvRNN_dev
     output: web
-    title: timeseries
+    title: tsai
   output: web
   title: Sidebar
