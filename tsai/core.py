@@ -9,7 +9,6 @@ from fastai2.imports import *
 from fastai2.torch_core import *
 from fastai2.data.core import *
 from fastai2.learner import Learner
-# from fastai2.basics import *
 from fastcore.transform import *
 
 # Cell

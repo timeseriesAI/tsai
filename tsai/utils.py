@@ -7,9 +7,6 @@ __all__ = ['ToTensor', 'ToArray', 'To3DTensor', 'To2DTensor', 'To1DTensor', 'To3
            'cpus']
 
 # Cell
-# from timeseries.all import *
-
-# Cell
 from fastai2.imports import *
 import torch
 
