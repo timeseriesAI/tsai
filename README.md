@@ -4,6 +4,8 @@
 
 `tsai`is a deep learning library built on top of fastai v2 / Pytorch focused on state-of-the-art methods for time series classification and regression.
 
+If you are looking for **timeseriesAI based on fastai v1**, it's been moved to **[timeseriesAI1](https://github.com/timeseriesAI/timeseriesAI1)**.
+
 ## Install
 
 You can install the **latest stable** version from pip:
@@ -20,7 +22,7 @@ In the latter case, you may also want to use install the bleeding egde fastai & 
 
 `pip install git+https://github.com/fastai/fastai2.git@master`
 
-## How to use
+## How to get started
 
 The only thing you need to do after you have installed the library is to add this to your notebook:
 
@@ -28,6 +30,6 @@ The only thing you need to do after you have installed the library is to add thi
 
 To get familiarized with the library, I'd suggest you start with this notebook:
 
-[01_Intro_to_Time_Series_Classification](https://github.com/timeseriesAI/timeseriesAI/blob/master/tutorial_nbs/01_Intro_to_Time_Series_Classification.ipynb)
+**[01_Intro_to_Time_Series_Classification](https://github.com/timeseriesAI/timeseriesAI/blob/master/tutorial_nbs/01_Intro_to_Time_Series_Classification.ipynb)**
 
 It provides an overview of a time series classification problem using fastai v2.
