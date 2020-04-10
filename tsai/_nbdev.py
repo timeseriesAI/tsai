@@ -84,8 +84,8 @@ modules = ["utils.py",
            "models/ResNet.py",
            "models/InceptionTime.py"]
 
-doc_url = "https://oguiza.github.io/"
+doc_url = "https://timeseriesai.github.io/timeseriesAI//"
 
-git_url = "https://github.com/oguiza/tsai/tree/master/"
+git_url = "https://github.com/timeseriesAI/timeseriesAI/tree/master/"
 
 def custom_doc_links(name): return None

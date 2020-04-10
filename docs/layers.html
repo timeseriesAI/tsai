@@ -35,7 +35,7 @@ summary: "Helper function used to build PyTorch timeseries models."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="noop" class="doc_header"><code>noop</code><a href="https://github.com/oguiza/tsai/tree/master/tsai/models/layers.py#L9" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>noop</code>(<strong><code>x</code></strong>)</p>
+<h4 id="noop" class="doc_header"><code>noop</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/layers.py#L9" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>noop</code>(<strong><code>x</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -55,7 +55,7 @@ summary: "Helper function used to build PyTorch timeseries models."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="same_padding1d" class="doc_header"><code>same_padding1d</code><a href="https://github.com/oguiza/tsai/tree/master/tsai/models/layers.py#L11" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>same_padding1d</code>(<strong><code>seq_len</code></strong>, <strong><code>ks</code></strong>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>dilation</code></strong>=<em><code>1</code></em>)</p>
+<h4 id="same_padding1d" class="doc_header"><code>same_padding1d</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/layers.py#L11" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>same_padding1d</code>(<strong><code>seq_len</code></strong>, <strong><code>ks</code></strong>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>dilation</code></strong>=<em><code>1</code></em>)</p>
 </blockquote>
 
 </div>
@@ -75,7 +75,7 @@ summary: "Helper function used to build PyTorch timeseries models."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ZeroPad1d" class="doc_header"><code>class</code> <code>ZeroPad1d</code><a href="https://github.com/oguiza/tsai/tree/master/tsai/models/layers.py#L21" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ZeroPad1d</code>(<strong><code>padding</code></strong>) :: <code>ConstantPad1d</code></p>
+<h2 id="ZeroPad1d" class="doc_header"><code>class</code> <code>ZeroPad1d</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/layers.py#L21" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ZeroPad1d</code>(<strong><code>padding</code></strong>) :: <code>ConstantPad1d</code></p>
 </blockquote>
 <p>Pads the input tensor boundaries with a constant value.</p>
 <p>For <code>N</code>-dimensional padding, use :func:<code>torch.nn.functional.pad()</code>.</p>
@@ -134,7 +134,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ConvSP1d" class="doc_header"><code>class</code> <code>ConvSP1d</code><a href="https://github.com/oguiza/tsai/tree/master/tsai/models/layers.py#L25" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ConvSP1d</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>ks</code></strong>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>'same'</code></em>, <strong><code>dilation</code></strong>=<em><code>1</code></em>, <strong><code>bias</code></strong>=<em><code>True</code></em>) :: <code>Module</code></p>
+<h2 id="ConvSP1d" class="doc_header"><code>class</code> <code>ConvSP1d</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/layers.py#L25" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ConvSP1d</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>ks</code></strong>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>'same'</code></em>, <strong><code>dilation</code></strong>=<em><code>1</code></em>, <strong><code>bias</code></strong>=<em><code>True</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Conv1d padding='same'</p>
 
@@ -155,7 +155,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="convlayer" class="doc_header"><code>convlayer</code><a href="https://github.com/oguiza/tsai/tree/master/tsai/models/layers.py#L39" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>convlayer</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>padding</code></strong>=<em><code>'same'</code></em>, <strong><code>bias</code></strong>=<em><code>True</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>bn_init</code></strong>=<em><code>False</code></em>, <strong><code>zero_bn</code></strong>=<em><code>False</code></em>, <strong><code>bn_before</code></strong>=<em><code>True</code></em>, <strong><code>act_fn</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="convlayer" class="doc_header"><code>convlayer</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/layers.py#L39" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>convlayer</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>padding</code></strong>=<em><code>'same'</code></em>, <strong><code>bias</code></strong>=<em><code>True</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>bn_init</code></strong>=<em><code>False</code></em>, <strong><code>zero_bn</code></strong>=<em><code>False</code></em>, <strong><code>bn_before</code></strong>=<em><code>True</code></em>, <strong><code>act_fn</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>conv layer (padding="same") + bn + act</p>
 

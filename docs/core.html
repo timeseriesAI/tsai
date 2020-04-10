@@ -38,7 +38,7 @@ summary: "Main Numpy and Times Series functions used throughout the library."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="NumpyTensor" class="doc_header"><code>class</code> <code>NumpyTensor</code><a href="https://github.com/oguiza/tsai/tree/master/tsai/core.py#L15" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyTensor</code>(<strong><code>o</code></strong>, <strong>**<code>kwargs</code></strong>) :: <code>TensorBase</code></p>
+<h2 id="NumpyTensor" class="doc_header"><code>class</code> <code>NumpyTensor</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/core.py#L15" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyTensor</code>(<strong><code>o</code></strong>, <strong>**<code>kwargs</code></strong>) :: <code>TensorBase</code></p>
 </blockquote>
 <p>Returns a <code>tensor</code> of type torch.float32 and class <a href="/core#NumpyTensor"><code>NumpyTensor</code></a> that has a show method</p>
 
@@ -59,7 +59,7 @@ summary: "Main Numpy and Times Series functions used throughout the library."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ToNumpyTensor" class="doc_header"><code>class</code> <code>ToNumpyTensor</code><a href="https://github.com/oguiza/tsai/tree/master/tsai/core.py#L41" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ToNumpyTensor</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
+<h2 id="ToNumpyTensor" class="doc_header"><code>class</code> <code>ToNumpyTensor</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/core.py#L41" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ToNumpyTensor</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
 </blockquote>
 <p>Transforms np.ndarray to NumpyTensor</p>
 
@@ -83,7 +83,7 @@ summary: "Main Numpy and Times Series functions used throughout the library."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSTensor" class="doc_header"><code>class</code> <code>TSTensor</code><a href="https://github.com/oguiza/tsai/tree/master/tsai/core.py#L46" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTensor</code>(<strong><code>o</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/core#NumpyTensor"><code>NumpyTensor</code></a></p>
+<h2 id="TSTensor" class="doc_header"><code>class</code> <code>TSTensor</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/core.py#L46" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTensor</code>(<strong><code>o</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/core#NumpyTensor"><code>NumpyTensor</code></a></p>
 </blockquote>
 <p>Returns a tensor oftype torch.float32 and class TSTensor that has a show method</p>
 
@@ -104,7 +104,7 @@ summary: "Main Numpy and Times Series functions used throughout the library."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ToTSTensor" class="doc_header"><code>class</code> <code>ToTSTensor</code><a href="https://github.com/oguiza/tsai/tree/master/tsai/core.py#L61" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ToTSTensor</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
+<h2 id="ToTSTensor" class="doc_header"><code>class</code> <code>ToTSTensor</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/core.py#L61" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ToTSTensor</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
 </blockquote>
 <p>Delegates (<code>__call__</code>,<code>decode</code>,<code>setup</code>) to (<code>encodes</code>,<code>decodes</code>,<code>setups</code>) if <code>split_idx</code> matches</p>
 
@@ -128,7 +128,7 @@ summary: "Main Numpy and Times Series functions used throughout the library."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="NumpyTensorBlock" class="doc_header"><code>class</code> <code>NumpyTensorBlock</code><a href="https://github.com/oguiza/tsai/tree/master/tsai/core.py#L65" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyTensorBlock</code>(<strong><code>type_tfms</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong><code>dls_kwargs</code></strong>=<em><code>None</code></em>)</p>
+<h2 id="NumpyTensorBlock" class="doc_header"><code>class</code> <code>NumpyTensorBlock</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/core.py#L65" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyTensorBlock</code>(<strong><code>type_tfms</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong><code>dls_kwargs</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -148,30 +148,7 @@ summary: "Main Numpy and Times Series functions used throughout the library."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSTensorBlock" class="doc_header"><code>class</code> <code>TSTensorBlock</code><a href="https://github.com/oguiza/tsai/tree/master/tsai/core.py#L72" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTensorBlock</code>(<strong><code>type_tfms</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong><code>dls_kwargs</code></strong>=<em><code>None</code></em>)</p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="Dataset" class="doc_header"><code>class</code> <code>Dataset</code><a href="https://github.com/oguiza/tsai/tree/master/tsai/core.py#L80" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Dataset</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>)</p>
+<h2 id="TSTensorBlock" class="doc_header"><code>class</code> <code>TSTensorBlock</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/core.py#L72" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTensorBlock</code>(<strong><code>type_tfms</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong><code>dls_kwargs</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -194,9 +171,8 @@ summary: "Main Numpy and Times Series functions used throughout the library."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="NumpyDatasets" class="doc_header"><code>class</code> <code>NumpyDatasets</code><a href="https://github.com/oguiza/tsai/tree/master/tsai/core.py#L86" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyDatasets</code>(<strong><code>items</code></strong>=<em><code>None</code></em>, <strong><code>tfms</code></strong>=<em><code>None</code></em>, <strong><code>tls</code></strong>=<em><code>None</code></em>, <strong><code>n_inp</code></strong>=<em><code>None</code></em>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong><code>use_list</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>train_setup</code></strong>=<em><code>True</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>types</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>) :: <code>Datasets</code></p>
+<h2 id="Dataset" class="doc_header"><code>class</code> <code>Dataset</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/core.py#L80" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Dataset</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
-<p>A dataset that creates tuples from X (and y) and applies <code>item_tfms</code></p>
 
 </div>
 
@@ -208,6 +184,9 @@ summary: "Main Numpy and Times Series functions used throughout the library."
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
 <div class="output_wrapper">
 <div class="output">
 
@@ -215,7 +194,7 @@ summary: "Main Numpy and Times Series functions used throughout the library."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSDatasets" class="doc_header"><code>class</code> <code>TSDatasets</code><a href="https://github.com/oguiza/tsai/tree/master/tsai/core.py#L123" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDatasets</code>(<strong><code>items</code></strong>=<em><code>None</code></em>, <strong><code>tfms</code></strong>=<em><code>None</code></em>, <strong><code>tls</code></strong>=<em><code>None</code></em>, <strong><code>n_inp</code></strong>=<em><code>None</code></em>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong><code>use_list</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>train_setup</code></strong>=<em><code>True</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>types</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>) :: <a href="/core#NumpyDatasets"><code>NumpyDatasets</code></a></p>
+<h2 id="NumpyDatasets" class="doc_header"><code>class</code> <code>NumpyDatasets</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/core.py#L86" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyDatasets</code>(<strong><code>items</code></strong>=<em><code>None</code></em>, <strong><code>tfms</code></strong>=<em><code>None</code></em>, <strong><code>tls</code></strong>=<em><code>None</code></em>, <strong><code>n_inp</code></strong>=<em><code>None</code></em>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong><code>use_list</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>train_setup</code></strong>=<em><code>True</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>types</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>) :: <code>Datasets</code></p>
 </blockquote>
 <p>A dataset that creates tuples from X (and y) and applies <code>item_tfms</code></p>
 
@@ -229,6 +208,27 @@ summary: "Main Numpy and Times Series functions used throughout the library."
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="TSDatasets" class="doc_header"><code>class</code> <code>TSDatasets</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/core.py#L123" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDatasets</code>(<strong><code>items</code></strong>=<em><code>None</code></em>, <strong><code>tfms</code></strong>=<em><code>None</code></em>, <strong><code>tls</code></strong>=<em><code>None</code></em>, <strong><code>n_inp</code></strong>=<em><code>None</code></em>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong><code>use_list</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>train_setup</code></strong>=<em><code>True</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>types</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>) :: <a href="/core#NumpyDatasets"><code>NumpyDatasets</code></a></p>
+</blockquote>
+<p>A dataset that creates tuples from X (and y) and applies <code>item_tfms</code></p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 
@@ -239,7 +239,7 @@ summary: "Main Numpy and Times Series functions used throughout the library."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="add_ds" class="doc_header"><code>add_ds</code><a href="https://github.com/oguiza/tsai/tree/master/tsai/core.py#L153" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>add_ds</code>(<strong><code>dsets</code></strong>, <strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>test_items</code></strong>=<em><code>None</code></em>, <strong><code>rm_tfms</code></strong>=<em><code>None</code></em>, <strong><code>with_labels</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="add_ds" class="doc_header"><code>add_ds</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/core.py#L153" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>add_ds</code>(<strong><code>dsets</code></strong>, <strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>test_items</code></strong>=<em><code>None</code></em>, <strong><code>rm_tfms</code></strong>=<em><code>None</code></em>, <strong><code>with_labels</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Create test datasets from X (and y) using validation transforms of <code>dsets</code></p>
 
@@ -260,7 +260,7 @@ summary: "Main Numpy and Times Series functions used throughout the library."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="NumpyDatasets.add_test" class="doc_header"><code>NumpyDatasets.add_test</code><a href="https://github.com/oguiza/tsai/tree/master/tsai/core.py#L174" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>NumpyDatasets.add_test</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>test_items</code></strong>=<em><code>None</code></em>, <strong><code>rm_tfms</code></strong>=<em><code>None</code></em>, <strong><code>with_labels</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="NumpyDatasets.add_test" class="doc_header"><code>NumpyDatasets.add_test</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/core.py#L174" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>NumpyDatasets.add_test</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>test_items</code></strong>=<em><code>None</code></em>, <strong><code>rm_tfms</code></strong>=<em><code>None</code></em>, <strong><code>with_labels</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 
 </div>
@@ -280,7 +280,7 @@ summary: "Main Numpy and Times Series functions used throughout the library."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="NumpyDatasets.add_unlabeled" class="doc_header"><code>NumpyDatasets.add_unlabeled</code><a href="https://github.com/oguiza/tsai/tree/master/tsai/core.py#L178" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>NumpyDatasets.add_unlabeled</code>(<strong><code>X</code></strong>, <strong><code>test_items</code></strong>=<em><code>None</code></em>, <strong><code>rm_tfms</code></strong>=<em><code>None</code></em>, <strong><code>with_labels</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="NumpyDatasets.add_unlabeled" class="doc_header"><code>NumpyDatasets.add_unlabeled</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/core.py#L178" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>NumpyDatasets.add_unlabeled</code>(<strong><code>X</code></strong>, <strong><code>test_items</code></strong>=<em><code>None</code></em>, <strong><code>rm_tfms</code></strong>=<em><code>None</code></em>, <strong><code>with_labels</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 
 </div>
@@ -303,7 +303,7 @@ summary: "Main Numpy and Times Series functions used throughout the library."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="NumpyDataLoader" class="doc_header"><code>class</code> <code>NumpyDataLoader</code><a href="https://github.com/oguiza/tsai/tree/master/tsai/core.py#L183" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyDataLoader</code>(<strong><code>dataset</code></strong>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>num_workers</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>) :: <code>TfmdDL</code></p>
+<h2 id="NumpyDataLoader" class="doc_header"><code>class</code> <code>NumpyDataLoader</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/core.py#L183" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyDataLoader</code>(<strong><code>dataset</code></strong>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>num_workers</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>) :: <code>TfmdDL</code></p>
 </blockquote>
 <p>Transformed <code>DataLoader</code></p>
 
@@ -324,7 +324,7 @@ summary: "Main Numpy and Times Series functions used throughout the library."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="show_tuple" class="doc_header"><code>show_tuple</code><a href="https://github.com/oguiza/tsai/tree/master/tsai/core.py#L207" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>show_tuple</code>(<strong><code>tup</code></strong>, <strong><code>nrows</code></strong>=<em><code>1</code></em>, <strong><code>ncols</code></strong>=<em><code>1</code></em>, <strong><code>sharex</code></strong>=<em><code>False</code></em>, <strong><code>sharey</code></strong>=<em><code>False</code></em>, <strong><code>squeeze</code></strong>=<em><code>True</code></em>, <strong><code>subplot_kw</code></strong>=<em><code>None</code></em>, <strong><code>gridspec_kw</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="show_tuple" class="doc_header"><code>show_tuple</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/core.py#L207" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>show_tuple</code>(<strong><code>tup</code></strong>, <strong><code>nrows</code></strong>=<em><code>1</code></em>, <strong><code>ncols</code></strong>=<em><code>1</code></em>, <strong><code>sharex</code></strong>=<em><code>False</code></em>, <strong><code>sharey</code></strong>=<em><code>False</code></em>, <strong><code>squeeze</code></strong>=<em><code>True</code></em>, <strong><code>subplot_kw</code></strong>=<em><code>None</code></em>, <strong><code>gridspec_kw</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Display a timeseries plot from a decoded tuple</p>
 
@@ -345,7 +345,7 @@ summary: "Main Numpy and Times Series functions used throughout the library."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSDataLoader" class="doc_header"><code>class</code> <code>TSDataLoader</code><a href="https://github.com/oguiza/tsai/tree/master/tsai/core.py#L212" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDataLoader</code>(<strong><code>dataset</code></strong>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>num_workers</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>) :: <a href="/core#NumpyDataLoader"><code>NumpyDataLoader</code></a></p>
+<h2 id="TSDataLoader" class="doc_header"><code>class</code> <code>TSDataLoader</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/core.py#L212" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDataLoader</code>(<strong><code>dataset</code></strong>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>num_workers</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>) :: <a href="/core#NumpyDataLoader"><code>NumpyDataLoader</code></a></p>
 </blockquote>
 <p>Transformed <code>DataLoader</code></p>
 
@@ -369,7 +369,7 @@ summary: "Main Numpy and Times Series functions used throughout the library."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="NumpyDataLoaders" class="doc_header"><code>class</code> <code>NumpyDataLoaders</code><a href="https://github.com/oguiza/tsai/tree/master/tsai/core.py#L222" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyDataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>device(type='cpu')</code></em>) :: <code>DataLoaders</code></p>
+<h2 id="NumpyDataLoaders" class="doc_header"><code>class</code> <code>NumpyDataLoaders</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/core.py#L222" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyDataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>device(type='cpu')</code></em>) :: <code>DataLoaders</code></p>
 </blockquote>
 <p>Basic wrapper around several <code>DataLoader</code>s.</p>
 
@@ -390,7 +390,7 @@ summary: "Main Numpy and Times Series functions used throughout the library."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSDataLoaders" class="doc_header"><code>class</code> <code>TSDataLoaders</code><a href="https://github.com/oguiza/tsai/tree/master/tsai/core.py#L258" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>device(type='cpu')</code></em>) :: <a href="/core#NumpyDataLoaders"><code>NumpyDataLoaders</code></a></p>
+<h2 id="TSDataLoaders" class="doc_header"><code>class</code> <code>TSDataLoaders</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/core.py#L258" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>device(type='cpu')</code></em>) :: <a href="/core#NumpyDataLoaders"><code>NumpyDataLoaders</code></a></p>
 </blockquote>
 <p>Basic wrapper around several <code>DataLoader</code>s.</p>
 
@@ -414,7 +414,7 @@ summary: "Main Numpy and Times Series functions used throughout the library."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="save_all" class="doc_header"><code>save_all</code><a href="https://github.com/oguiza/tsai/tree/master/tsai/core.py#L296" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>save_all</code>(<strong><code>path</code></strong>=<em><code>'export'</code></em>, <strong><code>dls_fname</code></strong>=<em><code>'dls'</code></em>, <strong><code>model_fname</code></strong>=<em><code>'model'</code></em>, <strong><code>learner_fname</code></strong>=<em><code>'learner'</code></em>)</p>
+<h4 id="save_all" class="doc_header"><code>save_all</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/core.py#L296" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>save_all</code>(<strong><code>path</code></strong>=<em><code>'export'</code></em>, <strong><code>dls_fname</code></strong>=<em><code>'dls'</code></em>, <strong><code>model_fname</code></strong>=<em><code>'model'</code></em>, <strong><code>learner_fname</code></strong>=<em><code>'learner'</code></em>)</p>
 </blockquote>
 
 </div>
@@ -434,7 +434,7 @@ summary: "Main Numpy and Times Series functions used throughout the library."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="load_learner_all" class="doc_header"><code>load_learner_all</code><a href="https://github.com/oguiza/tsai/tree/master/tsai/core.py#L320" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_learner_all</code>(<strong><code>path</code></strong>=<em><code>'export'</code></em>, <strong><code>dls_fname</code></strong>=<em><code>'dls'</code></em>, <strong><code>model_fname</code></strong>=<em><code>'model'</code></em>, <strong><code>learner_fname</code></strong>=<em><code>'learner'</code></em>, <strong><code>cpu</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="load_learner_all" class="doc_header"><code>load_learner_all</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/core.py#L320" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_learner_all</code>(<strong><code>path</code></strong>=<em><code>'export'</code></em>, <strong><code>dls_fname</code></strong>=<em><code>'dls'</code></em>, <strong><code>model_fname</code></strong>=<em><code>'model'</code></em>, <strong><code>learner_fname</code></strong>=<em><code>'learner'</code></em>, <strong><code>cpu</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 
 </div>
@@ -457,7 +457,7 @@ summary: "Main Numpy and Times Series functions used throughout the library."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="save_all" class="doc_header"><code>save_all</code><a href="https://github.com/oguiza/tsai/tree/master/tsai/core.py#L296" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>save_all</code>(<strong><code>path</code></strong>=<em><code>'export'</code></em>, <strong><code>dls_fname</code></strong>=<em><code>'dls'</code></em>, <strong><code>model_fname</code></strong>=<em><code>'model'</code></em>, <strong><code>learner_fname</code></strong>=<em><code>'learner'</code></em>)</p>
+<h4 id="save_all" class="doc_header"><code>save_all</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/core.py#L296" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>save_all</code>(<strong><code>path</code></strong>=<em><code>'export'</code></em>, <strong><code>dls_fname</code></strong>=<em><code>'dls'</code></em>, <strong><code>model_fname</code></strong>=<em><code>'model'</code></em>, <strong><code>learner_fname</code></strong>=<em><code>'learner'</code></em>)</p>
 </blockquote>
 
 </div>
@@ -477,7 +477,7 @@ summary: "Main Numpy and Times Series functions used throughout the library."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="load_learner_all" class="doc_header"><code>load_learner_all</code><a href="https://github.com/oguiza/tsai/tree/master/tsai/core.py#L320" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_learner_all</code>(<strong><code>path</code></strong>=<em><code>'export'</code></em>, <strong><code>dls_fname</code></strong>=<em><code>'dls'</code></em>, <strong><code>model_fname</code></strong>=<em><code>'model'</code></em>, <strong><code>learner_fname</code></strong>=<em><code>'learner'</code></em>, <strong><code>cpu</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="load_learner_all" class="doc_header"><code>load_learner_all</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/core.py#L320" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_learner_all</code>(<strong><code>path</code></strong>=<em><code>'export'</code></em>, <strong><code>dls_fname</code></strong>=<em><code>'dls'</code></em>, <strong><code>model_fname</code></strong>=<em><code>'model'</code></em>, <strong><code>learner_fname</code></strong>=<em><code>'learner'</code></em>, <strong><code>cpu</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 
 </div>
