@@ -2,8 +2,8 @@
   "tsai": {
     "Overview": "/",
     "Utilities": "/utils",
-    "Core": "/core",
     "Data": "/data",
+    "Core": "/core",
     "Layers": "/layers",
     "ResNet": "/ResNet",
     "InceptionTime": "/InceptionTime"

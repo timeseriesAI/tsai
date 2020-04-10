@@ -5,7 +5,7 @@ title: tsai
 keywords: fastai
 sidebar: home_sidebar
 
-summary: "A Practical Deep Learning for Time Series / Sequential Data library built with fastai v2/ Pytorch."
+summary: "Practical Deep Learning for Time Series / Sequential Data library based on fastai v2/ Pytorch."
 ---
 <!--
 
@@ -25,7 +25,7 @@ summary: "A Practical Deep Learning for Time Series / Sequential Data library bu
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Work in progress</p>
+<p><code>tsai</code>is a deep learning library built on top of fastai v2 / Pytorch focused on state-of-the-art methods for time series classification and regression.</p>
 
 </div>
 </div>
@@ -38,7 +38,13 @@ summary: "A Practical Deep Learning for Time Series / Sequential Data library bu
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><code>pip install tsai</code></p>
+<p>You can install the <strong>latest stable</strong> version from pip:</p>
+<p><code>pip install tsa</code></p>
+<p>Or you can install the <strong>bleeding edge</strong> version of this library from github by doing:</p>
+<p><code>pip install git+https://github.com/timeseriesAI/timeseriesAI.git@master</code></p>
+<p>In the latter case, you may also want to use install the bleeding egde fastai &amp; fastcore libraries, in which case you need to do this:</p>
+<p><code>pip install git+https://github.com/fastai/fastcore.git@master</code></p>
+<p><code>pip install git+https://github.com/fastai/fastai2.git@master</code></p>
 
 </div>
 </div>
@@ -51,7 +57,8 @@ summary: "A Practical Deep Learning for Time Series / Sequential Data library bu
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>TBD</p>
+<p>The only thing you need to do after you have installed the library is to add this to your notebook:</p>
+<p><code>from tsai.all import *</code></p>
 
 </div>
 </div>

@@ -7,8 +7,7 @@ __all__ = ['ToTensor', 'ToArray', 'To3DTensor', 'To2DTensor', 'To1DTensor', 'To3
            'cpus']
 
 # Cell
-from fastai2.imports import *
-import torch
+from .imports import *
 
 # Cell
 def ToTensor(o):
@@ -181,9 +180,8 @@ def ifelse(a, b, c):
 
 # Cell
 def stack(o, axis=0):
-    if isinstance(o[0], np.ndarray): return np.stack(o, axis)
-    elif isinstance(o[0], torch.Tensor): return torch.stack(tuple(o), dim=axis)
-    assert False, f'cannot stack this data type {type(o[0])}'
+    if isinstance(o[0], torch.Tensor): return torch.stack(tuple(o), dim=axis)
+    else: return np.stack(o, axis)
 
 # Cell
 # This is a convenience function will use later proposed by Thomas Capelle @tcapelle to be able to easily benchmark performance

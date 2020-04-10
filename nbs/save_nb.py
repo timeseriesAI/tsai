@@ -14,7 +14,7 @@ def save_nb():
     print('\nCurrent notebook saved.\n')
 
 # Cell
-def last_saved():
+def last_saved(max_elapsed=10):
     print()
     lib_path = Path(os.getcwd()).parent
     folder = lib_path/str(lib_path).split('/')[-1]
@@ -23,12 +23,10 @@ def last_saved():
     for fp in get_files(folder):
         fp = str(fp)
         fn = fp.split('/')[-1]
-        if not fn.endswith(".py") or fn.startswith("_") or fn.startswith(".") or fn in ['imports.py']: continue
+        if not fn.endswith(".py") or fn.startswith("_") or fn.startswith(".") or fn in ['imports.py', 'all.py']: continue
         elapsed_time = current_time - os.path.getmtime(fp)
         print(f"{fn:30} saved {elapsed_time:10.0f} s ago")
         elapsed += elapsed_time
-    print()
-    if elapsed < 1: print('Correct conversion!')
-    else: print(f'Total elapsed time {elapsed:.0f} s')
+    if elapsed < max_elapsed: print('Correct conversion!')
+    print(f'Total elapsed time {elapsed:.0f} s')
     print(strftime("%d-%m-%Y %H:%M:%S", gmtime()))
-    return int(elapsed)
