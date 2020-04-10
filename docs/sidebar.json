@@ -6,7 +6,6 @@
     "Data": "/data",
     "Layers": "/layers",
     "ResNet": "/ResNet",
-    "InceptionTime": "/InceptionTime",
-    "DeepConvRNN": "/DeepConvRNN_dev"
+    "InceptionTime": "/InceptionTime"
   }
 }

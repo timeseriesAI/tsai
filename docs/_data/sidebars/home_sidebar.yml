@@ -27,9 +27,6 @@ entries:
     - output: web,pdf
       title: InceptionTime
       url: /InceptionTime
-    - output: web,pdf
-      title: DeepConvRNN
-      url: /DeepConvRNN_dev
     output: web
     title: tsai
   output: web
