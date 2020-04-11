@@ -1,8 +1,8 @@
 # tsai
-> Practical Deep Learning for Time Series / Sequential Data library based on fastai v2/ Pytorch.
+> Practical Deep Learning for Time Series / Sequential Data package built with fastai v2/ Pytorch.
 
 
-`tsai`is a deep learning library built on top of fastai v2 / Pytorch focused on state-of-the-art methods for time series classification and regression.
+`tsai`is a deep learning package built on top of fastai v2 / Pytorch focused on state-of-the-art methods for time series classification and regression.
 
 If you are looking for **timeseriesAI based on fastai v1**, it's been moved to **[timeseriesAI1](https://github.com/timeseriesAI/timeseriesAI1)**.
 
@@ -10,7 +10,7 @@ If you are looking for **timeseriesAI based on fastai v1**, it's been moved to *
 
 You can install the **latest stable** version from pip:
 
-`pip install tsa`
+`pip install tsai`
 
 Or you can install the **bleeding edge** version of this library from github by doing:
 
@@ -33,3 +33,5 @@ To get familiarized with the library, I'd suggest you start with this notebook:
 **[01_Intro_to_Time_Series_Classification](https://github.com/timeseriesAI/timeseriesAI/blob/master/tutorial_nbs/01_Intro_to_Time_Series_Classification.ipynb)**
 
 It provides an overview of a time series classification problem using fastai v2.
+
+If you want more details, you can get them in nbs 00 and 00a.
