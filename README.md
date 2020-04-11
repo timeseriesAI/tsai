@@ -24,14 +24,14 @@ In the latter case, you may also want to use install the bleeding egde fastai & 
 
 ## How to get started
 
-The only thing you need to do after you have installed the library is to add this to your notebook:
-
-`from tsai.all import *`
-
-To get familiarized with the library, I'd suggest you start with this notebook:
+To get familiarized with the package, I'd suggest you start with this notebook:
 
 **[01_Intro_to_Time_Series_Classification](https://github.com/timeseriesAI/timeseriesAI/blob/master/tutorial_nbs/01_Intro_to_Time_Series_Classification.ipynb)**
 
 It provides an overview of a time series classification problem using fastai v2.
 
 If you want more details, you can get them in nbs 00 and 00a.
+
+To use tsai in your own notebooks, the only thing you need to do after you have installed the package is to add this:
+
+`from tsai.all import *`
