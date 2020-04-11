@@ -24,7 +24,7 @@ In the latter case, you may also want to use install the bleeding egde fastai & 
 
 ## How to get started
 
-To get familiarized with the package, I'd suggest you start with this notebook:
+To get started with the `tsai` package, I'd suggest you start with this notebook:
 
 **[01_Intro_to_Time_Series_Classification](https://github.com/timeseriesAI/timeseriesAI/blob/master/tutorial_nbs/01_Intro_to_Time_Series_Classification.ipynb)**
 
