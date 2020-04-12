@@ -4,6 +4,7 @@
     "Utilities": "/utils",
     "Data": "/data",
     "Core": "/core",
+    "rocket functions": "/rocket_functions",
     "Layers": "/layers",
     "ResNet": "/ResNet",
     "InceptionTime": "/InceptionTime"

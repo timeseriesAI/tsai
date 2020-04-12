@@ -19,6 +19,9 @@ entries:
       title: Core
       url: /core
     - output: web,pdf
+      title: rocket functions
+      url: /rocket_functions
+    - output: web,pdf
       title: Layers
       url: /layers
     - output: web,pdf
