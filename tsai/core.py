@@ -7,23 +7,12 @@ __all__ = ['NumpyTensor', 'ToNumpyTensor', 'TSTensor', 'ToTSTensor', 'NumpyTenso
 
 # Cell
 from .imports import *
-# import torch
-# import torch
-# import torch.nn as nn
-# from fastai2.imports import *
-# from fastai2.torch_core import *
-# from fastai2.data.core import *
-# from fastai2.learner import Learner
-# from fastcore.transform import *
-# from fastai2.vision.data import *
-# from fastai2.data.transforms import *
-# from fastai2.metrics import *
 from .utils import *
 from .data import *
 from .models.all import *
 
 # Cell
-class NumpyTensor(TensorBase):
+class NumpyTensor(Tensor):
     "Returns a `tensor` of type torch.float32 and class `NumpyTensor` that has a show method"
     def __new__(cls, o, **kwargs):
         if isinstance(o, (list, L)): o = np.stack(o)
@@ -216,8 +205,19 @@ def add_unlabeled(self:NumpyDatasets, X, test_items=None, rm_tfms=None, with_lab
     return add_ds(self, X, y=None, test_items=test_items, rm_tfms=rm_tfms, with_labels=with_labels)
 
 # Cell
+_batch_tfms = ('after_item','before_batch','after_batch')
+
 class NumpyDataLoader(TfmdDL):
     do_item = noops
+    def __init__(self, dataset, bs=64, shuffle=False, num_workers=None, verbose=False, do_setup=True, **kwargs):
+        if num_workers is None: num_workers = min(16, defaults.cpus)
+        for nm in _batch_tfms: kwargs[nm] = Pipeline(kwargs.get(nm,None))
+        super().__init__(dataset, bs=min(bs, len(dataset)), shuffle=shuffle, num_workers=num_workers, **kwargs)
+        if do_setup:
+            for nm in _batch_tfms:
+                pv(f"Setting up {nm}: {kwargs[nm]}", verbose)
+                kwargs[nm].setup(self)
+
     def create_batch(self, b): return self.dataset[b]
 
     @delegates(plt.subplots)
@@ -289,7 +289,7 @@ class NumpyDataLoaders(DataLoaders):
         if len(bs) != len(ds): bs = bs * len(ds)
         assert len(ds) == len(kwargs) == len(bs)
         if device == None: device = default_device()
-        return cls(*[cls._dl_type(d, bs=b, **k) for d,k,b in zip(ds, kwargs, bs)], path=path, device=device)
+        return cls(*[cls._dl_type(d, bs=min(b, len(d)), **k) for d,k,b in zip(ds, kwargs, bs)], path=path, device=device)
 
 class TSDataLoaders(NumpyDataLoaders):
     _xblock = TSTensorBlock
