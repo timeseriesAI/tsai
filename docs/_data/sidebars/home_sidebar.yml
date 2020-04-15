@@ -16,12 +16,6 @@ entries:
       title: Data External
       url: /data.external
     - output: web,pdf
-      title: Data
-      url: /data
-    - output: web,pdf
-      title: Core
-      url: /core
-    - output: web,pdf
       title: Data Core
       url: /data.core
     - output: web,pdf
