@@ -2,8 +2,11 @@
   "tsai": {
     "Overview": "/",
     "Utilities": "/utils",
+    "Data External": "/data.external",
     "Data": "/data",
     "Core": "/core",
+    "Data Core": "/data.core",
+    "Data Transforms": "/data.transforms",
     "rocket functions": "/rocket_functions",
     "Layers": "/layers",
     "ResNet": "/ResNet",

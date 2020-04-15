@@ -13,11 +13,20 @@ entries:
       title: Utilities
       url: /utils
     - output: web,pdf
+      title: Data External
+      url: /data.external
+    - output: web,pdf
       title: Data
       url: /data
     - output: web,pdf
       title: Core
       url: /core
+    - output: web,pdf
+      title: Data Core
+      url: /data.core
+    - output: web,pdf
+      title: Data Transforms
+      url: /data.transforms
     - output: web,pdf
       title: rocket functions
       url: /rocket_functions

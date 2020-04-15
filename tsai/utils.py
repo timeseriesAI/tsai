@@ -3,8 +3,8 @@
 __all__ = ['ToTensor', 'ToArray', 'To3DTensor', 'To2DTensor', 'To1DTensor', 'To3DArray', 'To2DArray', 'To1DArray',
            'To3D', 'To2D', 'To1D', 'To2DPlus', 'To3DPlus', 'To2DPlusTensor', 'To2DPlusArray', 'To3DPlusTensor',
            'To3DPlusArray', 'Todtype', 'bytes2size', 'bytes2GB', 'delete_all_in_dir', 'reverse_dict', 'is_tuple',
-           'itemify', 'is_none', 'ifisnone', 'ifnoneelse', 'ifisnoneelse', 'ifelse', 'stack', 'cycle_dl', 'device',
-           'cpus']
+           'itemify', 'is_none', 'ifisnone', 'ifnoneelse', 'ifisnoneelse', 'ifelse', 'is_not_close', 'test_not_close',
+           'stack', 'cycle_dl', 'device', 'cpus']
 
 # Cell
 from .imports import *
@@ -179,12 +179,43 @@ def ifelse(a, b, c):
     return b if a else c
 
 # Cell
+def is_not_close(a,b,eps=1e-5):
+    "Is `a` within `eps` of `b`"
+    if hasattr(a, '__array__') or hasattr(b,'__array__'):
+        return (abs(a-b)>eps).all()
+    if isinstance(a, (Iterable,Generator)) or isinstance(b, (Iterable,Generator)):
+        return is_not_close(np.array(a), np.array(b), eps=eps)
+    return abs(a-b)>eps
+
+# Cell
+def test_not_close(a,b,eps=1e-5):
+    "`test` that `a` is within `eps` of `b`"
+    test(a,b,partial(is_not_close,eps=eps),'not_close')
+
+# Cell
+@patch
+def mul_min(x:torch.Tensor, axes=None, keepdim=False):
+    if axes is None: return x.min()
+    axes = reversed(sorted(axes if is_listy(axes) else [axes]))
+    min_x = x
+    for ax in axes: min_x, _ = min_x.min(ax, keepdim)
+    return min_x
+
+@patch
+def mul_max(x:torch.Tensor, axes=None, keepdim=False):
+    if axes is None: return x.max()
+    axes = reversed(sorted(axes if is_listy(axes) else [axes]))
+    max_x = x
+    for ax in axes: max_x, _ = max_x.max(ax, keepdim)
+    return max_x
+
+# Cell
 def stack(o, axis=0):
     if isinstance(o[0], torch.Tensor): return torch.stack(tuple(o), dim=axis)
     else: return np.stack(o, axis)
 
 # Cell
-# This is a convenience function will use later proposed by Thomas Capelle @tcapelle to be able to easily benchmark performance
+# This is a convenience function will use later proposed by Thomas Capelle @tcapelle to be able to easily benchmark dl performance
 def cycle_dl(dl):
     for _ in iter(dl): pass
 
