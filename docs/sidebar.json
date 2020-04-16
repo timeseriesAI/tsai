@@ -5,6 +5,7 @@
     "Data External": "/data.external",
     "Data Core": "/data.core",
     "Data Transforms": "/data.transforms",
+    "Data Tabular": "/data.tabular",
     "rocket functions": "/rocket_functions",
     "Layers": "/layers",
     "ResNet": "/ResNet",

@@ -22,6 +22,9 @@ entries:
       title: Data Transforms
       url: /data.transforms
     - output: web,pdf
+      title: Data Tabular
+      url: /data.tabular
+    - output: web,pdf
       title: rocket functions
       url: /rocket_functions
     - output: web,pdf

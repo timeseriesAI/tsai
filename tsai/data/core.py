@@ -19,14 +19,12 @@ class NumpyTensor(TensorBase):
         res = cast(tensor(o), cls)
         res._meta = kwargs
         return res
-
     def __getitem__(self, idx):
         res = super().__getitem__(idx)
-        return res.as_subclass(type(self))# if res.numel() > 1 else cast(res, res.data.__class__)
-
+        return res.as_subclass(type(self))
     def __repr__(self):
-        return f'NumpyTensor(shape:{list(self.shape)})'
-
+        if self.numel() == 1: return f'{self}'
+        else: return f'NumpyTensor(shape:{list(self.shape)}'
     def show(self, ax=None, ctx=None, title=None, title_color='black', **kwargs):
         if self.ndim != 2: self = type(self)(To2DTensor(self))
         ax = ifnone(ax,ctx)
@@ -44,15 +42,12 @@ class ToNumpyTensor(Transform):
 # Cell
 class TSTensor(NumpyTensor):
     '''Returns a tensor oftype torch.float32 and class TSTensor that has a show method'''
-
     @property
     def vars(self): return self.shape[-2]
-
     @property
     def len(self): return self.shape[-1]
-
     def __repr__(self):
-        if self.numel() == 1: return f'{cast(self, self.data.__class__)}'
+        if self.numel() == 1: return f'{self}'
         elif self.ndim >= 3:   return f'TSTensor(samples:{self.shape[-3]}, vars:{self.shape[-2]}, len:{self.shape[-1]})'
         elif self.ndim == 2: return f'TSTensor(vars:{self.shape[-2]}, len:{self.shape[-1]})'
         elif self.ndim == 1: return f'TSTensor(len:{self.shape[-1]})'

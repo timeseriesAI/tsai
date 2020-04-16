@@ -105,7 +105,6 @@ def stack_padding(arr):
     mat = np.array( [resize(row, row_length) for row in arr] )
     return mat
 
-
 from sktime.utils.load_data import load_from_tsfile_to_dataframe
 def get_UCR_data(dsid, path='.', parent_dir='data/UCR', verbose=False, drop_na=False, on_disk=True):
     if verbose: print('Dataset:', dsid)
@@ -136,8 +135,7 @@ def get_UCR_data(dsid, path='.', parent_dir='data/UCR', verbose=False, drop_na=F
         np.save(f'{full_tgt_dir}/y_valid.npy', y_valid)
         delete_all_in_dir(full_tgt_dir, exception='.npy')
 
-    if on_disk: mmap_mode='r+'
-    else: mmap_mode=None
+    mmap_mode='r' if on_disk else None
     X_train = np.load(f'{full_tgt_dir}/X_train.npy', mmap_mode=mmap_mode)
     y_train = np.load(f'{full_tgt_dir}/y_train.npy', mmap_mode=mmap_mode)
     X_valid = np.load(f'{full_tgt_dir}/X_valid.npy', mmap_mode=mmap_mode)
