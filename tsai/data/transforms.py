@@ -15,6 +15,7 @@ from .external import *
 from .core import *
 from scipy.interpolate import CubicSpline
 from scipy.ndimage import convolve1d
+display(HTML("<style>.container { width:95% !important; }</style>"))
 
 # Cell
 class TSStandardize(Transform):

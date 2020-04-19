@@ -3,13 +3,14 @@
 __all__ = ['NumpyTensor', 'ToNumpyTensor', 'TSTensor', 'ToTSTensor', 'NumpyTensorBlock', 'TSTensorBlock',
            'TorchDataset', 'NumpyDataset', 'TSDataset', 'NumpyDatasets', 'TSDatasets', 'add_ds', 'np_convert',
            'np_collate', 'np_str_obj_array_pattern', 'np_collate_err_msg_format', 'NumpyDataLoader', 'show_tuple',
-           'TSDataLoader', 'NumpyDataLoaders', 'TSDataLoaders', 'save_all', 'load_learner_all']
+           'TSDataLoader', 'NumpyDataLoaders', 'TSDataLoaders', 'load_learner_all']
 
 # Cell
 from ..imports import *
 from ..utils import *
 from .external import *
 from ..models.all import *
+display(HTML("<style>.container { width:95% !important; }</style>"))
 
 # Cell
 class NumpyTensor(TensorBase):
@@ -103,7 +104,7 @@ class TSDataset():
 
 # Cell
 class NumpyDatasets(Datasets):
-    "A dataset that creates tuples from X (and y) and applies `item_tfms`"
+    "A dataset that creates tuples from X (and y) and applies `tfms` of type item_tfms"
     _xtype, _ytype = NumpyTensor, None # Expected X and y output types (must have a show method)
     def __init__(self, X=None, y=None, items=None, tfms=None, tls=None, n_inp=None, dl_type=None, inplace=False, **kwargs):
         self.inplace = inplace
@@ -283,17 +284,28 @@ def np_collate(batch):
 _batch_tfms = ('after_item','before_batch','after_batch')
 
 class NumpyDataLoader(TfmdDL):
-    do_item = noops
-    def __init__(self, dataset, bs=64, shuffle=False, num_workers=None, verbose=False, do_setup=True, **kwargs):
+    idxs = None
+    do_item = noops # create batch returns indices
+    def __init__(self, dataset, bs=64, shuffle=False, num_workers=None, batch_tfms=None, verbose=False, do_setup=True, **kwargs):
+        "after_batch == batch_tfms"
         if num_workers is None: num_workers = min(16, defaults.cpus)
-        for nm in _batch_tfms: kwargs[nm] = Pipeline(kwargs.get(nm,None))
+        for nm in _batch_tfms:
+            if nm in kwargs:
+                if nm in ['after_item','before_batch'] or (nm == 'after_batch' and batch_tfms is not None):
+                    t = kwargs.get('after_batch', None)
+                    assert t is None or (hasattr(t, 'fs') and t.fs[0].name == 'noop'), \
+                    f'You should use batch tfms instead of {nm}'
+            if nm == 'after_batch' and batch_tfms is not None: kwargs[nm] = Pipeline(batch_tfms)
+            kwargs[nm] = Pipeline(kwargs.get(nm,None))
         super().__init__(dataset, bs=min(bs, len(dataset)), shuffle=shuffle, num_workers=num_workers, **kwargs)
         if do_setup:
             for nm in _batch_tfms:
                 pv(f"Setting up {nm}: {kwargs[nm]}", verbose)
                 kwargs[nm].setup(self)
 
-    def create_batch(self, b): return self.dataset[b]
+    def create_batch(self, b):
+        self.idxs = b
+        return self.dataset[b]
 
     @delegates(plt.subplots)
     def show_batch(self, b=None, ctxs=None, max_n=9, nrows=3, ncols=3, figsize=(16, 10), **kwargs):
@@ -353,25 +365,24 @@ class NumpyDataLoaders(DataLoaders):
         return cls.from_dblock(dblock, source, **kwargs)
 
     @classmethod
-    def from_dsets(cls, *ds, path='.',  bs=64, device=None, **kwargs):
+    def from_dsets(cls, *ds, path='.', bs=64, num_workers=0, batch_tfms=None, device=None, **kwargs):
         default = (True,) + (False,) * (len(ds)-1)
         defaults = {'shuffle': default, 'drop_last': default}
-        for nm in _batch_tfms:
-            if nm in kwargs: kwargs[nm] = Pipeline(kwargs[nm])
         kwargs = merge(defaults, {k: tuplify(v, match=ds) for k,v in kwargs.items()})
         kwargs = [{k: v[i] for k,v in kwargs.items()} for i in range_of(ds)]
         if not is_listy(bs): bs = [bs]
         if len(bs) != len(ds): bs = bs * len(ds)
-        assert len(ds) == len(kwargs) == len(bs)
-        if device == None: device = default_device()
-        return cls(*[cls._dl_type(d, bs=min(b, len(d)), **k) for d,k,b in zip(ds, kwargs, bs)], path=path, device=device)
+        device = ifnone(device,default_device())
+        return cls(*[cls._dl_type(d, bs=b, num_workers=num_workers, batch_tfms=batch_tfms, **k) \
+                     for d,k,b in zip(ds, kwargs, bs)], path=path, device=device)
 
 class TSDataLoaders(NumpyDataLoaders):
     _xblock = TSTensorBlock
     _dl_type = TSDataLoader
 
 # Cell
-def save_all(self, path='export', dls_fname='dls', model_fname='model', learner_fname='learner'):
+@patch
+def save_all(self:Learner, path='export', dls_fname='dls', model_fname='model', learner_fname='learner'):
 
     path = Path(path)
     if not os.path.exists(path): os.makedirs(path)
@@ -392,7 +403,7 @@ def save_all(self, path='export', dls_fname='dls', model_fname='model', learner_
     print(f"model_fname   = '{model_fname}.pth'")
     print(f"learner_fname = '{learner_fname}.pkl'")
 
-Learner.save_all = save_all
+# Learner.save_all = save_all
 
 
 def load_learner_all(path='export', dls_fname='dls', model_fname='model', learner_fname='learner', cpu=True):

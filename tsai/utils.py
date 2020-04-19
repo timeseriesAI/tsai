@@ -4,10 +4,11 @@ __all__ = ['ToTensor', 'ToArray', 'To3DTensor', 'To2DTensor', 'To1DTensor', 'To3
            'To3D', 'To2D', 'To1D', 'To2DPlus', 'To3DPlus', 'To2DPlusTensor', 'To2DPlusArray', 'To3DPlusTensor',
            'To3DPlusArray', 'Todtype', 'bytes2size', 'bytes2GB', 'delete_all_in_dir', 'reverse_dict', 'is_tuple',
            'itemify', 'is_none', 'ifisnone', 'ifnoneelse', 'ifisnoneelse', 'ifelse', 'is_not_close', 'test_not_close',
-           'stack', 'cycle_dl', 'device', 'cpus']
+           'stack', 'cat2int', 'cycle_dl', 'device', 'cpus']
 
 # Cell
 from .imports import *
+display(HTML("<style>.container { width:95% !important; }</style>"))
 
 # Cell
 def ToTensor(o):
@@ -211,13 +212,19 @@ def mul_max(x:torch.Tensor, axes=None, keepdim=False):
 
 # Cell
 def stack(o, axis=0):
-    if isinstance(o[0], torch.Tensor): return torch.stack(tuple(o), dim=axis)
+    if isinstance(o[0], torch.Tensor): return retain_type(torch.stack(tuple(o), dim=axis), o[0])
     else: return np.stack(o, axis)
 
 # Cell
-# This is a convenience function will use later proposed by Thomas Capelle @tcapelle to be able to easily benchmark dl performance
+def cat2int(o):
+    cat = Categorize()
+    cat.setup(o)
+    return stack(TfmdLists(o, cat)[:])
+
+# Cell
+# This is a modified convenience function proposed by Thomas Capelle @tcapelle to be able to easily benchmark dls performance
 def cycle_dl(dl):
-    for _ in iter(dl): pass
+    for _ in dl: _
 
 # Cell
 device = 'cuda' if torch.cuda.is_available() else 'cpu'

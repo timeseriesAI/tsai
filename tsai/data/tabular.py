@@ -3,7 +3,9 @@
 __all__ = ['TabularDataset', 'TabularDataLoader']
 
 # Cell
+from ..imports import *
 from fastai2.tabular.all import *
+display(HTML("<style>.container { width:95% !important; }</style>"))
 
 # Cell
 class TabularDataset():

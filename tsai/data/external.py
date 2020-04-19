@@ -6,6 +6,7 @@ __all__ = ['decompress_from_url', 'get_UCR_univariate_list', 'get_UCR_multivaria
 # Cell
 from ..imports import *
 from ..utils import *
+display(HTML("<style>.container { width:95% !important; }</style>"))
 
 # Cell
 import tempfile
