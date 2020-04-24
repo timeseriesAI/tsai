@@ -25,11 +25,26 @@ entries:
       title: Data Tabular
       url: /data.tabular
     - output: web,pdf
+      title: Data Validation
+      url: /data.validation
+    - output: web,pdf
+      title: Metrics
+      url: /metrics
+    - output: web,pdf
+      title: Learner
+      url: /learner
+    - output: web,pdf
+      title: Optimizers
+      url: /optimizers
+    - output: web,pdf
       title: rocket functions
       url: /rocket_functions
     - output: web,pdf
       title: Layers
       url: /layers
+    - output: web,pdf
+      title: Utils
+      url: /models_utils
     - output: web,pdf
       title: ResNet
       url: /ResNet

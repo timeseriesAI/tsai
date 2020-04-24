@@ -3,8 +3,14 @@
 __all__ = ['generate_kernels', 'apply_kernel', 'apply_kernels', 'ROCKET']
 
 # Cell
+from .imports import *
 from .data.external import *
+
+# Cell
 from sklearn.linear_model import RidgeClassifierCV
+from numba import njit, prange
+import torch
+import torch.nn as nn
 
 # Cell
 # Angus Dempster, Francois Petitjean, Geoff Webb
@@ -16,10 +22,6 @@ from sklearn.linear_model import RidgeClassifierCV
 # changes:
 # - added kss parameter to generate_kernels
 # - convert X to np.float64
-
-from numba import njit, prange
-import numpy as np
-
 
 def generate_kernels(input_length, num_kernels, kss=[7, 9, 11], pad=True, dilate=True):
     candidate_lengths = np.array((kss))
@@ -79,9 +81,6 @@ def apply_kernels(X, kernels):
     return _X
 
 # Cell
-import torch
-import torch.nn as nn
-
 class ROCKET(nn.Module):
     def __init__(self, c_in, seq_len, n_kernels=10000, kss=[7, 9, 11]):
 

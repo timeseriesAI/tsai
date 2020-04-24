@@ -3,11 +3,10 @@
 __all__ = ['ResBlock', 'ResNet']
 
 # Cell
-import torch
-import torch.nn as nn
+from ..imports import *
 from .layers import *
 
-
+# Cell
 class ResBlock(nn.Module):
     def __init__(self, ni, nf, ks=[7, 5, 3]):
         super().__init__()

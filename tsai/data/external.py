@@ -6,7 +6,6 @@ __all__ = ['decompress_from_url', 'get_UCR_univariate_list', 'get_UCR_multivaria
 # Cell
 from ..imports import *
 from ..utils import *
-display(HTML("<style>.container { width:95% !important; }</style>"))
 
 # Cell
 import tempfile
@@ -15,6 +14,7 @@ except ImportError: from urllib.request import urlretrieve
 import shutil
 from pyunpack import Archive
 from scipy.io import arff
+from sktime.utils.load_data import load_from_tsfile_to_dataframe
 
 # Cell
 def decompress_from_url(url, target_dir=None, verbose=False):
@@ -106,7 +106,6 @@ def stack_padding(arr):
     mat = np.array( [resize(row, row_length) for row in arr] )
     return mat
 
-from sktime.utils.load_data import load_from_tsfile_to_dataframe
 def get_UCR_data(dsid, path='.', parent_dir='data/UCR', verbose=False, drop_na=False, on_disk=True):
     if verbose: print('Dataset:', dsid)
     assert dsid in get_UCR_univariate_list() + get_UCR_multivariate_list(), f'{dsid} is not a UCR dataset'

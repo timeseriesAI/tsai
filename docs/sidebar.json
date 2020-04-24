@@ -6,8 +6,13 @@
     "Data Core": "/data.core",
     "Data Transforms": "/data.transforms",
     "Data Tabular": "/data.tabular",
+    "Data Validation": "/data.validation",
+    "Metrics": "/metrics",
+    "Learner": "/learner",
+    "Optimizers": "/optimizers",
     "rocket functions": "/rocket_functions",
     "Layers": "/layers",
+    "Utils": "/models_utils",
     "ResNet": "/ResNet",
     "InceptionTime": "/InceptionTime"
   }

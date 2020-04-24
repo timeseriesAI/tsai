@@ -13,9 +13,11 @@ from ..imports import *
 from ..utils import *
 from .external import *
 from .core import *
+
+# Cell
 from scipy.interpolate import CubicSpline
 from scipy.ndimage import convolve1d
-display(HTML("<style>.container { width:95% !important; }</style>"))
+import pywt
 
 # Cell
 class TSStandardize(Transform):
@@ -316,7 +318,6 @@ class TSSmooth(Transform):
 def maddest(d, axis=None): #Mean Absolute Deviation
     return np.mean(np.absolute(d - np.mean(d, axis)), axis)
 
-import pywt
 class TSDenoise(Transform):
     "Denoises a sequence applying a wavelet decomposition method"
     order = 90

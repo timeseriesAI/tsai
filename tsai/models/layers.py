@@ -4,6 +4,9 @@ __all__ = ['noop', 'same_padding1d', 'ZeroPad1d', 'ConvSP1d', 'Chomp1d', 'Causal
            'LambdaPlus', 'Flatten', 'Squeeze', 'Unsqueeze', 'YRange', 'Temp']
 
 # Cell
+from ..imports import *
+
+# Cell
 import torch
 import torch.nn as nn
 from fastai2.torch_core import Module

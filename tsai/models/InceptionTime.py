@@ -3,14 +3,13 @@
 __all__ = ['noop', 'shortcut', 'Inception', 'InceptionBlock', 'InceptionTime']
 
 # Cell
+from ..imports import *
+
+# Cell
 # This is an unofficial PyTorch implementation by Ignacio Oguiza - oguiza@gmail.com based on:
 
 # Fawaz, H. I., Lucas, B., Forestier, G., Pelletier, C., Schmidt, D. F., Weber, J., ... & Petitjean, F. (2019). InceptionTime: Finding AlexNet for Time Series Classification. arXiv preprint arXiv:1909.04939.
 # Official InceptionTime tensorflow implementation: https://github.com/hfawaz/InceptionTime
-
-import torch
-import torch.nn as nn
-
 
 def noop(x):
     return x
@@ -19,7 +18,7 @@ def shortcut(c_in, c_out):
     return nn.Sequential(*[nn.Conv1d(c_in, c_out, kernel_size=1),
                            nn.BatchNorm1d(c_out)])
 
-class Inception(nn.Module):
+class Inception(Module):
     def __init__(self, c_in, bottleneck=32, ks=40, nb_filters=32):
 
         super().__init__()
@@ -50,7 +49,7 @@ class Inception(nn.Module):
         return self.act(self.bn(inc_out))
 
 
-class InceptionBlock(nn.Module):
+class InceptionBlock(Module):
     def __init__(self,c_in,bottleneck=32,ks=40,nb_filters=32,residual=True,depth=6):
 
         super().__init__()
@@ -85,7 +84,7 @@ class InceptionBlock(nn.Module):
                 x = self.act(x)
         return x
 
-class InceptionTime(nn.Module):
+class InceptionTime(Module):
     def __init__(self,c_in,c_out,bottleneck=32,ks=40,nb_filters=32,residual=True,depth=6):
         super().__init__()
         self.block = InceptionBlock(c_in,bottleneck=bottleneck,ks=ks,nb_filters=nb_filters,

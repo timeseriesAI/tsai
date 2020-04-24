@@ -24,29 +24,12 @@ description: "ROCKET (RandOm Convolutional KErnel Transform) functions for univa
     
 <div class="cell border-box-sizing code_cell rendered">
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_html rendered_html output_subarea ">
-<style>.container { width:95% !important; }</style>
 </div>
+    {% endraw %}
 
-</div>
-
-<div class="output_area">
-
-
-<div class="output_html rendered_html output_subarea ">
-<style>.container { width:95% !important; }</style>
-</div>
-
-</div>
-
-</div>
-</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -76,7 +59,7 @@ description: "ROCKET (RandOm Convolutional KErnel Transform) functions for univa
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="generate_kernels" class="doc_header"><code>generate_kernels</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/rocket_functions.py#L24" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>generate_kernels</code>(<strong><code>input_length</code></strong>, <strong><code>num_kernels</code></strong>, <strong><code>kss</code></strong>=<em><code>[7, 9, 11]</code></em>, <strong><code>pad</code></strong>=<em><code>True</code></em>, <strong><code>dilate</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="generate_kernels" class="doc_header"><code>generate_kernels</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/rocket_functions.py#L26" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>generate_kernels</code>(<strong><code>input_length</code></strong>, <strong><code>num_kernels</code></strong>, <strong><code>kss</code></strong>=<em><code>[7, 9, 11]</code></em>, <strong><code>pad</code></strong>=<em><code>True</code></em>, <strong><code>dilate</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 
 </div>
@@ -100,7 +83,7 @@ description: "ROCKET (RandOm Convolutional KErnel Transform) functions for univa
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="apply_kernel" class="doc_header"><code>apply_kernel</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/rocket_functions.py#L45" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>apply_kernel</code>(<strong><code>X</code></strong>, <strong><code>weights</code></strong>, <strong><code>length</code></strong>, <strong><code>bias</code></strong>, <strong><code>dilation</code></strong>, <strong><code>padding</code></strong>)</p>
+<h4 id="apply_kernel" class="doc_header"><code>apply_kernel</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/rocket_functions.py#L47" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>apply_kernel</code>(<strong><code>X</code></strong>, <strong><code>weights</code></strong>, <strong><code>length</code></strong>, <strong><code>bias</code></strong>, <strong><code>dilation</code></strong>, <strong><code>padding</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -124,7 +107,7 @@ description: "ROCKET (RandOm Convolutional KErnel Transform) functions for univa
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="apply_kernels" class="doc_header"><code>apply_kernels</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/rocket_functions.py#L67" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>apply_kernels</code>(<strong><code>X</code></strong>, <strong><code>kernels</code></strong>)</p>
+<h4 id="apply_kernels" class="doc_header"><code>apply_kernels</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/rocket_functions.py#L69" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>apply_kernels</code>(<strong><code>X</code></strong>, <strong><code>kernels</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -155,7 +138,7 @@ description: "ROCKET (RandOm Convolutional KErnel Transform) functions for univa
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ROCKET" class="doc_header"><code>class</code> <code>ROCKET</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/rocket_functions.py#L85" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ROCKET</code>(<strong><code>c_in</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>n_kernels</code></strong>=<em><code>10000</code></em>, <strong><code>kss</code></strong>=<em><code>[7, 9, 11]</code></em>) :: <code>Module</code></p>
+<h2 id="ROCKET" class="doc_header"><code>class</code> <code>ROCKET</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/rocket_functions.py#L84" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ROCKET</code>(<strong><code>c_in</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>n_kernels</code></strong>=<em><code>10000</code></em>, <strong><code>kss</code></strong>=<em><code>[7, 9, 11]</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
