@@ -21,6 +21,7 @@ import scipy as sp
 import sklearn.metrics as skm
 import gc
 import os
+from numbers import Integral
 from pathlib import Path
 import time
 from time import gmtime, strftime
@@ -52,17 +53,25 @@ def last_saved(max_elapsed=10):
             print(f"{fn:30} saved {elapsed_time:10.0f} s ago ***")
             counter += 1
         elapsed += elapsed_time
-    if counter == 0: print('Correct conversion! 😃')
-    else: print('Incorrect conversion! 😔')
+    if counter == 0: 
+        print('Correct conversion! 😃')
+        output = 1
+    else: 
+        print('Incorrect conversion! 😔')
+        output = 0
     print(f'Total elapsed time {elapsed:.0f} s')
-    print(strftime("%d-%m-%Y %H:%M:%S", gmtime()),"\n")
+    print(strftime("%a, %d %b %Y %H:%M:%S %Z\n"),"\n")
+    return output
     
-def beep():
-    wave = np.sin(12*np.pi*400*np.arange(10000*.1)/10000)
+def beep(inp=1):
+    if inp == 1: mult = 10
+    else: mult = .5
+    wave = np.sin(mult*np.pi*400*np.arange(10000*.1)/10000)
     return Audio(wave, rate=10000, autoplay=True)
 
 def create_scripts(max_elapsed=10):
     from nbdev.export import notebook2script
     save_nb()
     notebook2script()
-    last_saved(max_elapsed)
+    return last_saved(max_elapsed)
+    

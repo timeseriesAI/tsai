@@ -21,42 +21,54 @@ import pywt
 
 # Cell
 class TSStandardize(Transform):
-    "Standardize/destd batch of `TSTensor`"
+    "Standardize/destd batch of `torch.Tensor`, `NumpyTensor` or `TSTensor`"
     parameters, order = L('mean', 'std'), 99
-
-    def __init__(self, mean=None, std=None, by_sample=False, by_var=False):
+    def __init__(self, mean=None, std=None, by_sample=False, by_var=False, verbose=False):
         self.mean = tensor(mean) if mean is not None else None
         self.std = tensor(std) if std is not None else None
         self.by_sample, self.by_var = by_sample, by_var
         if by_sample and by_var: self.axes = (2)
         elif by_sample: self.axes = (1, 2)
         elif by_var: self.axes = (0, 2)
-        else: self.axes = []
+        else: self.axes = ()
+        self.verbose = verbose
 
     @classmethod
     def from_stats(cls, mean, std): return cls(mean, std)
 
     def setups(self, dl: DataLoader):
         if self.mean is None or self.std is None:
+            pv(f'{self.__class__.__name__} setup mean={self.mean}, std={self.std}, by_sample={self.by_sample}, by_var={self.by_var}', self.verbose)
             x, *_ = dl.one_batch()
-            self.mean, self.std = x.mean(self.axes, keepdim=True), x.std(self.axes, keepdim=True) + 1e-7
+            self.mean, self.std = x.mean(self.axes, keepdim=self.axes!=()), x.std(self.axes, keepdim=self.axes!=()) + 1e-7
+            pv(f'mean: {self.mean}  std: {self.std}\n', self.verbose)
 
-    def encodes(self, x: TSTensor):
-        if self.by_sample:
-            mean, std = x.mean(self.axes, keepdim=True), x.std(self.axes, keepdim=True) + 1e-7
-            return (x - mean) / std
+    def encodes(self, x:(NumpyTensor, TSTensor)):
+        if self.by_sample: self.mean, self.std = x.mean(self.axes, keepdim=self.axes!=()), x.std(self.axes, keepdim=self.axes!=()) + 1e-7
         return (x - self.mean) / self.std
 
-#     def decodes(self, x: TSTensor):
-#         f = to_cpu if x.device.type == 'cpu' else noop
-#         return (x * f(self.std) + f(self.mean))
-
 # Cell
+@patch
+def mul_min(x:(torch.Tensor, TSTensor, NumpyTensor), axes=(), keepdim=False):
+    if axes == (): return retain_type(x.min(), x)
+    axes = reversed(sorted(axes if is_listy(axes) else [axes]))
+    min_x = x
+    for ax in axes: min_x, _ = min_x.min(ax, keepdim)
+    return retain_type(min_x, x)
+
+@patch
+def mul_max(x:(torch.Tensor, TSTensor, NumpyTensor), axes=(), keepdim=False):
+    if axes == (): return retain_type(x.max(), x)
+    axes = reversed(sorted(axes if is_listy(axes) else [axes]))
+    max_x = x
+    for ax in axes: max_x, _ = max_x.max(ax, keepdim)
+    return retain_type(max_x, x)
+
 class TSNormalize(Transform):
-    "Normalize/denorm batch of `TSTensor`"
+    "Normalize/denorm batch of `torch.Tensor`, `NumpyTensor` or `TSTensor`"
     parameters, order = L('min', 'max'), 99
 
-    def __init__(self, min=None, max=None, range_min=0, range_max=1, by_sample=True, by_var=False):
+    def __init__(self, min=None, max=None, range_min=-1, range_max=1, by_sample=True, by_var=False, verbose=False):
         self.min = tensor(min) if min is not None else None
         self.max = tensor(max) if max is not None else None
         self.range_min, self.range_max = range_min, range_max
@@ -64,26 +76,22 @@ class TSNormalize(Transform):
         if by_sample and by_var: self.axes = (2)
         elif by_sample: self.axes = (1, 2)
         elif by_var: self.axes = (0, 2)
-        else: self.axes = None
+        else: self.axes = ()
+        self.verbose = verbose
 
     @classmethod
-    def from_stats(cls, min, max, range_min=0, range_max=1): return cls(min, max, range_min, range_max)
+    def from_stats(cls, min, max, range_min=0, range_max=1): return cls(min, max, self.range_min, self.range_max)
 
     def setups(self, dl: DataLoader):
         if self.min is None or self.max is None:
+            pv(f'{self.__class__.__name__} setup min={self.min}, max={self.max}, range_min={self.range_min}, range_max={self.range_max}, by_sample={self.by_sample}, by_var={self.by_var}',  self.verbose)
             x, *_ = dl.one_batch()
-            self.min, self.max = x.mul_min(self.axes, keepdim=True), x.mul_max(self.axes, keepdim=True)
+            self.min, self.max = x.mul_min(self.axes, keepdim=self.axes!=()), x.mul_max(self.axes, keepdim=self.axes!=())
+            pv(f'min: {self.min}  max: {self.max}\n', self.verbose)
 
-    def encodes(self, x: TSTensor):
-        if self.by_sample:
-            min, max = x.mul_min(self.axes, keepdim=True), x.mul_max(self.axes, keepdim=True)
-            return ((x - min) / (max - min)) * (self.range_max - self.range_min) + self.range_min
-        else:
-            return ((x - self.min) / (self.max - self.min)) * (self.range_max - self.range_min) + self.range_min
-
-#     def decodes(self, x: TSTensor):
-#         f = to_cpu if x.device.type == 'cpu' else noop
-#         return (((x - self.range_min)/(self.range_max - self.range_min)) * f(self.max - self.min) + f(self.min))
+    def encodes(self, x:(NumpyTensor, TSTensor)):
+        if self.by_sample: self.min, self.max = x.mul_min(self.axes, keepdim=self.axes!=()), x.mul_max(self.axes, keepdim=self.axes!=())
+        return ((x - self.min) / (self.max - self.min)) * (self.range_max - self.range_min) + self.range_min
 
 # Cell
 class TSIdentity(Transform):

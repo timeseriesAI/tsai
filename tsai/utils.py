@@ -4,7 +4,7 @@ __all__ = ['totensor', 'toarray', 'to3dtensor', 'to2dtensor', 'to1dtensor', 'to3
            'to3d', 'to2d', 'to1d', 'to2dPlus', 'to3dPlus', 'to2dPlusTensor', 'to2dPlusArray', 'to3dPlusTensor',
            'to3dPlusArray', 'Todtype', 'bytes2size', 'bytes2GB', 'delete_all_in_dir', 'reverse_dict', 'is_tuple',
            'itemify', 'is_none', 'ifisnone', 'ifnoneelse', 'ifisnoneelse', 'ifelse', 'is_not_close', 'test_not_close',
-           'stack', 'cat2int', 'cycle_dl']
+           'stack', 'cat2int', 'cycle_dl', 'memmap2cache']
 
 # Cell
 from .imports import *
@@ -193,23 +193,6 @@ def test_not_close(a,b,eps=1e-5):
     test(a,b,partial(is_not_close,eps=eps),'not_close')
 
 # Cell
-@patch
-def mul_min(x:torch.Tensor, axes=None, keepdim=False):
-    if axes is None: return x.min()
-    axes = reversed(sorted(axes if is_listy(axes) else [axes]))
-    min_x = x
-    for ax in axes: min_x, _ = min_x.min(ax, keepdim)
-    return min_x
-
-@patch
-def mul_max(x:torch.Tensor, axes=None, keepdim=False):
-    if axes is None: return x.max()
-    axes = reversed(sorted(axes if is_listy(axes) else [axes]))
-    max_x = x
-    for ax in axes: max_x, _ = max_x.max(ax, keepdim)
-    return max_x
-
-# Cell
 def stack(o, axis=0):
     if isinstance(o[0], torch.Tensor): return torch.stack(tuple(o), dim=axis)
     else: return np.stack(o, axis)
@@ -223,3 +206,16 @@ def cat2int(o):
 # Cell
 def cycle_dl(dl):
     for _ in dl: _
+
+# Cell
+def memmap2cache(o, bs=64, verbose=True):
+    print('Writing to buffer cache...\n')
+    start = partial = time.time()
+    n_batches = len(o) // bs
+    for i in range(n_batches):
+        np.array(o[slice(bs*i, bs*(1+i))])
+        if verbose and i > 0 and i%10==0:
+            print(f'{i:4} {1000*(time.time() - partial)/10:5.0f} ms')
+            partial = time.time()
+    print('\n...complete')
+    print(f'\nTotal time : {1000*(time.time() - start):.1f} ms ({1000 * (time.time() - start)/n_batches:.1f} ms / batch)')

@@ -14,6 +14,8 @@
     "Layers": "/layers",
     "Utils": "/models_utils",
     "ResNet": "/ResNet",
-    "InceptionTime": "/InceptionTime"
+    "InceptionTime": "/InceptionTime",
+    "FCN": "/FCN",
+    "ResCNN": "/ResCNN"
   }
 }

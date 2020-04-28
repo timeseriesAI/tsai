@@ -51,6 +51,12 @@ entries:
     - output: web,pdf
       title: InceptionTime
       url: /InceptionTime
+    - output: web,pdf
+      title: FCN
+      url: /FCN
+    - output: web,pdf
+      title: ResCNN
+      url: /ResCNN
     output: web
     title: tsai
   output: web

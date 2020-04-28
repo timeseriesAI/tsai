@@ -17,7 +17,7 @@ from torch._six import container_abcs, string_classes, int_classes
 
 # Cell
 class NumpyTensor(TensorBase):
-    "Returns a `tensor` of type torch.float32 and class `NumpyTensor` that has a show method"
+    "Returns a `tensor` with subclass `NumpyTensor` that has a show method"
     def __new__(cls, o, **kwargs):
         if isinstance(o, (list, L)): o = stack(o)
         res = cast(tensor(o), cls)
@@ -45,7 +45,7 @@ class ToNumpyTensor(Transform):
 
 # Cell
 class TSTensor(NumpyTensor):
-    '''Returns a tensor oftype torch.float32 and class TSTensor that has a show method'''
+    '''Returns a `tensor` with subclass `TSTensor` that has a show method'''
     @property
     def vars(self): return self.shape[-2]
     @property
@@ -109,26 +109,26 @@ class TSDataset():
 class NumpyDatasets(Datasets):
     "A dataset that creates tuples from X (and y) and applies `tfms` of type item_tfms"
     _xtype, _ytype = NumpyTensor, None # Expected X and y output types (must have a show method)
-    def __init__(self, X=None, y=None, items=None, tfms=None, tls=None, n_inp=None, dl_type=None, inplace=False, **kwargs):
+    def __init__(self, X=None, y=None, items=None, tfms=None, tls=None, n_inp=None, dl_type=None, inplace=True, **kwargs):
         self.inplace = inplace
         if tls is None:
             X = itemify(X, tup_id=0)
             y = itemify(y, tup_id=0) if y is not None else y
-            items = tuple((X)) if y is None else tuple((X,y))
+            items = tuple((X,)) if y is None else tuple((X,y))
             self.tfms = L(ifnone(tfms,[None]*len(ifnone(tls,items))))
         self.tls = L(tls if tls else [TfmdLists(item, t, **kwargs) for item,t in zip(items,self.tfms)])
         self.n_inp = (1 if len(self.tls)==1 else len(self.tls)-1) if n_inp is None else n_inp
         if len(self.tls[0]) > 0:
-            self.ptls = L([tl if not self.inplace else tl[:] if type(tl.items[0]).__name__ == 'memmap' else tensor(stack(tl[:])) for tl in self.tls])
-            self.types = [ifnone(_typ, type(tl[0]) if isinstance(tl[0], torch.Tensor) else tensor) for tl,_typ in zip(self.tls, [self._xtype, self._ytype])]
+            self.types = L([ifnone(_typ, type(tl[0]) if isinstance(tl[0], torch.Tensor) else tensor) for tl,_typ in zip(self.tls, [self._xtype, self._ytype])])
+            self.ptls = L([tl if not self.inplace else tl[:] if type(tl[0]).__name__ == 'memmap' else tensor(stack(tl[:])) for tl in self.tls])
 
     def __getitem__(self, it):
-        return tuple([typ(ptl[it]) if i==0 else typ(ptl[it]) for i,(ptl,typ) in enumerate(zip(self.ptls,self.types))])
+        return tuple([typ(ptl[it]) for i,(ptl,typ) in enumerate(zip(self.ptls,self.types))])
 
     def subset(self, i): return type(self)(tls=L(tl.subset(i) for tl in self.tls), n_inp=self.n_inp, inplace=self.inplace, tfms=self.tfms)
 
     def _new(self, X, *args, y=None, **kwargs):
-        items = ifnoneelse(y,tuple((X)),tuple((X, y)))
+        items = ifnoneelse(y,tuple((X,)),tuple((X, y)))
         return super()._new(items, tfms=self.tfms, do_setup=False, **kwargs)
 
     def show_at(self, idx, **kwargs):
@@ -146,7 +146,7 @@ class TSDatasets(NumpyDatasets):
     "A dataset that creates tuples from X (and y) and applies `item_tfms`"
     _xtype, _ytype = TSTensor, None # Expected X and y output types (torch.Tensor - default - or subclass)
     def __init__(self, X=None, y=None, items=None, sel_vars=None, sel_steps=None, tfms=None, tls=None, n_inp=None, dl_type=None,
-                 inplace=False, **kwargs):
+                 inplace=True, **kwargs):
         self.inplace = inplace
         if tls is None:
             X = itemify(X, tup_id=0)
@@ -158,22 +158,21 @@ class TSDatasets(NumpyDatasets):
         self.tls = L(tls if tls else [TfmdLists(item, t, **kwargs) for item,t in zip(items,self.tfms)])
         self.n_inp = (1 if len(self.tls)==1 else len(self.tls)-1) if n_inp is None else n_inp
         if len(self.tls[0]) > 0:
-            self.ptls = L([tl if not self.inplace else tl[:] if type(tl.items[0]).__name__ == 'memmap' else tensor(stack(tl[:])) for tl in self.tls])
             self.types = L([ifnone(_typ, type(tl[0]) if isinstance(tl[0], torch.Tensor) else tensor) for tl,_typ in zip(self.tls, [self._xtype, self._ytype])])
+            self.ptls = L([tl if not self.inplace else tl[:] if type(tl[0]).__name__ == 'memmap' else tensor(stack(tl[:])) for tl in self.tls])
 
     def __getitem__(self, it):
         return tuple([typ(ptl[it])[...,self.sel_vars, self.sel_steps] if i==0 else typ(ptl[it]) for i,(ptl,typ) in enumerate(zip(self.ptls,self.types))])
 
-    def subset(self, i): return type(self)(tls=L(tl.subset(i) for tl in self.tls), n_inp=self.n_inp,
-                                           inplace=self.inplace, tfms=self.tfms, sel_vars=self.sel_vars, sel_steps=self.sel_steps)
+    def subset(self, i): return type(self)(tls=L(tl.subset(i) for tl in self.tls), n_inp=self.n_inp, inplace=self.inplace, tfms=self.tfms,
+                                           sel_vars=self.sel_vars, sel_steps=self.sel_steps)
     @property
     def vars(self): return self[0][0].shape[-2]
     @property
     def len(self): return self[0][0].shape[-1]
 
-
 # Cell
-def add_ds(dsets, X, y=None, test_items=None, rm_tfms=None, with_labels=False, inplace=False):
+def add_ds(dsets, X, y=None, test_items=None, rm_tfms=None, with_labels=False, inplace=True):
     "Create test datasets from X (and y) using validation transforms of `dsets`"
     items = ifnoneelse(y,tuple((X,)),tuple((X, y)))
     with_labels = ifnoneelse(y,False,True)
@@ -184,7 +183,8 @@ def add_ds(dsets, X, y=None, test_items=None, rm_tfms=None, with_labels=False, i
         else:               rm_tfms = tuplify(rm_tfms, match=new_tls)
         for i,j in enumerate(rm_tfms): new_tls[i].tfms.fs = new_tls[i].tfms.fs[j:]
         if isinstance(dsets, TSDatasets):
-            return TSDatasets(tls=new_tls, n_inp=dsets.n_inp, inplace=inplace, tfms=dsets.tfms, sel_vars=dsets.sel_vars, sel_steps=dsets.sel_steps)
+            return TSDatasets(tls=new_tls, n_inp=dsets.n_inp, inplace=inplace, tfms=dsets.tfms,
+                              sel_vars=dsets.sel_vars, sel_steps=dsets.sel_steps)
         elif isinstance(dsets, NumpyDatasets):
             return NumpyDatasets(tls=new_tls, n_inp=dsets.n_inp, inplace=inplace, tfms=dsets.tfms)
         elif isinstance(dsets, Datasets): return Datasets(tls=new_tls)
@@ -314,9 +314,10 @@ class TSDataLoaders(NumpyDataLoaders):
 # Cell
 @patch
 def cws(self:DataLoader):
-    target = torch.Tensor(self.dataset.items[-1]).to(dtype=torch.int64)
-    # Compute samples weight (each sample should get its own weight)
-    class_sample_count = torch.tensor(
-        [(target == t).sum() for t in torch.unique(target, sorted=True)])
-    weights = 1. / class_sample_count.float()
-    return (weights / weights.sum()).to(default_device())
+    if isinstance(tensor(self.dataset[0][-1]).item(),Integral):
+        target = torch.Tensor(self.dataset.items[-1]).to(dtype=torch.int64)
+        # Compute samples weight (each sample should get its own weight)
+        class_sample_count = torch.tensor([(target == t).sum() for t in torch.unique(target, sorted=True)])
+        weights = 1. / class_sample_count.float()
+        return (weights / weights.sum()).to(default_device())
+    else: return None
