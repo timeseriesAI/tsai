@@ -45,13 +45,6 @@ description: "Helper function used to build PyTorch timeseries models."
     
 <div class="cell border-box-sizing code_cell rendered">
 
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
 <div class="output_wrapper">
 <div class="output">
 
@@ -166,7 +159,7 @@ description: "Helper function used to build PyTorch timeseries models."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_act_layer" class="doc_header"><code>get_act_layer</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/layers.py#L31" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_act_layer</code>(<strong><code>act_fn</code></strong>, <strong><code>act_kwargs</code></strong>=<em><code>{}</code></em>)</p>
+<h4 id="get_act_layer" class="doc_header"><code>get_act_layer</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/layers.py#L27" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_act_layer</code>(<strong><code>act_fn</code></strong>, <strong><code>act_kwargs</code></strong>=<em><code>{}</code></em>)</p>
 </blockquote>
 
 </div>
@@ -216,7 +209,7 @@ description: "Helper function used to build PyTorch timeseries models."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="same_padding1d" class="doc_header"><code>same_padding1d</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/layers.py#L42" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>same_padding1d</code>(<strong><code>seq_len</code></strong>, <strong><code>ks</code></strong>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>dilation</code></strong>=<em><code>1</code></em>)</p>
+<h4 id="same_padding1d" class="doc_header"><code>same_padding1d</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/layers.py#L38" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>same_padding1d</code>(<strong><code>seq_len</code></strong>, <strong><code>ks</code></strong>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>dilation</code></strong>=<em><code>1</code></em>)</p>
 </blockquote>
 
 </div>
@@ -240,7 +233,7 @@ description: "Helper function used to build PyTorch timeseries models."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Pad1d" class="doc_header"><code>class</code> <code>Pad1d</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/layers.py#L51" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Pad1d</code>(<strong><code>padding</code></strong>, <strong><code>value</code></strong>=<em><code>0.0</code></em>) :: <code>ConstantPad1d</code></p>
+<h2 id="Pad1d" class="doc_header"><code>class</code> <code>Pad1d</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/layers.py#L47" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Pad1d</code>(<strong><code>padding</code></strong>, <strong><code>value</code></strong>=<em><code>0.0</code></em>) :: <code>ConstantPad1d</code></p>
 </blockquote>
 <p>Pads the input tensor boundaries with a constant value.</p>
 <p>For <code>N</code>-dimensional padding, use :func:<code>torch.nn.functional.pad()</code>.</p>
@@ -303,7 +296,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Conv1dSame" class="doc_header"><code>class</code> <code>Conv1dSame</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/layers.py#L56" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conv1dSame</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>dilation</code></strong>=<em><code>1</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Module</code></p>
+<h2 id="Conv1dSame" class="doc_header"><code>class</code> <code>Conv1dSame</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/layers.py#L52" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conv1dSame</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>dilation</code></strong>=<em><code>1</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Module</code></p>
 </blockquote>
 <p>Conv1d with padding='same'</p>
 
@@ -357,7 +350,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Chomp1d" class="doc_header"><code>class</code> <code>Chomp1d</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/layers.py#L71" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Chomp1d</code>(<strong><code>chomp_size</code></strong>) :: <code>Module</code></p>
+<h2 id="Chomp1d" class="doc_header"><code>class</code> <code>Chomp1d</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/layers.py#L67" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Chomp1d</code>(<strong><code>chomp_size</code></strong>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -382,7 +375,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Conv1dCausal" class="doc_header"><code>class</code> <code>Conv1dCausal</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/layers.py#L79" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conv1dCausal</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>ks</code></strong>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>dilation</code></strong>=<em><code>1</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Module</code></p>
+<h2 id="Conv1dCausal" class="doc_header"><code>class</code> <code>Conv1dCausal</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/layers.py#L75" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conv1dCausal</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>ks</code></strong>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>dilation</code></strong>=<em><code>1</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -447,7 +440,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Conv1d" class="doc_header"><code>Conv1d</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/layers.py#L89" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Conv1d</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>'same'</code></em>, <strong><code>dilation</code></strong>=<em><code>1</code></em>, <strong><code>bias</code></strong>=<em><code>True</code></em>, <strong><code>act_fn</code></strong>=<em><code>'relu'</code></em>, <strong><code>act_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>bn_before_conv</code></strong>=<em><code>False</code></em>, <strong><code>bn_before_act</code></strong>=<em><code>True</code></em>, <strong><code>bn_after_act</code></strong>=<em><code>False</code></em>, <strong><code>zero_bn</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="Conv1d" class="doc_header"><code>Conv1d</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/layers.py#L85" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Conv1d</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>'same'</code></em>, <strong><code>dilation</code></strong>=<em><code>1</code></em>, <strong><code>bias</code></strong>=<em><code>True</code></em>, <strong><code>act_fn</code></strong>=<em><code>'relu'</code></em>, <strong><code>act_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>bn_before_conv</code></strong>=<em><code>False</code></em>, <strong><code>bn_before_act</code></strong>=<em><code>True</code></em>, <strong><code>bn_after_act</code></strong>=<em><code>False</code></em>, <strong><code>zero_bn</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>conv1d with default padding='same', bn and act_fn (default = 'relu')</p>
 
@@ -584,7 +577,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="CoordConv1D" class="doc_header"><code>class</code> <code>CoordConv1D</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/layers.py#L108" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CoordConv1D</code>() :: <code>Module</code></p>
+<h2 id="CoordConv1D" class="doc_header"><code>class</code> <code>CoordConv1D</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/layers.py#L104" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CoordConv1D</code>() :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -638,7 +631,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LambdaPlus" class="doc_header"><code>class</code> <code>LambdaPlus</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/layers.py#L118" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LambdaPlus</code>(<strong><code>func</code></strong>, <strong>*<code>args</code></strong>, <strong>**<code>kwargs</code></strong>) :: <code>Module</code></p>
+<h2 id="LambdaPlus" class="doc_header"><code>class</code> <code>LambdaPlus</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/layers.py#L114" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LambdaPlus</code>(<strong><code>func</code></strong>, <strong>*<code>args</code></strong>, <strong>**<code>kwargs</code></strong>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -695,7 +688,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Squeeze" class="doc_header"><code>class</code> <code>Squeeze</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/layers.py#L126" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Squeeze</code>(<strong><code>dim</code></strong>=<em><code>-1</code></em>) :: <code>Module</code></p>
+<h2 id="Squeeze" class="doc_header"><code>class</code> <code>Squeeze</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/layers.py#L122" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Squeeze</code>(<strong><code>dim</code></strong>=<em><code>-1</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -720,7 +713,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Unsqueeze" class="doc_header"><code>class</code> <code>Unsqueeze</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/layers.py#L131" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Unsqueeze</code>(<strong><code>dim</code></strong>=<em><code>-1</code></em>) :: <code>Module</code></p>
+<h2 id="Unsqueeze" class="doc_header"><code>class</code> <code>Unsqueeze</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/layers.py#L127" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Unsqueeze</code>(<strong><code>dim</code></strong>=<em><code>-1</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -745,7 +738,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="YRange" class="doc_header"><code>class</code> <code>YRange</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/layers.py#L136" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>YRange</code>(<strong><code>y_range</code></strong>:<code>tuple</code>) :: <code>Module</code></p>
+<h2 id="YRange" class="doc_header"><code>class</code> <code>YRange</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/layers.py#L132" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>YRange</code>(<strong><code>y_range</code></strong>:<code>tuple</code>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -770,7 +763,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Temp" class="doc_header"><code>class</code> <code>Temp</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/layers.py#L144" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Temp</code>(<strong><code>temp</code></strong>) :: <code>Module</code></p>
+<h2 id="Temp" class="doc_header"><code>class</code> <code>Temp</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/layers.py#L140" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Temp</code>(<strong><code>temp</code></strong>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 

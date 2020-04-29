@@ -4,12 +4,8 @@ __all__ = ['noop', 'mish', 'Mish', 'get_act_layer', 'same_padding1d', 'Pad1d', '
            'Conv1d', 'CoordConv1D', 'LambdaPlus', 'Flatten', 'Squeeze', 'Unsqueeze', 'YRange', 'Temp']
 
 # Cell
-from ..imports import *
-
-# Cell
-import torch
-import torch.nn as nn
 from fastai2.torch_core import Module
+from ..imports import *
 
 # Cell
 def noop(x): return x

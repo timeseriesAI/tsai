@@ -6,14 +6,14 @@ __all__ = ['LookAhead', 'Ralamb', 'ralamb', 'RangerLars', 'rangerlars', 'Ranger'
 from .imports import *
 
 # Cell
+from collections import defaultdict
+
+# Cell
 """ Lookahead Optimizer Wrapper.
 Implemented by Mikhail Grankin (Github: mgrankin) in his excellent collection of Pytorch optimizers https://github.com/mgrankin/over9000
 Implementation modified from: https://github.com/alphadl/lookahead.pytorch
 Paper: `Lookahead Optimizer: k steps forward, 1 step back` - https://arxiv.org/abs/1907.08610
 """
-import torch
-from collections import defaultdict
-
 class LookAhead(torch.optim.Optimizer):
     def __init__(self, base_optimizer, alpha=0.5, k=6):
         if not 0.0 <= alpha <= 1.0: raise ValueError(f'Invalid slow update rate: {alpha}')
@@ -198,7 +198,6 @@ def rangerlars(*args, **kwargs):
 # changed eps to 1e-5 as better default than 1e-8.
 
 class Ranger(torch.optim.Optimizer):
-
     def __init__(self, params, lr=1e-3,                       # lr
                 alpha=0.5, k=6, N_sma_threshhold=5,           # Ranger options
                 betas=(.95,0.999), eps=1e-5, weight_decay=0,  # Adam options

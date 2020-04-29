@@ -9,8 +9,6 @@ from .data.external import *
 # Cell
 from sklearn.linear_model import RidgeClassifierCV
 from numba import njit, prange
-import torch
-import torch.nn as nn
 
 # Cell
 # Angus Dempster, Francois Petitjean, Geoff Webb

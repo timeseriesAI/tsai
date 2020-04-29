@@ -12,7 +12,7 @@
     "Optimizers": "/optimizers",
     "rocket functions": "/rocket_functions",
     "Layers": "/layers",
-    "Utils": "/models_utils",
+    "Models utils": "/models_utils",
     "ResNet": "/ResNet",
     "InceptionTime": "/InceptionTime",
     "FCN": "/FCN",

@@ -11,11 +11,6 @@ from .external import *
 from ..models.InceptionTime import *
 
 # Cell
-import torch
-import re
-from torch._six import container_abcs, string_classes, int_classes
-
-# Cell
 class NumpyTensor(TensorBase):
     "Returns a `tensor` with subclass `NumpyTensor` that has a show method"
     def __new__(cls, o, **kwargs):

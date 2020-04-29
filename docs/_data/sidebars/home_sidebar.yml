@@ -43,7 +43,7 @@ entries:
       title: Layers
       url: /layers
     - output: web,pdf
-      title: Utils
+      title: Models utils
       url: /models_utils
     - output: web,pdf
       title: ResNet
