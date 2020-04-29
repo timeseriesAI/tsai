@@ -64,9 +64,8 @@ def last_saved(max_elapsed=10):
     return output
     
 def beep(inp=1):
-    if inp == 1: mult = 10
-    else: mult = .5
-    wave = np.sin(mult*np.pi*400*np.arange(10000*.1)/10000)
+    mult = 1.6*inp if inp else .08
+    wave = np.sin(mult*np.arange(1000))
     return Audio(wave, rate=10000, autoplay=True)
 
 def create_scripts(max_elapsed=10):

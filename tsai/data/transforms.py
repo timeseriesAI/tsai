@@ -21,7 +21,7 @@ import pywt
 
 # Cell
 class TSStandardize(Transform):
-    "Standardize/destd batch of `torch.Tensor`, `NumpyTensor` or `TSTensor`"
+    "Standardize/destd batch of `NumpyTensor` or `TSTensor`"
     parameters, order = L('mean', 'std'), 99
     def __init__(self, mean=None, std=None, by_sample=False, by_var=False, verbose=False):
         self.mean = tensor(mean) if mean is not None else None
@@ -65,7 +65,7 @@ def mul_max(x:(torch.Tensor, TSTensor, NumpyTensor), axes=(), keepdim=False):
     return retain_type(max_x, x)
 
 class TSNormalize(Transform):
-    "Normalize/denorm batch of `torch.Tensor`, `NumpyTensor` or `TSTensor`"
+    "Normalize/denorm batch of `NumpyTensor` or `TSTensor`"
     parameters, order = L('min', 'max'), 99
 
     def __init__(self, min=None, max=None, range_min=-1, range_max=1, by_sample=True, by_var=False, verbose=False):

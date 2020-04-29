@@ -7,15 +7,14 @@ from ..imports import *
 from .layers import *
 
 # Cell
-class ResBlock(nn.Module):
+class ResBlock(Module):
     def __init__(self, ni, nf, ks=[7, 5, 3]):
-        super().__init__()
-        self.conv1 = convlayer(ni, nf, ks[0])
-        self.conv2 = convlayer(nf, nf, ks[1])
-        self.conv3 = convlayer(nf, nf, ks[2])
+        self.conv1 = Conv1d(ni, nf, ks[0], padding='same', act_fn='relu')
+        self.conv2 = Conv1d(nf, nf, ks[1], padding='same', act_fn='relu')
+        self.conv3 = Conv1d(nf, nf, ks[2], padding='same', act_fn='relu')
 
         # expand channels for the sum if necessary
-        self.shortcut = noop if ni == nf else convlayer(ni, nf, ks=1, act_fn=False)
+        self.shortcut = noop if ni == nf else Conv1d(ni, nf, ks=1, act_fn=False)
         self.act_fn = nn.ReLU()
 
     def forward(self, x):
@@ -28,19 +27,19 @@ class ResBlock(nn.Module):
         x = self.act_fn(x)
         return x
 
-class ResNet(nn.Module):
+class ResNet(Module):
     def __init__(self,c_in, c_out):
-        super().__init__()
         nf = 64
         self.block1 = ResBlock(c_in, nf, ks=[7, 5, 3])
         self.block2 = ResBlock(nf, nf * 2, ks=[7, 5, 3])
         self.block3 = ResBlock(nf * 2, nf * 2, ks=[7, 5, 3])
         self.gap = nn.AdaptiveAvgPool1d(1)
+        self.squeeze = Squeeze(-1)
         self.fc = nn.Linear(nf * 2, c_out)
 
     def forward(self, x):
         x = self.block1(x)
         x = self.block2(x)
         x = self.block3(x)
-        x = self.gap(x).squeeze(-1)
+        x = self.squeeze(self.gap(x))
         return self.fc(x)

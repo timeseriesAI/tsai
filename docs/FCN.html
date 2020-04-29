@@ -84,6 +84,64 @@ description: "This is an unofficial PyTorch implementation by Ignacio Oguiza - o
 </div>
     {% endraw %}
 
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">FCN</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>FCN(
+  (conv1): Sequential(
+    (0): ConvSame1d(
+      (conv1d_same): Conv1d(3, 128, kernel_size=(7,), stride=(1,))
+    )
+    (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+  )
+  (conv2): Sequential(
+    (0): ConvSame1d(
+      (conv1d_same): Conv1d(128, 256, kernel_size=(5,), stride=(1,))
+    )
+    (1): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+  )
+  (conv3): Sequential(
+    (0): ConvSame1d(
+      (conv1d_same): Conv1d(256, 128, kernel_size=(3,), stride=(1,))
+    )
+    (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+  )
+  (gap): AdaptiveAvgPool1d(output_size=1)
+  (squeeze): Squeeze()
+  (fc): Linear(in_features=128, out_features=2, bias=True)
+)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
 </div>
  
 

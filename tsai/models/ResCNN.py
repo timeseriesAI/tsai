@@ -9,12 +9,12 @@ from .layers import *
 # Cell
 class Block(Module):
     def __init__(self, ni, nf, ks=[7, 5, 3], act_fn='relu'):
-        self.conv1 = convlayer(ni, nf, ks[0], act_fn=act_fn)
-        self.conv2 = convlayer(nf, nf, ks[1], act_fn=act_fn)
-        self.conv3 = convlayer(nf, nf, ks[2], act_fn=False)
+        self.conv1 = Conv1d(ni, nf, ks[0], padding='same', act_fn=act_fn)
+        self.conv2 = Conv1d(nf, nf, ks[1], padding='same', act_fn=act_fn)
+        self.conv3 = Conv1d(nf, nf, ks[2], padding='same', act_fn=False)
 
         # expand channels for the sum if necessary
-        self.shortcut = noop if ni == nf else convlayer(ni, nf, ks=1, act_fn=False)
+        self.shortcut = noop if ni == nf else Conv1d(ni, nf, ks=1, act_fn=False)
         self.act_fn = get_act_layer(act_fn)
 
     def forward(self, x):
@@ -32,9 +32,9 @@ class ResCNN(Module):
     def __init__(self, c_in, c_out):
         nf = 64
         self.block = Block(c_in, nf, ks=[7, 5, 3], act_fn='relu')
-        self.conv1 = convlayer(nf, nf * 2, ks=3, act_fn='leakyrelu', negative_slope=.2)
-        self.conv2 = convlayer(nf * 2, nf * 4, ks=3, act_fn='prelu')
-        self.conv3 = convlayer(nf * 4, nf * 2, ks=3, act_fn='elu', alpha=.3)
+        self.conv1 = Conv1d(nf, nf * 2, ks=3, padding='same', act_fn='leakyrelu', act_kwargs={'negative_slope':.2})
+        self.conv2 = Conv1d(nf * 2, nf * 4, ks=3, padding='same', act_fn='prelu')
+        self.conv3 = Conv1d(nf * 4, nf * 2, ks=3, padding='same', act_fn='elu', act_kwargs={'alpha':.3})
         self.gap = nn.AdaptiveAvgPool1d(1)
         self.lin = nn.Linear(nf * 2, c_out)
 
