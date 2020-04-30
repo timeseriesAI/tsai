@@ -25,6 +25,7 @@ from pathlib import Path
 import time
 from time import gmtime, strftime
 from IPython.display import Audio, display, HTML, Javascript
+import tsai
 
 PATH = Path(os.getcwd())
 device = 'cuda' if torch.cuda.is_available() else 'cpu'

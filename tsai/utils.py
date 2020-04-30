@@ -4,7 +4,7 @@ __all__ = ['totensor', 'toarray', 'to3dtensor', 'to2dtensor', 'to1dtensor', 'to3
            'to3d', 'to2d', 'to1d', 'to2dPlus', 'to3dPlus', 'to2dPlusTensor', 'to2dPlusArray', 'to3dPlusTensor',
            'to3dPlusArray', 'Todtype', 'bytes2size', 'bytes2GB', 'delete_all_in_dir', 'reverse_dict', 'is_tuple',
            'itemify', 'is_none', 'ifisnone', 'ifnoneelse', 'ifisnoneelse', 'ifelse', 'is_not_close', 'test_not_close',
-           'test_type', 'stack', 'cat2int', 'cycle_dl', 'memmap2cache']
+           'test_type', 'stack', 'cat2int', 'cycle_dl', 'memmap2cache', 'package_versions', 'hardware_details']
 
 # Cell
 from .imports import *
@@ -222,3 +222,21 @@ def memmap2cache(o, bs=64, verbose=True):
             partial = time.time()
     print('\n...complete')
     print(f'\nTotal time : {1000*(time.time() - start):.1f} ms ({1000 * (time.time() - start)/n_batches:.1f} ms / batch)')
+
+# Cell
+def package_versions():
+    print('tsai       :', tsai.__version__)
+    print('fastai2    :', fastai2.__version__)
+    print('fastcore   :', fastcore.__version__)
+    print('torch      :', torch.__version__)
+    print('scipy      :', sp.__version__)
+    print('numpy      :', np.__version__)
+    print('pandas     :', pd.__version__)
+
+def hardware_details():
+    print(f'Total RAM  : {bytes2GB(psutil.virtual_memory().total):6.2f} GB')
+    print(f'Used RAM   : {bytes2GB(psutil.virtual_memory().used):6.2f} GB')
+    print('n_cpus     :', cpus)
+    iscuda = torch.cuda.is_available()
+    if iscuda: print('device     : {} ({})'.format(device, torch.cuda.get_device_name(0)))
+    else: print('device     :', device)
