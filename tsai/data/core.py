@@ -207,6 +207,7 @@ class NumpyDataLoader(TfmdDL):
     idxs = None
     do_item = noops # create batch returns indices
     def __init__(self, dataset, bs=64, shuffle=False, num_workers=None, verbose=False, do_setup=True, batch_tfms=None, **kwargs):
+        '''batch_tfms == after_batch (either can be used)'''
         if num_workers is None: num_workers = min(16, defaults.cpus)
         for nm in _batch_tfms:
             if nm == 'after_batch' and batch_tfms is not None: kwargs[nm] = Pipeline(batch_tfms)

@@ -803,7 +803,7 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="show_tuple" class="doc_header"><code>show_tuple</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L253" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>show_tuple</code>(<strong><code>tup</code></strong>, <strong><code>nrows</code></strong>=<em><code>1</code></em>, <strong><code>ncols</code></strong>=<em><code>1</code></em>, <strong><code>sharex</code></strong>=<em><code>False</code></em>, <strong><code>sharey</code></strong>=<em><code>False</code></em>, <strong><code>squeeze</code></strong>=<em><code>True</code></em>, <strong><code>subplot_kw</code></strong>=<em><code>None</code></em>, <strong><code>gridspec_kw</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="show_tuple" class="doc_header"><code>show_tuple</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L254" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>show_tuple</code>(<strong><code>tup</code></strong>, <strong><code>nrows</code></strong>=<em><code>1</code></em>, <strong><code>ncols</code></strong>=<em><code>1</code></em>, <strong><code>sharex</code></strong>=<em><code>False</code></em>, <strong><code>sharey</code></strong>=<em><code>False</code></em>, <strong><code>squeeze</code></strong>=<em><code>True</code></em>, <strong><code>subplot_kw</code></strong>=<em><code>None</code></em>, <strong><code>gridspec_kw</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Display a timeseries plot from a decoded tuple</p>
 
@@ -828,7 +828,7 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSDataLoader" class="doc_header"><code>class</code> <code>TSDataLoader</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L258" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDataLoader</code>(<strong><code>dataset</code></strong>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>num_workers</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/data.core#NumpyDataLoader"><code>NumpyDataLoader</code></a></p>
+<h2 id="TSDataLoader" class="doc_header"><code>class</code> <code>TSDataLoader</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L259" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDataLoader</code>(<strong><code>dataset</code></strong>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>num_workers</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/data.core#NumpyDataLoader"><code>NumpyDataLoader</code></a></p>
 </blockquote>
 <p>Transformed <code>DataLoader</code></p>
 
@@ -860,7 +860,7 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="NumpyDataLoaders" class="doc_header"><code>class</code> <code>NumpyDataLoaders</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L267" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyDataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>device(type='cpu')</code></em>) :: <code>DataLoaders</code></p>
+<h2 id="NumpyDataLoaders" class="doc_header"><code>class</code> <code>NumpyDataLoaders</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L268" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyDataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>device(type='cpu')</code></em>) :: <code>DataLoaders</code></p>
 </blockquote>
 <p>Basic wrapper around several <code>DataLoader</code>s.</p>
 
@@ -885,7 +885,7 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSDataLoaders" class="doc_header"><code>class</code> <code>TSDataLoaders</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L301" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>device(type='cpu')</code></em>) :: <a href="/data.core#NumpyDataLoaders"><code>NumpyDataLoaders</code></a></p>
+<h2 id="TSDataLoaders" class="doc_header"><code>class</code> <code>TSDataLoaders</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L302" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>device(type='cpu')</code></em>) :: <a href="/data.core#NumpyDataLoaders"><code>NumpyDataLoaders</code></a></p>
 </blockquote>
 <p>Basic wrapper around several <code>DataLoader</code>s.</p>
 
@@ -917,7 +917,7 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DataLoader.cws" class="doc_header"><code>DataLoader.cws</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L306" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>DataLoader.cws</code>()</p>
+<h4 id="DataLoader.cws" class="doc_header"><code>DataLoader.cws</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L307" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>DataLoader.cws</code>()</p>
 </blockquote>
 
 </div>
