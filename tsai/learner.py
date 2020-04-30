@@ -5,9 +5,6 @@ __all__ = ['load_learner_all']
 # Cell
 from fastai2.learner import *
 from .imports import *
-from .data.external import *
-from .data.core import *
-from .models.InceptionTime import *
 
 # Cell
 @patch

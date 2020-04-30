@@ -6,6 +6,7 @@ __all__ = ['decompress_from_url', 'get_UCR_univariate_list', 'get_UCR_multivaria
 # Cell
 from ..imports import *
 from ..utils import *
+from .validation import *
 
 # Cell
 import tempfile
@@ -106,7 +107,7 @@ def stack_padding(arr):
     mat = np.array( [resize(row, row_length) for row in arr] )
     return mat
 
-def get_UCR_data(dsid, path='.', parent_dir='data/UCR', verbose=False, drop_na=False, on_disk=True):
+def get_UCR_data(dsid, path='.', parent_dir='data/UCR', verbose=False, drop_na=False, on_disk=True, return_split=True):
     if verbose: print('Dataset:', dsid)
     assert dsid in get_UCR_univariate_list() + get_UCR_multivariate_list(), f'{dsid} is not a UCR dataset'
     full_parent_dir = Path(path)/parent_dir
@@ -141,10 +142,17 @@ def get_UCR_data(dsid, path='.', parent_dir='data/UCR', verbose=False, drop_na=F
     X_valid = np.load(f'{full_tgt_dir}/X_valid.npy', mmap_mode=mmap_mode)
     y_valid = np.load(f'{full_tgt_dir}/y_valid.npy', mmap_mode=mmap_mode)
 
-    if verbose:
-        print('X_train:', X_train.shape)
-        print('y_train:', y_train.shape)
-        print('X_valid:', X_valid.shape)
-        print('y_valid:', y_valid.shape, '\n')
-
-    return X_train, y_train, X_valid, y_valid
+    if return_split:
+        if verbose:
+            print('X_train:', X_train.shape)
+            print('y_train:', y_train.shape)
+            print('X_valid:', X_valid.shape)
+            print('y_valid:', y_valid.shape, '\n')
+        return X_train, y_train, X_valid, y_valid
+    else:
+        X, y, splits = combine_split_data([X_train, X_valid], [y_train, y_valid])
+        if verbose:
+            print('X      :', X .shape)
+            print('y      :', y .shape)
+            print('splits :', splits)
+        return X, y, splits

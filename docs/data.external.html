@@ -59,7 +59,7 @@ description: "Helper functions used to download and extract common time series d
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="decompress_from_url" class="doc_header"><code>decompress_from_url</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/external.py#L20" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>decompress_from_url</code>(<strong><code>url</code></strong>, <strong><code>target_dir</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="decompress_from_url" class="doc_header"><code>decompress_from_url</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/external.py#L21" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>decompress_from_url</code>(<strong><code>url</code></strong>, <strong><code>target_dir</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 
 </div>
@@ -90,7 +90,7 @@ description: "Helper functions used to download and extract common time series d
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_UCR_univariate_list" class="doc_header"><code>get_UCR_univariate_list</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/external.py#L43" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_UCR_univariate_list</code>()</p>
+<h4 id="get_UCR_univariate_list" class="doc_header"><code>get_UCR_univariate_list</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/external.py#L44" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_UCR_univariate_list</code>()</p>
 </blockquote>
 
 </div>
@@ -121,7 +121,7 @@ description: "Helper functions used to download and extract common time series d
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_UCR_multivariate_list" class="doc_header"><code>get_UCR_multivariate_list</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/external.py#L85" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_UCR_multivariate_list</code>()</p>
+<h4 id="get_UCR_multivariate_list" class="doc_header"><code>get_UCR_multivariate_list</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/external.py#L86" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_UCR_multivariate_list</code>()</p>
 </blockquote>
 
 </div>
@@ -152,7 +152,7 @@ description: "Helper functions used to download and extract common time series d
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="stack_padding" class="doc_header"><code>stack_padding</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/external.py#L100" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>stack_padding</code>(<strong><code>arr</code></strong>)</p>
+<h4 id="stack_padding" class="doc_header"><code>stack_padding</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/external.py#L101" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>stack_padding</code>(<strong><code>arr</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -176,13 +176,38 @@ description: "Helper functions used to download and extract common time series d
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_UCR_data" class="doc_header"><code>get_UCR_data</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/external.py#L109" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_UCR_data</code>(<strong><code>dsid</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>parent_dir</code></strong>=<em><code>'data/UCR'</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>drop_na</code></strong>=<em><code>False</code></em>, <strong><code>on_disk</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="get_UCR_data" class="doc_header"><code>get_UCR_data</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/external.py#L110" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_UCR_data</code>(<strong><code>dsid</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>parent_dir</code></strong>=<em><code>'data/UCR'</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>drop_na</code></strong>=<em><code>False</code></em>, <strong><code>on_disk</code></strong>=<em><code>True</code></em>, <strong><code>return_split</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 
 </div>
 
 </div>
 
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;NATOPS&#39;</span> 
+<span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_valid</span><span class="p">,</span> <span class="n">y_valid</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">)</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">return_split</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">X_train</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">y_valid</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">X_train</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">y_valid</span><span class="p">)</span>
+<span class="n">test_type</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">X_train</span><span class="p">)</span>
+<span class="n">test_type</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+</pre></div>
+
+    </div>
 </div>
 </div>
 

@@ -4,7 +4,7 @@ __all__ = ['totensor', 'toarray', 'to3dtensor', 'to2dtensor', 'to1dtensor', 'to3
            'to3d', 'to2d', 'to1d', 'to2dPlus', 'to3dPlus', 'to2dPlusTensor', 'to2dPlusArray', 'to3dPlusTensor',
            'to3dPlusArray', 'Todtype', 'bytes2size', 'bytes2GB', 'delete_all_in_dir', 'reverse_dict', 'is_tuple',
            'itemify', 'is_none', 'ifisnone', 'ifnoneelse', 'ifisnoneelse', 'ifelse', 'is_not_close', 'test_not_close',
-           'stack', 'cat2int', 'cycle_dl', 'memmap2cache']
+           'test_type', 'stack', 'cat2int', 'cycle_dl', 'memmap2cache']
 
 # Cell
 from .imports import *
@@ -34,15 +34,15 @@ def to2dtensor(o):
     o = totensor(o)
     if o.ndim == 2: return o
     elif o.ndim == 1: return o[None]
-    elif o.ndim == 3: return o[0]#torch.squeeze(o, 0)
+    elif o.ndim == 3: return o[0]
     assert False, f'Please, review input dimensions {o.ndim}'
 
 
 def to1dtensor(o):
     o = totensor(o)
     if o.ndim == 1: return o
-    elif o.ndim == 3: return o[0,0]#torch.squeeze(o, 1)
-    if o.ndim == 2: return o[0]#torch.squeeze(o, 0)
+    elif o.ndim == 3: return o[0,0]
+    if o.ndim == 2: return o[0]
     assert False, f'Please, review input dimensions {o.ndim}'
 
 
@@ -58,15 +58,15 @@ def to2darray(o):
     o = toarray(o)
     if o.ndim == 2: return o
     elif o.ndim == 1: return o[None]
-    elif o.ndim == 3: return 0[0]#np.squeeze(o, 0)
+    elif o.ndim == 3: return o[0]
     assert False, f'Please, review input dimensions {o.ndim}'
 
 
 def to1darray(o):
     o = toarray(o)
     if o.ndim == 1: return o
-    elif o.ndim == 3: o = 0[0,0]#np.squeeze(o, 1)
-    elif o.ndim == 2: o = 0[0]#np.squeeze(o, 0)
+    elif o.ndim == 3: o = o[0,0]
+    elif o.ndim == 2: o = o[0]
     assert False, f'Please, review input dimensions {o.ndim}'
 
 
@@ -179,18 +179,21 @@ def ifelse(a, b, c):
     return b if a else c
 
 # Cell
-def is_not_close(a,b,eps=1e-5):
+def is_not_close(a, b, eps=1e-5):
     "Is `a` within `eps` of `b`"
-    if hasattr(a, '__array__') or hasattr(b,'__array__'):
-        return (abs(a-b)>eps).all()
-    if isinstance(a, (Iterable,Generator)) or isinstance(b, (Iterable,Generator)):
+    if hasattr(a, '__array__') or hasattr(b, '__array__'):
+        return (abs(a - b) > eps).all()
+    if isinstance(a, (Iterable, Generator)) or isinstance(b, (Iterable, Generator)):
         return is_not_close(np.array(a), np.array(b), eps=eps)
-    return abs(a-b)>eps
+    return abs(a - b) > eps
 
-# Cell
-def test_not_close(a,b,eps=1e-5):
+
+def test_not_close(a, b, eps=1e-5):
     "`test` that `a` is within `eps` of `b`"
-    test(a,b,partial(is_not_close,eps=eps),'not_close')
+    test(a, b, partial(is_not_close, eps=eps), 'not_close')
+
+def test_type(a, b):
+    return test_eq(type(a),type(b))
 
 # Cell
 def stack(o, axis=0):
