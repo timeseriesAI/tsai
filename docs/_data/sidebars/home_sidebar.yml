@@ -13,6 +13,9 @@ entries:
       title: Utilities
       url: /utils
     - output: web,pdf
+      title: Data Validation
+      url: /data.validation
+    - output: web,pdf
       title: Data External
       url: /data.external
     - output: web,pdf
@@ -25,9 +28,6 @@ entries:
       title: Data Tabular
       url: /data.tabular
     - output: web,pdf
-      title: Data Validation
-      url: /data.validation
-    - output: web,pdf
       title: Metrics
       url: /metrics
     - output: web,pdf
@@ -35,7 +35,7 @@ entries:
       url: /learner
     - output: web,pdf
       title: Optimizers
-      url: /optimizers
+      url: /optimizer
     - output: web,pdf
       title: rocket functions
       url: /rocket_functions

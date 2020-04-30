@@ -29,8 +29,6 @@ def save_all(self:Learner, path='export', dls_fname='dls', model_fname='model', 
     print(f"model_fname   = '{model_fname}.pth'")
     print(f"learner_fname = '{learner_fname}.pkl'")
 
-# Learner.save_all = save_all
-
 
 def load_learner_all(path='export', dls_fname='dls', model_fname='model', learner_fname='learner', cpu=True):
     path = Path(path)
