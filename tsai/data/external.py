@@ -158,5 +158,5 @@ def get_UCR_data(dsid, path='.', parent_dir='data/UCR', verbose=False, drop_na=F
         if verbose:
             print('X      :', X .shape)
             print('y      :', y .shape)
-            print('splits :', splits)
+            print('splits :', splits, '\n')
         return X, y, splits

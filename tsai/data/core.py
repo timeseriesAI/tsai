@@ -206,17 +206,11 @@ _batch_tfms = ('after_item','before_batch','after_batch')
 class NumpyDataLoader(TfmdDL):
     idxs = None
     do_item = noops # create batch returns indices
-    def __init__(self, dataset, bs=64, shuffle=False, num_workers=None, batch_tfms=None, verbose=False, do_setup=True, **kwargs):
-        "after_batch == batch_tfms"
+    def __init__(self, dataset, bs=64, shuffle=False, num_workers=None, verbose=False, do_setup=True, batch_tfms=None, **kwargs):
         if num_workers is None: num_workers = min(16, defaults.cpus)
         for nm in _batch_tfms:
-            if nm in kwargs:
-                if nm in ['after_item','before_batch'] or (nm == 'after_batch' and batch_tfms is not None):
-                    t = kwargs.get('after_batch', None)
-                    assert t is None or (hasattr(t, 'fs') and t.fs[0].name == 'noop'), \
-                    f'You should use batch tfms instead of {nm}'
             if nm == 'after_batch' and batch_tfms is not None: kwargs[nm] = Pipeline(batch_tfms)
-            kwargs[nm] = Pipeline(kwargs.get(nm,None))
+            else: kwargs[nm] = Pipeline(kwargs.get(nm,None))
         bs = min(bs, len(dataset))
         super().__init__(dataset, bs=bs, shuffle=shuffle, num_workers=num_workers, **kwargs)
         if do_setup:
