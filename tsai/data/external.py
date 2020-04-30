@@ -112,15 +112,14 @@ def get_UCR_data(dsid, path='.', parent_dir='data/UCR', verbose=False, drop_na=F
     assert dsid in get_UCR_univariate_list() + get_UCR_multivariate_list(), f'{dsid} is not a UCR dataset'
     full_parent_dir = Path(path)/parent_dir
     full_tgt_dir = full_parent_dir/dsid
-    if not all([os.path.isfile(f'{full_parent_dir}/{dsid}/{fn}.npy') for fn in ['X_train', 'X_valid', 'y_train', 'y_valid']]):
+    if not all([os.path.isfile(f'{full_parent_dir}/{dsid}/{fn}.npy') for fn in ['X_train', 'X_valid', 'y_train', 'y_valid', 'X', 'y']]):
         if dsid in ['InsectWingbeat', 'DuckDuckGeese']:
             if verbose: print('There are problems with the original zip file and data cannot correctly downloaded')
             return None, None, None, None
         src_website = 'http://www.timeseriesclassification.com/Downloads'
-        if not os.path.isdir(full_tgt_dir):
-            if verbose: print(f'Downloading and decompressing data to {full_tgt_dir}...')
-            decompress_from_url(f'{src_website}/{dsid}.zip', target_dir=full_tgt_dir, verbose=verbose)
-            if verbose: print('...data downloaded and decompressed')
+        if verbose: print(f'Downloading and decompressing data to {full_tgt_dir}...')
+        decompress_from_url(f'{src_website}/{dsid}.zip', target_dir=full_tgt_dir, verbose=verbose)
+        if verbose: print('...data downloaded and decompressed')
         X_train_df, y_train = load_from_tsfile_to_dataframe(full_tgt_dir/f'{dsid}_TRAIN.ts')
         X_valid_df, y_valid = load_from_tsfile_to_dataframe(full_tgt_dir/f'{dsid}_TEST.ts')
         X_train_ = []
@@ -134,6 +133,9 @@ def get_UCR_data(dsid, path='.', parent_dir='data/UCR', verbose=False, drop_na=F
         np.save(f'{full_tgt_dir}/y_train.npy', y_train)
         np.save(f'{full_tgt_dir}/X_valid.npy', X_valid)
         np.save(f'{full_tgt_dir}/y_valid.npy', y_valid)
+        np.save(f'{full_tgt_dir}/X.npy', concat(X_train, X_valid))
+        np.save(f'{full_tgt_dir}/y.npy', concat(y_train, y_valid))
+        del X_train, X_valid, y_train, y_valid
         delete_all_in_dir(full_tgt_dir, exception='.npy')
 
     mmap_mode='r' if on_disk else None
@@ -150,7 +152,9 @@ def get_UCR_data(dsid, path='.', parent_dir='data/UCR', verbose=False, drop_na=F
             print('y_valid:', y_valid.shape, '\n')
         return X_train, y_train, X_valid, y_valid
     else:
-        X, y, splits = combine_split_data([X_train, X_valid], [y_train, y_valid])
+        X = np.load(f'{full_tgt_dir}/X.npy', mmap_mode=mmap_mode)
+        y = np.load(f'{full_tgt_dir}/y.npy', mmap_mode=mmap_mode)
+        splits = get_predefined_splits(*[X_train, X_valid])
         if verbose:
             print('X      :', X .shape)
             print('y      :', y .shape)

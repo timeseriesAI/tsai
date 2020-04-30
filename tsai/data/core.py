@@ -8,7 +8,7 @@ __all__ = ['NumpyTensor', 'ToNumpyTensor', 'TSTensor', 'ToTSTensor', 'NumpyTenso
 from ..imports import *
 from ..utils import *
 from .external import *
-from ..models.InceptionTime import *
+from .validation import *
 
 # Cell
 class NumpyTensor(TensorBase):
@@ -86,12 +86,14 @@ class NumpyDataset():
 
 class TSDataset():
     def __init__(self, X, y=None, types=None, sel_vars=None, sel_steps=None):
-        self.X, self.y, self.types = X, y, types
+        self.X, self.y, self.types = to3darray(X), y, types
         self.sel_vars = ifnone(sel_vars, slice(None))
         self.sel_steps = ifnone(sel_steps,slice(None))
     def __getitem__(self, idx):
         if self.types is None: return (self.X[idx, self.sel_vars, self.sel_steps], self.y[idx]) if self.y is not None else (self.X[idx])
-        else: return (self.types[0](self.X[idx, self.sel_vars, self.sel_steps]), self.types[1](self.y[idx])) if self.y is not None else (self.types[0](self.X[idx]))
+        else:
+            return (self.types[0](self.X[idx, self.sel_vars, self.sel_steps]), self.types[1](self.y[idx])) if self.y is not None \
+            else (self.types[0](self.X[idx]))
     def __len__(self): return len(self.X)
     @property
     def c(self): return 0 if self.y is None else 1 if isinstance(self.y[0], float) else len(np.unique(self.y))
@@ -144,7 +146,7 @@ class TSDatasets(NumpyDatasets):
                  inplace=True, **kwargs):
         self.inplace = inplace
         if tls is None:
-            X = itemify(X, tup_id=0)
+            X = itemify(to3darray(X), tup_id=0)
             y = itemify(y, tup_id=0) if y is not None else y
             items = tuple((X,)) if y is None else tuple((X,y))
             self.tfms = L(ifnone(tfms,[None]*len(ifnone(tls,items))))
