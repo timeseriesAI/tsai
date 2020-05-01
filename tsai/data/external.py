@@ -138,7 +138,7 @@ def get_UCR_data(dsid, path='.', parent_dir='data/UCR', verbose=False, drop_na=F
         del X_train, X_valid, y_train, y_valid
         delete_all_in_dir(full_tgt_dir, exception='.npy')
 
-    mmap_mode='r' if on_disk else None
+    mmap_mode='r+' if on_disk else None
     X_train = np.load(f'{full_tgt_dir}/X_train.npy', mmap_mode=mmap_mode)
     y_train = np.load(f'{full_tgt_dir}/y_train.npy', mmap_mode=mmap_mode)
     X_valid = np.load(f'{full_tgt_dir}/X_valid.npy', mmap_mode=mmap_mode)
