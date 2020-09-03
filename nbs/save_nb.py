@@ -5,7 +5,7 @@ import os
 from pathlib import Path
 import time
 from time import gmtime, strftime
-from fastai2.data.transforms import get_files
+from fastai.data.transforms import get_files
 
 # Cell
 def save_nb():

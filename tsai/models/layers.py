@@ -4,7 +4,7 @@ __all__ = ['noop', 'mish', 'Mish', 'get_act_layer', 'same_padding1d', 'Pad1d', '
            'Conv1d', 'CoordConv1D', 'LambdaPlus', 'Flatten', 'Squeeze', 'Unsqueeze', 'YRange', 'Temp']
 
 # Cell
-from fastai2.torch_core import Module
+from fastai.torch_core import Module
 from ..imports import *
 
 # Cell

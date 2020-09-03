@@ -3,7 +3,7 @@
 __all__ = ['load_learner_all']
 
 # Cell
-from fastai2.learner import *
+from fastai.learner import *
 from .imports import *
 
 # Cell

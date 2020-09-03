@@ -1,15 +1,15 @@
-import fastai2
-from fastai2.imports import *
-from fastai2.data.all import *
-from fastai2.torch_core import *
-from fastai2.learner import *
-from fastai2.metrics import *
-from fastai2.callback.all import *
-from fastai2.vision.data import *
-from fastai2.interpret import *
-from fastai2.optimizer import *
-from fastai2.torch_core import Module
-from fastai2.data.transforms import get_files
+import fastai
+from fastai.imports import *
+from fastai.data.all import *
+from fastai.torch_core import *
+from fastai.learner import *
+from fastai.metrics import *
+from fastai.callback.all import *
+from fastai.vision.data import *
+from fastai.interpret import *
+from fastai.optimizer import *
+from fastai.torch_core import Module
+from fastai.data.transforms import get_files
 import fastcore
 from fastcore.test import *
 from fastcore.utils import *

@@ -226,7 +226,7 @@ def memmap2cache(o, bs=64, verbose=True):
 # Cell
 def package_versions():
     print('tsai       :', tsai.__version__)
-    print('fastai2    :', fastai2.__version__)
+    print('fastai  :', fastai.version__)
     print('fastcore   :', fastcore.__version__)
     print('torch      :', torch.__version__)
     print('scipy      :', sp.__version__)
