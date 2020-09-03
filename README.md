@@ -20,7 +20,7 @@ In the latter case, you may also want to use install the bleeding egde fastai & 
 
 `pip install git+https://github.com/fastai/fastcore.git@master`
 
-`pip install git+https://github.com/fastai/fastai2.git@master`
+`pip install git+https://github.com/fastai/fastai.git@master`
 
 ## How to get started
 
