@@ -4,7 +4,7 @@ __all__ = ['TabularDataset', 'TabularDataLoader']
 
 # Cell
 from ..imports import *
-from fastai2.tabular.all import *
+from fastai.tabular.all import *
 
 # Cell
 class TabularDataset():

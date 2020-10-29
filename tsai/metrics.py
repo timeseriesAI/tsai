@@ -4,7 +4,7 @@ __all__ = ['MatthewsCorrCoef']
 
 # Cell
 from .imports import *
-from fastai2.metrics import *
+from fastai.metrics import *
 
 # Cell
 def MatthewsCorrCoef(axis=-1, sample_weight=None):
