@@ -2,11 +2,13 @@
 
 title: Data Core
 
+
 keywords: fastai
 sidebar: home_sidebar
 
 summary: "Main Numpy and Times Series functions used throughout the library."
 description: "Main Numpy and Times Series functions used throughout the library."
+nb_path: "nbs/002_data.core.ipynb"
 ---
 <!--
 
@@ -30,23 +32,6 @@ description: "Main Numpy and Times Series functions used throughout the library.
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">tsai.models.InceptionTime</span> <span class="kn">import</span> <span class="o">*</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
 
 </div>
     {% endraw %}
@@ -85,12 +70,12 @@ y_valid: (30,)
 Dataset: OliveOil
 X      : (60, 1, 570)
 y      : (60,)
-splits : ((#30) [0,1,2,3,4,5,6,7,8,9...], (#30) [30,31,32,33,34,35,36,37,38,39...]) 
+splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], [30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59]) 
 
 Dataset: OliveOil
 X      : (60, 1, 570)
 y      : (60,)
-splits : ((#30) [0,1,2,3,4,5,6,7,8,9...], (#30) [30,31,32,33,34,35,36,37,38,39...]) 
+splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], [30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59]) 
 
 </pre>
 </div>
@@ -113,6 +98,13 @@ splits : ((#30) [0,1,2,3,4,5,6,7,8,9...], (#30) [30,31,32,33,34,35,36,37,38,39..
     
 <div class="cell border-box-sizing code_cell rendered">
 
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
 <div class="output_wrapper">
 <div class="output">
 
@@ -120,9 +112,117 @@ splits : ((#30) [0,1,2,3,4,5,6,7,8,9...], (#30) [30,31,32,33,34,35,36,37,38,39..
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="NumpyTensor" class="doc_header"><code>class</code> <code>NumpyTensor</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L14" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyTensor</code>(<strong><code>o</code></strong>, <strong>**<code>kwargs</code></strong>) :: <code>TensorBase</code></p>
+<h2 id="TensorBase" class="doc_header"><code>class</code> <code>TensorBase</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L300" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TensorBase</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <code>Tensor</code></p>
 </blockquote>
-<p>Returns a <code>tensor</code> with subclass <a href="/data.core#NumpyTensor"><code>NumpyTensor</code></a> that has a show method</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">inp</span> <span class="o">=</span> <span class="n">TensorBase</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mf">5.</span><span class="p">))</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1"># inp = torch.tensor(5.).requires_grad_(True) # This is OK</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">inp</span><span class="p">)</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">inp</span><span class="o">**</span><span class="mi">2</span>
+<span class="n">grad</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">autograd</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">inp</span><span class="p">,</span> <span class="n">only_inputs</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">grad</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>TensorBase(5., requires_grad=True)
+tensor(10.)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">true_img</span> <span class="o">=</span> <span class="n">TensorBase</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">16</span><span class="p">))</span> <span class="c1"># get from Dataloaders</span>
+<span class="c1"># true_img = torch.randn(2, 3, 16) # This is OK</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mf">3.</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">fake_img</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span> <span class="o">*</span> <span class="n">w</span> <span class="c1"># generate from model</span>
+<span class="k">def</span> <span class="nf">loss_func</span><span class="p">(</span><span class="n">fake_img</span><span class="p">,</span> <span class="n">true_img</span><span class="p">):</span> <span class="k">return</span> <span class="p">((</span><span class="n">fake_img</span><span class="o">-</span><span class="n">true_img</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="n">loss_func</span><span class="p">(</span><span class="n">fake_img</span><span class="p">,</span> <span class="n">true_img</span><span class="p">)</span>
+<span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+<span class="n">w</span><span class="o">.</span><span class="n">grad</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor(6.6482)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="NumpyTensor" class="doc_header"><code>class</code> <code>NumpyTensor</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L42" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyTensor</code>(<strong><code>o</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/data.core.html#TensorBase"><code>TensorBase</code></a></p>
+</blockquote>
+<p>Returns a <code>tensor</code> with subclass <a href="/data.core.html#NumpyTensor"><code>NumpyTensor</code></a> that has a show method</p>
 
 </div>
 
@@ -145,9 +245,9 @@ splits : ((#30) [0,1,2,3,4,5,6,7,8,9...], (#30) [30,31,32,33,34,35,36,37,38,39..
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ToNumpyTensor" class="doc_header"><code>class</code> <code>ToNumpyTensor</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L37" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ToNumpyTensor</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
+<h2 id="ToNumpyTensor" class="doc_header"><code>class</code> <code>ToNumpyTensor</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L71" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ToNumpyTensor</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
 </blockquote>
-<p>Transforms np.ndarray to NumpyTensor</p>
+<p>Transforms an object into NumpyTensor</p>
 
 </div>
 
@@ -177,9 +277,9 @@ splits : ((#30) [0,1,2,3,4,5,6,7,8,9...], (#30) [30,31,32,33,34,35,36,37,38,39..
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSTensor" class="doc_header"><code>class</code> <code>TSTensor</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L42" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTensor</code>(<strong><code>o</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/data.core#NumpyTensor"><code>NumpyTensor</code></a></p>
+<h2 id="TSTensor" class="doc_header"><code>class</code> <code>TSTensor</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L76" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTensor</code>(<strong><code>o</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/data.core.html#NumpyTensor"><code>NumpyTensor</code></a></p>
 </blockquote>
-<p>Returns a <code>tensor</code> with subclass <a href="/data.core#TSTensor"><code>TSTensor</code></a> that has a show method</p>
+<p>Returns a <code>tensor</code> with subclass <a href="/data.core.html#TSTensor"><code>TSTensor</code></a> that has a show method</p>
 
 </div>
 
@@ -202,10 +302,108 @@ splits : ((#30) [0,1,2,3,4,5,6,7,8,9...], (#30) [30,31,32,33,34,35,36,37,38,39..
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ToTSTensor" class="doc_header"><code>class</code> <code>ToTSTensor</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L54" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ToTSTensor</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
+<h2 id="ToTSTensor" class="doc_header"><code>class</code> <code>ToTSTensor</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L94" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ToTSTensor</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
 </blockquote>
-<p>Delegates (<code>__call__</code>,<code>decode</code>,<code>setup</code>) to (<code>encodes</code>,<code>decodes</code>,<code>setups</code>) if <code>split_idx</code> matches</p>
+<p>Transforms an object into TSTensor</p>
 
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">true</span> <span class="o">=</span> <span class="n">TSTensor</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mf">3.</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">fake</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="o">*</span> <span class="n">w</span>  <span class="c1"># generated by model</span>
+
+
+<span class="k">def</span> <span class="nf">loss_func</span><span class="p">(</span><span class="n">fake</span><span class="p">,</span> <span class="n">true</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">((</span><span class="n">fake</span> <span class="o">-</span> <span class="n">true</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+
+
+<span class="n">loss</span> <span class="o">=</span> <span class="n">loss_func</span><span class="p">(</span><span class="n">fake</span><span class="p">,</span> <span class="n">true</span><span class="p">)</span>
+<span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+<span class="n">w</span><span class="o">.</span><span class="n">grad</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor(7.0297)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">TSTensor</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mf">3.</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">test</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">true</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">test</span><span class="o">.</span><span class="n">requires_grad</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">l</span> <span class="o">=</span> <span class="n">L</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">],</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">])</span>
+<span class="n">TSTensor</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>TSTensor(vars:4, len:4)</pre>
 </div>
 
 </div>
@@ -240,7 +438,7 @@ splits : ((#30) [0,1,2,3,4,5,6,7,8,9...], (#30) [30,31,32,33,34,35,36,37,38,39..
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>TSTensor(samples:30, vars:1, len:570)
-TSTensor(vars:1, len:570)
+TSTensor(vars:570, len:570)
 TSTensor(len:570)
 -0.6113752722740173
 </pre>
@@ -293,7 +491,7 @@ TSTensor(len:570)
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ToTSTensor</span><span class="p">()((</span><span class="n">X_on_disk</span><span class="p">,</span> <span class="n">y_tensor</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ToTSTensor</span><span class="p">()(</span><span class="n">X_on_disk</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -308,10 +506,7 @@ TSTensor(len:570)
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(TSTensor(samples:60, vars:1, len:570),
- tensor([0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3,
-         3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2,
-         3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]))</pre>
+<pre>TSTensor(samples:60, vars:1, len:570)</pre>
 </div>
 
 </div>
@@ -344,7 +539,7 @@ TSTensor(len:570)
 
 
 <div class="output_png output_subarea ">
-<img src="data:image/png;base64,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
+<img src="data:image/png;base64,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
 "
 >
 </div>
@@ -375,7 +570,110 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="NumpyTensorBlock" class="doc_header"><code>class</code> <code>NumpyTensorBlock</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L58" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyTensorBlock</code>(<strong><code>type_tfms</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong><code>dls_kwargs</code></strong>=<em><code>None</code></em>)</p>
+<h2 id="ToFloat" class="doc_header"><code>class</code> <code>ToFloat</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L99" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ToFloat</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
+</blockquote>
+<p>Transforms an object dtype to float</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="ToInt" class="doc_header"><code>class</code> <code>ToInt</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L105" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ToInt</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
+</blockquote>
+<p>Transforms an object dtype to int</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;3&#39;</span><span class="p">])</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;1.0&#39;</span><span class="p">,</span> <span class="s1">&#39;2.0&#39;</span><span class="p">,</span> <span class="s1">&#39;3.0&#39;</span><span class="p">])</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="p">))</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">ToFloat</span><span class="p">()(</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">ToFloat</span><span class="p">()(</span><span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">ToFloat</span><span class="p">()(</span><span class="n">c</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">ToFloat</span><span class="p">()(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">*</span><span class="mi">10</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;1.0&#39;</span><span class="p">,</span> <span class="s1">&#39;2.0&#39;</span><span class="p">,</span> <span class="s1">&#39;3.0&#39;</span><span class="p">])</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">*</span><span class="mi">10</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">ToInt</span><span class="p">()(</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="s1">&#39;int64&#39;</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">ToInt</span><span class="p">()(</span><span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="s1">&#39;int64&#39;</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">ToInt</span><span class="p">()(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="NumpyTensorBlock" class="doc_header"><code>class</code> <code>NumpyTensorBlock</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L111" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyTensorBlock</code>(<strong><code>type_tfms</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong><code>dls_kwargs</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -399,7 +697,7 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSTensorBlock" class="doc_header"><code>class</code> <code>TSTensorBlock</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L65" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTensorBlock</code>(<strong><code>type_tfms</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong><code>dls_kwargs</code></strong>=<em><code>None</code></em>)</p>
+<h2 id="TSTensorBlock" class="doc_header"><code>class</code> <code>TSTensorBlock</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L118" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTensorBlock</code>(<strong><code>type_tfms</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong><code>dls_kwargs</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -448,7 +746,7 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TorchDataset" class="doc_header"><code>class</code> <code>TorchDataset</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L73" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TorchDataset</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>)</p>
+<h2 id="TorchDataset" class="doc_header"><code>class</code> <code>TorchDataset</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L126" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TorchDataset</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -472,7 +770,7 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="NumpyDataset" class="doc_header"><code>class</code> <code>NumpyDataset</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L78" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyDataset</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>types</code></strong>=<em><code>None</code></em>)</p>
+<h2 id="NumpyDataset" class="doc_header"><code>class</code> <code>NumpyDataset</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L132" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyDataset</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>types</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -496,7 +794,7 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSDataset" class="doc_header"><code>class</code> <code>TSDataset</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L87" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDataset</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>types</code></strong>=<em><code>None</code></em>, <strong><code>sel_vars</code></strong>=<em><code>None</code></em>, <strong><code>sel_steps</code></strong>=<em><code>None</code></em>)</p>
+<h2 id="TSDataset" class="doc_header"><code>class</code> <code>TSDataset</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L142" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDataset</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>types</code></strong>=<em><code>None</code></em>, <strong><code>sel_vars</code></strong>=<em><code>None</code></em>, <strong><code>sel_steps</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -579,7 +877,7 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="NumpyDatasets" class="doc_header"><code>class</code> <code>NumpyDatasets</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L106" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyDatasets</code>(<strong><code>items</code></strong>=<em><code>None</code></em>, <strong><code>tfms</code></strong>=<em><code>None</code></em>, <strong><code>tls</code></strong>=<em><code>None</code></em>, <strong><code>n_inp</code></strong>=<em><code>None</code></em>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong><code>use_list</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>train_setup</code></strong>=<em><code>True</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>types</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>) :: <code>Datasets</code></p>
+<h2 id="NumpyDatasets" class="doc_header"><code>class</code> <code>NumpyDatasets</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L162" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyDatasets</code>(<strong><code>items</code></strong>=<em><code>None</code></em>, <strong><code>tfms</code></strong>=<em><code>None</code></em>, <strong><code>tls</code></strong>=<em><code>None</code></em>, <strong><code>n_inp</code></strong>=<em><code>None</code></em>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong><code>use_list</code></strong>=<em><code>False</code></em>, <strong><code>match</code></strong>=<em><code>None</code></em>) :: <code>Datasets</code></p>
 </blockquote>
 <p>A dataset that creates tuples from X (and y) and applies <code>tfms</code> of type item_tfms</p>
 
@@ -604,7 +902,7 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSDatasets" class="doc_header"><code>class</code> <code>TSDatasets</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L142" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDatasets</code>(<strong><code>items</code></strong>=<em><code>None</code></em>, <strong><code>tfms</code></strong>=<em><code>None</code></em>, <strong><code>tls</code></strong>=<em><code>None</code></em>, <strong><code>n_inp</code></strong>=<em><code>None</code></em>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong><code>use_list</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>train_setup</code></strong>=<em><code>True</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>types</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>) :: <a href="/data.core#NumpyDatasets"><code>NumpyDatasets</code></a></p>
+<h2 id="TSDatasets" class="doc_header"><code>class</code> <code>TSDatasets</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L209" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDatasets</code>(<strong><code>items</code></strong>=<em><code>None</code></em>, <strong><code>tfms</code></strong>=<em><code>None</code></em>, <strong><code>tls</code></strong>=<em><code>None</code></em>, <strong><code>n_inp</code></strong>=<em><code>None</code></em>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong><code>use_list</code></strong>=<em><code>False</code></em>, <strong><code>match</code></strong>=<em><code>None</code></em>) :: <a href="/data.core.html#NumpyDatasets"><code>NumpyDatasets</code></a></p>
 </blockquote>
 <p>A dataset that creates tuples from X (and y) and applies <code>item_tfms</code></p>
 
@@ -679,7 +977,7 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="add_ds" class="doc_header"><code>add_ds</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L172" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>add_ds</code>(<strong><code>dsets</code></strong>, <strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>test_items</code></strong>=<em><code>None</code></em>, <strong><code>rm_tfms</code></strong>=<em><code>None</code></em>, <strong><code>with_labels</code></strong>=<em><code>False</code></em>, <strong><code>inplace</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="add_ds" class="doc_header"><code>add_ds</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L242" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>add_ds</code>(<strong><code>dsets</code></strong>, <strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>inplace</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Create test datasets from X (and y) using validation transforms of <code>dsets</code></p>
 
@@ -704,7 +1002,7 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="NumpyDatasets.add_test" class="doc_header"><code>NumpyDatasets.add_test</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L195" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>NumpyDatasets.add_test</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>test_items</code></strong>=<em><code>None</code></em>, <strong><code>rm_tfms</code></strong>=<em><code>None</code></em>, <strong><code>with_labels</code></strong>=<em><code>False</code></em>, <strong><code>inplace</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="NumpyDatasets.add_dataset" class="doc_header"><code>NumpyDatasets.add_dataset</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L260" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>NumpyDatasets.add_dataset</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>inplace</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 
 </div>
@@ -728,7 +1026,31 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="NumpyDatasets.add_unlabeled" class="doc_header"><code>NumpyDatasets.add_unlabeled</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L199" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>NumpyDatasets.add_unlabeled</code>(<strong><code>X</code></strong>, <strong><code>test_items</code></strong>=<em><code>None</code></em>, <strong><code>rm_tfms</code></strong>=<em><code>None</code></em>, <strong><code>with_labels</code></strong>=<em><code>False</code></em>, <strong><code>inplace</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="NumpyDatasets.add_test" class="doc_header"><code>NumpyDatasets.add_test</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L264" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>NumpyDatasets.add_test</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>inplace</code></strong>=<em><code>True</code></em>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="NumpyDatasets.add_unlabeled" class="doc_header"><code>NumpyDatasets.add_unlabeled</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L268" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>NumpyDatasets.add_unlabeled</code>(<strong><code>X</code></strong>, <strong><code>inplace</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 
 </div>
@@ -778,7 +1100,7 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="NumpyDataLoader" class="doc_header"><code>class</code> <code>NumpyDataLoader</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L206" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyDataLoader</code>(<strong><code>dataset</code></strong>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>num_workers</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>TfmdDL</code></p>
+<h2 id="NumpyDataLoader" class="doc_header"><code>class</code> <code>NumpyDataLoader</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L276" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyDataLoader</code>(<strong><code>dataset</code></strong>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>drop_last</code></strong>=<em><code>True</code></em>, <strong><code>num_workers</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>) :: <code>TfmdDL</code></p>
 </blockquote>
 <p>Transformed <code>DataLoader</code></p>
 
@@ -803,7 +1125,7 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="show_tuple" class="doc_header"><code>show_tuple</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L254" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>show_tuple</code>(<strong><code>tup</code></strong>, <strong><code>nrows</code></strong>=<em><code>1</code></em>, <strong><code>ncols</code></strong>=<em><code>1</code></em>, <strong><code>sharex</code></strong>=<em><code>False</code></em>, <strong><code>sharey</code></strong>=<em><code>False</code></em>, <strong><code>squeeze</code></strong>=<em><code>True</code></em>, <strong><code>subplot_kw</code></strong>=<em><code>None</code></em>, <strong><code>gridspec_kw</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="show_tuple" class="doc_header"><code>show_tuple</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L354" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>show_tuple</code>(<strong><code>tup</code></strong>, <strong><code>nrows</code></strong>=<em><code>1</code></em>, <strong><code>ncols</code></strong>=<em><code>1</code></em>, <strong><code>sharex</code></strong>=<em><code>False</code></em>, <strong><code>sharey</code></strong>=<em><code>False</code></em>, <strong><code>squeeze</code></strong>=<em><code>True</code></em>, <strong><code>subplot_kw</code></strong>=<em><code>None</code></em>, <strong><code>gridspec_kw</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Display a timeseries plot from a decoded tuple</p>
 
@@ -828,7 +1150,7 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSDataLoader" class="doc_header"><code>class</code> <code>TSDataLoader</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L259" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDataLoader</code>(<strong><code>dataset</code></strong>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>num_workers</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/data.core#NumpyDataLoader"><code>NumpyDataLoader</code></a></p>
+<h2 id="TSDataLoader" class="doc_header"><code>class</code> <code>TSDataLoader</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L359" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDataLoader</code>(<strong><code>dataset</code></strong>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>drop_last</code></strong>=<em><code>True</code></em>, <strong><code>num_workers</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>) :: <a href="/data.core.html#NumpyDataLoader"><code>NumpyDataLoader</code></a></p>
 </blockquote>
 <p>Transformed <code>DataLoader</code></p>
 
@@ -860,7 +1182,7 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="NumpyDataLoaders" class="doc_header"><code>class</code> <code>NumpyDataLoaders</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L268" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyDataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>device(type='cpu')</code></em>) :: <code>DataLoaders</code></p>
+<h2 id="NumpyDataLoaders" class="doc_header"><code>class</code> <code>NumpyDataLoaders</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L371" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyDataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>device(type='cpu')</code></em>) :: <code>DataLoaders</code></p>
 </blockquote>
 <p>Basic wrapper around several <code>DataLoader</code>s.</p>
 
@@ -885,7 +1207,7 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSDataLoaders" class="doc_header"><code>class</code> <code>TSDataLoaders</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L302" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>device(type='cpu')</code></em>) :: <a href="/data.core#NumpyDataLoaders"><code>NumpyDataLoaders</code></a></p>
+<h2 id="TSDataLoaders" class="doc_header"><code>class</code> <code>TSDataLoaders</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L405" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>device(type='cpu')</code></em>) :: <a href="/data.core.html#NumpyDataLoaders"><code>NumpyDataLoaders</code></a></p>
 </blockquote>
 <p>Basic wrapper around several <code>DataLoader</code>s.</p>
 
@@ -917,7 +1239,7 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DataLoader.cws" class="doc_header"><code>DataLoader.cws</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L307" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>DataLoader.cws</code>()</p>
+<h4 id="NumpyDataLoader.cws" class="doc_header"><code>NumpyDataLoader.cws</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L410" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>NumpyDataLoader.cws</code>()</p>
 </blockquote>
 
 </div>
@@ -939,13 +1261,13 @@ TSTensor(len:570)
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">bs</span> <span class="o">=</span> <span class="mi">25</span>
 <span class="n">dsets</span> <span class="o">=</span> <span class="n">TSDatasets</span><span class="p">(</span><span class="n">X_on_disk</span><span class="p">,</span> <span class="n">y_array</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">Categorize</span><span class="p">()],</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">dls</span>   <span class="o">=</span> <span class="n">TSDataLoaders</span><span class="o">.</span><span class="n">from_dsets</span><span class="p">(</span><span class="n">dsets</span><span class="o">.</span><span class="n">train</span><span class="p">,</span> <span class="n">dsets</span><span class="o">.</span><span class="n">valid</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">bs</span><span class="o">*</span><span class="mi">2</span><span class="p">],</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="p">[</span><span class="n">add</span><span class="p">(</span><span class="mi">1</span><span class="p">)])</span>
+<span class="n">dls</span>   <span class="o">=</span> <span class="n">TSDataLoaders</span><span class="o">.</span><span class="n">from_dsets</span><span class="p">(</span><span class="n">dsets</span><span class="o">.</span><span class="n">train</span><span class="p">,</span> <span class="n">dsets</span><span class="o">.</span><span class="n">valid</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">bs</span><span class="o">*</span><span class="mi">2</span><span class="p">],</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="n">add</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
 <span class="n">xb</span><span class="p">,</span><span class="n">yb</span> <span class="o">=</span> <span class="n">dls</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">one_batch</span><span class="p">()</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">xb</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">tensor</span><span class="p">(</span><span class="n">X_on_disk</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="n">dls</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">idxs</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 <span class="n">dsets</span> <span class="o">=</span> <span class="n">TSDatasets</span><span class="p">(</span><span class="n">X_on_disk</span><span class="p">,</span> <span class="n">y_array</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">Categorize</span><span class="p">()],</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">dls</span>   <span class="o">=</span> <span class="n">TSDataLoaders</span><span class="o">.</span><span class="n">from_dsets</span><span class="p">(</span><span class="n">dsets</span><span class="o">.</span><span class="n">train</span><span class="p">,</span> <span class="n">dsets</span><span class="o">.</span><span class="n">valid</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">bs</span><span class="o">*</span><span class="mi">2</span><span class="p">])</span>
 <span class="n">xb</span><span class="p">,</span><span class="n">yb</span> <span class="o">=</span> <span class="n">dls</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">one_batch</span><span class="p">()</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">])),</span> <span class="n">X_on_disk</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">X_on_disk</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">])),</span> <span class="n">X_on_disk</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">X_on_disk</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
 <span class="k">for</span> <span class="n">xb</span><span class="p">,</span><span class="n">yb</span> <span class="ow">in</span> <span class="n">dls</span><span class="o">.</span><span class="n">train</span><span class="p">:</span> 
     <span class="n">test_eq</span><span class="p">(</span><span class="n">xb</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">tensor</span><span class="p">(</span><span class="n">X_on_disk</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="n">dls</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">idxs</span><span class="p">]))</span>
 <span class="n">it</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">train</span><span class="p">)</span>
@@ -972,9 +1294,106 @@ TSTensor(len:570)
 <span class="n">dsets</span> <span class="o">=</span> <span class="n">TSDatasets</span><span class="p">(</span><span class="n">X_on_disk</span><span class="p">,</span> <span class="n">y_array</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="p">[</span><span class="n">add</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">Categorize</span><span class="p">()],</span> <span class="n">splits</span><span class="o">=</span><span class="n">RandomSplitter</span><span class="p">(</span><span class="n">valid_pct</span><span class="o">=.</span><span class="mi">3</span><span class="p">)(</span><span class="n">y_array</span><span class="p">),</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">dls</span> <span class="o">=</span> <span class="n">TSDataLoaders</span><span class="o">.</span><span class="n">from_dsets</span><span class="p">(</span><span class="n">dsets</span><span class="o">.</span><span class="n">train</span><span class="p">,</span> <span class="n">dsets</span><span class="o">.</span><span class="n">valid</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">bs</span><span class="o">*</span><span class="mi">2</span><span class="p">])</span>
 <span class="n">xb</span><span class="p">,</span><span class="n">yb</span> <span class="o">=</span> <span class="n">dls</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">one_batch</span><span class="p">()</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">dsets</span><span class="o">.</span><span class="n">train</span><span class="p">)),</span> <span class="n">X_on_disk</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">X_on_disk</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">dsets</span><span class="o">.</span><span class="n">train</span><span class="p">)),</span> <span class="n">X_on_disk</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">X_on_disk</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
 <span class="n">xb</span><span class="p">,</span><span class="n">yb</span> <span class="o">=</span> <span class="n">dls</span><span class="o">.</span><span class="n">valid</span><span class="o">.</span><span class="n">one_batch</span><span class="p">()</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">bs</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">dsets</span><span class="o">.</span><span class="n">valid</span><span class="p">)),</span> <span class="n">X_on_disk</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">X_on_disk</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">bs</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">dsets</span><span class="o">.</span><span class="n">valid</span><span class="p">)),</span> <span class="n">X_on_disk</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">X_on_disk</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsets</span> <span class="o">=</span> <span class="n">TSDatasets</span><span class="p">(</span><span class="n">X_on_disk</span><span class="p">,</span> <span class="n">y_array</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">Categorize</span><span class="p">()],</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">dls</span>   <span class="o">=</span> <span class="n">TSDataLoaders</span><span class="o">.</span><span class="n">from_dsets</span><span class="p">(</span><span class="n">dsets</span><span class="o">.</span><span class="n">train</span><span class="p">,</span> <span class="n">dsets</span><span class="o">.</span><span class="n">valid</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="p">[</span><span class="mi">32</span><span class="p">,</span> <span class="mi">64</span><span class="p">])</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">dl</span> <span class="o">=</span> <span class="n">dls</span><span class="o">.</span><span class="n">train</span> <span class="k">if</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="o">.</span><span class="mi">5</span> <span class="k">else</span> <span class="n">dls</span><span class="o">.</span><span class="n">valid</span>
+    <span class="n">xb</span><span class="p">,</span><span class="n">yb</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">one_batch</span><span class="p">()</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">xb</span><span class="p">,</span> <span class="n">TSTensor</span><span class="p">(</span><span class="n">X_on_disk</span><span class="p">[</span><span class="n">dl</span><span class="o">.</span><span class="n">input_idxs</span><span class="p">]))</span>
+    
+<span class="n">dsets</span> <span class="o">=</span> <span class="n">TSDatasets</span><span class="p">(</span><span class="n">X_on_disk</span><span class="p">,</span> <span class="n">y_array</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">Categorize</span><span class="p">()],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">dls</span>   <span class="o">=</span> <span class="n">TSDataLoaders</span><span class="o">.</span><span class="n">from_dsets</span><span class="p">(</span><span class="n">dsets</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">xb</span><span class="p">,</span><span class="n">yb</span> <span class="o">=</span> <span class="n">dls</span><span class="o">.</span><span class="n">one_batch</span><span class="p">()</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">xb</span><span class="p">,</span> <span class="n">TSTensor</span><span class="p">(</span><span class="n">X_on_disk</span><span class="p">[</span><span class="n">dl</span><span class="o">.</span><span class="n">input_idxs</span><span class="p">]))</span>
+    
+<span class="n">dsets</span> <span class="o">=</span> <span class="n">TSDatasets</span><span class="p">(</span><span class="n">X_on_disk</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">dls</span>   <span class="o">=</span> <span class="n">TSDataLoaders</span><span class="o">.</span><span class="n">from_dsets</span><span class="p">(</span><span class="n">dsets</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">xb</span> <span class="o">=</span> <span class="n">dls</span><span class="o">.</span><span class="n">one_batch</span><span class="p">()</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">xb</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">TSTensor</span><span class="p">(</span><span class="n">X_on_disk</span><span class="p">[</span><span class="n">dl</span><span class="o">.</span><span class="n">input_idxs</span><span class="p">]))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsets</span> <span class="o">=</span> <span class="n">TSDatasets</span><span class="p">(</span><span class="n">X_on_disk</span><span class="p">,</span> <span class="n">y_array</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">Categorize</span><span class="p">()],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">dls</span>   <span class="o">=</span> <span class="n">TSDataLoaders</span><span class="o">.</span><span class="n">from_dsets</span><span class="p">(</span><span class="n">dsets</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
+<span class="n">test_eq_type</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">split_idxs</span><span class="p">,</span> <span class="n">L</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X_on_disk</span><span class="p">))</span><span class="o">.</span><span class="n">tolist</span><span class="p">()))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;NATOPS&#39;</span> 
+<span class="n">bs</span> <span class="o">=</span> <span class="mi">64</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">return_split</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">tfms</span>  <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">[</span><span class="n">Categorize</span><span class="p">()]]</span>
+<span class="n">dsets</span> <span class="o">=</span> <span class="n">TSDatasets</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">)</span>
+<span class="n">dls</span>   <span class="o">=</span> <span class="n">TSDataLoaders</span><span class="o">.</span><span class="n">from_dsets</span><span class="p">(</span><span class="n">dsets</span><span class="o">.</span><span class="n">train</span><span class="p">,</span> <span class="n">dsets</span><span class="o">.</span><span class="n">valid</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">bs</span><span class="o">*</span><span class="mi">2</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;NATOPS&#39;</span> 
+<span class="n">bs</span> <span class="o">=</span> <span class="mi">64</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">return_split</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">tfms</span>  <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">[</span><span class="n">Categorize</span><span class="p">()]]</span>
+<span class="n">dsets</span> <span class="o">=</span> <span class="n">TSDatasets</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">dls</span>   <span class="o">=</span> <span class="n">TSDataLoaders</span><span class="o">.</span><span class="n">from_dsets</span><span class="p">(</span><span class="n">dsets</span><span class="o">.</span><span class="n">train</span><span class="p">,</span> <span class="n">dsets</span><span class="o">.</span><span class="n">valid</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">bs</span><span class="o">*</span><span class="mi">2</span><span class="p">])</span>
 </pre></div>
 
     </div>

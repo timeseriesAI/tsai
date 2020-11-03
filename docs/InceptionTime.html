@@ -2,11 +2,13 @@
 
 title: InceptionTime
 
+
 keywords: fastai
 sidebar: home_sidebar
 
 summary: "This is an unofficial PyTorch implementation by Ignacio Oguiza - oguiza@gmail.com based on:"
 description: "This is an unofficial PyTorch implementation by Ignacio Oguiza - oguiza@gmail.com based on:"
+nb_path: "nbs/102_InceptionTime.ipynb"
 ---
 <!--
 
@@ -52,7 +54,7 @@ description: "This is an unofficial PyTorch implementation by Ignacio Oguiza - o
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="shortcut" class="doc_header"><code>shortcut</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/InceptionTime.py#L17" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>shortcut</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>)</p>
+<h4 id="shortcut" class="doc_header"><code>shortcut</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/InceptionTime.py#L18" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>shortcut</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -76,32 +78,7 @@ description: "This is an unofficial PyTorch implementation by Ignacio Oguiza - o
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Inception" class="doc_header"><code>class</code> <code>Inception</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/InceptionTime.py#L21" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Inception</code>(<strong><code>c_in</code></strong>, <strong><code>bottleneck</code></strong>=<em><code>32</code></em>, <strong><code>ks</code></strong>=<em><code>40</code></em>, <strong><code>nb_filters</code></strong>=<em><code>32</code></em>) :: <code>Module</code></p>
-</blockquote>
-<p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="InceptionBlock" class="doc_header"><code>class</code> <code>InceptionBlock</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/InceptionTime.py#L48" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>InceptionBlock</code>(<strong><code>c_in</code></strong>, <strong><code>bottleneck</code></strong>=<em><code>32</code></em>, <strong><code>ks</code></strong>=<em><code>40</code></em>, <strong><code>nb_filters</code></strong>=<em><code>32</code></em>, <strong><code>residual</code></strong>=<em><code>True</code></em>, <strong><code>depth</code></strong>=<em><code>6</code></em>) :: <code>Module</code></p>
+<h2 id="Inception" class="doc_header"><code>class</code> <code>Inception</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/InceptionTime.py#L22" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Inception</code>(<strong><code>c_in</code></strong>, <strong><code>bottleneck</code></strong>=<em><code>32</code></em>, <strong><code>ks</code></strong>=<em><code>40</code></em>, <strong><code>nb_filters</code></strong>=<em><code>32</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -126,7 +103,32 @@ description: "This is an unofficial PyTorch implementation by Ignacio Oguiza - o
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="InceptionTime" class="doc_header"><code>class</code> <code>InceptionTime</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/InceptionTime.py#L78" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>InceptionTime</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>bottleneck</code></strong>=<em><code>32</code></em>, <strong><code>ks</code></strong>=<em><code>40</code></em>, <strong><code>nb_filters</code></strong>=<em><code>32</code></em>, <strong><code>residual</code></strong>=<em><code>True</code></em>, <strong><code>depth</code></strong>=<em><code>6</code></em>) :: <code>Module</code></p>
+<h2 id="InceptionBlock" class="doc_header"><code>class</code> <code>InceptionBlock</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/InceptionTime.py#L49" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>InceptionBlock</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>=<em><code>32</code></em>, <strong><code>residual</code></strong>=<em><code>True</code></em>, <strong><code>depth</code></strong>=<em><code>6</code></em>, <strong><code>ks</code></strong>=<em><code>40</code></em>, <strong><code>bottleneck</code></strong>=<em><code>True</code></em>) :: <code>Module</code></p>
+</blockquote>
+<p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="InceptionTime" class="doc_header"><code>class</code> <code>InceptionTime</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/InceptionTime.py#L79" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>InceptionTime</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>nf</code></strong>=<em><code>32</code></em>, <strong><code>nb_filters</code></strong>=<em><code>None</code></em>, <strong><code>ks</code></strong>=<em><code>40</code></em>, <strong><code>bottleneck</code></strong>=<em><code>True</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 

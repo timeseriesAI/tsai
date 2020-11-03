@@ -11,52 +11,118 @@ entries:
       url: /
     - output: web,pdf
       title: Utilities
-      url: /utils
+      url: utils.html
     - output: web,pdf
       title: Data Validation
-      url: /data.validation
+      url: data.validation.html
     - output: web,pdf
       title: Data External
-      url: /data.external
+      url: data.external.html
     - output: web,pdf
       title: Data Core
-      url: /data.core
+      url: data.core.html
     - output: web,pdf
       title: Data Transforms
-      url: /data.transforms
+      url: data.transforms.html
+    - output: web,pdf
+      title: Data Image
+      url: data.image.html
     - output: web,pdf
       title: Data Tabular
-      url: /data.tabular
+      url: data.tabular.html
+    - output: web,pdf
+      title: Mixed data
+      url: data.mixed.html
     - output: web,pdf
       title: Metrics
-      url: /metrics
+      url: metrics.html
     - output: web,pdf
       title: Learner
-      url: /learner
+      url: learner.html
     - output: web,pdf
       title: Optimizers
-      url: /optimizer
+      url: optimizer.html
+    - output: web,pdf
+      title: Callback
+      url: callback.html
     - output: web,pdf
       title: rocket functions
-      url: /rocket_functions
+      url: rocket_functions.html
     - output: web,pdf
       title: Layers
-      url: /layers
+      url: models.layers.html
     - output: web,pdf
       title: Models utils
-      url: /models_utils
+      url: models_utils.html
     - output: web,pdf
       title: ResNet
-      url: /ResNet
+      url: models.ResNet.html
+    - output: web,pdf
+      title: ResNetPlus
+      url: models.ResNetPlus.html
     - output: web,pdf
       title: InceptionTime
-      url: /InceptionTime
+      url: models.InceptionTime.html
+    - output: web,pdf
+      title: InceptionTimePlus
+      url: models.InceptionTimePlus.html
     - output: web,pdf
       title: FCN
-      url: /FCN
+      url: models.FCN.html
+    - output: web,pdf
+      title: FCNPlus
+      url: models.FCNPlus.html
     - output: web,pdf
       title: ResCNN
-      url: /ResCNN
+      url: models.ResCNN.html
+    - output: web,pdf
+      title: RNN
+      url: models.RNN.html
+    - output: web,pdf
+      title: RNNPlus
+      url: models.RNNPlus.html
+    - output: web,pdf
+      title: XceptionTime
+      url: models.XceptionTime.html
+    - output: web,pdf
+      title: XceptionTimePlus
+      url: models.XceptionTimePlus.html
+    - output: web,pdf
+      title: RNN_FCN
+      url: models.RNN_FCN.html
+    - output: web,pdf
+      title: RNN_FCNPlus
+      url: models.RNN_FCNPlus.html
+    - output: web,pdf
+      title: TransformerModel
+      url: models.TransformerModel.html
+    - output: web,pdf
+      title: TST (Time Series Transformer)
+      url: models.TST.html
+    - output: web,pdf
+      title: OmniScaleCNN
+      url: models.OmniScaleCNN.html
+    - output: web,pdf
+      title: multilevel Wavelet Decomposition Network (mWDN)
+      url: models.mWDN.html
+    - output: web,pdf
+      title: ROCKET functions
+      url: models.ROCKET.html
+    - output: web,pdf
+      title: XResNet1d
+      url: models.XResNet1d.html
+    - output: web,pdf
+      title: XResNet1dPlus
+      url: models.XResNet1dPlus.html
+    - output: web,pdf
+      title: TabModel
+      url: models.TabModel.html
+    - output: web,pdf
+      title: Hybrid
+      url: models.Hybrid.html
+    - output: web,pdf
+      title: Trading utilities
+      url: trading.utils.html
     output: web
     title: tsai
   output: web
