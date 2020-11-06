@@ -46,14 +46,11 @@ entries:
       title: Callback
       url: callback.html
     - output: web,pdf
-      title: rocket functions
-      url: rocket_functions.html
+      title: Models utils
+      url: models.utils.html
     - output: web,pdf
       title: Layers
       url: models.layers.html
-    - output: web,pdf
-      title: Models utils
-      url: models_utils.html
     - output: web,pdf
       title: ResNet
       url: models.ResNet.html

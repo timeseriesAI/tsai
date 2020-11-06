@@ -6,36 +6,6 @@
 
 If you are looking for **timeseriesAI based on fastai v1**, it's been moved to **[timeseriesAI1](https://github.com/timeseriesAI/timeseriesAI1)**.
 
-## Install
-
-You can install the **latest stable** version from pip:
-
-`pip install tsai`
-
-Or you can install the **bleeding edge** version of this library from github by doing:
-
-`pip install git+https://github.com/timeseriesAI/timeseriesAI.git@master`
-
-In the latter case, you may also want to use install the bleeding egde fastai & fastcore libraries, in which case you need to do this:
-
-`pip install git+https://github.com/fastai/fastcore.git@master`
-
-`pip install git+https://github.com/fastai/fastai.git@master`
-
-## How to get started
-
-To get to know the `tsai` package, I'd suggest you start with this notebook:
-
-**[01_Intro_to_Time_Series_Classification](https://github.com/timeseriesAI/timeseriesAI/blob/master/tutorial_nbs/01_Intro_to_Time_Series_Classification.ipynb)**
-
-It provides an overview of a time series classification problem using fastai v2.
-
-If you want more details, you can get them in nbs 00 and 00a.
-
-To use tsai in your own notebooks, the only thing you need to do after you have installed the package is to add this:
-
-`from tsai.all import *`
-
 ## What's new?
 
 ### tsai: 2.0 (Nov 3rd, 2020)
@@ -55,3 +25,27 @@ To use tsai in your own notebooks, the only thing you need to do after you have 
 * Some of the models (those finishing with an plus) have additional, experimental functionality (like coordconv, zero_norm, squeeze and excitation, etc).
 
 The best way to discocer and understand how to use this new functionality is to use the tutorial nbs. I encourage you to use them!
+
+## Install
+
+You can install the **latest stable** version from pip:
+
+`pip install tsai`
+
+Or you can install the **bleeding edge** version of this library from github by doing:
+
+`pip install git+https://github.com/timeseriesAI/timeseriesAI.git@master`
+
+## How to get started
+
+To get to know the `tsai` package, I'd suggest you start with this notebook:
+
+**[01_Intro_to_Time_Series_Classification](https://github.com/timeseriesAI/timeseriesAI/blob/master/tutorial_nbs/01_Intro_to_Time_Series_Classification.ipynb)**
+
+It provides an overview of a time series classification problem using fastai v2.
+
+If you want more details, you can get them in nbs 00 and 00a.
+
+To use tsai in your own notebooks, the only thing you need to do after you have installed the package is to add this:
+
+`from tsai.all import *`

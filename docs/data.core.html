@@ -97,37 +97,6 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="TensorBase" class="doc_header"><code>class</code> <code>TensorBase</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L300" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TensorBase</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <code>Tensor</code></p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
 <div class="inner_cell">
@@ -150,8 +119,8 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>TensorBase(5., requires_grad=True)
-tensor(10.)
+<pre>TensorBase(5., grad_fn=&lt;AliasBackward&gt;)
+TensorBase(10.)
 </pre>
 </div>
 </div>
@@ -191,7 +160,7 @@ tensor(10.)
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor(6.6482)</pre>
+<pre>tensor(6.1019)</pre>
 </div>
 
 </div>
@@ -220,7 +189,7 @@ tensor(10.)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="NumpyTensor" class="doc_header"><code>class</code> <code>NumpyTensor</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L42" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyTensor</code>(<strong><code>o</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/data.core.html#TensorBase"><code>TensorBase</code></a></p>
+<h2 id="NumpyTensor" class="doc_header"><code>class</code> <code>NumpyTensor</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L18" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyTensor</code>(<strong><code>o</code></strong>, <strong>**<code>kwargs</code></strong>) :: <code>TensorBase</code></p>
 </blockquote>
 <p>Returns a <code>tensor</code> with subclass <a href="/data.core.html#NumpyTensor"><code>NumpyTensor</code></a> that has a show method</p>
 
@@ -245,7 +214,7 @@ tensor(10.)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ToNumpyTensor" class="doc_header"><code>class</code> <code>ToNumpyTensor</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L71" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ToNumpyTensor</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
+<h2 id="ToNumpyTensor" class="doc_header"><code>class</code> <code>ToNumpyTensor</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L47" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ToNumpyTensor</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
 </blockquote>
 <p>Transforms an object into NumpyTensor</p>
 
@@ -277,7 +246,7 @@ tensor(10.)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSTensor" class="doc_header"><code>class</code> <code>TSTensor</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L76" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTensor</code>(<strong><code>o</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/data.core.html#NumpyTensor"><code>NumpyTensor</code></a></p>
+<h2 id="TSTensor" class="doc_header"><code>class</code> <code>TSTensor</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L52" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTensor</code>(<strong><code>o</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/data.core.html#NumpyTensor"><code>NumpyTensor</code></a></p>
 </blockquote>
 <p>Returns a <code>tensor</code> with subclass <a href="/data.core.html#TSTensor"><code>TSTensor</code></a> that has a show method</p>
 
@@ -302,7 +271,7 @@ tensor(10.)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ToTSTensor" class="doc_header"><code>class</code> <code>ToTSTensor</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L94" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ToTSTensor</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
+<h2 id="ToTSTensor" class="doc_header"><code>class</code> <code>ToTSTensor</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L70" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ToTSTensor</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
 </blockquote>
 <p>Transforms an object into TSTensor</p>
 
@@ -349,7 +318,7 @@ tensor(10.)
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor(7.0297)</pre>
+<pre>tensor(7.2446)</pre>
 </div>
 
 </div>
@@ -570,7 +539,7 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ToFloat" class="doc_header"><code>class</code> <code>ToFloat</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L99" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ToFloat</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
+<h2 id="ToFloat" class="doc_header"><code>class</code> <code>ToFloat</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L75" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ToFloat</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
 </blockquote>
 <p>Transforms an object dtype to float</p>
 
@@ -595,7 +564,7 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ToInt" class="doc_header"><code>class</code> <code>ToInt</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L105" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ToInt</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
+<h2 id="ToInt" class="doc_header"><code>class</code> <code>ToInt</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L81" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ToInt</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
 </blockquote>
 <p>Transforms an object dtype to int</p>
 
@@ -673,7 +642,7 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="NumpyTensorBlock" class="doc_header"><code>class</code> <code>NumpyTensorBlock</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L111" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyTensorBlock</code>(<strong><code>type_tfms</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong><code>dls_kwargs</code></strong>=<em><code>None</code></em>)</p>
+<h2 id="NumpyTensorBlock" class="doc_header"><code>class</code> <code>NumpyTensorBlock</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L87" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyTensorBlock</code>(<strong><code>type_tfms</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong><code>dls_kwargs</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -697,7 +666,7 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSTensorBlock" class="doc_header"><code>class</code> <code>TSTensorBlock</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L118" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTensorBlock</code>(<strong><code>type_tfms</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong><code>dls_kwargs</code></strong>=<em><code>None</code></em>)</p>
+<h2 id="TSTensorBlock" class="doc_header"><code>class</code> <code>TSTensorBlock</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L94" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTensorBlock</code>(<strong><code>type_tfms</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong><code>dls_kwargs</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -746,7 +715,7 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TorchDataset" class="doc_header"><code>class</code> <code>TorchDataset</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L126" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TorchDataset</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>)</p>
+<h2 id="TorchDataset" class="doc_header"><code>class</code> <code>TorchDataset</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L102" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TorchDataset</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -770,7 +739,7 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="NumpyDataset" class="doc_header"><code>class</code> <code>NumpyDataset</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L132" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyDataset</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>types</code></strong>=<em><code>None</code></em>)</p>
+<h2 id="NumpyDataset" class="doc_header"><code>class</code> <code>NumpyDataset</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L108" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyDataset</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>types</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -794,7 +763,7 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSDataset" class="doc_header"><code>class</code> <code>TSDataset</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L142" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDataset</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>types</code></strong>=<em><code>None</code></em>, <strong><code>sel_vars</code></strong>=<em><code>None</code></em>, <strong><code>sel_steps</code></strong>=<em><code>None</code></em>)</p>
+<h2 id="TSDataset" class="doc_header"><code>class</code> <code>TSDataset</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L118" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDataset</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>types</code></strong>=<em><code>None</code></em>, <strong><code>sel_vars</code></strong>=<em><code>None</code></em>, <strong><code>sel_steps</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -877,7 +846,7 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="NumpyDatasets" class="doc_header"><code>class</code> <code>NumpyDatasets</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L162" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyDatasets</code>(<strong><code>items</code></strong>=<em><code>None</code></em>, <strong><code>tfms</code></strong>=<em><code>None</code></em>, <strong><code>tls</code></strong>=<em><code>None</code></em>, <strong><code>n_inp</code></strong>=<em><code>None</code></em>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong><code>use_list</code></strong>=<em><code>False</code></em>, <strong><code>match</code></strong>=<em><code>None</code></em>) :: <code>Datasets</code></p>
+<h2 id="NumpyDatasets" class="doc_header"><code>class</code> <code>NumpyDatasets</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L138" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyDatasets</code>(<strong><code>items</code></strong>=<em><code>None</code></em>, <strong><code>tfms</code></strong>=<em><code>None</code></em>, <strong><code>tls</code></strong>=<em><code>None</code></em>, <strong><code>n_inp</code></strong>=<em><code>None</code></em>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong><code>use_list</code></strong>=<em><code>False</code></em>, <strong><code>match</code></strong>=<em><code>None</code></em>) :: <code>Datasets</code></p>
 </blockquote>
 <p>A dataset that creates tuples from X (and y) and applies <code>tfms</code> of type item_tfms</p>
 
@@ -902,7 +871,7 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSDatasets" class="doc_header"><code>class</code> <code>TSDatasets</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L209" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDatasets</code>(<strong><code>items</code></strong>=<em><code>None</code></em>, <strong><code>tfms</code></strong>=<em><code>None</code></em>, <strong><code>tls</code></strong>=<em><code>None</code></em>, <strong><code>n_inp</code></strong>=<em><code>None</code></em>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong><code>use_list</code></strong>=<em><code>False</code></em>, <strong><code>match</code></strong>=<em><code>None</code></em>) :: <a href="/data.core.html#NumpyDatasets"><code>NumpyDatasets</code></a></p>
+<h2 id="TSDatasets" class="doc_header"><code>class</code> <code>TSDatasets</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L185" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDatasets</code>(<strong><code>items</code></strong>=<em><code>None</code></em>, <strong><code>tfms</code></strong>=<em><code>None</code></em>, <strong><code>tls</code></strong>=<em><code>None</code></em>, <strong><code>n_inp</code></strong>=<em><code>None</code></em>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong><code>use_list</code></strong>=<em><code>False</code></em>, <strong><code>match</code></strong>=<em><code>None</code></em>) :: <a href="/data.core.html#NumpyDatasets"><code>NumpyDatasets</code></a></p>
 </blockquote>
 <p>A dataset that creates tuples from X (and y) and applies <code>item_tfms</code></p>
 
@@ -977,7 +946,7 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="add_ds" class="doc_header"><code>add_ds</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L242" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>add_ds</code>(<strong><code>dsets</code></strong>, <strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>inplace</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="add_ds" class="doc_header"><code>add_ds</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L218" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>add_ds</code>(<strong><code>dsets</code></strong>, <strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>inplace</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Create test datasets from X (and y) using validation transforms of <code>dsets</code></p>
 
@@ -1002,7 +971,7 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="NumpyDatasets.add_dataset" class="doc_header"><code>NumpyDatasets.add_dataset</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L260" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>NumpyDatasets.add_dataset</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>inplace</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="NumpyDatasets.add_dataset" class="doc_header"><code>NumpyDatasets.add_dataset</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L236" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>NumpyDatasets.add_dataset</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>inplace</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 
 </div>
@@ -1026,7 +995,7 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="NumpyDatasets.add_test" class="doc_header"><code>NumpyDatasets.add_test</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L264" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>NumpyDatasets.add_test</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>inplace</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="NumpyDatasets.add_test" class="doc_header"><code>NumpyDatasets.add_test</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L240" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>NumpyDatasets.add_test</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>inplace</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 
 </div>
@@ -1050,7 +1019,7 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="NumpyDatasets.add_unlabeled" class="doc_header"><code>NumpyDatasets.add_unlabeled</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L268" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>NumpyDatasets.add_unlabeled</code>(<strong><code>X</code></strong>, <strong><code>inplace</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="NumpyDatasets.add_unlabeled" class="doc_header"><code>NumpyDatasets.add_unlabeled</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L244" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>NumpyDatasets.add_unlabeled</code>(<strong><code>X</code></strong>, <strong><code>inplace</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 
 </div>
@@ -1100,7 +1069,7 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="NumpyDataLoader" class="doc_header"><code>class</code> <code>NumpyDataLoader</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L276" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyDataLoader</code>(<strong><code>dataset</code></strong>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>drop_last</code></strong>=<em><code>True</code></em>, <strong><code>num_workers</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>) :: <code>TfmdDL</code></p>
+<h2 id="NumpyDataLoader" class="doc_header"><code>class</code> <code>NumpyDataLoader</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L252" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyDataLoader</code>(<strong><code>dataset</code></strong>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>drop_last</code></strong>=<em><code>True</code></em>, <strong><code>num_workers</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>persistent_workers</code></strong>=<em><code>False</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>) :: <code>TfmdDL</code></p>
 </blockquote>
 <p>Transformed <code>DataLoader</code></p>
 
@@ -1125,7 +1094,7 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="show_tuple" class="doc_header"><code>show_tuple</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L354" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>show_tuple</code>(<strong><code>tup</code></strong>, <strong><code>nrows</code></strong>=<em><code>1</code></em>, <strong><code>ncols</code></strong>=<em><code>1</code></em>, <strong><code>sharex</code></strong>=<em><code>False</code></em>, <strong><code>sharey</code></strong>=<em><code>False</code></em>, <strong><code>squeeze</code></strong>=<em><code>True</code></em>, <strong><code>subplot_kw</code></strong>=<em><code>None</code></em>, <strong><code>gridspec_kw</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="show_tuple" class="doc_header"><code>show_tuple</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L330" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>show_tuple</code>(<strong><code>tup</code></strong>, <strong><code>nrows</code></strong>=<em><code>1</code></em>, <strong><code>ncols</code></strong>=<em><code>1</code></em>, <strong><code>sharex</code></strong>=<em><code>False</code></em>, <strong><code>sharey</code></strong>=<em><code>False</code></em>, <strong><code>squeeze</code></strong>=<em><code>True</code></em>, <strong><code>subplot_kw</code></strong>=<em><code>None</code></em>, <strong><code>gridspec_kw</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Display a timeseries plot from a decoded tuple</p>
 
@@ -1150,7 +1119,7 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSDataLoader" class="doc_header"><code>class</code> <code>TSDataLoader</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L359" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDataLoader</code>(<strong><code>dataset</code></strong>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>drop_last</code></strong>=<em><code>True</code></em>, <strong><code>num_workers</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>) :: <a href="/data.core.html#NumpyDataLoader"><code>NumpyDataLoader</code></a></p>
+<h2 id="TSDataLoader" class="doc_header"><code>class</code> <code>TSDataLoader</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L335" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDataLoader</code>(<strong><code>dataset</code></strong>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>drop_last</code></strong>=<em><code>True</code></em>, <strong><code>num_workers</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>persistent_workers</code></strong>=<em><code>False</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>) :: <a href="/data.core.html#NumpyDataLoader"><code>NumpyDataLoader</code></a></p>
 </blockquote>
 <p>Transformed <code>DataLoader</code></p>
 
@@ -1182,7 +1151,7 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="NumpyDataLoaders" class="doc_header"><code>class</code> <code>NumpyDataLoaders</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L371" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyDataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>device(type='cpu')</code></em>) :: <code>DataLoaders</code></p>
+<h2 id="NumpyDataLoaders" class="doc_header"><code>class</code> <code>NumpyDataLoaders</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L347" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyDataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>device(type='cpu')</code></em>) :: <code>DataLoaders</code></p>
 </blockquote>
 <p>Basic wrapper around several <code>DataLoader</code>s.</p>
 
@@ -1207,7 +1176,7 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSDataLoaders" class="doc_header"><code>class</code> <code>TSDataLoaders</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L405" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>device(type='cpu')</code></em>) :: <a href="/data.core.html#NumpyDataLoaders"><code>NumpyDataLoaders</code></a></p>
+<h2 id="TSDataLoaders" class="doc_header"><code>class</code> <code>TSDataLoaders</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L381" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>device(type='cpu')</code></em>) :: <a href="/data.core.html#NumpyDataLoaders"><code>NumpyDataLoaders</code></a></p>
 </blockquote>
 <p>Basic wrapper around several <code>DataLoader</code>s.</p>
 
@@ -1239,7 +1208,7 @@ TSTensor(len:570)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="NumpyDataLoader.cws" class="doc_header"><code>NumpyDataLoader.cws</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L410" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>NumpyDataLoader.cws</code>()</p>
+<h4 id="NumpyDataLoader.cws" class="doc_header"><code>NumpyDataLoader.cws</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/core.py#L386" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>NumpyDataLoader.cws</code>()</p>
 </blockquote>
 
 </div>

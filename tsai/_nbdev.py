@@ -80,6 +80,8 @@ index = {"totensor": "000_utils.ipynb",
          "apply_cmap": "000_utils.ipynb",
          "torch_tile": "000_utils.ipynb",
          "to_tsfresh_dataset": "000_utils.ipynb",
+         "pcorr": "000_utils.ipynb",
+         "scorr": "000_utils.ipynb",
          "check_overlap": "000b_data.validation.ipynb",
          "leakage_finder": "000b_data.validation.ipynb",
          "balance_idx": "000b_data.validation.ipynb",
@@ -93,7 +95,6 @@ index = {"totensor": "000_utils.ipynb",
          "get_UCR_univariate_list": "001_data.external.ipynb",
          "get_UCR_multivariate_list": "001_data.external.ipynb",
          "get_UCR_data": "001_data.external.ipynb",
-         "TensorBase": "002_data.core.ipynb",
          "NumpyTensor": "002_data.core.ipynb",
          "ToNumpyTensor": "002_data.core.ipynb",
          "TSTensor": "002_data.core.ipynb",
@@ -438,7 +439,7 @@ modules = ["utils.py",
            "models/Hybrid.py",
            "trading/utils.py"]
 
-doc_url = "https://timeseriesai.github.io/timeseriesAI//"
+doc_url = "https://timeseriesai.github.io/timeseriesAI//tsai/"
 
 git_url = "https://github.com/timeseriesAI/timeseriesAI/tree/master/"
 

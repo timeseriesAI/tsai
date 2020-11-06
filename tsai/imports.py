@@ -26,6 +26,7 @@ from pathlib import Path
 import time
 from time import gmtime, strftime
 import pytz # timezone
+import sklearn
 from IPython.display import Audio, display, HTML, Javascript, clear_output
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)

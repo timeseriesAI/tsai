@@ -10,7 +10,7 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'ttest', 'tscore', 'ttest_tensor', 'pcc', 'scc', 'a', 'b', 'remove_fn', 'npsave', 'np_save', 'permute_2D',
            'random_normal', 'random_half_normal', 'random_normal_tensor', 'random_half_normal_tensor', 'clip_outliers',
            'default_dpi', 'get_plot_fig', 'fig2buf', 'plot_scatter', 'jointplot_scatter', 'jointplot_kde', 'get_idxs',
-           'apply_cmap', 'torch_tile', 'to_tsfresh_dataset']
+           'apply_cmap', 'torch_tile', 'to_tsfresh_dataset', 'pcorr', 'scorr']
 
 # Cell
 from .imports import *
@@ -502,3 +502,13 @@ def to_tsfresh_dataset(ts):
         joint_ts =  ts.transpose(1,2).reshape(-1, ts.shape[1])
         cols = ['id']+np.arange(ts.shape[1]).tolist()
         return pd.DataFrame(torch.cat([ids, joint_ts], dim=1).numpy(), columns=cols)
+
+# Cell
+from scipy.stats import skew, kurtosis
+
+def pcorr(a, b):
+    return scipy.stats.pearsonr(a, b)
+
+def scorr(a, b):
+    corr = scipy.stats.spearmanr(a, b)
+    return corr[0], corr[1]
