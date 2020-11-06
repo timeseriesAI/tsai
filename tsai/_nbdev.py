@@ -439,7 +439,7 @@ modules = ["utils.py",
            "models/Hybrid.py",
            "trading/utils.py"]
 
-doc_url = "https://timeseriesai.github.io//timeseriesAI/"
+doc_url = "https://timeseriesai.github.io//tsai/"
 
 git_url = "https://github.com/timeseriesAI/timeseriesAI/tree/master/"
 
