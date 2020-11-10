@@ -2,7 +2,7 @@
 > Practical Deep Learning for Time Series / Sequential Data package built with fastai v2/ Pytorch.
 
 
-![CI](https://github.com/timeseriesai/tsai/workflows/CI/badge.svg) [![PyPI](https://img.shields.io/pypi/v/tsai?color=blue&label=pypi%20version)](https://pypi.org/project/tsai/#description) [![Conda (channel only)](https://img.shields.io/conda/vn/timeseriesai/tsai?color=seagreen&label=conda%20version)](https://anaconda.org/timeseriesai/tsai)
+![CI](https://github.com/timeseriesai/tsai/workflows/CI/badge.svg) [![PyPI](https://img.shields.io/pypi/v/tsai?color=blue&label=pypi%20version)](https://pypi.org/project/tsai/#description)
 
 `tsai`is a deep learning package built on top of fastai v2 / Pytorch focused on state-of-the-art methods for time series classification and regression.
 
