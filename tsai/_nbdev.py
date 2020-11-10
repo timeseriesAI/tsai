@@ -222,7 +222,6 @@ index = {"totensor": "000_utils.ipynb",
          "GamblersCallback": "010_callback.ipynb",
          "NoisyStudent": "010_callback.ipynb",
          "TransformScheduler": "010_callback.ipynb",
-         "TSStdBySampleCallback": "010_callback.ipynb",
          "ShowGraphCallback2": "010_callback.ipynb",
          "get_layers": "100_models.utils.ipynb",
          "is_layer": "100_models.utils.ipynb",
@@ -244,6 +243,7 @@ index = {"totensor": "000_utils.ipynb",
          "split_model": "100_models.utils.ipynb",
          "seq_len_calculator": "100_models.utils.ipynb",
          "noop": "100b_models.layers.ipynb",
+         "lin_zero_init": "100b_models.layers.ipynb",
          "SwishBeta": "100b_models.layers.ipynb",
          "same_padding1d": "100b_models.layers.ipynb",
          "Pad1d": "100b_models.layers.ipynb",
@@ -370,6 +370,7 @@ index = {"totensor": "000_utils.ipynb",
          "apply_kernel": "111_models.ROCKET.ipynb",
          "apply_kernels": "111_models.ROCKET.ipynb",
          "ROCKET": "111_models.ROCKET.ipynb",
+         "create_rocket_features": "111_models.ROCKET.ipynb",
          "xresnet1d18": "112_models.XResNet1d.ipynb",
          "xresnet1d34": "112_models.XResNet1d.ipynb",
          "xresnet1d50": "112_models.XResNet1d.ipynb",
@@ -439,8 +440,8 @@ modules = ["utils.py",
            "models/Hybrid.py",
            "trading/utils.py"]
 
-doc_url = "https://timeseriesAI.github.io//tsai/"
+doc_url = "https://timeseriesAI.github.io/tsai/"
 
-git_url = "https://github.com/timeseriesAI/timeseriesAI/tree/master/"
+git_url = "https://github.com/timeseriesAI/tsai/tree/master/"
 
 def custom_doc_links(name): return None

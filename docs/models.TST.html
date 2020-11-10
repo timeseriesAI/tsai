@@ -31,15 +31,60 @@ nb_path: "nbs/108b_models.TST.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="TO-DO">TO DO<a class="anchor-link" href="#TO-DO"> </a></h2>
+<h2 id="TST-*args-and-**kwargs">TST *args and **kwargs<a class="anchor-link" href="#TST-*args-and-**kwargs"> </a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Usual values are the ones that appear in the "Attention is all you need" and "A Transformer-based Framework for Multivariate Time Series Representation Learning" papers.</p>
+<p>The default values are the ones selected as a default configuration in the latter.</p>
+<ul>
+<li>c_in: the number of features (aka variables, dimensions, channels) in the time series dataset. dls.var</li>
+<li>c_out: the number of target classes. dls.c</li>
+<li>seq_len: number of time steps in the time series. dls.len</li>
+<li>max_seq_len: useful to control the temporal resolution in long time series to avoid memory issues. Default. None.</li>
+<li>d_model: total dimension of the model (number of features created by the model). Usual values: 128-1024. Default: 128.</li>
+<li>n_heads:  parallel attention heads. Usual values: 8-16. Default: 16.</li>
+<li>d_k: size of the learned linear projection of queries and keys in the MHA. Usual values: 16-512. Default: None -&gt; (d_model/n_heads) = 32.</li>
+<li>d_v: size of the learned linear projection of values in the MHA. Usual values: 16-512. Default: None -&gt; (d_model/n_heads) = 32.</li>
+<li>d_ff: the dimension of the feedforward network model. Usual values: 256-4096. Default: 256.</li>
+<li>res_dropout: amount of residual dropout applied in the encoder. Usual values: 0.-0.3. Default: 0.1.</li>
+<li>activation: the activation function of intermediate layer, relu or gelu. Default: 'gelu'.</li>
+<li>num_layers: the number of sub-encoder-layers in the encoder. Usual values: 2-8. Default: 3.</li>
+<li>fc_dropout: dropout applied to the final fully connected layer. Usual values: 0.-0.8. Default: 0.</li>
+<li>pe: type of positional encoder. Available types: None, 'gauss' (default), 'lin1d', 'exp1d', '2d', 'sincos', 'zeros'. Default: 'gauss'.</li>
+<li>learn_pe: learned positional encoder (True, default) or fixed positional encoder. Default: True.</li>
+<li>flatten: this will flattent the encoder output to be able to apply an mlp type of head. Default=True.</li>
+<li>custom_head: custom head that will be applied to the network. It must contain all kwargs (pass a partial function). Default: None.</li>
+<li>y_range: range of possible y values (used in regression tasks). Default: None</li>
+<li>kwargs: nn.Conv1d kwargs. If not {}, a nn.Conv1d with those kwargs will be applied to original time series.</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Tips-on-how-to-use-transformers:">Tips on how to use transformers:<a class="anchor-link" href="#Tips-on-how-to-use-transformers:"> </a></h2>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <ul>
-<li>Pass qk_kwargs to manage Eq 2 in A Transformer-based Framework for Multivariate Time Series Representation Learning</li>
-<li>Tips: low LR, standardize by channel, long time series (max_q_len), univariate (dk_kwargs (kernel_size, strice, dilation)</li>
+<li><p>In general, transformers require a lower lr compared to other time series models when used with the same datasets. It's important to use <code>learn.lr_find()</code> to learn what a good lr may be.</p>
+</li>
+<li><p>The paper authors recommend to standardize data by feature. This can be done by adding <code>TSStandardize(by_var=True</code> as a batch_tfm when creating the <a href="/tsai/data.core.html#TSDataLoaders"><code>TSDataLoaders</code></a>.</p>
+</li>
+<li><p>The authors used LabelSmoothingCrossEntropyFlat() as the loss function.</p>
+</li>
+<li><p>When using TST with a long time series, you may use <code>max_w_len</code> to reduce the memory size and thus avoid gpu issues.`</p>
+</li>
+<li><p>I've tried different types of positional encoders. In my experience, the default one works just fine.</p>
+</li>
+<li><p>In some of the cases I've used it, you may need to increase the res_dropout &gt; .1 and/ or fc_dropout &gt; 0 in order to achieve a good performance.</p>
+</li>
 </ul>
 
 </div>
@@ -82,7 +127,7 @@ nb_path: "nbs/108b_models.TST.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="SinCosPosEncoding" class="doc_header"><code>SinCosPosEncoding</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/TST.py#L13" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>SinCosPosEncoding</code>(<strong><code>q_len</code></strong>, <strong><code>d_model</code></strong>)</p>
+<h4 id="SinCosPosEncoding" class="doc_header"><code>SinCosPosEncoding</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TST.py#L13" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>SinCosPosEncoding</code>(<strong><code>q_len</code></strong>, <strong><code>d_model</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -163,7 +208,7 @@ nb_path: "nbs/108b_models.TST.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Coord2dPosEncoding" class="doc_header"><code>Coord2dPosEncoding</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/TST.py#L22" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Coord2dPosEncoding</code>(<strong><code>q_len</code></strong>, <strong><code>d_model</code></strong>, <strong><code>eps</code></strong>=<em><code>0.001</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>device</code></strong>=<em><code>device(type='cpu')</code></em>)</p>
+<h4 id="Coord2dPosEncoding" class="doc_header"><code>Coord2dPosEncoding</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TST.py#L22" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Coord2dPosEncoding</code>(<strong><code>q_len</code></strong>, <strong><code>d_model</code></strong>, <strong><code>eps</code></strong>=<em><code>0.001</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>device</code></strong>=<em><code>device(type='cpu')</code></em>)</p>
 </blockquote>
 
 </div>
@@ -272,7 +317,7 @@ nb_path: "nbs/108b_models.TST.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Coord1dPosEncoding" class="doc_header"><code>Coord1dPosEncoding</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/TST.py#L35" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Coord1dPosEncoding</code>(<strong><code>q_len</code></strong>, <strong><code>exponential</code></strong>=<em><code>False</code></em>, <strong><code>normalize</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>device(type='cpu')</code></em>)</p>
+<h4 id="Coord1dPosEncoding" class="doc_header"><code>Coord1dPosEncoding</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TST.py#L35" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Coord1dPosEncoding</code>(<strong><code>q_len</code></strong>, <strong><code>exponential</code></strong>=<em><code>False</code></em>, <strong><code>normalize</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>device(type='cpu')</code></em>)</p>
 </blockquote>
 
 </div>
@@ -402,7 +447,7 @@ nb_path: "nbs/108b_models.TST.ipynb"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(-3.051758e-08, 0.99949986, -2.820423, 1.4113108)</pre>
+<pre>(3.051758e-08, 0.99949986, -2.820423, 1.4113108)</pre>
 </div>
 
 </div>
@@ -437,7 +482,7 @@ nb_path: "nbs/108b_models.TST.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ScaledDotProductAttention" class="doc_header"><code>class</code> <code>ScaledDotProductAttention</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/TST.py#L43" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ScaledDotProductAttention</code>(<strong><code>d_k</code></strong>:<code>int</code>) :: <code>Module</code></p>
+<h2 id="ScaledDotProductAttention" class="doc_header"><code>class</code> <code>ScaledDotProductAttention</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TST.py#L43" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ScaledDotProductAttention</code>(<strong><code>d_k</code></strong>:<code>int</code>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -469,7 +514,7 @@ nb_path: "nbs/108b_models.TST.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MultiHeadAttention" class="doc_header"><code>class</code> <code>MultiHeadAttention</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/TST.py#L66" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MultiHeadAttention</code>(<strong><code>d_model</code></strong>:<code>int</code>, <strong><code>n_heads</code></strong>:<code>int</code>, <strong><code>d_k</code></strong>:<code>int</code>, <strong><code>d_v</code></strong>:<code>int</code>) :: <code>Module</code></p>
+<h2 id="MultiHeadAttention" class="doc_header"><code>class</code> <code>MultiHeadAttention</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TST.py#L65" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MultiHeadAttention</code>(<strong><code>d_model</code></strong>:<code>int</code>, <strong><code>n_heads</code></strong>:<code>int</code>, <strong><code>d_k</code></strong>:<code>int</code>, <strong><code>d_v</code></strong>:<code>int</code>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -536,7 +581,7 @@ nb_path: "nbs/108b_models.TST.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSTEncoderLayer" class="doc_header"><code>class</code> <code>TSTEncoderLayer</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/TST.py#L100" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTEncoderLayer</code>(<strong><code>d_model</code></strong>:<code>int</code>, <strong><code>n_heads</code></strong>:<code>int</code>, <strong><code>d_k</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>d_v</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>d_ff</code></strong>:<code>int</code>=<em><code>256</code></em>, <strong><code>res_dropout</code></strong>:<code>float</code>=<em><code>0.1</code></em>, <strong><code>activation</code></strong>:<code>str</code>=<em><code>'gelu'</code></em>) :: <code>Module</code></p>
+<h2 id="TSTEncoderLayer" class="doc_header"><code>class</code> <code>TSTEncoderLayer</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TST.py#L99" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTEncoderLayer</code>(<strong><code>d_model</code></strong>:<code>int</code>, <strong><code>n_heads</code></strong>:<code>int</code>, <strong><code>d_k</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>d_v</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>d_ff</code></strong>:<code>int</code>=<em><code>256</code></em>, <strong><code>res_dropout</code></strong>:<code>float</code>=<em><code>0.1</code></em>, <strong><code>activation</code></strong>:<code>str</code>=<em><code>'gelu'</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -603,7 +648,7 @@ nb_path: "nbs/108b_models.TST.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSTEncoder" class="doc_header"><code>class</code> <code>TSTEncoder</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/TST.py#L145" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTEncoder</code>(<strong><code>encoder_layer</code></strong>, <strong><code>n_layers</code></strong>) :: <code>Module</code></p>
+<h2 id="TSTEncoder" class="doc_header"><code>class</code> <code>TSTEncoder</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TST.py#L144" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTEncoder</code>(<strong><code>encoder_layer</code></strong>, <strong><code>n_layers</code></strong>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -635,7 +680,7 @@ nb_path: "nbs/108b_models.TST.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TST" class="doc_header"><code>class</code> <code>TST</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/TST.py#L156" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TST</code>(<strong><code>c_in</code></strong>:<code>int</code>, <strong><code>c_out</code></strong>:<code>int</code>, <strong><code>seq_len</code></strong>:<code>int</code>, <strong><code>max_seq_len</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>n_layers</code></strong>:<code>int</code>=<em><code>3</code></em>, <strong><code>d_model</code></strong>:<code>int</code>=<em><code>128</code></em>, <strong><code>n_heads</code></strong>:<code>int</code>=<em><code>16</code></em>, <strong><code>d_k</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>d_v</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>d_ff</code></strong>:<code>int</code>=<em><code>256</code></em>, <strong><code>res_dropout</code></strong>:<code>float</code>=<em><code>0.1</code></em>, <strong><code>activation</code></strong>:<code>str</code>=<em><code>'gelu'</code></em>, <strong><code>fc_dropout</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>pe</code></strong>:<code>str</code>=<em><code>'gauss'</code></em>, <strong><code>learn_pe</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>flatten</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>custom_head</code></strong>:<code>Optional</code>=<em><code>None</code></em>, <strong><code>y_range</code></strong>:<code>Optional</code>[<code>tuple</code>]=<em><code>None</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Module</code></p>
+<h2 id="TST" class="doc_header"><code>class</code> <code>TST</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TST.py#L155" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TST</code>(<strong><code>c_in</code></strong>:<code>int</code>, <strong><code>c_out</code></strong>:<code>int</code>, <strong><code>seq_len</code></strong>:<code>int</code>, <strong><code>max_seq_len</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>n_layers</code></strong>:<code>int</code>=<em><code>3</code></em>, <strong><code>d_model</code></strong>:<code>int</code>=<em><code>128</code></em>, <strong><code>n_heads</code></strong>:<code>int</code>=<em><code>16</code></em>, <strong><code>d_k</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>d_v</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>d_ff</code></strong>:<code>int</code>=<em><code>256</code></em>, <strong><code>res_dropout</code></strong>:<code>float</code>=<em><code>0.1</code></em>, <strong><code>activation</code></strong>:<code>str</code>=<em><code>'gelu'</code></em>, <strong><code>fc_dropout</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>pe</code></strong>:<code>str</code>=<em><code>'gauss'</code></em>, <strong><code>learn_pe</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>flatten</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>custom_head</code></strong>:<code>Optional</code>=<em><code>None</code></em>, <strong><code>y_range</code></strong>:<code>Optional</code>[<code>tuple</code>]=<em><code>None</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -858,7 +903,7 @@ nb_path: "nbs/108b_models.TST.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MultiTST" class="doc_header"><code>class</code> <code>MultiTST</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/models/TST.py#L260" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MultiTST</code>(<strong><code>feat_mask</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>max_seq_len</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>n_layers</code></strong>:<code>int</code>=<em><code>3</code></em>, <strong><code>d_model</code></strong>:<code>int</code>=<em><code>128</code></em>, <strong><code>n_heads</code></strong>:<code>int</code>=<em><code>16</code></em>, <strong><code>d_k</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>d_v</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>d_ff</code></strong>:<code>int</code>=<em><code>256</code></em>, <strong><code>res_dropout</code></strong>:<code>float</code>=<em><code>0.1</code></em>, <strong><code>activation</code></strong>:<code>str</code>=<em><code>'gelu'</code></em>, <strong><code>fc_dropout</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>pe</code></strong>:<code>str</code>=<em><code>'gauss'</code></em>, <strong><code>learn_pe</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>flatten</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>custom_head</code></strong>:<code>Optional</code>=<em><code>None</code></em>, <strong><code>y_range</code></strong>:<code>Optional</code>[<code>tuple</code>]=<em><code>None</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <code>Module</code></p>
+<h2 id="MultiTST" class="doc_header"><code>class</code> <code>MultiTST</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TST.py#L261" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MultiTST</code>(<strong><code>feat_mask</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>max_seq_len</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>n_layers</code></strong>:<code>int</code>=<em><code>3</code></em>, <strong><code>d_model</code></strong>:<code>int</code>=<em><code>128</code></em>, <strong><code>n_heads</code></strong>:<code>int</code>=<em><code>16</code></em>, <strong><code>d_k</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>d_v</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>d_ff</code></strong>:<code>int</code>=<em><code>256</code></em>, <strong><code>res_dropout</code></strong>:<code>float</code>=<em><code>0.1</code></em>, <strong><code>activation</code></strong>:<code>str</code>=<em><code>'gelu'</code></em>, <strong><code>fc_dropout</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>pe</code></strong>:<code>str</code>=<em><code>'gauss'</code></em>, <strong><code>learn_pe</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>flatten</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>custom_head</code></strong>:<code>Optional</code>=<em><code>None</code></em>, <strong><code>y_range</code></strong>:<code>Optional</code>[<code>tuple</code>]=<em><code>None</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 

@@ -1,10 +1,15 @@
+.ONESHELL:
+SHELL := /bin/bash
 SRC = $(wildcard nbs/*.ipynb)
 
-all: timeseriesAI docs
+all: tsai docs
 
-timeseriesAI: $(SRC)
+tsai: $(SRC)
 	nbdev_build_lib
-	touch timeseriesAI
+	touch tsai
+
+sync:
+	nbdev_update_lib
 
 docs_serve: docs
 	cd docs && bundle exec jekyll serve
@@ -17,6 +22,7 @@ test:
 	nbdev_test_nbs
 
 release: pypi
+	nbdev_conda_package
 	nbdev_bump_version
 
 pypi: dist
@@ -27,4 +33,3 @@ dist: clean
 
 clean:
 	rm -rf dist
-    

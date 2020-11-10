@@ -61,7 +61,6 @@ class ScaledDotProductAttention(Module):
 
         return context, attn
 
-
 # Cell
 class MultiHeadAttention(Module):
     def __init__(self, d_model:int, n_heads:int, d_k:int, d_v:int):
@@ -167,7 +166,9 @@ class TST(Module):
             seq_len: number of time steps in the time series.
             max_seq_len: useful to control the temporal resolution in long time series to avoid memory issues.
             d_model: total dimension of the model (number of features created by the model)
-            nhead:  parallel attention heads.
+            n_heads:  parallel attention heads.
+            d_k: size of the learned linear projection of queries and keys in the MHA. Usual values: 16-512. Default: None -> (d_model/n_heads) = 32.
+            d_v: size of the learned linear projection of values in the MHA. Usual values: 16-512. Default: None -> (d_model/n_heads) = 32.
             d_ff: the dimension of the feedforward network model.
             res_dropout: amount of residual dropout applied in the encoder.
             activation: the activation function of intermediate layer, relu or gelu.

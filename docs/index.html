@@ -31,8 +31,14 @@ nb_path: "nbs/index.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="https://github.com/timeseriesai/tsai/workflows/CI/badge.svg" alt="CI"> <a href="https://pypi.org/project/tsai/#description"><img src="https://img.shields.io/pypi/v/tsai?color=blue&amp;label=pypi%20version" alt="PyPI"></a> <a href="https://anaconda.org/timeseriesai/tsai"><img src="https://img.shields.io/conda/vn/timeseriesai/tsai?color=seagreen&amp;label=conda%20version" alt="Conda (channel only)"></a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <p><code>tsai</code>is a deep learning package built on top of fastai v2 / Pytorch focused on state-of-the-art methods for time series classification and regression.</p>
-<p>If you are looking for <strong>timeseriesAI based on fastai v1</strong>, it's been moved to <strong><a href="https://github.com/timeseriesAI/timeseriesAI1">timeseriesAI1</a></strong>.</p>
 
 </div>
 </div>
@@ -40,6 +46,21 @@ nb_path: "nbs/index.ipynb"
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="What's-new?">What's new?<a class="anchor-link" href="#What's-new?"> </a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="tsai:-2.4-(Nov-10th,-2020)">tsai: 2.4 (Nov 10th, 2020)<a class="anchor-link" href="#tsai:-2.4-(Nov-10th,-2020)"> </a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Adapted <code>tsai</code> to work with Pytorch 1.7.</li>
+</ul>
+
 </div>
 </div>
 </div>
@@ -53,15 +74,17 @@ nb_path: "nbs/index.ipynb"
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><code>tsai</code> 2.0 is a major update to the tsai library. These are the major changes made to the library:</p>
 <ul>
-<li>New tutorial nbs have been added to demonstrate the use of new functionality like: <ul>
-<li>Time series data preparation</li>
-<li>Intro to time series regression</li>
+<li><p>New tutorial nbs have been added to demonstrate the use of new functionality like:</p>
+<ul>
+<li>Time series <strong>data preparation</strong></li>
+<li>Intro to <strong>time series regression</strong></li>
 <li>TS archs comparison</li>
-<li>TS to image classification</li>
-<li>TS classification with transformers</li>
+<li><strong>TS to image</strong> classification</li>
+<li>TS classification with <strong>transformers</strong></li>
 </ul>
 </li>
-<li>Also some tutorial nbs have been updated like Time Series transforms</li>
+<li><p>Also some tutorial nbs have been updated like <strong>Time Series transforms</strong></p>
+</li>
 <li>More ts data transforms have been added, including ts to images.</li>
 <li>New callbacks, like the state of the art noisy_student that will allow you to use unlabeled data.</li>
 <li>New time series, state-of-the-art models are now available like XceptionTime, RNN_FCN (like LSTM_FCN, GRU_FCN), TransformerModel, TST (Transformer), OmniScaleCNN, mWDN (multi-wavelet decomposition network), XResNet1d.</li>
@@ -83,7 +106,7 @@ nb_path: "nbs/index.ipynb"
 <p>You can install the <strong>latest stable</strong> version from pip:</p>
 <p><code>pip install tsai</code></p>
 <p>Or you can install the <strong>bleeding edge</strong> version of this library from github by doing:</p>
-<p><code>pip install git+https://github.com/timeseriesAI/timeseriesAI.git@master</code></p>
+<p><code>pip install git+https://github.com/timeseriesAI/tsai.git@master</code></p>
 
 </div>
 </div>
@@ -96,8 +119,7 @@ nb_path: "nbs/index.ipynb"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>To get to know the <code>tsai</code> package, I'd suggest you start with this notebook:</p>
-<p><strong><a href="https://github.com/timeseriesAI/timeseriesAI/blob/master/tutorial_nbs/01_Intro_to_Time_Series_Classification.ipynb">01_Intro_to_Time_Series_Classification</a></strong></p>
+<p>To get to know the <code>tsai</code> package, I'd suggest you start with this notebook in Google Colab: <strong><a href="https://colab.research.google.com/github/timeseriesAI/tsai/blob/master/tutorial_nbs/01_Intro_to_Time_Series_Classification.ipynb">01_Intro_to_Time_Series_Classification</a></strong></p>
 <p>It provides an overview of a time series classification problem using fastai v2.</p>
 <p>If you want more details, you can get them in nbs 00 and 00a.</p>
 <p>To use tsai in your own notebooks, the only thing you need to do after you have installed the package is to add this:</p>

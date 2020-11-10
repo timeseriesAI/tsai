@@ -2,23 +2,28 @@
 > Practical Deep Learning for Time Series / Sequential Data package built with fastai v2/ Pytorch.
 
 
+![CI](https://github.com/timeseriesai/tsai/workflows/CI/badge.svg) [![PyPI](https://img.shields.io/pypi/v/tsai?color=blue&label=pypi%20version)](https://pypi.org/project/tsai/#description) [![Conda (channel only)](https://img.shields.io/conda/vn/timeseriesai/tsai?color=seagreen&label=conda%20version)](https://anaconda.org/timeseriesai/tsai)
+
 `tsai`is a deep learning package built on top of fastai v2 / Pytorch focused on state-of-the-art methods for time series classification and regression.
 
-If you are looking for **timeseriesAI based on fastai v1**, it's been moved to **[timeseriesAI1](https://github.com/timeseriesAI/timeseriesAI1)**.
-
 ## What's new?
+
+### tsai: 2.4 (Nov 10th, 2020)
+
+* Adapted `tsai` to work with Pytorch 1.7.
 
 ### tsai: 2.0 (Nov 3rd, 2020)
 
 `tsai` 2.0 is a major update to the tsai library. These are the major changes made to the library:
 
 * New tutorial nbs have been added to demonstrate the use of new functionality like: 
-    * Time series data preparation
-    * Intro to time series regression
+    * Time series **data preparation**
+    * Intro to **time series regression**
     * TS archs comparison
-    * TS to image classification
-    * TS classification with transformers
-* Also some tutorial nbs have been updated like Time Series transforms
+    * **TS to image** classification
+    * TS classification with **transformers**
+    
+* Also some tutorial nbs have been updated like **Time Series transforms**
 * More ts data transforms have been added, including ts to images.
 * New callbacks, like the state of the art noisy_student that will allow you to use unlabeled data.
 * New time series, state-of-the-art models are now available like XceptionTime, RNN_FCN (like LSTM_FCN, GRU_FCN), TransformerModel, TST (Transformer), OmniScaleCNN, mWDN (multi-wavelet decomposition network), XResNet1d.
@@ -34,13 +39,11 @@ You can install the **latest stable** version from pip:
 
 Or you can install the **bleeding edge** version of this library from github by doing:
 
-`pip install git+https://github.com/timeseriesAI/timeseriesAI.git@master`
+`pip install git+https://github.com/timeseriesAI/tsai.git@master`
 
 ## How to get started
 
-To get to know the `tsai` package, I'd suggest you start with this notebook:
-
-**[01_Intro_to_Time_Series_Classification](https://github.com/timeseriesAI/timeseriesAI/blob/master/tutorial_nbs/01_Intro_to_Time_Series_Classification.ipynb)**
+To get to know the `tsai` package, I'd suggest you start with this notebook in Google Colab: **[01_Intro_to_Time_Series_Classification](https://colab.research.google.com/github/timeseriesAI/tsai/blob/master/tutorial_nbs/01_Intro_to_Time_Series_Classification.ipynb)**
 
 It provides an overview of a time series classification problem using fastai v2.
 

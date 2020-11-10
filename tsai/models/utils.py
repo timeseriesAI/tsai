@@ -75,7 +75,9 @@ def create_model(arch, c_in=1, c_out=2, seq_len=32, dls=None, device=default_dev
             if v in arch.__name__]):
         return arch(c_in, c_out, seq_len=seq_len, **kwargs).to(device=device)
     elif 'xresnet' in arch.__name__ and not '1d' in arch.__name__:
-        return (arch(c_in=c_in, n_out=c_out)).to(device=device)
+        return (arch(c_in=c_in, n_out=c_out, **kwargs)).to(device=device)
+    elif 'rocket' in arch.__name__.lower():
+        return (arch(c_in=c_in, seq_len=seq_len, **kwargs)).to(device=device)
     else:
         return arch(c_in, c_out, **kwargs).to(device=device)
 

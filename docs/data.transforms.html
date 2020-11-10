@@ -101,7 +101,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ToNumpyCategory" class="doc_header"><code>class</code> <code>ToNumpyCategory</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L27" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ToNumpyCategory</code>(<strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
+<h2 id="ToNumpyCategory" class="doc_header"><code>class</code> <code>ToNumpyCategory</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L27" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ToNumpyCategory</code>(<strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
 </blockquote>
 <p>Categorize a numpy batch</p>
 
@@ -186,7 +186,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="OneHot" class="doc_header"><code>class</code> <code>OneHot</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L45" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>OneHot</code>(<strong><code>n_classes</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
+<h2 id="OneHot" class="doc_header"><code>class</code> <code>OneHot</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L45" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>OneHot</code>(<strong><code>n_classes</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
 </blockquote>
 <p>One-hot encode/ decode a batch</p>
 
@@ -313,9 +313,9 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSStandardize" class="doc_header"><code>class</code> <code>TSStandardize</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L62" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSStandardize</code>(<strong><code>mean</code></strong>=<em><code>None</code></em>, <strong><code>std</code></strong>=<em><code>None</code></em>, <strong><code>by_sample</code></strong>=<em><code>False</code></em>, <strong><code>by_var</code></strong>=<em><code>False</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>) :: <code>Transform</code></p>
+<h2 id="TSStandardize" class="doc_header"><code>class</code> <code>TSStandardize</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L62" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSStandardize</code>(<strong><code>mean</code></strong>=<em><code>None</code></em>, <strong><code>std</code></strong>=<em><code>None</code></em>, <strong><code>by_sample</code></strong>=<em><code>False</code></em>, <strong><code>by_var</code></strong>=<em><code>False</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>) :: <code>Transform</code></p>
 </blockquote>
-<p>Standardizes batch of type <a href="/data.core.html#NumpyTensor"><code>NumpyTensor</code></a> or <a href="/data.core.html#TSTensor"><code>TSTensor</code></a></p>
+<p>Standardizes batch of type <a href="/tsai/data.core.html#NumpyTensor"><code>NumpyTensor</code></a> or <a href="/tsai/data.core.html#TSTensor"><code>TSTensor</code></a></p>
 
 </div>
 
@@ -345,7 +345,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Tensor.mul_min" class="doc_header"><code>Tensor.mul_min</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L93" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Tensor.mul_min</code>(<strong><code>x</code></strong>:<code>NumpyTensor'&gt;)</code>, <strong><code>axes</code></strong>=<em><code>()</code></em>, <strong><code>keepdim</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="Tensor.mul_min" class="doc_header"><code>Tensor.mul_min</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L93" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Tensor.mul_min</code>(<strong><code>x</code></strong>:<code>NumpyTensor'&gt;)</code>, <strong><code>axes</code></strong>=<em><code>()</code></em>, <strong><code>keepdim</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 
 </div>
@@ -369,7 +369,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TSTensor.mul_min" class="doc_header"><code>TSTensor.mul_min</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L93" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TSTensor.mul_min</code>(<strong><code>x</code></strong>:<code>NumpyTensor'&gt;)</code>, <strong><code>axes</code></strong>=<em><code>()</code></em>, <strong><code>keepdim</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="TSTensor.mul_min" class="doc_header"><code>TSTensor.mul_min</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L93" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TSTensor.mul_min</code>(<strong><code>x</code></strong>:<code>NumpyTensor'&gt;)</code>, <strong><code>axes</code></strong>=<em><code>()</code></em>, <strong><code>keepdim</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 
 </div>
@@ -393,7 +393,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="NumpyTensor.mul_min" class="doc_header"><code>NumpyTensor.mul_min</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L93" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>NumpyTensor.mul_min</code>(<strong><code>x</code></strong>:<code>NumpyTensor'&gt;)</code>, <strong><code>axes</code></strong>=<em><code>()</code></em>, <strong><code>keepdim</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="NumpyTensor.mul_min" class="doc_header"><code>NumpyTensor.mul_min</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L93" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>NumpyTensor.mul_min</code>(<strong><code>x</code></strong>:<code>NumpyTensor'&gt;)</code>, <strong><code>axes</code></strong>=<em><code>()</code></em>, <strong><code>keepdim</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 
 </div>
@@ -417,7 +417,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Tensor.mul_max" class="doc_header"><code>Tensor.mul_max</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L102" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Tensor.mul_max</code>(<strong><code>x</code></strong>:<code>NumpyTensor'&gt;)</code>, <strong><code>axes</code></strong>=<em><code>()</code></em>, <strong><code>keepdim</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="Tensor.mul_max" class="doc_header"><code>Tensor.mul_max</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L102" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Tensor.mul_max</code>(<strong><code>x</code></strong>:<code>NumpyTensor'&gt;)</code>, <strong><code>axes</code></strong>=<em><code>()</code></em>, <strong><code>keepdim</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 
 </div>
@@ -441,7 +441,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TSTensor.mul_max" class="doc_header"><code>TSTensor.mul_max</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L102" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TSTensor.mul_max</code>(<strong><code>x</code></strong>:<code>NumpyTensor'&gt;)</code>, <strong><code>axes</code></strong>=<em><code>()</code></em>, <strong><code>keepdim</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="TSTensor.mul_max" class="doc_header"><code>TSTensor.mul_max</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L102" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TSTensor.mul_max</code>(<strong><code>x</code></strong>:<code>NumpyTensor'&gt;)</code>, <strong><code>axes</code></strong>=<em><code>()</code></em>, <strong><code>keepdim</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 
 </div>
@@ -465,7 +465,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="NumpyTensor.mul_max" class="doc_header"><code>NumpyTensor.mul_max</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L102" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>NumpyTensor.mul_max</code>(<strong><code>x</code></strong>:<code>NumpyTensor'&gt;)</code>, <strong><code>axes</code></strong>=<em><code>()</code></em>, <strong><code>keepdim</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="NumpyTensor.mul_max" class="doc_header"><code>NumpyTensor.mul_max</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L102" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>NumpyTensor.mul_max</code>(<strong><code>x</code></strong>:<code>NumpyTensor'&gt;)</code>, <strong><code>axes</code></strong>=<em><code>()</code></em>, <strong><code>keepdim</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 
 </div>
@@ -489,9 +489,9 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSNormalize" class="doc_header"><code>class</code> <code>TSNormalize</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L111" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSNormalize</code>(<strong><code>min</code></strong>=<em><code>None</code></em>, <strong><code>max</code></strong>=<em><code>None</code></em>, <strong><code>range</code></strong>=<em><code>(-1, 1)</code></em>, <strong><code>by_sample</code></strong>=<em><code>True</code></em>, <strong><code>by_var</code></strong>=<em><code>False</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>) :: <code>Transform</code></p>
+<h2 id="TSNormalize" class="doc_header"><code>class</code> <code>TSNormalize</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L111" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSNormalize</code>(<strong><code>min</code></strong>=<em><code>None</code></em>, <strong><code>max</code></strong>=<em><code>None</code></em>, <strong><code>range</code></strong>=<em><code>(-1, 1)</code></em>, <strong><code>by_sample</code></strong>=<em><code>True</code></em>, <strong><code>by_var</code></strong>=<em><code>False</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>) :: <code>Transform</code></p>
 </blockquote>
-<p>Normalizes batch of type <a href="/data.core.html#NumpyTensor"><code>NumpyTensor</code></a> or <a href="/data.core.html#TSTensor"><code>TSTensor</code></a></p>
+<p>Normalizes batch of type <a href="/tsai/data.core.html#NumpyTensor"><code>NumpyTensor</code></a> or <a href="/tsai/data.core.html#TSTensor"><code>TSTensor</code></a></p>
 
 </div>
 
@@ -658,7 +658,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSStdBySample" class="doc_header"><code>class</code> <code>TSStdBySample</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L144" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSStdBySample</code>(<strong><code>by_var</code></strong>=<em><code>False</code></em>) :: <code>Transform</code></p>
+<h2 id="TSStdBySample" class="doc_header"><code>class</code> <code>TSStdBySample</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L144" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSStdBySample</code>(<strong><code>by_var</code></strong>=<em><code>False</code></em>) :: <code>Transform</code></p>
 </blockquote>
 <p>Standardizes each sample in a batch (optionally by_var)</p>
 
@@ -707,9 +707,9 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSIdentity" class="doc_header"><code>class</code> <code>TSIdentity</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L158" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSIdentity</code>(<strong><code>magnitude</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSIdentity" class="doc_header"><code>class</code> <code>TSIdentity</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L158" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSIdentity</code>(<strong><code>magnitude</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
-<p>Applies the identity tfm to a <a href="/data.core.html#TSTensor"><code>TSTensor</code></a> batch</p>
+<p>Applies the identity tfm to a <a href="/tsai/data.core.html#TSTensor"><code>TSTensor</code></a> batch</p>
 
 </div>
 
@@ -756,9 +756,9 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSShuffle_HLs" class="doc_header"><code>class</code> <code>TSShuffle_HLs</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L168" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSShuffle_HLs</code>(<strong><code>magnitude</code></strong>=<em><code>1.0</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSShuffle_HLs" class="doc_header"><code>class</code> <code>TSShuffle_HLs</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L168" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSShuffle_HLs</code>(<strong><code>magnitude</code></strong>=<em><code>1.0</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
-<p>Randomly shuffles HIs/LOs of an OHLC <a href="/data.core.html#TSTensor"><code>TSTensor</code></a> batch</p>
+<p>Randomly shuffles HIs/LOs of an OHLC <a href="/tsai/data.core.html#TSTensor"><code>TSTensor</code></a> batch</p>
 
 </div>
 
@@ -805,7 +805,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSShuffleSteps" class="doc_header"><code>class</code> <code>TSShuffleSteps</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L190" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSShuffleSteps</code>(<strong><code>magnitude</code></strong>=<em><code>1.0</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSShuffleSteps" class="doc_header"><code>class</code> <code>TSShuffleSteps</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L190" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSShuffleSteps</code>(<strong><code>magnitude</code></strong>=<em><code>1.0</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Randomly shuffles consecutive sequence datapoints in batch</p>
 
@@ -849,7 +849,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_png output_subarea ">
-<img src="data:image/png;base64,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
+<img src="data:image/png;base64,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
 "
 >
 </div>
@@ -880,9 +880,9 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSMagAddNoise" class="doc_header"><code>class</code> <code>TSMagAddNoise</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L210" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSMagAddNoise</code>(<strong><code>magnitude</code></strong>=<em><code>1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSMagAddNoise" class="doc_header"><code>class</code> <code>TSMagAddNoise</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L210" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSMagAddNoise</code>(<strong><code>magnitude</code></strong>=<em><code>1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
-<p>Applies additive noise on the y-axis for each step of a <a href="/data.core.html#TSTensor"><code>TSTensor</code></a> batch</p>
+<p>Applies additive noise on the y-axis for each step of a <a href="/tsai/data.core.html#TSTensor"><code>TSTensor</code></a> batch</p>
 
 </div>
 
@@ -905,9 +905,9 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSMagMulNoise" class="doc_header"><code>class</code> <code>TSMagMulNoise</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L223" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSMagMulNoise</code>(<strong><code>magnitude</code></strong>=<em><code>1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSMagMulNoise" class="doc_header"><code>class</code> <code>TSMagMulNoise</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L223" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSMagMulNoise</code>(<strong><code>magnitude</code></strong>=<em><code>1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
-<p>Applies multiplicative noise on the y-axis for each step of a <a href="/data.core.html#TSTensor"><code>TSTensor</code></a> batch</p>
+<p>Applies multiplicative noise on the y-axis for each step of a <a href="/tsai/data.core.html#TSTensor"><code>TSTensor</code></a> batch</p>
 
 </div>
 
@@ -928,6 +928,8 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">TSMagAddNoise</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">TSMagMulNoise</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">test_ne</span><span class="p">(</span><span class="n">TSMagAddNoise</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">xb</span><span class="p">)</span>
+<span class="n">test_ne</span><span class="p">(</span><span class="n">TSMagMulNoise</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">xb</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -955,7 +957,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="random_curve_generator" class="doc_header"><code>random_curve_generator</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L237" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>random_curve_generator</code>(<strong><code>o</code></strong>, <strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>order</code></strong>=<em><code>4</code></em>, <strong><code>noise</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="random_curve_generator" class="doc_header"><code>random_curve_generator</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L237" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>random_curve_generator</code>(<strong><code>o</code></strong>, <strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>order</code></strong>=<em><code>4</code></em>, <strong><code>noise</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -979,7 +981,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="random_cum_curve_generator" class="doc_header"><code>random_cum_curve_generator</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L243" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>random_cum_curve_generator</code>(<strong><code>o</code></strong>, <strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>order</code></strong>=<em><code>4</code></em>, <strong><code>noise</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="random_cum_curve_generator" class="doc_header"><code>random_cum_curve_generator</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L243" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>random_cum_curve_generator</code>(<strong><code>o</code></strong>, <strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>order</code></strong>=<em><code>4</code></em>, <strong><code>noise</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -1003,7 +1005,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="random_cum_noise_generator" class="doc_header"><code>random_cum_noise_generator</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L250" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>random_cum_noise_generator</code>(<strong><code>o</code></strong>, <strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>noise</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="random_cum_noise_generator" class="doc_header"><code>random_cum_noise_generator</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L250" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>random_cum_noise_generator</code>(<strong><code>o</code></strong>, <strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>noise</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -1027,7 +1029,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="random_cum_linear_generator" class="doc_header"><code>random_cum_linear_generator</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L257" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>random_cum_linear_generator</code>(<strong><code>o</code></strong>, <strong><code>magnitude</code></strong>=<em><code>0.1</code></em>)</p>
+<h4 id="random_cum_linear_generator" class="doc_header"><code>random_cum_linear_generator</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L257" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>random_cum_linear_generator</code>(<strong><code>o</code></strong>, <strong><code>magnitude</code></strong>=<em><code>0.1</code></em>)</p>
 </blockquote>
 
 </div>
@@ -1058,43 +1060,10 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSTimeNoise" class="doc_header"><code>class</code> <code>TSTimeNoise</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L274" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTimeNoise</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSTimeNoise" class="doc_header"><code>class</code> <code>TSTimeNoise</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L274" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTimeNoise</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
-<p>Applies noise to each step in the x-axis of a <a href="/data.core.html#TSTensor"><code>TSTensor</code></a> batch based on smooth random curve</p>
+<p>Applies noise to each step in the x-axis of a <a href="/tsai/data.core.html#TSTensor"><code>TSTensor</code></a> batch based on smooth random curve</p>
 
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">TSTimeNoise</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">xb</span><span class="o">.</span><span class="n">shape</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>(torch.Size([128, 24, 51]), torch.Size([128, 24, 51]))</pre>
 </div>
 
 </div>
@@ -1113,6 +1082,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">TSTimeNoise</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">test_ne</span><span class="p">(</span><span class="n">TSTimeNoise</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">xb</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1140,9 +1110,9 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSMagWarp" class="doc_header"><code>class</code> <code>TSMagWarp</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L288" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSMagWarp</code>(<strong><code>magnitude</code></strong>=<em><code>0.02</code></em>, <strong><code>ord</code></strong>=<em><code>4</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSMagWarp" class="doc_header"><code>class</code> <code>TSMagWarp</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L288" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSMagWarp</code>(<strong><code>magnitude</code></strong>=<em><code>0.02</code></em>, <strong><code>ord</code></strong>=<em><code>4</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
-<p>Applies warping to the y-axis of a <a href="/data.core.html#TSTensor"><code>TSTensor</code></a> batch based on a smooth random curve</p>
+<p>Applies warping to the y-axis of a <a href="/tsai/data.core.html#TSTensor"><code>TSTensor</code></a> batch based on a smooth random curve</p>
 
 </div>
 
@@ -1162,6 +1132,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">TSMagWarp</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">test_ne</span><span class="p">(</span><span class="n">TSMagWarp</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">xb</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1189,9 +1160,9 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSTimeWarp" class="doc_header"><code>class</code> <code>TSTimeWarp</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L302" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTimeWarp</code>(<strong><code>magnitude</code></strong>=<em><code>0.02</code></em>, <strong><code>ord</code></strong>=<em><code>4</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSTimeWarp" class="doc_header"><code>class</code> <code>TSTimeWarp</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L302" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTimeWarp</code>(<strong><code>magnitude</code></strong>=<em><code>0.02</code></em>, <strong><code>ord</code></strong>=<em><code>4</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
-<p>Applies time warping to the x-axis of a <a href="/data.core.html#TSTensor"><code>TSTensor</code></a> batch based on a smooth random curve</p>
+<p>Applies time warping to the x-axis of a <a href="/tsai/data.core.html#TSTensor"><code>TSTensor</code></a> batch based on a smooth random curve</p>
 
 </div>
 
@@ -1211,6 +1182,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">TSTimeWarp</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">test_ne</span><span class="p">(</span><span class="n">TSTimeWarp</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">xb</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1238,9 +1210,9 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSWindowWarp" class="doc_header"><code>class</code> <code>TSWindowWarp</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L316" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSWindowWarp</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSWindowWarp" class="doc_header"><code>class</code> <code>TSWindowWarp</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L316" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSWindowWarp</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
-<p>Applies window slicing to the x-axis of a <a href="/data.core.html#TSTensor"><code>TSTensor</code></a> batch based on a random linear curve based on
+<p>Applies window slicing to the x-axis of a <a href="/tsai/data.core.html#TSTensor"><code>TSTensor</code></a> batch based on a random linear curve based on
 <a href="https://halshs.archives-ouvertes.fr/halshs-01357973/document">https://halshs.archives-ouvertes.fr/halshs-01357973/document</a></p>
 
 </div>
@@ -1261,6 +1233,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">TSWindowWarp</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">test_ne</span><span class="p">(</span><span class="n">TSWindowWarp</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">xb</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1288,9 +1261,9 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSMagScale" class="doc_header"><code>class</code> <code>TSMagScale</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L331" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSMagScale</code>(<strong><code>magnitude</code></strong>=<em><code>0.5</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSMagScale" class="doc_header"><code>class</code> <code>TSMagScale</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L331" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSMagScale</code>(<strong><code>magnitude</code></strong>=<em><code>0.5</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
-<p>Applies scaling to the y-axis of a <a href="/data.core.html#TSTensor"><code>TSTensor</code></a> batch based on a scalar</p>
+<p>Applies scaling to the y-axis of a <a href="/tsai/data.core.html#TSTensor"><code>TSTensor</code></a> batch based on a scalar</p>
 
 </div>
 
@@ -1313,9 +1286,9 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSMagScalePerVar" class="doc_header"><code>class</code> <code>TSMagScalePerVar</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L345" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSMagScalePerVar</code>(<strong><code>magnitude</code></strong>=<em><code>0.5</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSMagScalePerVar" class="doc_header"><code>class</code> <code>TSMagScalePerVar</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L345" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSMagScalePerVar</code>(<strong><code>magnitude</code></strong>=<em><code>0.5</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
-<p>Applies per_var scaling to the y-axis of a <a href="/data.core.html#TSTensor"><code>TSTensor</code></a> batch based on a scalar</p>
+<p>Applies per_var scaling to the y-axis of a <a href="/tsai/data.core.html#TSTensor"><code>TSTensor</code></a> batch based on a scalar</p>
 
 </div>
 
@@ -1336,6 +1309,8 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">TSMagScale</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">TSMagScalePerVar</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">test_ne</span><span class="p">(</span><span class="n">TSMagScale</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">xb</span><span class="p">)</span>
+<span class="n">test_ne</span><span class="p">(</span><span class="n">TSMagScalePerVar</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">xb</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1363,7 +1338,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSRandomZoomIn" class="doc_header"><code>class</code> <code>TSRandomZoomIn</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L362" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomZoomIn</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSRandomZoomIn" class="doc_header"><code>class</code> <code>TSRandomZoomIn</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L362" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomZoomIn</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Randomly amplifies a sequence focusing on a random section of the steps</p>
 
@@ -1384,7 +1359,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">TSRandomZoomIn</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">TSRandomZoomIn</span><span class="p">(</span><span class="o">.</span><span class="mi">5</span><span class="p">)(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1412,7 +1387,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSWindowSlicing" class="doc_header"><code>class</code> <code>TSWindowSlicing</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L382" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSWindowSlicing</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSWindowSlicing" class="doc_header"><code>class</code> <code>TSWindowSlicing</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L382" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSWindowSlicing</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Randomly extracts an resize a ts slice based on <a href="https://halshs.archives-ouvertes.fr/halshs-01357973/document">https://halshs.archives-ouvertes.fr/halshs-01357973/document</a></p>
 
@@ -1434,6 +1409,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">TSWindowSlicing</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">test_ne</span><span class="p">(</span><span class="n">TSWindowSlicing</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">xb</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1461,7 +1437,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSRandomZoomOut" class="doc_header"><code>class</code> <code>TSRandomZoomOut</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L398" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomZoomOut</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSRandomZoomOut" class="doc_header"><code>class</code> <code>TSRandomZoomOut</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L398" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomZoomOut</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Randomly compresses a sequence on the x-axis</p>
 
@@ -1482,7 +1458,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">TSRandomZoomOut</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">TSRandomZoomOut</span><span class="p">(</span><span class="o">.</span><span class="mi">5</span><span class="p">)(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1510,7 +1486,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSRandomTimeScale" class="doc_header"><code>class</code> <code>TSRandomTimeScale</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L419" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomTimeScale</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSRandomTimeScale" class="doc_header"><code>class</code> <code>TSRandomTimeScale</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L419" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomTimeScale</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Randomly amplifies/ compresses a sequence on the x-axis keeping the same length</p>
 
@@ -1531,7 +1507,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">TSRandomTimeScale</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">TSRandomTimeScale</span><span class="p">(</span><span class="o">.</span><span class="mi">5</span><span class="p">)(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1559,7 +1535,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSRandomTimeStep" class="doc_header"><code>class</code> <code>TSRandomTimeStep</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L432" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomTimeStep</code>(<strong><code>magnitude</code></strong>=<em><code>0.02</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSRandomTimeStep" class="doc_header"><code>class</code> <code>TSRandomTimeStep</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L432" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomTimeStep</code>(<strong><code>magnitude</code></strong>=<em><code>0.02</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Compresses a sequence on the x-axis by randomly selecting sequence steps and interpolating to previous size</p>
 
@@ -1608,7 +1584,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSBlur" class="doc_header"><code>class</code> <code>TSBlur</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L450" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSBlur</code>(<strong><code>magnitude</code></strong>=<em><code>1.0</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSBlur" class="doc_header"><code>class</code> <code>TSBlur</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L450" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSBlur</code>(<strong><code>magnitude</code></strong>=<em><code>1.0</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Blurs a sequence applying a filter of type [1, 0, 1]</p>
 
@@ -1630,6 +1606,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">TSBlur</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">test_ne</span><span class="p">(</span><span class="n">TSBlur</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">xb</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1657,7 +1634,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSSmooth" class="doc_header"><code>class</code> <code>TSSmooth</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L466" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSSmooth</code>(<strong><code>magnitude</code></strong>=<em><code>1.0</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSSmooth" class="doc_header"><code>class</code> <code>TSSmooth</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L466" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSSmooth</code>(<strong><code>magnitude</code></strong>=<em><code>1.0</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Smoothens a sequence applying a filter of type [1, 5, 1]</p>
 
@@ -1679,6 +1656,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">TSSmooth</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">test_ne</span><span class="p">(</span><span class="n">TSSmooth</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">xb</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1706,7 +1684,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="maddest" class="doc_header"><code>maddest</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L482" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>maddest</code>(<strong><code>d</code></strong>, <strong><code>axis</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="maddest" class="doc_header"><code>maddest</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L482" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>maddest</code>(<strong><code>d</code></strong>, <strong><code>axis</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -1730,7 +1708,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSFreqDenoise" class="doc_header"><code>class</code> <code>TSFreqDenoise</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L485" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSFreqDenoise</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>wavelet</code></strong>=<em><code>'db4'</code></em>, <strong><code>level</code></strong>=<em><code>2</code></em>, <strong><code>thr</code></strong>=<em><code>None</code></em>, <strong><code>thr_mode</code></strong>=<em><code>'hard'</code></em>, <strong><code>pad_mode</code></strong>=<em><code>'per'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSFreqDenoise" class="doc_header"><code>class</code> <code>TSFreqDenoise</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L485" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSFreqDenoise</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>wavelet</code></strong>=<em><code>'db4'</code></em>, <strong><code>level</code></strong>=<em><code>2</code></em>, <strong><code>thr</code></strong>=<em><code>None</code></em>, <strong><code>thr_mode</code></strong>=<em><code>'hard'</code></em>, <strong><code>pad_mode</code></strong>=<em><code>'per'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Denoises a sequence applying a wavelet decomposition method</p>
 
@@ -1752,6 +1730,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">TSFreqDenoise</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">test_ne</span><span class="p">(</span><span class="n">TSFreqDenoise</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">xb</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1779,7 +1758,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSRandomFreqNoise" class="doc_header"><code>class</code> <code>TSRandomFreqNoise</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L516" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomFreqNoise</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>wavelet</code></strong>=<em><code>'db4'</code></em>, <strong><code>level</code></strong>=<em><code>2</code></em>, <strong><code>mode</code></strong>=<em><code>'constant'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSRandomFreqNoise" class="doc_header"><code>class</code> <code>TSRandomFreqNoise</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L516" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomFreqNoise</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>wavelet</code></strong>=<em><code>'db4'</code></em>, <strong><code>level</code></strong>=<em><code>2</code></em>, <strong><code>mode</code></strong>=<em><code>'constant'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Applys random noise using a wavelet decomposition method</p>
 
@@ -1828,7 +1807,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSRandomResizedLookBack" class="doc_header"><code>class</code> <code>TSRandomResizedLookBack</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L533" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomResizedLookBack</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSRandomResizedLookBack" class="doc_header"><code>class</code> <code>TSRandomResizedLookBack</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L533" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomResizedLookBack</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Selects a random number of sequence steps starting from the end and return an output of the same shape</p>
 
@@ -1879,7 +1858,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSVarOut" class="doc_header"><code>class</code> <code>TSVarOut</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L549" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSVarOut</code>(<strong><code>magnitude</code></strong>=<em><code>0.05</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSVarOut" class="doc_header"><code>class</code> <code>TSVarOut</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L549" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSVarOut</code>(<strong><code>magnitude</code></strong>=<em><code>0.05</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Set the value of a random number of variables to zero</p>
 
@@ -1928,7 +1907,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSCutOut" class="doc_header"><code>class</code> <code>TSCutOut</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L573" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSCutOut</code>(<strong><code>magnitude</code></strong>=<em><code>0.05</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSCutOut" class="doc_header"><code>class</code> <code>TSCutOut</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L573" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSCutOut</code>(<strong><code>magnitude</code></strong>=<em><code>0.05</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Sets a random section of the sequence to zero</p>
 
@@ -1977,7 +1956,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSTimeStepOut" class="doc_header"><code>class</code> <code>TSTimeStepOut</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L595" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTimeStepOut</code>(<strong><code>magnitude</code></strong>=<em><code>0.05</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSTimeStepOut" class="doc_header"><code>class</code> <code>TSTimeStepOut</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L595" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTimeStepOut</code>(<strong><code>magnitude</code></strong>=<em><code>0.05</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Sets random sequence steps to zero</p>
 
@@ -2026,7 +2005,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSRandomCropPad" class="doc_header"><code>class</code> <code>TSRandomCropPad</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L612" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomCropPad</code>(<strong><code>magnitude</code></strong>=<em><code>0.05</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSRandomCropPad" class="doc_header"><code>class</code> <code>TSRandomCropPad</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L612" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomCropPad</code>(<strong><code>magnitude</code></strong>=<em><code>0.05</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Crops a section of the sequence of a random length</p>
 
@@ -2075,7 +2054,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSMaskOut" class="doc_header"><code>class</code> <code>TSMaskOut</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L632" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSMaskOut</code>(<strong><code>magnitude</code></strong>=<em><code>0.05</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSMaskOut" class="doc_header"><code>class</code> <code>TSMaskOut</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L632" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSMaskOut</code>(<strong><code>magnitude</code></strong>=<em><code>0.05</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Set a random number of steps to zero</p>
 
@@ -2097,6 +2076,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">TSMaskOut</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">test_ne</span><span class="p">(</span><span class="n">TSMaskOut</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">xb</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -2124,7 +2104,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSTranslateX" class="doc_header"><code>class</code> <code>TSTranslateX</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L648" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTranslateX</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSTranslateX" class="doc_header"><code>class</code> <code>TSTranslateX</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L648" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTranslateX</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Moves a selected sequence window a random number of steps</p>
 
@@ -2173,7 +2153,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSRandomShift" class="doc_header"><code>class</code> <code>TSRandomShift</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L672" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomShift</code>(<strong><code>magnitude</code></strong>=<em><code>0.02</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSRandomShift" class="doc_header"><code>class</code> <code>TSRandomShift</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L672" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomShift</code>(<strong><code>magnitude</code></strong>=<em><code>0.02</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Shifts and splits a sequence</p>
 
@@ -2222,7 +2202,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSHorizontalFlip" class="doc_header"><code>class</code> <code>TSHorizontalFlip</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L686" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSHorizontalFlip</code>(<strong><code>magnitude</code></strong>=<em><code>1.0</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSHorizontalFlip" class="doc_header"><code>class</code> <code>TSHorizontalFlip</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L686" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSHorizontalFlip</code>(<strong><code>magnitude</code></strong>=<em><code>1.0</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Flips the sequence along the x-axis</p>
 
@@ -2244,6 +2224,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">TSHorizontalFlip</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">test_ne</span><span class="p">(</span><span class="n">TSHorizontalFlip</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">xb</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -2271,7 +2252,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSRandomTrend" class="doc_header"><code>class</code> <code>TSRandomTrend</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L699" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomTrend</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSRandomTrend" class="doc_header"><code>class</code> <code>TSRandomTrend</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L699" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomTrend</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Randomly rotates the sequence along the z-axis</p>
 
@@ -2320,7 +2301,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSVerticalFlip" class="doc_header"><code>class</code> <code>TSVerticalFlip</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L720" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSVerticalFlip</code>(<strong><code>magnitude</code></strong>=<em><code>1.0</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSVerticalFlip" class="doc_header"><code>class</code> <code>TSVerticalFlip</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L720" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSVerticalFlip</code>(<strong><code>magnitude</code></strong>=<em><code>1.0</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Applies a negative value to the time sequence</p>
 
@@ -2342,6 +2323,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">TSVerticalFlip</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">test_ne</span><span class="p">(</span><span class="n">TSVerticalFlip</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">xb</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -2369,7 +2351,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSResize" class="doc_header"><code>class</code> <code>TSResize</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L731" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSResize</code>(<strong><code>magnitude</code></strong>=<em><code>-0.5</code></em>, <strong><code>size</code></strong>=<em><code>None</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSResize" class="doc_header"><code>class</code> <code>TSResize</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L731" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSResize</code>(<strong><code>magnitude</code></strong>=<em><code>-0.5</code></em>, <strong><code>size</code></strong>=<em><code>None</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Resizes the sequence length of a time series</p>
 
@@ -2391,6 +2373,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">sz</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">.</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span> <span class="n">test_eq</span><span class="p">(</span><span class="n">TSResize</span><span class="p">(</span><span class="n">sz</span><span class="p">)(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">sz</span><span class="p">))))</span>
+<span class="n">test_ne</span><span class="p">(</span><span class="n">TSResize</span><span class="p">(</span><span class="mi">1</span><span class="p">)(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">xb</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -2418,7 +2401,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSRandomSize" class="doc_header"><code>class</code> <code>TSRandomSize</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L745" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomSize</code>(<strong><code>magnitude</code></strong>=<em><code>0.0</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSRandomSize" class="doc_header"><code>class</code> <code>TSRandomSize</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L745" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomSize</code>(<strong><code>magnitude</code></strong>=<em><code>0.0</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Randomly resizes the sequence length of a time series</p>
 
@@ -2472,7 +2455,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSRandomLargerSize" class="doc_header"><code>class</code> <code>TSRandomLargerSize</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L759" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomLargerSize</code>(<strong><code>magnitude</code></strong>=<em><code>1.0</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSRandomLargerSize" class="doc_header"><code>class</code> <code>TSRandomLargerSize</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L759" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomLargerSize</code>(<strong><code>magnitude</code></strong>=<em><code>1.0</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Randomly resizes the sequence length of a time series</p>
 
@@ -2497,7 +2480,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSRandomSmallerSize" class="doc_header"><code>class</code> <code>TSRandomSmallerSize</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L771" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomSmallerSize</code>(<strong><code>magnitude</code></strong>=<em><code>1.0</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSRandomSmallerSize" class="doc_header"><code>class</code> <code>TSRandomSmallerSize</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L771" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomSmallerSize</code>(<strong><code>magnitude</code></strong>=<em><code>1.0</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Randomly resizes the sequence length of a time series</p>
 
@@ -2551,7 +2534,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSRandomLowRes" class="doc_header"><code>class</code> <code>TSRandomLowRes</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L784" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomLowRes</code>(<strong><code>magnitude</code></strong>=<em><code>0.5</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSRandomLowRes" class="doc_header"><code>class</code> <code>TSRandomLowRes</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L784" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomLowRes</code>(<strong><code>magnitude</code></strong>=<em><code>0.5</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Randomly resizes the sequence length of a time series to a lower resolution</p>
 
@@ -2583,7 +2566,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSDownUpScale" class="doc_header"><code>class</code> <code>TSDownUpScale</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L797" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDownUpScale</code>(<strong><code>magnitude</code></strong>=<em><code>0.5</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSDownUpScale" class="doc_header"><code>class</code> <code>TSDownUpScale</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L797" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDownUpScale</code>(<strong><code>magnitude</code></strong>=<em><code>0.5</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Downscales a time series and upscales it again to previous sequence length</p>
 
@@ -2632,7 +2615,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSRandomDownUpScale" class="doc_header"><code>class</code> <code>TSRandomDownUpScale</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L812" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomDownUpScale</code>(<strong><code>magnitude</code></strong>=<em><code>0.5</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSRandomDownUpScale" class="doc_header"><code>class</code> <code>TSRandomDownUpScale</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L812" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomDownUpScale</code>(<strong><code>magnitude</code></strong>=<em><code>0.5</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Randomly downscales a time series and upscales it again to previous sequence length</p>
 
@@ -2690,7 +2673,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RandAugment" class="doc_header"><code>class</code> <code>RandAugment</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L872" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RandAugment</code>(<strong><code>tfms</code></strong>:<code>list</code>, <strong><code>N</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>M</code></strong>:<code>int</code>=<em><code>3</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="RandAugment" class="doc_header"><code>class</code> <code>RandAugment</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L872" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RandAugment</code>(<strong><code>tfms</code></strong>:<code>list</code>, <strong><code>N</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>M</code></strong>:<code>int</code>=<em><code>3</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>A transform that before_call its state at each <code>__call__</code></p>
 
@@ -2698,6 +2681,23 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 </div>
 
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_ne</span><span class="p">(</span><span class="n">RandAugment</span><span class="p">(</span><span class="n">TSMagAddNoise</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">M</span><span class="o">=</span><span class="mi">10</span><span class="p">)(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">xb</span><span class="p">)</span>
+</pre></div>
+
+    </div>
 </div>
 </div>
 
@@ -2722,7 +2722,7 @@ splits : ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TestTfm" class="doc_header"><code>class</code> <code>TestTfm</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/transforms.py#L899" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TestTfm</code>(<strong><code>tfm</code></strong>, <strong><code>magnitude</code></strong>=<em><code>1.0</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TestTfm" class="doc_header"><code>class</code> <code>TestTfm</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/transforms.py#L899" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TestTfm</code>(<strong><code>tfm</code></strong>, <strong><code>magnitude</code></strong>=<em><code>1.0</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Utility class to test the output of selected tfms during training</p>
 

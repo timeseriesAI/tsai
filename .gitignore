@@ -146,4 +146,5 @@ export/*
 *_dev.*
 *.npy
 *.pth
+*.pkl*
 

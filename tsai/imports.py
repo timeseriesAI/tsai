@@ -27,6 +27,7 @@ import time
 from time import gmtime, strftime
 import pytz # timezone
 import sklearn
+from sklearn.linear_model import LogisticRegression, RidgeClassifierCV # needed by rocket!
 from IPython.display import Audio, display, HTML, Javascript, clear_output
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)

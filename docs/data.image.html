@@ -61,7 +61,7 @@ nb_path: "nbs/003b_data.image.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSImage" class="doc_header"><code>class</code> <code>TSImage</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/image.py#L22" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSImage</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <code>TensorImage</code></p>
+<h2 id="TSImage" class="doc_header"><code>class</code> <code>TSImage</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/image.py#L22" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSImage</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <code>TensorImage</code></p>
 </blockquote>
 
 </div>
@@ -85,7 +85,7 @@ nb_path: "nbs/003b_data.image.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ToTSImage" class="doc_header"><code>class</code> <code>ToTSImage</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/image.py#L48" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ToTSImage</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
+<h2 id="ToTSImage" class="doc_header"><code>class</code> <code>ToTSImage</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/image.py#L48" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ToTSImage</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
 </blockquote>
 <p>Delegates (<code>__call__</code>,<code>decode</code>,<code>setup</code>) to (<code>encodes</code>,<code>decodes</code>,<code>setups</code>) if <code>split_idx</code> matches</p>
 
@@ -117,7 +117,7 @@ nb_path: "nbs/003b_data.image.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSToPlot" class="doc_header"><code>class</code> <code>TSToPlot</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/image.py#L54" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSToPlot</code>(<strong><code>size</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>224</code></em>, <strong><code>dpi</code></strong>:<code>int</code>=<em><code>72</code></em>, <strong><code>lw</code></strong>=<em><code>1</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
+<h2 id="TSToPlot" class="doc_header"><code>class</code> <code>TSToPlot</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/image.py#L54" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSToPlot</code>(<strong><code>size</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>224</code></em>, <strong><code>dpi</code></strong>:<code>int</code>=<em><code>72</code></em>, <strong><code>lw</code></strong>=<em><code>1</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
 </blockquote>
 <p>Transforms a time series batch to a 4d TSImage (bs, n_vars, size, size) by creating a matplotlib plot.</p>
 
@@ -184,7 +184,7 @@ nb_path: "nbs/003b_data.image.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSToMat" class="doc_header"><code>class</code> <code>TSToMat</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/image.py#L83" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSToMat</code>(<strong><code>size</code></strong>=<em><code>224</code></em>, <strong><code>dpi</code></strong>=<em><code>72</code></em>, <strong><code>cmap</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
+<h2 id="TSToMat" class="doc_header"><code>class</code> <code>TSToMat</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/image.py#L83" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSToMat</code>(<strong><code>size</code></strong>=<em><code>224</code></em>, <strong><code>dpi</code></strong>=<em><code>72</code></em>, <strong><code>cmap</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
 </blockquote>
 <p>Transforms a time series batch to a 4d TSImage (bs, n_vars, size, size) by creating a matplotlib matrix.
 Input data must be normalized with a range(-1, 1)</p>
@@ -323,7 +323,7 @@ Input data must be normalized with a range(-1, 1)</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSToGADF" class="doc_header"><code>class</code> <code>TSToGADF</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/image.py#L114" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSToGADF</code>(<strong><code>size</code></strong>=<em><code>224</code></em>, <strong><code>cmap</code></strong>=<em><code>None</code></em>, <strong><code>range</code></strong>=<em><code>None</code></em>, <strong><code>image_size</code></strong>=<em><code>1.0</code></em>, <strong><code>sample_range</code></strong>=<em><code>(-1, 1)</code></em>, <strong><code>method</code></strong>=<em><code>'summation'</code></em>, <strong><code>overlapping</code></strong>=<em><code>False</code></em>) :: <code>Transform</code></p>
+<h2 id="TSToGADF" class="doc_header"><code>class</code> <code>TSToGADF</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/image.py#L114" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSToGADF</code>(<strong><code>size</code></strong>=<em><code>224</code></em>, <strong><code>cmap</code></strong>=<em><code>None</code></em>, <strong><code>range</code></strong>=<em><code>None</code></em>, <strong><code>image_size</code></strong>=<em><code>1.0</code></em>, <strong><code>sample_range</code></strong>=<em><code>(-1, 1)</code></em>, <strong><code>method</code></strong>=<em><code>'summation'</code></em>, <strong><code>overlapping</code></strong>=<em><code>False</code></em>) :: <code>Transform</code></p>
 </blockquote>
 <p>Transforms a time series batch to a 4d TSImage (bs, n_vars, size, size) by applying Gramian Angular Difference Field.
 It requires either input to be previously normalized between -1 and 1 or set range to (-1, 1)</p>
@@ -349,7 +349,7 @@ It requires either input to be previously normalized between -1 and 1 or set ran
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSToGASF" class="doc_header"><code>class</code> <code>TSToGASF</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/image.py#L138" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSToGASF</code>(<strong><code>size</code></strong>=<em><code>224</code></em>, <strong><code>cmap</code></strong>=<em><code>None</code></em>, <strong><code>range</code></strong>=<em><code>None</code></em>, <strong><code>image_size</code></strong>=<em><code>1.0</code></em>, <strong><code>sample_range</code></strong>=<em><code>(-1, 1)</code></em>, <strong><code>method</code></strong>=<em><code>'summation'</code></em>, <strong><code>overlapping</code></strong>=<em><code>False</code></em>) :: <code>Transform</code></p>
+<h2 id="TSToGASF" class="doc_header"><code>class</code> <code>TSToGASF</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/image.py#L138" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSToGASF</code>(<strong><code>size</code></strong>=<em><code>224</code></em>, <strong><code>cmap</code></strong>=<em><code>None</code></em>, <strong><code>range</code></strong>=<em><code>None</code></em>, <strong><code>image_size</code></strong>=<em><code>1.0</code></em>, <strong><code>sample_range</code></strong>=<em><code>(-1, 1)</code></em>, <strong><code>method</code></strong>=<em><code>'summation'</code></em>, <strong><code>overlapping</code></strong>=<em><code>False</code></em>) :: <code>Transform</code></p>
 </blockquote>
 <p>Transforms a time series batch to a 4d TSImage (bs, n_vars, size, size) by applying Gramian Angular Summation Field.
 It requires either input to be previously normalized between -1 and 1 or set range to (-1, 1)</p>
@@ -375,7 +375,7 @@ It requires either input to be previously normalized between -1 and 1 or set ran
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSToMTF" class="doc_header"><code>class</code> <code>TSToMTF</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/image.py#L163" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSToMTF</code>(<strong><code>size</code></strong>=<em><code>224</code></em>, <strong><code>cmap</code></strong>=<em><code>None</code></em>, <strong><code>image_size</code></strong>=<em><code>1.0</code></em>, <strong><code>n_bins</code></strong>=<em><code>8</code></em>, <strong><code>strategy</code></strong>=<em><code>'quantile'</code></em>, <strong><code>overlapping</code></strong>=<em><code>False</code></em>) :: <code>Transform</code></p>
+<h2 id="TSToMTF" class="doc_header"><code>class</code> <code>TSToMTF</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/image.py#L163" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSToMTF</code>(<strong><code>size</code></strong>=<em><code>224</code></em>, <strong><code>cmap</code></strong>=<em><code>None</code></em>, <strong><code>image_size</code></strong>=<em><code>1.0</code></em>, <strong><code>n_bins</code></strong>=<em><code>8</code></em>, <strong><code>strategy</code></strong>=<em><code>'quantile'</code></em>, <strong><code>overlapping</code></strong>=<em><code>False</code></em>) :: <code>Transform</code></p>
 </blockquote>
 <p>Transforms a time series batch to a 4d TSImage (bs, n_vars, size, size) by applying Markov Transition Field</p>
 
@@ -400,7 +400,7 @@ It requires either input to be previously normalized between -1 and 1 or set ran
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSToRP" class="doc_header"><code>class</code> <code>TSToRP</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/image.py#L186" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSToRP</code>(<strong><code>size</code></strong>=<em><code>224</code></em>, <strong><code>cmap</code></strong>=<em><code>None</code></em>, <strong><code>dimension</code></strong>=<em><code>1</code></em>, <strong><code>time_delay</code></strong>=<em><code>1</code></em>, <strong><code>threshold</code></strong>=<em><code>None</code></em>, <strong><code>percentage</code></strong>=<em><code>10</code></em>) :: <code>Transform</code></p>
+<h2 id="TSToRP" class="doc_header"><code>class</code> <code>TSToRP</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/image.py#L186" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSToRP</code>(<strong><code>size</code></strong>=<em><code>224</code></em>, <strong><code>cmap</code></strong>=<em><code>None</code></em>, <strong><code>dimension</code></strong>=<em><code>1</code></em>, <strong><code>time_delay</code></strong>=<em><code>1</code></em>, <strong><code>threshold</code></strong>=<em><code>None</code></em>, <strong><code>percentage</code></strong>=<em><code>10</code></em>) :: <code>Transform</code></p>
 </blockquote>
 <p>Transforms a time series batch to a 4d TSImage (bs, n_vars, size, size) by applying Recurrence Plot.
 It requires input to be previously normalized between -1 and 1</p>
@@ -426,7 +426,7 @@ It requires input to be previously normalized between -1 and 1</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSToJRP" class="doc_header"><code>class</code> <code>TSToJRP</code><a href="https://github.com/timeseriesAI/timeseriesAI/tree/master/tsai/data/image.py#L211" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSToJRP</code>(<strong><code>size</code></strong>=<em><code>224</code></em>, <strong><code>cmap</code></strong>=<em><code>None</code></em>, <strong><code>dimension</code></strong>=<em><code>1</code></em>, <strong><code>time_delay</code></strong>=<em><code>1</code></em>, <strong><code>threshold</code></strong>=<em><code>None</code></em>, <strong><code>percentage</code></strong>=<em><code>10</code></em>) :: <code>Transform</code></p>
+<h2 id="TSToJRP" class="doc_header"><code>class</code> <code>TSToJRP</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/image.py#L211" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSToJRP</code>(<strong><code>size</code></strong>=<em><code>224</code></em>, <strong><code>cmap</code></strong>=<em><code>None</code></em>, <strong><code>dimension</code></strong>=<em><code>1</code></em>, <strong><code>time_delay</code></strong>=<em><code>1</code></em>, <strong><code>threshold</code></strong>=<em><code>None</code></em>, <strong><code>percentage</code></strong>=<em><code>10</code></em>) :: <code>Transform</code></p>
 </blockquote>
 <p>Transforms a time series batch to a 4d TSImage (bs, n_vars, size, size) by applying Joint Recurrence Plot</p>
 

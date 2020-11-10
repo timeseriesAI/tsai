@@ -24,16 +24,13 @@ class NumpyTensor(TensorBase):
         res._meta = kwargs
         return res
 
-    def __getitem__(self, idx):
-        res = super().__getitem__(idx)
-        return res.as_subclass(type(self))
-
     def __repr__(self):
         if self.numel() == 1: return f'{self}'
         else: return f'NumpyTensor(shape:{tuple(self.shape)})'
 
     def show(self, ax=None, ctx=None, title=None, title_color='black', **kwargs):
-        if self.ndim != 2: self = type(self)(to2d(self))
+        if self.ndim == 0: return str(self)
+        elif self.ndim != 2: self = type(self)(to2d(self))
         self = self.detach().cpu().numpy()
         ax = ifnone(ax, ctx)
         if ax is None: fig, ax = plt.subplots(**kwargs)
@@ -52,7 +49,9 @@ class ToNumpyTensor(Transform):
 class TSTensor(NumpyTensor):
     '''Returns a `tensor` with subclass `TSTensor` that has a show method'''
     @property
-    def vars(self): return self.shape[1]
+    def vars(self):
+        if self.ndim >=4: return self.shape[-3]
+        else: return self.shape[-2]
 
     @property
     def len(self): return self.shape[-1]
@@ -60,9 +59,9 @@ class TSTensor(NumpyTensor):
     def __repr__(self):
         if self.numel() == 1: return f'{self}'
         elif self.ndim >= 3:
-            return f'TSTensor(samples:{self.shape[0]}, vars:{self.shape[1]}, len:{self.shape[-1]})'
+            return f'TSTensor(samples:{self.shape[-3]}, vars:{self.shape[-2]}, len:{self.shape[-1]})'
         elif self.ndim == 2:
-            return f'TSTensor(vars:{self.shape[1]}, len:{self.shape[-1]})'
+            return f'TSTensor(vars:{self.shape[-2]}, len:{self.shape[-1]})'
         elif self.ndim == 1:
             return f'TSTensor(len:{self.shape[-1]})'
 
@@ -129,7 +128,9 @@ class TSDataset():
     @property
     def c(self): return 0 if self.y is None else 1 if isinstance(self.y[0], float) else len(np.unique(self.y))
     @property
-    def vars(self): return self[0][0].shape[0]
+    def vars(self):
+        if self[0][0].ndim >=4: return self[0][0].shape[-3]
+        return self[0][0].shape[-2]
     @property
     def len(self): return self[0][0].shape[-1]
 
@@ -210,7 +211,9 @@ class TSDatasets(NumpyDatasets):
     def subset(self, i): return type(self)(tls=L(tl.subset(i) for tl in self.tls), n_inp=self.n_inp, inplace=self.inplace, tfms=self.tfms,
                                            sel_vars=self.sel_vars, sel_steps=self.sel_steps, split=L(self.splits[i]) if self.splits is not None else None)
     @property
-    def vars(self): return self[0][0].shape[0]
+    def vars(self):
+        if self[0][0].ndim >=4: return self[0][0].shape[-3]
+        return self[0][0].shape[-2]
     @property
     def len(self): return self[0][0].shape[-1]
 
@@ -330,14 +333,15 @@ class NumpyDataLoader(TfmdDL):
 @delegates(plt.subplots)
 def show_tuple(tup, **kwargs):
     "Display a timeseries plot from a decoded tuple"
-    tup[0].show(title='unlabeled' if len(tup) == 1 else tup[1], **kwargs)
+    tup[0].show(title='unlabeled' if len(tup) == 1 else str(tup[1]), **kwargs)
 
 class TSDataLoader(NumpyDataLoader):
     @property
     def vars(self):
         b = self.one_batch()
         x = b[0] if isinstance(b, tuple) else b
-        return x.shape[1]
+        if x.ndim >=4: return x.shape[-3]
+        return x.shape[-2]
     @property
     def len(self): return self.dataset[0][0].shape[-1]
 
