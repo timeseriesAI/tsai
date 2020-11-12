@@ -12,51 +12,6 @@ entries:
     output: web
     title: Getting started
   - folderitems:
-      subfolders:
-      - subfolderitems:
-        - output: web,pdf
-          title: Data core
-          url: /data.core.html
-        - output: web,pdf
-          title: External data
-          url: /data.external.html
-        - output: web,pdf
-          title: Validation
-          url: /data.validation.html
-        - output: web,pdf
-          title: Transforms
-          url: /data.transforms.html
-        - output: web,pdf
-          title: Tabular data
-          url: /data.tabular.html
-        - output: web,pdf
-          title: Mixed data
-          url: /tutorial.mixed.html
-    output: web
-    title: Data
-  - folderitems:
-      subfolders:
-      - output: web,pdf
-        title: Data core
-        url: /data.core.html
-      - output: web,pdf
-        title: External data
-        url: /data.external.html
-      - output: web,pdf
-        title: Validation
-        url: /data.validation.html
-      - output: web,pdf
-        title: Transforms
-        url: /data.transforms.html
-      - output: web,pdf
-        title: Tabular data
-        url: /data.tabular.html
-      - output: web,pdf
-        title: Mixed data
-        url: /tutorial.mixed.html
-    output: web
-    title: Data2
-  - folderitems:
     - output: web,pdf
       title: Data core
       url: /data.core.html
@@ -76,6 +31,28 @@ entries:
       title: Mixed data
       url: /tutorial.mixed.html
     output: web
-    title: Data3
+    title: Data
+  - folderitems:
+    - output: web,pdf
+      title: Learner
+      url: /learner.html
+    - output: web,pdf
+      title: Optimizers
+      url: /optimizer.html
+    - output: web,pdf
+      title: Metrics
+      url: /metrics.html
+      subfolders:
+      - output: web
+        subfolderitems:
+        - output: web,pdf
+          title: Core
+          url: /callback.core.html
+        - output: web,pdf
+          title: Semi-supervised learning
+          url: /callback.semi_supervised.html
+        title: Callbacks
+    output: web
+    title: Training
   output: web
   title: Sidebar
