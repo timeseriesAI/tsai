@@ -14,158 +14,144 @@ entries:
   - folderitems:
     - output: web,pdf
       title: Data core
-      url: /data.core.html
+      url: /data.core
     - output: web,pdf
       title: External data
-      url: /data.external.html
+      url: /data.external
     - output: web,pdf
       title: Validation
-      url: /data.validation.html
+      url: /data.validation
     - output: web,pdf
       title: Transforms
-      url: /data.transforms.html
+      url: /data.transforms
     - output: web,pdf
       title: Tabular data
-      url: /data.tabular.html
+      url: /data.tabular
     - output: web,pdf
       title: Mixed data
-      url: /tutorial.mixed.html
+      url: /tutorial.mixed
     output: web
     title: Data
   - folderitems:
     - output: web,pdf
       title: Learner
-      url: /learner.html
+      url: /learner
     - output: web,pdf
       title: Optimizers
-      url: /optimizer.html
+      url: /optimizer
     - output: web,pdf
       title: Metrics
-      url: /metrics.html
+      url: /metrics
       subfolders:
       - output: web
         subfolderitems:
         - output: web,pdf
           title: Core
-          url: /callback.core.html
+          url: /callback.core
         - output: web,pdf
           title: Semi-supervised learning
-          url: /callback.semi_supervised.html
+          url: /callback.semi_supervised
         title: Callbacks
     output: web
     title: Training
   - folderitems:
-    - output: web
+    - output: web,pdf
+      title: Layers
+      url: /models.layers
+    - output: web,pdf
+      title: Utilities
+      url: /models.utils
       subfolders:
       - output: web
         subfolderitems:
         - output: web,pdf
           title: RNN
-          url: /models.RNN.html
+          url: /models.RNN
         - output: web,pdf
           title: RNNPlus
-          url: /models.RNNPlus.html
+          url: /models.RNNPlus
         title: RNNs
-      title: RNNs
-    - output: web
-      subfolders:
       - output: web
         subfolderitems:
         - output: web,pdf
           title: FCN
-          url: /models.FCN.html
+          url: /models.FCN
         - output: web,pdf
           title: FCNPlus
-          url: /models.FCNPlus.html
+          url: /models.FCNPlus
         - output: web,pdf
           title: ResNet
-          url: /models.ResNet.html
+          url: /models.ResNet
         - output: web,pdf
           title: ResNetPlus
-          url: /models.ResNetPlus.html
+          url: /models.ResNetPlus
         - output: web,pdf
           title: XResNet1d
-          url: /models.XResNet1d.html
+          url: /models.XResNet1d
         - output: web,pdf
           title: XResNet1dPlus
-          url: /models.XResNet1dPlus.html
+          url: /models.XResNet1dPlus
         - output: web,pdf
           title: ResCNN
-          url: /models.ResCNN.html
+          url: /models.ResCNN
         - output: web,pdf
           title: ROCKET
-          url: /models.ROCKET.html
+          url: /models.ROCKET
         - output: web,pdf
           title: InceptionTime
-          url: /models.InceptionTime.html
+          url: /models.InceptionTime
         - output: web,pdf
           title: InceptionTimePlus
-          url: /models.InceptionTimePlus.html
+          url: /models.InceptionTimePlus
         - output: web,pdf
           title: XceptionTime
-          url: /models.XceptionTime.html
+          url: /models.XceptionTime
         - output: web,pdf
           title: XceptionTimePlus
-          url: /models.XceptionTimePlus.html
+          url: /models.XceptionTimePlus
         - output: web,pdf
           title: OmniScaleCNN
-          url: /models.OmniScaleCNN.html
+          url: /models.OmniScaleCNN
         title: CNNs
-      title: CNNs
-    - output: web
-      subfolders:
       - output: web
         subfolderitems:
         - output: web,pdf
           title: RNN_FCN
-          url: /models.RNN_FCN.html
+          url: /models.RNN_FCN
         - output: web,pdf
           title: RNN_FCNPlus
-          url: /models.RNN_FCNPlus.html
+          url: /models.RNN_FCNPlus
         title: RNN-CNNs
-      title: RNN-CNNs
-    - output: web
-      subfolders:
       - output: web
         subfolderitems:
         - output: web,pdf
           title: mWDN
-          url: /models.mWDN.html
+          url: /models.mWDN
         title: Wavelet-based NNs
-      title: Wavelet-based NNs
-    - output: web
-      subfolders:
       - output: web
         subfolderitems:
         - output: web,pdf
           title: TransformerModel
-          url: /models.TransformerModel.html
+          url: /models.TransformerModel
         - output: web,pdf
           title: Time Series Transformer (TST)
-          url: /models.TST.html
+          url: /models.TST
         title: Transformers
-      title: Transformers
     - output: web,pdf
       title: Tabular Model
-      url: /models.TabModel.html
+      url: /models.TabModel
     - output: web,pdf
       title: Hybrid models
-      url: /models.Hybrid.html
-    - output: web,pdf
-      title: Layers
-      url: /models.layers.html
-    - output: web,pdf
-      title: Utilities
-      url: /models.utils.html
+      url: /models.Hybrid
     output: web
     title: Models
   - folderitems:
     - output: web,pdf
       title: Time series utilities
-      url: /utils.html
+      url: /utils
     - output: web,pdf
       title: Trading utilities
-      url: /trading.utils.html
+      url: /trading.utils
     output: web
     title: Utilities
   output: web
