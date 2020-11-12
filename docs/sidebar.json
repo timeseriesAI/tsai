@@ -3,23 +3,23 @@
     "Overview": "/"
   },
   "Data": {
-      "": {
-        "Data core": "/data.core.html",
-        "External data": "/data.external.html",
-        "Validation": "/data.validation.html",
-        "Transforms": "/data.transforms.html",
-        "Tabular data": "/data.tabular.html",
-        "Mixed data": "/tutorial.mixed.html"
-       }
+    "Data core": "/data.core.html",
+    "External data": "/data.external.html",
+    "Validation": "/data.validation.html",
+    "Transforms": "/data.transforms.html",
+    "Tabular data": "/data.tabular.html",
+    "Mixed data": "/tutorial.mixed.html"
   },
   "Training": {
     "Learner": "/learner.html",
     "Optimizers": "/optimizer.html",
     "Metrics": "/metrics.html",
-    "Callbacks": {
-        "Core": "/callback.core.html",
-        "Semi-supervised learning": "/callback.semi_supervised.html"
-     }
+    "": {
+        "Callbacks": {
+            "Core": "/callback.core.html",
+            "Semi-supervised learning": "/callback.semi_supervised.html"
+         }
+    }
    },
   "Models": {
     "RNNs": {
