@@ -9,20 +9,5 @@
         "Transforms": "/data.transforms.html",
         "Tabular data": "/data.tabular.html",
         "Mixed data": "/tutorial.mixed.html"
-    },
-    "Training": {
-        "": {
-            "Learner": "/learner.html"
-        },
-        "empty1": {
-            "Optimizers": "/optimizer.html"
-        },
-        "empty2": {
-            "Metrics": "/metrics.html"
-        },
-        "Callbacks": {
-            "Core": "/callback.core.html",
-            "Semi-supervised learning": "/callback.semi_supervised.html"
-        }
     }
 }
