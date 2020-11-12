@@ -2,8 +2,8 @@
   "Getting Started": {
     "Overview": "/"
   },
-  "": {
-      "Data": {
+  "Data": {
+      "": {
         "Data core": "/data.core.html",
         "External data": "/data.external.html",
         "Validation": "/data.validation.html",
