@@ -28,7 +28,7 @@
                 "RNNPlus": "/models.RNNPlus.html"
             }
         },
-        "": {
+        "empty1": {
             "CNNs": {
                 "FCN": "/models.FCN.html",
                 "FCNPlus": "/models.FCNPlus.html",
@@ -45,18 +45,18 @@
                 "OmniScaleCNN": "/models.OmniScaleCNN.html"
             }
         },
-        "": {
+        "empty2": {
             "RNN-CNNs": {
                 "RNN_FCN": "/models.RNN_FCN.html",
                 "RNN_FCNPlus": "/models.RNN_FCNPlus.html"
             }
         },
-        "": {
+        "empty3": {
             "Wavelet-based NN": {
                 "mWDN": "/models.mWDN.html"
             }
         },
-        "": {
+        "empty4": {
             "Transformers": {
                 "TransformerModel": "/models.TransformerModel.html",
                 "Time Series Transformer (TST)": "/models.TST.html"
