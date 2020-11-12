@@ -22,13 +22,13 @@
         }
     },
     "Models": {
-        "": {
+        "RNNs": {
             "RNNs": {
                 "RNN": "/models.RNN.html",
                 "RNNPlus": "/models.RNNPlus.html"
             }
         },
-        "": {
+        "CNNs": {
             "CNNs": {
                 "FCN": "/models.FCN.html",
                 "FCNPlus": "/models.FCNPlus.html",
@@ -45,18 +45,18 @@
                 "OmniScaleCNN": "/models.OmniScaleCNN.html"
             }
         },
-        "": {
+        "RNN-CNNs": {
             "RNN-CNNs": {
                 "RNN_FCN": "/models.RNN_FCN.html",
                 "RNN_FCNPlus": "/models.RNN_FCNPlus.html"
             }
         },
-        "empty3": {
-            "Wavelet-based NN": {
+        "Wavelet-based NNs": {
+            "Wavelet-based NNs": {
                 "mWDN": "/models.mWDN.html"
             }
         },
-        "": {
+        "Transformers": {
             "Transformers": {
                 "TransformerModel": "/models.TransformerModel.html",
                 "Time Series Transformer (TST)": "/models.TST.html"
