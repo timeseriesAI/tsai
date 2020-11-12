@@ -1,43 +1,82 @@
 {
-  "tsai": {
-    "Overview": "/",
-    "Utilities": "utils.html",
-    "Data Validation": "data.validation.html",
-    "Data External": "data.external.html",
-    "Data Core": "data.core.html",
-    "Data Transforms": "data.transforms.html",
-    "Data Image": "data.image.html",
-    "Data Tabular": "data.tabular.html",
-    "Mixed data": "data.mixed.html",
-    "Metrics": "metrics.html",
-    "Learner": "learner.html",
-    "Optimizers": "optimizer.html",
-    "Callback core": "callback.core.html",
-    "Callback semi_supervised": "callback.semi_supervised.html",
-    "Models utils": "models.utils.html",
-    "Layers": "models.layers.html",
-    "ResNet": "models.ResNet.html",
-    "ResNetPlus": "models.ResNetPlus.html",
-    "InceptionTime": "models.InceptionTime.html",
-    "InceptionTimePlus": "models.InceptionTimePlus.html",
-    "FCN": "models.FCN.html",
-    "FCNPlus": "models.FCNPlus.html",
-    "ResCNN": "models.ResCNN.html",
-    "RNN": "models.RNN.html",
-    "RNNPlus": "models.RNNPlus.html",
-    "XceptionTime": "models.XceptionTime.html",
-    "XceptionTimePlus": "models.XceptionTimePlus.html",
-    "RNN_FCN": "models.RNN_FCN.html",
-    "RNN_FCNPlus": "models.RNN_FCNPlus.html",
-    "TransformerModel": "models.TransformerModel.html",
-    "TST (Time Series Transformer)": "models.TST.html",
-    "OmniScaleCNN": "models.OmniScaleCNN.html",
-    "multilevel Wavelet Decomposition Network (mWDN)": "models.mWDN.html",
-    "ROCKET functions": "models.ROCKET.html",
-    "XResNet1d": "models.XResNet1d.html",
-    "XResNet1dPlus": "models.XResNet1dPlus.html",
-    "TabModel": "models.TabModel.html",
-    "Hybrid": "models.Hybrid.html",
-    "Trading utilities": "trading.utils.html"
+  "Getting Started": {
+    "Overview": "/"
+  },
+  "Data": {
+    "Data core": "/data.core.html",
+    "External data": "/data.external.html",
+    "Validation": "/data.validation.html",
+    "Transforms": "/data.transforms.html",
+    "Tabular data": "/data.tabular.html",
+    "Mixed data": "/tutorial.mixed.html"
+   },
+  "Training": {
+    "Learner": "/learner.html",
+    "Optimizers": "/optimizer.html",
+    "Metrics": "/metrics.html",
+    "Callbacks": {
+        "Core": "/callback.core.html",
+        "Semi-supervised learning": "/callback.semi_supervised.html"
+     }
+   },
+  "Models": {
+    "RNNs": {
+        "RNN": "/models.RNN.html",
+        "RNNPlus": "/models.RNNPlus.html"
+      },
+    "CNNs": {
+        "FCN": {
+            "FCN": "/models.FCN.html",
+            "FCNPlus": "/models.FCNPlus.html"
+          },
+        "ResNet": {
+            "ResNet": "/models.ResNet.html",
+            "ResNetPlus": "/models.ResNetPlus.html",
+            "XResNet1d": "/models.XResNet1d.html",
+            "XResNet1dPlus": "/models.XResNet1dPlus.html"
+          },
+        "ResCNN": {
+            "ResCNN": "/models.ResCNN.html"
+          },
+        "ROCKET": {
+            "ROCKET": "/models.ROCKET.html"
+          },
+        "InceptionTime": {
+            "InceptionTime": "/models.InceptionTime.html",
+            "InceptionTimePlus": "/models.InceptionTimePlus.html"
+          },
+        "XceptionTime": {
+            "XceptionTime": "/models.XceptionTime.html",
+            "XceptionTimePlus": "/models.XceptionTimePlus.html"
+          },
+        "OmniScaleCNN": {
+            "OmniScaleCNN": "/models.OmniScaleCNN.html"
+          }
+      },
+    "Hybrid RNN-CNNs": {
+        "RNN_FCN": {
+            "RNN_FCN": "/models.RNN_FCN.html",
+            "RNN_FCNPlus": "/models.RNN_FCNPlus.html"
+          }
+      },
+    "Wavelet-based NN": {
+        "mWDN": "/models.mWDN.html"
+      },
+    "Transformers": {
+        "TransformerModel": "/models.TransformerModel.html",
+        "Time Series Transformer (TST)": "/models.TST.html"
+      },
+    "Tabular Model": {
+        "Tabular Model": "/models.TabModel.html"
+      },
+    "Hybrid models": {
+        "Hybrid models": "/models.Hybrid.html"
+      },
+    "Layers": "/models.layers.html",
+    "Utilities": "/models.utils.html"
+  },
+  "Utilities": {
+    "Time series utilities": "/utils.html",
+    "Trading utilities": "/trading.utils.html"
   }
 }
