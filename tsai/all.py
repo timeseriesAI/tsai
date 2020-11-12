@@ -5,6 +5,6 @@ from .data.all import *
 from .metrics import *
 from .learner import *
 from .optimizer import *
-from .callback import *
 from .models.all import *
 from .trading.all import *
+from .callback.all import *

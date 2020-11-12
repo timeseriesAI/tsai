@@ -43,8 +43,11 @@ entries:
       title: Optimizers
       url: optimizer.html
     - output: web,pdf
-      title: Callback
-      url: callback.html
+      title: Callback core
+      url: callback.core.html
+    - output: web,pdf
+      title: Callback semi_supervised
+      url: callback.semi_supervised.html
     - output: web,pdf
       title: Models utils
       url: models.utils.html

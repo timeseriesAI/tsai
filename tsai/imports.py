@@ -38,8 +38,8 @@ cpus = defaults.cpus
 
 
 def save_nb(verbose=False):
-    display(Javascript('IPython.notebook.save_checkpoint()'))
-    time.sleep(1)
+    display(Javascript('IPython.notebook.save_checkpoint();'))
+    time.sleep(3)
     pv('\nCurrent notebook saved.\n', verbose)
 
 

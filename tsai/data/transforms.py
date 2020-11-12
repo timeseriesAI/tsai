@@ -3,12 +3,12 @@
 __all__ = ['ToNumpyCategory', 'OneHot', 'TSStandardize', 'TSNormalize', 'TSStdBySample', 'TSIdentity', 'TSShuffle_HLs',
            'TSShuffleSteps', 'TSMagAddNoise', 'TSMagMulNoise', 'random_curve_generator', 'random_cum_curve_generator',
            'random_cum_noise_generator', 'random_cum_linear_generator', 'TSTimeNoise', 'TSMagWarp', 'TSTimeWarp',
-           'TSWindowWarp', 'TSMagScale', 'TSMagScalePerVar', 'TSRandomZoomIn', 'TSRandomResizedCrop', 'TSWindowSlicing',
+           'TSWindowWarp', 'TSMagScale', 'TSMagScalePerVar', 'TSRandomResizedCrop', 'TSRandomZoomIn', 'TSWindowSlicing',
            'TSRandomZoomOut', 'TSRandomTimeScale', 'TSRandomTimeStep', 'TSBlur', 'TSSmooth', 'maddest', 'TSFreqDenoise',
            'TSRandomFreqNoise', 'TSRandomResizedLookBack', 'TSVarOut', 'TSCutOut', 'TSTimeStepOut', 'TSRandomCropPad',
            'TSMaskOut', 'TSTranslateX', 'TSRandomShift', 'TSHorizontalFlip', 'TSRandomTrend', 'TSRandomRotate',
            'TSVerticalFlip', 'TSResize', 'TSRandomSize', 'TSRandomLargerSize', 'TSRandomSmallerSize', 'TSRandomLowRes',
-           'TSDownUpScale', 'TSRandomDownUpScale', 'all_TS_randaugs', 'RandAugment', 'TestTfm']
+           'TSDownUpScale', 'TSRandomDownUpScale', 'all_TS_randaugs', 'RandAugment', 'TestTfm', 'get_tfm_name']
 
 # Cell
 from fastai.vision.augment import RandTransform
@@ -359,7 +359,7 @@ class TSMagScalePerVar(RandTransform):
         return output
 
 # Cell
-class TSRandomZoomIn(RandTransform):
+class TSRandomResizedCrop(RandTransform):
     "Randomly amplifies a sequence focusing on a random section of the steps"
     order = 95
     def __init__(self, magnitude=0.1, ex=None, mode='linear', **kwargs):
@@ -376,7 +376,7 @@ class TSRandomZoomIn(RandTransform):
         start = np.random.randint(0, seq_len - win_len)
         return F.interpolate(o[..., start : start + win_len], size=seq_len, mode=self.mode, align_corners=None if self.mode in ['nearest', 'area'] else False)
 
-TSRandomResizedCrop = TSRandomZoomIn
+TSRandomZoomIn = TSRandomResizedCrop
 
 # Cell
 class TSWindowSlicing(RandTransform):
@@ -838,6 +838,7 @@ all_TS_randaugs = [
     (TSRandomTimeScale, 0.05, 0.5),
     (TSRandomTimeStep, 0.05, 0.5),
     (partial(TSFreqDenoise, ex=0), 0.1, 1.),
+    (TSRandomLowRes, 0.05, 0.5),
 
     # Magnitude
     (partial(TSMagWarp, ex=0), 0.02, 0.2),
@@ -865,6 +866,7 @@ all_TS_randaugs = [
     (TSRandomResizedLookBack, 0.1, 1.),
     (TSTimeStepOut, 0.01, 0.2),
     (TSRandomCropPad, 0.05, 0.5),
+    (TSRandomResizedCrop, 0.05, 0.5),
     (TSMaskOut, 0.01, 0.2),
 ]
 
@@ -908,3 +910,13 @@ class TestTfm(RandTransform):
         self.tfmd.append(torch.equal(o, output))
         self.shape.append(o.shape)
         return output
+
+# Cell
+def get_tfm_name(tfm):
+    if hasattr(tfm, "func"): tfm_name = tfm.func.__name__
+    elif isinstance(tfm, tuple):
+        if hasattr(tfm[0], "func"): tfm_name = tfm[0].func.__name__
+        else: tfm_name = tfm[0].__name__
+    elif hasattr(tfm, "__name__"): tfm_name = tfm.__name__
+    else: tfm_name = str(tfm)
+    return tfm_name
