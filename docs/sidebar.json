@@ -20,5 +20,55 @@
                 "Semi-supervised learning": "/callback.semi_supervised.html"
             }
         }
+    },
+    "Models": {
+        "": {
+            "RNNs": {
+                "RNN": "/models.RNN.html",
+                "RNNPlus": "/models.RNNPlus.html"
+            }
+        },
+        "": {
+            "CNNs": {
+                "FCN": "/models.FCN.html",
+                "FCNPlus": "/models.FCNPlus.html",
+                "ResNet": "/models.ResNet.html",
+                "ResNetPlus": "/models.ResNetPlus.html",
+                "XResNet1d": "/models.XResNet1d.html",
+                "XResNet1dPlus": "/models.XResNet1dPlus.html",
+                "ResCNN": "/models.ResCNN.html",
+                "ROCKET": "/models.ROCKET.html",
+                "InceptionTime": "/models.InceptionTime.html",
+                "InceptionTimePlus": "/models.InceptionTimePlus.html",
+                "XceptionTime": "/models.XceptionTime.html",
+                "XceptionTimePlus": "/models.XceptionTimePlus.html",
+                "OmniScaleCNN": "/models.OmniScaleCNN.html"
+            }
+        },
+        "": {
+            "RNN-CNNs": {
+                "RNN_FCN": "/models.RNN_FCN.html",
+                "RNN_FCNPlus": "/models.RNN_FCNPlus.html"
+            }
+        },
+        "": {
+            "Wavelet-based NN": {
+                "mWDN": "/models.mWDN.html"
+            }
+        },
+        "": {
+            "Transformers": {
+                "TransformerModel": "/models.TransformerModel.html",
+                "Time Series Transformer (TST)": "/models.TST.html"
+            }
+        },
+        "Tabular Model": "/models.TabModel.html",
+        "Hybrid models": "/models.Hybrid.html",
+        "Layers": "/models.layers.html",
+        "Utilities": "/models.utils.html"
+    },
+    "Utilities": {
+        "Time series utilities": "/utils.html",
+        "Trading utilities": "/trading.utils.html"
     }
 }

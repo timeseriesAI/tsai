@@ -54,5 +54,39 @@ entries:
         title: Callbacks
     output: web
     title: Training
+  - folderitems:
+      subfolders:
+      - output: web
+        subfolderitems:
+        - output: web,pdf
+          title: TransformerModel
+          url: /models.TransformerModel.html
+        - output: web,pdf
+          title: Time Series Transformer (TST)
+          url: /models.TST.html
+        title: Transformers
+    - output: web,pdf
+      title: Tabular Model
+      url: /models.TabModel.html
+    - output: web,pdf
+      title: Hybrid models
+      url: /models.Hybrid.html
+    - output: web,pdf
+      title: Layers
+      url: /models.layers.html
+    - output: web,pdf
+      title: Utilities
+      url: /models.utils.html
+    output: web
+    title: Models
+  - folderitems:
+    - output: web,pdf
+      title: Time series utilities
+      url: /utils.html
+    - output: web,pdf
+      title: Trading utilities
+      url: /trading.utils.html
+    output: web
+    title: Utilities
   output: web
   title: Sidebar
