@@ -8,7 +8,7 @@
         "Validation": "/data.validation",
         "Transforms": "/data.transforms",
         "Tabular data": "/data.tabular",
-        "Mixed data": "/tutorial.mixed"
+        "Mixed data": "/data.mixed"
     },
     "Training": {
         "Learner": "/learner",

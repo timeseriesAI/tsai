@@ -29,7 +29,7 @@ entries:
       url: /data.tabular
     - output: web,pdf
       title: Mixed data
-      url: /tutorial.mixed
+      url: /data.mixed
     output: web
     title: Data
   - folderitems:

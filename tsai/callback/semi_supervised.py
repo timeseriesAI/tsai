@@ -57,7 +57,7 @@ class NoisyStudent(Callback):
         self.dls.train.bs = self.bs - self.dl2.bs
         pv(f'labels / pseudolabels per training batch              : {self.dls.train.bs} / {self.dl2.bs}', self.verbose)
         rel_weight = (self.dls.train.bs/self.dl2.bs) * (len(self.dl2.dataset)/len(self.dls.train.dataset))
-        pv(f'relative labeled/ pseudolabel sample weight in dataset: {rel_weight:.3f}', self.verbose)
+        pv(f'relative labeled/ pseudolabel sample weight in dataset: {rel_weight:.1f}', self.verbose)
         self.dl2iter = iter(self.dl2)
 
         self.old_loss_func = self.learn.loss_func

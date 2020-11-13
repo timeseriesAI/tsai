@@ -128,10 +128,9 @@ nb_path: "nbs/011_callback.semi_supervised.ipynb"
 <span class="n">pseudolabels</span> <span class="o">=</span> <span class="n">ToNumpyCategory</span><span class="p">()(</span><span class="n">y</span><span class="p">)</span> <span class="k">if</span> <span class="n">soft_preds</span> <span class="k">else</span> <span class="n">OneHot</span><span class="p">()(</span><span class="n">y</span><span class="p">)</span>
 <span class="n">dsets2</span> <span class="o">=</span> <span class="n">TSDatasets</span><span class="p">(</span><span class="n">pseudolabeled_data</span><span class="p">,</span> <span class="n">pseudolabels</span><span class="p">)</span>
 <span class="n">dl2</span> <span class="o">=</span> <span class="n">TSDataLoader</span><span class="p">(</span><span class="n">dsets2</span><span class="p">)</span>
-<span class="n">cbs</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">noisy_student</span> <span class="o">=</span> <span class="n">NoisyStudent</span><span class="p">(</span><span class="n">dl2</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">l2pl_ratio</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">cbs</span> <span class="o">+=</span> <span class="p">[</span><span class="n">noisy_student</span><span class="p">]</span>
-<span class="n">learn</span> <span class="o">=</span> <span class="n">Learner</span><span class="p">(</span><span class="n">dls</span><span class="p">,</span> <span class="n">InceptionTime</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">vars</span><span class="p">,</span> <span class="n">dls</span><span class="o">.</span><span class="n">c</span><span class="p">),</span> <span class="n">loss_func</span><span class="o">=</span><span class="n">LabelSmoothingCrossEntropy</span><span class="p">(),</span> <span class="n">cbs</span><span class="o">=</span><span class="n">cbs</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="n">accuracy</span><span class="p">])</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">create_model</span><span class="p">(</span><span class="n">InceptionTime</span><span class="p">,</span> <span class="n">dls</span><span class="o">=</span><span class="n">dls</span><span class="p">)</span>
+<span class="n">noisy_student_cb</span> <span class="o">=</span> <span class="n">NoisyStudent</span><span class="p">(</span><span class="n">dl2</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">l2pl_ratio</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">learn</span> <span class="o">=</span> <span class="n">Learner</span><span class="p">(</span><span class="n">dls</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">cbs</span><span class="o">=</span><span class="n">noisy_student_cb</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">accuracy</span><span class="p">)</span>
 <span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 
@@ -146,7 +145,7 @@ nb_path: "nbs/011_callback.semi_supervised.ipynb"
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>labels / pseudolabels per training batch              : 171 / 85
-relative labeled/ pseudolabel sample weight in dataset: 4.024
+relative labeled/ pseudolabel sample weight in dataset: 4.0
 </pre>
 </div>
 </div>
@@ -168,10 +167,10 @@ relative labeled/ pseudolabel sample weight in dataset: 4.024
   <tbody>
     <tr>
       <td>0</td>
-      <td>1.959584</td>
-      <td>1.811152</td>
-      <td>0.155556</td>
-      <td>00:13</td>
+      <td>1.879329</td>
+      <td>1.802031</td>
+      <td>0.150000</td>
+      <td>00:09</td>
     </tr>
   </tbody>
 </table>
@@ -183,7 +182,7 @@ relative labeled/ pseudolabel sample weight in dataset: 4.024
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>
-X: torch.Size([171, 24, 51])  X2: torch.Size([85, 24, 51])  X_comb: torch.Size([256, 24, 89])
+X: torch.Size([171, 24, 51])  X2: torch.Size([85, 24, 51])  X_comb: torch.Size([256, 24, 38])
 y: torch.Size([171])  y2: torch.Size([85])  y_comb: torch.Size([256])
 </pre>
 </div>
@@ -208,10 +207,9 @@ y: torch.Size([171])  y2: torch.Size([85])  y_comb: torch.Size([256])
 <span class="n">pseudolabels</span> <span class="o">=</span> <span class="n">ToNumpyCategory</span><span class="p">()(</span><span class="n">y</span><span class="p">)</span> <span class="k">if</span> <span class="n">soft_preds</span> <span class="k">else</span> <span class="n">OneHot</span><span class="p">()(</span><span class="n">y</span><span class="p">)</span>
 <span class="n">dsets2</span> <span class="o">=</span> <span class="n">TSDatasets</span><span class="p">(</span><span class="n">pseudolabeled_data</span><span class="p">,</span> <span class="n">pseudolabels</span><span class="p">)</span>
 <span class="n">dl2</span> <span class="o">=</span> <span class="n">TSDataLoader</span><span class="p">(</span><span class="n">dsets2</span><span class="p">)</span>
-<span class="n">cbs</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">noisy_student</span> <span class="o">=</span> <span class="n">NoisyStudent</span><span class="p">(</span><span class="n">dl2</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">l2pl_ratio</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">cbs</span> <span class="o">+=</span> <span class="p">[</span><span class="n">noisy_student</span><span class="p">]</span>
-<span class="n">learn</span> <span class="o">=</span> <span class="n">Learner</span><span class="p">(</span><span class="n">dls</span><span class="p">,</span> <span class="n">InceptionTime</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">vars</span><span class="p">,</span> <span class="n">dls</span><span class="o">.</span><span class="n">c</span><span class="p">),</span> <span class="n">loss_func</span><span class="o">=</span><span class="n">LabelSmoothingCrossEntropy</span><span class="p">(),</span> <span class="n">cbs</span><span class="o">=</span><span class="n">cbs</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="n">accuracy</span><span class="p">])</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">create_model</span><span class="p">(</span><span class="n">InceptionTime</span><span class="p">,</span> <span class="n">dls</span><span class="o">=</span><span class="n">dls</span><span class="p">)</span>
+<span class="n">noisy_student_cb</span> <span class="o">=</span> <span class="n">NoisyStudent</span><span class="p">(</span><span class="n">dl2</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">l2pl_ratio</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">learn</span> <span class="o">=</span> <span class="n">Learner</span><span class="p">(</span><span class="n">dls</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">cbs</span><span class="o">=</span><span class="n">noisy_student_cb</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">accuracy</span><span class="p">)</span>
 <span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 
@@ -226,7 +224,7 @@ y: torch.Size([171])  y2: torch.Size([85])  y_comb: torch.Size([256])
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>labels / pseudolabels per training batch              : 171 / 85
-relative labeled/ pseudolabel sample weight in dataset: 4.024
+relative labeled/ pseudolabel sample weight in dataset: 4.0
 </pre>
 </div>
 </div>
@@ -248,10 +246,10 @@ relative labeled/ pseudolabel sample weight in dataset: 4.024
   <tbody>
     <tr>
       <td>0</td>
-      <td>1.892791</td>
-      <td>1.842742</td>
-      <td>0.200000</td>
-      <td>00:06</td>
+      <td>1.845270</td>
+      <td>1.795770</td>
+      <td>0.316667</td>
+      <td>00:10</td>
     </tr>
   </tbody>
 </table>
@@ -263,7 +261,7 @@ relative labeled/ pseudolabel sample weight in dataset: 4.024
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>
-X: torch.Size([171, 24, 51])  X2: torch.Size([85, 24, 51])  X_comb: torch.Size([256, 24, 38])
+X: torch.Size([171, 24, 51])  X2: torch.Size([85, 24, 51])  X_comb: torch.Size([256, 24, 67])
 y: torch.Size([171, 6])  y2: torch.Size([85, 6])  y_comb: torch.Size([256, 6])
 </pre>
 </div>

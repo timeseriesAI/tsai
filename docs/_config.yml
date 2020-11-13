@@ -9,7 +9,7 @@ use_math: true
 # Add Google analytics id if you have one and want to use it here
 google_analytics:
 # See http://nbdev.fast.ai/search for help with adding Search
-google_search:
+google_search: 11230dd821e5ae508
 
 host: 127.0.0.1
 # the preview server used. Leave as is.
