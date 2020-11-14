@@ -99,15 +99,15 @@ test_eq(len(get_UCR_multivariate_list()), 30)
 
 # Cell
 def get_UCR_data(dsid, path='.', parent_dir='data/UCR', on_disk=True, return_split=True, verbose=False):
+    if dsid in ['InsectWingbeat']:
+        if verbose: print('There are problems with the original zip file and data cannot be correctly downloaded')
+        if return_split: return None, None, None, None
+        else: return None, None, None
     if verbose: print('Dataset:', dsid)
     assert dsid in get_UCR_univariate_list() + get_UCR_multivariate_list(), f'{dsid} is not a UCR dataset'
     full_parent_dir = Path(path)/parent_dir
     full_tgt_dir = full_parent_dir/dsid
     if not all([os.path.isfile(f'{full_parent_dir}/{dsid}/{fn}.npy') for fn in ['X_train', 'X_valid', 'y_train', 'y_valid', 'X', 'y']]):
-        if dsid in ['InsectWingbeat']:
-            if verbose: print('There are problems with the original zip file and data cannot correctly downloaded')
-            if return_split: return None, None, None, None
-            else: return None, None, None
         src_website = 'http://www.timeseriesclassification.com/Downloads'
         if verbose: print(f'Downloading and decompressing data to {full_tgt_dir}...')
         decompress_from_url(f'{src_website}/{dsid}.zip', target_dir=full_tgt_dir, verbose=verbose)
