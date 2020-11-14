@@ -8,24 +8,33 @@ from .layers import *
 
 # Cell
 class Hybrid(Module):
-    def __init__(self, dls, models, flatten=True, head=create_mlp_head, device=None, **kwargs):
+    def __init__(self, dls, models, device=None, flatten=True, custom_head=mlp_head, **kwargs):
+        r"""
+        Args:
+            dls: DataLoaders of type MixedDL.
+            models: list of models (one model per dataloader in dls).
+            flatten: if True, the output of each model body will be flattend before concatenating and passing to a joint head.
+            device: cpu or cuda. If None, default_device() will be chosen.
+            custom_head: type of thead that will be applied.
+            kwargs: custom_head kwargs
+        """
 
         device = ifnone(device, default_device())
         self.models = nn.ModuleList()
-        for m in models:
+        for m in L(models):
             m.head = Identity()
             self.models.append(m)
         self.flatten = Reshape(-1) if flatten else None
         with torch.no_grad():
             self.head = Noop
-            self.head_nf = self.forward(first(dls.train)[0]).shape[-1]
-        self.head = head(self.head_nf, dls.c, **kwargs)
+            out = self.forward(first(dls.train)[0])
+            self.head_nf = out.shape[-1] if flatten else out.shape[1]
+        self.head = custom_head(self.head_nf, dls.c, **kwargs)
         self.to(device=device)
 
     def forward(self, xs):
-        out = []
-        for x,m in zip(xs, self.models):
+        for i, (x,m) in enumerate(zip(xs, self.models)):
             _out = m(*x) if isinstance(x, L) else m(x)
             if self.flatten is not None and _out.ndim == 3: _out = self.flatten(_out)
-            out = _out if out == [] else torch.cat([out, _out], dim=1)
+            out = _out if i==0 else torch.cat([out, _out], dim=1)
         return self.head(out)

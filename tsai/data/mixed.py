@@ -23,7 +23,9 @@ class MixedDL():
         self.c = []
         bs = 0
         for dl in dls: # ensure all dls have the same bs
-            if bs == 0: bsi = dl.bs
+            if bs == 0:
+                bsi = dl.bs
+                self.train_ds = dl.dataset
             else: dl.bs = bsi
             dl.shuffle_fn = self.shuffle_fn
             if self.c == [] and hasattr(dl, "c"): self.c = dl.c

@@ -145,6 +145,10 @@ old/*
 export/*
 *_dev.*
 *.npy
+*.ts
+*.arff
 *.pth
 *.pkl*
+*.txt
+*.jpg
 

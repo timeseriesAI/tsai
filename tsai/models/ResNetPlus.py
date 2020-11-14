@@ -41,18 +41,33 @@ class ResBlockPlus(Module):
 
 @delegates(ResBlockPlus.__init__)
 class ResNetPlus(Module):
-    def __init__(self, c_in, c_out, nf=64, sa=False, se=None, fc_dropout=0., **kwargs):
+    def __init__(self, c_in, c_out, seq_len=None, nf=64, sa=False, se=None, fc_dropout=0., concat_pool=False,
+                 flatten=False, custom_head=None, y_range=None, **kwargs):
         self.resblock1 = ResBlockPlus(c_in,   nf,     se=se,   **kwargs)
         self.resblock2 = ResBlockPlus(nf,     nf * 2, se=se,   **kwargs)
         self.resblock3 = ResBlockPlus(nf * 2, nf * 2, sa=sa, **kwargs)
-        self.gap = GAP1d(1)
-        self.do = nn.Dropout(fc_dropout) if fc_dropout > 0 else noop
-        self.fc = nn.Linear(nf * 2, c_out)
+
+        self.head_nf = nf * 2
+        self.flatten = None
+        if flatten:
+            assert seq_len is not None, "you need to pass seq_len when flatten=True"
+            self.head_nf *= seq_len
+        self.flatten = Flatten() if flatten else None
+        if custom_head is not None: self.head = custom_head(self.head_nf, c_out)
+        else: self.head = self.create_head(self.head_nf, c_out, concat_pool=concat_pool, fc_dropout=fc_dropout, y_range=y_range)
+
+    def create_head(self, nf, c_out, concat_pool=False, fc_dropout=0., y_range=None, **kwargs):
+        if concat_pool: nf = nf * 2
+        layers = [GACP1d(1) if concat_pool else GAP1d(1)]
+        if fc_dropout: layers += [nn.Dropout(fc_dropout)]
+        layers += [nn.Linear(nf, c_out)]
+        if y_range: layers += [SigmoidRange(*y_range)]
+        return nn.Sequential(*layers)
 
     def forward(self, x):
         x = self.resblock1(x)
         x = self.resblock2(x)
         x = self.resblock3(x)
-        x = self.gap(x)
-        x = self.do(x)
-        return self.fc(x)
+        if self.flatten is not None: x = self.flatten(x)
+        x = self.head(x)
+        return x
