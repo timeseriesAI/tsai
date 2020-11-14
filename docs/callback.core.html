@@ -137,7 +137,7 @@ nb_path: "nbs/010_callback.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="GamblersCallback" class="doc_header"><code>class</code> <code>GamblersCallback</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/callback/core.py#L17" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GamblersCallback</code>(<strong><code>after_create</code></strong>=<em><code>None</code></em>, <strong><code>before_fit</code></strong>=<em><code>None</code></em>, <strong><code>before_epoch</code></strong>=<em><code>None</code></em>, <strong><code>before_train</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_pred</code></strong>=<em><code>None</code></em>, <strong><code>after_loss</code></strong>=<em><code>None</code></em>, <strong><code>before_backward</code></strong>=<em><code>None</code></em>, <strong><code>after_backward</code></strong>=<em><code>None</code></em>, <strong><code>after_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_train</code></strong>=<em><code>None</code></em>, <strong><code>after_train</code></strong>=<em><code>None</code></em>, <strong><code>before_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_fit</code></strong>=<em><code>None</code></em>, <strong><code>after_fit</code></strong>=<em><code>None</code></em>) :: <code>Callback</code></p>
+<h2 id="GamblersCallback" class="doc_header"><code>class</code> <code>GamblersCallback</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/callback/core.py#L18" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GamblersCallback</code>(<strong><code>after_create</code></strong>=<em><code>None</code></em>, <strong><code>before_fit</code></strong>=<em><code>None</code></em>, <strong><code>before_epoch</code></strong>=<em><code>None</code></em>, <strong><code>before_train</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_pred</code></strong>=<em><code>None</code></em>, <strong><code>after_loss</code></strong>=<em><code>None</code></em>, <strong><code>before_backward</code></strong>=<em><code>None</code></em>, <strong><code>after_backward</code></strong>=<em><code>None</code></em>, <strong><code>after_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_train</code></strong>=<em><code>None</code></em>, <strong><code>after_train</code></strong>=<em><code>None</code></em>, <strong><code>before_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_fit</code></strong>=<em><code>None</code></em>, <strong><code>after_fit</code></strong>=<em><code>None</code></em>) :: <code>Callback</code></p>
 </blockquote>
 <p>A callback to use metrics with gambler's loss</p>
 
@@ -195,9 +195,9 @@ nb_path: "nbs/010_callback.core.ipynb"
   <tbody>
     <tr>
       <td>0</td>
-      <td>1.573864</td>
-      <td>1.576166</td>
-      <td>0.166667</td>
+      <td>1.654426</td>
+      <td>1.568730</td>
+      <td>0.266667</td>
       <td>00:05</td>
     </tr>
   </tbody>
@@ -236,7 +236,7 @@ nb_path: "nbs/010_callback.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TransformScheduler" class="doc_header"><code>class</code> <code>TransformScheduler</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/callback/core.py#L22" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TransformScheduler</code>(<strong><code>schedule_func</code></strong>:<code>callable</code>, <strong><code>show_plot</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <code>Callback</code></p>
+<h2 id="TransformScheduler" class="doc_header"><code>class</code> <code>TransformScheduler</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/callback/core.py#L23" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TransformScheduler</code>(<strong><code>schedule_func</code></strong>:<code>callable</code>, <strong><code>show_plot</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <code>Callback</code></p>
 </blockquote>
 <p>A callback to schedule batch transforms during training based on a function (sched_lin, sched_exp, sched_cos (default), etc)</p>
 
@@ -272,7 +272,7 @@ nb_path: "nbs/010_callback.core.ipynb"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>TransformScheduler(&lt;fastai.callback.schedule._Annealer object at 0x7fdc68ae2290&gt;)</pre>
+<pre>TransformScheduler(&lt;fastai.callback.schedule._Annealer object at 0x7f88394529d0&gt;)</pre>
 </div>
 
 </div>
@@ -381,7 +381,7 @@ nb_path: "nbs/010_callback.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ShowGraphCallback2" class="doc_header"><code>class</code> <code>ShowGraphCallback2</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/callback/core.py#L60" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ShowGraphCallback2</code>(<strong><code>after_create</code></strong>=<em><code>None</code></em>, <strong><code>before_fit</code></strong>=<em><code>None</code></em>, <strong><code>before_epoch</code></strong>=<em><code>None</code></em>, <strong><code>before_train</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_pred</code></strong>=<em><code>None</code></em>, <strong><code>after_loss</code></strong>=<em><code>None</code></em>, <strong><code>before_backward</code></strong>=<em><code>None</code></em>, <strong><code>after_backward</code></strong>=<em><code>None</code></em>, <strong><code>after_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_train</code></strong>=<em><code>None</code></em>, <strong><code>after_train</code></strong>=<em><code>None</code></em>, <strong><code>before_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_fit</code></strong>=<em><code>None</code></em>, <strong><code>after_fit</code></strong>=<em><code>None</code></em>) :: <code>Callback</code></p>
+<h2 id="ShowGraphCallback2" class="doc_header"><code>class</code> <code>ShowGraphCallback2</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/callback/core.py#L61" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ShowGraphCallback2</code>(<strong><code>after_create</code></strong>=<em><code>None</code></em>, <strong><code>before_fit</code></strong>=<em><code>None</code></em>, <strong><code>before_epoch</code></strong>=<em><code>None</code></em>, <strong><code>before_train</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_pred</code></strong>=<em><code>None</code></em>, <strong><code>after_loss</code></strong>=<em><code>None</code></em>, <strong><code>before_backward</code></strong>=<em><code>None</code></em>, <strong><code>after_backward</code></strong>=<em><code>None</code></em>, <strong><code>after_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_train</code></strong>=<em><code>None</code></em>, <strong><code>after_train</code></strong>=<em><code>None</code></em>, <strong><code>before_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_fit</code></strong>=<em><code>None</code></em>, <strong><code>after_fit</code></strong>=<em><code>None</code></em>) :: <code>Callback</code></p>
 </blockquote>
 <p>(Modified) Update a graph of training and validation loss</p>
 
@@ -419,7 +419,7 @@ nb_path: "nbs/010_callback.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="UBDA" class="doc_header"><code>class</code> <code>UBDA</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/callback/core.py#L85" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>UBDA</code>(<strong><code>batch_tfms</code></strong>:<code>list</code>, <strong><code>N</code></strong>:<code>int</code>=<em><code>2</code></em>, <strong><code>C</code></strong>:<code>int</code>=<em><code>4</code></em>, <strong><code>S</code></strong>:<code>int</code>=<em><code>1</code></em>) :: <code>Callback</code></p>
+<h2 id="UBDAug" class="doc_header"><code>class</code> <code>UBDAug</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/callback/core.py#L86" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>UBDAug</code>(<strong><code>batch_tfms</code></strong>:<code>list</code>, <strong><code>N</code></strong>:<code>int</code>=<em><code>2</code></em>, <strong><code>C</code></strong>:<code>int</code>=<em><code>4</code></em>, <strong><code>S</code></strong>:<code>int</code>=<em><code>1</code></em>) :: <code>Callback</code></p>
 </blockquote>
 <p>A callback to implement the uncertainty-based data augmentation.</p>
 
@@ -453,7 +453,7 @@ nb_path: "nbs/010_callback.core.ipynb"
            <span class="n">TSRandomCropPad</span><span class="p">(</span><span class="o">.</span><span class="mi">3</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span> 
            <span class="n">TSMagAddNoise</span><span class="p">(</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span> <span class="n">p</span><span class="o">=.</span><span class="mi">5</span><span class="p">)]</span>
 
-<span class="n">ubda_cb</span> <span class="o">=</span> <span class="n">UBDA</span><span class="p">(</span><span class="n">TS_tfms</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">S</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">ubda_cb</span> <span class="o">=</span> <span class="n">UBDAug</span><span class="p">(</span><span class="n">TS_tfms</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">S</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="n">learn</span> <span class="o">=</span> <span class="n">Learner</span><span class="p">(</span><span class="n">dls</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">cbs</span><span class="o">=</span><span class="n">ubda_cb</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">accuracy</span><span class="p">)</span>
 <span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
@@ -482,10 +482,10 @@ nb_path: "nbs/010_callback.core.ipynb"
   <tbody>
     <tr>
       <td>0</td>
-      <td>1.826635</td>
-      <td>1.807900</td>
-      <td>0.177778</td>
-      <td>00:13</td>
+      <td>1.819536</td>
+      <td>1.771290</td>
+      <td>0.155556</td>
+      <td>00:12</td>
     </tr>
   </tbody>
 </table>

@@ -10,7 +10,7 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'ttest', 'tscore', 'ttest_tensor', 'pcc', 'scc', 'a', 'b', 'remove_fn', 'npsave', 'np_save', 'permute_2D',
            'random_normal', 'random_half_normal', 'random_normal_tensor', 'random_half_normal_tensor', 'clip_outliers',
            'default_dpi', 'get_plot_fig', 'fig2buf', 'plot_scatter', 'jointplot_scatter', 'jointplot_kde', 'get_idxs',
-           'apply_cmap', 'torch_tile', 'to_tsfresh_dataset', 'pcorr', 'scorr']
+           'apply_cmap', 'torch_tile', 'to_tsfresh_dataset', 'pcorr', 'scorr', 'torch_diff']
 
 # Cell
 from .imports import *
@@ -486,7 +486,7 @@ def torch_tile(a, n_tile, dim=0):
     repeat_idx = [1] * a.dim()
     repeat_idx[dim] = n_tile
     a = a.repeat(*(repeat_idx))
-    order_index = torch.LongTensor(np.concatenate([init_dim * np.arange(n_tile) + i for i in range(init_dim)]))
+    order_index = torch.cat([init_dim * torch.arange(n_tile) + i for i in range(init_dim)]).to(device=a.device)
     return torch.index_select(a, dim, order_index)
 
 # Cell
@@ -512,3 +512,10 @@ def pcorr(a, b):
 def scorr(a, b):
     corr = scipy.stats.spearmanr(a, b)
     return corr[0], corr[1]
+
+# Cell
+def torch_diff(t, lag=1, pad=True):
+    import torch.nn.functional as F
+    diff = t[..., lag:] - t[..., :-lag]
+    if pad: return F.pad(diff, (lag,0))
+    else: return diff

@@ -6,6 +6,7 @@ __all__ = ['ResBlockPlus', 'ResNetPlus']
 from ..imports import *
 from .utils import *
 from .layers import *
+torch.set_num_threads(cpus)
 
 # Cell
 class ResBlockPlus(Module):

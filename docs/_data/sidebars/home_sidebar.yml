@@ -22,6 +22,9 @@ entries:
       title: Validation
       url: /data.validation
     - output: web,pdf
+      title: Preprocessing
+      url: /data.preprocessing
+    - output: web,pdf
       title: Transforms
       url: /data.transforms
     - output: web,pdf

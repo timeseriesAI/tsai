@@ -8,13 +8,13 @@
 
 ## What's new?
 
-### tsai: 2.4 (Nov 10th, 2020)
+### tsai: 0.2.4 (Nov 10th, 2020)
 
 * Adapted `tsai` to work with Pytorch 1.7.
 
-### tsai: 2.0 (Nov 3rd, 2020)
+### tsai: 0.2.0 (Nov 3rd, 2020)
 
-`tsai` 2.0 is a major update to the tsai library. These are the major changes made to the library:
+`tsai` 0.2.0 is a major update to the tsai library. These are the major changes made to the library:
 
 * New tutorial nbs have been added to demonstrate the use of new functionality like: 
     * Time series **data preparation**

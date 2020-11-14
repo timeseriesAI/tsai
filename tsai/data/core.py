@@ -2,7 +2,7 @@
 
 __all__ = ['NumpyTensor', 'ToNumpyTensor', 'TSTensor', 'ToTSTensor', 'ToFloat', 'ToInt', 'NumpyTensorBlock',
            'TSTensorBlock', 'TorchDataset', 'NumpyDataset', 'TSDataset', 'NumpyDatasets', 'TSDatasets', 'add_ds',
-           'NumpyDataLoader', 'show_tuple', 'TSDataLoader', 'NumpyDataLoaders', 'TSDataLoaders']
+           'NumpyDataLoader', 'show_tuple', 'TSDataLoader', 'NumpyDataLoaders', 'TSDataLoaders', 'get_ts_dls']
 
 # Cell
 from ..imports import *
@@ -11,22 +11,22 @@ from .external import *
 from .validation import *
 
 # Cell
-def _fa_rebuild_tensor (cls, *args, **kwargs): return cls(torch._utils._rebuild_tensor_v2(*args, **kwargs))
-def _fa_rebuild_qtensor(cls, *args, **kwargs): return cls(torch._utils._rebuild_qtensor  (*args, **kwargs))
-
-# Cell
 class NumpyTensor(TensorBase):
     "Returns a `tensor` with subclass `NumpyTensor` that has a show method"
 
     def __new__(cls, o, **kwargs):
         if isinstance(o, (list, L)): o = stack(o)
         res = cast(tensor(o), cls)
-        res._meta = kwargs
+        for k,v in kwargs.items(): setattr(res, k, v)
         return res
+
+    @property
+    def data(self): return torch.Tensor(self.float())
 
     def __repr__(self):
         if self.numel() == 1: return f'{self}'
         else: return f'NumpyTensor(shape:{tuple(self.shape)})'
+
 
     def show(self, ax=None, ctx=None, title=None, title_color='black', **kwargs):
         if self.ndim == 0: return str(self)
@@ -48,6 +48,7 @@ class ToNumpyTensor(Transform):
 # Cell
 class TSTensor(NumpyTensor):
     '''Returns a `tensor` with subclass `TSTensor` that has a show method'''
+
     @property
     def vars(self):
         if self.ndim >=4: return self.shape[-3]
@@ -351,9 +352,9 @@ _batch_tfms = ('after_item','before_batch','after_batch')
 class NumpyDataLoaders(DataLoaders):
     _xblock = NumpyTensorBlock
     _dl_type = NumpyDataLoader
-    def __init__(self, *loaders, path='.', device=default_device()):
+    def __init__(self, *loaders, path='.', device=None):
         self.loaders,self.path = list(loaders),Path(path)
-        self.device = device
+        self.device = ifnone(device, default_device())
 
     @classmethod
     @delegates(DataLoaders.from_dblock)
@@ -371,7 +372,8 @@ class NumpyDataLoaders(DataLoaders):
         return cls.from_dblock(dblock, source, **kwargs)
 
     @classmethod
-    def from_dsets(cls, *ds, path='.', bs=64, num_workers=0, batch_tfms=None, device=default_device(), shuffle_train=True, **kwargs):
+    def from_dsets(cls, *ds, path='.', bs=64, num_workers=0, batch_tfms=None, device=None, shuffle_train=True, **kwargs):
+        device = ifnone(device, default_device())
         if batch_tfms is not None and not isinstance(batch_tfms, list): batch_tfms = [batch_tfms]
         default = (shuffle_train,) + (False,) * (len(ds)-1)
         defaults = {'shuffle': default, 'drop_last': default}
@@ -396,3 +398,11 @@ def cws(self:NumpyDataLoader):
         weights = 1. / class_sample_count.float()
         return (weights / weights.sum()).to(default_device())
     else: return None
+
+# Cell
+def get_ts_dls(X, y=None, splits=None, sel_vars=None, sel_steps=None, tfms=None, inplace=True,
+            path='.', bs=64, num_workers=0, batch_tfms=None, device=None, shuffle_train=True, **kwargs):
+    dsets = TSDatasets(X, y, splits=splits, sel_vars=sel_vars, sel_steps=sel_steps, tfms=tfms, inplace=inplace, **kwargs)
+    dls   = TSDataLoaders.from_dsets(dsets.train, dsets.valid, path='.', bs=bs, num_workers=num_workers, batch_tfms=batch_tfms,
+                                     device=device, shuffle_train=shuffle_train, **kwargs)
+    return dls

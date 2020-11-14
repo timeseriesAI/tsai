@@ -67,7 +67,7 @@ nb_path: "nbs/011_callback.semi_supervised.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="NoisyStudent" class="doc_header"><code>class</code> <code>NoisyStudent</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/callback/semi_supervised.py#L17" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NoisyStudent</code>(<strong><code>dl2</code></strong>:<code>DataLoader</code>, <strong><code>bs</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>l2pl_ratio</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>batch_tfms</code></strong>:<code>Optional</code>[<code>list</code>]=<em><code>None</code></em>, <strong><code>do_setup</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>pseudolabel_sample_weight</code></strong>:<code>float</code>=<em><code>1.0</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>) :: <code>Callback</code></p>
+<h2 id="NoisyStudent" class="doc_header"><code>class</code> <code>NoisyStudent</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/callback/semi_supervised.py#L18" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NoisyStudent</code>(<strong><code>dl2</code></strong>:<code>DataLoader</code>, <strong><code>bs</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>l2pl_ratio</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>batch_tfms</code></strong>:<code>Optional</code>[<code>list</code>]=<em><code>None</code></em>, <strong><code>do_setup</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>pseudolabel_sample_weight</code></strong>:<code>float</code>=<em><code>1.0</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>) :: <code>Callback</code></p>
 </blockquote>
 <p>A callback to implement the Noisy Student approach. In the original paper this was used in combination with noise:</p>
 
@@ -167,10 +167,10 @@ relative labeled/ pseudolabel sample weight in dataset: 4.0
   <tbody>
     <tr>
       <td>0</td>
-      <td>1.879329</td>
-      <td>1.802031</td>
-      <td>0.150000</td>
-      <td>00:09</td>
+      <td>1.855433</td>
+      <td>1.810069</td>
+      <td>0.166667</td>
+      <td>00:07</td>
     </tr>
   </tbody>
 </table>
@@ -246,10 +246,10 @@ relative labeled/ pseudolabel sample weight in dataset: 4.0
   <tbody>
     <tr>
       <td>0</td>
-      <td>1.845270</td>
-      <td>1.795770</td>
-      <td>0.316667</td>
-      <td>00:10</td>
+      <td>1.886215</td>
+      <td>1.778320</td>
+      <td>0.200000</td>
+      <td>00:06</td>
     </tr>
   </tbody>
 </table>
@@ -261,7 +261,7 @@ relative labeled/ pseudolabel sample weight in dataset: 4.0
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>
-X: torch.Size([171, 24, 51])  X2: torch.Size([85, 24, 51])  X_comb: torch.Size([256, 24, 67])
+X: torch.Size([171, 24, 51])  X2: torch.Size([85, 24, 51])  X_comb: torch.Size([256, 24, 40])
 y: torch.Size([171, 6])  y2: torch.Size([85, 6])  y_comb: torch.Size([256, 6])
 </pre>
 </div>

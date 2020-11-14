@@ -5,6 +5,7 @@ __all__ = ['NoisyStudent']
 # Cell
 from ..imports import *
 from ..utils import *
+from ..data.preprocessing import *
 from ..data.transforms import *
 from ..models.layers import *
 from fastai.callback.all import *

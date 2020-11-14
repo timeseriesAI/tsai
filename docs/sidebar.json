@@ -6,6 +6,7 @@
         "Data core": "/data.core",
         "External data": "/data.external",
         "Validation": "/data.validation",
+        "Preprocessing": "/data.preprocessing",
         "Transforms": "/data.transforms",
         "Tabular data": "/data.tabular",
         "Mixed data": "/data.mixed"
