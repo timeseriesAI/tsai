@@ -8,7 +8,7 @@ entries:
   - folderitems:
     - output: web,pdf
       title: Overview
-      url: /
+      url: ''
     output: web
     title: Getting started
   - folderitems:
@@ -16,20 +16,23 @@ entries:
       title: Data core
       url: /data.core
     - output: web,pdf
-      title: External data
+      title: Getting external data
       url: /data.external
     - output: web,pdf
-      title: Validation
+      title: Splitting data
       url: /data.validation
     - output: web,pdf
-      title: Preprocessing
+      title: Preprocessing data
       url: /data.preprocessing
     - output: web,pdf
-      title: Transforms
+      title: Data augmentation
       url: /data.transforms
     - output: web,pdf
       title: Tabular data
       url: /data.tabular
+    - output: web,pdf
+      title: Imaging time series
+      url: /data.image
     - output: web,pdf
       title: Mixed data
       url: /data.mixed
@@ -45,16 +48,12 @@ entries:
     - output: web,pdf
       title: Metrics
       url: /metrics
-      subfolders:
-      - output: web
-        subfolderitems:
-        - output: web,pdf
-          title: Core
-          url: /callback.core
-        - output: web,pdf
-          title: Semi-supervised learning
-          url: /callback.semi_supervised
-        title: Callbacks
+    - output: web,pdf
+      title: Callbacks core
+      url: /callback.core
+    - output: web,pdf
+      title: Semi-supervised learning
+      url: /callback.semi_supervised
     output: web
     title: Training
   - folderitems:
@@ -64,6 +63,9 @@ entries:
     - output: web,pdf
       title: Utilities
       url: /models.utils
+    - output: web,pdf
+      title: MLP
+      url: /models.MLP
       subfolders:
       - output: web
         subfolderitems:
@@ -139,13 +141,16 @@ entries:
         - output: web,pdf
           title: Time Series Transformer (TST)
           url: /models.TST
+        - output: web,pdf
+          title: Time Series Transformer Plus (TSTPlus)
+          url: /models.TSTPlus
         title: Transformers
     - output: web,pdf
       title: Tabular Model
       url: /models.TabModel
     - output: web,pdf
-      title: Hybrid models
-      url: /models.Hybrid
+      title: HybridDL models
+      url: /models.HybridDL
     output: web
     title: Models
   - folderitems:
@@ -153,7 +158,7 @@ entries:
       title: Time series utilities
       url: /utils
     - output: web,pdf
-      title: Trading utilities
+      title: Other utilities
       url: /trading.utils
     output: web
     title: Utilities

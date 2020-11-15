@@ -1,30 +1,28 @@
 {
     "Getting started": {
-        "Overview": "/"
+        "Overview": ""
     },
     "Data": {
         "Data core": "/data.core",
-        "External data": "/data.external",
-        "Validation": "/data.validation",
-        "Preprocessing": "/data.preprocessing",
-        "Transforms": "/data.transforms",
+        "Getting external data": "/data.external",
+        "Splitting data": "/data.validation",
+        "Preprocessing data": "/data.preprocessing",
+        "Data augmentation": "/data.transforms",
         "Tabular data": "/data.tabular",
+        "Imaging time series": "/data.image",
         "Mixed data": "/data.mixed"
     },
     "Training": {
         "Learner": "/learner",
         "Optimizers": "/optimizer",
         "Metrics": "/metrics",
-        "": {
-            "Callbacks": {
-                "Core": "/callback.core",
-                "Semi-supervised learning": "/callback.semi_supervised"
-            }
-        }
+        "Callbacks core": "/callback.core",
+        "Semi-supervised learning": "/callback.semi_supervised"
     },
     "Models": {
         "Layers": "/models.layers",
         "Utilities": "/models.utils",
+        "MLP": "/models.MLP",
         "": {
             "RNNs": {
                 "RNN": "/models.RNN",
@@ -62,14 +60,15 @@
         "empty4": {
             "Transformers": {
                 "TransformerModel": "/models.TransformerModel",
-                "Time Series Transformer (TST)": "/models.TST"
+                "Time Series Transformer (TST)": "/models.TST",
+                "Time Series Transformer Plus (TSTPlus)": "/models.TSTPlus"
             }
         },
         "Tabular Model": "/models.TabModel",
-        "Hybrid models": "/models.Hybrid"
+        "HybridDL models": "/models.HybridDL"
     },
     "Utilities": {
         "Time series utilities": "/utils",
-        "Trading utilities": "/trading.utils"
+        "Other utilities": "/trading.utils"
     }
 }

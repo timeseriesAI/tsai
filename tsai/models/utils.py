@@ -69,8 +69,12 @@ def check_weight(m, cond=noop, verbose=False):
     return np.array(mean), np.array(std)
 
 # Cell
-def create_model(arch, c_in=1, c_out=2, seq_len=32, dls=None, device=default_device(), **kwargs):
-    if dls is not None: c_in, c_out, seq_len = dls.vars, dls.c, dls.len
+def create_model(arch, c_in=None, c_out=None, seq_len=None, dls=None, device=None, **kwargs):
+    device = ifnone(device, default_device())
+    if dls is not None:
+        c_in = ifnone(c_in, dls.vars)
+        c_out = ifnone(c_out, dls.c)
+        seq_len = ifnone(seq_len, dls.len)
     if sum([1 for v in ['RNN_FCN', 'LSTM_FCN', 'RNNPlus', 'LSTMPlus', 'GRUPlus', 'InceptionTimePlus', 'GRU_FCN', 'OmniScaleCNN', 'mWDN', 'TST']
             if v in arch.__name__]):
         return arch(c_in, c_out, seq_len=seq_len, **kwargs).to(device=device)
