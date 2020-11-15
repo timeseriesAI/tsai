@@ -1,74 +1,75 @@
 {
     "Getting started": {
-        "Overview": ""
+        "Overview": "",
+        "Tutorials":"tutorials"
     },
     "Data": {
-        "Data core": "/data.core",
-        "Getting external data": "/data.external",
-        "Splitting data": "/data.validation",
-        "Preprocessing data": "/data.preprocessing",
-        "Data augmentation": "/data.transforms",
-        "Tabular data": "/data.tabular",
-        "Imaging time series": "/data.image",
-        "Mixed data": "/data.mixed"
+        "Data core": "data.core",
+        "Getting external data": "data.external",
+        "Splitting data": "data.validation",
+        "Preprocessing data": "data.preprocessing",
+        "Data augmentation": "data.transforms",
+        "Tabular data": "data.tabular",
+        "Imaging time series": "data.image",
+        "Mixed data": "data.mixed"
     },
     "Training": {
-        "Learner": "/learner",
-        "Optimizers": "/optimizer",
-        "Metrics": "/metrics",
-        "Callbacks core": "/callback.core",
-        "Semi-supervised learning": "/callback.semi_supervised"
+        "Learner": "learner",
+        "Optimizers": "optimizer",
+        "Metrics": "metrics",
+        "Callbacks core": "callback.core",
+        "Semi-supervised learning": "callback.semi_supervised"
     },
     "Models": {
-        "Layers": "/models.layers",
-        "Utilities": "/models.utils",
-        "MLP": "/models.MLP",
+        "Layers": "models.layers",
+        "Utilities": "models.utils",
+        "MLP": "models.MLP",
         "": {
             "RNNs": {
-                "RNN": "/models.RNN",
-                "RNNPlus": "/models.RNNPlus"
+                "RNN": "models.RNN",
+                "RNNPlus": "models.RNNPlus"
             }
         },
         "empty1": {
             "CNNs": {
-                "FCN": "/models.FCN",
-                "FCNPlus": "/models.FCNPlus",
-                "ResNet": "/models.ResNet",
-                "ResNetPlus": "/models.ResNetPlus",
-                "XResNet1d": "/models.XResNet1d",
-                "XResNet1dPlus": "/models.XResNet1dPlus",
-                "ResCNN": "/models.ResCNN",
-                "ROCKET": "/models.ROCKET",
-                "InceptionTime": "/models.InceptionTime",
-                "InceptionTimePlus": "/models.InceptionTimePlus",
-                "XceptionTime": "/models.XceptionTime",
-                "XceptionTimePlus": "/models.XceptionTimePlus",
-                "OmniScaleCNN": "/models.OmniScaleCNN"
+                "FCN": "models.FCN",
+                "FCNPlus": "models.FCNPlus",
+                "ResNet": "models.ResNet",
+                "ResNetPlus": "models.ResNetPlus",
+                "XResNet1d": "models.XResNet1d",
+                "XResNet1dPlus": "models.XResNet1dPlus",
+                "ResCNN": "models.ResCNN",
+                "ROCKET": "models.ROCKET",
+                "InceptionTime": "models.InceptionTime",
+                "InceptionTimePlus": "models.InceptionTimePlus",
+                "XceptionTime": "models.XceptionTime",
+                "XceptionTimePlus": "models.XceptionTimePlus",
+                "OmniScaleCNN": "models.OmniScaleCNN"
             }
         },
         "empty2": {
             "RNN-CNNs": {
-                "RNN_FCN": "/models.RNN_FCN",
-                "RNN_FCNPlus": "/models.RNN_FCNPlus"
+                "RNN_FCN": "models.RNN_FCN",
+                "RNN_FCNPlus": "models.RNN_FCNPlus"
             }
         },
         "empty3": {
             "Wavelet-based NNs": {
-                "mWDN": "/models.mWDN"
+                "mWDN": "models.mWDN"
             }
         },
         "empty4": {
             "Transformers": {
-                "TransformerModel": "/models.TransformerModel",
-                "Time Series Transformer (TST)": "/models.TST",
-                "Time Series Transformer Plus (TSTPlus)": "/models.TSTPlus"
+                "TransformerModel": "models.TransformerModel",
+                "Time Series Transformer (TST)": "models.TST",
+                "Time Series Transformer Plus (TSTPlus)": "models.TSTPlus"
             }
         },
-        "Tabular Model": "/models.TabModel",
-        "HybridDL models": "/models.HybridDL"
+        "Tabular Model": "models.TabModel",
+        "HybridDL models": "models.HybridDL"
     },
     "Utilities": {
-        "Time series utilities": "/utils",
-        "Other utilities": "/trading.utils"
+        "Time series utilities": "utils",
+        "Other utilities": "trading.utils"
     }
 }

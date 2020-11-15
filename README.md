@@ -1,5 +1,5 @@
-# tsai
-> State-of-the-art Time Series & Sequences Deep Learning in Pytorch / fastai
+# tsai (timeseriesAI)
+> Deep Learning for Time Series/ Sequences with Pytorch/ fastai
 
 
 ![CI](https://github.com/timeseriesai/tsai/workflows/CI/badge.svg) [![PyPI](https://img.shields.io/pypi/v/tsai?color=blue&label=pypi%20version)](https://pypi.org/project/tsai/#description)
