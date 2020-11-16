@@ -21,7 +21,7 @@ class NumpyTensor(TensorBase):
         return res
 
     @property
-    def data(self): return torch.Tensor(self.float())
+    def data(self): return cast(self, Tensor).data
 
     def __repr__(self):
         if self.numel() == 1: return f'{self}'

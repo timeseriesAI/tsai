@@ -148,7 +148,7 @@ export/*
 *.ts
 *.arff
 *.pth
-*.pkl*
+*.pkl
 *.txt
 *.jpg
 
