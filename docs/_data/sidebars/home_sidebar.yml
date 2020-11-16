@@ -8,161 +8,161 @@ entries:
   - folderitems:
     - output: web,pdf
       title: Overview
-      url: ''
+      url: /
     - output: web,pdf
       title: Tutorials
-      url: tutorials
+      url: /tutorials
     output: web
     title: Getting started
   - folderitems:
     - output: web,pdf
       title: Data core
-      url: data.core
+      url: /data.core
     - output: web,pdf
       title: Getting external data
-      url: data.external
+      url: /data.external
     - output: web,pdf
       title: Splitting data
-      url: data.validation
+      url: /data.validation
     - output: web,pdf
       title: Preprocessing data
-      url: data.preprocessing
+      url: /data.preprocessing
     - output: web,pdf
       title: Data augmentation
-      url: data.transforms
+      url: /data.transforms
     - output: web,pdf
       title: Tabular data
-      url: data.tabular
+      url: /data.tabular
     - output: web,pdf
       title: Imaging time series
-      url: data.image
+      url: /data.image
     - output: web,pdf
       title: Mixed data
-      url: data.mixed
+      url: /data.mixed
     output: web
     title: Data
   - folderitems:
     - output: web,pdf
       title: Learner
-      url: learner
+      url: /learner
     - output: web,pdf
       title: Optimizers
-      url: optimizer
+      url: /optimizer
     - output: web,pdf
       title: Metrics
-      url: metrics
+      url: /metrics
     - output: web,pdf
       title: Callbacks core
-      url: callback.core
+      url: /callback.core
     - output: web,pdf
       title: Semi-supervised learning
-      url: callback.semi_supervised
+      url: /callback.semi_supervised
     output: web
     title: Training
   - folderitems:
     - output: web,pdf
       title: Layers
-      url: models.layers
+      url: /models.layers
     - output: web,pdf
       title: Utilities
-      url: models.utils
+      url: /models.utils
     - output: web,pdf
       title: MLP
-      url: models.MLP
+      url: /models.MLP
       subfolders:
       - output: web
         subfolderitems:
         - output: web,pdf
           title: RNN
-          url: models.RNN
+          url: /models.RNN
         - output: web,pdf
           title: RNNPlus
-          url: models.RNNPlus
+          url: /models.RNNPlus
         title: RNNs
       - output: web
         subfolderitems:
         - output: web,pdf
           title: FCN
-          url: models.FCN
+          url: /models.FCN
         - output: web,pdf
           title: FCNPlus
-          url: models.FCNPlus
+          url: /models.FCNPlus
         - output: web,pdf
           title: ResNet
-          url: models.ResNet
+          url: /models.ResNet
         - output: web,pdf
           title: ResNetPlus
-          url: models.ResNetPlus
+          url: /models.ResNetPlus
         - output: web,pdf
           title: XResNet1d
-          url: models.XResNet1d
+          url: /models.XResNet1d
         - output: web,pdf
           title: XResNet1dPlus
-          url: models.XResNet1dPlus
+          url: /models.XResNet1dPlus
         - output: web,pdf
           title: ResCNN
-          url: models.ResCNN
+          url: /models.ResCNN
         - output: web,pdf
           title: ROCKET
-          url: models.ROCKET
+          url: /models.ROCKET
         - output: web,pdf
           title: InceptionTime
-          url: models.InceptionTime
+          url: /models.InceptionTime
         - output: web,pdf
           title: InceptionTimePlus
-          url: models.InceptionTimePlus
+          url: /models.InceptionTimePlus
         - output: web,pdf
           title: XceptionTime
-          url: models.XceptionTime
+          url: /models.XceptionTime
         - output: web,pdf
           title: XceptionTimePlus
-          url: models.XceptionTimePlus
+          url: /models.XceptionTimePlus
         - output: web,pdf
           title: OmniScaleCNN
-          url: models.OmniScaleCNN
+          url: /models.OmniScaleCNN
         title: CNNs
       - output: web
         subfolderitems:
         - output: web,pdf
           title: RNN_FCN
-          url: models.RNN_FCN
+          url: /models.RNN_FCN
         - output: web,pdf
           title: RNN_FCNPlus
-          url: models.RNN_FCNPlus
+          url: /models.RNN_FCNPlus
         title: RNN-CNNs
       - output: web
         subfolderitems:
         - output: web,pdf
           title: mWDN
-          url: models.mWDN
+          url: /models.mWDN
         title: Wavelet-based NNs
       - output: web
         subfolderitems:
         - output: web,pdf
           title: TransformerModel
-          url: models.TransformerModel
+          url: /models.TransformerModel
         - output: web,pdf
           title: Time Series Transformer (TST)
-          url: models.TST
+          url: /models.TST
         - output: web,pdf
           title: Time Series Transformer Plus (TSTPlus)
-          url: models.TSTPlus
+          url: /models.TSTPlus
         title: Transformers
     - output: web,pdf
       title: Tabular Model
-      url: models.TabModel
+      url: /models.TabModel
     - output: web,pdf
       title: HybridDL models
-      url: models.HybridDL
+      url: /models.HybridDL
     output: web
     title: Models
   - folderitems:
     - output: web,pdf
       title: Time series utilities
-      url: utils
+      url: /utils
     - output: web,pdf
       title: Other utilities
-      url: trading.utils
+      url: /trading.utils
     output: web
     title: Utilities
   output: web
