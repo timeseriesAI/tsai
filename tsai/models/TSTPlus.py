@@ -20,7 +20,7 @@ def SinCosPosEncoding(q_len, d_model):
 
 # Cell
 def Coord2dPosEncoding(q_len, d_model, eps=1e-3, verbose=False, device=default_device()):
-    x = .4
+    x = 1
     i = 0
     for i in range(100):
         cpe = 2 * (torch.linspace(0, 1, q_len).reshape(-1, 1) ** x) * (torch.linspace(0, 1, d_model).reshape(1, -1) ** x) - 1

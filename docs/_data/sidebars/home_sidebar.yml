@@ -52,7 +52,7 @@ entries:
       title: Metrics
       url: /metrics
     - output: web,pdf
-      title: Callbacks core
+      title: Callbacks
       url: /callback.core
     - output: web,pdf
       title: Semi-supervised learning

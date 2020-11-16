@@ -143,7 +143,7 @@ setattr(InceptionTimePlus62x62, '__name__', 'InceptionTimePlus62x62')
 @delegates(InceptionTimePlus.__init__)
 class MultiInceptionTimePlus(Module):
     _arch = InceptionTimePlus
-    def __init__(self, feat_mask, c_out, **kwargs):
+    def __init__(self, feat_mask, c_out, seq_len=None, **kwargs):
         r"""
         MultiInceptionTimePlus is a class that allows you to create a model with multiple branches of InceptionTimePlus.
 
@@ -151,13 +151,13 @@ class MultiInceptionTimePlus(Module):
             - feat_mask: list with number of features that will be passed to each body.
         """
         self.feat_mask = [feat_mask] if isinstance(feat_mask, int) else feat_mask
-        self.c_out, self.kwargs = c_out, kwargs
+        self.c_out = c_out
 
         # Body
         self.branches = nn.ModuleList()
         self.head_nf = 0
         for feat in self.feat_mask:
-            m = create_model(self._arch, c_in=feat, c_out=c_out, **kwargs)
+            m = create_model(self._arch, c_in=feat, c_out=c_out, seq_len=seq_len, **kwargs)
             self.head_nf += m.head_nf
             m.head = Noop
             self.branches.append(m)

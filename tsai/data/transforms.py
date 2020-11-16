@@ -31,7 +31,7 @@ class TSIdentity(RandTransform):
     def __init__(self, magnitude=None, **kwargs):
         self.magnitude = magnitude
         super().__init__(**kwargs)
-    def encodes(self, o: (NumpyTensor, TSTensor)): return o
+    def encodes(self, o: TSTensor): return o
 
 # Cell
 # partial(TSShuffle_HLs, ex=0),
@@ -41,7 +41,7 @@ class TSShuffle_HLs(RandTransform):
     def __init__(self, magnitude=1., ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
         timesteps = o.shape[-1] // 4
         pos_rand_list = np.random.choice(np.arange(timesteps),size=random.randint(1, timesteps),replace=False)
@@ -63,7 +63,7 @@ class TSShuffleSteps(RandTransform):
     def __init__(self, magnitude=1., ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
         odd = 1 - o.shape[-1]%2
         r = np.random.randint(2)
@@ -83,7 +83,7 @@ class TSMagAddNoise(RandTransform):
     def __init__(self, magnitude=1, ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
         # output = o + torch.normal(0, o.std() * self.magnitude, o.shape, dtype=o.dtype, device=o.device)
         output = o + torch.normal(0, 1/3, o.shape, dtype=o.dtype, device=o.device) * (o[..., 1:] - o[..., :-1]).std(2, keepdims=True) * self.magnitude
@@ -96,7 +96,7 @@ class TSMagMulNoise(RandTransform):
     def __init__(self, magnitude=1, ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
         noise = torch.normal(1, self.magnitude * .025, o.shape, dtype=o.dtype, device=o.device)
         output = o * noise
@@ -147,7 +147,7 @@ class TSTimeNoise(RandTransform):
     def __init__(self, magnitude=0.1, ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
         f = CubicSpline(np.arange(o.shape[-1]), o.cpu(), axis=-1)
         output = o.new(f(random_cum_noise_generator(o, magnitude=self.magnitude)))
@@ -161,7 +161,7 @@ class TSMagWarp(RandTransform):
     def __init__(self, magnitude=0.02, ord=4, ex=None, **kwargs):
         self.magnitude, self.ord, self.ex = magnitude, ord, ex
         super().__init__(**kwargs)
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         if self.magnitude and self.magnitude <= 0: return o
         y_mult = random_curve_generator(o, magnitude=self.magnitude, order=self.ord)
         output = o * o.new(y_mult)
@@ -175,7 +175,7 @@ class TSTimeWarp(RandTransform):
     def __init__(self, magnitude=0.02, ord=4, ex=None, **kwargs):
         self.magnitude, self.ord, self.ex = magnitude, ord, ex
         super().__init__(**kwargs)
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
         f = CubicSpline(np.arange(o.shape[-1]), o.cpu(), axis=-1)
         output = o.new(f(random_cum_curve_generator(o, magnitude=self.magnitude, order=self.ord)))
@@ -190,7 +190,7 @@ class TSWindowWarp(RandTransform):
     def __init__(self, magnitude=0.1, ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0 or self.magnitude >= 1: return o
         f = CubicSpline(np.arange(o.shape[-1]), o.cpu(), axis=-1)
         output = o.new(f(random_cum_linear_generator(o, magnitude=self.magnitude)))
@@ -204,7 +204,7 @@ class TSMagScale(RandTransform):
     def __init__(self, magnitude=0.5, ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
         rand = random_half_normal()
         scale = (1 - (rand  * self.magnitude)/2) if random.random() > 1/3 else (1 + (rand  * self.magnitude))
@@ -218,7 +218,7 @@ class TSMagScalePerVar(RandTransform):
     def __init__(self, magnitude=0.5, ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
         s = [1] * o.ndim
         s[-2] = o.shape[-2]
@@ -236,7 +236,7 @@ class TSRandomResizedCrop(RandTransform):
         "mode:  'nearest' | 'linear' | 'area'"
         self.magnitude, self.ex, self.mode = magnitude, ex, mode
         super().__init__(**kwargs)
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
         seq_len = o.shape[-1]
         lambd = np.random.beta(self.magnitude, self.magnitude)
@@ -256,7 +256,7 @@ class TSWindowSlicing(RandTransform):
         "mode:  'nearest' | 'linear' | 'area'"
         self.magnitude, self.ex, self.mode = magnitude, ex, mode
         super().__init__(**kwargs)
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0 or self.magnitude >= 1: return o
         seq_len = o.shape[-1]
         win_len = int(round(seq_len * (1 - self.magnitude)))
@@ -272,7 +272,7 @@ class TSRandomZoomOut(RandTransform):
         "mode:  'nearest' | 'linear' | 'area'"
         self.magnitude, self.ex, self.mode = magnitude, ex, mode
         super().__init__(**kwargs)
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
         seq_len = o.shape[-1]
         lambd = np.random.beta(self.magnitude, self.magnitude)
@@ -293,7 +293,7 @@ class TSRandomTimeScale(RandTransform):
         "mode:  'nearest' | 'linear' | 'area'"
         self.magnitude, self.ex, self.mode = magnitude, ex, mode
         super().__init__(**kwargs)
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
         if np.random.rand() <= 0.5: return TSRandomZoomIn(magnitude=self.magnitude, ex=self.ex, mode=self.mode)(o, split_idx=0)
         else: return TSRandomZoomOut(magnitude=self.magnitude, ex=self.ex, mode=self.mode)(o, split_idx=0)
@@ -306,7 +306,7 @@ class TSRandomTimeStep(RandTransform):
         "mode:  'nearest' | 'linear' | 'area'"
         self.magnitude, self.ex, self.mode = magnitude, ex, mode
         super().__init__(**kwargs)
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
         seq_len = o.shape[-1]
         new_seq_len = int(round(seq_len * max(.5, (1 - np.random.rand() * self.magnitude))))
@@ -324,7 +324,7 @@ class TSBlur(RandTransform):
         self.magnitude, self.ex = magnitude, ex
         self.filterargs = np.array([1, 0, 1])
         super().__init__(**kwargs)
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
         w = self.filterargs * np.random.rand(3)
         w = w / w.sum()
@@ -340,7 +340,7 @@ class TSSmooth(RandTransform):
         self.magnitude, self.ex = magnitude, ex
         self.filterargs = np.array([1, 5, 1])
         super().__init__(**kwargs)
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
         w = self.filterargs * np.random.rand(3)
         w = w / w.sum()
@@ -359,7 +359,7 @@ class TSFreqDenoise(RandTransform):
         self.magnitude, self.ex = magnitude, ex
         self.wavelet, self.level, self.thr, self.thr_mode, self.pad_mode = wavelet, level, thr, thr_mode, pad_mode
         super().__init__(**kwargs)
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
         """
         1. Adapted from waveletSmooth function found here:
@@ -390,7 +390,7 @@ class TSRandomFreqNoise(RandTransform):
         self.magnitude, self.ex = magnitude, ex
         self.wavelet, self.level, self.mode = wavelet, level, mode
         super().__init__(**kwargs)
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
         self.level = 1 if self.level is None else self.level
         coeff = pywt.wavedec(o.cpu(), self.wavelet, mode=self.mode, level=self.level)
@@ -407,7 +407,7 @@ class TSRandomResizedLookBack(RandTransform):
         "mode:  'nearest' | 'linear' | 'area'"
         self.magnitude, self.mode = magnitude, mode
         super().__init__(**kwargs)
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
         seq_len = o.shape[-1]
         lambd = np.random.beta(self.magnitude, self.magnitude)
@@ -422,7 +422,7 @@ class TSVarOut(RandTransform):
     def __init__(self, magnitude=0.05, ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
         in_vars = o.shape[-2]
         if in_vars == 1: return o
@@ -446,7 +446,7 @@ class TSCutOut(RandTransform):
     def __init__(self, magnitude=0.05, ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
         seq_len = o.shape[-1]
         lambd = np.random.beta(self.magnitude, self.magnitude)
@@ -468,7 +468,7 @@ class TSTimeStepOut(RandTransform):
     def __init__(self, magnitude=0.05, ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
         magnitude = min(.5, self.magnitude)
         seq_len = o.shape[-1]
@@ -485,7 +485,7 @@ class TSRandomCropPad(RandTransform):
     def __init__(self, magnitude=0.05, ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
         seq_len = o.shape[-1]
         lambd = np.random.beta(self.magnitude, self.magnitude)
@@ -505,7 +505,7 @@ class TSMaskOut(RandTransform):
     def __init__(self, magnitude=0.05, ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
         seq_len = o.shape[-1]
         mask = torch.rand_like(o) <= self.magnitude
@@ -521,7 +521,7 @@ class TSTranslateX(RandTransform):
     def __init__(self, magnitude=0.1, ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
         seq_len = o.shape[-1]
         lambd = np.random.beta(self.magnitude, self.magnitude)
@@ -545,7 +545,7 @@ class TSRandomShift(RandTransform):
     def __init__(self, magnitude=0.02, ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
         pos = int(round(np.random.randint(0, o.shape[-1]) * self.magnitude)) * (random.randint(0, 1)*2-1)
         output = torch.cat((o[..., pos:], o[..., :pos]), dim=-1)
@@ -559,7 +559,7 @@ class TSHorizontalFlip(RandTransform):
     def __init__(self, magnitude=1., ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
         output = torch.flip(o, [-1])
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
@@ -572,7 +572,7 @@ class TSRandomTrend(RandTransform):
     def __init__(self, magnitude=0.1, ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
         flat_x = o.reshape(o.shape[0], -1)
         ran = flat_x.max(dim=-1, keepdim=True).values - flat_x.min(dim=-1, keepdim=True).values
@@ -593,7 +593,7 @@ class TSVerticalFlip(RandTransform):
     def __init__(self, magnitude=1., ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
         return - o
 
@@ -605,7 +605,7 @@ class TSResize(RandTransform):
         "mode:  'nearest' | 'linear' | 'area'"
         self.magnitude, self.size, self.ex, self.mode = magnitude, size, ex, mode
         super().__init__(**kwargs)
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         if self.magnitude == 0: return o
         size = ifnone(self.size, int(round((1 + self.magnitude) * o.shape[-1])))
         output = F.interpolate(o, size=size, mode=self.mode, align_corners=None if self.mode in ['nearest', 'area'] else False)
@@ -619,7 +619,7 @@ class TSRandomSize(RandTransform):
         "mode:  'nearest' | 'linear' | 'area'"
         self.magnitude, self.ex, self.mode = magnitude, ex, mode
         super().__init__(**kwargs)
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
         size_perc = 1 / (1 + (random_half_normal() if random.random() > 1/3 else - random_half_normal() / 2) * (1 + self.magnitude))
         if random.random() > .5: size_perc = 1. / size_perc
@@ -633,7 +633,7 @@ class TSRandomLowRes(RandTransform):
         "mode:  'nearest' | 'linear' | 'area'"
         self.magnitude, self.ex, self.mode = magnitude, ex, mode
         super().__init__(**kwargs)
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
         size_perc = 1 - (np.random.rand() * (1 - self.magnitude))
         return F.interpolate(o, size=int(size_perc * o.shape[-1]), mode=self.mode, align_corners=None if self.mode in ['nearest', 'area'] else False)
@@ -646,7 +646,7 @@ class TSDownUpScale(RandTransform):
         "mode:  'nearest' | 'linear' | 'area'"
         self.magnitude, self.ex, self.mode = magnitude, ex, mode
         super().__init__(**kwargs)
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0 or self.magnitude >= 1: return o
         output = F.interpolate(o, size=int((1 - self.magnitude) * o.shape[-1]), mode=self.mode, align_corners=None if self.mode in ['nearest', 'area'] else False)
         output = F.interpolate(output, size=o.shape[-1], mode=self.mode, align_corners=None if self.mode in ['nearest', 'area'] else False)
@@ -661,7 +661,7 @@ class TSRandomDownUpScale(RandTransform):
         "mode:  'nearest' | 'linear' | 'area'"
         self.magnitude, self.ex, self.mode = magnitude, ex, mode
         super().__init__(**kwargs)
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0 or self.magnitude >= 1: return o
         scale_factor = 0.5 + 0.5 * np.random.rand()
         output = F.interpolate(o, size=int(scale_factor * o.shape[-1]), mode=self.mode, align_corners=None if self.mode in ['nearest', 'area'] else False)
@@ -749,7 +749,7 @@ class TestTfm(RandTransform):
         self.tfm, self.magnitude, self.ex = tfm, magnitude, ex
         self.tfmd, self.shape = [], []
         super().__init__(**kwargs)
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
         output = self.tfm(o, split_idx=self.split_idx)
         self.tfmd.append(torch.equal(o, output))

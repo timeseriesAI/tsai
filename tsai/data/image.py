@@ -60,7 +60,7 @@ class TSToPlot(Transform):
         self.size, self.dpi, self.lw, self.kwargs = size, dpi, lw, kwargs
         self.fig = get_plot_fig(size, dpi=dpi)
 
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         device = o.device
         if o.data.device.type == 'cuda': o = o.cpu()
         if o.ndim == 2: o = o[None]
@@ -89,7 +89,7 @@ class TSToMat(Transform):
     def __init__(self, size=224, dpi=default_dpi(), cmap=None, **kwargs):
         self.size, self.dpi, self.cmap, self.kwargs = size, dpi, cmap, kwargs
 
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         device = o.device
         if o.data.device.type == 'cuda': o = o.cpu()
         if o.ndim == 2: o = o[None]
@@ -121,7 +121,7 @@ class TSToGADF(Transform):
         self.size,self.cmap,self.range = size,cmap,range
         self.encoder = GramianAngularField(image_size=1., sample_range=self.range, method='d', **kwargs)
 
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         bs, *_, seq_len = o.shape
         size = ifnone(self.size, seq_len)
         if size != seq_len:
@@ -145,7 +145,7 @@ class TSToGASF(Transform):
         self.size,self.cmap,self.range = size,cmap,range
         self.encoder = GramianAngularField(image_size=1., sample_range=self.range, method='s', **kwargs)
 
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         bs, *_, seq_len = o.shape
         size = ifnone(self.size, seq_len)
         if size != seq_len:
@@ -169,7 +169,7 @@ class TSToMTF(Transform):
         self.size,self.cmap = size,cmap
         self.encoder = MarkovTransitionField(**kwargs)
 
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         bs, *_, seq_len = o.shape
         size = ifnone(self.size, seq_len)
         if size != seq_len:
@@ -193,7 +193,7 @@ class TSToRP(Transform):
         self.size,self.cmap = size,cmap
         self.encoder = RecurrencePlot(**kwargs)
 
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         bs, *_, seq_len = o.shape
         size = ifnone(self.size, seq_len)
         if size != seq_len:
@@ -217,7 +217,7 @@ class TSToJRP(Transform):
         self.size,self.cmap = size,cmap
         self.encoder = JointRecurrencePlot(**kwargs)
 
-    def encodes(self, o: (NumpyTensor, TSTensor)):
+    def encodes(self, o: TSTensor):
         o = to3d(o)
         bs, *_, seq_len = o.shape
         size = ifnone(self.size, seq_len)

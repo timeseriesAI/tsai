@@ -70,9 +70,9 @@ class TSStandardize(Transform):
             else:
                 pv(f'{self.__class__.__name__} setup mean shape={self.mean.shape}, std shape={self.std.shape}, by_sample={self.by_sample}, by_var={self.by_var}\n', self.verbose)
 
-    def encodes(self, x:(NumpyTensor, TSTensor)):
-        if self.by_sample: self.mean, self.std = x.mean(self.axes, keepdim=self.axes!=()), x.std(self.axes, keepdim=self.axes!=()) + 1e-7
-        return (x - self.mean) / self.std
+    def encodes(self, o:TSTensor):
+        if self.by_sample: self.mean, self.std = o.mean(self.axes, keepdim=self.axes!=()), o.std(self.axes, keepdim=self.axes!=()) + 1e-7
+        return (o - self.mean) / self.std
 
 # Cell
 @patch
@@ -120,9 +120,9 @@ class TSNormalize(Transform):
             else:
                 pv(f'{self.__class__.__name__} setup min shape={self.min.shape}, max shape={self.max.shape}, range_min={self.range_min}, range_max={self.range_max}, by_sample={self.by_sample}, by_var={self.by_var}\n', self.verbose)
 
-    def encodes(self, x:(NumpyTensor, TSTensor)):
-        if self.by_sample: self.min, self.max = x.mul_min(self.axes, keepdim=self.axes!=()), x.mul_max(self.axes, keepdim=self.axes!=())
-        return torch.clamp(((x - self.min) / (self.max - self.min)) * (self.range_max - self.range_min) + self.range_min,
+    def encodes(self, o:TSTensor):
+        if self.by_sample: self.min, self.max = o.mul_min(self.axes, keepdim=self.axes!=()), o.mul_max(self.axes, keepdim=self.axes!=())
+        return torch.clamp(((o - self.min) / (self.max - self.min)) * (self.range_max - self.range_min) + self.range_min,
                            self.range_min, self.range_max)
 
 # Cell
@@ -132,14 +132,14 @@ class TSDiff(Transform):
     def __init__(self, lag=1, pad=True):
         self.lag, self.pad = lag, pad
 
-    def encodes(self, o:(NumpyTensor, TSTensor)):
+    def encodes(self, o:TSTensor):
         return torch_diff(o, lag=self.lag, pad=self.pad)
 
 # Cell
 class TSLog(Transform):
     "Log transforms batch of type `NumpyTensor` or `TSTensor`. For positive values only"
     order = 97
-    def encodes(self, o:(NumpyTensor, TSTensor)):
+    def encodes(self, o:TSTensor):
         return torch.log(o)
 
 # Cell
@@ -149,5 +149,5 @@ class TSLogReturn(Transform):
     def __init__(self, lag=1, pad=True):
         self.lag, self.pad = lag, pad
 
-    def encodes(self, o:(NumpyTensor, TSTensor)):
+    def encodes(self, o:TSTensor):
         return torch_diff(torch.log(t), lag=self.lag, pad=self.pad)
