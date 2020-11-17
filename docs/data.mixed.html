@@ -77,24 +77,58 @@ nb_path: "nbs/006_data.mixed.ipynb"
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="get_mixed_dls" class="doc_header"><code>get_mixed_dls</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/mixed.py#L113" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_mixed_dls</code>(<strong>*<code>dls</code></strong>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">ADULT_SAMPLE</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">tsai.data.tabular</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">path</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">ADULT_SAMPLE</span><span class="p">)</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">&#39;adult.csv&#39;</span><span class="p">)</span>
 <span class="c1"># df[&#39;salary&#39;] = np.random.rand(len(df)) # uncomment to simulate a cont dependent variable</span>
-<span class="n">procs</span> <span class="o">=</span> <span class="p">[</span><span class="n">Categorify</span><span class="p">,</span> <span class="n">FillMissing</span><span class="p">,</span> <span class="n">Normalize</span><span class="p">]</span>
+<span class="n">target</span> <span class="o">=</span> <span class="s1">&#39;salary&#39;</span>
+<span class="n">splits</span> <span class="o">=</span> <span class="n">RandomSplitter</span><span class="p">()(</span><span class="n">range_of</span><span class="p">(</span><span class="n">df</span><span class="p">))</span>
+
 <span class="n">cat_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;workclass&#39;</span><span class="p">,</span> <span class="s1">&#39;education&#39;</span><span class="p">,</span> <span class="s1">&#39;marital-status&#39;</span><span class="p">]</span>
 <span class="n">cont_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">,</span> <span class="s1">&#39;fnlwgt&#39;</span><span class="p">]</span>
-<span class="n">y_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;salary&#39;</span><span class="p">]</span>
-<span class="n">y_block</span> <span class="o">=</span> <span class="n">RegressionBlock</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;salary&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">float</span><span class="p">)</span> <span class="k">else</span> <span class="n">CategoryBlock</span><span class="p">()</span>
-<span class="n">splits</span> <span class="o">=</span> <span class="n">RandomSplitter</span><span class="p">()(</span><span class="n">range_of</span><span class="p">(</span><span class="n">df</span><span class="p">))</span>
-<span class="n">pd</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">mode</span><span class="o">.</span><span class="n">chained_assignment</span><span class="o">=</span><span class="kc">None</span>
-<span class="n">to0</span> <span class="o">=</span> <span class="n">TabularPandas</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">procs</span><span class="o">=</span><span class="n">procs</span><span class="p">,</span> <span class="n">cat_names</span><span class="o">=</span><span class="n">cat_names</span><span class="p">,</span> <span class="n">cont_names</span><span class="o">=</span><span class="n">cont_names</span><span class="p">,</span>
-                   <span class="n">y_names</span><span class="o">=</span><span class="n">y_names</span><span class="p">,</span> <span class="n">y_block</span><span class="o">=</span><span class="n">y_block</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                   <span class="n">reduce_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">to0</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">dls1</span> <span class="o">=</span> <span class="n">get_tabular_dls</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">cat_names</span><span class="o">=</span><span class="n">cat_names</span><span class="p">,</span> <span class="n">cont_names</span><span class="o">=</span><span class="n">cont_names</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">512</span><span class="p">)</span>
+<span class="n">dls1</span><span class="o">.</span><span class="n">show_batch</span><span class="p">()</span>
+
+<span class="n">cat_names</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1">#[&#39;occupation&#39;, &#39;relationship&#39;, &#39;race&#39;]</span>
+<span class="n">cont_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;education-num&#39;</span><span class="p">]</span>
+<span class="n">dls2</span> <span class="o">=</span> <span class="n">get_tabular_dls</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">cat_names</span><span class="o">=</span><span class="n">cat_names</span><span class="p">,</span> <span class="n">cont_names</span><span class="o">=</span><span class="n">cont_names</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">128</span><span class="p">)</span>
+<span class="n">dls2</span><span class="o">.</span><span class="n">show_batch</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -122,48 +156,93 @@ nb_path: "nbs/006_data.mixed.ipynb"
   </thead>
   <tbody>
     <tr>
-      <th>3021</th>
+      <th>0</th>
       <td>Private</td>
-      <td>5th-6th</td>
+      <td>12th</td>
       <td>Married-civ-spouse</td>
-      <td>30.0</td>
-      <td>151001.0</td>
+      <td>23.000001</td>
+      <td>201679.999957</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
-      <th>13450</th>
+      <th>1</th>
+      <td>State-gov</td>
+      <td>11th</td>
+      <td>Never-married</td>
+      <td>19.000000</td>
+      <td>431745.004269</td>
+      <td>&lt;50k</td>
+    </tr>
+    <tr>
+      <th>2</th>
       <td>Private</td>
+      <td>10th</td>
+      <td>Married-civ-spouse</td>
+      <td>60.999999</td>
+      <td>68267.994495</td>
+      <td>&lt;50k</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Federal-gov</td>
       <td>Bachelors</td>
-      <td>Married-civ-spouse</td>
-      <td>34.0</td>
-      <td>203408.0</td>
-      <td>&gt;=50k</td>
+      <td>Never-married</td>
+      <td>28.000000</td>
+      <td>381788.996004</td>
+      <td>&lt;50k</td>
     </tr>
     <tr>
-      <th>6180</th>
-      <td>Private</td>
-      <td>Some-college</td>
-      <td>Married-civ-spouse</td>
-      <td>52.0</td>
-      <td>284129.0</td>
-      <td>&gt;=50k</td>
-    </tr>
-    <tr>
-      <th>30557</th>
+      <th>4</th>
       <td>Private</td>
       <td>Some-college</td>
       <td>Never-married</td>
-      <td>20.0</td>
-      <td>230891.0</td>
+      <td>21.000000</td>
+      <td>138768.000104</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
-      <th>27961</th>
+      <th>5</th>
+      <td>Private</td>
+      <td>HS-grad</td>
+      <td>Married-civ-spouse</td>
+      <td>39.000000</td>
+      <td>51100.001895</td>
+      <td>&gt;=50k</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Local-gov</td>
+      <td>HS-grad</td>
+      <td>Married-civ-spouse</td>
+      <td>31.000000</td>
+      <td>224233.998719</td>
+      <td>&lt;50k</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>Private</td>
+      <td>Masters</td>
+      <td>Married-civ-spouse</td>
+      <td>49.000000</td>
+      <td>101824.999443</td>
+      <td>&gt;=50k</td>
+    </tr>
+    <tr>
+      <th>8</th>
       <td>Private</td>
       <td>HS-grad</td>
       <td>Never-married</td>
-      <td>48.0</td>
-      <td>207817.0</td>
+      <td>19.000000</td>
+      <td>198662.999953</td>
+      <td>&lt;50k</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>Private</td>
+      <td>Some-college</td>
+      <td>Married-civ-spouse</td>
+      <td>39.000000</td>
+      <td>165186.000027</td>
       <td>&lt;50k</td>
     </tr>
   </tbody>
@@ -171,41 +250,6 @@ nb_path: "nbs/006_data.mixed.ipynb"
 </div>
 
 </div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">ADULT_SAMPLE</span><span class="p">)</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">&#39;adult.csv&#39;</span><span class="p">)</span>
-<span class="c1"># df[&#39;salary&#39;] = np.random.rand(len(df)) # uncomment to simulate a cont dependent variable</span>
-<span class="n">procs</span> <span class="o">=</span> <span class="p">[</span><span class="n">Categorify</span><span class="p">,</span> <span class="n">FillMissing</span><span class="p">,</span> <span class="n">Normalize</span><span class="p">]</span>
-<span class="n">cat_names</span> <span class="o">=</span> <span class="kc">None</span><span class="c1">#[&#39;occupation&#39;, &#39;relationship&#39;, &#39;race&#39;]</span>
-<span class="n">cont_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;education-num&#39;</span><span class="p">]</span>
-<span class="n">y_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;salary&#39;</span><span class="p">]</span>
-<span class="n">y_block</span> <span class="o">=</span> <span class="n">RegressionBlock</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;salary&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">float</span><span class="p">)</span> <span class="k">else</span> <span class="n">CategoryBlock</span><span class="p">()</span>
-<span class="n">pd</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">mode</span><span class="o">.</span><span class="n">chained_assignment</span><span class="o">=</span><span class="kc">None</span>
-<span class="n">to1</span> <span class="o">=</span> <span class="n">TabularPandas</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">procs</span><span class="o">=</span><span class="n">procs</span><span class="p">,</span> <span class="n">cat_names</span><span class="o">=</span><span class="n">cat_names</span><span class="p">,</span> <span class="n">cont_names</span><span class="o">=</span><span class="n">cont_names</span><span class="p">,</span>
-                   <span class="n">y_names</span><span class="o">=</span><span class="n">y_names</span><span class="p">,</span> <span class="n">y_block</span><span class="o">=</span><span class="n">y_block</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                   <span class="n">reduce_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">to1</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
 
 <div class="output_area">
 
@@ -222,31 +266,61 @@ nb_path: "nbs/006_data.mixed.ipynb"
   </thead>
   <tbody>
     <tr>
-      <th>3021</th>
+      <th>0</th>
       <td>False</td>
-      <td>3.0</td>
+      <td>14.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
-      <th>13450</th>
-      <td>False</td>
-      <td>13.0</td>
-      <td>&gt;=50k</td>
-    </tr>
-    <tr>
-      <th>6180</th>
-      <td>False</td>
-      <td>10.0</td>
-      <td>&gt;=50k</td>
-    </tr>
-    <tr>
-      <th>30557</th>
+      <th>1</th>
       <td>False</td>
       <td>10.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
-      <th>27961</th>
+      <th>2</th>
+      <td>False</td>
+      <td>9.0</td>
+      <td>&lt;50k</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>False</td>
+      <td>8.0</td>
+      <td>&lt;50k</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>False</td>
+      <td>10.0</td>
+      <td>&lt;50k</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>False</td>
+      <td>9.0</td>
+      <td>&gt;=50k</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>False</td>
+      <td>10.0</td>
+      <td>&lt;50k</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>False</td>
+      <td>4.0</td>
+      <td>&lt;50k</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>False</td>
+      <td>10.0</td>
+      <td>&lt;50k</td>
+    </tr>
+    <tr>
+      <th>9</th>
       <td>False</td>
       <td>9.0</td>
       <td>&lt;50k</td>
@@ -270,11 +344,27 @@ nb_path: "nbs/006_data.mixed.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dls0</span> <span class="o">=</span> <span class="n">to0</span><span class="o">.</span><span class="n">dataloaders</span><span class="p">()</span>
-<span class="n">dls1</span> <span class="o">=</span> <span class="n">to1</span><span class="o">.</span><span class="n">dataloaders</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">b</span> <span class="o">=</span> <span class="n">first</span><span class="p">(</span><span class="n">dls2</span><span class="o">.</span><span class="n">train</span><span class="p">)</span>
+<span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(torch.Size([128, 1]), torch.Size([128, 1]))</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -288,9 +378,7 @@ nb_path: "nbs/006_data.mixed.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mixed_train_dl</span> <span class="o">=</span> <span class="n">MixedDL</span><span class="p">(</span><span class="n">dls0</span><span class="o">.</span><span class="n">train</span><span class="p">,</span> <span class="n">dls1</span><span class="o">.</span><span class="n">train</span><span class="p">)</span>
-<span class="n">mixed_valid_dl</span> <span class="o">=</span> <span class="n">MixedDL</span><span class="p">(</span><span class="n">dls0</span><span class="o">.</span><span class="n">valid</span><span class="p">,</span> <span class="n">dls1</span><span class="o">.</span><span class="n">valid</span><span class="p">)</span>
-<span class="n">dls</span> <span class="o">=</span> <span class="n">DataLoaders</span><span class="p">(</span><span class="n">mixed_train_dl</span><span class="p">,</span> <span class="n">mixed_valid_dl</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dls</span> <span class="o">=</span> <span class="n">get_mixed_dls</span><span class="p">(</span><span class="n">dls1</span><span class="p">,</span> <span class="n">dls2</span><span class="p">)</span>
 <span class="n">dls</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">show_batch</span><span class="p">()</span>
 </pre></div>
 
@@ -321,91 +409,91 @@ nb_path: "nbs/006_data.mixed.ipynb"
     <tr>
       <th>0</th>
       <td>Private</td>
-      <td>HS-grad</td>
+      <td>Bachelors</td>
       <td>Never-married</td>
-      <td>18.000000</td>
-      <td>104703.999928</td>
+      <td>30.000000</td>
+      <td>66193.997890</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>?</td>
-      <td>HS-grad</td>
-      <td>Married-civ-spouse</td>
-      <td>65.999999</td>
-      <td>168071.000065</td>
+      <td>Private</td>
+      <td>10th</td>
+      <td>Never-married</td>
+      <td>16.999999</td>
+      <td>239345.999274</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>Private</td>
-      <td>HS-grad</td>
+      <td>Federal-gov</td>
+      <td>Bachelors</td>
       <td>Married-civ-spouse</td>
-      <td>33.000000</td>
-      <td>162572.001559</td>
+      <td>43.000000</td>
+      <td>197069.000368</td>
       <td>&gt;=50k</td>
     </tr>
     <tr>
       <th>3</th>
       <td>Private</td>
       <td>Bachelors</td>
-      <td>Never-married</td>
-      <td>44.000000</td>
-      <td>203761.000281</td>
+      <td>Married-civ-spouse</td>
+      <td>57.000001</td>
+      <td>124506.998040</td>
       <td>&gt;=50k</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>State-gov</td>
-      <td>HS-grad</td>
-      <td>Divorced</td>
-      <td>46.000000</td>
-      <td>162851.999150</td>
+      <td>Private</td>
+      <td>Bachelors</td>
+      <td>Never-married</td>
+      <td>24.000000</td>
+      <td>163664.999487</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>5</th>
-      <td>Private</td>
-      <td>Bachelors</td>
+      <td>?</td>
+      <td>9th</td>
       <td>Married-civ-spouse</td>
-      <td>34.000000</td>
-      <td>303866.998917</td>
-      <td>&gt;=50k</td>
+      <td>66.000001</td>
+      <td>108185.002139</td>
+      <td>&lt;50k</td>
     </tr>
     <tr>
       <th>6</th>
       <td>Private</td>
-      <td>Some-college</td>
-      <td>Married-civ-spouse</td>
-      <td>57.000001</td>
-      <td>112839.998457</td>
-      <td>&gt;=50k</td>
+      <td>Bachelors</td>
+      <td>Never-married</td>
+      <td>28.000000</td>
+      <td>338376.000524</td>
+      <td>&lt;50k</td>
     </tr>
     <tr>
       <th>7</th>
-      <td>Federal-gov</td>
-      <td>Some-college</td>
-      <td>Married-civ-spouse</td>
-      <td>45.000000</td>
-      <td>201127.000309</td>
-      <td>&gt;=50k</td>
+      <td>Private</td>
+      <td>Assoc-voc</td>
+      <td>Divorced</td>
+      <td>29.000000</td>
+      <td>177118.999750</td>
+      <td>&lt;50k</td>
     </tr>
     <tr>
       <th>8</th>
       <td>Private</td>
       <td>Some-college</td>
-      <td>Divorced</td>
-      <td>42.000000</td>
-      <td>169627.999950</td>
+      <td>Never-married</td>
+      <td>21.999999</td>
+      <td>383603.000333</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>9</th>
       <td>Private</td>
-      <td>Bachelors</td>
+      <td>Some-college</td>
       <td>Never-married</td>
-      <td>39.000000</td>
-      <td>491000.007889</td>
+      <td>34.000000</td>
+      <td>591710.997851</td>
       <td>&lt;50k</td>
     </tr>
   </tbody>
@@ -431,19 +519,19 @@ nb_path: "nbs/006_data.mixed.ipynb"
     <tr>
       <th>0</th>
       <td>False</td>
-      <td>9.0</td>
+      <td>13.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>1</th>
       <td>False</td>
-      <td>9.0</td>
+      <td>6.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>2</th>
       <td>False</td>
-      <td>9.0</td>
+      <td>13.0</td>
       <td>&gt;=50k</td>
     </tr>
     <tr>
@@ -455,26 +543,26 @@ nb_path: "nbs/006_data.mixed.ipynb"
     <tr>
       <th>4</th>
       <td>False</td>
-      <td>9.0</td>
+      <td>13.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>5</th>
       <td>False</td>
-      <td>13.0</td>
-      <td>&gt;=50k</td>
+      <td>5.0</td>
+      <td>&lt;50k</td>
     </tr>
     <tr>
       <th>6</th>
       <td>False</td>
-      <td>10.0</td>
-      <td>&gt;=50k</td>
+      <td>13.0</td>
+      <td>&lt;50k</td>
     </tr>
     <tr>
       <th>7</th>
       <td>False</td>
-      <td>10.0</td>
-      <td>&gt;=50k</td>
+      <td>11.0</td>
+      <td>&lt;50k</td>
     </tr>
     <tr>
       <th>8</th>
@@ -485,7 +573,7 @@ nb_path: "nbs/006_data.mixed.ipynb"
     <tr>
       <th>9</th>
       <td>False</td>
-      <td>13.0</td>
+      <td>10.0</td>
       <td>&lt;50k</td>
     </tr>
   </tbody>
@@ -508,7 +596,7 @@ nb_path: "nbs/006_data.mixed.ipynb"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">xs</span><span class="p">,</span> <span class="n">ys</span> <span class="o">=</span> <span class="n">first</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">train</span><span class="p">)</span>
-<span class="nb">len</span><span class="p">(</span><span class="n">xs</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">len</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">len</span><span class="p">(</span><span class="n">ys</span><span class="p">)</span>
+<span class="n">xs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">xs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">xs</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">xs</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">ys</span><span class="o">.</span><span class="n">shape</span>
 </pre></div>
 
     </div>
@@ -523,7 +611,11 @@ nb_path: "nbs/006_data.mixed.ipynb"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(2, 2, 2, 64)</pre>
+<pre>(torch.Size([128, 3]),
+ torch.Size([128, 2]),
+ torch.Size([128, 1]),
+ torch.Size([128, 1]),
+ torch.Size([128, 1]))</pre>
 </div>
 
 </div>

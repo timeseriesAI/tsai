@@ -2,7 +2,7 @@
 
 __all__ = ['get_layers', 'is_layer', 'is_linear', 'is_bn', 'is_conv_linear', 'is_affine_layer', 'is_conv', 'has_bias',
            'has_weight', 'has_weight_or_bias', 'check_bias', 'check_weight', 'create_model', 'create_tabular_model',
-           'count_parameters', 'get_clones', 'get_nf', 'split_model', 'seq_len_calculator']
+           'count_parameters', 'build_model', 'get_clones', 'get_nf', 'split_model', 'seq_len_calculator']
 
 # Cell
 from ..imports import *
@@ -84,6 +84,8 @@ def create_model(arch, c_in=None, c_out=None, seq_len=None, dls=None, device=Non
         return (arch(c_in=c_in, seq_len=seq_len, **kwargs)).to(device=device)
     else:
         return arch(c_in, c_out, **kwargs).to(device=device)
+
+build_model = create_model
 
 
 @delegates(TabularModel.__init__)

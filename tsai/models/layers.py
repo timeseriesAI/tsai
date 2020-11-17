@@ -7,7 +7,7 @@ __all__ = ['noop', 'lin_zero_init', 'SwishBeta', 'same_padding1d', 'Pad1d', 'Con
            'View', 'Reshape', 'Max', 'LastStep', 'Noop', 'Sharpen', 'MaxPPVPool1d', 'MPPV1d', 'Temp_Scale',
            'Vector_Scale', 'Matrix_Scale', 'get_calibrator', 'GAP1d', 'GACP1d', 'SqueezeExciteBlock',
            'create_pool_head', 'pool_head', 'create_pool_plus_head', 'pool_plus_head', 'create_mlp_head', 'mlp_head',
-           'create_conv_head', 'conv_head', 'change_model_head', 'GaussianNoise', 'gambler_loss',
+           'create_conv_head', 'conv_head', 'heads', 'change_model_head', 'GaussianNoise', 'gambler_loss',
            'CrossEntropyLossOneHot', 'ttest_bin_loss', 'ttest_reg_loss', 'CenterLoss', 'CenterPlusLoss', 'FocalLoss']
 
 # Cell
@@ -434,6 +434,9 @@ def create_conv_head(nf, c_out, adaptive_size=None, y_range=None):
     return nn.Sequential(*layers)
 
 conv_head = create_conv_head
+
+# Cell
+heads = [mlp_head, pool_head, pool_plus_head, conv_head]
 
 # Cell
 def change_model_head(model, custom_head, **kwargs):
