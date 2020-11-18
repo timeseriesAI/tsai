@@ -98,7 +98,8 @@ def get_UCR_multivariate_list():
 test_eq(len(get_UCR_multivariate_list()), 30)
 
 # Cell
-def get_UCR_data(dsid, path='.', parent_dir='data/UCR', on_disk=True, return_split=True, verbose=False):
+def get_UCR_data(dsid, path='.', parent_dir='data/UCR', on_disk=True, return_split=True, split_data=True, verbose=False):
+    return_split = return_split and split_data # keep return_split for compatibility. It will be replaced by split_data
     if dsid in ['InsectWingbeat']:
         if verbose: print('There are problems with the original zip file and data cannot be correctly downloaded')
         if return_split: return None, None, None, None

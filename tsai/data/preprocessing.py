@@ -68,14 +68,17 @@ class TSStandardize(Transform):
             x, *_ = dl.one_batch()
             self.mean, self.std = x.mean(self.axes, keepdim=self.axes!=()), x.std(self.axes, keepdim=self.axes!=()) + 1e-7
             if len(self.mean.shape) == 0:
-                pv(f'{self.__class__.__name__} setup mean={self.mean}, std={self.std}, by_sample={self.by_sample}, by_var={self.by_var}\n',
+                pv(f'{self.__class__.__name__} mean={self.mean}, std={self.std}, by_sample={self.by_sample}, by_var={self.by_var}\n',
                    self.verbose)
             else:
-                pv(f'{self.__class__.__name__} setup mean shape={self.mean.shape}, std shape={self.std.shape}, by_sample={self.by_sample}, by_var={self.by_var}\n', self.verbose)
+                pv(f'{self.__class__.__name__} mean shape={self.mean.shape}, std shape={self.std.shape}, by_sample={self.by_sample}, by_var={self.by_var}\n',
+                   self.verbose)
 
     def encodes(self, o:TSTensor):
         if self.by_sample: self.mean, self.std = o.mean(self.axes, keepdim=self.axes!=()), o.std(self.axes, keepdim=self.axes!=()) + 1e-7
         return (o - self.mean) / self.std
+
+    def __repr__(self): return f'{self.__class__.__name__}(by_sample={self.by_sample}, by_var={self.by_var})'
 
 # Cell
 @patch
@@ -100,7 +103,7 @@ class TSNormalize(Transform):
     "Normalizes batch of type `TSTensor`"
     parameters, order = L('min', 'max'), 97
 
-    def __init__(self, min=None, max=None, range=(-1, 1), by_sample=True, by_var=False, verbose=False):
+    def __init__(self, min=None, max=None, range=(-1, 1), by_sample=False, by_var=False, verbose=False):
         self.min = tensor(min) if min is not None else None
         self.max = tensor(max) if max is not None else None
         self.range_min, self.range_max = range
@@ -119,14 +122,17 @@ class TSNormalize(Transform):
             x, *_ = dl.one_batch()
             self.min, self.max = x.mul_min(self.axes, keepdim=self.axes!=()), x.mul_max(self.axes, keepdim=self.axes!=())
             if len(self.min.shape) == 0:
-                pv(f'{self.__class__.__name__} setup min={self.min}, max={self.max}, range_min={self.range_min}, range_max={self.range_max}, by_sample={self.by_sample}, by_var={self.by_var}\n', self.verbose)
+                pv(f'{self.__class__.__name__} min={self.min}, max={self.max}, by_sample={self.by_sample}, by_var={self.by_var}\n', self.verbose)
             else:
-                pv(f'{self.__class__.__name__} setup min shape={self.min.shape}, max shape={self.max.shape}, range_min={self.range_min}, range_max={self.range_max}, by_sample={self.by_sample}, by_var={self.by_var}\n', self.verbose)
+                pv(f'{self.__class__.__name__} min shape={self.min.shape}, max shape={self.max.shape}, by_sample={self.by_sample}, by_var={self.by_var}\n',
+                   self.verbose)
 
     def encodes(self, o:TSTensor):
         if self.by_sample: self.min, self.max = o.mul_min(self.axes, keepdim=self.axes!=()), o.mul_max(self.axes, keepdim=self.axes!=())
         return torch.clamp(((o - self.min) / (self.max - self.min)) * (self.range_max - self.range_min) + self.range_min,
                            self.range_min, self.range_max)
+
+    def __repr__(self): return f'{self.__class__.__name__}(by_sample={self.by_sample}, by_var={self.by_var})'
 
 # Cell
 class TSClipOutliers(Transform):
@@ -150,7 +156,10 @@ class TSClipOutliers(Transform):
             o, *_ = dl.one_batch()
             min, max = get_outliers_IQR(o, self.axis)
             self.min, self.max = tensor(min), tensor(max)
-            pv(f'{self.__class__.__name__} min={self.min}, max={self.max}\n', self.verbose)
+            if self.axis is None: pv(f'{self.__class__.__name__} min={self.min}, max={self.max}, by_sample={self.by_sample}, by_var={self.by_var}\n',
+                                     self.verbose)
+            else: pv(f'{self.__class__.__name__} min={self.min.shape}, max={self.max.shape}, by_sample={self.by_sample}, by_var={self.by_var}\n',
+                     self.verbose)
             self.su = False
 
     def encodes(self, o:TSTensor):
@@ -159,6 +168,8 @@ class TSClipOutliers(Transform):
             min, max = get_outliers_IQR(o, axis=self.axis)
             self.min, self.max = o.new(min), o.new(max)
         return torch_clamp(o, self.min, self.max)
+
+    def __repr__(self): return f'{self.__class__.__name__}(by_sample={self.by_sample}, by_var={self.by_var})'
 
 # Cell
 class TSRobustScaler(Transform):
@@ -184,8 +195,10 @@ class TSRobustScaler(Transform):
             median = get_percentile(o, 50, self.axis)
             min, max = get_outliers_IQR(o, self.axis)
             self.median, self.min, self.max = tensor(median), tensor(min), tensor(max)
-            if self.axis is None: pv(f'{self.__class__.__name__} median={self.median} min={self.min}, max={self.max}\n', self.verbose)
-            else: pv(f'{self.__class__.__name__} median={self.median.shape} min={self.min.shape}, max={self.max.shape}\n', self.verbose)
+            if self.axis is None: pv(f'{self.__class__.__name__} median={self.median} min={self.min}, max={self.max}, by_sample={self.by_sample}, by_var={self.by_var}\n',
+                                     self.verbose)
+            else: pv(f'{self.__class__.__name__} median={self.median.shape} min={self.min.shape}, max={self.max.shape}, by_sample={self.by_sample}, by_var={self.by_var}\n',
+                     self.verbose)
             self.su = False
 
     def encodes(self, o:TSTensor):
@@ -194,6 +207,8 @@ class TSRobustScaler(Transform):
             min, max = get_outliers_IQR(o, axis=self.axis)
             self.median, self.min, self.max = o.new(median), o.new(min), o.new(max)
         return (o - self.median) / (self.max - self.min)
+
+    def __repr__(self): return f'{self.__class__.__name__}(by_sample={self.by_sample}, by_var={self.by_var})'
 
 # Cell
 class TSDiff(Transform):
@@ -205,12 +220,17 @@ class TSDiff(Transform):
     def encodes(self, o:TSTensor):
         return torch_diff(o, lag=self.lag, pad=self.pad)
 
+    def __repr__(self): return f'{self.__class__.__name__}(lag={self.lag}, pad={self.pad})'
+
 # Cell
 class TSLog(Transform):
     "Log transforms batch of type `TSTensor`. For positive values only"
     order = 97
+
     def encodes(self, o:TSTensor):
         return torch.log(o)
+
+    def __repr__(self): return f'{self.__class__.__name__}()'
 
 # Cell
 class TSLogReturn(Transform):
@@ -221,3 +241,5 @@ class TSLogReturn(Transform):
 
     def encodes(self, o:TSTensor):
         return torch_diff(torch.log(t), lag=self.lag, pad=self.pad)
+
+    def __repr__(self): return f'{self.__class__.__name__}(lag={self.lag}, pad={self.pad})'
