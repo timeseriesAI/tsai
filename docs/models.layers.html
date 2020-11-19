@@ -1203,31 +1203,6 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="LastStep" class="doc_header"><code>class</code> <code>LastStep</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L276" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LastStep</code>() :: <code>Module</code></p>
-</blockquote>
-<p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
 <div class="inner_cell">
@@ -1259,9 +1234,9 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 <div class="output_text output_subarea output_execute_result">
 <pre>(Transpose(1, 2),
- Permute(0, 2, 1),
+ Permute(dims=0, 2, 1),
  View(bs, -1, 2, 10),
- Transpose(1, 2).contiguous(),
+ Transpose(dims=1, 2).contiguous(),
  Reshape(bs, -1, 2, 10),
  Sequential())</pre>
 </div>
@@ -1292,7 +1267,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Sharpen" class="doc_header"><code>class</code> <code>Sharpen</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L284" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Sharpen</code>(<strong><code>T</code></strong>=<em><code>0.5</code></em>) :: <code>Module</code></p>
+<h2 id="Sharpen" class="doc_header"><code>class</code> <code>Sharpen</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L279" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Sharpen</code>(<strong><code>T</code></strong>=<em><code>0.5</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>This is used to increase confidence in predictions - MixMatch paper</p>
 
@@ -1337,7 +1312,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_png output_subarea ">
-<img src="data:image/png;base64,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
+<img src="data:image/png;base64,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
 "
 >
 </div>
@@ -1368,7 +1343,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MaxPPVPool1d" class="doc_header"><code>class</code> <code>MaxPPVPool1d</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L292" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MaxPPVPool1d</code>() :: <code>Module</code></p>
+<h2 id="MaxPPVPool1d" class="doc_header"><code>class</code> <code>MaxPPVPool1d</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L287" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MaxPPVPool1d</code>() :: <code>Module</code></p>
 </blockquote>
 <p>Drop-in replacement for AdaptiveConcatPool1d - multiplies nf by 2</p>
 
@@ -1393,7 +1368,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MPPV1d" class="doc_header"><code>class</code> <code>MPPV1d</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L300" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MPPV1d</code>() :: <code>Module</code></p>
+<h2 id="MPPV1d" class="doc_header"><code>class</code> <code>MPPV1d</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L295" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MPPV1d</code>() :: <code>Module</code></p>
 </blockquote>
 <p>MaxPPVPool1d + Flatten</p>
 
@@ -1448,7 +1423,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Temp_Scale" class="doc_header"><code>class</code> <code>Temp_Scale</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L309" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Temp_Scale</code>(<strong><code>temp</code></strong>=<em><code>1.0</code></em>, <strong><code>dirichlet</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
+<h2 id="Temp_Scale" class="doc_header"><code>class</code> <code>Temp_Scale</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L304" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Temp_Scale</code>(<strong><code>temp</code></strong>=<em><code>1.0</code></em>, <strong><code>dirichlet</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Used to perform Temperature Scaling (dirichlet=False) or Single-parameter Dirichlet calibration (dirichlet=True)</p>
 
@@ -1473,7 +1448,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Vector_Scale" class="doc_header"><code>class</code> <code>Vector_Scale</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L321" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Vector_Scale</code>(<strong><code>n_classes</code></strong>=<em><code>1</code></em>, <strong><code>dirichlet</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
+<h2 id="Vector_Scale" class="doc_header"><code>class</code> <code>Vector_Scale</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L316" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Vector_Scale</code>(<strong><code>n_classes</code></strong>=<em><code>1</code></em>, <strong><code>dirichlet</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Used to perform Vector Scaling (dirichlet=False) or Diagonal Dirichlet calibration (dirichlet=True)</p>
 
@@ -1498,7 +1473,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Matrix_Scale" class="doc_header"><code>class</code> <code>Matrix_Scale</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L333" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Matrix_Scale</code>(<strong><code>n_classes</code></strong>=<em><code>1</code></em>, <strong><code>dirichlet</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
+<h2 id="Matrix_Scale" class="doc_header"><code>class</code> <code>Matrix_Scale</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L328" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Matrix_Scale</code>(<strong><code>n_classes</code></strong>=<em><code>1</code></em>, <strong><code>dirichlet</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Used to perform Matrix Scaling (dirichlet=False) or Dirichlet calibration (dirichlet=True)</p>
 
@@ -1523,7 +1498,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_calibrator" class="doc_header"><code>get_calibrator</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L348" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_calibrator</code>(<strong><code>calibrator</code></strong>=<em><code>None</code></em>, <strong><code>n_classes</code></strong>=<em><code>1</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="get_calibrator" class="doc_header"><code>get_calibrator</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L343" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_calibrator</code>(<strong><code>calibrator</code></strong>=<em><code>None</code></em>, <strong><code>n_classes</code></strong>=<em><code>1</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -1666,7 +1641,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="GAP1d" class="doc_header"><code>class</code> <code>GAP1d</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L359" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GAP1d</code>(<strong><code>output_size</code></strong>=<em><code>1</code></em>) :: <code>Module</code></p>
+<h2 id="GAP1d" class="doc_header"><code>class</code> <code>GAP1d</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L354" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GAP1d</code>(<strong><code>output_size</code></strong>=<em><code>1</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Global Adaptive Pooling + Flatten</p>
 
@@ -1691,7 +1666,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="GACP1d" class="doc_header"><code>class</code> <code>GACP1d</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L368" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GACP1d</code>(<strong><code>output_size</code></strong>=<em><code>1</code></em>) :: <code>Module</code></p>
+<h2 id="GACP1d" class="doc_header"><code>class</code> <code>GACP1d</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L363" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GACP1d</code>(<strong><code>output_size</code></strong>=<em><code>1</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Global AdaptiveConcatPool + Flatten</p>
 
@@ -1747,7 +1722,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SqueezeExciteBlock" class="doc_header"><code>class</code> <code>SqueezeExciteBlock</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L377" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SqueezeExciteBlock</code>(<strong><code>ni</code></strong>, <strong><code>reduction</code></strong>=<em><code>16</code></em>) :: <code>Module</code></p>
+<h2 id="SqueezeExciteBlock" class="doc_header"><code>class</code> <code>SqueezeExciteBlock</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L372" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SqueezeExciteBlock</code>(<strong><code>ni</code></strong>, <strong><code>reduction</code></strong>=<em><code>16</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -1800,7 +1775,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="create_pool_head" class="doc_header"><code>create_pool_head</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L388" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_pool_head</code>(<strong><code>nf</code></strong>, <strong><code>c_out</code></strong>, <strong><code>concat_pool</code></strong>=<em><code>False</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="create_pool_head" class="doc_header"><code>create_pool_head</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L383" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_pool_head</code>(<strong><code>nf</code></strong>, <strong><code>c_out</code></strong>, <strong><code>concat_pool</code></strong>=<em><code>False</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -1884,7 +1859,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="create_pool_plus_head" class="doc_header"><code>create_pool_plus_head</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L398" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_pool_plus_head</code>(<strong><code>nf</code></strong>, <strong><code>c_out</code></strong>, <strong><code>lin_ftrs</code></strong>=<em><code>None</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>concat_pool</code></strong>=<em><code>True</code></em>, <strong><code>bn_final</code></strong>=<em><code>False</code></em>, <strong><code>lin_first</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="create_pool_plus_head" class="doc_header"><code>create_pool_plus_head</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L393" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_pool_plus_head</code>(<strong><code>nf</code></strong>, <strong><code>c_out</code></strong>, <strong><code>lin_ftrs</code></strong>=<em><code>None</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>concat_pool</code></strong>=<em><code>True</code></em>, <strong><code>bn_final</code></strong>=<em><code>False</code></em>, <strong><code>lin_first</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -1968,7 +1943,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="create_mlp_head" class="doc_header"><code>create_mlp_head</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L417" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_mlp_head</code>(<strong><code>nf</code></strong>, <strong><code>c_out</code></strong>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="create_mlp_head" class="doc_header"><code>create_mlp_head</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L412" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_mlp_head</code>(<strong><code>nf</code></strong>, <strong><code>c_out</code></strong>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -2044,7 +2019,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="create_conv_head" class="doc_header"><code>create_conv_head</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L425" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_conv_head</code>(<strong><code>nf</code></strong>, <strong><code>c_out</code></strong>, <strong><code>adaptive_size</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="create_conv_head" class="doc_header"><code>create_conv_head</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L420" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_conv_head</code>(<strong><code>nf</code></strong>, <strong><code>c_out</code></strong>, <strong><code>adaptive_size</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -2143,7 +2118,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="change_model_head" class="doc_header"><code>change_model_head</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L442" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>change_model_head</code>(<strong><code>model</code></strong>, <strong><code>custom_head</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="change_model_head" class="doc_header"><code>change_model_head</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L437" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>change_model_head</code>(<strong><code>model</code></strong>, <strong><code>custom_head</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Replaces a model's head by a custom head as long as the model has a head and head_nf attributes</p>
 
@@ -2175,7 +2150,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="GaussianNoise" class="doc_header"><code>class</code> <code>GaussianNoise</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L448" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GaussianNoise</code>(<strong><code>sigma</code></strong>=<em><code>0.1</code></em>, <strong><code>is_relative_detach</code></strong>=<em><code>True</code></em>) :: <code>Module</code></p>
+<h2 id="GaussianNoise" class="doc_header"><code>class</code> <code>GaussianNoise</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L443" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GaussianNoise</code>(<strong><code>sigma</code></strong>=<em><code>0.1</code></em>, <strong><code>is_relative_detach</code></strong>=<em><code>True</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Gaussian noise regularizer.</p>
 <p>Args:
@@ -2241,7 +2216,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="gambler_loss" class="doc_header"><code>gambler_loss</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L473" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gambler_loss</code>(<strong><code>reward</code></strong>=<em><code>2</code></em>)</p>
+<h4 id="gambler_loss" class="doc_header"><code>gambler_loss</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L468" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gambler_loss</code>(<strong><code>reward</code></strong>=<em><code>2</code></em>)</p>
 </blockquote>
 
 </div>
@@ -2279,7 +2254,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor(0.6657)</pre>
+<pre>tensor(0.6802)</pre>
 </div>
 
 </div>
@@ -2308,7 +2283,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="CrossEntropyLossOneHot" class="doc_header"><code>CrossEntropyLossOneHot</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L483" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>CrossEntropyLossOneHot</code>(<strong><code>output</code></strong>, <strong><code>target</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="CrossEntropyLossOneHot" class="doc_header"><code>CrossEntropyLossOneHot</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L478" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>CrossEntropyLossOneHot</code>(<strong><code>output</code></strong>, <strong><code>target</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -2345,7 +2320,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor(0.7441)</pre>
+<pre>tensor(0.7807)</pre>
 </div>
 
 </div>
@@ -2382,7 +2357,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor(0.7285, grad_fn=&lt;NllLossBackward&gt;)</pre>
+<pre>tensor(0.6438, grad_fn=&lt;NllLossBackward&gt;)</pre>
 </div>
 
 </div>
@@ -2444,7 +2419,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ttest_bin_loss" class="doc_header"><code>ttest_bin_loss</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L488" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ttest_bin_loss</code>(<strong><code>output</code></strong>, <strong><code>target</code></strong>)</p>
+<h4 id="ttest_bin_loss" class="doc_header"><code>ttest_bin_loss</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L483" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ttest_bin_loss</code>(<strong><code>output</code></strong>, <strong><code>target</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -2468,7 +2443,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ttest_reg_loss" class="doc_header"><code>ttest_reg_loss</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L492" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ttest_reg_loss</code>(<strong><code>output</code></strong>, <strong><code>target</code></strong>)</p>
+<h4 id="ttest_reg_loss" class="doc_header"><code>ttest_reg_loss</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L487" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ttest_reg_loss</code>(<strong><code>output</code></strong>, <strong><code>target</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -2520,7 +2495,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="CenterLoss" class="doc_header"><code>class</code> <code>CenterLoss</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L496" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CenterLoss</code>(<strong><code>c_out</code></strong>, <strong><code>logits_dim</code></strong>=<em><code>None</code></em>) :: <code>Module</code></p>
+<h2 id="CenterLoss" class="doc_header"><code>class</code> <code>CenterLoss</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L491" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CenterLoss</code>(<strong><code>c_out</code></strong>, <strong><code>logits_dim</code></strong>=<em><code>None</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Code in Pytorch has been slightly modified from: <a href="https://github.com/KaiyangZhou/pytorch-center-loss/blob/master/center_loss.py">https://github.com/KaiyangZhou/pytorch-center-loss/blob/master/center_loss.py</a>
 Based on paper: Wen et al. A Discriminative Feature Learning Approach for Deep Face Recognition. ECCV 2016.</p>
@@ -2549,7 +2524,7 @@ Based on paper: Wen et al. A Discriminative Feature Learning Approach for Deep F
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="CenterPlusLoss" class="doc_header"><code>class</code> <code>CenterPlusLoss</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L532" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CenterPlusLoss</code>(<strong><code>loss</code></strong>, <strong><code>c_out</code></strong>, <strong><code>λ</code></strong>=<em><code>0.01</code></em>, <strong><code>logits_dim</code></strong>=<em><code>None</code></em>) :: <code>Module</code></p>
+<h2 id="CenterPlusLoss" class="doc_header"><code>class</code> <code>CenterPlusLoss</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L527" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CenterPlusLoss</code>(<strong><code>loss</code></strong>, <strong><code>c_out</code></strong>, <strong><code>λ</code></strong>=<em><code>0.01</code></em>, <strong><code>logits_dim</code></strong>=<em><code>None</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -2589,8 +2564,8 @@ Based on paper: Wen et al. A Discriminative Feature Learning Approach for Deep F
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(tensor(11.3878, grad_fn=&lt;DivBackward0&gt;),
- tensor(2.3608, grad_fn=&lt;AddBackward0&gt;))</pre>
+<pre>(tensor(8.9821, grad_fn=&lt;DivBackward0&gt;),
+ tensor(2.3573, grad_fn=&lt;AddBackward0&gt;))</pre>
 </div>
 
 </div>
@@ -2652,7 +2627,7 @@ Based on paper: Wen et al. A Discriminative Feature Learning Approach for Deep F
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FocalLoss" class="doc_header"><code>class</code> <code>FocalLoss</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L543" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FocalLoss</code>(<strong><code>gamma</code></strong>=<em><code>0</code></em>, <strong><code>eps</code></strong>=<em><code>1e-07</code></em>) :: <code>Module</code></p>
+<h2 id="FocalLoss" class="doc_header"><code>class</code> <code>FocalLoss</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L538" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FocalLoss</code>(<strong><code>gamma</code></strong>=<em><code>0</code></em>, <strong><code>eps</code></strong>=<em><code>1e-07</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -2692,7 +2667,7 @@ Based on paper: Wen et al. A Discriminative Feature Learning Approach for Deep F
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor(0.7494)</pre>
+<pre>tensor(0.7453)</pre>
 </div>
 
 </div>

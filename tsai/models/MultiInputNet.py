@@ -25,6 +25,7 @@ class MultiInputNet(Module):
             m.head = Identity()
             self.models.append(m)
         self.flatten = Reshape(-1) if flatten else None
+        self.concat = Concat(dim=1)
         with torch.no_grad():
             self.head = Noop
             out = self.forward(first(dls.train)[0])
@@ -36,5 +37,5 @@ class MultiInputNet(Module):
         for i, (x,m) in enumerate(zip(xs, self.models)):
             _out = m(*x) if isinstance(x, L) else m(x)
             if self.flatten is not None and _out.ndim == 3: _out = self.flatten(_out)
-            out = _out if i==0 else torch.cat([out, _out], dim=1)
+            out = _out if i==0 else self.concat([out, _out], dim=1)
         return self.head(out)

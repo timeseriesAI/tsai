@@ -15,7 +15,6 @@ class _RNNPlus_Base(Module):
         if flatten: assert seq_len, 'you need to enter a seq_len to use flatten=True'
         self.ls, self.fl = last_step, flatten
         self.rnn = self._cell(c_in, hidden_size, num_layers=n_layers, bias=bias, batch_first=True, dropout=rnn_dropout, bidirectional=bidirectional)
-        if last_step: self.last_step = LastStep()
         if flatten: self.flatten = Reshape(-1)
 
         # Head
@@ -25,10 +24,10 @@ class _RNNPlus_Base(Module):
         else: self.head = self.create_head(self.head_nf, c_out, fc_dropout=fc_dropout, y_range=y_range)
 
     def forward(self, x):
-        x = x.transpose(2,1) # [batch_size x n_vars x seq_len] --> [batch_size x seq_len x n_vars]
-        output, _ = self.rnn(x) # output from all sequence steps: [batch_size x seq_len x hidden_size * (1 + bidirectional)]
-        if self.ls: output = self.last_step(output) #             [batch_size x hidden_size * (1 + bidirectional)]
-        if self.fl: output = self.flatten(output) #               [batch_size x seq_len * hidden_size * (1 + bidirectional)]
+        x = x.transpose(2,1)                                             # [batch_size x n_vars x seq_len] --> [batch_size x seq_len x n_vars]
+        output, _ = self.rnn(x)                                          # [batch_size x seq_len x hidden_size * (1 + bidirectional)]
+        if self.ls: output = output[:, -1]                               # [batch_size x hidden_size * (1 + bidirectional)]
+        if self.fl: output = self.flatten(output)                        # [batch_size x seq_len * hidden_size * (1 + bidirectional)]
         if not self.ls and not self.fl: output = output.transpose(2,1)
         return self.head(output)
 

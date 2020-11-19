@@ -19,8 +19,8 @@ entries:
       title: Data core
       url: /data.core
     - output: web,pdf
-      title: Getting external data
-      url: /data.external
+      title: Loading data
+      url: /data.load
     - output: web,pdf
       title: Splitting data
       url: /data.validation

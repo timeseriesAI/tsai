@@ -61,7 +61,7 @@ nb_path: "nbs/006_data.mixed.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MixedDL" class="doc_header"><code>class</code> <code>MixedDL</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/mixed.py#L18" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MixedDL</code>(<strong>*<code>dls</code></strong>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
+<h2 id="MixedDataLoaders" class="doc_header"><code>class</code> <code>MixedDataLoaders</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/mixed.py#L18" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MixedDataLoaders</code>(<strong>*<code>dls</code></strong>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -158,91 +158,91 @@ nb_path: "nbs/006_data.mixed.ipynb"
     <tr>
       <th>0</th>
       <td>Private</td>
-      <td>Bachelors</td>
-      <td>Never-married</td>
-      <td>29.0</td>
-      <td>393264.003764</td>
+      <td>Some-college</td>
+      <td>Divorced</td>
+      <td>30.000000</td>
+      <td>173646.999321</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>Local-gov</td>
-      <td>Bachelors</td>
-      <td>Married-civ-spouse</td>
-      <td>49.0</td>
-      <td>149209.999574</td>
-      <td>&gt;=50k</td>
+      <td>Private</td>
+      <td>HS-grad</td>
+      <td>Separated</td>
+      <td>41.000000</td>
+      <td>216116.001059</td>
+      <td>&lt;50k</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>Self-emp-inc</td>
-      <td>HS-grad</td>
-      <td>Married-civ-spouse</td>
-      <td>44.0</td>
-      <td>151089.000816</td>
+      <td>State-gov</td>
+      <td>11th</td>
+      <td>Widowed</td>
+      <td>61.000001</td>
+      <td>159908.000763</td>
       <td>&gt;=50k</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>Private</td>
-      <td>11th</td>
-      <td>Never-married</td>
-      <td>33.0</td>
-      <td>280111.002951</td>
-      <td>&lt;50k</td>
+      <td>Self-emp-not-inc</td>
+      <td>Assoc-acdm</td>
+      <td>Married-civ-spouse</td>
+      <td>54.000001</td>
+      <td>392286.005788</td>
+      <td>&gt;=50k</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>Federal-gov</td>
-      <td>Some-college</td>
-      <td>Never-married</td>
-      <td>36.0</td>
-      <td>192442.999943</td>
+      <td>Private</td>
+      <td>Bachelors</td>
+      <td>Separated</td>
+      <td>43.000000</td>
+      <td>27765.999597</td>
       <td>&gt;=50k</td>
     </tr>
     <tr>
       <th>5</th>
       <td>Private</td>
-      <td>HS-grad</td>
-      <td>Divorced</td>
-      <td>52.0</td>
-      <td>141301.000355</td>
+      <td>11th</td>
+      <td>Married-spouse-absent</td>
+      <td>25.000000</td>
+      <td>210095.000186</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>6</th>
       <td>Private</td>
-      <td>HS-grad</td>
+      <td>Some-college</td>
       <td>Married-civ-spouse</td>
-      <td>73.0</td>
-      <td>199361.999707</td>
-      <td>&lt;50k</td>
+      <td>35.000000</td>
+      <td>44780.005201</td>
+      <td>&gt;=50k</td>
     </tr>
     <tr>
       <th>7</th>
       <td>Private</td>
-      <td>HS-grad</td>
-      <td>Never-married</td>
-      <td>30.0</td>
-      <td>104051.997063</td>
+      <td>9th</td>
+      <td>Married-civ-spouse</td>
+      <td>47.000000</td>
+      <td>121124.001323</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>8</th>
-      <td>Private</td>
-      <td>HS-grad</td>
-      <td>Married-civ-spouse</td>
-      <td>60.0</td>
-      <td>206338.999420</td>
+      <td>Self-emp-not-inc</td>
+      <td>Assoc-voc</td>
+      <td>Never-married</td>
+      <td>26.000000</td>
+      <td>201137.999878</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>9</th>
-      <td>Federal-gov</td>
-      <td>Some-college</td>
-      <td>Never-married</td>
-      <td>34.0</td>
-      <td>189943.999988</td>
+      <td>Private</td>
+      <td>Assoc-voc</td>
+      <td>Married-civ-spouse</td>
+      <td>46.000000</td>
+      <td>237730.998910</td>
       <td>&lt;50k</td>
     </tr>
   </tbody>
@@ -269,42 +269,42 @@ nb_path: "nbs/006_data.mixed.ipynb"
       <th>0</th>
       <td>False</td>
       <td>13.0</td>
-      <td>&lt;50k</td>
+      <td>&gt;=50k</td>
     </tr>
     <tr>
       <th>1</th>
       <td>False</td>
-      <td>13.0</td>
+      <td>10.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>2</th>
       <td>False</td>
-      <td>9.0</td>
+      <td>10.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>3</th>
       <td>False</td>
       <td>13.0</td>
-      <td>&gt;=50k</td>
+      <td>&lt;50k</td>
     </tr>
     <tr>
       <th>4</th>
       <td>False</td>
-      <td>10.0</td>
+      <td>9.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>5</th>
       <td>False</td>
-      <td>8.0</td>
+      <td>9.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>6</th>
       <td>False</td>
-      <td>9.0</td>
+      <td>10.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
@@ -316,13 +316,13 @@ nb_path: "nbs/006_data.mixed.ipynb"
     <tr>
       <th>8</th>
       <td>False</td>
-      <td>15.0</td>
+      <td>7.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>9</th>
       <td>False</td>
-      <td>10.0</td>
+      <td>9.0</td>
       <td>&lt;50k</td>
     </tr>
   </tbody>
@@ -408,20 +408,20 @@ nb_path: "nbs/006_data.mixed.ipynb"
   <tbody>
     <tr>
       <th>0</th>
-      <td>Private</td>
-      <td>Some-college</td>
-      <td>Married-civ-spouse</td>
-      <td>35.0</td>
-      <td>216472.998622</td>
-      <td>&gt;=50k</td>
+      <td>Local-gov</td>
+      <td>Bachelors</td>
+      <td>Never-married</td>
+      <td>28.000000</td>
+      <td>407671.996379</td>
+      <td>&lt;50k</td>
     </tr>
     <tr>
       <th>1</th>
       <td>Private</td>
       <td>Some-college</td>
-      <td>Separated</td>
-      <td>48.0</td>
-      <td>113597.998069</td>
+      <td>Never-married</td>
+      <td>24.000001</td>
+      <td>379417.996016</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
@@ -429,71 +429,71 @@ nb_path: "nbs/006_data.mixed.ipynb"
       <td>Private</td>
       <td>HS-grad</td>
       <td>Married-civ-spouse</td>
-      <td>33.0</td>
-      <td>112847.001727</td>
-      <td>&lt;50k</td>
+      <td>50.000000</td>
+      <td>95469.000195</td>
+      <td>&gt;=50k</td>
     </tr>
     <tr>
       <th>3</th>
       <td>Private</td>
-      <td>Prof-school</td>
-      <td>Married-civ-spouse</td>
-      <td>39.0</td>
-      <td>202026.999621</td>
-      <td>&gt;=50k</td>
+      <td>HS-grad</td>
+      <td>Separated</td>
+      <td>39.000000</td>
+      <td>174329.999327</td>
+      <td>&lt;50k</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>Self-emp-not-inc</td>
+      <td>?</td>
       <td>HS-grad</td>
-      <td>Separated</td>
-      <td>38.0</td>
-      <td>151322.000497</td>
+      <td>Married-civ-spouse</td>
+      <td>60.000000</td>
+      <td>174073.000497</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>5</th>
-      <td>Private</td>
-      <td>Assoc-voc</td>
-      <td>Never-married</td>
-      <td>22.0</td>
-      <td>171419.000088</td>
+      <td>Self-emp-not-inc</td>
+      <td>10th</td>
+      <td>Married-civ-spouse</td>
+      <td>55.000000</td>
+      <td>278228.002656</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>6</th>
-      <td>Private</td>
-      <td>10th</td>
-      <td>Never-married</td>
-      <td>17.0</td>
-      <td>206506.000245</td>
+      <td>Local-gov</td>
+      <td>11th</td>
+      <td>Divorced</td>
+      <td>39.000000</td>
+      <td>189911.000001</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>7</th>
       <td>Private</td>
-      <td>Some-college</td>
-      <td>Never-married</td>
-      <td>23.0</td>
-      <td>57898.003000</td>
-      <td>&lt;50k</td>
+      <td>Masters</td>
+      <td>Married-civ-spouse</td>
+      <td>57.000000</td>
+      <td>112840.001634</td>
+      <td>&gt;=50k</td>
     </tr>
     <tr>
       <th>8</th>
       <td>Private</td>
       <td>Bachelors</td>
       <td>Never-married</td>
-      <td>27.0</td>
-      <td>258768.000742</td>
-      <td>&lt;50k</td>
+      <td>31.000000</td>
+      <td>111566.998586</td>
+      <td>&gt;=50k</td>
     </tr>
     <tr>
       <th>9</th>
-      <td>Self-emp-inc</td>
+      <td>Private</td>
       <td>HS-grad</td>
-      <td>Married-civ-spouse</td>
-      <td>50.0</td>
-      <td>136913.001258</td>
+      <td>Never-married</td>
+      <td>20.000001</td>
+      <td>102607.002072</td>
       <td>&lt;50k</td>
     </tr>
   </tbody>
@@ -519,8 +519,8 @@ nb_path: "nbs/006_data.mixed.ipynb"
     <tr>
       <th>0</th>
       <td>False</td>
-      <td>10.0</td>
-      <td>&gt;=50k</td>
+      <td>13.0</td>
+      <td>&lt;50k</td>
     </tr>
     <tr>
       <th>1</th>
@@ -532,43 +532,43 @@ nb_path: "nbs/006_data.mixed.ipynb"
       <th>2</th>
       <td>False</td>
       <td>9.0</td>
-      <td>&lt;50k</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>False</td>
-      <td>15.0</td>
       <td>&gt;=50k</td>
     </tr>
     <tr>
-      <th>4</th>
+      <th>3</th>
       <td>False</td>
       <td>9.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
-      <th>5</th>
-      <td>False</td>
-      <td>11.0</td>
+      <th>4</th>
+      <td>True</td>
+      <td>10.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
-      <th>6</th>
+      <th>5</th>
       <td>False</td>
       <td>6.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
+      <th>6</th>
+      <td>False</td>
+      <td>7.0</td>
+      <td>&lt;50k</td>
+    </tr>
+    <tr>
       <th>7</th>
       <td>False</td>
-      <td>10.0</td>
-      <td>&lt;50k</td>
+      <td>14.0</td>
+      <td>&gt;=50k</td>
     </tr>
     <tr>
       <th>8</th>
       <td>False</td>
       <td>13.0</td>
-      <td>&lt;50k</td>
+      <td>&gt;=50k</td>
     </tr>
     <tr>
       <th>9</th>

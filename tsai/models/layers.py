@@ -4,11 +4,11 @@ __all__ = ['noop', 'lin_zero_init', 'SwishBeta', 'same_padding1d', 'Pad1d', 'Con
            'SeparableConv1d', 'AddCoords1d', 'ConvBlock', 'Conv', 'ConvBN', 'ConvIN', 'CoordConv', 'CoordConvBN',
            'SepConv', 'SepConvBN', 'SepConvIN', 'SepCoordConv', 'SepCoordConvBN', 'ResBlock1dPlus', 'SEModule1d',
            'Norm', 'BN1d', 'IN1d', 'LambdaPlus', 'Squeeze', 'Unsqueeze', 'Add', 'Concat', 'Permute', 'Transpose',
-           'View', 'Reshape', 'Max', 'LastStep', 'Noop', 'Sharpen', 'MaxPPVPool1d', 'MPPV1d', 'Temp_Scale',
-           'Vector_Scale', 'Matrix_Scale', 'get_calibrator', 'GAP1d', 'GACP1d', 'SqueezeExciteBlock',
-           'create_pool_head', 'pool_head', 'create_pool_plus_head', 'pool_plus_head', 'create_mlp_head', 'mlp_head',
-           'create_conv_head', 'conv_head', 'heads', 'change_model_head', 'GaussianNoise', 'gambler_loss',
-           'CrossEntropyLossOneHot', 'ttest_bin_loss', 'ttest_reg_loss', 'CenterLoss', 'CenterPlusLoss', 'FocalLoss']
+           'View', 'Reshape', 'Max', 'Noop', 'Sharpen', 'MaxPPVPool1d', 'MPPV1d', 'Temp_Scale', 'Vector_Scale',
+           'Matrix_Scale', 'get_calibrator', 'GAP1d', 'GACP1d', 'SqueezeExciteBlock', 'create_pool_head', 'pool_head',
+           'create_pool_plus_head', 'pool_plus_head', 'create_mlp_head', 'mlp_head', 'create_conv_head', 'conv_head',
+           'heads', 'change_model_head', 'GaussianNoise', 'gambler_loss', 'CrossEntropyLossOneHot', 'ttest_bin_loss',
+           'ttest_reg_loss', 'CenterLoss', 'CenterPlusLoss', 'FocalLoss']
 
 # Cell
 from torch.nn.init import normal_
@@ -271,11 +271,6 @@ class Max(Module):
     def __init__(self, dim=None, keepdim=False): self.dim, self.keepdim = dim, keepdim
     def forward(self, x): return x.max(self.dim, keepdim=self.keepdim)[0]
     def __repr__(self): return f'{self.__class__.__name__}(dim={self.dim}, keepdim={self.keepdim})'
-
-
-class LastStep(Module):
-    def forward(self, x): return x[..., -1]
-    def __repr__(self): return f'{self.__class__.__name__}()'
 
 
 Noop = nn.Sequential()
