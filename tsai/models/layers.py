@@ -219,13 +219,13 @@ class LambdaPlus(Module):
 class Squeeze(Module):
     def __init__(self, dim=-1): self.dim = dim
     def forward(self, x): return x.squeeze(dim=self.dim)
-    def __repr__(self): return f'{self.__class__.__name__}({self.dim})'
+    def __repr__(self): return f'{self.__class__.__name__}(dim={self.dim})'
 
 
 class Unsqueeze(Module):
     def __init__(self, dim=-1): self.dim = dim
     def forward(self, x): return x.unsqueeze(dim=self.dim)
-    def __repr__(self): return f'{self.__class__.__name__}({self.dim})'
+    def __repr__(self): return f'{self.__class__.__name__}(dim={self.dim})'
 
 
 class Add(Module):
@@ -236,13 +236,13 @@ class Add(Module):
 class Concat(Module):
     def __init__(self, dim=1): self.dim = dim
     def forward(self, *x): return torch.cat(*x, dim=self.dim)
-    def __repr__(self): return f'{self.__class__.__name__}({self.dim})'
+    def __repr__(self): return f'{self.__class__.__name__}(dim={self.dim})'
 
 
 class Permute(Module):
     def __init__(self, *dims): self.dims = dims
     def forward(self, x): return x.permute(self.dims)
-    def __repr__(self): return f"{self.__class__.__name__}({', '.join([str(d) for d in self.dims])})"
+    def __repr__(self): return f"{self.__class__.__name__}(dims={', '.join([str(d) for d in self.dims])})"
 
 
 class Transpose(Module):
@@ -251,7 +251,7 @@ class Transpose(Module):
         if self.contiguous: return x.transpose(*self.dims).contiguous()
         else: return x.transpose(*self.dims)
     def __repr__(self):
-        if self.contiguous: return f"{self.__class__.__name__}({', '.join([str(d) for d in self.dims])}).contiguous()"
+        if self.contiguous: return f"{self.__class__.__name__}(dims={', '.join([str(d) for d in self.dims])}).contiguous()"
         else: return f"{self.__class__.__name__}({', '.join([str(d) for d in self.dims])})"
 
 
@@ -270,11 +270,11 @@ class Reshape(Module):
 class Max(Module):
     def __init__(self, dim=None, keepdim=False): self.dim, self.keepdim = dim, keepdim
     def forward(self, x): return x.max(self.dim, keepdim=self.keepdim)[0]
-    def __repr__(self): return f'{self.__class__.__name__}({self.dim}, keepdim={self.keepdim})'
+    def __repr__(self): return f'{self.__class__.__name__}(dim={self.dim}, keepdim={self.keepdim})'
 
 
 class LastStep(Module):
-    def forward(self, x): return x[:, -1]
+    def forward(self, x): return x[..., -1]
     def __repr__(self): return f'{self.__class__.__name__}()'
 
 

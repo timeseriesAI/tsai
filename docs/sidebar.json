@@ -5,7 +5,7 @@
     },
     "Data": {
         "Data core": "/data.core",
-        "Getting external data": "/data.external",
+        "Loading data": "/data.load",
         "Splitting data": "/data.validation",
         "Preprocessing data": "/data.preprocessing",
         "Data augmentation": "/data.transforms",
