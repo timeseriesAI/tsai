@@ -3,7 +3,6 @@
 __all__ = ['TSImage', 'ToTSImage', 'TSToPlot', 'TSToMat', 'TSToGADF', 'TSToGASF', 'TSToMTF', 'TSToRP', 'TSToJRP']
 
 # Cell
-import tsai
 from ..imports import *
 from ..utils import *
 from .core import *

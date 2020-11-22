@@ -120,7 +120,7 @@ entries:
         - output: web,pdf
           title: OmniScaleCNN
           url: /models.OmniScaleCNN
-        title: CNNs
+        title: 1D CNNs
       - output: web
         subfolderitems:
         - output: web,pdf
