@@ -151,4 +151,4 @@ export/*
 *.pkl
 *.txt
 *.jpg
-
+/nbs/docs/*
