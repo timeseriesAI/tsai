@@ -1,16 +1,22 @@
 # tsai (timeseriesAI)
-> Deep Learning for Time Series/ Sequences with Pytorch/ fastai
+> State-of-the-art Deep Learning for Time Series/ Sequences with Pytorch/ fastai
 
 
-![CI](https://github.com/timeseriesai/tsai/workflows/CI/badge.svg) [![PyPI](https://img.shields.io/pypi/v/tsai?color=blue&label=pypi%20version)](https://pypi.org/project/tsai/#description)
+<div align="center"><img width="30%" src="./docs/images/tsai_logo_dlb.svg"></div>
 
-`tsai`is a deep learning package built on top of Pytorch & fastai focused on state-of-the-art techniques for time series classification and regression.
+![CI](https://github.com/timeseriesai/tsai/workflows/CI/badge.svg) ![docs](https://github.com/fastai/fastai/workflows/docs/badge.svg) 
+[![PyPI](https://img.shields.io/pypi/v/tsai?color=blue&label=pypi%20version)](https://pypi.org/project/tsai/#description)
+[![Downloads](https://pepy.tech/badge/tsai)](https://pepy.tech/project/tsai)
+
+`tsai`is an open-source deep learning package built on top of Pytorch & fastai focused on state-of-the-art techniques for time series classification, regression and forecasting.
+
+Here's the link to the [documentation](https://timeseriesai.github.io/tsai/).
 
 ## What's new?
 
 ### tsai: 0.2.4 (Nov 10th, 2020)
 
-* Adapted `tsai` to work with Pytorch 1.7.
+* Added support to Pytorch 1.7.
 
 ### tsai: 0.2.0 (Nov 3rd, 2020)
 
