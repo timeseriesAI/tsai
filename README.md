@@ -1,12 +1,12 @@
+<div align="center">
+    <img width="60%" src="./docs/images/tsai_logo_dlb.svg">
+</div>
+
+-----------------
+
 # tsai (by timeseriesAI)
 > State-of-the-art Deep Learning for Time Series and Sequences in Pytorch / fastai
 
-
-  
-
-<div align="center"><img width="60%" src="./docs/images/tsai_logo_dlb.svg"></div>
-
-  
 
 ![CI](https://github.com/timeseriesai/tsai/workflows/CI/badge.svg) ![docs](https://github.com/fastai/fastai/workflows/docs/badge.svg) 
 [![PyPI](https://img.shields.io/pypi/v/tsai?color=blue&label=pypi%20version)](https://pypi.org/project/tsai/#description)
