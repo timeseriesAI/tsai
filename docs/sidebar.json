@@ -39,6 +39,7 @@
                 "XResNet1d": "/models.XResNet1d",
                 "XResNet1dPlus": "/models.XResNet1dPlus",
                 "ResCNN": "/models.ResCNN",
+                "TCN": "/models.TCN",
                 "ROCKET": "/models.ROCKET",
                 "InceptionTime": "/models.InceptionTime",
                 "InceptionTimePlus": "/models.InceptionTimePlus",

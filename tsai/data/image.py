@@ -5,8 +5,8 @@ __all__ = ['TSImage', 'ToTSImage', 'TSToPlot', 'TSToMat', 'TSToGADF', 'TSToGASF'
 # Cell
 from ..imports import *
 from ..utils import *
-from .core import *
 from .external import *
+from .core import *
 from .preprocessing import *
 from .transforms import *
 

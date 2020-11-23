@@ -119,7 +119,7 @@ class UBDAug(Callback):
                         losses = torch.cat((max_loss, loss), dim=1)
                         x2 = torch.cat((x2, x_tfm.unsqueeze(1)), dim=1)
                         x2 = x2[np.arange(x2.shape[0]).reshape(-1,1), losses.argsort(1)[:, -self.S:]]
-                        max_loss = losses.max(1).values.reshape(-1,1)
+                        max_loss = losses.max(1)[0].reshape(-1,1)
                 setattr(self.loss_func, 'reduction', self.red)
             x2 = x2.reshape(-1, self.x.shape[-2], self.x.shape[-1])
             if self.S > 1: self.learn.yb = (torch_tile(self.y, 2),)

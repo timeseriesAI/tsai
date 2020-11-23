@@ -11,6 +11,10 @@ google_analytics:
 # See http://nbdev.fast.ai/search for help with adding Search
 google_search: 11230dd821e5ae508
 
+# This specifies what badges are turned on by default for notebook docs.
+default_badges:
+  colab: true
+
 host: 127.0.0.1
 # the preview server used. Leave as is.
 port: 4000

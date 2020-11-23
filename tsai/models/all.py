@@ -3,6 +3,7 @@ from .utils import *
 
 from .FCN import *
 from .FCNPlus import *
+from .TCN import *
 from .InceptionTime import *
 from .InceptionTimePlus import *
 from .MLP import *

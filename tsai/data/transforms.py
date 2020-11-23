@@ -575,7 +575,7 @@ class TSRandomTrend(RandTransform):
     def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
         flat_x = o.reshape(o.shape[0], -1)
-        ran = flat_x.max(dim=-1, keepdim=True).values - flat_x.min(dim=-1, keepdim=True).values
+        ran = flat_x.max(dim=-1, keepdim=True)[0] - flat_x.min(dim=-1, keepdim=True)[0]
         trend = torch.linspace(0, 1, o.shape[-1], device=o.device) * ran
         t = (1 + self.magnitude * 2 * (np.random.rand() - 0.5) * trend)
         t -= t.mean(-1, keepdim=True)

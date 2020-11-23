@@ -103,6 +103,9 @@ entries:
           title: ResCNN
           url: /models.ResCNN
         - output: web,pdf
+          title: TCN
+          url: /models.TCN
+        - output: web,pdf
           title: ROCKET
           url: /models.ROCKET
         - output: web,pdf
