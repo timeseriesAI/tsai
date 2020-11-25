@@ -47,7 +47,7 @@ class OneHot(Transform):
 # Cell
 class TSStandardize(Transform):
     "Standardizes batch of type `TSTensor`"
-    parameters, order = L('mean', 'std'), 97
+    parameters, order = L('mean', 'std'), 90
     def __init__(self, mean=None, std=None, by_sample=False, by_var=False, verbose=False):
         self.mean = tensor(mean) if mean is not None else None
         self.std = tensor(std) if std is not None else None
@@ -101,7 +101,7 @@ def mul_max(x:(torch.Tensor, TSTensor, NumpyTensor), axes=(), keepdim=False):
 
 class TSNormalize(Transform):
     "Normalizes batch of type `TSTensor`"
-    parameters, order = L('min', 'max'), 97
+    parameters, order = L('min', 'max'), 90
 
     def __init__(self, min=None, max=None, range=(-1, 1), by_sample=False, by_var=False, verbose=False):
         self.min = tensor(min) if min is not None else None
@@ -137,7 +137,7 @@ class TSNormalize(Transform):
 # Cell
 class TSClipOutliers(Transform):
     "Clip outliers batch of type `TSTensor` based on the IQR"
-    parameters, order = L('min', 'max'), 97
+    parameters, order = L('min', 'max'), 90
     def __init__(self, min=None, max=None, by_sample=False, by_var=False, verbose=False):
         self.su = (min is None or max is None) and not by_sample
         self.min = tensor(min) if min is not None else tensor(-np.inf)
@@ -174,7 +174,7 @@ class TSClipOutliers(Transform):
 # Cell
 class TSRobustScaler(Transform):
     r"""This Scaler removes the median and scales the data according to the quantile range (defaults to IQR: Interquartile Range)"""
-    parameters, order = L('median', 'min', 'max'), 97
+    parameters, order = L('median', 'min', 'max'), 90
     def __init__(self, median=None, min=None, max=None, by_sample=False, by_var=False, verbose=False):
         self.su = (median is None or min is None or max is None) and not by_sample
         self.median = tensor(median) if median is not None else tensor(0)
@@ -213,7 +213,7 @@ class TSRobustScaler(Transform):
 # Cell
 class TSDiff(Transform):
     "Differences batch of type `TSTensor`"
-    order = 97
+    order = 90
     def __init__(self, lag=1, pad=True):
         self.lag, self.pad = lag, pad
 
@@ -225,7 +225,7 @@ class TSDiff(Transform):
 # Cell
 class TSLog(Transform):
     "Log transforms batch of type `TSTensor`. For positive values only"
-    order = 97
+    order = 90
 
     def encodes(self, o:TSTensor):
         return torch.log(o)
@@ -235,11 +235,11 @@ class TSLog(Transform):
 # Cell
 class TSLogReturn(Transform):
     "Calculates log-return of batch of type `TSTensor`. For positive values only"
-    order = 97
+    order = 90
     def __init__(self, lag=1, pad=True):
         self.lag, self.pad = lag, pad
 
     def encodes(self, o:TSTensor):
-        return torch_diff(torch.log(t), lag=self.lag, pad=self.pad)
+        return torch_diff(torch.log(o), lag=self.lag, pad=self.pad)
 
     def __repr__(self): return f'{self.__class__.__name__}(lag={self.lag}, pad={self.pad})'

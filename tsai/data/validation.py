@@ -79,8 +79,10 @@ def TrainValidTestSplitter(n_splits:int=1, valid_size:Union[float, int]=0.2, tes
                 train_ = L(L([train]) * n_splits) if n_splits > 1 else train
                 valid_ = L(L([train]) * n_splits) if n_splits > 1 else train
                 test_ = L(L([test]) * n_splits) if n_splits > 1 else test
-                if n_splits > 1: return L([L(split) for split in itemify(train_, valid_, test_)])
-                else: return L([train_, valid_, test_])
+                if n_splits > 1:
+                    return [split for split in itemify(train_, valid_, test_)]
+                else:
+                    return train_, valid_, test_
             elif n_splits > 1:
                 if stratify_:
                     splits = StratifiedKFold(n_splits=n_splits, shuffle=shuffle, random_state=random_state).split(np.arange(len(train_valid)), o[train_valid])
@@ -96,7 +98,7 @@ def TrainValidTestSplitter(n_splits:int=1, valid_size:Union[float, int]=0.2, tes
                     train_.append(L(L(train_valid)[train]))
                     valid_.append(L(L(train_valid)[valid]))
                 test_ = L(L([test]) * n_splits)
-                return L([L(split) for split in itemify(train_, valid_, test_)])
+                return [split for split in itemify(train_, valid_, test_)]
             else:
                 train, valid = train_test_split(range(len(train_valid)), test_size=vs, random_state=random_state,
                                                 stratify=o[train_valid] if stratify_ else None, shuffle=shuffle, **kwargs)
@@ -105,7 +107,7 @@ def TrainValidTestSplitter(n_splits:int=1, valid_size:Union[float, int]=0.2, tes
                 if shuffle:
                     train = random_shuffle(train, random_state)
                     valid = random_shuffle(valid, random_state)
-                return L(L(L(train_valid)[train]), L(L(train_valid)[valid]),  test)
+                return (L(L(train_valid)[train]), L(L(train_valid)[valid]),  test)
         else:
             if vs == 0:
                 train, _ = RandomSplitter(0, seed=random_state)(o)
@@ -114,8 +116,10 @@ def TrainValidTestSplitter(n_splits:int=1, valid_size:Union[float, int]=0.2, tes
                 if shuffle: train = random_shuffle(train, random_state)
                 train_ = L(L([train]) * n_splits) if n_splits > 1 else train
                 valid_ = L(L([train]) * n_splits) if n_splits > 1 else train
-                if n_splits > 1: return L([L(split) for split in itemify(train_, valid_)])
-                else: return L([train_, valid_])
+                if n_splits > 1:
+                    return [split for split in itemify(train_, valid_)]
+                else:
+                    return (train_, valid_)
             elif n_splits > 1:
                 if stratify_: splits = StratifiedKFold(n_splits=n_splits, shuffle=shuffle, random_state=random_state).split(np.arange(len(o)), o)
                 else: splits = KFold(n_splits=n_splits, shuffle=shuffle, random_state=random_state).split(np.arange(len(o)))
@@ -130,13 +134,13 @@ def TrainValidTestSplitter(n_splits:int=1, valid_size:Union[float, int]=0.2, tes
                     if not isinstance(valid, (list, L)):  valid = valid.tolist()
                     train_.append(L(train))
                     valid_.append(L(L(valid)))
-                return L([L(split) for split in itemify(train_, valid_)])
+                return [split for split in itemify(train_, valid_)]
             else:
                 train, valid = train_test_split(range(len(o)), test_size=vs, random_state=random_state, stratify=o if stratify_ else None,
                                                 shuffle=shuffle, **kwargs)
                 train, valid = toL(train), toL(valid)
                 if balance: train = train[balance_idx(o[train], random_state=random_state)]
-                return L(train, valid)
+                return train, valid
     return _inner
 
 # Cell
@@ -157,8 +161,8 @@ def get_splits(o, n_splits:int=1, valid_size:float=0.2, test_size:float=0., trai
     '''
     if n_splits == 1 and valid_size == 0. and  test_size == 0.: train_only = True
     if balance: stratify = True
-    splits = L(TrainValidTestSplitter(n_splits, valid_size=valid_size, test_size=test_size, train_only=train_only, stratify=stratify,
-                                      balance=balance, shuffle=shuffle, random_state=random_state, verbose=verbose)(o))
+    splits = TrainValidTestSplitter(n_splits, valid_size=valid_size, test_size=test_size, train_only=train_only, stratify=stratify,
+                                      balance=balance, shuffle=shuffle, random_state=random_state, verbose=verbose)(o)
     if check_splits:
         if train_only or (n_splits == 1 and valid_size == 0): print('valid == train')
         elif n_splits > 1:
@@ -176,16 +180,22 @@ def get_splits(o, n_splits:int=1, valid_size:float=0.2, test_size:float=0., trai
             if not balance: assert len(o) == cum_len, f'len(o)={len(o)} while cum_len={cum_len}'
     if train_perc and train_perc > 0 and train_perc < 1:
         if n_splits > 1:
+            splits = list(splits)
             for i in range(n_splits):
+                splits[i] = list(splits[i])
                 splits[i][0] = L(np.random.choice(splits[i][0], int(len(splits[i][0]) * train_perc), False).tolist())
                 if train_only:
                     if valid_size != 0: splits[i][1] = splits[i][0]
                     if test_size != 0: splits[i][2] = splits[i][0]
+                splits[i] = tuple(splits[i])
+            splits = tuple(splits)
         else:
+            splits = list(splits)
             splits[0] = L(np.random.choice(splits[0], int(len(splits[0]) * train_perc), False).tolist())
             if train_only:
                 if valid_size != 0: splits[1] = splits[0]
                 if test_size != 0: splits[2] = splits[0]
+            splits = tuple(splits)
     return splits
 
 # Cell
@@ -194,7 +204,7 @@ def TimeSplitter(valid_pct=0.2):
     def _inner(o):
         cut = int(valid_pct * len(o))
         idx = np.arange(len(o))
-        return idx[:-cut],idx[-cut:]
+        return L(idx[:-cut].tolist()), L(idx[-cut:].tolist())
     return _inner
 
 # Cell

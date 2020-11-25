@@ -307,12 +307,14 @@ class NumpyDataLoader(TfmdDL):
 
 
     @delegates(plt.subplots)
-    def show_batch(self, b=None, ctxs=None, max_n=9, nrows=3, ncols=3, figsize=(16, 10), unique=False, **kwargs):
-        if unique: b = self.unique_batch(max_n=max_n)
+    def show_batch(self, b=None, ctxs=None, max_n=9, nrows=3, ncols=3, figsize=(16, 10), unique=False, sharex=True, sharey=False, **kwargs):
+        if unique:
+            b = self.unique_batch(max_n=max_n)
+            sharex, sharey = True, True
         elif b is None: b = self.one_batch()
         db = self.decode_batch(b, max_n=max_n)
         if figsize is None: figsize = (ncols*6, max_n//ncols*4)
-        if ctxs is None: ctxs = get_grid(min(len(db), nrows*ncols), nrows=None, ncols=ncols, figsize=figsize, **kwargs)
+        if ctxs is None: ctxs = get_grid(min(len(db), nrows*ncols), nrows=None, ncols=ncols, figsize=figsize, sharex=sharex, sharey=sharey, **kwargs)
         for i,ctx in enumerate(ctxs): show_tuple(db[i], ctx=ctx)
 
 

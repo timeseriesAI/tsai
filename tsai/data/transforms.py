@@ -37,7 +37,7 @@ class TSIdentity(RandTransform):
 # partial(TSShuffle_HLs, ex=0),
 class TSShuffle_HLs(RandTransform):
     "Randomly shuffles HIs/LOs of an OHLC `TSTensor` batch"
-    order = 70
+    order = 90
     def __init__(self, magnitude=1., ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
@@ -59,7 +59,7 @@ class TSShuffle_HLs(RandTransform):
 # partial(TSShuffleSteps, ex=0),
 class TSShuffleSteps(RandTransform):
     "Randomly shuffles consecutive sequence datapoints in batch"
-    order = 70
+    order = 90
     def __init__(self, magnitude=1., ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
@@ -79,7 +79,7 @@ class TSShuffleSteps(RandTransform):
 # Cell
 class TSMagAddNoise(RandTransform):
     "Applies additive noise on the y-axis for each step of a `TSTensor` batch"
-    order = 80
+    order = 90
     def __init__(self, magnitude=1, ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
@@ -92,7 +92,7 @@ class TSMagAddNoise(RandTransform):
 
 class TSMagMulNoise(RandTransform):
     "Applies multiplicative noise on the y-axis for each step of a `TSTensor` batch"
-    order = 80
+    order = 90
     def __init__(self, magnitude=1, ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
@@ -143,7 +143,7 @@ def random_cum_linear_generator(o, magnitude=0.1):
 # Cell
 class TSTimeNoise(RandTransform):
     "Applies noise to each step in the x-axis of a `TSTensor` batch based on smooth random curve"
-    order = 80
+    order = 90
     def __init__(self, magnitude=0.1, ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
@@ -157,7 +157,7 @@ class TSTimeNoise(RandTransform):
 # Cell
 class TSMagWarp(RandTransform):
     "Applies warping to the y-axis of a `TSTensor` batch based on a smooth random curve"
-    order = 80
+    order = 90
     def __init__(self, magnitude=0.02, ord=4, ex=None, **kwargs):
         self.magnitude, self.ord, self.ex = magnitude, ord, ex
         super().__init__(**kwargs)
@@ -171,7 +171,7 @@ class TSMagWarp(RandTransform):
 # Cell
 class TSTimeWarp(RandTransform):
     "Applies time warping to the x-axis of a `TSTensor` batch based on a smooth random curve"
-    order = 80
+    order = 90
     def __init__(self, magnitude=0.02, ord=4, ex=None, **kwargs):
         self.magnitude, self.ord, self.ex = magnitude, ord, ex
         super().__init__(**kwargs)
@@ -186,7 +186,7 @@ class TSTimeWarp(RandTransform):
 class TSWindowWarp(RandTransform):
     """Applies window slicing to the x-axis of a `TSTensor` batch based on a random linear curve based on
     https://halshs.archives-ouvertes.fr/halshs-01357973/document"""
-    order = 80
+    order = 90
     def __init__(self, magnitude=0.1, ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
@@ -200,7 +200,7 @@ class TSWindowWarp(RandTransform):
 # Cell
 class TSMagScale(RandTransform):
     "Applies scaling to the y-axis of a `TSTensor` batch based on a scalar"
-    order = 80
+    order = 90
     def __init__(self, magnitude=0.5, ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
@@ -214,7 +214,7 @@ class TSMagScale(RandTransform):
 
 class TSMagScalePerVar(RandTransform):
     "Applies per_var scaling to the y-axis of a `TSTensor` batch based on a scalar"
-    order = 80
+    order = 90
     def __init__(self, magnitude=0.5, ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
@@ -231,7 +231,7 @@ class TSMagScalePerVar(RandTransform):
 # Cell
 class TSRandomResizedCrop(RandTransform):
     "Randomly amplifies a sequence focusing on a random section of the steps"
-    order = 95
+    order = 90
     def __init__(self, magnitude=0.1, ex=None, mode='linear', **kwargs):
         "mode:  'nearest' | 'linear' | 'area'"
         self.magnitude, self.ex, self.mode = magnitude, ex, mode
@@ -251,7 +251,7 @@ TSRandomZoomIn = TSRandomResizedCrop
 # Cell
 class TSWindowSlicing(RandTransform):
     "Randomly extracts an resize a ts slice based on https://halshs.archives-ouvertes.fr/halshs-01357973/document"
-    order = 95
+    order = 90
     def __init__(self, magnitude=0.1, ex=None, mode='linear', **kwargs):
         "mode:  'nearest' | 'linear' | 'area'"
         self.magnitude, self.ex, self.mode = magnitude, ex, mode
@@ -267,7 +267,7 @@ class TSWindowSlicing(RandTransform):
 # Cell
 class TSRandomZoomOut(RandTransform):
     "Randomly compresses a sequence on the x-axis"
-    order = 95
+    order = 90
     def __init__(self, magnitude=0.1, ex=None, mode='linear', **kwargs):
         "mode:  'nearest' | 'linear' | 'area'"
         self.magnitude, self.ex, self.mode = magnitude, ex, mode
@@ -288,7 +288,7 @@ class TSRandomZoomOut(RandTransform):
 # Cell
 class TSRandomTimeScale(RandTransform):
     "Randomly amplifies/ compresses a sequence on the x-axis keeping the same length"
-    order = 95
+    order = 90
     def __init__(self, magnitude=0.1, ex=None, mode='linear', **kwargs):
         "mode:  'nearest' | 'linear' | 'area'"
         self.magnitude, self.ex, self.mode = magnitude, ex, mode
@@ -301,7 +301,7 @@ class TSRandomTimeScale(RandTransform):
 # Cell
 class TSRandomTimeStep(RandTransform):
     "Compresses a sequence on the x-axis by randomly selecting sequence steps and interpolating to previous size"
-    order = 95
+    order = 90
     def __init__(self, magnitude=0.02, ex=None, mode='linear', **kwargs):
         "mode:  'nearest' | 'linear' | 'area'"
         self.magnitude, self.ex, self.mode = magnitude, ex, mode
@@ -319,7 +319,7 @@ class TSRandomTimeStep(RandTransform):
 # Cell
 class TSBlur(RandTransform):
     "Blurs a sequence applying a filter of type [1, 0, 1]"
-    order = 80
+    order = 90
     def __init__(self, magnitude=1., ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         self.filterargs = np.array([1, 0, 1])
@@ -335,7 +335,7 @@ class TSBlur(RandTransform):
 # Cell
 class TSSmooth(RandTransform):
     "Smoothens a sequence applying a filter of type [1, 5, 1]"
-    order = 80
+    order = 90
     def __init__(self, magnitude=1., ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         self.filterargs = np.array([1, 5, 1])
@@ -354,7 +354,7 @@ def maddest(d, axis=None): #Mean Absolute Deviation
 
 class TSFreqDenoise(RandTransform):
     "Denoises a sequence applying a wavelet decomposition method"
-    order = 80
+    order = 90
     def __init__(self, magnitude=0.1, ex=None, wavelet='db4', level=2, thr=None, thr_mode='hard', pad_mode='per', **kwargs):
         self.magnitude, self.ex = magnitude, ex
         self.wavelet, self.level, self.thr, self.thr_mode, self.pad_mode = wavelet, level, thr, thr_mode, pad_mode
@@ -385,7 +385,7 @@ class TSFreqDenoise(RandTransform):
 # Cell
 class TSRandomFreqNoise(RandTransform):
     "Applys random noise using a wavelet decomposition method"
-    order = 80
+    order = 90
     def __init__(self, magnitude=0.1, ex=None, wavelet='db4', level=2, mode='constant', **kwargs):
         self.magnitude, self.ex = magnitude, ex
         self.wavelet, self.level, self.mode = wavelet, level, mode
@@ -402,7 +402,7 @@ class TSRandomFreqNoise(RandTransform):
 # Cell
 class TSRandomResizedLookBack(RandTransform):
     "Selects a random number of sequence steps starting from the end and return an output of the same shape"
-    order = 95
+    order = 90
     def __init__(self, magnitude=0.1, mode='linear', **kwargs):
         "mode:  'nearest' | 'linear' | 'area'"
         self.magnitude, self.mode = magnitude, mode
@@ -418,7 +418,7 @@ class TSRandomResizedLookBack(RandTransform):
 # Cell
 class TSVarOut(RandTransform):
     "Set the value of a random number of variables to zero"
-    order = 95
+    order = 90
     def __init__(self, magnitude=0.05, ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
@@ -442,7 +442,7 @@ class TSVarOut(RandTransform):
 # Cell
 class TSCutOut(RandTransform):
     "Sets a random section of the sequence to zero"
-    order = 95
+    order = 90
     def __init__(self, magnitude=0.05, ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
@@ -464,7 +464,7 @@ class TSCutOut(RandTransform):
 # Cell
 class TSTimeStepOut(RandTransform):
     "Sets random sequence steps to zero"
-    order = 95
+    order = 90
     def __init__(self, magnitude=0.05, ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
@@ -481,7 +481,7 @@ class TSTimeStepOut(RandTransform):
 # Cell
 class TSRandomCropPad(RandTransform):
     "Crops a section of the sequence of a random length"
-    order = 95
+    order = 90
     def __init__(self, magnitude=0.05, ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
@@ -501,7 +501,7 @@ class TSRandomCropPad(RandTransform):
 # Cell
 class TSMaskOut(RandTransform):
     "Set a random number of steps to zero"
-    order = 95
+    order = 90
     def __init__(self, magnitude=0.05, ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
@@ -600,7 +600,7 @@ class TSVerticalFlip(RandTransform):
 # Cell
 class TSResize(RandTransform):
     "Resizes the sequence length of a time series"
-    order = 80
+    order = 90
     def __init__(self, magnitude=-0.5, size=None, ex=None, mode='linear', **kwargs):
         "mode:  'nearest' | 'linear' | 'area'"
         self.magnitude, self.size, self.ex, self.mode = magnitude, size, ex, mode
@@ -614,7 +614,7 @@ class TSResize(RandTransform):
 # Cell
 class TSRandomSize(RandTransform):
     "Randomly resizes the sequence length of a time series"
-    order = 80
+    order = 90
     def __init__(self, magnitude=0., ex=None, mode='linear', **kwargs):
         "mode:  'nearest' | 'linear' | 'area'"
         self.magnitude, self.ex, self.mode = magnitude, ex, mode
@@ -628,7 +628,7 @@ class TSRandomSize(RandTransform):
 # Cell
 class TSRandomLowRes(RandTransform):
     "Randomly resizes the sequence length of a time series to a lower resolution"
-    order = 80
+    order = 90
     def __init__(self, magnitude=.5, ex=None, mode='linear', **kwargs):
         "mode:  'nearest' | 'linear' | 'area'"
         self.magnitude, self.ex, self.mode = magnitude, ex, mode
@@ -641,7 +641,7 @@ class TSRandomLowRes(RandTransform):
 # Cell
 class TSDownUpScale(RandTransform):
     "Downscales a time series and upscales it again to previous sequence length"
-    order = 80
+    order = 90
     def __init__(self, magnitude=0.5, ex=None, mode='linear', **kwargs):
         "mode:  'nearest' | 'linear' | 'area'"
         self.magnitude, self.ex, self.mode = magnitude, ex, mode
@@ -656,7 +656,7 @@ class TSDownUpScale(RandTransform):
 # Cell
 class TSRandomDownUpScale(RandTransform):
     "Randomly downscales a time series and upscales it again to previous sequence length"
-    order = 80
+    order = 90
     def __init__(self, magnitude=.5, ex=None, mode='linear', **kwargs):
         "mode:  'nearest' | 'linear' | 'area'"
         self.magnitude, self.ex, self.mode = magnitude, ex, mode
@@ -717,7 +717,7 @@ all_TS_randaugs = [
 
 # Cell
 class RandAugment(RandTransform):
-    order = 60
+    order = 90
     def __init__(self, tfms:list, N:int=1, M:int=3, **kwargs):
         '''
         tfms   : list of tfm functions (not called)

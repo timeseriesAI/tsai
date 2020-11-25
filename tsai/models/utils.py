@@ -69,7 +69,7 @@ def check_weight(m, cond=noop, verbose=False):
     return np.array(mean), np.array(std)
 
 # Cell
-def create_model(arch, c_in=None, c_out=None, seq_len=None, dls=None, device=None, **kwargs):
+def create_model(arch, c_in=None, c_out=None, seq_len=None, dls=None, device=None, verbose=False, **kwargs):
     device = ifnone(device, default_device())
     if dls is not None:
         c_in = ifnone(c_in, dls.vars)
@@ -77,12 +77,16 @@ def create_model(arch, c_in=None, c_out=None, seq_len=None, dls=None, device=Non
         seq_len = ifnone(seq_len, dls.len)
     if sum([1 for v in ['RNN_FCN', 'LSTM_FCN', 'RNNPlus', 'LSTMPlus', 'GRUPlus', 'InceptionTimePlus', 'GRU_FCN', 'OmniScaleCNN', 'mWDN', 'TST']
             if v in arch.__name__]):
+        pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} seq_len={seq_len} device={device}, kwargs={kwargs})', verbose)
         return arch(c_in, c_out, seq_len=seq_len, **kwargs).to(device=device)
     elif 'xresnet' in arch.__name__ and not '1d' in arch.__name__:
+        pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} device={device}, kwargs={kwargs})', verbose)
         return (arch(c_in=c_in, n_out=c_out, **kwargs)).to(device=device)
     elif 'rocket' in arch.__name__.lower():
+        pv(f'arch: {arch.__name__}(c_in={c_in} seq_len={seq_len} device={device}, kwargs={kwargs})', verbose)
         return (arch(c_in=c_in, seq_len=seq_len, **kwargs)).to(device=device)
     else:
+        pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} device={device}, kwargs={kwargs})', verbose)
         return arch(c_in, c_out, **kwargs).to(device=device)
 
 build_model = create_model

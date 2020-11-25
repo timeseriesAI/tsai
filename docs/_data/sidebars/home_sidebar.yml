@@ -155,17 +155,14 @@ entries:
       title: Tabular Model
       url: /models.TabModel
     - output: web,pdf
-      title: HybridDL models
-      url: /models.HybridDL
+      title: MultiInput models
+      url: /models.MultiInputNet
     output: web
     title: Models
   - folderitems:
     - output: web,pdf
       title: Time series utilities
       url: /utils
-    - output: web,pdf
-      title: Other utilities
-      url: /trading.utils
     output: web
     title: Utilities
   output: web
