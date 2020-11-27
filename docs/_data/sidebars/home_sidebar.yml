@@ -28,8 +28,11 @@ entries:
       title: Preprocessing data
       url: /data.preprocessing
     - output: web,pdf
-      title: Data augmentation
+      title: Label-invariant transformations
       url: /data.transforms
+    - output: web,pdf
+      title: Label-mixing transformations
+      url: /data.mixed_sample_augmentation
     - output: web,pdf
       title: Tabular data
       url: /data.tabular
@@ -155,7 +158,7 @@ entries:
       title: Tabular Model
       url: /models.TabModel
     - output: web,pdf
-      title: MultiInput models
+      title: MultiInputNet
       url: /models.MultiInputNet
     output: web
     title: Models

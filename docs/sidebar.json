@@ -8,7 +8,8 @@
         "Loading data": "/data.load",
         "Splitting data": "/data.validation",
         "Preprocessing data": "/data.preprocessing",
-        "Data augmentation": "/data.transforms",
+        "Label-invariant transformations": "/data.transforms",
+        "Label-mixing transformations": "/data.mixed_sample_augmentation",
         "Tabular data": "/data.tabular",
         "Imaging time series": "/data.image",
         "Mixed data": "/data.mixed"
@@ -67,7 +68,7 @@
             }
         },
         "Tabular Model": "/models.TabModel",
-        "MultiInput models": "/models.MultiInputNet"
+        "MultiInputNet": "/models.MultiInputNet"
     },
     "Utilities": {
         "Time series utilities": "/utils"

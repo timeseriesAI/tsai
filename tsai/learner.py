@@ -8,6 +8,20 @@ from .imports import *
 
 # Cell
 @patch
+def show_batch(self:Learner, figsize=(16, 10), **kwargs):
+    cbs = self.cbs
+    self.cbs = [cb for cb in self.cbs if cb.__class__.__name__ not in ['TrainEvalCallback','Recorder','ProgressCallback']]
+    with self:
+        self.epoch, self.training = 0, True
+        b = self.dls.one_batch()
+        self._split(b)
+        self('before_batch')
+    self.dls.show_batch(b=(self.xb[0], self.yb[0]), figsize=figsize, **kwargs)
+    self.cbs = cbs
+    return self
+
+# Cell
+@patch
 def save_all(self:Learner, path='export', dls_fname='dls', model_fname='model', learner_fname='learner'):
 
     path = Path(path)

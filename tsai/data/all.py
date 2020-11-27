@@ -6,4 +6,5 @@ from .transforms import *
 from .image import *
 from .tabular import *
 from .mixed import *
+from .mixed_sample_augmentation import *
 
