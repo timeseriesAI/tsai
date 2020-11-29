@@ -5,15 +5,14 @@ __all__ = ['get_layers', 'is_layer', 'is_linear', 'is_bn', 'is_conv_linear', 'is
            'count_parameters', 'build_model', 'get_clones', 'get_nf', 'split_model', 'seq_len_calculator']
 
 # Cell
+from fastai.tabular.model import *
 from ..imports import *
 
 # Cell
-from fastai.tabular.model import *
-
-# Cell
-def get_layers(model, cond=noop):
+def get_layers(model, cond=noop, full=True):
     if isinstance(model, Learner): model=model.model
-    return [m for m in flatten_model(model) if any([c(m) for c in L(cond)])]
+    if full: return [m for m in flatten_model(model) if any([c(m) for c in L(cond)])]
+    else: return [m for m in model if any([c(m) for c in L(cond)])]
 
 def is_layer(*args):
     def _is_layer(l, cond=args):

@@ -11,7 +11,7 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'random_normal', 'random_half_normal', 'random_normal_tensor', 'random_half_normal_tensor', 'clip_outliers',
            'default_dpi', 'get_plot_fig', 'fig2buf', 'plot_scatter', 'jointplot_scatter', 'jointplot_kde', 'get_idxs',
            'apply_cmap', 'torch_tile', 'to_tsfresh_dataset', 'pcorr', 'scorr', 'torch_diff', 'get_outliers_IQR',
-           'get_percentile', 'torch_clamp']
+           'get_percentile', 'torch_clamp', 'torch_slice_by_dim']
 
 # Cell
 from .imports import *
@@ -539,3 +539,10 @@ def torch_clamp(o, min=None, max=None):
     if min is not None: o = torch.max(o, min)
     if max is not None: o = torch.min(o, max)
     return o
+
+# Cell
+def torch_slice_by_dim(t, index, dim=-1, **kwargs):
+    if not isinstance(index, torch.Tensor): index = torch.Tensor(index)
+    assert t.ndim == index.ndim, "t and index must have the same ndim"
+    index = index.long()
+    return torch.gather(t, dim, index, **kwargs)
