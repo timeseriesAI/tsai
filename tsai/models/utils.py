@@ -74,7 +74,7 @@ def create_model(arch, c_in=None, c_out=None, seq_len=None, dls=None, device=Non
         c_in = ifnone(c_in, dls.vars)
         c_out = ifnone(c_out, dls.c)
         seq_len = ifnone(seq_len, dls.len)
-    if sum([1 for v in ['RNN_FCN', 'LSTM_FCN', 'RNNPlus', 'LSTMPlus', 'GRUPlus', 'InceptionTimePlus', 'GRU_FCN', 'OmniScaleCNN', 'mWDN', 'TST']
+    if sum([1 for v in ['RNN_FCN', 'LSTM_FCN', 'RNNPlus', 'LSTMPlus', 'GRUPlus', 'InceptionTimePlus', 'GRU_FCN', 'OmniScaleCNN', 'mWDN', 'TST', 'XCM']
             if v in arch.__name__]):
         pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} seq_len={seq_len} device={device}, kwargs={kwargs})', verbose)
         return arch(c_in, c_out, seq_len=seq_len, **kwargs).to(device=device)
