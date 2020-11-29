@@ -56,12 +56,15 @@ class XCM(Module):
         if y_range: layers += [SigmoidRange(*y_range)]
         return nn.Sequential(*layers)
 
-    def show_gradcam(self, x, y=None, cmap='inferno', detach=True, cpu=True, apply_relu=True):
+
+    def show_gradcam(self, x, y=None, detach=True, cpu=True, apply_relu=True, cmap='inferno', figsize=None, **kwargs):
+
         att_maps = get_attibution_map(self, [self.conv2dblock, self.conv1dblock], x, y=y, detach=detach, cpu=cpu, apply_relu=apply_relu)
         att_maps[0] = (att_maps[0] - att_maps[0].min()) / (att_maps[0].max() - att_maps[0].min())
         att_maps[1] = (att_maps[1] - att_maps[1].min()) / (att_maps[1].max() - att_maps[1].min())
 
-        fig = plt.figure(figsize=(10, 10))
+        figsize = ifnone(figsize, (10, 10))
+        fig = plt.figure(figsize=figsize, **kwargs)
         ax = plt.axes()
         plt.title('Observed variables')
         im = ax.imshow(att_maps[0], cmap=cmap)
@@ -69,7 +72,7 @@ class XCM(Module):
         plt.colorbar(im, cax=cax)
         plt.show()
 
-        fig = plt.figure(figsize=(10, 10))
+        fig = plt.figure(figsize=figsize, **kwargs)
         ax = plt.axes()
         plt.title('Time')
         im = ax.imshow(att_maps[1], cmap=cmap)

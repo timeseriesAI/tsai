@@ -307,19 +307,22 @@ class NumpyDataLoader(TfmdDL):
 
 
     @delegates(plt.subplots)
-    def show_batch(self, b=None, ctxs=None, max_n=9, nrows=3, ncols=3, figsize=(16, 10), unique=False, sharex=True, sharey=False, **kwargs):
+    def show_batch(self, b=None, ctxs=None, max_n=9, nrows=3, ncols=3, figsize=None, unique=False, sharex=True, sharey=False, **kwargs):
         if unique:
             b = self.unique_batch(max_n=max_n)
             sharex, sharey = True, True
         elif b is None: b = self.one_batch()
         db = self.decode_batch(b, max_n=max_n)
-        if figsize is None: figsize = (ncols*6, max_n//ncols*4)
-        if ctxs is None: ctxs = get_grid(min(len(db), nrows*ncols), nrows=None, ncols=ncols, figsize=figsize, sharex=sharex, sharey=sharey, **kwargs)
+        ncols = min(ncols, math.ceil(len(db) / ncols))
+        nrows = min(nrows, math.ceil(len(db) / ncols))
+        max_n = min(max_n, len(db), nrows*ncols)
+        if figsize is None: figsize = (ncols*6, math.ceil(max_n/ncols)*4)
+        if ctxs is None: ctxs = get_grid(max_n, nrows=nrows, ncols=ncols, figsize=figsize, sharex=sharex, sharey=sharey, **kwargs)
         for i,ctx in enumerate(ctxs): show_tuple(db[i], ctx=ctx)
 
 
     @delegates(plt.subplots)
-    def show_results(self, b, preds, ctxs=None, max_n=9, nrows=3, ncols=3, figsize=(16, 10), **kwargs):
+    def show_results(self, b, preds, ctxs=None, max_n=9, nrows=3, ncols=3, figsize=None, **kwargs):
         t = self.decode_batch(b, max_n=max_n)
         p = self.decode_batch((b[0],preds), max_n=max_n)
         if figsize is None: figsize = (ncols*6, max_n//ncols*4)
@@ -358,6 +361,13 @@ class NumpyDataLoaders(DataLoaders):
         self.loaders,self.path = list(loaders),Path(path)
         self.device = ifnone(device, default_device())
 
+    def new_dl(self, x, y=None):
+        if x.ndim == 1: x = [to2d(x)]
+        elif x.ndim ==2 and not is_listy(x): x = [x]
+        if y is not None and not is_listy(y) and not isinstance(y, (np.ndarray, torch.Tensor)): y = [y]
+        return self.valid.new(self.valid.dataset.add_test(x, y=y))
+
+
     @classmethod
     @delegates(DataLoaders.from_dblock)
     def from_numpy(cls, X, y=None, splitter=None, valid_pct=0.2, seed=0, item_tfms=None, batch_tfms=None, **kwargs):
@@ -385,6 +395,7 @@ class NumpyDataLoaders(DataLoaders):
         if len(bs) != len(ds): bs = bs * len(ds)
         return cls(*[cls._dl_type(d, bs=b, num_workers=num_workers, batch_tfms=batch_tfms, **k) \
                      for d,k,b in zip(ds, kwargs, bs)], path=path, device=device)
+
 
 class TSDataLoaders(NumpyDataLoaders):
     _xblock = TSTensorBlock
