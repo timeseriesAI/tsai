@@ -170,17 +170,58 @@ class NumpyDatasets(Datasets):
         self.show(self[idx], **kwargs)
         plt.show()
 
+    @delegates(plt.subplots)
+    def show_dist(self, figsize=None, **kwargs):
+        if self.c == 0:
+            print('\nunlabeled dataset.\n')
+            return
+
+        _y = self.ptls[1].flatten().detach().cpu().numpy()
+        _my_colors = random_shuffle(L(mcolors.CSS4_COLORS.keys()))
+        if self.cat: data = np.unique(_y, return_counts=True)
+        else: data = _y
+        figsize = ifnone(figsize, (8, 6))
+        fig = plt.figure(figsize=figsize, **kwargs)
+        ax = plt.axes()
+        plt.title('Target distribution', fontweight='bold')
+        if self.cat:
+            plt.bar(self.vocab, data[1], color=_my_colors, edgecolor='black')
+            plt.xticks(self.vocab)
+        else:
+            plt.hist(data, min(len(_y) // 2, 100), color='violet', edgecolor='black')
+        plt.show()
+
     @property
     def items(self): return tuple([tl.items for tl in self.tls])
     @items.setter
     def items(self, vs):
         for tl,c in zip(self.tls, vs): tl.items = v
+
+    @property
+    def cat(self):
+        try:
+            if isinstance(self[0][-1].item(), Integral): return True
+            else: return False
+        except: pass
+        try:
+            if isinstance(self[0][-1][-1].item(), Integral): return True
+            else: return False
+        except: pass
+
     @property
     def c(self):
-        return 0 if len(self.tls) == 1 else 1 if isinstance(self.ptls[1][0].item(), float) else len(np.unique(self.ptls[1]))
+        if len(self.tls) == 1: return 0
+        if not self.cat: return 1
+        return len(np.unique(self.ptls[1].detach().cpu().flatten().numpy()))
+
+    @property
+    def no(self):
+        if self[0][-1].ndim == 0: return 1
+        else: return len(self[0][-1])
+
     @property
     def loss_func(self):
-        return MSELossFlat() if self.c == 1 else CrossEntropyLossFlat()
+        return MSELossFlat() if not self.cat else CrossEntropyLossFlat()
 
 
 @delegates(NumpyDatasets.__init__)
@@ -218,7 +259,7 @@ class TSDatasets(NumpyDatasets):
     @property
     def len(self): return self[0][0].shape[-1]
 
-# Cell
+
 def add_ds(dsets, X, y=None, inplace=True):
     "Create test datasets from X (and y) using validation transforms of `dsets`"
     items = tuple((X,)) if y is None else tuple((X, y))
@@ -332,9 +373,26 @@ class NumpyDataLoader(TfmdDL):
             color = 'green' if t[i][1] == p[i][1] else 'red'
             t[i][0].show(ctx=ctx, title=title, title_color=color)
 
+    @delegates(plt.subplots)
+    def show_dist(self, figsize=None, **kwargs): self.dataset.show_dist(figsize=figsize, **kwargs)
+
+
     @property
     def c(self): return self.dataset.c
 
+    @property
+    def cat(self): return self.dataset.cat
+
+    @property
+    def cws(self):
+        if self.cat:
+            counts = torch.unique(dls.ptls[1].detach().cpu().flatten(), return_counts=True, sorted=True)[-1]
+            iw = (counts.sum() / counts)
+            return (iw / iw.sum()).to(dls.ptls[1].device)
+        else: return None
+
+    @property
+    def no(self): return self.dataset.no
 
 @delegates(plt.subplots)
 def show_tuple(tup, **kwargs):
@@ -352,6 +410,7 @@ class TSDataLoader(NumpyDataLoader):
     def len(self): return self.dataset[0][0].shape[-1]
 
 # Cell
+import matplotlib.colors as mcolors
 _batch_tfms = ('after_item','before_batch','after_batch')
 
 class NumpyDataLoaders(DataLoaders):
@@ -366,6 +425,14 @@ class NumpyDataLoaders(DataLoaders):
         elif x.ndim ==2 and not is_listy(x): x = [x]
         if y is not None and not is_listy(y) and not isinstance(y, (np.ndarray, torch.Tensor)): y = [y]
         return self.valid.new(self.valid.dataset.add_test(x, y=y))
+
+    @delegates(plt.subplots)
+    def show_dist(self, figsize=None, **kwargs): self.dataset.show_dist(figsize=figsize, **kwargs)
+
+    def decoder(self, o):
+        if isinstance(o, tuple): return self.decode(o)
+        if o.ndim <= 1: return self.decodes(o)
+        else: return L([self.decodes(oi) for oi in o])
 
 
     @classmethod
@@ -401,18 +468,7 @@ class TSDataLoaders(NumpyDataLoaders):
     _xblock = TSTensorBlock
     _dl_type = TSDataLoader
 
-# Cell
-@patch
-def cws(self:NumpyDataLoader):
-    if isinstance(tensor(self.dataset[0][-1]).item(), Integral):
-        target = torch.Tensor(self.dataset.items[-1]).to(dtype=torch.int64)
-        # Compute samples weight (each sample should get its own weight)
-        class_sample_count = torch.tensor([(target == t).sum() for t in torch.unique(target, sorted=True)])
-        weights = 1. / class_sample_count.float()
-        return (weights / weights.sum()).to(default_device())
-    else: return None
 
-# Cell
 def get_ts_dls(X, y=None, splits=None, sel_vars=None, sel_steps=None, tfms=None, inplace=True,
             path='.', bs=64, num_workers=0, batch_tfms=None, device=None, shuffle_train=True, **kwargs):
     dsets = TSDatasets(X, y, splits=splits, sel_vars=sel_vars, sel_steps=sel_steps, tfms=tfms, inplace=inplace, **kwargs)

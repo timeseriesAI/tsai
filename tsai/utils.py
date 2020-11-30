@@ -11,7 +11,7 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'random_normal', 'random_half_normal', 'random_normal_tensor', 'random_half_normal_tensor', 'clip_outliers',
            'default_dpi', 'get_plot_fig', 'fig2buf', 'plot_scatter', 'jointplot_scatter', 'jointplot_kde', 'get_idxs',
            'apply_cmap', 'torch_tile', 'to_tsfresh_dataset', 'pcorr', 'scorr', 'torch_diff', 'get_outliers_IQR',
-           'get_percentile', 'torch_clamp', 'torch_slice_by_dim']
+           'get_percentile', 'torch_clamp', 'torch_slice_by_dim', 'reduce_memory_usage']
 
 # Cell
 from .imports import *
@@ -546,3 +546,41 @@ def torch_slice_by_dim(t, index, dim=-1, **kwargs):
     assert t.ndim == index.ndim, "t and index must have the same ndim"
     index = index.long()
     return torch.gather(t, dim, index, **kwargs)
+
+# Cell
+def reduce_memory_usage(df):
+
+    start_memory = df.memory_usage().sum() / 1024**2
+    print(f"Memory usage of dataframe is {start_memory} MB")
+
+    for col in df.columns:
+        col_type = df[col].dtype
+
+        if col_type != 'object':
+            c_min = df[col].min()
+            c_max = df[col].max()
+
+            if str(col_type)[:3] == 'int':
+                if c_min > np.iinfo(np.int8).min and c_max < np.iinfo(np.int8).max:
+                    df[col] = df[col].astype(np.int8)
+                elif c_min > np.iinfo(np.int16).min and c_max < np.iinfo(np.int16).max:
+                    df[col] = df[col].astype(np.int16)
+                elif c_min > np.iinfo(np.int32).min and c_max < np.iinfo(np.int32).max:
+                    df[col] = df[col].astype(np.int32)
+                elif c_min > np.iinfo(np.int64).min and c_max < np.iinfo(np.int64).max:
+                    df[col] = df[col].astype(np.int64)
+
+            else:
+                if c_min > np.finfo(np.float16).min and c_max < np.finfo(np.float16).max:
+                    df[col] = df[col].astype(np.float16)
+                elif c_min > np.finfo(np.float32).min and c_max < np.finfo(np.float32).max:
+                    df[col] = df[col].astype(np.float32)
+                else:
+                    pass
+        else:
+            df[col] = df[col].astype('category')
+
+    end_memory = df.memory_usage().sum() / 1024**2
+    print(f"Memory usage of dataframe after reduction {end_memory} MB")
+    print(f"Reduced by {100 * (start_memory - end_memory) / start_memory} % ")
+    return df

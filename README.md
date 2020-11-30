@@ -63,3 +63,18 @@ If you want more details, you can get them in nbs 00 and 00a.
 To use tsai in your own notebooks, the only thing you need to do after you have installed the package is to add this:
 
 `from tsai.all import *`
+
+## Citing tsai
+
+If you use `tsai` in your research please use the following BibTeX entry:
+
+```text
+@Misc{tsai,
+    author =       {Ignacio Oguiza},
+    title =        {tsai - A state-of-the-art deep learning library for time series and sequential data},
+    howpublished = {Github},
+    year =         {2020},
+    url =          {https://github.com/timeseriesAI/tsai}
+    
+}
+```
