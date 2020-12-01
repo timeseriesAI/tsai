@@ -8,11 +8,14 @@ from fastai.tabular.all import *
 
 # Cell
 @delegates(DataLoaders.__init__)
-def get_tabular_dls(df, procs=[Categorify, FillMissing, Normalize], cat_names=None, cont_names=None, target=None, y_names=None,
+def get_tabular_dls(df, procs=[Categorify, FillMissing, Normalize], cat_names=None, cont_names=None, y_names=None,
                     y_block=None, splits=None, do_setup=True, inplace=False, reduce_memory=True, device=None, **kwargs):
     device = ifnone(device, default_device())
-    y_names = ifnone(y_names, target)
-    y_block = ifnone(y_block, RegressionBlock() if isinstance(df[y_names].values[0], float) else CategoryBlock())
+    if cat_names is not None and not isinstance(cat_names, list): cat_names = cat_names.tolist()
+    if cont_names is not None and not isinstance(cont_names, list): cont_names = cont_names.tolist()
+    assert cat_names is None or isinstance(cat_names, list), 'cat_names must be either None or a list'
+    assert cont_names is None or isinstance(cont_names, list), 'cont_names must be either None or a list'
+    y_block = ifnone(y_block, RegressionBlock() if isinstance(df[y_names].values.flatten()[-1], float) else CategoryBlock())
     pd.options.mode.chained_assignment=None
     to = TabularPandas(df, procs=procs, cat_names=cat_names, cont_names=cont_names, y_names=y_names, y_block=y_block,
                        splits=splits, do_setup=do_setup, inplace=inplace, reduce_memory=reduce_memory, device=device)

@@ -386,9 +386,9 @@ class NumpyDataLoader(TfmdDL):
     @property
     def cws(self):
         if self.cat:
-            counts = torch.unique(dls.ptls[1].detach().cpu().flatten(), return_counts=True, sorted=True)[-1]
+            counts = torch.unique(self.ptls[1].detach().cpu().flatten(), return_counts=True, sorted=True)[-1]
             iw = (counts.sum() / counts)
-            return (iw / iw.sum()).to(dls.ptls[1].device)
+            return (iw / iw.sum()).to(self.device)
         else: return None
 
     @property

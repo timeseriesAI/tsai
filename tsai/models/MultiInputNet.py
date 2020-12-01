@@ -37,5 +37,5 @@ class MultiInputNet(Module):
         for i, (x,m) in enumerate(zip(xs, self.models)):
             _out = m(*x) if isinstance(x, L) else m(x)
             if self.flatten is not None and _out.ndim == 3: _out = self.flatten(_out)
-            out = _out if i==0 else self.concat([out, _out], dim=1)
+            out = _out if i==0 else self.concat([out, _out])
         return self.head(out)

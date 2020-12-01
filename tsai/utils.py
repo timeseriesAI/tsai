@@ -10,7 +10,7 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'ttest', 'tscore', 'ttest_tensor', 'pcc', 'scc', 'a', 'b', 'remove_fn', 'npsave', 'np_save', 'permute_2D',
            'random_normal', 'random_half_normal', 'random_normal_tensor', 'random_half_normal_tensor', 'clip_outliers',
            'default_dpi', 'get_plot_fig', 'fig2buf', 'plot_scatter', 'jointplot_scatter', 'jointplot_kde', 'get_idxs',
-           'apply_cmap', 'torch_tile', 'to_tsfresh_dataset', 'pcorr', 'scorr', 'torch_diff', 'get_outliers_IQR',
+           'apply_cmap', 'torch_tile', 'to_tsfresh_df', 'pcorr', 'scorr', 'torch_diff', 'get_outliers_IQR',
            'get_percentile', 'torch_clamp', 'torch_slice_by_dim', 'reduce_memory_usage']
 
 # Cell
@@ -491,18 +491,22 @@ def torch_tile(a, n_tile, dim=0):
     return torch.index_select(a, dim, order_index)
 
 # Cell
-def to_tsfresh_dataset(ts):
+def to_tsfresh_df(ts):
     r"""Prepares a time series (Tensor/ np.ndarray) to be used as a tsfresh dataset to allow feature extraction"""
+    ts = to3d(ts)
     if isinstance(ts, np.ndarray):
         ids = np.repeat(np.arange(len(ts)), ts.shape[-1]).reshape(-1,1)
         joint_ts =  ts.transpose(0,2,1).reshape(-1, ts.shape[1])
-        cols = ['id']+np.arange(ts.shape[1]).tolist()
-        return pd.DataFrame(np.concatenate([ids, joint_ts], axis=1), columns=cols)
+        cols = ['id'] + np.arange(ts.shape[1]).tolist()
+        df = pd.DataFrame(np.concatenate([ids, joint_ts], axis=1), columns=cols)
     elif isinstance(ts, torch.Tensor):
         ids = torch_tile(torch.arange(len(ts)), ts.shape[-1]).reshape(-1,1)
         joint_ts =  ts.transpose(1,2).reshape(-1, ts.shape[1])
         cols = ['id']+np.arange(ts.shape[1]).tolist()
-        return pd.DataFrame(torch.cat([ids, joint_ts], dim=1).numpy(), columns=cols)
+        df = pd.DataFrame(torch.cat([ids, joint_ts], dim=1).numpy(), columns=cols)
+    df['id'] = df['id'].astype(int)
+    df.reset_index(drop=True, inplace=True)
+    return df
 
 # Cell
 from scipy.stats import skew, kurtosis
