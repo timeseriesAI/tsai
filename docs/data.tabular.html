@@ -61,7 +61,7 @@ nb_path: "nbs/005_data.tabular.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_tabular_dls" class="doc_header"><code>get_tabular_dls</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/tabular.py#L10" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_tabular_dls</code>(<strong><code>df</code></strong>, <strong><code>procs</code></strong>=<em><code>[&lt;class 'fastai.tabular.core.Categorify'&gt;, &lt;class 'fastai.tabular.core.FillMissing'&gt;, &lt;class 'fastai.data.transforms.Normalize'&gt;]</code></em>, <strong><code>cat_names</code></strong>=<em><code>None</code></em>, <strong><code>cont_names</code></strong>=<em><code>None</code></em>, <strong><code>target</code></strong>=<em><code>None</code></em>, <strong><code>y_names</code></strong>=<em><code>None</code></em>, <strong><code>y_block</code></strong>=<em><code>None</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>inplace</code></strong>=<em><code>False</code></em>, <strong><code>reduce_memory</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>'.'</code></em>)</p>
+<h4 id="get_tabular_dls" class="doc_header"><code>get_tabular_dls</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/tabular.py#L10" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_tabular_dls</code>(<strong><code>df</code></strong>, <strong><code>procs</code></strong>=<em><code>[&lt;class 'fastai.tabular.core.Categorify'&gt;, &lt;class 'fastai.tabular.core.FillMissing'&gt;, &lt;class 'fastai.data.transforms.Normalize'&gt;]</code></em>, <strong><code>cat_names</code></strong>=<em><code>None</code></em>, <strong><code>cont_names</code></strong>=<em><code>None</code></em>, <strong><code>y_names</code></strong>=<em><code>None</code></em>, <strong><code>y_block</code></strong>=<em><code>None</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>inplace</code></strong>=<em><code>False</code></em>, <strong><code>reduce_memory</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>'.'</code></em>)</p>
 </blockquote>
 
 </div>
@@ -91,7 +91,7 @@ nb_path: "nbs/005_data.tabular.ipynb"
 <span class="n">target</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;salary&#39;</span><span class="p">]</span>
 <span class="n">splits</span> <span class="o">=</span> <span class="n">RandomSplitter</span><span class="p">()(</span><span class="n">range_of</span><span class="p">(</span><span class="n">df</span><span class="p">))</span>
 
-<span class="n">dls</span> <span class="o">=</span> <span class="n">get_tabular_dls</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">cat_names</span><span class="o">=</span><span class="n">cat_names</span><span class="p">,</span> <span class="n">cont_names</span><span class="o">=</span><span class="n">cont_names</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s1">&#39;salary&#39;</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">512</span><span class="p">)</span>
+<span class="n">dls</span> <span class="o">=</span> <span class="n">get_tabular_dls</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">cat_names</span><span class="o">=</span><span class="n">cat_names</span><span class="p">,</span> <span class="n">cont_names</span><span class="o">=</span><span class="n">cont_names</span><span class="p">,</span> <span class="n">y_names</span><span class="o">=</span><span class="s1">&#39;salary&#39;</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">512</span><span class="p">)</span>
 <span class="n">dls</span><span class="o">.</span><span class="n">show_batch</span><span class="p">()</span>
 </pre></div>
 
@@ -131,108 +131,108 @@ nb_path: "nbs/005_data.tabular.ipynb"
     <tr>
       <th>0</th>
       <td>Private</td>
-      <td>Some-college</td>
-      <td>10</td>
-      <td>Divorced</td>
-      <td>Adm-clerical</td>
-      <td>Not-in-family</td>
-      <td>White</td>
-      <td>Female</td>
-      <td>0</td>
-      <td>0</td>
-      <td>United-States</td>
-      <td>49.000000</td>
-      <td>255465.997925</td>
-      <td>60.0</td>
-      <td>&lt;50k</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>Private</td>
       <td>HS-grad</td>
       <td>9</td>
-      <td>Married-civ-spouse</td>
-      <td>Other-service</td>
-      <td>Husband</td>
+      <td>Never-married</td>
+      <td>Transport-moving</td>
+      <td>Not-in-family</td>
       <td>White</td>
       <td>Male</td>
       <td>0</td>
       <td>0</td>
       <td>United-States</td>
       <td>47.000000</td>
-      <td>481986.993110</td>
-      <td>40.0</td>
-      <td>&gt;=50k</td>
+      <td>464944.989444</td>
+      <td>45.0</td>
+      <td>&lt;50k</td>
     </tr>
     <tr>
-      <th>2</th>
-      <td>Private</td>
-      <td>HS-grad</td>
-      <td>9</td>
+      <th>1</th>
+      <td>State-gov</td>
+      <td>Bachelors</td>
+      <td>13</td>
       <td>Never-married</td>
-      <td>Exec-managerial</td>
+      <td>Adm-clerical</td>
       <td>Not-in-family</td>
       <td>White</td>
       <td>Female</td>
       <td>0</td>
       <td>0</td>
       <td>United-States</td>
-      <td>27.000000</td>
-      <td>133425.002979</td>
-      <td>50.0</td>
+      <td>24.000000</td>
+      <td>191269.000016</td>
+      <td>65.0</td>
+      <td>&lt;50k</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>State-gov</td>
+      <td>Masters</td>
+      <td>14</td>
+      <td>Never-married</td>
+      <td>Prof-specialty</td>
+      <td>Unmarried</td>
+      <td>Asian-Pac-Islander</td>
+      <td>Female</td>
+      <td>0</td>
+      <td>0</td>
+      <td>Taiwan</td>
+      <td>29.000000</td>
+      <td>214283.999322</td>
+      <td>20.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>Private</td>
-      <td>Some-college</td>
-      <td>10</td>
-      <td>Never-married</td>
-      <td>Other-service</td>
-      <td>Unmarried</td>
-      <td>Black</td>
-      <td>Female</td>
-      <td>0</td>
-      <td>0</td>
-      <td>United-States</td>
-      <td>25.000000</td>
-      <td>201412.999655</td>
-      <td>40.0</td>
-      <td>&lt;50k</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>Private</td>
+      <td>State-gov</td>
       <td>Bachelors</td>
       <td>13</td>
-      <td>Never-married</td>
-      <td>Adm-clerical</td>
-      <td>Own-child</td>
-      <td>Asian-Pac-Islander</td>
-      <td>Male</td>
-      <td>0</td>
-      <td>0</td>
-      <td>Taiwan</td>
-      <td>26.000000</td>
-      <td>190650.000028</td>
-      <td>40.0</td>
-      <td>&lt;50k</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>Private</td>
-      <td>11th</td>
-      <td>7</td>
       <td>Married-civ-spouse</td>
-      <td>Machine-op-inspct</td>
+      <td>Protective-serv</td>
       <td>Husband</td>
       <td>White</td>
       <td>Male</td>
       <td>0</td>
       <td>0</td>
       <td>United-States</td>
-      <td>56.000001</td>
-      <td>183883.999990</td>
+      <td>25.000000</td>
+      <td>262663.999570</td>
+      <td>40.0</td>
+      <td>&gt;=50k</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Private</td>
+      <td>11th</td>
+      <td>7</td>
+      <td>Never-married</td>
+      <td>Machine-op-inspct</td>
+      <td>Unmarried</td>
+      <td>White</td>
+      <td>Female</td>
+      <td>0</td>
+      <td>0</td>
+      <td>Nicaragua</td>
+      <td>28.000000</td>
+      <td>111520.002504</td>
+      <td>40.0</td>
+      <td>&lt;50k</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>?</td>
+      <td>Assoc-voc</td>
+      <td>11</td>
+      <td>Married-spouse-absent</td>
+      <td>?</td>
+      <td>Unmarried</td>
+      <td>White</td>
+      <td>Female</td>
+      <td>0</td>
+      <td>0</td>
+      <td>United-States</td>
+      <td>49.000000</td>
+      <td>558182.990831</td>
       <td>40.0</td>
       <td>&lt;50k</td>
     </tr>
@@ -241,72 +241,72 @@ nb_path: "nbs/005_data.tabular.ipynb"
       <td>Private</td>
       <td>Some-college</td>
       <td>10</td>
-      <td>Widowed</td>
-      <td>Craft-repair</td>
-      <td>Unmarried</td>
+      <td>Never-married</td>
+      <td>Adm-clerical</td>
+      <td>Not-in-family</td>
       <td>White</td>
       <td>Female</td>
       <td>0</td>
       <td>0</td>
       <td>United-States</td>
-      <td>54.000000</td>
-      <td>221914.999264</td>
-      <td>50.0</td>
+      <td>27.000000</td>
+      <td>253814.001041</td>
+      <td>40.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>7</th>
-      <td>Local-gov</td>
-      <td>Assoc-acdm</td>
-      <td>12</td>
+      <td>Private</td>
+      <td>1st-4th</td>
+      <td>2</td>
       <td>Married-civ-spouse</td>
-      <td>Tech-support</td>
+      <td>Handlers-cleaners</td>
       <td>Husband</td>
       <td>White</td>
       <td>Male</td>
       <td>0</td>
       <td>0</td>
-      <td>United-States</td>
-      <td>43.000000</td>
-      <td>37937.004887</td>
-      <td>43.0</td>
+      <td>Mexico</td>
+      <td>31.000000</td>
+      <td>374832.993741</td>
+      <td>40.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>8</th>
-      <td>Self-emp-not-inc</td>
-      <td>HS-grad</td>
-      <td>9</td>
-      <td>Married-civ-spouse</td>
-      <td>Farming-fishing</td>
-      <td>Husband</td>
+      <td>Private</td>
+      <td>Bachelors</td>
+      <td>13</td>
+      <td>Never-married</td>
+      <td>Exec-managerial</td>
+      <td>Not-in-family</td>
       <td>White</td>
       <td>Male</td>
       <td>0</td>
       <td>0</td>
       <td>United-States</td>
-      <td>57.000000</td>
-      <td>50989.999448</td>
-      <td>30.0</td>
+      <td>22.999999</td>
+      <td>120171.999597</td>
+      <td>40.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>9</th>
-      <td>Self-emp-inc</td>
-      <td>Bachelors</td>
-      <td>13</td>
-      <td>Married-civ-spouse</td>
-      <td>Exec-managerial</td>
-      <td>Husband</td>
+      <td>Local-gov</td>
+      <td>Some-college</td>
+      <td>10</td>
+      <td>Never-married</td>
+      <td>Adm-clerical</td>
+      <td>Not-in-family</td>
       <td>White</td>
       <td>Male</td>
       <td>0</td>
       <td>0</td>
       <td>United-States</td>
-      <td>47.000000</td>
-      <td>362835.001866</td>
-      <td>50.0</td>
-      <td>&gt;=50k</td>
+      <td>30.000000</td>
+      <td>247327.997709</td>
+      <td>40.0</td>
+      <td>&lt;50k</td>
     </tr>
   </tbody>
 </table>
@@ -356,9 +356,9 @@ nb_path: "nbs/005_data.tabular.ipynb"
   <tbody>
     <tr>
       <td>0</td>
-      <td>0.310394</td>
-      <td>0.292246</td>
-      <td>0.868550</td>
+      <td>0.302901</td>
+      <td>0.315467</td>
+      <td>0.858876</td>
       <td>00:06</td>
     </tr>
   </tbody>
@@ -405,8 +405,8 @@ nb_path: "nbs/005_data.tabular.ipynb"
     (5): Embedding(7, 5)
     (6): Embedding(6, 4)
     (7): Embedding(3, 3)
-    (8): Embedding(116, 23)
-    (9): Embedding(89, 20)
+    (8): Embedding(117, 23)
+    (9): Embedding(92, 20)
     (10): Embedding(43, 13)
   )
   (emb_drop): Dropout(p=0.0, inplace=False)

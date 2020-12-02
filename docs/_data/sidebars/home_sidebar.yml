@@ -22,6 +22,9 @@ entries:
       title: Loading data
       url: /data.load
     - output: web,pdf
+      title: Data preparation
+      url: /data.preparation
+    - output: web,pdf
       title: Splitting data
       url: /data.validation
     - output: web,pdf

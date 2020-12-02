@@ -8,7 +8,7 @@ from .layers import *
 
 # Cell
 class MultiInputNet(Module):
-    def __init__(self, dls, models, device=None, flatten=True, custom_head=mlp_head, **kwargs):
+    def __init__(self, dls, models, device=None, flatten=True, custom_head=None, **kwargs):
         r"""
         Args:
             dls: DataLoaders of type MixedDataLoaders.
@@ -19,6 +19,7 @@ class MultiInputNet(Module):
             kwargs: custom_head kwargs
         """
 
+        head = ifnone(custom_head, mlp_head)
         device = ifnone(device, default_device())
         self.models = nn.ModuleList()
         for m in L(models):
@@ -30,7 +31,7 @@ class MultiInputNet(Module):
             self.head = Noop
             out = self.forward(first(dls.train)[0])
             self.head_nf = out.shape[-1] if flatten else out.shape[1]
-        self.head = custom_head(self.head_nf, dls.c, **kwargs)
+        self.head = head(self.head_nf, dls.c, **kwargs)
         self.to(device=device)
 
     def forward(self, xs):

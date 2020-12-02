@@ -75,6 +75,5 @@ If you use `tsai` in your research please use the following BibTeX entry:
     howpublished = {Github},
     year =         {2020},
     url =          {https://github.com/timeseriesAI/tsai}
-    
 }
 ```

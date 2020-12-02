@@ -78,16 +78,18 @@ def build_ts_model(arch, c_in=None, c_out=None, seq_len=None, dls=None, device=N
     if sum([1 for v in ['RNN_FCN', 'LSTM_FCN', 'RNNPlus', 'LSTMPlus', 'GRUPlus', 'InceptionTimePlus', 'GRU_FCN', 'OmniScaleCNN', 'mWDN', 'TST', 'XCM']
             if v in arch.__name__]):
         pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} seq_len={seq_len} device={device}, kwargs={kwargs})', verbose)
-        return arch(c_in, c_out, seq_len=seq_len, **kwargs).to(device=device)
+        model = arch(c_in, c_out, seq_len=seq_len, **kwargs).to(device=device)
     elif 'xresnet' in arch.__name__ and not '1d' in arch.__name__:
         pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} device={device}, kwargs={kwargs})', verbose)
-        return (arch(c_in=c_in, n_out=c_out, **kwargs)).to(device=device)
+        model = (arch(c_in=c_in, n_out=c_out, **kwargs)).to(device=device)
     elif 'rocket' in arch.__name__.lower():
         pv(f'arch: {arch.__name__}(c_in={c_in} seq_len={seq_len} device={device}, kwargs={kwargs})', verbose)
-        return (arch(c_in=c_in, seq_len=seq_len, **kwargs)).to(device=device)
+        model = (arch(c_in=c_in, seq_len=seq_len, **kwargs)).to(device=device)
     else:
         pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} device={device}, kwargs={kwargs})', verbose)
-        return arch(c_in, c_out, **kwargs).to(device=device)
+        model = arch(c_in, c_out, **kwargs).to(device=device)
+    setattr(model, "__name__", arch.__name__)
+    return model
 
 build_model = build_ts_model
 create_model = build_ts_model

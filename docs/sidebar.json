@@ -6,6 +6,7 @@
     "Data": {
         "Data core": "/data.core",
         "Loading data": "/data.load",
+        "Data preparation": "/data.preparation",
         "Splitting data": "/data.validation",
         "Preprocessing data": "/data.preprocessing",
         "Label-invariant transformations": "/data.transforms",
