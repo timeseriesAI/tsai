@@ -17,31 +17,6 @@
 
 Here's the link to the [documentation](https://timeseriesai.github.io/tsai/).
 
-## What's new?
-
-### tsai: 0.2.4 (Nov 10th, 2020)
-
-* Added support to Pytorch 1.7.
-
-### tsai: 0.2.0 (Nov 3rd, 2020)
-
-`tsai` 0.2.0 is a major update to the tsai library. These are the major changes made to the library:
-
-* New tutorial nbs have been added to demonstrate the use of new functionality like: 
-    * Time series **data preparation**
-    * Intro to **time series regression**
-    * TS archs comparison
-    * **TS to image** classification
-    * TS classification with **transformers**
-    
-* Also some tutorial nbs have been updated like **Time Series transforms**
-* More ts data transforms have been added, including ts to images.
-* New callbacks, like the state of the art noisy_student that will allow you to use unlabeled data.
-* New time series, state-of-the-art models are now available like XceptionTime, RNN_FCN (like LSTM_FCN, GRU_FCN), TransformerModel, TST (Transformer), OmniScaleCNN, mWDN (multi-wavelet decomposition network), XResNet1d.
-* Some of the models (those finishing with an plus) have additional, experimental functionality (like coordconv, zero_norm, squeeze and excitation, etc).
-
-The best way to discocer and understand how to use this new functionality is to use the tutorial nbs. I encourage you to use them!
-
 ## Install
 
 You can install the **latest stable** version from pip:
