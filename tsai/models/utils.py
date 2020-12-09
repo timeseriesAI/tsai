@@ -123,14 +123,26 @@ def get_nf(m):
     return get_layers(m, cond=is_linear)[-1].in_features
 
 # Cell
-def split_model(model):
-    if hasattr(model, "head"): head = model.head
+def split_model(model, cut=None):
+    if hasattr(model, "head"):
+        head = model.head
+        model.head = Identity()
+        body = model
+        return body, head
+    elif is_listy(model):
+        if cut is None:
+            ll = list(enumerate(model.children()))
+            cut = next(i for i,o in reversed(ll) if has_pool_type(o))
+        if isinstance(cut, int):
+            body = nn.Sequential(*list(model.children())[:cut])
+            head = nn.Sequential(*list(model.children())[cut:])
+            return body, head
+        else:
+            print('This model cannot be split as a head attribute is not available')
+            return
     else:
         print('This model cannot be split as a head attribute is not available')
         return
-    model.head = Identity()
-    body = model
-    return body, head
 
 # Cell
 def seq_len_calculator(seq_len, **kwargs):

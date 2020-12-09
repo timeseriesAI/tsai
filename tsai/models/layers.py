@@ -5,11 +5,11 @@ __all__ = ['noop', 'lin_zero_init', 'SwishBeta', 'same_padding1d', 'Pad1d', 'Con
            'Conv', 'ConvBN', 'ConvIN', 'CoordConv', 'CoordConvBN', 'SepConv', 'SepConvBN', 'SepConvIN', 'SepCoordConv',
            'SepCoordConvBN', 'ResBlock1dPlus', 'SEModule1d', 'Norm', 'BN1d', 'IN1d', 'LambdaPlus', 'Squeeze',
            'Unsqueeze', 'Add', 'Concat', 'Permute', 'Transpose', 'View', 'Reshape', 'Max', 'Noop', 'Sharpen',
-           'MaxPPVPool1d', 'MPPV1d', 'Temp_Scale', 'Vector_Scale', 'Matrix_Scale', 'get_calibrator', 'GAP1d', 'GACP1d',
-           'SqueezeExciteBlock', 'create_pool_head', 'pool_head', 'create_pool_plus_head', 'pool_plus_head',
-           'create_mlp_head', 'mlp_head', 'create_conv_head', 'conv_head', 'heads', 'change_model_head',
-           'GaussianNoise', 'gambler_loss', 'CrossEntropyLossOneHot', 'ttest_bin_loss', 'ttest_reg_loss', 'CenterLoss',
-           'CenterPlusLoss', 'FocalLoss']
+           'MaxPPVPool1d', 'MPPV1d', 'Sequential', 'Temp_Scale', 'Vector_Scale', 'Matrix_Scale', 'get_calibrator',
+           'GAP1d', 'GACP1d', 'SqueezeExciteBlock', 'create_pool_head', 'pool_head', 'create_pool_plus_head',
+           'pool_plus_head', 'create_mlp_head', 'mlp_head', 'create_conv_head', 'conv_head', 'create_fc_head',
+           'fc_head', 'heads', 'change_model_head', 'GaussianNoise', 'gambler_loss', 'CrossEntropyLossOneHot',
+           'ttest_bin_loss', 'ttest_reg_loss', 'CenterLoss', 'CenterPlusLoss', 'FocalLoss']
 
 # Cell
 from torch.nn.init import normal_
@@ -359,6 +359,14 @@ class MPPV1d(Module):
         return self.flatten(self.mppv(x))
 
 # Cell
+class Sequential(nn.Sequential):
+    """Class that allows you to pass one or multiple inputs"""
+    def forward(self, *x):
+        for i, module in enumerate(self._modules.values()):
+            x = module(*x) if isinstance(x, (list, tuple, L)) else module(x)
+        return x
+
+# Cell
 class Temp_Scale(Module):
     "Used to perform Temperature Scaling (dirichlet=False) or Single-parameter Dirichlet calibration (dirichlet=True)"
     def __init__(self, temp=1., dirichlet=False):
@@ -489,7 +497,18 @@ def create_conv_head(nf, c_out, adaptive_size=None, y_range=None):
 conv_head = create_conv_head
 
 # Cell
-heads = [mlp_head, pool_head, pool_plus_head, conv_head]
+def create_fc_head(layers, c_out, y_range=None, fc_dropout=0., use_bn=False, bn_final=False, act=nn.ReLU(inplace=True)):
+    if not is_listy(fc_dropout): fc_dropout = [fc_dropout]*(len(layers) - 1)
+    sizes = layers + [c_out]
+    actns = [act_cls for _ in range(len(sizes) - 2)] + [None]
+    _layers = [LinBnDrop(sizes[i], sizes[i+1], bn=use_bn and (i!=len(actns)-1 or bn_final), p=p, act=a) for i,(p,a) in enumerate(zip(fc_dropout+[0.], actns))]
+    if y_range is not None: _layers.append(SigmoidRange(*y_range))
+    return nn.Sequential(*_layers)
+
+fc_head = create_fc_head
+
+# Cell
+heads = [mlp_head, fc_head, pool_head, pool_plus_head, conv_head]
 
 # Cell
 def change_model_head(model, custom_head, **kwargs):

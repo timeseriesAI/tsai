@@ -2,7 +2,8 @@
 
 __all__ = ['NumpyTensor', 'ToNumpyTensor', 'TSTensor', 'ToTSTensor', 'ToFloat', 'ToInt', 'NumpyTensorBlock',
            'TSTensorBlock', 'TorchDataset', 'NumpyDataset', 'TSDataset', 'NumpyDatasets', 'TSDatasets', 'add_ds',
-           'NumpyDataLoader', 'show_tuple', 'TSDataLoader', 'NumpyDataLoaders', 'TSDataLoaders', 'get_ts_dls']
+           'get_subset_dset', 'NumpyDataLoader', 'show_tuple', 'TSDataLoader', 'NumpyDataLoaders', 'TSDataLoaders',
+           'get_ts_dls', 'get_subset_dl']
 
 # Cell
 from ..imports import *
@@ -290,6 +291,23 @@ def add_test(self:NumpyDatasets, X, y=None, inplace=True):
 def add_unlabeled(self:NumpyDatasets, X, inplace=True):
     return add_ds(self, X, y=None, inplace=inplace)
 
+def get_subset_dset(dset, idxs):
+    if isinstance(dset, TabularPandas):
+        new_dset =  dset.iloc[idxs]
+        new_dset.items.reset_index(drop=True, inplace=True)
+        return new_dset
+    items = tuple([L(item)[idxs] for item in dset.items])
+    if isinstance(dset, (Datasets, NumpyDatasets, TSDatasets)):
+        new_tls = L([tl._new(item, split_idx=dset.split_idx) for tl,item in zip(dset.tls, items)])
+        if isinstance(dset, TSDatasets):
+            return TSDatasets(tls=new_tls, n_inp=dset.n_inp, inplace=dset.inplace, tfms=dset.tfms, sel_vars=dset.sel_vars, sel_steps=dset.sel_steps)
+        elif isinstance(dset, NumpyDatasets):
+            return NumpyDatasets(tls=new_tls, n_inp=dset.n_inp, inplace=inplace, tfms=dset.tfms)
+        elif isinstance(dset, Datasets): return Datasets(tls=new_tls)
+    elif isinstance(dset, TfmdLists):
+        return dset._new(items, split_idx=dset.split_idx)
+    else: raise Exception(f"Expected a `Datasets`, `TfmdLists` of `TabularPandas` dataset but got {dset.__class__.__name__}")
+
 # Cell
 _batch_tfms = ('after_item','before_batch','after_batch')
 
@@ -314,7 +332,7 @@ class NumpyDataLoader(TfmdDL):
 
     def create_batch(self, b):
         it = b if self.shuffle else slice(b[0], b[0] + self.bs)
-        self.idxs = b
+        self.idxs = L(b)
         if hasattr(self, "split_idxs"): self.input_idxs = self.split_idxs[it]
         return self.dataset[it]
 
@@ -475,3 +493,8 @@ def get_ts_dls(X, y=None, splits=None, sel_vars=None, sel_steps=None, tfms=None,
     dls   = TSDataLoaders.from_dsets(dsets.train, dsets.valid, path='.', bs=bs, num_workers=num_workers, batch_tfms=batch_tfms,
                                      device=device, shuffle_train=shuffle_train, **kwargs)
     return dls
+
+
+def get_subset_dl(dl, idx):
+    subset_dset = get_subset_dset(dl.dataset, idx)
+    return dl.new(subset_dset)

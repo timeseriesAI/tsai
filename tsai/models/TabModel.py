@@ -9,8 +9,8 @@ from .layers import *
 # Cell
 class TabModel(Module):
     "Basic model for tabular data."
-    def __init__(self, emb_szs, n_cont, out_sz, layers, ps=None, embed_p=0.,
-                 y_range=None, use_bn=True, bn_final=False, bn_cont=True, act_cls=nn.ReLU(inplace=True)):
+    def __init__(self, emb_szs, n_cont, out_sz, layers, ps=None, embed_p=0., y_range=None, use_bn=True, bn_final=False, bn_cont=True,
+                 act_cls=nn.ReLU(inplace=True)):
         ps = ifnone(ps, [0.]*len(layers))
         if not is_listy(ps): ps = [ps]*len(layers)
         self.embeds = nn.ModuleList([Embedding(ni, nf) for ni,nf in emb_szs])
@@ -24,6 +24,7 @@ class TabModel(Module):
                        for i,(p,a) in enumerate(zip(ps,actns))]
         self.layers = nn.Sequential(*_layers)
         _head = [nn.Linear(layers[-1], out_sz)]
+        self.head_nf = layers[-1]
         if y_range is not None: _head.append(SigmoidRange(*y_range))
         self.head = nn.Sequential(*_head)
 

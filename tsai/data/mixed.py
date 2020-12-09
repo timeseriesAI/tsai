@@ -6,27 +6,26 @@ __all__ = ['MixedDataLoaders', 'get_mixed_dls']
 from ..imports import *
 
 # Cell
+# This implementation of a mixed dataloader is based on a great implementation created by Zach Mueller in this fastai thread:
+# https://forums.fast.ai/t/combining-tabular-images-in-fastai2-and-should-work-with-almost-any-other-type/73197
+
 from packaging import version
 from fastai.data.load import _FakeLoader
 from torch.utils.data.dataloader import _MultiProcessingDataLoaderIter,_SingleProcessDataLoaderIter,_DatasetKind
 _loaders = (_MultiProcessingDataLoaderIter,_SingleProcessDataLoaderIter)
 
-# Cell
-# This implementation of a mixed dataloader is based on a great implementation created by Zach Mueller in this fastai thread:
-# https://forums.fast.ai/t/combining-tabular-images-in-fastai2-and-should-work-with-almost-any-other-type/73197
-
 class MixedDataLoaders():
-    def __init__(self, *dls, device=None):
+    def __init__(self, *dls, device=None, bs=None):
         "Accepts any number of `DataLoaders` and a device"
         device = ifnone(device, default_device())
         self.device = device
-        self.c = []
-        bs = min([dl.bs for dl in dls])
-        for dl in dls: # ensure all dls have the same bs
+        self.c = None
+        bs = ifnone(bs, min([dl.bs for dl in dls]))
+        for i, dl in enumerate(dls): # ensure all dls have the same bs
             dl.bs = bs
-            if bs == 0:  self.train_ds = dl.dataset
             dl.shuffle_fn = self.shuffle_fn
-            if self.c == [] and hasattr(dl, "c"): self.c = dl.c
+            if self.c is None and hasattr(dl, "c"): self.c = dl.c
+            if i == 0: self.dataset = dl.dataset
             dl.to(device=device)
         self.dls = dls
         self.count = 0
@@ -63,15 +62,16 @@ class MixedDataLoaders():
         for b in z:
             inps = []
             outs = []
-            if self.device is not None: b = to_device(b, self.device)
+            if self.device is not None:
+                b = to_device(b, self.device)
             for batch, dl in zip(b, self.dls):
                 batch = dl.after_batch(batch)
                 inps += batch[:dl.n_inp]
                 outs += batch[dl.n_inp:]
-            # Remove duplicates and split inputs and outputs
-            inps = [L(inps)[idx] for idx in self.x_idxs] if len(self.x_idxs) > 1 else L(outs)[self.x_idxs][0]
-            outs = L(outs)[self.y_idxs] if len(self.y_idxs) > 1 else L(outs)[self.y_idxs][0]
-            yield (inps, outs)
+            inps = tuple([tuple(L(inps)[idx]) if isinstance(idx, list) else inps[idx] for idx in self.x_idxs]) if len(self.x_idxs) > 1 else tuple(L(outs)[self.x_idxs][0])
+            outs = tuple(L(outs)[self.y_idxs]) if len(self.y_idxs) > 1 else L(outs)[self.y_idxs][0]
+            yield inps, outs
+
 
     def one_batch(self):
         "Grab one batch of data"
@@ -110,14 +110,14 @@ class MixedDataLoaders():
         return b_
 
 # Cell
-def get_mixed_dls(*dls, device=None):
+def get_mixed_dls(*dls, device=None, **kwargs):
     device = ifnone(device, default_device())
     _mixed_train_dls = []
     _mixed_valid_dls = []
     for dl in dls:
         _mixed_train_dls.append(dl.train)
         _mixed_valid_dls.append(dl.valid)
-    mixed_train_dl = MixedDataLoaders(*_mixed_train_dls)
-    mixed_valid_dl = MixedDataLoaders(*_mixed_valid_dls)
+    mixed_train_dl = MixedDataLoaders(*_mixed_train_dls, **kwargs)
+    mixed_valid_dl = MixedDataLoaders(*_mixed_valid_dls, **kwargs)
     mixed_dls = DataLoaders(mixed_train_dl, mixed_valid_dl, device=device)
     return mixed_dls

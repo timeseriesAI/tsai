@@ -11,7 +11,7 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'random_normal', 'random_half_normal', 'random_normal_tensor', 'random_half_normal_tensor', 'clip_outliers',
            'default_dpi', 'get_plot_fig', 'fig2buf', 'plot_scatter', 'jointplot_scatter', 'jointplot_kde', 'get_idxs',
            'apply_cmap', 'torch_tile', 'to_tsfresh_df', 'pcorr', 'scorr', 'torch_diff', 'get_outliers_IQR',
-           'get_percentile', 'torch_clamp', 'torch_slice_by_dim', 'reduce_memory_usage']
+           'get_percentile', 'torch_clamp', 'torch_slice_by_dim', 'concat', 'reduce_memory_usage']
 
 # Cell
 from .imports import *
@@ -550,6 +550,17 @@ def torch_slice_by_dim(t, index, dim=-1, **kwargs):
     assert t.ndim == index.ndim, "t and index must have the same ndim"
     index = index.long()
     return torch.gather(t, dim, index, **kwargs)
+
+# Cell
+def concat(*ls, dim=0):
+    "Concatenate tensors, arrays, lists, or tuples by a dimension"
+    if not len(ls): return []
+    it = ls[0]
+    if isinstance(it, torch.Tensor): return torch.cat(ls, dim=dim)
+    elif isinstance(it, np.ndarray): return np.concatenate(ls, axis=dim)
+    else:
+        res = np.concatenate(ls, axis=dim).tolist()
+        return retain_type(res, typ=type(it))
 
 # Cell
 def reduce_memory_usage(df):

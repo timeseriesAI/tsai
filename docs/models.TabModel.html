@@ -141,73 +141,73 @@ nb_path: "nbs/120_models.TabModel.ipynb"
   </thead>
   <tbody>
     <tr>
-      <th>17713</th>
-      <td>Private</td>
-      <td>Assoc-voc</td>
-      <td>Married-civ-spouse</td>
-      <td>Craft-repair</td>
-      <td>Husband</td>
-      <td>White</td>
-      <td>False</td>
-      <td>37.0</td>
-      <td>161141.0</td>
-      <td>11.0</td>
-      <td>&gt;=50k</td>
-    </tr>
-    <tr>
-      <th>248</th>
-      <td>Private</td>
-      <td>Doctorate</td>
-      <td>Married-civ-spouse</td>
-      <td>Prof-specialty</td>
-      <td>Husband</td>
-      <td>White</td>
-      <td>True</td>
-      <td>40.0</td>
-      <td>130760.0</td>
-      <td>10.0</td>
-      <td>&lt;50k</td>
-    </tr>
-    <tr>
-      <th>13731</th>
-      <td>Private</td>
-      <td>Some-college</td>
+      <th>21572</th>
+      <td>?</td>
+      <td>10th</td>
       <td>Never-married</td>
-      <td>Adm-clerical</td>
-      <td>Not-in-family</td>
-      <td>White</td>
-      <td>False</td>
-      <td>26.0</td>
-      <td>188569.0</td>
-      <td>10.0</td>
-      <td>&lt;50k</td>
-    </tr>
-    <tr>
-      <th>22925</th>
-      <td>Private</td>
-      <td>Some-college</td>
-      <td>Never-married</td>
-      <td>Sales</td>
+      <td>?</td>
       <td>Own-child</td>
       <td>White</td>
       <td>False</td>
-      <td>21.0</td>
-      <td>197747.0</td>
-      <td>10.0</td>
+      <td>17.0</td>
+      <td>34019.0</td>
+      <td>6.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
-      <th>29319</th>
+      <th>28184</th>
       <td>Private</td>
-      <td>Some-college</td>
-      <td>Never-married</td>
-      <td>Adm-clerical</td>
-      <td>Own-child</td>
+      <td>HS-grad</td>
+      <td>Married-civ-spouse</td>
+      <td>Transport-moving</td>
+      <td>Husband</td>
       <td>White</td>
       <td>False</td>
-      <td>21.0</td>
-      <td>214716.0</td>
-      <td>10.0</td>
+      <td>34.0</td>
+      <td>381153.0</td>
+      <td>9.0</td>
+      <td>&lt;50k</td>
+    </tr>
+    <tr>
+      <th>26376</th>
+      <td>Private</td>
+      <td>HS-grad</td>
+      <td>Married-civ-spouse</td>
+      <td>Exec-managerial</td>
+      <td>Husband</td>
+      <td>White</td>
+      <td>False</td>
+      <td>52.0</td>
+      <td>155434.0</td>
+      <td>9.0</td>
+      <td>&lt;50k</td>
+    </tr>
+    <tr>
+      <th>11173</th>
+      <td>Private</td>
+      <td>HS-grad</td>
+      <td>Married-civ-spouse</td>
+      <td>Machine-op-inspct</td>
+      <td>Wife</td>
+      <td>White</td>
+      <td>False</td>
+      <td>33.0</td>
+      <td>403468.0</td>
+      <td>9.0</td>
+      <td>&lt;50k</td>
+    </tr>
+    <tr>
+      <th>6105</th>
+      <td>Private</td>
+      <td>HS-grad</td>
+      <td>Married-civ-spouse</td>
+      <td>Transport-moving</td>
+      <td>Husband</td>
+      <td>Black</td>
+      <td>False</td>
+      <td>29.0</td>
+      <td>301031.0</td>
+      <td>9.0</td>
       <td>&lt;50k</td>
     </tr>
   </tbody>
@@ -239,7 +239,7 @@ nb_path: "nbs/120_models.TabModel.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tab_model</span> <span class="o">=</span> <span class="n">create_tabular_model</span><span class="p">(</span><span class="n">TabModel</span><span class="p">,</span> <span class="n">tab_dls</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tab_model</span> <span class="o">=</span> <span class="n">build_tabular_model</span><span class="p">(</span><span class="n">TabModel</span><span class="p">,</span> <span class="n">tab_dls</span><span class="p">)</span>
 <span class="n">tab_model</span><span class="p">(</span><span class="o">*</span><span class="n">b</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">shape</span>
 </pre></div>
 
