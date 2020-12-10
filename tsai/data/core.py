@@ -12,6 +12,10 @@ from .external import *
 from .validation import *
 
 # Cell
+from matplotlib.ticker import PercentFormatter
+import matplotlib.colors as mcolors
+
+# Cell
 class NumpyTensor(TensorBase):
     "Returns a `tensor` with subclass `NumpyTensor` that has a show method"
 
@@ -172,24 +176,29 @@ class NumpyDatasets(Datasets):
         plt.show()
 
     @delegates(plt.subplots)
-    def show_dist(self, figsize=None, **kwargs):
+    def show_dist(self, figsize=None, color=None, **kwargs):
         if self.c == 0:
             print('\nunlabeled dataset.\n')
             return
-
         _y = self.ptls[1].flatten().detach().cpu().numpy()
-        _my_colors = random_shuffle(L(mcolors.CSS4_COLORS.keys()))
-        if self.cat: data = np.unique(_y, return_counts=True)
-        else: data = _y
+        if color == "random": color = random_shuffle(L(mcolors.CSS4_COLORS.keys()))
+        elif color is None: color = ['m', 'orange', 'darkblue', 'lightgray']
         figsize = ifnone(figsize, (8, 6))
         fig = plt.figure(figsize=figsize, **kwargs)
         ax = plt.axes()
+        ax.set_axisbelow(True)
+        plt.grid(color='gainsboro', linewidth=.1)
         plt.title('Target distribution', fontweight='bold')
         if self.cat:
-            plt.bar(self.vocab, data[1], color=_my_colors, edgecolor='black')
+            data = np.unique(_y, return_counts=True)[1]
+            data = data / np.sum(data)
+            plt.bar(self.vocab, data, color=color, edgecolor='black')
             plt.xticks(self.vocab)
         else:
-            plt.hist(data, min(len(_y) // 2, 100), color='violet', edgecolor='black')
+            data = _y
+            weights=np.ones(len(data)) / len(data)
+            plt.hist(data, bins=min(len(_y) // 2, 100), weights=weights, color='violet', edgecolor='black')
+        plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
         plt.show()
 
     @property
@@ -428,7 +437,6 @@ class TSDataLoader(NumpyDataLoader):
     def len(self): return self.dataset[0][0].shape[-1]
 
 # Cell
-import matplotlib.colors as mcolors
 _batch_tfms = ('after_item','before_batch','after_batch')
 
 class NumpyDataLoaders(DataLoaders):

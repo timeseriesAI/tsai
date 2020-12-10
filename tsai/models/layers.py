@@ -500,7 +500,7 @@ conv_head = create_conv_head
 def create_fc_head(layers, c_out, y_range=None, fc_dropout=0., use_bn=False, bn_final=False, act=nn.ReLU(inplace=True)):
     if not is_listy(fc_dropout): fc_dropout = [fc_dropout]*(len(layers) - 1)
     sizes = layers + [c_out]
-    actns = [act_cls for _ in range(len(sizes) - 2)] + [None]
+    actns = [act for _ in range(len(sizes) - 2)] + [None]
     _layers = [LinBnDrop(sizes[i], sizes[i+1], bn=use_bn and (i!=len(actns)-1 or bn_final), p=p, act=a) for i,(p,a) in enumerate(zip(fc_dropout+[0.], actns))]
     if y_range is not None: _layers.append(SigmoidRange(*y_range))
     return nn.Sequential(*_layers)
