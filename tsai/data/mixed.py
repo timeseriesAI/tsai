@@ -62,8 +62,7 @@ class MixedDataLoaders():
         for b in z:
             inps = []
             outs = []
-            if self.device is not None:
-                b = to_device(b, self.device)
+            if self.device is not None: b = to_device(b, self.device)
             for batch, dl in zip(b, self.dls):
                 batch = dl.after_batch(batch)
                 inps += batch[:dl.n_inp]
