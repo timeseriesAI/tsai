@@ -347,6 +347,10 @@ class NumpyDataLoader(TfmdDL):
 
     def create_item(self, s): return s
 
+    def to(self, device):
+        self.device = device
+        return self
+
     def get_idxs(self):
         idxs = Inf.count if self.indexed else Inf.nones
         if self.n is not None: idxs = list(range(len(self.dataset)))
@@ -387,7 +391,6 @@ class NumpyDataLoader(TfmdDL):
         if figsize is None: figsize = (ncols*6, math.ceil(max_n/ncols)*4)
         if ctxs is None: ctxs = get_grid(max_n, nrows=nrows, ncols=ncols, figsize=figsize, sharex=sharex, sharey=sharey, **kwargs)
         for i,ctx in enumerate(ctxs): show_tuple(db[i], ctx=ctx)
-
 
     @delegates(plt.subplots)
     def show_results(self, b, preds, ctxs=None, max_n=9, nrows=3, ncols=3, figsize=None, **kwargs):
@@ -443,7 +446,7 @@ class NumpyDataLoaders(DataLoaders):
     _xblock = NumpyTensorBlock
     _dl_type = NumpyDataLoader
     def __init__(self, *loaders, path='.', device=None):
-        self.loaders,self.path = list(loaders),Path(path)
+        self.loaders, self.path = list(loaders), Path(path)
         self.device = ifnone(device, default_device())
 
     def new_dl(self, x, y=None):
@@ -477,7 +480,7 @@ class NumpyDataLoaders(DataLoaders):
         return cls.from_dblock(dblock, source, **kwargs)
 
     @classmethod
-    def from_dsets(cls, *ds, path='.', bs=64, num_workers=0, batch_tfms=None, device=None, shuffle_train=True, **kwargs):
+    def from_dsets(cls, *ds, path='.', bs=64, num_workers=None, batch_tfms=None, device=None, shuffle_train=True, **kwargs):
         device = ifnone(device, default_device())
         if batch_tfms is not None and not isinstance(batch_tfms, list): batch_tfms = [batch_tfms]
         default = (shuffle_train,) + (False,) * (len(ds)-1)
@@ -486,8 +489,8 @@ class NumpyDataLoaders(DataLoaders):
         kwargs = [{k: v[i] for k,v in kwargs.items()} for i in range_of(ds)]
         if not is_listy(bs): bs = [bs]
         if len(bs) != len(ds): bs = bs * len(ds)
-        return cls(*[cls._dl_type(d, bs=b, num_workers=num_workers, batch_tfms=batch_tfms, **k) \
-                     for d,k,b in zip(ds, kwargs, bs)], path=path, device=device)
+        loaders = [cls._dl_type(d, bs=b, num_workers=num_workers, batch_tfms=batch_tfms, **k) for d,k,b in zip(ds, kwargs, bs)]
+        return cls(*loaders, path=path, device=device)
 
 
 class TSDataLoaders(NumpyDataLoaders):
@@ -496,9 +499,9 @@ class TSDataLoaders(NumpyDataLoaders):
 
 
 def get_ts_dls(X, y=None, splits=None, sel_vars=None, sel_steps=None, tfms=None, inplace=True,
-            path='.', bs=64, num_workers=0, batch_tfms=None, device=None, shuffle_train=True, **kwargs):
+            path='.', bs=64, batch_tfms=None, num_workers=None, device=None, shuffle_train=True, **kwargs):
     dsets = TSDatasets(X, y, splits=splits, sel_vars=sel_vars, sel_steps=sel_steps, tfms=tfms, inplace=inplace, **kwargs)
-    dls   = TSDataLoaders.from_dsets(dsets.train, dsets.valid, path='.', bs=bs, num_workers=num_workers, batch_tfms=batch_tfms,
+    dls   = TSDataLoaders.from_dsets(dsets.train, dsets.valid, path=path, bs=bs, batch_tfms=batch_tfms, num_workers=num_workers,
                                      device=device, shuffle_train=shuffle_train, **kwargs)
     return dls
 
