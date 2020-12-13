@@ -350,9 +350,9 @@ random_state : when shuffle is True, random_state affects the ordering of the in
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>((#636) [22,228,36,171,634,568,114,120,540,300...],
- (#200) [451,506,188,3,623,183,478,632,551,590...],
- (#200) [25,344,940,408,807,376,223,289,229,125...])</pre>
+<pre>((#621) [535,746,808,832,199,797,903,284,520,558...],
+ (#200) [442,843,622,236,901,875,344,662,445,518...],
+ (#200) [731,223,361,943,775,464,36,581,283,100...])</pre>
 </div>
 
 </div>
@@ -777,9 +777,9 @@ valid == train
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>((#60) [32,61,3,10,84,81,82,68,29,48...],
- (#20) [94,31,66,72,22,46,64,25,85,34...],
- (#20) [75,36,17,42,41,47,13,54,37,9...])</pre>
+<pre>((#60) [13,74,67,52,97,45,64,93,77,20...],
+ (#20) [89,4,61,24,10,66,72,0,40,96...],
+ (#20) [28,44,75,5,92,2,54,33,83,8...])</pre>
 </div>
 
 </div>
@@ -870,9 +870,9 @@ valid == train
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>((#12) [80,90,71,89,49,78,63,91,24,17...],
- (#21) [37,41,92,65,87,43,57,56,14,27...],
- (#17) [84,99,73,19,51,96,62,8,60,26...])</pre>
+<pre>((#12) [20,26,7,15,39,28,95,99,64,6...],
+ (#21) [89,32,21,78,92,42,71,33,57,56...],
+ (#17) [24,11,23,98,14,22,85,88,94,63...])</pre>
 </div>
 
 </div>
@@ -943,12 +943,68 @@ valid == train
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="get_splits_len" class="doc_header"><code>get_splits_len</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/validation.py#L228" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_splits_len</code>(<strong><code>splits</code></strong>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="get_info" class="doc_header"><code>get_info</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/validation.py#L235" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_info</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_valid</span><span class="p">,</span> <span class="n">y_valid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
 <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">combine_split_data</span><span class="p">([</span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_valid</span><span class="p">],</span> <span class="p">[</span><span class="n">y_train</span><span class="p">,</span> <span class="n">y_valid</span><span class="p">])</span>
+<span class="n">get_info</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">X</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">X_valid</span><span class="p">,</span> <span class="n">X</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
 <span class="n">test_type</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
@@ -956,6 +1012,23 @@ valid == train
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>X         : [samples=5 x features=3 x timesteps=4]
+y shape   : (5,)
+n classes : 2 [0, 1]
+n_splits  : [3, 2]
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 

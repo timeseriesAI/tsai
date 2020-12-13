@@ -2,11 +2,12 @@
 
 __all__ = ['get_layers', 'is_layer', 'is_linear', 'is_bn', 'is_conv_linear', 'is_affine_layer', 'is_conv', 'has_bias',
            'has_weight', 'has_weight_or_bias', 'check_bias', 'check_weight', 'build_ts_model', 'build_tabular_model',
-           'count_parameters', 'build_model', 'create_model', 'create_tabular_model', 'get_clones', 'get_nf',
-           'split_model', 'seq_len_calculator']
+           'build_tsimage_model', 'count_parameters', 'build_model', 'create_model', 'create_tabular_model',
+           'get_clones', 'get_nf', 'split_model', 'seq_len_calculator']
 
 # Cell
 from fastai.tabular.model import *
+from fastai.vision.models.all import *
 from ..imports import *
 
 # Cell
@@ -106,6 +107,18 @@ def build_tabular_model(arch, dls, layers=None, emb_szs=None, n_out=None, y_rang
     return arch(emb_szs, len(dls.cont_names), n_out, layers, y_range=y_range, **kwargs).to(device=device)
 
 create_tabular_model = build_tabular_model
+
+
+@delegates(XResNet.__init__)
+def build_tsimage_model(arch, c_in=None, c_out=None, dls=None, pretrained=False, device=None, verbose=False, **kwargs):
+    device = ifnone(device, default_device())
+    if dls is not None:
+        c_in = ifnone(c_in, dls.vars)
+        c_out = ifnone(c_out, dls.c)
+
+    model = arch(pretrained=pretrained, c_in=c_in, n_out=c_out, **kwargs).to(device=device)
+    setattr(model, "__name__", arch.__name__)
+    return model
 
 
 def count_parameters(model, trainable=True):

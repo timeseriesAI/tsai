@@ -3,7 +3,8 @@
 __all__ = ['NumpyTensor', 'ToNumpyTensor', 'TSTensor', 'ToTSTensor', 'ToFloat', 'ToInt', 'NumpyTensorBlock',
            'TSTensorBlock', 'TorchDataset', 'NumpyDataset', 'TSDataset', 'NumpyDatasets', 'TSDatasets', 'add_ds',
            'get_subset_dset', 'NumpyDataLoader', 'show_tuple', 'TSDataLoader', 'NumpyDataLoaders', 'TSDataLoaders',
-           'get_ts_dls', 'get_subset_dl']
+           'get_ts_dls', 'get_subset_dl', 'NumpyDataLoaders', 'TSDataLoaders', 'get_ts_dls', 'get_subset_dl',
+           'get_tsimage_dls']
 
 # Cell
 from ..imports import *
@@ -347,10 +348,6 @@ class NumpyDataLoader(TfmdDL):
 
     def create_item(self, s): return s
 
-    def to(self, device):
-        self.device = device
-        return self
-
     def get_idxs(self):
         idxs = Inf.count if self.indexed else Inf.nones
         if self.n is not None: idxs = list(range(len(self.dataset)))
@@ -499,12 +496,82 @@ class TSDataLoaders(NumpyDataLoaders):
 
 
 def get_ts_dls(X, y=None, splits=None, sel_vars=None, sel_steps=None, tfms=None, inplace=True,
-            path='.', bs=64, batch_tfms=None, num_workers=None, device=None, shuffle_train=True, **kwargs):
+            path='.', bs=64, batch_tfms=None, num_workers=0, device=None, shuffle_train=True, **kwargs):
     dsets = TSDatasets(X, y, splits=splits, sel_vars=sel_vars, sel_steps=sel_steps, tfms=tfms, inplace=inplace, **kwargs)
     dls   = TSDataLoaders.from_dsets(dsets.train, dsets.valid, path=path, bs=bs, batch_tfms=batch_tfms, num_workers=num_workers,
                                      device=device, shuffle_train=shuffle_train, **kwargs)
     return dls
 
+
+def get_subset_dl(dl, idx):
+    subset_dset = get_subset_dset(dl.dataset, idx)
+    return dl.new(subset_dset)# Cell
+_batch_tfms = ('after_item','before_batch','after_batch')
+
+class NumpyDataLoaders(DataLoaders):
+    _xblock = NumpyTensorBlock
+    _dl_type = NumpyDataLoader
+    def __init__(self, *loaders, path='.', device=None):
+        self.loaders, self.path = list(loaders), Path(path)
+        self.device = ifnone(device, default_device())
+
+    def new_dl(self, x, y=None):
+        if x.ndim == 1: x = [to2d(x)]
+        elif x.ndim ==2 and not is_listy(x): x = [x]
+        if y is not None and not is_listy(y) and not isinstance(y, (np.ndarray, torch.Tensor)): y = [y]
+        return self.valid.new(self.valid.dataset.add_test(x, y=y))
+
+    @delegates(plt.subplots)
+    def show_dist(self, figsize=None, **kwargs): self.dataset.show_dist(figsize=figsize, **kwargs)
+
+    def decoder(self, o):
+        if isinstance(o, tuple): return self.decode(o)
+        if o.ndim <= 1: return self.decodes(o)
+        else: return L([self.decodes(oi) for oi in o])
+
+
+    @classmethod
+    @delegates(DataLoaders.from_dblock)
+    def from_numpy(cls, X, y=None, splitter=None, valid_pct=0.2, seed=0, item_tfms=None, batch_tfms=None, **kwargs):
+        "Create timeseries dataloaders from arrays (X and y, unless unlabeled)"
+        if splitter is None: splitter = RandomSplitter(valid_pct=valid_pct, seed=seed)
+        getters = [ItemGetter(0), ItemGetter(1)] if y is not None else [ItemGetter(0)]
+        dblock = DataBlock(blocks=(cls._xblock, CategoryBlock),
+                           getters=getters,
+                           splitter=splitter,
+                           item_tfms=item_tfms,
+                           batch_tfms=batch_tfms)
+
+        source = itemify(X) if y is None else itemify(X,y)
+        return cls.from_dblock(dblock, source, **kwargs)
+
+    @classmethod
+    def from_dsets(cls, *ds, path='.', bs=64, num_workers=None, batch_tfms=None, device=None, shuffle_train=True, **kwargs):
+        device = ifnone(device, default_device())
+        if batch_tfms is not None and not isinstance(batch_tfms, list): batch_tfms = [batch_tfms]
+        default = (shuffle_train,) + (False,) * (len(ds)-1)
+        defaults = {'shuffle': default, 'drop_last': default}
+        kwargs = merge(defaults, {k: tuplify(v, match=ds) for k,v in kwargs.items()})
+        kwargs = [{k: v[i] for k,v in kwargs.items()} for i in range_of(ds)]
+        if not is_listy(bs): bs = [bs]
+        if len(bs) != len(ds): bs = bs * len(ds)
+        loaders = [cls._dl_type(d, bs=b, num_workers=num_workers, batch_tfms=batch_tfms, **k) for d,k,b in zip(ds, kwargs, bs)]
+        return cls(*loaders, path=path, device=device)
+
+
+class TSDataLoaders(NumpyDataLoaders):
+    _xblock = TSTensorBlock
+    _dl_type = TSDataLoader
+
+
+def get_ts_dls(X, y=None, splits=None, sel_vars=None, sel_steps=None, tfms=None, inplace=True,
+            path='.', bs=64, batch_tfms=None, num_workers=0, device=None, shuffle_train=True, **kwargs):
+    dsets = TSDatasets(X, y, splits=splits, sel_vars=sel_vars, sel_steps=sel_steps, tfms=tfms, inplace=inplace, **kwargs)
+    dls   = TSDataLoaders.from_dsets(dsets.train, dsets.valid, path=path, bs=bs, batch_tfms=batch_tfms, num_workers=num_workers,
+                                     device=device, shuffle_train=shuffle_train, **kwargs)
+    return dls
+
+get_tsimage_dls = get_ts_dls
 
 def get_subset_dl(dl, idx):
     subset_dset = get_subset_dset(dl.dataset, idx)

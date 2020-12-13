@@ -87,3 +87,14 @@ def create_scripts(max_elapsed=60):
     save_nb()
     notebook2script()
     return last_saved(max_elapsed)
+
+
+class Timer():
+    def __init__(self): self.start_dt = None
+    def start(self): self.start_dt = datetime.now()
+    def stop(self):
+        end_dt = datetime.now()
+        print(f'Elapsed time: {end_dt - self.start_dt}')
+        self.start_dt = datetime.now()
+
+timer = Timer()
