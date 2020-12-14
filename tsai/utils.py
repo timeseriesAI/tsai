@@ -11,7 +11,7 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'random_normal', 'random_half_normal', 'random_normal_tensor', 'random_half_normal_tensor', 'clip_outliers',
            'default_dpi', 'get_plot_fig', 'fig2buf', 'plot_scatter', 'jointplot_scatter', 'jointplot_kde', 'get_idxs',
            'apply_cmap', 'torch_tile', 'to_tsfresh_df', 'pcorr', 'scorr', 'torch_diff', 'get_outliers_IQR',
-           'get_percentile', 'torch_clamp', 'torch_slice_by_dim', 'concat', 'reduce_memory_usage']
+           'get_percentile', 'torch_clamp', 'torch_slice_by_dim', 'concat', 'reduce_memory_usage', 'cls_name']
 
 # Cell
 from .imports import *
@@ -599,3 +599,6 @@ def reduce_memory_usage(df):
     print(f"Memory usage of dataframe after reduction {end_memory} MB")
     print(f"Reduced by {100 * (start_memory - end_memory) / start_memory} % ")
     return df
+
+# Cell
+def cls_name(o): return o.__class__.__name__

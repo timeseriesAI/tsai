@@ -85,7 +85,31 @@ nb_path: "nbs/000b_data.validation.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="leakage_finder" class="doc_header"><code>leakage_finder</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/validation.py#L24" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>leakage_finder</code>(<strong>*<code>splits</code></strong>, <strong><code>verbose</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="check_splits_overlap" class="doc_header"><code>check_splits_overlap</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/validation.py#L23" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>check_splits_overlap</code>(<strong><code>splits</code></strong>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="leakage_finder" class="doc_header"><code>leakage_finder</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/validation.py#L26" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>leakage_finder</code>(<strong>*<code>splits</code></strong>, <strong><code>verbose</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>You can pass splits as a tuple, or train, valid, ...</p>
 
@@ -110,7 +134,7 @@ nb_path: "nbs/000b_data.validation.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="balance_idx" class="doc_header"><code>balance_idx</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/validation.py#L37" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>balance_idx</code>(<strong><code>o</code></strong>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>random_state</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="balance_idx" class="doc_header"><code>balance_idx</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/validation.py#L39" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>balance_idx</code>(<strong><code>o</code></strong>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>random_state</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 
 </div>
@@ -251,7 +275,7 @@ nb_path: "nbs/000b_data.validation.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TrainValidTestSplitter" class="doc_header"><code>TrainValidTestSplitter</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/validation.py#L47" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TrainValidTestSplitter</code>(<strong><code>n_splits</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>valid_size</code></strong>:<code>Union</code>[<code>float</code>, <code>int</code>]=<em><code>0.2</code></em>, <strong><code>test_size</code></strong>:<code>Union</code>[<code>float</code>, <code>int</code>]=<em><code>0.0</code></em>, <strong><code>train_only</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>stratify</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>balance</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>shuffle</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>random_state</code></strong>:<code>Union</code>[<code>NoneType</code>, <code>int</code>]=<em><code>None</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="TrainValidTestSplitter" class="doc_header"><code>TrainValidTestSplitter</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/validation.py#L49" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TrainValidTestSplitter</code>(<strong><code>n_splits</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>valid_size</code></strong>:<code>Union</code>[<code>float</code>, <code>int</code>]=<em><code>0.2</code></em>, <strong><code>test_size</code></strong>:<code>Union</code>[<code>float</code>, <code>int</code>]=<em><code>0.0</code></em>, <strong><code>train_only</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>stratify</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>balance</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>shuffle</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>random_state</code></strong>:<code>Union</code>[<code>NoneType</code>, <code>int</code>]=<em><code>None</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Split <code>items</code> into random train, valid (and test optional) subsets.</p>
 
@@ -283,7 +307,7 @@ nb_path: "nbs/000b_data.validation.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_splits" class="doc_header"><code>get_splits</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/validation.py#L147" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_splits</code>(<strong><code>o</code></strong>, <strong><code>n_splits</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>valid_size</code></strong>:<code>float</code>=<em><code>0.2</code></em>, <strong><code>test_size</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>train_only</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>train_perc</code></strong>:<code>float</code>=<em><code>1.0</code></em>, <strong><code>balance</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>shuffle</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>stratify</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>check_splits</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>random_state</code></strong>:<code>Union</code>[<code>NoneType</code>, <code>int</code>]=<em><code>None</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>False</code></em>)</p>
+<h4 id="get_splits" class="doc_header"><code>get_splits</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/validation.py#L149" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_splits</code>(<strong><code>o</code></strong>, <strong><code>n_splits</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>valid_size</code></strong>:<code>float</code>=<em><code>0.2</code></em>, <strong><code>test_size</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>train_only</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>train_perc</code></strong>:<code>float</code>=<em><code>1.0</code></em>, <strong><code>balance</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>shuffle</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>stratify</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>check_splits</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>random_state</code></strong>:<code>Union</code>[<code>NoneType</code>, <code>int</code>]=<em><code>None</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Arguments:
 o            : object to which splits will be applied, usually target.
@@ -350,9 +374,9 @@ random_state : when shuffle is True, random_state affects the ordering of the in
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>((#621) [535,746,808,832,199,797,903,284,520,558...],
- (#200) [442,843,622,236,901,875,344,662,445,518...],
- (#200) [731,223,361,943,775,464,36,581,283,100...])</pre>
+<pre>((#609) [422,637,996,741,937,330,619,680,353,438...],
+ (#200) [953,52,857,76,728,998,244,905,163,393...],
+ (#200) [756,985,255,362,768,588,476,103,719,698...])</pre>
 </div>
 
 </div>
@@ -381,7 +405,7 @@ random_state : when shuffle is True, random_state affects the ordering of the in
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TimeSplitter" class="doc_header"><code>TimeSplitter</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/validation.py#L202" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TimeSplitter</code>(<strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>)</p>
+<h4 id="TimeSplitter" class="doc_header"><code>TimeSplitter</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/validation.py#L204" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TimeSplitter</code>(<strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>)</p>
 </blockquote>
 <p>Create function that splits <code>items</code> between train/val with <code>valid_pct</code> without shuffling data.</p>
 
@@ -777,9 +801,9 @@ valid == train
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>((#60) [13,74,67,52,97,45,64,93,77,20...],
- (#20) [89,4,61,24,10,66,72,0,40,96...],
- (#20) [28,44,75,5,92,2,54,33,83,8...])</pre>
+<pre>((#60) [20,67,58,4,73,41,96,75,39,15...],
+ (#20) [83,10,27,57,53,89,0,7,5,43...],
+ (#20) [38,44,70,6,37,1,59,21,65,82...])</pre>
 </div>
 
 </div>
@@ -870,9 +894,9 @@ valid == train
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>((#12) [20,26,7,15,39,28,95,99,64,6...],
- (#21) [89,32,21,78,92,42,71,33,57,56...],
- (#17) [24,11,23,98,14,22,85,88,94,63...])</pre>
+<pre>((#12) [50,79,80,55,85,53,69,3,25,94...],
+ (#21) [6,1,7,10,90,74,96,20,87,21...],
+ (#17) [66,84,59,71,78,29,47,30,4,12...])</pre>
 </div>
 
 </div>
@@ -901,7 +925,7 @@ valid == train
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_predefined_splits" class="doc_header"><code>get_predefined_splits</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/validation.py#L211" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_predefined_splits</code>(<strong>*<code>xs</code></strong>)</p>
+<h4 id="get_predefined_splits" class="doc_header"><code>get_predefined_splits</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/validation.py#L213" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_predefined_splits</code>(<strong>*<code>xs</code></strong>)</p>
 </blockquote>
 <p>xs is a list with X_train, X_valid, ...</p>
 
@@ -926,7 +950,7 @@ valid == train
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="combine_split_data" class="doc_header"><code>combine_split_data</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/validation.py#L220" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>combine_split_data</code>(<strong><code>xs</code></strong>, <strong><code>ys</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="combine_split_data" class="doc_header"><code>combine_split_data</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/validation.py#L222" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>combine_split_data</code>(<strong><code>xs</code></strong>, <strong><code>ys</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>xs is a list with X_train, X_valid, .... ys is None or a list with y_train, y_valid, ....</p>
 
@@ -958,31 +982,7 @@ valid == train
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_splits_len" class="doc_header"><code>get_splits_len</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/validation.py#L228" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_splits_len</code>(<strong><code>splits</code></strong>)</p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_info" class="doc_header"><code>get_info</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/validation.py#L235" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_info</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="get_splits_len" class="doc_header"><code>get_splits_len</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/validation.py#L230" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_splits_len</code>(<strong><code>splits</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -1004,7 +1004,6 @@ valid == train
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_valid</span><span class="p">,</span> <span class="n">y_valid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
 <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">combine_split_data</span><span class="p">([</span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_valid</span><span class="p">],</span> <span class="p">[</span><span class="n">y_train</span><span class="p">,</span> <span class="n">y_valid</span><span class="p">])</span>
-<span class="n">get_info</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">X</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">X_valid</span><span class="p">,</span> <span class="n">X</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
 <span class="n">test_type</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
@@ -1012,23 +1011,6 @@ valid == train
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>X         : [samples=5 x features=3 x timesteps=4]
-y shape   : (5,)
-n classes : 2 [0, 1]
-n_splits  : [3, 2]
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 

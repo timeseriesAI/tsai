@@ -94,7 +94,9 @@ class Timer():
     def start(self): self.start_dt = datetime.now()
     def stop(self):
         end_dt = datetime.now()
-        print(f'Elapsed time: {end_dt - self.start_dt}')
+        elapsed = end_dt - self.start_dt
+        print(f'Elapsed time: {elapsed}')
         self.start_dt = datetime.now()
+        return elapsed
 
 timer = Timer()
