@@ -206,3 +206,13 @@ def tsimage_learner(dls, arch=None, pretrained=False,
     if kwargs: store_attr(self=learn, **kwargs)
 
     return learn
+
+# Cell
+@patch
+def decoder(self:Learner, o): return L([self.dls.decodes(o) for o in preds])
+
+# Cell
+@patch
+@delegates(GatherPredsCallback.__init__)
+def get_X_preds(self:Learner, X, y=None, **kwargs):
+    return learn.get_preds(dl=self.dls.new_dl(X, y=y), **kwargs)

@@ -115,7 +115,7 @@ class ROCKET(nn.Module):
     def forward(self, x):
         for i in range(self.n_kernels):
             out = self.convs[i](x)
-            _max = out.max(dim=-1).values
+            _max = out.max(dim=-1)[0]
             _ppv = torch.gt(out, 0).sum(dim=-1).float() / out.shape[-1]
             cat = torch.cat((_max, _ppv), dim=-1)
             output = cat if i == 0 else torch.cat((output, cat), dim=-1)

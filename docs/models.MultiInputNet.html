@@ -98,7 +98,6 @@ nb_path: "nbs/130_models.MultiInputNet.ipynb"
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;NATOPS&#39;</span>
 <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">get_info</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">splits</span><span class="p">)</span>
 <span class="n">ts_features_df</span> <span class="o">=</span> <span class="n">get_ts_features</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 </pre></div>
 
@@ -111,19 +110,8 @@ nb_path: "nbs/130_models.MultiInputNet.ipynb"
 
 <div class="output_area">
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>X         : [samples=360 x features=24 x timesteps=51]
-y shape   : (360,)
-n classes : 6 [&#39;1.0&#39;, &#39;2.0&#39;, &#39;3.0&#39;, &#39;4.0&#39;, &#39;5.0&#39;, &#39;6.0&#39;]
-n_splits  : [180, 180]
-</pre>
-</div>
-</div>
-
-<div class="output_area">
-
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>Feature Extraction: 100%|██████████| 40/40 [00:03&lt;00:00, 11.03it/s]
+<pre>Feature Extraction: 100%|██████████| 40/40 [00:04&lt;00:00,  9.02it/s]
 </pre>
 </div>
 </div>
@@ -185,10 +173,10 @@ n_splits  : [180, 180]
   <tbody>
     <tr>
       <td>0</td>
-      <td>1.795793</td>
-      <td>1.787661</td>
-      <td>0.194444</td>
-      <td>0.794519</td>
+      <td>1.793148</td>
+      <td>1.784803</td>
+      <td>0.316667</td>
+      <td>0.783407</td>
       <td>00:03</td>
     </tr>
   </tbody>

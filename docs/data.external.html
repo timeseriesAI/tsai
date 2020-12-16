@@ -229,7 +229,7 @@ y_valid: (180,)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_info" class="doc_header"><code>get_info</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/external.py#L169" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_info</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="check_data" class="doc_header"><code>check_data</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/external.py#L169" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>check_data</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -251,18 +251,18 @@ y_valid: (180,)
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;OliveOil&#39;</span>
 <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">force_download</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">get_info</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="p">)</span>
-<span class="n">get_info</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="p">)</span>
+<span class="n">check_data</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="p">)</span>
+<span class="n">check_data</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="p">)</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-<span class="n">get_info</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="p">)</span>
+<span class="n">check_data</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="p">)</span>
 <span class="n">y</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-<span class="n">get_info</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="p">)</span>
+<span class="n">check_data</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="p">)</span>
 <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">force_download</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">splits</span> <span class="o">=</span> <span class="n">get_splits</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-<span class="n">get_info</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="p">)</span>
-<span class="n">get_info</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="p">)</span>
+<span class="n">check_data</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="p">)</span>
+<span class="n">check_data</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="p">)</span>
 <span class="n">y</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span><span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-<span class="n">get_info</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="p">)</span>
+<span class="n">check_data</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="p">)</span>
 <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">force_download</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
@@ -277,10 +277,10 @@ y_valid: (180,)
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>X      - shape: [60 samples x 1 features x 570 timesteps]  type: ndarray  dtype:float32  isnan: 0
-y      - shape: (60,)  type: ndarray  dtype:&lt;U1  n_classes: 4 [&#39;1&#39;, &#39;2&#39;, &#39;3&#39;, &#39;4&#39;]  isnan: False
+y      - shape: (60,)  type: ndarray  dtype:&lt;U1  n_classes: 4 (15 samples per class) [&#39;1&#39;, &#39;2&#39;, &#39;3&#39;, &#39;4&#39;]  isnan: False
 splits - n_splits: 2 shape: [30, 30]  overlap: [False]
 X      - shape: (60, 570)  type: ndarray  dtype:float32  isnan: 0
-y      - shape: (60,)  type: ndarray  dtype:&lt;U1  n_classes: 4 [&#39;1&#39;, &#39;2&#39;, &#39;3&#39;, &#39;4&#39;]  isnan: False
+y      - shape: (60,)  type: ndarray  dtype:&lt;U1  n_classes: 4 (15 samples per class) [&#39;1&#39;, &#39;2&#39;, &#39;3&#39;, &#39;4&#39;]  isnan: False
 splits - n_splits: 2 shape: [30, 30]  overlap: [False]
 X      - shape: [60 samples x 1 features x 570 timesteps]  type: ndarray  dtype:float32  isnan: 0
 y      - shape: (60,)  type: ndarray  dtype:float32  isnan: 0
@@ -288,14 +288,29 @@ splits - n_splits: 2 shape: [30, 30]  overlap: [False]
 X      - shape: (60, 570)  type: ndarray  dtype:float32  isnan: 0
 y      - shape: (60,)  type: ndarray  dtype:float32  isnan: 10
 splits - n_splits: 2 shape: [30, 30]  overlap: [False]
-X      - shape: [60 samples x 1 features x 570 timesteps]  type: ndarray  dtype:float32  isnan: 0
-y      - shape: (60,)  type: ndarray  dtype:&lt;U1  n_classes: 4 [&#39;1&#39;, &#39;2&#39;, &#39;3&#39;, &#39;4&#39;]  isnan: False
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/Users/nacho/anaconda3/lib/python3.7/site-packages/ipykernel_launcher.py:21: UserWarning: y must not contain nan values
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>X      - shape: [60 samples x 1 features x 570 timesteps]  type: ndarray  dtype:float32  isnan: 0
+y      - shape: (60,)  type: ndarray  dtype:&lt;U1  n_classes: 4 (15 samples per class) [&#39;1&#39;, &#39;2&#39;, &#39;3&#39;, &#39;4&#39;]  isnan: False
 splits - n_splits: 3 shape: [[40, 20], [40, 20], [40, 20]]  overlap: [False, False, False]
 X      - shape: (60, 570)  type: ndarray  dtype:float32  isnan: 0
-y      - shape: (60,)  type: ndarray  dtype:&lt;U1  n_classes: 4 [&#39;1&#39;, &#39;2&#39;, &#39;3&#39;, &#39;4&#39;]  isnan: False
+y      - shape: (60,)  type: ndarray  dtype:&lt;U1  n_classes: 4 (15 samples per class) [&#39;1&#39;, &#39;2&#39;, &#39;3&#39;, &#39;4&#39;]  isnan: False
 splits - n_splits: 3 shape: [[40, 20], [40, 20], [40, 20]]  overlap: [False, False, False]
 X      - shape: (60, 570)  type: ndarray  dtype:float32  isnan: 0
-y      - shape: (60,)  type: ndarray  dtype:&lt;U1  n_classes: 5 [&#39;1&#39;, &#39;2&#39;, &#39;3&#39;, &#39;4&#39;, &#39;n&#39;]  isnan: False
+y      - shape: (60,)  type: ndarray  dtype:&lt;U1  n_classes: 5 (12 samples per class) [&#39;1&#39;, &#39;2&#39;, &#39;3&#39;, &#39;4&#39;, &#39;n&#39;]  isnan: False
 splits - n_splits: 3 shape: [[40, 20], [40, 20], [40, 20]]  overlap: [False, False, False]
 </pre>
 </div>
