@@ -14,7 +14,7 @@ from .explainability import *
 
 # Fauvel, K., Lin, T., Masson, V., Fromont, É., & Termier, A. (2020). XCM: An Explainable Convolutional Neural Network for
 # Multivariate Time Series Classification. arXiv preprint arXiv:2009.04796.
-# Official TCN PyTorch implementation: not available as of Nov 27th, 2020
+# Official XCM PyTorch implementation: not available as of Nov 27th, 2020
 
 class XCM(Module):
     def __init__(self, c_in:int, c_out:int, seq_len:int, nf:int=128, window_perc:float=1., flatten:bool=False, custom_head:callable=None,
