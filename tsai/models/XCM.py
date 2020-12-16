@@ -20,7 +20,7 @@ class XCM(Module):
     def __init__(self, c_in:int, c_out:int, seq_len:int, nf:int=128, window_perc:float=1., flatten:bool=False, custom_head:callable=None,
                  concat_pool:bool=False, fc_dropout:float=0., y_range:tuple=None, **kwargs):
 
-        window_size = int(seq_len * window_perc)
+        window_size = int(round(seq_len * window_perc, 0))
         self.conv2dblock = nn.Sequential(*[Unsqueeze(1), Conv2d(1, nf, kernel_size=(1, window_size), padding='same'), BatchNorm(nf), nn.ReLU()])
         self.conv2d1x1block = nn.Sequential(*[nn.Conv2d(nf, 1, kernel_size=1), nn.ReLU(), Squeeze(1)])
         self.conv1dblock = nn.Sequential(*[Conv1d(c_in, nf, kernel_size=window_size, padding='same'), BatchNorm(nf, ndim=1), nn.ReLU()])
