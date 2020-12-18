@@ -209,7 +209,7 @@ def tsimage_learner(dls, arch=None, pretrained=False,
 
 # Cell
 @patch
-def decoder(self:Learner, o): return L([self.dls.decodes(o) for o in preds])
+def decoder(self:Learner, o): return L([self.dls.decodes(oi) for oi in o])
 
 # Cell
 @patch

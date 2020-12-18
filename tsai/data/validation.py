@@ -201,10 +201,10 @@ def get_splits(o, n_splits:int=1, valid_size:float=0.2, test_size:float=0., trai
     return splits
 
 # Cell
-def TimeSplitter(valid_pct=0.2):
-    "Create function that splits `items` between train/val with `valid_pct` without shuffling data."
+def TimeSplitter(valid_size:Union[int, float]=0.2):
+    "Create function that splits `items` between train/val with `valid_size` without shuffling data."
     def _inner(o):
-        cut = int(valid_pct * len(o))
+        cut = valid_size if isinstance(valid_size, Integral) else int(valid_size * len(o))
         idx = np.arange(len(o))
         return L(idx[:-cut].tolist()), L(idx[-cut:].tolist())
     return _inner
