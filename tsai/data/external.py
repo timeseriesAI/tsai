@@ -16,7 +16,7 @@ except ImportError: from urllib.request import urlretrieve
 import shutil
 from pyunpack import Archive
 from scipy.io import arff
-from sktime.utils.load_data import load_from_tsfile_to_dataframe
+from sktime.utils.data_io import load_from_tsfile_to_dataframe
 
 # Cell
 def decompress_from_url(url, target_dir=None, verbose=False):
