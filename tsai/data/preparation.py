@@ -49,24 +49,33 @@ def split_xy(X, y=None, splits=None):
     elif len(splits) == 3: return _X[0], _y[0], _X[1], _y[1], _X[2], _y[2]
 
 # Cell
-def SlidingWindow(window_length:int, stride:Union[None, int]=1, start:Union[int, None]=0, get_x:Union[None, int, list]=None,
-                  get_y:Union[None, int, list]=None, y_func:Optional[callable]=None, horizon:int=0, seq_first:bool=True,
-                  sort_by:Optional[list]=None, ascending:bool=True):
+# SlidingWindow vectorization is based on "Fast and Robust Sliding Window Vectorization with NumPy" by Syafiq Kamarul Azman
+# https://towardsdatascience.com/fast-and-robust-sliding-window-vectorization-with-numpy-3ad950ed62f5
+
+
+def SlidingWindow(window_len:int, stride:Union[None, int]=1, start:int=0, get_x:Union[None, int, list]=None,
+                  get_y:Union[None, int, list]=None, y_func:Optional[callable]=None, horizon:Union[int, list]=1, seq_first:bool=True,
+                  sort_by:Optional[list]=None, ascending:bool=True, check_leakage:bool=True):
 
     """
     Applies a sliding window to a 1d or 2d input (np.ndarray, torch.Tensor or pd.DataFrame)
 
     Args:
-        window_length   = length of lookback window
-        stride          = n datapoints the window is moved ahead along the sequence. Default: 1. If None, stride=window_length (no overlap)
+        window_len      = length of lookback window
+        stride          = n datapoints the window is moved ahead along the sequence. Default: 1. If None, stride=window_len (no overlap)
         start           = determines the step where the first window is applied: 0 (default), a given step (int), or random within the 1st stride (None).
-        horizon         = number of future datapoints to predict. 0 for last step in the selected window. > 0 for future steps. List for several steps.
-        get_x           = indices of columns that contain the independent variable (xs). If None, all data will be used as x
-        get_y           = indices of columns that contain the target (ys). If None and horizon = 0, no y will be returned to avoid leakage.
-        y_func          = function to calculate the ys based on the get_y col/s and the last lookback window or the horizon.
+        horizon         = number of future datapoints to predict:
+                            * 0 for last step in each sub-window.
+                            * n > 0 for a range of n future steps (1 to n).
+                            * n < 0 for a range of n past steps (-n + 1 to 0).
+                            * list : for those exact timesteps.
+        get_x           = indices of columns that contain the independent variable (xs). If None, all data will be used as x.
+        get_y           = indices of columns that contain the target (ys). If None, all data will be used as y. [] means no y data is created.
+        y_func          = function to calculate the ys based on the get_y col/s and each y sub-window. y_func must be a function applied to axis=1!
         seq_first       = True if input shape (seq_len, n_vars), False if input shape (n_vars, seq_len)
         sort_by         = column/s used for sorting the array in ascending order
         ascending       = used in sorting
+        check_leakage   = checks if there's leakage in the output between X and y
 
 
     Input:
@@ -74,93 +83,107 @@ def SlidingWindow(window_length:int, stride:Union[None, int]=1, start:Union[int,
         shape: (seq_len, ) or (seq_len, n_vars) if seq_first=True else (n_vars, seq_len)
     """
 
-    if type(get_x) == pd.core.indexes.base.Index: get_x = get_x.values
-    if type(get_y) == pd.core.indexes.base.Index: get_y = get_y.values
-    get_x = [get_x] if type(get_x) not in [np.ndarray, torch.Tensor, list, NoneType] else get_x
-    get_y = [get_y] if type(get_y) not in [np.ndarray, torch.Tensor, list, NoneType] else get_y
-    if horizon == 0 and get_x is not None and get_y is not None:
-        assert len([y_idx for y_idx in get_y if y_idx in get_x]) == 0, \
-        'you need to change either horizon, get_x or get_y to avoid leakage'
-    wl = window_length
-    ws = wl if stride is None else stride
-    start = start if start is not None else np.random.choice(ws, 1)[0]
+    if horizon == 0: horizon_rng = np.array([0])
+    elif is_listy(horizon): horizon_rng = np.array(horizon)
+    elif isinstance(horizon, Integral): horizon_rng = np.arange(1, horizon + 1) if horizon > 0 else np.arange(horizon + 1, 1)
+    min_horizon = min(horizon_rng)
+    max_horizon = max(horizon_rng)
+    _get_x = slice(None) if get_x is None else [get_x] if not is_listy(get_x) else get_x
+    _get_y = slice(None) if get_y is None else [get_y] if not is_listy(get_y) else get_y
+    if min_horizon <= 0 and y_func is None and get_y != [] and check_leakage:
+        assert get_x is not None and  get_y is not None and len([y for y in _get_y if y in _get_x]) == 0,  \
+        'you need to change either horizon, get_x, get_y or use a y_func to avoid leakage'
+    stride = ifnone(stride, window_len)
+
     def _inner(o):
+        if not seq_first: o = o.T
         if isinstance(o, pd.DataFrame):
             if sort_by is not None: o.sort_values(by=sort_by, axis=0, ascending=ascending, inplace=True, ignore_index=True)
-            columns = o.columns.values if seq_first else o.T.columns.values
-            o = o.values
-            if o.ndim > 1:
-                if get_x is None and get_y is not None: _get_x = [i for i, col in enumerate(columns) if col not in get_y]
-                elif get_x is not None: _get_x = [i for i, col in enumerate(columns) if col in get_x]
-                else: _get_x = slice(None)
-                _get_y = [i for i, col in enumerate(columns) if col in get_y] if get_y is not None else slice(None)
-        elif o.ndim > 1:
-            _get_x = ifnone(get_x, slice(None))
-            _get_y = ifnone(get_y, slice(None))
-        if seq_first: o = o.T
-        o = o.squeeze()
-        _seq_len = o.shape[-1]
-        assert wl + ws + horizon <= _seq_len, f'window_length + stride + horizon > seq_len ({wl + ws + horizon} > {_seq_len})'
-        x, y = [], []
-        for i in range(start, _seq_len - wl - horizon + 1, ws):
-            if o.ndim == 1:
-                x.append(o[..., slice(i, i + wl)])
-                if get_y is not None or horizon > 0:
-                    if y_func is not None:
-                        y.append(y_func(o[(..., slice(i + wl, i + wl + horizon)) if horizon else (..., slice(i + wl - 1, i + wl))]))
-                    else:
-                        y.append(o[(..., slice(i + wl, i + wl + horizon)) if horizon else (..., slice(i + wl - 1, i + wl))])
-            else:
-                x.append(o[..., _get_x, slice(i, i + wl)])
-                if get_y is not None or horizon > 0:
-                    if y_func is not None:
-                        y.append(y_func(o[(..., _get_y, slice(i + wl, i + wl + horizon)) if horizon else (..., _get_y, slice(i, i + wl))]))
-                    else:
-                        y.append(o[(..., _get_y, slice(i + wl, i + wl + horizon)) if horizon else (..., _get_y, slice(i + wl - 1, i + wl))])
-        X = to3d(stack(x))
-        if X.dtype == 'O': X = X.astype(np.float32)
-        y = stack(y).squeeze() if y != [] else None
-        return X, y
+            X = o.loc[:, _get_x].values if get_x is None or not isinstance(_get_x[0], Integral) else o.iloc[:, _get_x].values
+            y = o.loc[:, _get_y].values if get_y is None or not isinstance(_get_y[0], Integral) else o.iloc[:, _get_y].values
+        else:
+            if isinstance(o, torch.Tensor): o = o.numpy()
+            if o.ndim < 2: o = o[:, None]
+            X = o[:, _get_x]
+            y = o[:, _get_y]
+        seq_len = len(X)
+        X_max_time = seq_len - start - max_horizon - window_len + 1
+        if X_max_time <= 0: return None, None
+        X_sub_windows = (start +
+                         np.expand_dims(np.arange(window_len), 0) + # window len
+                         np.expand_dims(np.arange(X_max_time, step=stride), 0).T) # # subwindows
+        X = np.transpose(X[X_sub_windows], (0, 2, 1))
+        if y is not None and get_y != []:
+            y_start = start + window_len - 1
+            y_max_time = seq_len - y_start - max_horizon
+            y_sub_windows = (y_start +
+                             np.expand_dims(horizon_rng, 0) + # horizon_rng
+                             np.expand_dims(np.arange(y_max_time, step=stride), 0).T) # # subwindows
+            y = y[y_sub_windows]
+            if y_func is not None and len(y) > 0:
+                y = y_func(y)
+            if y.ndim >= 2:
+                for d in np.arange(1, y.ndim)[::-1]:
+                    if y.shape[d] == 1: y = np.squeeze(y, axis=d)
+            return X, y
+        else: return X, None
     return _inner
 
 # Cell
-def SlidingWindowPanel(df, window_length:int, unique_id_cols:list, stride:Union[None, int]=1, start:Union[int, None]=0, get_x:Union[None, int, list]=None,
-                       get_y:Union[None, int, list]=None, y_func:Optional[callable]=None, horizon:int=0, seq_first:bool=True,
-                       sort_by:Optional[list]=None, ascending:bool=True):
+def SlidingWindowPanel(df, window_len:int, unique_id_cols:list, stride:Union[None, int]=1, start:int=0, get_x:Union[None, int, list]=None,
+                       get_y:Union[None, int, list]=None, y_func:Optional[callable]=None, horizon:Union[int, list]=1, seq_first:bool=True,
+                       sort_by:Optional[list]=None, ascending:bool=True, check_leakage:bool=True, return_key:bool=False):
 
     """
     Applies a sliding window to a 1d or 2d input (np.ndarray, torch.Tensor or pd.DataFrame)
 
     Args:
-        window_length   = length of lookback window
+        df              = pandas dataframe containing all data
+        window_len      = length of lookback window
         unique_id_cols  = columns that will be used to identify a time series for each entity.
-        stride          = n datapoints the window is moved ahead along the sequence. Default: 1. If None, stride=window_length (no overlap)
+        stride          = n datapoints the window is moved ahead along the sequence. Default: 1. If None, stride=window_len (no overlap)
         start           = determines the step where the first window is applied: 0 (default), a given step (int), or random within the 1st stride (None).
-        horizon         = number of future datapoints to predict. 0 for last step in the selected window. > 0 for future steps. List for several steps.
-        get_x           = indices of columns that contain the independent variable (xs). If None, all data will be used as x
-        get_y           = indices of columns that contain the target (ys). If None and horizon = 0, no y will be returned to avoid leakage.
-        y_func          = function to calculate the ys based on the get_y col/s and the last lookback window or the horizon. If None, get_y will be returned.
+        horizon         = number of future datapoints to predict:
+                            * 0 for last step in each sub-window.
+                            * n > 0 for a range of n future steps (1 to n).
+                            * n < 0 for a range of n past steps (-n + 1 to 0).
+                            * list : for those exact timesteps.
+        get_x           = indices of columns that contain the independent variable (xs). If None, all data will be used as x.
+        get_y           = indices of columns that contain the target (ys). If None, all data will be used as y. [] means no y data is created.
+        y_func          = function to calculate the ys based on the get_y col/s and each y sub-window. y_func must be a function applied to axis=1!
         seq_first       = True if input shape (seq_len, n_vars), False if input shape (n_vars, seq_len)
         sort_by         = column/s used for sorting the array in ascending order
         ascending       = used in sorting
+        check_leakage   = checks if there's leakage in the output between X and y
+        return_key      = when True, the key corresponsing to unique_id_cols for each sample is returned
 
 
     Input:
         You can use np.ndarray, pd.DataFrame or torch.Tensor as input
         shape: (seq_len, ) or (seq_len, n_vars) if seq_first=True else (n_vars, seq_len)
     """
-
+    global _key
     sort_by = unique_id_cols + (sort_by if sort_by is not None else [])
     df.sort_values(by=sort_by, axis=0, ascending=ascending, inplace=True, ignore_index=True)
-    key = df[unique_id_cols].values
     unique_id_values = df[unique_id_cols].drop_duplicates().values
     _x = []
     _y = []
-    for v in unique_id_values:
-        x_v, y_v = SlidingWindow(window_length, stride=stride, start=start, get_x=get_x, get_y=get_y, y_func=y_func,
-                                 horizon=0, seq_first=seq_first)(df[(df[unique_id_cols].values == v).sum(axis=1) == len(v)])
-        _x.append(x_v)
-        if y_v is not None: _y.append(y_v)
+    _key = []
+    for i, v in enumerate(progress_bar(unique_id_values)):
+        x_v, y_v = SlidingWindow(window_len, stride=stride, start=start, get_x=get_x, get_y=get_y, y_func=y_func,
+                                 horizon=horizon, seq_first=seq_first, check_leakage=check_leakage)(df[(df[unique_id_cols].values == v).sum(axis=1) == len(v)])
+        if x_v is not None and len(x_v) > 0:
+            _x.append(x_v)
+            if return_key: _key.append([v.tolist()] * len(x_v))
+            if y_v is not None and len(y_v) > 0: _y.append(y_v)
     X = concat(*_x)
-    y = concat(*_y) if len(_y) > 0 else None
-    return X, y, key
+    if _y != []:
+        y = concat(*_y)
+        for d in np.arange(1, y.ndim)[::-1]:
+            if y.shape[d] == 1: y = np.squeeze(y, axis=d)
+    else: y = None
+    if return_key:
+        key = np.concatenate(_key)
+        if key.ndim == 2 and key.shape[-1] == 1: key = np.squeeze(key, -1)
+        if return_key: return X, y, key
+    else: return X, y

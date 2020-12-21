@@ -374,9 +374,9 @@ random_state : when shuffle is True, random_state affects the ordering of the in
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>((#639) [799,432,542,805,759,581,183,22,473,619...],
- (#200) [578,789,73,618,637,919,925,499,405,437...],
- (#200) [882,883,43,56,372,939,547,297,184,842...])</pre>
+<pre>((#669) [460,165,312,913,814,946,958,626,957,692...],
+ (#200) [699,944,642,955,895,472,786,400,410,713...],
+ (#200) [760,136,163,83,783,899,28,91,142,144...])</pre>
 </div>
 
 </div>
@@ -405,9 +405,9 @@ random_state : when shuffle is True, random_state affects the ordering of the in
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TimeSplitter" class="doc_header"><code>TimeSplitter</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/validation.py#L204" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TimeSplitter</code>(<strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>)</p>
+<h4 id="TimeSplitter" class="doc_header"><code>TimeSplitter</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/validation.py#L204" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TimeSplitter</code>(<strong><code>valid_size</code></strong>:<code>Union</code>[<code>int</code>, <code>float</code>]=<em><code>0.2</code></em>)</p>
 </blockquote>
-<p>Create function that splits <code>items</code> between train/val with <code>valid_pct</code> without shuffling data.</p>
+<p>Create function that splits <code>items</code> between train/val with <code>valid_size</code> without shuffling data.</p>
 
 </div>
 
@@ -427,28 +427,11 @@ random_state : when shuffle is True, random_state affects the ordering of the in
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span> <span class="o">+</span> <span class="mi">100</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">TimeSplitter</span><span class="p">(</span><span class="n">valid_pct</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)(</span><span class="n">y</span><span class="p">)[</span><span class="mi">1</span><span class="p">],</span> <span class="n">L</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()))</span>
-<span class="n">TimeSplitter</span><span class="p">(</span><span class="n">valid_pct</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)(</span><span class="n">y</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">TimeSplitter</span><span class="p">(</span><span class="n">valid_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)(</span><span class="n">y</span><span class="p">)[</span><span class="mi">1</span><span class="p">],</span> <span class="n">L</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()))</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">TimeSplitter</span><span class="p">(</span><span class="n">valid_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)(</span><span class="n">y</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">TimeSplitter</span><span class="p">(</span><span class="n">valid_size</span><span class="o">=</span><span class="mi">200</span><span class="p">)(</span><span class="n">y</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>((#800) [0,1,2,3,4,5,6,7,8,9...],
- (#200) [800,801,802,803,804,805,806,807,808,809...])</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -801,9 +784,9 @@ valid == train
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>((#60) [98,70,37,88,38,94,60,97,12,15...],
- (#20) [33,31,52,85,96,89,21,7,25,1...],
- (#20) [75,0,62,34,36,56,84,76,91,44...])</pre>
+<pre>((#60) [92,8,57,82,27,71,63,79,72,20...],
+ (#20) [30,77,6,10,99,33,48,59,51,55...],
+ (#20) [68,88,41,29,50,22,56,34,86,96...])</pre>
 </div>
 
 </div>
@@ -894,9 +877,9 @@ valid == train
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>((#12) [67,58,60,36,2,81,84,16,14,70...],
- (#21) [3,87,78,1,18,72,63,45,79,99...],
- (#17) [4,25,86,80,38,65,27,71,83,11...])</pre>
+<pre>((#12) [78,28,57,38,61,73,65,2,71,0...],
+ (#21) [86,53,16,5,74,46,21,40,56,52...],
+ (#17) [22,66,55,32,94,92,43,26,3,20...])</pre>
 </div>
 
 </div>
