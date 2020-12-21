@@ -130,15 +130,14 @@ def SlidingWindow(window_len:int, stride:Union[None, int]=1, start:int=0, get_x:
     return _inner
 
 # Cell
-def SlidingWindowPanel(df, window_len:int, unique_id_cols:list, stride:Union[None, int]=1, start:int=0, get_x:Union[None, int, list]=None,
+def SlidingWindowPanel(window_len:int, unique_id_cols:list, stride:Union[None, int]=1, start:int=0, get_x:Union[None, int, list]=None,
                        get_y:Union[None, int, list]=None, y_func:Optional[callable]=None, horizon:Union[int, list]=1, seq_first:bool=True,
-                       sort_by:Optional[list]=None, ascending:bool=True, check_leakage:bool=True, return_key:bool=False):
+                       sort_by:Optional[list]=None, ascending:bool=True, check_leakage:bool=True, return_key:bool=False, verbose:bool=True):
 
     """
     Applies a sliding window to a 1d or 2d input (np.ndarray, torch.Tensor or pd.DataFrame)
 
     Args:
-        df              = pandas dataframe containing all data
         window_len      = length of lookback window
         unique_id_cols  = columns that will be used to identify a time series for each entity.
         stride          = n datapoints the window is moved ahead along the sequence. Default: 1. If None, stride=window_len (no overlap)
@@ -162,28 +161,35 @@ def SlidingWindowPanel(df, window_len:int, unique_id_cols:list, stride:Union[Non
         You can use np.ndarray, pd.DataFrame or torch.Tensor as input
         shape: (seq_len, ) or (seq_len, n_vars) if seq_first=True else (n_vars, seq_len)
     """
-    global _key
+
     sort_by = unique_id_cols + (sort_by if sort_by is not None else [])
-    df.sort_values(by=sort_by, axis=0, ascending=ascending, inplace=True, ignore_index=True)
-    unique_id_values = df[unique_id_cols].drop_duplicates().values
-    _x = []
-    _y = []
-    _key = []
-    for i, v in enumerate(progress_bar(unique_id_values)):
-        x_v, y_v = SlidingWindow(window_len, stride=stride, start=start, get_x=get_x, get_y=get_y, y_func=y_func,
-                                 horizon=horizon, seq_first=seq_first, check_leakage=check_leakage)(df[(df[unique_id_cols].values == v).sum(axis=1) == len(v)])
-        if x_v is not None and len(x_v) > 0:
-            _x.append(x_v)
-            if return_key: _key.append([v.tolist()] * len(x_v))
-            if y_v is not None and len(y_v) > 0: _y.append(y_v)
-    X = concat(*_x)
-    if _y != []:
-        y = concat(*_y)
-        for d in np.arange(1, y.ndim)[::-1]:
-            if y.shape[d] == 1: y = np.squeeze(y, axis=d)
-    else: y = None
-    if return_key:
-        key = np.concatenate(_key)
-        if key.ndim == 2 and key.shape[-1] == 1: key = np.squeeze(key, -1)
-        if return_key: return X, y, key
-    else: return X, y
+
+    def _SlidingWindowPanel(df):
+
+        df.sort_values(by=sort_by, axis=0, ascending=ascending, inplace=True, ignore_index=True)
+        unique_id_values = df[unique_id_cols].drop_duplicates().values
+        _x = []
+        _y = []
+        _key = []
+        for i, v in enumerate(progress_bar(unique_id_values)):
+            x_v, y_v = SlidingWindow(window_len, stride=stride, start=start, get_x=get_x, get_y=get_y, y_func=y_func,
+                                     horizon=horizon, seq_first=seq_first, check_leakage=check_leakage)(df[(df[unique_id_cols].values == v).sum(axis=1) == len(v)])
+            if x_v is not None and len(x_v) > 0:
+                _x.append(x_v)
+                if return_key: _key.append([v.tolist()] * len(x_v))
+                if y_v is not None and len(y_v) > 0: _y.append(y_v)
+            else: pv(f'cannot use {unique_id_cols} = {v} due to not having enough records', verbose)
+
+        X = concat(*_x)
+        if _y != []:
+            y = concat(*_y)
+            for d in np.arange(1, y.ndim)[::-1]:
+                if y.shape[d] == 1: y = np.squeeze(y, axis=d)
+        else: y = None
+        if return_key:
+            key = np.concatenate(_key)
+            if key.ndim == 2 and key.shape[-1] == 1: key = np.squeeze(key, -1)
+            if return_key: return X, y, key
+        else: return X, y
+
+    return _SlidingWindowPanel
