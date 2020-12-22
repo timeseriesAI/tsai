@@ -2,6 +2,20 @@
 
 <!-- do not remove -->
 
+
+## 0.2.12
+
+### New Features
+
+* Data: 
+    * core: `get_subset_dl` and `get_subset_dls`convenience function have been added.
+    * data preparation: `SlidingWindow` and `SlidingWindowPanel` functions are now vectorized, and are at least an order of magnitude faster. 
+* Models: 
+    * `XCM`: An Explainable Convolutional Neural Network for Multivariate Time Series Classification have been added. Official code not released yet. This is a stete-of-the-art time series model that combines Conv1d and Conv2d and has good explainability.
+* Training:
+    * learner: `ts_learner` and `tsimage_learner` convenience functions have been added, as well as a `get_X_preds` methods to facilitate the generation of predictions.
+
+
 ## 0.2.8
 
 ### New Features

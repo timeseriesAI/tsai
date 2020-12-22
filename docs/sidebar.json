@@ -10,7 +10,7 @@
         "Splitting data": "/data.validation",
         "Preprocessing data": "/data.preprocessing",
         "Label-invariant transformations": "/data.transforms",
-        "Label-mixing transformations": "/data.mixed_sample_augmentation",
+        "Label-mixing transformations": "/data.mixed_augmentation",
         "Tabular data": "/data.tabular",
         "Imaging time series": "/data.image",
         "Mixed data": "/data.mixed"
@@ -47,7 +47,8 @@
                 "InceptionTimePlus": "/models.InceptionTimePlus",
                 "XceptionTime": "/models.XceptionTime",
                 "XceptionTimePlus": "/models.XceptionTimePlus",
-                "OmniScaleCNN": "/models.OmniScaleCNN"
+                "OmniScaleCNN": "/models.OmniScaleCNN",
+                "XCM": "/models.XCM"
             }
         },
         "empty2": {

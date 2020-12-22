@@ -35,7 +35,7 @@ entries:
       url: /data.transforms
     - output: web,pdf
       title: Label-mixing transformations
-      url: /data.mixed_sample_augmentation
+      url: /data.mixed_augmentation
     - output: web,pdf
       title: Tabular data
       url: /data.tabular
@@ -129,6 +129,9 @@ entries:
         - output: web,pdf
           title: OmniScaleCNN
           url: /models.OmniScaleCNN
+        - output: web,pdf
+          title: XCM
+          url: /models.XCM
         title: 1D CNNs
       - output: web
         subfolderitems:
