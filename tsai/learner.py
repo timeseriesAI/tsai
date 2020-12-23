@@ -182,7 +182,6 @@ def ts_learner(dls, arch=None,
 
     # keep track of args for loggers
     store_attr('arch', self=learn)
-    if kwargs: store_attr(self=learn, **kwargs)
 
     return learn
 
@@ -203,7 +202,6 @@ def tsimage_learner(dls, arch=None, pretrained=False,
 
     # keep track of args for loggers
     store_attr('arch', self=learn)
-    if kwargs: store_attr(self=learn, **kwargs)
 
     return learn
 

@@ -3,6 +3,12 @@
 <!-- do not remove -->
 
 
+## 0.2.13
+
+Added min requirements for all package dependencies.
+
+    
+
 ## 0.2.12
 
 ### New Features

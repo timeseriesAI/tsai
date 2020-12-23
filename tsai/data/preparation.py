@@ -88,8 +88,8 @@ def SlidingWindow(window_len:int, stride:Union[None, int]=1, start:int=0, get_x:
     elif isinstance(horizon, Integral): horizon_rng = np.arange(1, horizon + 1) if horizon > 0 else np.arange(horizon + 1, 1)
     min_horizon = min(horizon_rng)
     max_horizon = max(horizon_rng)
-    _get_x = slice(None) if get_x is None else [get_x] if not is_listy(get_x) else get_x
-    _get_y = slice(None) if get_y is None else [get_y] if not is_listy(get_y) else get_y
+    _get_x = slice(None) if get_x is None else get_x.tolist() if isinstance(get_x, pd.core.indexes.base.Index) else [get_x] if not is_listy(get_x) else get_x
+    _get_y = slice(None) if get_y is None else get_y.tolist() if isinstance(get_y, pd.core.indexes.base.Index) else [get_y] if not is_listy(get_y) else get_y
     if min_horizon <= 0 and y_func is None and get_y != [] and check_leakage:
         assert get_x is not None and  get_y is not None and len([y for y in _get_y if y in _get_x]) == 0,  \
         'you need to change either horizon, get_x, get_y or use a y_func to avoid leakage'
@@ -180,9 +180,9 @@ def SlidingWindowPanel(window_len:int, unique_id_cols:list, stride:Union[None, i
                 if y_v is not None and len(y_v) > 0: _y.append(y_v)
             else: pv(f'cannot use {unique_id_cols} = {v} due to not having enough records', verbose)
 
-        X = concat(*_x)
+        X = np.concatenate(_x)
         if _y != []:
-            y = concat(*_y)
+            y = np.concatenate(_y)
             for d in np.arange(1, y.ndim)[::-1]:
                 if y.shape[d] == 1: y = np.squeeze(y, axis=d)
         else: y = None
