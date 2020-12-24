@@ -135,11 +135,11 @@ def SlidingWindowPanel(window_len:int, unique_id_cols:list, stride:Union[None, i
                        sort_by:Optional[list]=None, ascending:bool=True, check_leakage:bool=True, return_key:bool=False, verbose:bool=True):
 
     """
-    Applies a sliding window to a 1d or 2d input (np.ndarray, torch.Tensor or pd.DataFrame)
+    Applies a sliding window to a pd.DataFrame.
 
     Args:
         window_len      = length of lookback window
-        unique_id_cols  = columns that will be used to identify a time series for each entity.
+        unique_id_cols  = pd.DataFrame columns that will be used to identify a time series for each entity.
         stride          = n datapoints the window is moved ahead along the sequence. Default: 1. If None, stride=window_len (no overlap)
         start           = determines the step where the first window is applied: 0 (default), a given step (int), or random within the 1st stride (None).
         horizon         = number of future datapoints to predict:

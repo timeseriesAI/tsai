@@ -9,7 +9,6 @@
 
 
 ![CI](https://github.com/timeseriesai/tsai/workflows/CI/badge.svg) 
-![docs](https://github.com/fastai/fastai/workflows/docs/badge.svg) 
 [![PyPI](https://img.shields.io/pypi/v/tsai?color=blue&label=pypi%20version)](https://pypi.org/project/tsai/#description)
 [![Downloads](https://pepy.tech/badge/tsai)](https://pepy.tech/project/tsai)
 
