@@ -7,6 +7,7 @@ from fastai.callback.all import *
 from ..imports import *
 from ..utils import *
 from ..models.utils import *
+from ..models.layers import *
 
 # Cell
 def create_subsequence_mask(o, r=.15, lm=3, stateful=True, sync=False):
