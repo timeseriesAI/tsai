@@ -65,7 +65,7 @@ nb_path: "nbs/120_models.TabModel.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TabModel" class="doc_header"><code>class</code> <code>TabModel</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TabModel.py#L10" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabModel</code>(<strong><code>emb_szs</code></strong>, <strong><code>n_cont</code></strong>, <strong><code>out_sz</code></strong>, <strong><code>layers</code></strong>, <strong><code>ps</code></strong>=<em><code>None</code></em>, <strong><code>embed_p</code></strong>=<em><code>0.0</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>use_bn</code></strong>=<em><code>True</code></em>, <strong><code>bn_final</code></strong>=<em><code>False</code></em>, <strong><code>bn_cont</code></strong>=<em><code>True</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU(inplace=True)</code></em>) :: <code>Module</code></p>
+<h2 id="TabModel" class="doc_header"><code>class</code> <code>TabModel</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TabModel.py#L10" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabModel</code>(<strong><code>emb_szs</code></strong>, <strong><code>n_cont</code></strong>, <strong><code>out_sz</code></strong>, <strong><code>layers</code></strong>, <strong><code>ps</code></strong>=<em><code>None</code></em>, <strong><code>embed_p</code></strong>=<em><code>0.0</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>use_bn</code></strong>=<em><code>True</code></em>, <strong><code>bn_final</code></strong>=<em><code>False</code></em>, <strong><code>bn_cont</code></strong>=<em><code>True</code></em>, <strong><code>act</code></strong>=<em><code>ReLU(inplace=True)</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Basic model for tabular data.</p>
 
@@ -141,73 +141,73 @@ nb_path: "nbs/120_models.TabModel.ipynb"
   </thead>
   <tbody>
     <tr>
-      <th>21572</th>
-      <td>?</td>
-      <td>10th</td>
-      <td>Never-married</td>
-      <td>?</td>
-      <td>Own-child</td>
-      <td>White</td>
-      <td>False</td>
-      <td>17.0</td>
-      <td>34019.0</td>
-      <td>6.0</td>
-      <td>&lt;50k</td>
-    </tr>
-    <tr>
-      <th>28184</th>
+      <th>19712</th>
       <td>Private</td>
-      <td>HS-grad</td>
+      <td>Some-college</td>
       <td>Married-civ-spouse</td>
-      <td>Transport-moving</td>
+      <td>Machine-op-inspct</td>
       <td>Husband</td>
       <td>White</td>
       <td>False</td>
-      <td>34.0</td>
-      <td>381153.0</td>
-      <td>9.0</td>
+      <td>42.0</td>
+      <td>424855.0</td>
+      <td>10.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
-      <th>26376</th>
-      <td>Private</td>
-      <td>HS-grad</td>
-      <td>Married-civ-spouse</td>
-      <td>Exec-managerial</td>
-      <td>Husband</td>
-      <td>White</td>
-      <td>False</td>
-      <td>52.0</td>
-      <td>155434.0</td>
-      <td>9.0</td>
-      <td>&lt;50k</td>
-    </tr>
-    <tr>
-      <th>11173</th>
+      <th>29025</th>
       <td>Private</td>
       <td>HS-grad</td>
       <td>Married-civ-spouse</td>
       <td>Machine-op-inspct</td>
-      <td>Wife</td>
+      <td>Husband</td>
       <td>White</td>
       <td>False</td>
-      <td>33.0</td>
-      <td>403468.0</td>
+      <td>38.0</td>
+      <td>225707.0</td>
+      <td>9.0</td>
+      <td>&gt;=50k</td>
+    </tr>
+    <tr>
+      <th>15795</th>
+      <td>Local-gov</td>
+      <td>HS-grad</td>
+      <td>Married-civ-spouse</td>
+      <td>Protective-serv</td>
+      <td>Husband</td>
+      <td>Black</td>
+      <td>False</td>
+      <td>20.0</td>
+      <td>312427.0</td>
       <td>9.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
-      <th>6105</th>
+      <th>891</th>
       <td>Private</td>
       <td>HS-grad</td>
-      <td>Married-civ-spouse</td>
-      <td>Transport-moving</td>
-      <td>Husband</td>
+      <td>Divorced</td>
+      <td>Adm-clerical</td>
+      <td>Not-in-family</td>
+      <td>White</td>
+      <td>False</td>
+      <td>47.0</td>
+      <td>207140.0</td>
+      <td>9.0</td>
+      <td>&lt;50k</td>
+    </tr>
+    <tr>
+      <th>25044</th>
+      <td>Private</td>
+      <td>Assoc-voc</td>
+      <td>Never-married</td>
+      <td>Tech-support</td>
+      <td>Unmarried</td>
       <td>Black</td>
       <td>False</td>
-      <td>29.0</td>
-      <td>301031.0</td>
-      <td>9.0</td>
+      <td>24.0</td>
+      <td>64167.0</td>
+      <td>11.0</td>
       <td>&lt;50k</td>
     </tr>
   </tbody>

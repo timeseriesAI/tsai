@@ -89,8 +89,8 @@ class InceptionBlockPlus(Module):
 
 @delegates(InceptionModulePlus.__init__)
 class InceptionTimePlus(Module):
-    def __init__(self, c_in, c_out, seq_len=None, nf=32, nb_filters=None, concat_pool=False, fc_dropout=0., depth=6, stoch_depth=1., y_range=None,
-                 flatten=False, custom_head=None, **kwargs):
+    def __init__(self, c_in, c_out, seq_len=None, nf=32, nb_filters=None, concat_pool=False, fc_dropout=0., depth=6, stoch_depth=1.,
+                 bn=False, y_range=None, flatten=False, custom_head=None, **kwargs):
 
         nf = ifnone(nf, nb_filters) # for compatibility
         self.fc_dropout, self.c_out, self.y_range = fc_dropout, c_out, y_range
@@ -98,26 +98,26 @@ class InceptionTimePlus(Module):
 
         if stoch_depth is not 0: keep_prob = np.linspace(1, stoch_depth, depth // 3)
         else: keep_prob = np.array([1] * depth // 3)
-        self.inceptionblock = InceptionBlockPlus(c_in, nf, depth=depth, keep_prob=keep_prob, **kwargs)
+        self.backbone = InceptionBlockPlus(c_in, nf, depth=depth, keep_prob=keep_prob, **kwargs)
 
         self.head_nf = nf * 4
-        self.flatten = None
-        if flatten:  self.head_nf *= seq_len
-        self.flatten = Flatten() if flatten else None
-        if custom_head: self.head = custom_head(self.head_nf, c_out)
-        else: self.head = self.create_head(self.head_nf, c_out, concat_pool=concat_pool, fc_dropout=fc_dropout, y_range=y_range)
+        if custom_head: self.head = custom_head(self.head_nf, c_out, seq_len)
+        else: self.head = self.create_head(self.head_nf, c_out, seq_len, flatten=flatten, concat_pool=concat_pool,
+                                           fc_dropout=fc_dropout, bn=bn, y_range=y_range)
 
-    def create_head(self, nf, c_out, concat_pool=False, fc_dropout=0., y_range=None, **kwargs):
-        if concat_pool: nf = nf * 2
-        layers = [GACP1d(1) if concat_pool else GAP1d(1)]
-        if fc_dropout: layers += [nn.Dropout(fc_dropout)]
-        layers += [nn.Linear(nf, c_out)]
+    def create_head(self, nf, c_out, seq_len, flatten=False, concat_pool=False, fc_dropout=0., bn=False, y_range=None, **kwargs):
+        if flatten:
+            nf *= seq_len
+            layers = [Flatten()]
+        else:
+            if concat_pool: nf *= 2
+            layers = [GACP1d(1) if concat_pool else GAP1d(1)]
+        layers += [LinBnDrop(nf, c_out, bn=bn, p=fc_dropout)]
         if y_range: layers += [SigmoidRange(*y_range)]
         return nn.Sequential(*layers)
 
     def forward(self, x):
-        x = self.inceptionblock(x)
-        if self.flatten is not None: x = self.flatten(x)
+        x = self.backbone(x)
         x = self.head(x)
         return x
 
@@ -163,8 +163,7 @@ class MultiInceptionTimePlus(Module):
             self.branches.append(m)
 
         # Head
-        self.head = self._arch.create_head(self, self.head_nf, c_out, **kwargs)
-
+        self.head = self._arch.create_head(self, self.head_nf, c_out, seq_len, **kwargs)
 
     def forward(self, x):
         x = torch.split(x, self.feat_mask, dim=1)

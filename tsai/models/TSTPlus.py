@@ -10,17 +10,20 @@ from .layers import *
 from .utils import *
 
 # Cell
-def SinCosPosEncoding(q_len, d_model):
+def SinCosPosEncoding(q_len, d_model, normalize=True):
     pe = torch.zeros(q_len, d_model, device=default_device())
     position = torch.arange(0, q_len).unsqueeze(1)
     div_term = torch.exp(torch.arange(0, d_model, 2) * -(math.log(10000.0) / d_model))
     pe[:, 0::2] = torch.sin(position * div_term)
     pe[:, 1::2] = torch.cos(position * div_term)
+    if normalize:
+        pe = pe - pe.mean()
+        pe = pe / pe.std()
     return pe.to(device=device)
 
 # Cell
-def Coord2dPosEncoding(q_len, d_model, eps=1e-3, verbose=False, device=default_device()):
-    x = 1
+def Coord2dPosEncoding(q_len, d_model, exponential=False, normalize=True, eps=1e-3, verbose=False, device=default_device()):
+    x = .5 if exponential else 1
     i = 0
     for i in range(100):
         cpe = 2 * (torch.linspace(0, 1, q_len).reshape(-1, 1) ** x) * (torch.linspace(0, 1, d_model).reshape(1, -1) ** x) - 1
@@ -29,6 +32,9 @@ def Coord2dPosEncoding(q_len, d_model, eps=1e-3, verbose=False, device=default_d
         elif cpe.mean() > eps: x += .001
         else: x -= .001
         i += 1
+    if normalize:
+        cpe = cpe - cpe.mean()
+        cpe = cpe / cpe.std()
     return cpe.to(device=device)
 
 # Cell
@@ -41,29 +47,36 @@ def Coord1dPosEncoding(q_len, exponential=False, normalize=True, device=default_
 
 # Cell
 class ScaledDotProductAttention(Module):
-    def __init__(self, d_k:int): self.d_k = d_k
-    def forward(self, q:Tensor, k:Tensor, v:Tensor, mask:Optional[Tensor]=None):
+    def __init__(self, d_k:int, res_attention:bool=False): self.d_k,self.res_attention = d_k,res_attention
+    def forward(self, q:Tensor, k:Tensor, v:Tensor, prev:Optional[Tensor]=None, attn_mask:Optional[Tensor]=None):
 
         # MatMul (q, k) - similarity scores for all pairs of positions in an input sequence
-        scores = torch.matmul(q, k)                                         # scores : [bs x n_heads x q_len x q_len]
+        scores = torch.matmul(q, k)                                    # scores : [bs x n_heads x q_len x q_len]
 
         # Scale
         scores = scores / (self.d_k ** 0.5)
 
-        # Mask (optional)
-        if mask is not None: scores.masked_fill_(mask, -1e9)
+        # Attention mask (optional)
+        if attn_mask is not None:                                     # mask with shape [q_len x q_len]
+            if attn_mask.dtype == torch.bool:
+                scores.masked_fill_(attn_mask, float('-inf'))
+            else:
+                scores += attn_mask
 
         # SoftMax
-        attn = F.softmax(scores, dim=-1)                                    # attn   : [bs x n_heads x q_len x q_len]
+        if prev is not None: scores = scores + prev
+
+        attn = F.softmax(scores, dim=-1)                               # attn   : [bs x n_heads x q_len x q_len]
 
         # MatMul (attn, v)
-        context = torch.matmul(attn, v)                                     # context: [bs x n_heads x q_len x d_v]
+        context = torch.matmul(attn, v)                                # context: [bs x n_heads x q_len x d_v]
 
-        return context, attn
+        if self.res_attention: return context, attn, scores
+        else: return context, attn
 
 # Cell
 class MultiHeadAttention(Module):
-    def __init__(self, d_model:int, n_heads:int, d_k:int, d_v:int):
+    def __init__(self, d_model:int, n_heads:int, d_k:int, d_v:int, res_attention:bool=False):
         r"""
         Input shape:  Q, K, V:[batch_size (bs) x q_len x d_model], mask:[q_len x q_len]
         """
@@ -75,7 +88,9 @@ class MultiHeadAttention(Module):
 
         self.W_O = nn.Linear(n_heads * d_v, d_model, bias=False)
 
-    def forward(self, Q:Tensor, K:Tensor, V:Tensor, mask:Optional[Tensor]=None):
+        self.res_attention = res_attention
+
+    def forward(self, Q:Tensor, K:Tensor, V:Tensor, prev:Optional[Tensor]=None, attn_mask:Optional[Tensor]=None):
 
         bs = Q.size(0)
 
@@ -85,26 +100,33 @@ class MultiHeadAttention(Module):
         v_s = self.W_V(V).view(bs, -1, self.n_heads, self.d_v).transpose(1,2)       # v_s    : [bs x n_heads x q_len x d_v]
 
         # Scaled Dot-Product Attention (multiple heads)
-        context, attn = ScaledDotProductAttention(self.d_k)(q_s, k_s, v_s)          # context: [bs x n_heads x q_len x d_v], attn: [bs x n_heads x q_len x q_len]
+        if self.res_attention:
+            context, attn, scores = ScaledDotProductAttention(self.d_k, self.res_attention)(q_s, k_s, v_s, prev=prev, attn_mask=attn_mask)
+        else:
+            context, attn = ScaledDotProductAttention(self.d_k)(q_s, k_s, v_s, attn_mask=attn_mask)
+        # context: [bs x n_heads x q_len x d_v], attn: [bs x n_heads x q_len x q_len]
 
         # Concat
         context = context.transpose(1, 2).contiguous().view(bs, -1, self.n_heads * self.d_v) # context: [bs x q_len x n_heads * d_v]
 
         # Linear
-        output = self.W_O(context)                                                  # context: [bs x q_len x d_model]
+        output = self.W_O(context)                                                           # context: [bs x q_len x d_model]
 
-        return output, attn
+        if self.res_attention: return output, attn, scores
+        else: return output, attn
 
 # Cell
 class TSTEncoderLayer(Module):
-    def __init__(self, d_model:int, n_heads:int, d_k:Optional[int]=None, d_v:Optional[int]=None, d_ff:int=256, res_dropout:float=0.1, activation:str="gelu"):
+    def __init__(self, d_model:int, n_heads:int, d_k:Optional[int]=None, d_v:Optional[int]=None, d_ff:int=256, res_dropout:float=0.1, activation:str="gelu",
+                res_attention:bool=False):
 
         assert d_model // n_heads, f"d_model ({d_model}) must be divisible by n_heads ({n_heads})"
         d_k = ifnone(d_k, d_model // n_heads)
         d_v = ifnone(d_v, d_model // n_heads)
 
         # Multi-Head attention
-        self.self_attn = MultiHeadAttention(d_model, n_heads, d_k, d_v)
+        self.res_attention = res_attention
+        self.self_attn = MultiHeadAttention(d_model, n_heads, d_k, d_v, res_attention=res_attention)
 
         # Add & Norm
         self.dropout_attn = nn.Dropout(res_dropout)
@@ -117,11 +139,14 @@ class TSTEncoderLayer(Module):
         self.dropout_ffn = nn.Dropout(res_dropout)
         self.batchnorm_ffn = nn.BatchNorm1d(d_model)
 
-    def forward(self, src:Tensor, mask:Optional[Tensor]=None) -> Tensor:
+    def forward(self, src:Tensor, prev:Optional[Tensor]=None, attn_mask:Optional[Tensor]=None) -> Tensor:
 
         # Multi-Head attention sublayer
         ## Multi-Head attention
-        src2, attn = self.self_attn(src, src, src, mask=mask)
+        if self.res_attention:
+            src2, attn, scores = self.self_attn(src, src, src, prev, attn_mask=attn_mask)
+        else:
+            src2, attn = self.self_attn(src, src, src, attn_mask=attn_mask)
         ## Add & Norm
         src = src + self.dropout_attn(src2) # Add: residual connection with residual dropout
         src = self.batchnorm_attn(src.permute(1,2,0)).permute(2,0,1) # Norm: batchnorm (requires d_model features to be in dim 1)
@@ -133,30 +158,38 @@ class TSTEncoderLayer(Module):
         src = src + self.dropout_ffn(src2) # Add: residual connection with residual dropout
         src = self.batchnorm_ffn(src.permute(1,2,0)).permute(2,0,1) # Norm: batchnorm (requires d_model features to be in dim 1)
 
-        return src
+        if self.res_attention:
+            return src, scores
+        else:
+            return src
 
     def _get_activation_fn(self, activation):
-        if activation == "relu": return nn.ReLU()
-        elif activation == "gelu": return nn.GELU()
+        if activation.lower() == "relu": return nn.ReLU()
+        elif activation.lower() == "gelu": return nn.GELU()
         raise ValueError(f'{activation} is not available. You can use "relu" or "gelu"')
 
 # Cell
 class TSTEncoder(Module):
-    def __init__(self, encoder_layer, n_layers):
+    def __init__(self, encoder_layer, n_layers, res_attention:bool=False):
         self.layers = nn.ModuleList([deepcopy(encoder_layer) for i in range(n_layers)])
+        self.res_attention = res_attention
 
-    def forward(self, src:Tensor, mask:Optional[Tensor]=None) -> Tensor:
+    def forward(self, src:Tensor, attn_mask:Optional[Tensor]=None) -> Tensor:
         output = src
-        for mod in self.layers: output = mod(output, mask=mask)
-        return output
-
+        scores = None
+        if self.res_attention:
+            for mod in self.layers: output, scores = mod(output, prev=scores, attn_mask=attn_mask)
+            return output
+        else:
+            for mod in self.layers: output = mod(output, attn_mask=attn_mask)
+            return output
 
 # Cell
 class TSTPlus(Module):
-    def __init__(self, c_in:int, c_out:int, seq_len:int, max_seq_len:Optional[int]=None,
+    def __init__(self, c_in:int, c_out:int, seq_len:int, max_seq_len:Optional[int]=512,
                  n_layers:int=3, d_model:int=128, n_heads:int=16, d_k:Optional[int]=None, d_v:Optional[int]=None,
-                 d_ff:int=256, res_dropout:float=0.1, activation:str="gelu", fc_dropout:float=0.,
-                 pe:str='gauss', learn_pe:bool=True, flatten:bool=True, custom_head:Optional=None,
+                 d_ff:int=256, res_dropout:float=0.1, activation:str="gelu", res_attention:bool=False,
+                 pe:str='exp1d', learn_pe:bool=True, flatten:bool=True, fc_dropout:float=0., custom_head:Optional=None,
                  y_range:Optional[tuple]=None, verbose:bool=False, **kwargs):
         r"""TST (Time Series Transformer) is a Transformer that takes continuous time series as inputs.
         As mentioned in the paper, the input must be standardized by_var based on the entire training set.
@@ -164,7 +197,7 @@ class TSTPlus(Module):
             c_in: the number of features (aka variables, dimensions, channels) in the time series dataset.
             c_out: the number of target classes.
             seq_len: number of time steps in the time series.
-            max_seq_len: useful to control the temporal resolution in long time series to avoid memory issues.
+            max_seq_len: useful to control the temporal resolution in long time series to avoid memory issues. Default=512.
             d_model: total dimension of the model (number of features created by the model)
             n_heads:  parallel attention heads.
             d_k: size of the learned linear projection of queries and keys in the MHA. Usual values: 16-512. Default: None -> (d_model/n_heads) = 32.
@@ -172,17 +205,19 @@ class TSTPlus(Module):
             d_ff: the dimension of the feedforward network model.
             res_dropout: amount of residual dropout applied in the encoder.
             activation: the activation function of intermediate layer, relu or gelu.
+            res_attention: if True Residual MultiHeadAttention is applied.
             num_layers: the number of sub-encoder-layers in the encoder.
-            fc_dropout: dropout applied to the final fully connected layer.
-            pe: type of positional encoder. Available types: None, 'gauss' (default), 'lin1d', 'exp1d', '2d', 'sincos', 'zeros'.
+            pe: type of positional encoder. Available types: 'exp1d', 'lin1d', 'exp2d', 'lin2d', 'sincos', 'gauss', 'zeros', None.
             learn_pe: learned positional encoder (True, default) or fixed positional encoder.
             flatten: this will flattent the encoder output to be able to apply an mlp type of head (default=True)
+            fc_dropout: dropout applied to the final fully connected layer.
             custom_head: custom head that will be applied to the network. It must contain all kwargs (pass a partial function)
             y_range: range of possible y values (used in regression tasks).
             kwargs: nn.Conv1d kwargs. If not {}, a nn.Conv1d with those kwargs will be applied to original time series.
 
         Input shape:
-            bs (batch size) x nvars (aka features, variables, dimensions, channels) x seq_len (aka time steps)
+            x: bs (batch size) x nvars (aka features, variables, dimensions, channels) x seq_len (aka time steps)
+            attn_mask: q_len x q_len
         """
         self.c_out, self.seq_len = c_out, seq_len
 
@@ -200,11 +235,11 @@ class TSTPlus(Module):
         elif kwargs:
             self.new_q_len = True
             t = torch.rand(1, 1, seq_len)
-            q_len = nn.Conv1d(1, 1, **kwargs)(t).shape[-1]
-            self.W_P = nn.Conv1d(c_in, d_model, **kwargs) # Eq 2
+            q_len = Conv1d(1, 1, **kwargs)(t).shape[-1]
+            self.W_P = Conv1d(c_in, d_model, **kwargs) # Eq 2
             pv(f'Conv1d with kwargs={kwargs} applied to input to create input encodings\n', verbose)
         else:
-            self.W_P = nn.Linear(c_in, d_model) # Eq 1: projection of feature vectors onto a d-dim vector space
+            self.W_P = nn.Linear(c_in, d_model)        # Eq 1: projection of feature vectors onto a d-dim vector space
 
         # Positional encoding
         if pe == None:
@@ -214,8 +249,9 @@ class TSTPlus(Module):
         elif pe == 'gauss': W_pos = torch.normal(0, 1, (q_len, d_model), device=default_device())
         elif pe == 'lin1d': W_pos = Coord1dPosEncoding(q_len, exponential=False, normalize=True)
         elif pe == 'exp1d': W_pos = Coord1dPosEncoding(q_len, exponential=True, normalize=True)
-        elif pe == '2d': W_pos = Coord2dPosEncoding(q_len, d_model)
-        elif pe == 'sincos': W_pos = SinCosPosEncoding(q_len, d_model)
+        elif pe == 'lin2d': W_pos = Coord2dPosEncoding(q_len, d_model, exponential=False, normalize=True)
+        elif pe == 'exp2d': W_pos = Coord2dPosEncoding(q_len, d_model, exponential=True, normalize=True)
+        elif pe == 'sincos': W_pos = SinCosPosEncoding(q_len, d_model, normalize=True)
         else: raise ValueError(f"{pe} is not a valid pe (positional encoder. Available types: 'gauss' (default), 'zeros', lin1d', 'exp1d', '2d', 'sincos'.)")
         self.W_pos = nn.Parameter(W_pos, requires_grad=learn_pe)
 
@@ -223,44 +259,53 @@ class TSTPlus(Module):
         self.res_dropout = nn.Dropout(res_dropout)
 
         # Encoder
-        encoder_layer = TSTEncoderLayer(d_model, n_heads, d_k=d_k, d_v=d_v, d_ff=d_ff, res_dropout=res_dropout, activation=activation)
-        self.encoder = TSTEncoder(encoder_layer, n_layers)
-        self.flatten = Flatten() if flatten else None
+        encoder_layer = TSTEncoderLayer(d_model, n_heads, d_k=d_k, d_v=d_v, d_ff=d_ff, res_dropout=res_dropout, activation=activation,
+                                        res_attention=res_attention)
+        self.encoder = TSTEncoder(encoder_layer, n_layers, res_attention=res_attention)
+        self.transpose = Transpose(-1, -2, contiguous=True)
 
         # Head
-        self.head_nf = q_len * d_model if flatten else d_model
-        if custom_head: self.head = custom_head(self.head_nf, c_out) # custom head passed as a partial func with all its kwargs
-        else: self.head = self.create_head(self.head_nf, c_out, fc_dropout=fc_dropout, y_range=y_range)
+        self.head_nf = d_model
+        if custom_head: self.head = custom_head(self.head_nf, c_out, q_len) # custom head passed as a partial func with all its kwargs
+        else: self.head = self.create_head(self.head_nf, c_out, q_len, flatten=flatten, fc_dropout=fc_dropout, y_range=y_range)
 
-    def create_head(self, nf, c_out, fc_dropout=0., y_range=None, **kwargs):
-        layers = [nn.Dropout(fc_dropout)] if fc_dropout else []
+    def create_head(self, nf, c_out, seq_len, flatten=True, fc_dropout=0., y_range=None, **kwargs):
+        if flatten: nf = nf * seq_len
+        layers = [Flatten()] if flatten else []
+        if fc_dropout: layers += [nn.Dropout(fc_dropout)]
         layers += [nn.Linear(nf, c_out)]
         if y_range: layers += [SigmoidRange(*y_range)]
         return nn.Sequential(*layers)
 
 
-    def forward(self, x:Tensor, mask:Optional[Tensor]=None) -> Tensor:  # x: [bs x nvars x q_len]
+    def forward(self, x:Tensor, attn_mask:Optional[Tensor]=None) -> Tensor:  # x: [bs x nvars x q_len], attn_mask: [q_len x q_len]
 
         # Input encoding
         if self.new_q_len: u = self.W_P(x).transpose(2,1) # Eq 2        # u: [bs x d_model x q_len] transposed to [bs x q_len x d_model]
-        else: u = self.W_P(x.transpose(2,1)) # Eq 1                     # u: [bs x q_len x d_model] transposed to [bs x q_len x d_model]
+        else: u = self.W_P(x.transpose(2,1))              # Eq 1        # u: [bs x q_len x d_model] transposed to [bs x q_len x d_model]
 
         # Positional encoding
         u = self.res_dropout(u + self.W_pos)
 
         # Encoder
-        z = self.encoder(u)                                             # z: [bs x q_len x d_model]
-        if self.flatten is not None: z = self.flatten(z)                # z: [bs x q_len * d_model]
-        else: z = z.transpose(2,1).contiguous()                         # z: [bs x d_model x q_len]
+        z = self.encoder(u, attn_mask=attn_mask)                        # z: [bs x q_len x d_model]
+        z = self.transpose(z)                                           # z: [bs x d_model x q_len]
 
         # Classification/ Regression head
-        return self.head(z)                                             # output: [bs x c_out]
+        return self.head(z)
+
+    def show_pe(self, cmap='viridis', figsize=None):
+        plt.figure(figsize=figsize)
+        plt.pcolormesh(self.W_pos.detach().cpu(), cmap=cmap)
+        plt.title('Positional Encoding')
+        plt.colorbar()
+        plt.show()
 
 # Cell
 @delegates(TSTPlus.__init__)
 class MultiTST(Module):
     _arch = TSTPlus
-    def __init__(self, feats, c_out, seq_len, **kwargs):
+    def __init__(self, feats, c_out, seq_len, max_seq_len:Optional[int]=512, **kwargs):
         r"""
         MultiTST is a class that allows you to create a model with multiple branches of TST.
 
@@ -274,13 +319,14 @@ class MultiTST(Module):
         self.branches = nn.ModuleList()
         self.head_nf = 0
         for feat in self.feats:
-            m = create_model(self._arch, c_in=feat, c_out=c_out, seq_len=seq_len, **kwargs)
+            m = create_model(self._arch, c_in=feat, c_out=c_out, seq_len=seq_len, max_seq_len=max_seq_len, **kwargs)
             self.head_nf += m.head_nf
             m.head = Noop
             self.branches.append(m)
 
         # Head
-        self.head = self._arch.create_head(self, self.head_nf, c_out, **kwargs)
+        q_len = min(seq_len, max_seq_len)
+        self.head = self._arch.create_head(self, self.head_nf, c_out, q_len, **kwargs)
 
     def forward(self, x):
         x = torch.split(x, self.feats, dim=1)

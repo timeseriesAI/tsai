@@ -106,14 +106,14 @@ test_eq(len(get_UCR_multivariate_list()), 30)
 UCR_multivariate_list = get_UCR_multivariate_list()
 
 UCR_list = sorted(UCR_univariate_list + UCR_multivariate_list)
+len(UCR_list)
 
 # Cell
 def get_UCR_data(dsid, path='.', parent_dir='data/UCR', on_disk=True, return_split=True, split_data=True, force_download=False, verbose=False):
+    dsid = [ds for ds in UCR_list if ds.lower() == dsid.lower()][0]
     return_split = return_split and split_data # keep return_split for compatibility. It will be replaced by split_data
     if dsid in ['InsectWingbeat']:
-        if verbose: print('There are problems with the original zip file and data cannot be correctly downloaded')
-        if return_split: return None, None, None, None
-        else: return None, None, None
+        warnings.warn(f'Be aware that download of the {dsid} dataset is very slow')
     if verbose: print('Dataset:', dsid)
     assert dsid in UCR_list, f'{dsid} is not a UCR dataset'
     full_parent_dir = Path(path)/parent_dir
@@ -124,15 +124,19 @@ def get_UCR_data(dsid, path='.', parent_dir='data/UCR', on_disk=True, return_spl
         if dsid == 'DuckDuckGeese':
             with zipfile.ZipFile(Path('data/UCR/DuckDuckGeese/DuckDuckGeese_ts.zip'), 'r') as zip_ref:
                 zip_ref.extractall(Path(parent_dir))
+        pv('loading ts files to dataframe...', verbose)
         X_train_df, y_train = load_from_tsfile_to_dataframe(full_tgt_dir/f'{dsid}_TRAIN.ts')
         X_valid_df, y_valid = load_from_tsfile_to_dataframe(full_tgt_dir/f'{dsid}_TEST.ts')
+        pv('...ts files loaded', verbose)
+        pv('preparing numpy arrays...', verbose)
         X_train_ = []
         X_valid_ = []
-        for i in range(X_train_df.shape[-1]):
+        for i in progress_bar(range(X_train_df.shape[-1])):
             X_train_.append(stack_pad(X_train_df[f'dim_{i}'])) # stack arrays even if they have different lengths
             X_valid_.append(stack_pad(X_valid_df[f'dim_{i}'])) # stack arrays even if they have different lengths
         X_train = np.transpose(np.stack(X_train_, axis=-1), (0, 2, 1)).astype(np.float32)
         X_valid = np.transpose(np.stack(X_valid_, axis=-1), (0, 2, 1)).astype(np.float32)
+        X_train, X_valid = match_seq_len(X_train, X_valid)
         np.save(f'{full_tgt_dir}/X_train.npy', X_train)
         np.save(f'{full_tgt_dir}/y_train.npy', y_train)
         np.save(f'{full_tgt_dir}/X_valid.npy', X_valid)
@@ -141,6 +145,7 @@ def get_UCR_data(dsid, path='.', parent_dir='data/UCR', on_disk=True, return_spl
         np.save(f'{full_tgt_dir}/y.npy', concat(y_train, y_valid))
         del X_train, X_valid, y_train, y_valid
         delete_all_in_dir(full_tgt_dir, exception='.npy')
+        pv('...numpy arrays correctly saved', verbose)
 
     mmap_mode='r+' if on_disk else None
     X_train = np.load(f'{full_tgt_dir}/X_train.npy', mmap_mode=mmap_mode)
@@ -167,10 +172,10 @@ def get_UCR_data(dsid, path='.', parent_dir='data/UCR', on_disk=True, return_spl
 
 # Cell
 def check_data(X, y=None, splits=None):
-    X_is_nan = np.isnan(X).sum()
+    try: X_is_nan = np.isnan(X).sum()
+    except: X_is_nan = 'couldn not be checked'
     if X.ndim == 3:
         shape = f'[{X.shape[0]} samples x {X.shape[1]} features x {X.shape[-1]} timesteps]'
-
         print(f'X      - shape: {shape}  type: {cls_name(X)}  dtype:{X.dtype}  isnan: {X_is_nan}')
     else:
         print(f'X      - shape: {X.shape}  type: {cls_name(X)}  dtype:{X.dtype}  isnan: {X_is_nan}')

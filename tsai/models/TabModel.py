@@ -10,7 +10,7 @@ from .layers import *
 class TabModel(Module):
     "Basic model for tabular data."
     def __init__(self, emb_szs, n_cont, out_sz, layers, ps=None, embed_p=0., y_range=None, use_bn=True, bn_final=False, bn_cont=True,
-                 act_cls=nn.ReLU(inplace=True)):
+                 act=nn.ReLU(inplace=True)):
         ps = ifnone(ps, [0.]*len(layers))
         if not is_listy(ps): ps = [ps]*len(layers)
         self.embeds = nn.ModuleList([Embedding(ni, nf) for ni,nf in emb_szs])
@@ -19,7 +19,7 @@ class TabModel(Module):
         n_emb = sum(e.embedding_dim for e in self.embeds)
         self.n_emb,self.n_cont = n_emb,n_cont
         sizes = [n_emb + n_cont] + layers + [out_sz]
-        actns = [act_cls for _ in range(len(sizes)-2)]
+        actns = [act for _ in range(len(sizes)-2)]
         _layers = [LinBnDrop(sizes[i], sizes[i+1], bn=use_bn and (i!=len(actns)-1 or bn_final), p=p, act=a)
                        for i,(p,a) in enumerate(zip(ps,actns))]
         self.layers = nn.Sequential(*_layers)

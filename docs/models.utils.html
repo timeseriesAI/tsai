@@ -349,7 +349,7 @@ nb_path: "nbs/100_models.utils.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="build_ts_model" class="doc_header"><code>build_ts_model</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L73" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>build_ts_model</code>(<strong><code>arch</code></strong>, <strong><code>c_in</code></strong>=<em><code>None</code></em>, <strong><code>c_out</code></strong>=<em><code>None</code></em>, <strong><code>seq_len</code></strong>=<em><code>None</code></em>, <strong><code>dls</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="transfer_weights" class="doc_header"><code>transfer_weights</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L73" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>transfer_weights</code>(<strong><code>model</code></strong>, <strong><code>weights_path</code></strong>:<code>Path</code>, <strong><code>device</code></strong>:<code>device</code>=<em><code>None</code></em>, <strong><code>exclude_head</code></strong>:<code>bool</code>=<em><code>True</code></em>)</p>
 </blockquote>
 
 </div>
@@ -373,7 +373,7 @@ nb_path: "nbs/100_models.utils.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="build_tabular_model" class="doc_header"><code>build_tabular_model</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L99" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>build_tabular_model</code>(<strong><code>arch</code></strong>, <strong><code>dls</code></strong>, <strong><code>layers</code></strong>=<em><code>None</code></em>, <strong><code>emb_szs</code></strong>=<em><code>None</code></em>, <strong><code>n_out</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>ps</code></strong>=<em><code>None</code></em>, <strong><code>embed_p</code></strong>=<em><code>0.0</code></em>, <strong><code>use_bn</code></strong>=<em><code>True</code></em>, <strong><code>bn_final</code></strong>=<em><code>False</code></em>, <strong><code>bn_cont</code></strong>=<em><code>True</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU(inplace=True)</code></em>)</p>
+<h4 id="build_ts_model" class="doc_header"><code>build_ts_model</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L97" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>build_ts_model</code>(<strong><code>arch</code></strong>, <strong><code>c_in</code></strong>=<em><code>None</code></em>, <strong><code>c_out</code></strong>=<em><code>None</code></em>, <strong><code>seq_len</code></strong>=<em><code>None</code></em>, <strong><code>dls</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong><code>weights_path</code></strong>=<em><code>None</code></em>, <strong><code>exclude_head</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -397,7 +397,7 @@ nb_path: "nbs/100_models.utils.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="build_tsimage_model" class="doc_header"><code>build_tsimage_model</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L112" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>build_tsimage_model</code>(<strong><code>arch</code></strong>, <strong><code>c_in</code></strong>=<em><code>None</code></em>, <strong><code>c_out</code></strong>=<em><code>None</code></em>, <strong><code>dls</code></strong>=<em><code>None</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>p</code></strong>=<em><code>0.0</code></em>, <strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>stem_szs</code></strong>=<em><code>(32, 32, 64)</code></em>, <strong><code>widen</code></strong>=<em><code>1.0</code></em>, <strong><code>sa</code></strong>=<em><code>False</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU</code></em>, <strong><code>ndim</code></strong>=<em><code>2</code></em>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>2</code></em>, <strong><code>groups</code></strong>=<em><code>1</code></em>, <strong><code>reduction</code></strong>=<em><code>None</code></em>, <strong><code>nh1</code></strong>=<em><code>None</code></em>, <strong><code>nh2</code></strong>=<em><code>None</code></em>, <strong><code>dw</code></strong>=<em><code>False</code></em>, <strong><code>g2</code></strong>=<em><code>1</code></em>, <strong><code>sym</code></strong>=<em><code>False</code></em>, <strong><code>norm_type</code></strong>=<em><code>&lt;NormType.Batch: 1&gt;</code></em>, <strong><code>pool</code></strong>=<em><code>AvgPool</code></em>, <strong><code>pool_first</code></strong>=<em><code>True</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>bias</code></strong>=<em><code>None</code></em>, <strong><code>bn_1st</code></strong>=<em><code>True</code></em>, <strong><code>transpose</code></strong>=<em><code>False</code></em>, <strong><code>init</code></strong>=<em><code>'auto'</code></em>, <strong><code>xtra</code></strong>=<em><code>None</code></em>, <strong><code>bias_std</code></strong>=<em><code>0.01</code></em>, <strong><code>dilation</code></strong>:<code>Union</code>[<code>int</code>, <code>Tuple</code>[<code>int</code>, <code>int</code>]]=<em><code>1</code></em>, <strong><code>padding_mode</code></strong>:<code>str</code>=<em><code>'zeros'</code></em>)</p>
+<h4 id="build_tabular_model" class="doc_header"><code>build_tabular_model</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L128" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>build_tabular_model</code>(<strong><code>arch</code></strong>, <strong><code>dls</code></strong>, <strong><code>layers</code></strong>=<em><code>None</code></em>, <strong><code>emb_szs</code></strong>=<em><code>None</code></em>, <strong><code>n_out</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>ps</code></strong>=<em><code>None</code></em>, <strong><code>embed_p</code></strong>=<em><code>0.0</code></em>, <strong><code>use_bn</code></strong>=<em><code>True</code></em>, <strong><code>bn_final</code></strong>=<em><code>False</code></em>, <strong><code>bn_cont</code></strong>=<em><code>True</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU(inplace=True)</code></em>)</p>
 </blockquote>
 
 </div>
@@ -421,7 +421,31 @@ nb_path: "nbs/100_models.utils.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="count_parameters" class="doc_header"><code>count_parameters</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L124" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>count_parameters</code>(<strong><code>model</code></strong>, <strong><code>trainable</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="build_tsimage_model" class="doc_header"><code>build_tsimage_model</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L141" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>build_tsimage_model</code>(<strong><code>arch</code></strong>, <strong><code>c_in</code></strong>=<em><code>None</code></em>, <strong><code>c_out</code></strong>=<em><code>None</code></em>, <strong><code>dls</code></strong>=<em><code>None</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>p</code></strong>=<em><code>0.0</code></em>, <strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>stem_szs</code></strong>=<em><code>(32, 32, 64)</code></em>, <strong><code>widen</code></strong>=<em><code>1.0</code></em>, <strong><code>sa</code></strong>=<em><code>False</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU</code></em>, <strong><code>ndim</code></strong>=<em><code>2</code></em>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>2</code></em>, <strong><code>groups</code></strong>=<em><code>1</code></em>, <strong><code>reduction</code></strong>=<em><code>None</code></em>, <strong><code>nh1</code></strong>=<em><code>None</code></em>, <strong><code>nh2</code></strong>=<em><code>None</code></em>, <strong><code>dw</code></strong>=<em><code>False</code></em>, <strong><code>g2</code></strong>=<em><code>1</code></em>, <strong><code>sym</code></strong>=<em><code>False</code></em>, <strong><code>norm_type</code></strong>=<em><code>&lt;NormType.Batch: 1&gt;</code></em>, <strong><code>pool</code></strong>=<em><code>AvgPool</code></em>, <strong><code>pool_first</code></strong>=<em><code>True</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>bias</code></strong>=<em><code>None</code></em>, <strong><code>bn_1st</code></strong>=<em><code>True</code></em>, <strong><code>transpose</code></strong>=<em><code>False</code></em>, <strong><code>init</code></strong>=<em><code>'auto'</code></em>, <strong><code>xtra</code></strong>=<em><code>None</code></em>, <strong><code>bias_std</code></strong>=<em><code>0.01</code></em>, <strong><code>dilation</code></strong>:<code>Union</code>[<code>int</code>, <code>Tuple</code>[<code>int</code>, <code>int</code>]]=<em><code>1</code></em>, <strong><code>padding_mode</code></strong>:<code>str</code>=<em><code>'zeros'</code></em>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="count_parameters" class="doc_header"><code>count_parameters</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L153" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>count_parameters</code>(<strong><code>model</code></strong>, <strong><code>trainable</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 
 </div>
@@ -484,7 +508,7 @@ nb_path: "nbs/100_models.utils.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_clones" class="doc_header"><code>get_clones</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L129" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_clones</code>(<strong><code>module</code></strong>, <strong><code>N</code></strong>)</p>
+<h4 id="get_clones" class="doc_header"><code>get_clones</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L158" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_clones</code>(<strong><code>module</code></strong>, <strong><code>N</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -553,7 +577,7 @@ nb_path: "nbs/100_models.utils.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_nf" class="doc_header"><code>get_nf</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L133" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_nf</code>(<strong><code>m</code></strong>)</p>
+<h4 id="get_nf" class="doc_header"><code>get_nf</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L162" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_nf</code>(<strong><code>m</code></strong>)</p>
 </blockquote>
 <p>Get nf from model's last linear layer</p>
 
@@ -624,7 +648,7 @@ nb_path: "nbs/100_models.utils.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="split_model" class="doc_header"><code>split_model</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L139" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>split_model</code>(<strong><code>model</code></strong>, <strong><code>cut</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="split_model" class="doc_header"><code>split_model</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L168" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>split_model</code>(<strong><code>model</code></strong>, <strong><code>cut</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -655,7 +679,7 @@ nb_path: "nbs/100_models.utils.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="seq_len_calculator" class="doc_header"><code>seq_len_calculator</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L161" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>seq_len_calculator</code>(<strong><code>seq_len</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="seq_len_calculator" class="doc_header"><code>seq_len_calculator</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L190" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>seq_len_calculator</code>(<strong><code>seq_len</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>

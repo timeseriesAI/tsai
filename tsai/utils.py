@@ -5,13 +5,14 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'to3dPlusTensor', 'to3dPlusArray', 'todtype', 'bytes2size', 'bytes2GB', 'delete_all_in_dir', 'reverse_dict',
            'is_tuple', 'itemify', 'isnone', 'exists', 'ifelse', 'is_not_close', 'test_not_close', 'test_type',
            'test_ok', 'test_not_ok', 'test_error', 'assert_fn', 'test_gt', 'test_ge', 'test_lt', 'test_le', 'stack',
-           'stack_pad', 'random_shuffle', 'cat2int', 'cycle_dl', 'cycle_dl_to_device', 'cache_memmap', 'memmap2cache',
-           'get_func_defaults', 'get_idx_from_df_col_vals', 'get_sublist_idxs', 'flatten_list', 'display_pd_df',
-           'ttest', 'tscore', 'ttest_tensor', 'pcc', 'scc', 'a', 'b', 'remove_fn', 'npsave', 'np_save', 'permute_2D',
-           'random_normal', 'random_half_normal', 'random_normal_tensor', 'random_half_normal_tensor', 'clip_outliers',
-           'default_dpi', 'get_plot_fig', 'fig2buf', 'plot_scatter', 'jointplot_scatter', 'jointplot_kde', 'get_idxs',
-           'apply_cmap', 'torch_tile', 'to_tsfresh_df', 'pcorr', 'scorr', 'torch_diff', 'get_outliers_IQR',
-           'get_percentile', 'torch_clamp', 'torch_slice_by_dim', 'concat', 'reduce_memory_usage', 'cls_name']
+           'stack_pad', 'match_seq_len', 'random_shuffle', 'cat2int', 'cycle_dl', 'cycle_dl_to_device', 'cache_memmap',
+           'memmap2cache', 'get_func_defaults', 'get_idx_from_df_col_vals', 'get_sublist_idxs', 'flatten_list',
+           'display_pd_df', 'ttest', 'tscore', 'ttest_tensor', 'pcc', 'scc', 'a', 'b', 'remove_fn', 'npsave', 'np_save',
+           'permute_2D', 'random_normal', 'random_half_normal', 'random_normal_tensor', 'random_half_normal_tensor',
+           'clip_outliers', 'default_dpi', 'get_plot_fig', 'fig2buf', 'plot_scatter', 'jointplot_scatter',
+           'jointplot_kde', 'get_idxs', 'apply_cmap', 'torch_tile', 'to_tsfresh_df', 'pcorr', 'scorr', 'torch_diff',
+           'get_outliers_IQR', 'get_percentile', 'torch_clamp', 'torch_slice_by_dim', 'concat', 'reduce_memory_usage',
+           'cls_name', 'roll2d', 'roll3d', 'random_roll2d', 'random_roll3d']
 
 # Cell
 from .imports import *
@@ -268,6 +269,11 @@ def stack_pad(l):
     row_length = max(l, key=len).__len__()
     mat = np.array([resize(row, row_length) for row in l])
     return mat
+
+# Cell
+def match_seq_len(*arrays):
+    max_len = stack([x.shape[-1] for x in arrays]).max()
+    return [np.pad(x, pad_width=((0,0), (0,0), (max_len - x.shape[-1], 0)), mode='constant', constant_values=0) for x in arrays]
 
 # Cell
 def random_shuffle(o, random_state=None):
@@ -602,3 +608,59 @@ def reduce_memory_usage(df):
 
 # Cell
 def cls_name(o): return o.__class__.__name__
+
+# Cell
+
+# This solution is based on https://stackoverflow.com/questions/20360675/roll-rows-of-a-matrix-independently
+def roll2d(o, roll1=None, roll2=None):
+    r"""Rolls a 2D object on the indicated axis"""
+    assert o.ndim == 2, "roll2D can only be applied to 2d objects"
+    axis1, axis2 = np.ogrid[:o.shape[0], :o.shape[1]]
+    if roll1 is not None:
+        axis1 = axis1 - roll1.reshape(-1, 1)
+    if roll2 is not None:
+        axis2 = axis2 - roll2.reshape(-1, 1)
+    return o[axis1, axis2]
+
+
+# This solution is based on https://stackoverflow.com/questions/20360675/roll-rows-of-a-matrix-independently
+def roll3d(o, roll1=None, roll2=None, roll3=None):
+    r"""Rolls a 3D object on the indicated axis"""
+    assert o.ndim == 3, "roll3D can only be applied to 3d objects"
+    axis1, axis2, axis2 = np.ogrid[:o.shape[0], :o.shape[1], :o.shape[2]]
+    if roll1 is not None:
+        axis1 = axis1 - roll1.reshape(-1, 1)
+    if roll2 is not None:
+        axis2 = axis2 - roll2.reshape(-1, 1)
+    if roll3 is not None:
+        axis3 = axis3 - roll3.reshape(-1, 1)
+    return o[axis1, axis2, axis3]
+
+
+# This solution is based on https://stackoverflow.com/questions/20360675/roll-rows-of-a-matrix-independently
+def random_roll2d(o, axis=()):
+    r"""Rolls a 2D object on the indicated axis"""
+    axis1, axis2 = np.ogrid[:o.shape[0], :o.shape[1]]
+    if 0 in axis:
+        roll1 = np.random.randint(0, o.shape[0], o.shape[0]).reshape(-1, 1)
+        axis1 = axis1 - roll1
+    if 1 in axis:
+        roll2 = np.random.randint(0, o.shape[1], o.shape[0]).reshape(-1, 1)
+        axis2 = axis2 - roll2
+    return o[axis1, axis2]
+
+
+# This solution is based on https://stackoverflow.com/questions/20360675/roll-rows-of-a-matrix-independently
+def random_roll3d(o, axis=()):
+    r"""Rolls a 3D object on the indicated axis"""
+    axis1, axis2, axis3 = np.ogrid[:o.shape[0], :o.shape[1], :o.shape[2]]
+    if 0 in axis:
+        roll1 = np.random.randint(0, o.shape[0], o.shape[0]).reshape(-1, 1, 1)
+        axis1 = axis1 - roll1
+    if 1 in axis:
+        roll2 = np.random.randint(0, o.shape[1], o.shape[0]).reshape(-1, 1, 1)
+        axis2 = axis2 - roll2
+    if 2 in axis:
+        roll3 = np.random.randint(0, o.shape[2], o.shape[0]).reshape(-1, 1, 1)
+        axis3 = axis3 - roll3
+    return o[axis1, axis2, axis3]

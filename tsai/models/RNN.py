@@ -14,9 +14,9 @@ class _RNN_Base(Module):
         self.fc = nn.Linear(hidden_size * (1 + bidirectional), c_out)
 
     def forward(self, x):
-        x = x.transpose(2,1) # [batch_size x n_vars x seq_len] --> [batch_size x seq_len x n_vars]
+        x = x.transpose(2,1)    # [batch_size x n_vars x seq_len] --> [batch_size x seq_len x n_vars]
         output, _ = self.rnn(x) # output from all sequence steps: [batch_size x seq_len x hidden_size * (1 + bidirectional)]
-        output = output[:, -1] # output from last sequence step : [batch_size x hidden_size * (1 + bidirectional)]
+        output = output[:, -1]  # output from last sequence step : [batch_size x hidden_size * (1 + bidirectional)]
         output = self.fc(self.dropout(output))
         return output
 

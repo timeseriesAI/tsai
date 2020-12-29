@@ -89,14 +89,38 @@ def create_scripts(max_elapsed=60):
     return last_saved(max_elapsed)
 
 
-class Timer():
-    def __init__(self): self.start_dt = None
-    def start(self): self.start_dt = datetime.now()
-    def stop(self):
+class Timer:
+    def start(self, verbose=False): 
+        self.all_elapsed = 0
+        self.n = 0
+        self.verbose = verbose
+        self.start_dt = datetime.now()
+        self.start_dt0 = self.start_dt
+
+    def elapsed(self):
         end_dt = datetime.now()
+        self.n += 1
+        assert hasattr(self, "start_dt0"), "You need to first use timer.start()"
         elapsed = end_dt - self.start_dt
-        print(f'Elapsed time: {elapsed}')
+        if self.all_elapsed == 0: self.all_elapsed = elapsed
+        else: self.all_elapsed += elapsed
+        pv(f'Elapsed time ({self.n:3}): {elapsed}', self.verbose)
         self.start_dt = datetime.now()
         return elapsed
+
+    def stop(self):
+        end_dt = datetime.now()
+        self.n += 1
+        assert hasattr(self, "start_dt0"), "You need to first use timer.start()"
+        elapsed = end_dt - self.start_dt
+        if self.all_elapsed == 0: self.all_elapsed = elapsed
+        else: self.all_elapsed += elapsed
+        total_elapsed = end_dt - self.start_dt0
+        pv(f'Elapsed time ({self.n:3}): {elapsed}', self.verbose)
+        pv(f'Elapsed time (all): {self.all_elapsed}', self.verbose)
+        pv(f'Total time        : {total_elapsed}', self.verbose)
+        delattr(self, "start_dt0")
+        delattr(self, "start_dt")
+        return total_elapsed
 
 timer = Timer()

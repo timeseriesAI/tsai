@@ -20,7 +20,15 @@
         "Optimizers": "/optimizer",
         "Metrics": "/metrics",
         "Callbacks": "/callback.core",
-        "Semi-supervised learning": "/callback.semi_supervised"
+        "": {
+            "Semi-supervised learning": {
+                "/callback.noisy_student"
+            }
+        },
+        "empty1": {
+            "Self-supervised learning": {
+            }
+        }
     },
     "Models": {
         "Layers": "/models.layers",

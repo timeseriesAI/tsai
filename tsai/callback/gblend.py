@@ -37,7 +37,7 @@ class GBlend(Callback):
     Pattern Recognition (pp. 12695-12705).
     """
 
-    def __init__(self, V_pct=.1, n:Union[None, int, tuple, list]=(10, 5), sel_metric:Optional[str]=None, show_plot:bool=False):
+    def __init__(self, V_pct=.1, n:Union[None, int, tuple, list]=(10, 5), sel_metric:Optional[str]=None, show_plot:bool=False, path:str='./data/gblend'):
 
         r"""
         Args:
@@ -49,6 +49,8 @@ class GBlend(Callback):
         assert V_pct < 1, 'V_pct must be < 1'
         self.V_pct, self.n, self.sel_metric, self.show_plot = V_pct, n, sel_metric, show_plot
         self.metric_idx = None
+        self.path = Path(path)
+        if not os.path.exists(self.path): os.makedirs(self.path)
 
     def before_fit(self):
 
@@ -102,7 +104,7 @@ class GBlend(Callback):
 
             #compute weights
             self.learn.save('gblend_learner')
-            torch.save(self.learn.model, 'gblend_model')
+            torch.save(self.learn.model, self.path/'gblend_model')
             w = self.compute_weights()
             if self.epoch == 0: self.learn.ws = [w]
             else: self.learn.ws.append(w)
@@ -116,7 +118,7 @@ class GBlend(Callback):
         _LT = []
         _LV = []
         for i in range(self.M + 1):
-            model = torch.load('gblend_model')
+            model = torch.load(self.path/'gblend_model')
             learn = Learner(self.learn.new_dls[i], model.m[i], loss_func=GBlendLoss(),
                             opt_func=self.learn.opt_func, metrics=self.learn.metrics)
             learn.model.multi_output = False
@@ -163,7 +165,7 @@ class GBlend(Callback):
         _LV = []
         with torch.no_grad():
             for i in range(self.M + 1):
-                model = torch.load('gblend_model')
+                model = torch.load(self.path/'gblend_model')
                 model.multi_output = False
                 model = model.m[i]
                 _train_metrics = []

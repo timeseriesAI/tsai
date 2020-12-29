@@ -47,7 +47,7 @@ nb_path: "nbs/130_models.MultiInputNet.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MultiInputNet" class="doc_header"><code>class</code> <code>MultiInputNet</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/MultiInputNet.py#L11" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MultiInputNet</code>(<strong>*<code>models</code></strong>, <strong><code>c_out</code></strong>=<em><code>None</code></em>, <strong><code>reshape_fn</code></strong>=<em><code>None</code></em>, <strong><code>multi_output</code></strong>=<em><code>False</code></em>, <strong><code>joint_head</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Module</code></p>
+<h2 id="MultiInputNet" class="doc_header"><code>class</code> <code>MultiInputNet</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/MultiInputNet.py#L11" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MultiInputNet</code>(<strong>*<code>models</code></strong>, <strong><code>c_out</code></strong>=<em><code>None</code></em>, <strong><code>reshape_fn</code></strong>=<em><code>None</code></em>, <strong><code>multi_output</code></strong>=<em><code>False</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -111,7 +111,7 @@ nb_path: "nbs/130_models.MultiInputNet.ipynb"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>Feature Extraction: 100%|██████████| 40/40 [00:04&lt;00:00,  9.02it/s]
+<pre>Feature Extraction: 100%|██████████| 40/40 [00:03&lt;00:00, 10.21it/s]
 </pre>
 </div>
 </div>
@@ -173,11 +173,11 @@ nb_path: "nbs/130_models.MultiInputNet.ipynb"
   <tbody>
     <tr>
       <td>0</td>
-      <td>1.793148</td>
-      <td>1.784803</td>
+      <td>1.786771</td>
+      <td>1.780888</td>
       <td>0.316667</td>
-      <td>0.783407</td>
-      <td>00:03</td>
+      <td>0.747481</td>
+      <td>00:02</td>
     </tr>
   </tbody>
 </table>

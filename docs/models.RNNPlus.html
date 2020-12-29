@@ -39,65 +39,6 @@ nb_path: "nbs/105_models.RNNPlus.ipynb"
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="o">!</span>python  -V
-<span class="n">p</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;python         : </span><span class="si">{</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;fastai         :&#39;</span><span class="p">,</span> <span class="n">fastai</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;fastcore       :&#39;</span><span class="p">,</span> <span class="n">fastcore</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;torch          :&#39;</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;scipy          :&#39;</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;numpy          :&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;pandas         :&#39;</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;matplotlib     :&#39;</span><span class="p">,</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Total RAM      : </span><span class="si">{</span><span class="n">bytes2GB</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">virtual_memory</span><span class="p">()</span><span class="o">.</span><span class="n">total</span><span class="p">)</span><span class="si">:</span><span class="s1">6.2f</span><span class="si">}</span><span class="s1"> GB&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Available RAM  : </span><span class="si">{</span><span class="n">bytes2GB</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">virtual_memory</span><span class="p">()</span><span class="o">.</span><span class="n">available</span><span class="p">)</span><span class="si">:</span><span class="s1">6.2f</span><span class="si">}</span><span class="s1"> GB&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Used RAM       : </span><span class="si">{</span><span class="n">bytes2GB</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">virtual_memory</span><span class="p">()</span><span class="o">.</span><span class="n">used</span><span class="p">)</span><span class="si">:</span><span class="s1">6.2f</span><span class="si">}</span><span class="s1"> GB&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;n_cpus         :&#39;</span><span class="p">,</span> <span class="n">cpus</span><span class="p">)</span>
-<span class="n">iscuda</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span>
-<span class="k">if</span> <span class="n">iscuda</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;device         : </span><span class="si">{}</span><span class="s1"> (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">device</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">get_device_name</span><span class="p">(</span><span class="mi">0</span><span class="p">)))</span>
-<span class="k">else</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;device         :&#39;</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>python         : 3.7.6
-fastai         : 2.1.6
-fastcore       : 1.3.5
-torch          : 1.7.0
-scipy          : 1.5.2
-numpy          : 1.19.1
-pandas         : 1.1.3
-matplotlib     : 3.3.2
-Total RAM      :   8.00 GB
-Available RAM  :   2.81 GB
-Used RAM       :   4.17 GB
-n_cpus         : 8
-device         : cpu
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
 <div class="output">
@@ -106,7 +47,7 @@ device         : cpu
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RNNPlus" class="doc_header"><code>class</code> <code>RNNPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/RNNPlus.py#L41" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RNNPlus</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>None</code></em>, <strong><code>hidden_size</code></strong>=<em><code>100</code></em>, <strong><code>n_layers</code></strong>=<em><code>1</code></em>, <strong><code>bias</code></strong>=<em><code>True</code></em>, <strong><code>rnn_dropout</code></strong>=<em><code>0</code></em>, <strong><code>bidirectional</code></strong>=<em><code>False</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>last_step</code></strong>=<em><code>True</code></em>, <strong><code>flatten</code></strong>=<em><code>False</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>_RNNPlus_Base</code></p>
+<h2 id="RNNPlus" class="doc_header"><code>class</code> <code>RNNPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/RNNPlus.py#L41" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RNNPlus</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>None</code></em>, <strong><code>hidden_size</code></strong>=<em><code>100</code></em>, <strong><code>n_layers</code></strong>=<em><code>1</code></em>, <strong><code>bias</code></strong>=<em><code>True</code></em>, <strong><code>rnn_dropout</code></strong>=<em><code>0</code></em>, <strong><code>bidirectional</code></strong>=<em><code>False</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>last_step</code></strong>=<em><code>True</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>_RNNPlus_Base</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -131,7 +72,7 @@ device         : cpu
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LSTMPlus" class="doc_header"><code>class</code> <code>LSTMPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/RNNPlus.py#L44" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTMPlus</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>None</code></em>, <strong><code>hidden_size</code></strong>=<em><code>100</code></em>, <strong><code>n_layers</code></strong>=<em><code>1</code></em>, <strong><code>bias</code></strong>=<em><code>True</code></em>, <strong><code>rnn_dropout</code></strong>=<em><code>0</code></em>, <strong><code>bidirectional</code></strong>=<em><code>False</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>last_step</code></strong>=<em><code>True</code></em>, <strong><code>flatten</code></strong>=<em><code>False</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>_RNNPlus_Base</code></p>
+<h2 id="LSTMPlus" class="doc_header"><code>class</code> <code>LSTMPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/RNNPlus.py#L44" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTMPlus</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>None</code></em>, <strong><code>hidden_size</code></strong>=<em><code>100</code></em>, <strong><code>n_layers</code></strong>=<em><code>1</code></em>, <strong><code>bias</code></strong>=<em><code>True</code></em>, <strong><code>rnn_dropout</code></strong>=<em><code>0</code></em>, <strong><code>bidirectional</code></strong>=<em><code>False</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>last_step</code></strong>=<em><code>True</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>_RNNPlus_Base</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -156,7 +97,7 @@ device         : cpu
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="GRUPlus" class="doc_header"><code>class</code> <code>GRUPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/RNNPlus.py#L47" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GRUPlus</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>None</code></em>, <strong><code>hidden_size</code></strong>=<em><code>100</code></em>, <strong><code>n_layers</code></strong>=<em><code>1</code></em>, <strong><code>bias</code></strong>=<em><code>True</code></em>, <strong><code>rnn_dropout</code></strong>=<em><code>0</code></em>, <strong><code>bidirectional</code></strong>=<em><code>False</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>last_step</code></strong>=<em><code>True</code></em>, <strong><code>flatten</code></strong>=<em><code>False</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>_RNNPlus_Base</code></p>
+<h2 id="GRUPlus" class="doc_header"><code>class</code> <code>GRUPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/RNNPlus.py#L47" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GRUPlus</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>None</code></em>, <strong><code>hidden_size</code></strong>=<em><code>100</code></em>, <strong><code>n_layers</code></strong>=<em><code>1</code></em>, <strong><code>bias</code></strong>=<em><code>True</code></em>, <strong><code>rnn_dropout</code></strong>=<em><code>0</code></em>, <strong><code>bidirectional</code></strong>=<em><code>False</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>last_step</code></strong>=<em><code>True</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>_RNNPlus_Base</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -189,13 +130,16 @@ device         : cpu
 <span class="n">seq_len</span> <span class="o">=</span> <span class="mi">12</span>
 <span class="n">c_out</span> <span class="o">=</span> <span class="mi">2</span>
 <span class="n">xb</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_in</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">RNNPlus</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rnn_dropout</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fc_dropout</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">flatten</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> 
-        <span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">])</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">RNNPlus</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">)(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">])</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">RNNPlus</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rnn_dropout</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fc_dropout</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">])</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">LSTMPlus</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rnn_dropout</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fc_dropout</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">])</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">GRUPlus</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rnn_dropout</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fc_dropout</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">])</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">RNNPlus</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">flatten</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">])</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">RNNPlus</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">flatten</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">])</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">RNNPlus</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rnn_dropout</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fc_dropout</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">flatten</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> 
         <span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">])</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">LSTMPlus</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">flatten</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">])</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">GRUPlus</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">flatten</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">])</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">GRUPlus</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">last_step</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">flatten</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">])</span>
 </pre></div>
 
     </div>
@@ -242,12 +186,12 @@ device         : cpu
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">tsai.data.all</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">tsai.models.utils</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;NATOPS&#39;</span> 
 <span class="n">bs</span> <span class="o">=</span> <span class="mi">16</span>
 <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">return_split</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">tfms</span>  <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">[</span><span class="n">Categorize</span><span class="p">()]]</span>
-<span class="n">dsets</span> <span class="o">=</span> <span class="n">TSDatasets</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">dls</span>   <span class="o">=</span> <span class="n">TSDataLoaders</span><span class="o">.</span><span class="n">from_dsets</span><span class="p">(</span><span class="n">dsets</span><span class="o">.</span><span class="n">train</span><span class="p">,</span> <span class="n">dsets</span><span class="o">.</span><span class="n">valid</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="n">bs</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="n">bs</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -264,7 +208,7 @@ device         : cpu
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">LSTMPlus</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">vars</span><span class="p">,</span> <span class="n">dls</span><span class="o">.</span><span class="n">c</span><span class="p">,</span> <span class="n">dls</span><span class="o">.</span><span class="n">len</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">build_ts_model</span><span class="p">(</span><span class="n">LSTMPlus</span><span class="p">,</span> <span class="n">dls</span><span class="o">=</span><span class="n">dls</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">head</span><span class="p">)</span>
 <span class="n">learn</span> <span class="o">=</span> <span class="n">Learner</span><span class="p">(</span><span class="n">dls</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span>  <span class="n">metrics</span><span class="o">=</span><span class="n">accuracy</span><span class="p">)</span>
 <span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">3e-3</span><span class="p">)</span>
@@ -281,7 +225,10 @@ device         : cpu
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Sequential(
-  (0): Linear(in_features=100, out_features=6, bias=True)
+  (0): LastStep()
+  (1): LinBnDrop(
+    (0): Linear(in_features=100, out_features=6, bias=True)
+  )
 )
 </pre>
 </div>
@@ -304,9 +251,9 @@ device         : cpu
   <tbody>
     <tr>
       <td>0</td>
-      <td>1.807175</td>
-      <td>1.783138</td>
-      <td>0.200000</td>
+      <td>1.822123</td>
+      <td>1.796828</td>
+      <td>0.172222</td>
       <td>00:02</td>
     </tr>
   </tbody>
@@ -345,7 +292,10 @@ device         : cpu
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Sequential(
-  (0): Linear(in_features=5100, out_features=6, bias=True)
+  (0): Flatten(full=False)
+  (1): LinBnDrop(
+    (0): Linear(in_features=5100, out_features=6, bias=True)
+  )
 )
 </pre>
 </div>
@@ -368,10 +318,10 @@ device         : cpu
   <tbody>
     <tr>
       <td>0</td>
-      <td>1.251290</td>
-      <td>0.759416</td>
-      <td>0.722222</td>
-      <td>00:01</td>
+      <td>1.293266</td>
+      <td>0.815523</td>
+      <td>0.694444</td>
+      <td>00:02</td>
     </tr>
   </tbody>
 </table>
@@ -442,9 +392,9 @@ device         : cpu
   <tbody>
     <tr>
       <td>0</td>
-      <td>1.712864</td>
-      <td>1.615165</td>
-      <td>0.500000</td>
+      <td>1.738512</td>
+      <td>1.644175</td>
+      <td>0.472222</td>
       <td>00:02</td>
     </tr>
   </tbody>
@@ -516,9 +466,9 @@ device         : cpu
   <tbody>
     <tr>
       <td>0</td>
-      <td>0.877509</td>
-      <td>1.564805</td>
-      <td>0.611111</td>
+      <td>0.963994</td>
+      <td>1.583249</td>
+      <td>0.594444</td>
       <td>00:02</td>
     </tr>
   </tbody>
@@ -558,10 +508,13 @@ device         : cpu
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>RNNPlus(
   (rnn): RNN(3, 100, num_layers=2, batch_first=True, dropout=0.5, bidirectional=True)
-  (flatten): Reshape(bs, -1)
+  (transpose): Transpose(dims=-1, -2).contiguous()
   (head): Sequential(
-    (0): Dropout(p=0.5, inplace=False)
-    (1): Linear(in_features=200, out_features=2, bias=True)
+    (0): LastStep()
+    (1): LinBnDrop(
+      (0): Dropout(p=0.5, inplace=False)
+      (1): Linear(in_features=200, out_features=2, bias=True)
+    )
   )
 )
 (81802, True)
@@ -610,10 +563,13 @@ device         : cpu
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>LSTMPlus(
   (rnn): LSTM(3, 100, num_layers=2, batch_first=True, dropout=0.5, bidirectional=True)
-  (flatten): Reshape(bs, -1)
+  (transpose): Transpose(dims=-1, -2).contiguous()
   (head): Sequential(
-    (0): Dropout(p=0.5, inplace=False)
-    (1): Linear(in_features=200, out_features=2, bias=True)
+    (0): LastStep()
+    (1): LinBnDrop(
+      (0): Dropout(p=0.5, inplace=False)
+      (1): Linear(in_features=200, out_features=2, bias=True)
+    )
   )
 )
 (326002, True)
@@ -662,10 +618,13 @@ device         : cpu
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>GRUPlus(
   (rnn): GRU(3, 100, num_layers=2, batch_first=True, dropout=0.5, bidirectional=True)
-  (flatten): Reshape(bs, -1)
+  (transpose): Transpose(dims=-1, -2).contiguous()
   (head): Sequential(
-    (0): Dropout(p=0.5, inplace=False)
-    (1): Linear(in_features=200, out_features=2, bias=True)
+    (0): LastStep()
+    (1): LinBnDrop(
+      (0): Dropout(p=0.5, inplace=False)
+      (1): Linear(in_features=200, out_features=2, bias=True)
+    )
   )
 )
 (244602, True)

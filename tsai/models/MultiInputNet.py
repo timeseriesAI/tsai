@@ -10,14 +10,14 @@ from .utils import *
 # Cell
 class MultiInputNet(Module):
 
-    def __init__(self, *models, c_out=None, reshape_fn=None, multi_output=False, joint_head=None, device=None, **kwargs):
+    def __init__(self, *models, c_out=None, reshape_fn=None, multi_output=False, custom_head=None, device=None, **kwargs):
         r"""
         Args:
             models       : list of models (one model per dataloader in dls). They all must have a head.
             c_out        : output layer size.
             reshape_fn   : callable to transform a 3d input into a 2d input (Noop, Reshape(-1), GAP1d())
             multi_output : determines if the model creates M+1 output (one per model plus a combined one), or just a single output (combined one).
-            joint_head   : allows you to pass a custom joint head. If None a MLP will be created (you can pass 'layers' to this default head using kwargs)
+            custom_head  : allows you to pass a custom joint head. If None a MLP will be created (you can pass 'layers' to this default head using kwargs)
             device       : cpu or cuda. If None, default_device() will be chosen.
             kwargs       : head kwargs
         """
@@ -38,11 +38,8 @@ class MultiInputNet(Module):
             min_nf = min(min_nf, model.head_nf)
 
         self.head_nf = head_nf
-        if joint_head is None:
-            if not 'layers' in kwargs: layers = [head_nf, min_nf, min_nf]
-            head = create_fc_head(layers=layers, c_out=c_out, **kwargs)
-        else:
-            head = joint_head(self.head_nf, c_out, **kwargs)
+        if custom_head is None: head = create_fc_head(head_nf, c_out, 1, **kwargs)
+        else: head = custom_head(self.head_nf, c_out, **kwargs)
         self.heads.append(head)
         self.multi_output = multi_output
         self.m.append(self)

@@ -4,11 +4,11 @@ __all__ = ['TSIdentity', 'TSShuffle_HLs', 'TSShuffleSteps', 'TSMagAddNoise', 'TS
            'random_cum_curve_generator', 'random_cum_noise_generator', 'random_cum_linear_generator', 'TSTimeNoise',
            'TSMagWarp', 'TSTimeWarp', 'TSWindowWarp', 'TSMagScale', 'TSMagScalePerVar', 'TSRandomResizedCrop',
            'TSRandomZoomIn', 'TSWindowSlicing', 'TSRandomZoomOut', 'TSRandomTimeScale', 'TSRandomTimeStep', 'TSBlur',
-           'TSSmooth', 'maddest', 'TSFreqDenoise', 'TSRandomFreqNoise', 'TSRandomResizedLookBack', 'TSVarOut',
-           'TSCutOut', 'TSTimeStepOut', 'TSRandomCropPad', 'TSMaskOut', 'TSTranslateX', 'TSRandomShift',
-           'TSHorizontalFlip', 'TSRandomTrend', 'TSRandomRotate', 'TSVerticalFlip', 'TSResize', 'TSRandomSize',
-           'TSRandomLowRes', 'TSDownUpScale', 'TSRandomDownUpScale', 'all_TS_randaugs', 'RandAugment', 'TestTfm',
-           'get_tfm_name']
+           'TSSmooth', 'maddest', 'TSFreqDenoise', 'TSRandomFreqNoise', 'TSRandomResizedLookBack',
+           'TSRandomLookBackOut', 'TSVarOut', 'TSCutOut', 'TSTimeStepOut', 'TSRandomCropPad', 'TSMaskOut',
+           'TSTranslateX', 'TSRandomShift', 'TSHorizontalFlip', 'TSRandomTrend', 'TSRandomRotate', 'TSVerticalFlip',
+           'TSResize', 'TSRandomSize', 'TSRandomLowRes', 'TSDownUpScale', 'TSRandomDownUpScale', 'all_TS_randaugs',
+           'RandAugment', 'TestTfm', 'get_tfm_name']
 
 # Cell
 from fastai.vision.augment import RandTransform
@@ -416,6 +416,22 @@ class TSRandomResizedLookBack(RandTransform):
         return F.interpolate(output, size=seq_len, mode=self.mode, align_corners=None if self.mode in ['nearest', 'area'] else False)
 
 # Cell
+class TSRandomLookBackOut(RandTransform):
+    "Selects a random number of sequence steps starting from the end and set them to zero"
+    order = 90
+    def __init__(self, magnitude=0.1, **kwargs):
+        self.magnitude = magnitude
+        super().__init__(**kwargs)
+    def encodes(self, o: TSTensor):
+        if not self.magnitude or self.magnitude <= 0: return o
+        seq_len = o.shape[-1]
+        lambd = np.random.beta(self.magnitude, self.magnitude)
+        lambd = min(lambd, 1 - lambd)
+        output = o.clone()
+        output[..., :int(round(lambd * seq_len))] = 0
+        return output
+
+# Cell
 class TSVarOut(RandTransform):
     "Set the value of a random number of variables to zero"
     order = 90
@@ -708,6 +724,7 @@ all_TS_randaugs = [
     (TSRandomZoomIn, 0.05, 0.5),
     (TSWindowSlicing, 0.05, 0.2),
     (TSRandomZoomOut, 0.05, 0.5),
+    (TSRandomLookBackOut, 0.1, 1.),
     (TSRandomResizedLookBack, 0.1, 1.),
     (TSTimeStepOut, 0.01, 0.2),
     (TSRandomCropPad, 0.05, 0.5),

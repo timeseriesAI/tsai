@@ -11,30 +11,30 @@ from .layers import *
 # Cell
 class _RNNPlus_Base(Module):
     def __init__(self, c_in, c_out, seq_len=None, hidden_size=100, n_layers=1, bias=True, rnn_dropout=0, bidirectional=False, fc_dropout=0.,
-                 last_step=True, flatten=False, custom_head=None, y_range=None, **kwargs):
-        if flatten: assert seq_len, 'you need to enter a seq_len to use flatten=True'
-        self.ls, self.fl = last_step, flatten
+                 last_step=True, bn=False, custom_head=None, y_range=None, **kwargs):
+        if not last_step: assert seq_len, 'you need to enter a seq_len to use flatten=True'
         self.rnn = self._cell(c_in, hidden_size, num_layers=n_layers, bias=bias, batch_first=True, dropout=rnn_dropout, bidirectional=bidirectional)
-        if flatten: self.flatten = Reshape(-1)
+        self.transpose = Transpose(-1, -2, contiguous=True)
 
         # Head
-        self.head_nf = seq_len * hidden_size * (1 + bidirectional) if flatten and not last_step else hidden_size * (1 + bidirectional)
-        self.c_out = c_out
-        if custom_head: self.head = custom_head(self.head_nf, c_out) # custom head must have all required kwargs
-        else: self.head = self.create_head(self.head_nf, c_out, fc_dropout=fc_dropout, y_range=y_range)
+        self.head_nf = hidden_size * (1 + bidirectional)
+        if custom_head: self.head = custom_head(self.head_nf, c_out, seq_len) # custom head must have all required kwargs
+        else: self.head = self.create_head(self.head_nf, c_out, seq_len, last_step=last_step, fc_dropout=fc_dropout, bn=bn, y_range=y_range)
 
     def forward(self, x):
-        x = x.transpose(2,1)                                             # [batch_size x n_vars x seq_len] --> [batch_size x seq_len x n_vars]
-        output, _ = self.rnn(x)                                          # [batch_size x seq_len x hidden_size * (1 + bidirectional)]
-        if self.ls: output = output[:, -1]                               # [batch_size x hidden_size * (1 + bidirectional)]
-        if self.fl: output = self.flatten(output)                        # [batch_size x seq_len * hidden_size * (1 + bidirectional)]
-        if not self.ls and not self.fl: output = output.transpose(2,1)
+        x = x.transpose(2,1)                               # [batch_size x n_vars x seq_len] --> [batch_size x seq_len x n_vars]
+        output, _ = self.rnn(x)                            # [batch_size x seq_len x hidden_size * (1 + bidirectional)]
+        output = self.transpose(output)                    # [batch_size x hidden_size * (1 + bidirectional) x seq_len]
         return self.head(output)
 
-    def create_head(self, nf, c_out, fc_dropout=0., y_range=None):
-        layers = [nn.Dropout(fc_dropout)] if fc_dropout else []
-        layers += [nn.Linear(self.head_nf, c_out)]
-        if y_range is not None: layers += [SigmoidRange(*y_range)]
+    def create_head(self, nf, c_out, seq_len, last_step=True, fc_dropout=0., bn=False, y_range=None):
+        if last_step:
+            layers = [LastStep()]
+        else:
+            layers = [Flatten()]
+            nf *= seq_len
+        layers += [LinBnDrop(nf, c_out, bn=bn, p=fc_dropout)]
+        if y_range: layers += [SigmoidRange(*y_range)]
         return nn.Sequential(*layers)
 
 

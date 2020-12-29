@@ -4,12 +4,13 @@ __all__ = ['noop', 'lin_zero_init', 'SwishBeta', 'same_padding1d', 'Pad1d', 'Con
            'Conv2dSame', 'Conv2d', 'Chomp1d', 'Conv1dCausal', 'Conv1d', 'SeparableConv1d', 'AddCoords1d', 'ConvBlock',
            'Conv', 'ConvBN', 'ConvIN', 'CoordConv', 'CoordConvBN', 'SepConv', 'SepConvBN', 'SepConvIN', 'SepCoordConv',
            'SepCoordConvBN', 'ResBlock1dPlus', 'SEModule1d', 'Norm', 'BN1d', 'IN1d', 'LambdaPlus', 'Squeeze',
-           'Unsqueeze', 'Add', 'Concat', 'Permute', 'Transpose', 'View', 'Reshape', 'Max', 'Noop', 'Sharpen',
-           'MaxPPVPool1d', 'MPPV1d', 'Sequential', 'Temp_Scale', 'Vector_Scale', 'Matrix_Scale', 'get_calibrator',
-           'GAP1d', 'GACP1d', 'SqueezeExciteBlock', 'create_pool_head', 'pool_head', 'create_pool_plus_head',
-           'pool_plus_head', 'create_mlp_head', 'mlp_head', 'create_conv_head', 'conv_head', 'create_fc_head',
-           'fc_head', 'heads', 'change_model_head', 'GaussianNoise', 'gambler_loss', 'CrossEntropyLossOneHot',
-           'ttest_bin_loss', 'ttest_reg_loss', 'CenterLoss', 'CenterPlusLoss', 'FocalLoss']
+           'Unsqueeze', 'Add', 'Concat', 'Permute', 'Transpose', 'View', 'Reshape', 'Max', 'LastStep', 'Noop',
+           'Sharpen', 'MaxPPVPool1d', 'MPPV1d', 'Sequential', 'Temp_Scale', 'Vector_Scale', 'Matrix_Scale',
+           'get_calibrator', 'GAP1d', 'GACP1d', 'SqueezeExciteBlock', 'create_pool_head', 'pool_head',
+           'create_pool_plus_head', 'pool_plus_head', 'create_conv_head', 'conv_head', 'create_mlp_head', 'mlp_head',
+           'create_fc_head', 'fc_head', 'create_rnn_head', 'rnn_head', 'heads', 'change_model_head', 'GaussianNoise',
+           'gambler_loss', 'CrossEntropyLossOneHot', 'ttest_bin_loss', 'ttest_reg_loss', 'CenterLoss', 'CenterPlusLoss',
+           'FocalLoss', 'TweedieLoss']
 
 # Cell
 from torch.nn.init import normal_
@@ -331,6 +332,11 @@ class Max(Module):
     def __repr__(self): return f'{self.__class__.__name__}(dim={self.dim}, keepdim={self.keepdim})'
 
 
+class LastStep(Module):
+    def forward(self, x): return x[..., -1]
+    def __repr__(self): return f'{self.__class__.__name__}()'
+
+
 Noop = nn.Sequential()
 
 # Cell
@@ -446,7 +452,10 @@ class SqueezeExciteBlock(Module):
         return x * y.expand_as(x)
 
 # Cell
-def create_pool_head(nf, c_out, concat_pool=False, fc_dropout=0., bn=False, y_range=None):
+def create_pool_head(*args, concat_pool=False, fc_dropout=0., bn=False, y_range=None, **kwargs):
+    nf = args[0]
+    c_out = args[1]
+    if kwargs: print(f'{kwargs}  not being used')
     if concat_pool: nf = nf * 2
     layers = [GACP1d(1) if concat_pool else GAP1d(1)]
     layers += [LinBnDrop(nf, c_out, bn=bn, p=fc_dropout)]
@@ -456,7 +465,9 @@ def create_pool_head(nf, c_out, concat_pool=False, fc_dropout=0., bn=False, y_ra
 pool_head = create_pool_head
 
 # Cell
-def create_pool_plus_head(nf, c_out, lin_ftrs=None, fc_dropout=0., concat_pool=True, bn_final=False, lin_first=False, y_range=None):
+def create_pool_plus_head(*args, lin_ftrs=None, fc_dropout=0., concat_pool=True, bn_final=False, lin_first=False, y_range=None):
+    nf = args[0]
+    c_out = args[1]
     if concat_pool: nf = nf * 2
     lin_ftrs = [nf, 512, c_out] if lin_ftrs is None else [nf] + lin_ftrs + [c_out]
     ps = L(fc_dropout)
@@ -475,15 +486,9 @@ def create_pool_plus_head(nf, c_out, lin_ftrs=None, fc_dropout=0., concat_pool=T
 pool_plus_head = create_pool_plus_head
 
 # Cell
-def create_mlp_head(nf, c_out, fc_dropout=0., bn=False, y_range=None):
-    layers = [LinBnDrop(nf, c_out, bn=bn, p=fc_dropout)]
-    if y_range: layers += [SigmoidRange(*y_range)]
-    return nn.Sequential(*layers)
-
-mlp_head = create_mlp_head
-
-# Cell
-def create_conv_head(nf, c_out, adaptive_size=None, y_range=None):
+def create_conv_head(*args, adaptive_size=None, y_range=None):
+    nf = args[0]
+    c_out = args[1]
     layers = [nn.AdaptiveAvgPool1d(adaptive_size)] if adaptive_size is not None else []
     for i in range(2):
         if nf > 1:
@@ -497,18 +502,41 @@ def create_conv_head(nf, c_out, adaptive_size=None, y_range=None):
 conv_head = create_conv_head
 
 # Cell
-def create_fc_head(layers, c_out, y_range=None, fc_dropout=0., use_bn=False, bn_final=False, act=nn.ReLU(inplace=True)):
-    if not is_listy(fc_dropout): fc_dropout = [fc_dropout]*(len(layers) - 1)
-    sizes = layers + [c_out]
-    actns = [act for _ in range(len(sizes) - 2)] + [None]
-    _layers = [LinBnDrop(sizes[i], sizes[i+1], bn=use_bn and (i!=len(actns)-1 or bn_final), p=p, act=a) for i,(p,a) in enumerate(zip(fc_dropout+[0.], actns))]
-    if y_range is not None: _layers.append(SigmoidRange(*y_range))
-    return nn.Sequential(*_layers)
+def create_mlp_head(nf, c_out, seq_len, flatten=True, fc_dropout=0., bn=False, y_range=None):
+    if flatten: nf *= seq_len
+    layers = [Flatten()] if flatten else []
+    layers += [LinBnDrop(nf, c_out, bn=bn, p=fc_dropout)]
+    if y_range: layers += [SigmoidRange(*y_range)]
+    return nn.Sequential(*layers)
+
+mlp_head = create_mlp_head
+
+# Cell
+def create_fc_head(nf, c_out, seq_len, flatten=True, lin_ftrs=None, y_range=None, fc_dropout=0., bn=False, bn_final=False, act=nn.ReLU(inplace=True)):
+    if flatten: nf *= seq_len
+    layers = [Flatten()] if flatten else []
+    lin_ftrs = [nf, 512, c_out] if lin_ftrs is None else [nf] + lin_ftrs + [c_out]
+    if not is_listy(fc_dropout): fc_dropout = [fc_dropout]*(len(lin_ftrs) - 1)
+    actns = [act for _ in range(len(lin_ftrs) - 2)] + [None]
+    layers += [LinBnDrop(lin_ftrs[i], lin_ftrs[i+1], bn=bn and (i!=len(actns)-1 or bn_final), p=p, act=a) for i,(p,a) in enumerate(zip(fc_dropout+[0.], actns))]
+    if y_range is not None: layers.append(SigmoidRange(*y_range))
+    return nn.Sequential(*layers)
 
 fc_head = create_fc_head
 
 # Cell
-heads = [mlp_head, fc_head, pool_head, pool_plus_head, conv_head]
+def create_rnn_head(*args, fc_dropout=0., bn=False, y_range=None):
+    nf = args[0]
+    c_out = args[1]
+    layers = [LastStep()]
+    layers += [LinBnDrop(nf, c_out, bn=bn, p=fc_dropout)]
+    if y_range: layers += [SigmoidRange(*y_range)]
+    return nn.Sequential(*layers)
+
+rnn_head = create_rnn_head
+
+# Cell
+heads = [mlp_head, fc_head, pool_head, pool_plus_head, conv_head, rnn_head]
 
 # Cell
 def change_model_head(model, custom_head, **kwargs):
@@ -621,4 +649,25 @@ class FocalLoss(Module):
         logp = self.ce(input, target)
         p = torch.exp(-logp)
         loss = (1 - p) ** self.gamma * logp
+        return loss.mean()
+
+# Cell
+class TweedieLoss(Module):
+    def __init__(self, p=1.5, eps=1e-10):
+        """
+        Tweedie loss as calculated in LightGBM
+        Args:
+            p: tweedie variance power (1 < p < 2)
+            eps: small number to avoid log(zero).
+        """
+        assert p > 1 and p < 2, "make sure 1 < p < 2"
+        self.p, self.eps = p, eps
+
+    def forward(self, inp, targ):
+        inp = inp.flatten()
+        targ = targ.flatten()
+        torch.clamp_min_(inp, self.eps)
+        a = targ * torch.exp((1 - p) * torch.log(inp)) / (1 - p)
+        b = torch.exp((2 - p) * torch.log(inp)) / (2 - p)
+        loss = -a + b
         return loss.mean()
