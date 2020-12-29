@@ -6,6 +6,7 @@ __all__ = ['create_subsequence_mask', 'create_variable_mask', 'TSBERT_Loss', 'TS
 from fastai.callback.all import *
 from ..imports import *
 from ..utils import *
+from ..models.utils import *
 
 # Cell
 def create_subsequence_mask(o, r=.15, lm=3, stateful=True, sync=False):
