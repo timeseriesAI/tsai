@@ -10,154 +10,173 @@ entries:
       title: Overview
       url: /
     - output: web,pdf
-      title: Utilities
-      url: utils.html
+      title: Tutorials
+      url: /tutorials
+    output: web
+    title: Getting started
+  - folderitems:
     - output: web,pdf
-      title: Spliting data
-      url: data.validation.html
+      title: Data core
+      url: /data.core
+    - output: web,pdf
+      title: Loading data
+      url: /data.load
     - output: web,pdf
       title: Data preparation
-      url: data.preparation.html
+      url: /data.preparation
     - output: web,pdf
-      title: External data
-      url: data.external.html
+      title: Splitting data
+      url: /data.validation
     - output: web,pdf
-      title: Data Core
-      url: data.core.html
+      title: Preprocessing data
+      url: /data.preprocessing
     - output: web,pdf
-      title: Data preprocessing
-      url: data.preprocessing.html
+      title: Label-invariant transformations
+      url: /data.transforms
     - output: web,pdf
-      title: Time Series Data Augmentation
-      url: data.transforms.html
+      title: Label-mixing transformations
+      url: /data.mixed_augmentation
     - output: web,pdf
-      title: Label-mixing transforms
-      url: data.mixed_augmentation.html
+      title: Tabular data
+      url: /data.tabular
     - output: web,pdf
-      title: Imaging Time Series
-      url: data.image.html
-    - output: web,pdf
-      title: Featurizing Time Series
-      url: data.features.html
-    - output: web,pdf
-      title: Data Tabular
-      url: data.tabular.html
+      title: Imaging time series
+      url: /data.image
     - output: web,pdf
       title: Mixed data
-      url: data.mixed.html
-    - output: web,pdf
-      title: Metrics
-      url: metrics.html
+      url: /data.mixed
+    output: web
+    title: Data
+  - folderitems:
     - output: web,pdf
       title: Learner
-      url: learner.html
+      url: /learner
     - output: web,pdf
       title: Optimizers
-      url: optimizer.html
+      url: /optimizer
     - output: web,pdf
-      title: Callback
-      url: callback.core.html
+      title: Metrics
+      url: /metrics
     - output: web,pdf
-      title: Noisy student
-      url: callback.noisy_student.html
-    - output: web,pdf
-      title: Gradient Blending
-      url: callback.gblend.html
-    - output: web,pdf
-      title: 'TSBERT: Self-supervised Pre-training of Time Series Models'
-      url: callback.TSBERT.html
-    - output: web,pdf
-      title: Models utils
-      url: models.utils.html
+      title: Callbacks
+      url: /callback.core
+      subfolders:
+      - output: web
+        subfolderitems:
+        - output: web,pdf
+          title: Noisy student
+          url: /callback.noisy_student
+        title: Semi-supervised learning
+    output: web
+    title: Training
+  - folderitems:
     - output: web,pdf
       title: Layers
-      url: models.layers.html
+      url: /models.layers
     - output: web,pdf
-      title: Model explainability
-      url: models.explainability.html
-    - output: web,pdf
-      title: ResNet
-      url: models.ResNet.html
-    - output: web,pdf
-      title: ResNetPlus
-      url: models.ResNetPlus.html
-    - output: web,pdf
-      title: InceptionTime
-      url: models.InceptionTime.html
-    - output: web,pdf
-      title: InceptionTimePlus
-      url: models.InceptionTimePlus.html
+      title: Utilities
+      url: /models.utils
     - output: web,pdf
       title: MLP
-      url: models.MLP.html
+      url: /models.MLP
+      subfolders:
+      - output: web
+        subfolderitems:
+        - output: web,pdf
+          title: RNN
+          url: /models.RNN
+        - output: web,pdf
+          title: RNNPlus
+          url: /models.RNNPlus
+        title: RNNs
+      - output: web
+        subfolderitems:
+        - output: web,pdf
+          title: FCN
+          url: /models.FCN
+        - output: web,pdf
+          title: FCNPlus
+          url: /models.FCNPlus
+        - output: web,pdf
+          title: ResNet
+          url: /models.ResNet
+        - output: web,pdf
+          title: ResNetPlus
+          url: /models.ResNetPlus
+        - output: web,pdf
+          title: XResNet1d
+          url: /models.XResNet1d
+        - output: web,pdf
+          title: XResNet1dPlus
+          url: /models.XResNet1dPlus
+        - output: web,pdf
+          title: ResCNN
+          url: /models.ResCNN
+        - output: web,pdf
+          title: TCN
+          url: /models.TCN
+        - output: web,pdf
+          title: ROCKET
+          url: /models.ROCKET
+        - output: web,pdf
+          title: InceptionTime
+          url: /models.InceptionTime
+        - output: web,pdf
+          title: InceptionTimePlus
+          url: /models.InceptionTimePlus
+        - output: web,pdf
+          title: XceptionTime
+          url: /models.XceptionTime
+        - output: web,pdf
+          title: XceptionTimePlus
+          url: /models.XceptionTimePlus
+        - output: web,pdf
+          title: OmniScaleCNN
+          url: /models.OmniScaleCNN
+        - output: web,pdf
+          title: XCM
+          url: /models.XCM
+        title: 1D CNNs
+      - output: web
+        subfolderitems:
+        - output: web,pdf
+          title: RNN_FCN
+          url: /models.RNN_FCN
+        - output: web,pdf
+          title: RNN_FCNPlus
+          url: /models.RNN_FCNPlus
+        title: RNN-CNNs
+      - output: web
+        subfolderitems:
+        - output: web,pdf
+          title: mWDN
+          url: /models.mWDN
+        title: Wavelet-based NNs
+      - output: web
+        subfolderitems:
+        - output: web,pdf
+          title: TransformerModel
+          url: /models.TransformerModel
+        - output: web,pdf
+          title: Time Series Transformer (TST)
+          url: /models.TST
+        - output: web,pdf
+          title: Time Series Transformer Plus (TSTPlus)
+          url: /models.TSTPlus
+        title: Transformers
     - output: web,pdf
-      title: FCN
-      url: models.FCN.html
-    - output: web,pdf
-      title: FCNPlus
-      url: models.FCNPlus.html
-    - output: web,pdf
-      title: ResCNN
-      url: models.ResCNN.html
-    - output: web,pdf
-      title: RNN
-      url: models.RNN.html
-    - output: web,pdf
-      title: RNNPlus
-      url: models.RNNPlus.html
-    - output: web,pdf
-      title: XceptionTime
-      url: models.XceptionTime.html
-    - output: web,pdf
-      title: XceptionTimePlus
-      url: models.XceptionTimePlus.html
-    - output: web,pdf
-      title: RNN_FCN
-      url: models.RNN_FCN.html
-    - output: web,pdf
-      title: RNN_FCNPlus
-      url: models.RNN_FCNPlus.html
-    - output: web,pdf
-      title: TransformerModel
-      url: models.TransformerModel.html
-    - output: web,pdf
-      title: TST (Time Series Transformer)
-      url: models.TST.html
-    - output: web,pdf
-      title: TSTPlus (Time Series Transformer)
-      url: models.TSTPlus.html
-    - output: web,pdf
-      title: OmniScaleCNN
-      url: models.OmniScaleCNN.html
-    - output: web,pdf
-      title: multilevel Wavelet Decomposition Network (mWDN)
-      url: models.mWDN.html
-    - output: web,pdf
-      title: ROCKET functions
-      url: models.ROCKET.html
-    - output: web,pdf
-      title: XResNet1d
-      url: models.XResNet1d.html
-    - output: web,pdf
-      title: XResNet1dPlus
-      url: models.XResNet1dPlus.html
-    - output: web,pdf
-      title: TCN (Temporal Convolutional Network)
-      url: models.TCN.html
-    - output: web,pdf
-      title: 'XCM: An Explainable Convolutional Neural Network for Multivariate Time
-        Series Classification'
-      url: models.XCM.html
-    - output: web,pdf
-      title: TabModel
-      url: models.TabModel.html
+      title: Tabular Model
+      url: /models.TabModel
     - output: web,pdf
       title: MultiInputNet
-      url: models.MultiInputNet.html
-    - output: web,pdf
-      title: Tutorial notebooks
-      url: tutorials.html
+      url: /models.MultiInputNet
     output: web
-    title: tsai
+    title: Models
+  - folderitems:
+    - output: web,pdf
+      title: Time series utilities
+      url: /utils
+    output: web
+    title: Utilities
   output: web
   title: Sidebar
