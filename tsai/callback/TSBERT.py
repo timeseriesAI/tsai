@@ -11,6 +11,7 @@ from ..models.layers import *
 
 # Cell
 def create_subsequence_mask(o, r=.15, lm=3, stateful=True, sync=False):
+    if o.ndim == 2: o = o[None]
     n_masks, mask_dims, mask_len = o.shape
     if sync == 'random': sync = random.random() > .5
     dims = 1 if sync else mask_dims
@@ -54,9 +55,10 @@ class TSBERT_Loss(Module):
 # Cell
 class TSBERT(Callback):
     def __init__(self, r:float=.15, subsequence_mask:bool=True, lm:float=3., stateful:bool=True, sync:bool=False, variable_mask:bool=False,
-                 crit:callable=None, target_dir:str='./data/TSBERT', fname:str='ssd_trained_model',verbose:bool=True):
+                 crit:callable=None, target_dir:str='./data/TSBERT', fname:str='model',verbose:bool=True):
         r"""
-        A callback to implement a self-supervised denoising task.
+        Callback used to perform the autoregressive task of denoising the input after a binary mask has been applied.
+
         Args:
             mask_shape: expected mask shape (tuple). e.g batch size, n_vars, timesteps
             r: proba of masking.
@@ -67,7 +69,7 @@ class TSBERT(Callback):
             variable_mask: apply a mask to random variables.
             crit: loss function that will be used. If None MSELossFlat().
             target_dir : directory where trained model will be stored.
-            fname : name that will be used to save the pretrained model.
+            fname : file name that will be used to save the pretrained model.
     """
         self.subsequence_mask,self.variable_mask=subsequence_mask,variable_mask
         assert self.subsequence_mask or self.variable_mask, 'you must set subsequence_mask and/or variable_mask to True'
@@ -79,7 +81,7 @@ class TSBERT(Callback):
         self.learn.loss_func = TSBERT_Loss(self.crit)
 
         # save initial model head
-        assert hasattr(self.learn.model, "head"), "you can only use SSD with models that have .head attributes"
+        assert hasattr(self.learn.model, "head"), f"you can only use {cls_name(self)} with models that have .head attribute"
         backbone, head = split_model(self.learn.model)
         self.head = head
         self.learn.model = backbone
@@ -91,8 +93,8 @@ class TSBERT(Callback):
             out = self.learn.model(b[0])
             assert out.ndim == 3, "make sure the backbone (after model.head = Noop) produces a 3d output [bs x nf x seq_len]"
             no = out.shape[1]
-            self.learn.model.head = nn.Sequential(*[Transpose(-1, -2), nn.Linear(no, ni), Transpose(-1, -2)]).to(b[0].device)
-            assert self.learn.model(b[0]).shape == b[0].shape
+            self.learn.model.head = nn.Conv1d(no, ni, 1).to(b[0].device) # equivalent to linear layer applied to dim=1
+            assert self.learn.model(b[0]).shape == b[0].shape, f"{cls_name(self)} cannot recreate a tensor with the input shape"
 
     def before_batch(self):
         if self.subsequence_mask and self.variable_mask:
@@ -107,7 +109,7 @@ class TSBERT(Callback):
             mask = create_variable_mask(self.x, r=self.r)
         self.learn.yb = (self.x,)
         self.learn.xb = (self.x * mask,)
-        self.learn.loss_func.mask = mask == 0
+        self.learn.loss_func.mask = (mask == 0) # boolean mask
 
     def after_fit(self):
         if self.epoch == self.n_epoch - 1 and not "LRFinder" in [cls_name(cb) for cb in self.learn.cbs]:
@@ -116,5 +118,5 @@ class TSBERT(Callback):
             PATH = Path(f'{self.target_dir/self.fname}.pth')
             if not os.path.exists(PATH.parent): os.makedirs(PATH.parent)
             torch.save(self.learn.model.state_dict(), PATH)
-            pv(f"\npre-trained model weights path: {PATH}\n", self.verbose)
+            pv(f"\npre-trained model weights_path='{PATH}'\n", self.verbose)
         self.learn.remove_cb(self)

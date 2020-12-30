@@ -100,7 +100,10 @@ class InceptionTimePlus(Module):
         else: keep_prob = np.array([1] * depth // 3)
         self.backbone = InceptionBlockPlus(c_in, nf, depth=depth, keep_prob=keep_prob, **kwargs)
 
+        #head
         self.head_nf = nf * 4
+        self.c_out = c_out
+        self.seq_len = seq_len
         if custom_head: self.head = custom_head(self.head_nf, c_out, seq_len)
         else: self.head = self.create_head(self.head_nf, c_out, seq_len, flatten=flatten, concat_pool=concat_pool,
                                            fc_dropout=fc_dropout, bn=bn, y_range=y_range)
@@ -143,7 +146,7 @@ setattr(InceptionTimePlus62x62, '__name__', 'InceptionTimePlus62x62')
 @delegates(InceptionTimePlus.__init__)
 class MultiInceptionTimePlus(Module):
     _arch = InceptionTimePlus
-    def __init__(self, feat_mask, c_out, seq_len=None, **kwargs):
+    def __init__(self, feat_mask, c_out, seq_len=None, custom_head=None, **kwargs):
         r"""
         MultiInceptionTimePlus is a class that allows you to create a model with multiple branches of InceptionTimePlus.
 
@@ -151,19 +154,23 @@ class MultiInceptionTimePlus(Module):
             - feat_mask: list with number of features that will be passed to each body.
         """
         self.feat_mask = [feat_mask] if isinstance(feat_mask, int) else feat_mask
-        self.c_out = c_out
 
-        # Body
+        # Backbone
         self.branches = nn.ModuleList()
         self.head_nf = 0
         for feat in self.feat_mask:
-            m = create_model(self._arch, c_in=feat, c_out=c_out, seq_len=seq_len, **kwargs)
+            m = create_model(self._arch, c_in=feat, c_out=c_out, seq_len=seq_len, custom_head=custom_head, **kwargs)
             self.head_nf += m.head_nf
             m.head = Noop
             self.branches.append(m)
 
         # Head
-        self.head = self._arch.create_head(self, self.head_nf, c_out, seq_len, **kwargs)
+        self.c_out = c_out
+        self.seq_len = seq_len
+        if custom_head is None:
+            self.head = self._arch.create_head(self, self.head_nf, c_out, seq_len, **kwargs)
+        else:
+            self.head = custom_head(self.head_nf, c_out, seq_len, **kwargs)
 
     def forward(self, x):
         x = torch.split(x, self.feat_mask, dim=1)

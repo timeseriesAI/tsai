@@ -8,9 +8,9 @@ __all__ = ['noop', 'lin_zero_init', 'SwishBeta', 'same_padding1d', 'Pad1d', 'Con
            'Sharpen', 'MaxPPVPool1d', 'MPPV1d', 'Sequential', 'Temp_Scale', 'Vector_Scale', 'Matrix_Scale',
            'get_calibrator', 'GAP1d', 'GACP1d', 'SqueezeExciteBlock', 'create_pool_head', 'pool_head',
            'create_pool_plus_head', 'pool_plus_head', 'create_conv_head', 'conv_head', 'create_mlp_head', 'mlp_head',
-           'create_fc_head', 'fc_head', 'create_rnn_head', 'rnn_head', 'heads', 'change_model_head', 'GaussianNoise',
-           'gambler_loss', 'CrossEntropyLossOneHot', 'ttest_bin_loss', 'ttest_reg_loss', 'CenterLoss', 'CenterPlusLoss',
-           'FocalLoss', 'TweedieLoss']
+           'create_fc_head', 'fc_head', 'create_rnn_head', 'rnn_head', 'create_conv_lin_3d_head', 'conv_lin_3d_head',
+           'heads', 'GaussianNoise', 'gambler_loss', 'CrossEntropyLossOneHot', 'ttest_bin_loss', 'ttest_reg_loss',
+           'CenterLoss', 'CenterPlusLoss', 'FocalLoss', 'TweedieLoss']
 
 # Cell
 from torch.nn.init import normal_
@@ -536,13 +536,31 @@ def create_rnn_head(*args, fc_dropout=0., bn=False, y_range=None):
 rnn_head = create_rnn_head
 
 # Cell
-heads = [mlp_head, fc_head, pool_head, pool_plus_head, conv_head, rnn_head]
+class create_conv_lin_3d_head(nn.Sequential):
+    "Module to create a 3d output head"
+
+    def __init__(self, n_in, n_out, seq_len, d=None, conv_first=True, conv_bn=True, lin_first=False, lin_bn=True, act=None, fc_dropout=0., **kwargs):
+
+        conv = [BatchNorm(n_in, ndim=1)] if conv_bn else []
+        conv.append(Conv1d(n_in, n_out, 1, padding=0, bias=not conv_bn, **kwargs))
+
+        if d is not None:
+            l = [Transpose(-1, -2), BatchNorm(d if lin_first else seq_len, ndim=1), Transpose(-1, -2)] if lin_bn else []
+            if fc_dropout != 0: l.append(nn.Dropout(fc_dropout))
+
+            lin = [nn.Linear(seq_len, d, bias=not lin_bn)]
+            if act is not None: lin.append(act)
+
+            lin_layers = lin+l if lin_first else l+lin
+            layers = conv + lin_layers if conv_first else lin_layers + conv
+        else: layers = conv
+
+        super().__init__(*layers)
+
+conv_lin_3d_head = create_conv_lin_3d_head
 
 # Cell
-def change_model_head(model, custom_head, **kwargs):
-    r"""Replaces a model's head by a custom head as long as the model has a head and head_nf attributes"""
-    model.head = custom_head(model.head_nf, model.c_out, **kwargs)
-    return model
+heads = [mlp_head, fc_head, pool_head, pool_plus_head, conv_head, rnn_head, conv_lin_3d_head]
 
 # Cell
 class GaussianNoise(Module):

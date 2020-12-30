@@ -3,7 +3,7 @@
 __all__ = ['get_layers', 'is_layer', 'is_linear', 'is_bn', 'is_conv_linear', 'is_affine_layer', 'is_conv', 'has_bias',
            'has_weight', 'has_weight_or_bias', 'check_bias', 'check_weight', 'transfer_weights', 'build_ts_model',
            'build_tabular_model', 'build_tsimage_model', 'count_parameters', 'build_model', 'create_model',
-           'create_tabular_model', 'get_clones', 'get_nf', 'split_model', 'seq_len_calculator']
+           'create_tabular_model', 'get_clones', 'get_nf', 'split_model', 'seq_len_calculator', 'change_model_head']
 
 # Cell
 from fastai.tabular.model import *
@@ -71,6 +71,10 @@ def check_weight(m, cond=noop, verbose=False):
 
 # Cell
 def transfer_weights(model, weights_path:Path, device:torch.device=None, exclude_head:bool=True):
+    """Utility function that allows to easily transfer weights between models.
+    Taken from the great self-supervised repository created by Kerem Turgutlu.
+    https://github.com/KeremTurgutlu/self_supervised/blob/d87ebd9b4961c7da0efd6073c42782bbc61aaa2e/self_supervised/utils.py"""
+
     device = ifnone(device, default_device())
     state_dict = model.state_dict()
     new_state_dict = torch.load(weights_path, map_location=device)
@@ -94,13 +98,15 @@ def transfer_weights(model, weights_path:Path, device:torch.device=None, exclude
             print(f"weights from {weights_path} successfully transferred!\n")
 
 
-def build_ts_model(arch, c_in=None, c_out=None, seq_len=None, dls=None, device=None, verbose=False,
+def build_ts_model(arch, c_in=None, c_out=None, seq_len=None, d=None, dls=None, device=None, verbose=False,
                    pretrained=False, weights_path=None, exclude_head=True, **kwargs):
     device = ifnone(device, default_device())
     if dls is not None:
         c_in = ifnone(c_in, dls.vars)
         c_out = ifnone(c_out, dls.c)
         seq_len = ifnone(seq_len, dls.len)
+        d = ifnone(d, dls.d)
+    if d is not None and not 'custom_head' in kwargs.keys(): kwargs['custom_head'] = partial(create_conv_lin_3d_head, d=d)
     if sum([1 for v in ['RNN_FCN', 'LSTM_FCN', 'RNNPlus', 'LSTMPlus', 'GRUPlus', 'InceptionTimePlus', 'GRU_FCN', 'OmniScaleCNN', 'mWDN', 'TST', 'XCM', 'MLP']
             if v in arch.__name__]):
         pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} seq_len={seq_len} device={device}, kwargs={kwargs})', verbose)
@@ -190,3 +196,9 @@ def split_model(model, cut=None):
 def seq_len_calculator(seq_len, **kwargs):
     t = torch.rand(1, 1, seq_len)
     return nn.Conv1d(1, 1, **kwargs)(t).shape[-1]
+
+# Cell
+def change_model_head(model, custom_head, **kwargs):
+    r"""Replaces a model's head by a custom head as long as the model has a head, head_nf, c_out and seq_len attributes"""
+    model.head = custom_head(model.head_nf, model.c_out, model.seq_len, **kwargs)
+    return model

@@ -122,8 +122,17 @@ class ROCKET(nn.Module):
         return output
 
 # Cell
-def create_rocket_features(dls, model):
-    for i,(xb,yb) in enumerate(dls):
-        x_out = model(xb) if i == 0 else torch.cat([x_out, model(xb)])
-        y_out = yb if i == 0 else torch.cat([y_out, yb])
-    return x_out.cpu().numpy(), y_out.cpu().numpy()
+def create_rocket_features(dl, n_kernels=10_000, kss=[7, 9, 11], device=None):
+    """Args:
+
+        dl        : single TSDataLoader (for example dls.train or dls.valid)
+        n_kernels : number of kernels created in ROCKET
+        kss       : filter sizes used by ROCKET
+    """
+    model = ROCKET(dl.vars, dl.len, n_kernels=n_kernels, kss=kss, device=device)
+    for i,(xb,yb) in enumerate(progress_bar(dl)):
+        _x_out = model(xb).detach().cpu().numpy()
+        _y_out = yb.detach().cpu().numpy()
+        x_out = _x_out if i == 0 else torch.cat([x_out, _x_out])
+        y_out = _y_out if i == 0 else torch.cat([y_out, _y_out])
+    return x_out, y_out

@@ -17,8 +17,8 @@ from .explainability import *
 # Official XCM PyTorch implementation: not available as of Nov 27th, 2020
 
 class XCM(Module):
-    def __init__(self, c_in:int, c_out:int, seq_len:int, nf:int=128, window_perc:float=1., flatten:bool=False, custom_head:callable=None,
-                 concat_pool:bool=False, fc_dropout:float=0., y_range:tuple=None, **kwargs):
+    def __init__(self, c_in:int, c_out:int, seq_len:Optional[int]=None, nf:int=128, window_perc:float=1., flatten:bool=False, custom_head:callable=None,
+                 concat_pool:bool=False, fc_dropout:float=0., bn:bool=False, y_range:tuple=None, **kwargs):
 
         window_size = int(round(seq_len * window_perc, 0))
         self.conv2dblock = nn.Sequential(*[Unsqueeze(1), Conv2d(1, nf, kernel_size=(1, window_size), padding='same'), BatchNorm(nf), nn.ReLU()])
@@ -29,11 +29,11 @@ class XCM(Module):
         self.conv1d = nn.Sequential(*[Conv1d(c_in + 1, nf, kernel_size=window_size, padding='same'), BatchNorm(nf, ndim=1), nn.ReLU()])
 
         self.head_nf = nf
-        self.flatten = None
-        if flatten:  self.head_nf *= seq_len
-        self.flatten = Flatten() if flatten else None
-        if custom_head: self.head = custom_head(self.head_nf, c_out, **kwargs)
-        else: self.head = self.create_head(self.head_nf, c_out, concat_pool=concat_pool, fc_dropout=fc_dropout, y_range=y_range)
+        self.c_out = c_out
+        self.seq_len = seq_len
+        if custom_head: self.head = custom_head(self.head_nf, c_out, seq_len, **kwargs)
+        else: self.head = self.create_head(self.head_nf, c_out, seq_len, flatten=flatten, concat_pool=concat_pool,
+                                           fc_dropout=fc_dropout, bn=bn, y_range=y_range)
 
 
     def forward(self, x):
@@ -43,16 +43,18 @@ class XCM(Module):
         x2 = self.conv1d1x1block(x2)
         out = self.concat((x2, x1))
         out = self.conv1d(out)
-        if self.flatten is not None: out = self.flatten(out)
         out = self.head(out)
         return out
 
 
-    def create_head(self, nf, c_out, concat_pool=False, fc_dropout=0., y_range=None, **kwargs):
-        if concat_pool: nf = nf * 2
-        layers = [GACP1d(1) if concat_pool else GAP1d(1)]
-        if fc_dropout: layers += [nn.Dropout(fc_dropout)]
-        layers += [nn.Linear(nf, c_out)]
+    def create_head(self, nf, c_out, seq_len=None, flatten=False, concat_pool=False, fc_dropout=0., bn=False, y_range=None):
+        if flatten:
+            nf *= seq_len
+            layers = [Flatten()]
+        else:
+            if concat_pool: nf *= 2
+            layers = [GACP1d(1) if concat_pool else GAP1d(1)]
+        layers += [LinBnDrop(nf, c_out, bn=bn, p=fc_dropout)]
         if y_range: layers += [SigmoidRange(*y_range)]
         return nn.Sequential(*layers)
 

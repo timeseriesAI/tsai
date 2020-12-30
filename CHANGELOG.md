@@ -6,6 +6,12 @@
 ## 0.2.13
 
 Added min requirements for all package dependencies.
+* Models: 
+    * Added change_model_head utility function to ease the process of changing an instantiated models head.
+    * conv_lin_3d_head function to allow generation of 3d output tensors. This may be useful for multivariate, multi-horizon direct (non-recursive) time series forecasting.
+    * Updated TST (Time series transformer) to allow the use of residual attention (based on He, R., Ravula, A., Kanagal, B., & Ainslie, J. (2020). Realformer: Transformer Likes Informed Attention. arXiv preprint arXiv:2012.11747.)
+    * provided new functionality to transfer model's weights (useful when using pre-trained models). 
+    * updated build_ts_model to be able to use pretrained model weights.
 
     
 

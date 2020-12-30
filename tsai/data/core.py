@@ -226,12 +226,22 @@ class NumpyDatasets(Datasets):
             if isinstance(self[0][-1][-1].item(), Integral): return True
             else: return False
         except: pass
+        return False
 
     @property
     def c(self):
-        if len(self.tls) == 1: return 0
-        if not self.cat: return self.ptls[1].detach().cpu()[0].numel()
-        return len(np.unique(self.ptls[1].detach().cpu().flatten().numpy()))
+        if len(self.ptls) == 1: return 0
+        elif not self.cat:
+            if self.ptls[1][0].ndim == 0: return 1
+            return len(self.ptls[1][0])
+        return len(np.unique(self.ptls[1]))
+
+    @property
+    def d(self):
+        if self.cat or self.c == 0: return None
+        elif self.ptls[1][0].ndim <= 1: return None
+        else: return len(self.ptls[1][0][0])
+
 
     @property
     def loss_func(self):
@@ -409,6 +419,9 @@ class NumpyDataLoader(TfmdDL):
 
     @property
     def c(self): return self.dataset.c
+
+    @property
+    def d(self): return self.dataset.d
 
     @property
     def cat(self): return self.dataset.cat

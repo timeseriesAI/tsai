@@ -709,7 +709,7 @@ nb_path: "nbs/108c_models.TSTPlus.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSTPlus" class="doc_header"><code>class</code> <code>TSTPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TSTPlus.py#L188" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTPlus</code>(<strong><code>c_in</code></strong>:<code>int</code>, <strong><code>c_out</code></strong>:<code>int</code>, <strong><code>seq_len</code></strong>:<code>int</code>, <strong><code>max_seq_len</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>512</code></em>, <strong><code>n_layers</code></strong>:<code>int</code>=<em><code>3</code></em>, <strong><code>d_model</code></strong>:<code>int</code>=<em><code>128</code></em>, <strong><code>n_heads</code></strong>:<code>int</code>=<em><code>16</code></em>, <strong><code>d_k</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>d_v</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>d_ff</code></strong>:<code>int</code>=<em><code>256</code></em>, <strong><code>res_dropout</code></strong>:<code>float</code>=<em><code>0.1</code></em>, <strong><code>activation</code></strong>:<code>str</code>=<em><code>'gelu'</code></em>, <strong><code>res_attention</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>pe</code></strong>:<code>str</code>=<em><code>'exp1d'</code></em>, <strong><code>learn_pe</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>flatten</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>fc_dropout</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>custom_head</code></strong>:<code>Optional</code>=<em><code>None</code></em>, <strong><code>y_range</code></strong>:<code>Optional</code>[<code>tuple</code>]=<em><code>None</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Module</code></p>
+<h2 id="TSTPlus" class="doc_header"><code>class</code> <code>TSTPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TSTPlus.py#L188" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTPlus</code>(<strong><code>c_in</code></strong>:<code>int</code>, <strong><code>c_out</code></strong>:<code>int</code>, <strong><code>seq_len</code></strong>:<code>int</code>, <strong><code>max_seq_len</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>512</code></em>, <strong><code>n_layers</code></strong>:<code>int</code>=<em><code>3</code></em>, <strong><code>d_model</code></strong>:<code>int</code>=<em><code>128</code></em>, <strong><code>n_heads</code></strong>:<code>int</code>=<em><code>16</code></em>, <strong><code>d_k</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>d_v</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>d_ff</code></strong>:<code>int</code>=<em><code>256</code></em>, <strong><code>res_dropout</code></strong>:<code>float</code>=<em><code>0.1</code></em>, <strong><code>activation</code></strong>:<code>str</code>=<em><code>'gelu'</code></em>, <strong><code>res_attention</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>pe</code></strong>:<code>str</code>=<em><code>'exp1d'</code></em>, <strong><code>learn_pe</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>flatten</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>fc_dropout</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>concat_pool</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>bn</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>custom_head</code></strong>:<code>Optional</code>=<em><code>None</code></em>, <strong><code>y_range</code></strong>:<code>Optional</code>[<code>tuple</code>]=<em><code>None</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -969,8 +969,10 @@ nb_path: "nbs/108c_models.TSTPlus.ipynb"
 <div class="output_text output_subarea output_execute_result">
 <pre>Sequential(
   (0): Flatten(full=False)
-  (1): Dropout(p=0.1, inplace=False)
-  (2): Linear(in_features=7680, out_features=2, bias=True)
+  (1): LinBnDrop(
+    (0): Dropout(p=0.1, inplace=False)
+    (1): Linear(in_features=7680, out_features=2, bias=True)
+  )
 )</pre>
 </div>
 
@@ -993,7 +995,7 @@ nb_path: "nbs/108c_models.TSTPlus.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MultiTST" class="doc_header"><code>class</code> <code>MultiTST</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TSTPlus.py#L306" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MultiTST</code>(<strong><code>feats</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>max_seq_len</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>512</code></em>, <strong><code>n_layers</code></strong>:<code>int</code>=<em><code>3</code></em>, <strong><code>d_model</code></strong>:<code>int</code>=<em><code>128</code></em>, <strong><code>n_heads</code></strong>:<code>int</code>=<em><code>16</code></em>, <strong><code>d_k</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>d_v</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>d_ff</code></strong>:<code>int</code>=<em><code>256</code></em>, <strong><code>res_dropout</code></strong>:<code>float</code>=<em><code>0.1</code></em>, <strong><code>activation</code></strong>:<code>str</code>=<em><code>'gelu'</code></em>, <strong><code>res_attention</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>pe</code></strong>:<code>str</code>=<em><code>'exp1d'</code></em>, <strong><code>learn_pe</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>flatten</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>fc_dropout</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>custom_head</code></strong>:<code>Optional</code>=<em><code>None</code></em>, <strong><code>y_range</code></strong>:<code>Optional</code>[<code>tuple</code>]=<em><code>None</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <code>Module</code></p>
+<h2 id="MultiTSTPlus" class="doc_header"><code>class</code> <code>MultiTSTPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TSTPlus.py#L314" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MultiTSTPlus</code>(<strong><code>feats</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>max_seq_len</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>512</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>n_layers</code></strong>:<code>int</code>=<em><code>3</code></em>, <strong><code>d_model</code></strong>:<code>int</code>=<em><code>128</code></em>, <strong><code>n_heads</code></strong>:<code>int</code>=<em><code>16</code></em>, <strong><code>d_k</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>d_v</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>d_ff</code></strong>:<code>int</code>=<em><code>256</code></em>, <strong><code>res_dropout</code></strong>:<code>float</code>=<em><code>0.1</code></em>, <strong><code>activation</code></strong>:<code>str</code>=<em><code>'gelu'</code></em>, <strong><code>res_attention</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>pe</code></strong>:<code>str</code>=<em><code>'exp1d'</code></em>, <strong><code>learn_pe</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>flatten</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>fc_dropout</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>concat_pool</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>bn</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>y_range</code></strong>:<code>Optional</code>[<code>tuple</code>]=<em><code>None</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -1026,8 +1028,8 @@ nb_path: "nbs/108c_models.TSTPlus.ipynb"
 <span class="n">c_out</span> <span class="o">=</span> <span class="mi">2</span>
 <span class="n">seq_len</span> <span class="o">=</span> <span class="mi">10</span>
 <span class="n">xb2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_in</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">)</span>
-<span class="n">model1</span> <span class="o">=</span> <span class="n">MultiTST</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="p">)</span>
-<span class="n">model2</span> <span class="o">=</span> <span class="n">MultiTST</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">)</span>
+<span class="n">model1</span> <span class="o">=</span> <span class="n">MultiTSTPlus</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="p">)</span>
+<span class="n">model2</span> <span class="o">=</span> <span class="n">MultiTSTPlus</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">model1</span><span class="p">(</span><span class="n">xb2</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">model2</span><span class="p">(</span><span class="n">xb2</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">count_parameters</span><span class="p">(</span><span class="n">model1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">count_parameters</span><span class="p">(</span><span class="n">model2</span><span class="p">),</span> <span class="kc">True</span><span class="p">)</span>
 </pre></div>
@@ -1046,7 +1048,7 @@ nb_path: "nbs/108c_models.TSTPlus.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model1</span> <span class="o">=</span> <span class="n">MultiTST</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">y_range</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">5.5</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model1</span> <span class="o">=</span> <span class="n">MultiTSTPlus</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">y_range</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">5.5</span><span class="p">))</span>
 <span class="n">body</span><span class="p">,</span> <span class="n">head</span> <span class="o">=</span> <span class="n">split_model</span><span class="p">(</span><span class="n">model1</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">body</span><span class="p">(</span><span class="n">xb2</span><span class="p">)</span><span class="o">.</span><span class="n">ndim</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">head</span><span class="p">(</span><span class="n">body</span><span class="p">(</span><span class="n">xb2</span><span class="p">))</span><span class="o">.</span><span class="n">ndim</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
@@ -1067,8 +1069,123 @@ nb_path: "nbs/108c_models.TSTPlus.ipynb"
 <div class="output_text output_subarea output_execute_result">
 <pre>Sequential(
   (0): Flatten(full=False)
-  (1): Linear(in_features=2560, out_features=2, bias=True)
+  (1): LinBnDrop(
+    (0): Linear(in_features=2560, out_features=2, bias=True)
+  )
   (2): SigmoidRange(low=0.5, high=5.5)
+)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">bs</span> <span class="o">=</span> <span class="mi">16</span>
+<span class="n">n_vars</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">seq_len</span> <span class="o">=</span> <span class="mi">12</span>
+<span class="n">c_out</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">xb</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">n_vars</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">)</span>
+<span class="n">net</span> <span class="o">=</span> <span class="n">MultiTSTPlus</span><span class="p">(</span><span class="n">n_vars</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">)</span>
+<span class="n">change_model_head</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">create_pool_plus_head</span><span class="p">,</span> <span class="n">concat_pool</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">net</span><span class="p">(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">net</span><span class="o">.</span><span class="n">head</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>torch.Size([16, 2])
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Sequential(
+  (0): AdaptiveAvgPool1d(output_size=1)
+  (1): Flatten(full=False)
+  (2): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (3): Linear(in_features=128, out_features=512, bias=False)
+  (4): ReLU(inplace=True)
+  (5): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (6): Linear(in_features=512, out_features=2, bias=False)
+)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">bs</span> <span class="o">=</span> <span class="mi">16</span>
+<span class="n">n_vars</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">seq_len</span> <span class="o">=</span> <span class="mi">12</span>
+<span class="n">c_out</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">xb</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">n_vars</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">)</span>
+<span class="n">new_head</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">conv_lin_3d_head</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">net</span> <span class="o">=</span> <span class="n">MultiTSTPlus</span><span class="p">(</span><span class="n">n_vars</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">custom_head</span><span class="o">=</span><span class="n">new_head</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">net</span><span class="p">(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">net</span><span class="o">.</span><span class="n">head</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>torch.Size([16, 2, 5])
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>create_conv_lin_3d_head(
+  (0): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (1): Conv1d(128, 2, kernel_size=(1,), stride=(1,), bias=False)
+  (2): Transpose(-1, -2)
+  (3): BatchNorm1d(12, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (4): Transpose(-1, -2)
+  (5): Linear(in_features=12, out_features=5, bias=False)
 )</pre>
 </div>
 
