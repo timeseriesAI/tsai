@@ -1,0 +1,82 @@
+{
+    "Getting started": {
+        "Overview": "/",
+        "Tutorials":"/tutorials"
+    },
+    "Data": {
+        "Data core": "/data.core",
+        "Loading data": "/data.load",
+        "Data preparation": "/data.preparation",
+        "Splitting data": "/data.validation",
+        "Preprocessing data": "/data.preprocessing",
+        "Label-invariant transformations": "/data.transforms",
+        "Label-mixing transformations": "/data.mixed_augmentation",
+        "Tabular data": "/data.tabular",
+        "Imaging time series": "/data.image",
+        "Mixed data": "/data.mixed"
+    },
+    "Training": {
+        "Learner": "/learner",
+        "Optimizers": "/optimizer",
+        "Metrics": "/metrics",
+        "Callbacks": "/callback.core",
+        "": {
+            "Semi-supervised learning": {
+                "Noisy student": "/callback.noisy_student"
+            }
+        }
+    },
+    "Models": {
+        "Layers": "/models.layers",
+        "Utilities": "/models.utils",
+        "MLP": "/models.MLP",
+        "": {
+            "RNNs": {
+                "RNN": "/models.RNN",
+                "RNNPlus": "/models.RNNPlus"
+            }
+        },
+        "empty1": {
+            "1D CNNs": {
+                "FCN": "/models.FCN",
+                "FCNPlus": "/models.FCNPlus",
+                "ResNet": "/models.ResNet",
+                "ResNetPlus": "/models.ResNetPlus",
+                "XResNet1d": "/models.XResNet1d",
+                "XResNet1dPlus": "/models.XResNet1dPlus",
+                "ResCNN": "/models.ResCNN",
+                "TCN": "/models.TCN",
+                "ROCKET": "/models.ROCKET",
+                "InceptionTime": "/models.InceptionTime",
+                "InceptionTimePlus": "/models.InceptionTimePlus",
+                "XceptionTime": "/models.XceptionTime",
+                "XceptionTimePlus": "/models.XceptionTimePlus",
+                "OmniScaleCNN": "/models.OmniScaleCNN",
+                "XCM": "/models.XCM"
+            }
+        },
+        "empty2": {
+            "RNN-CNNs": {
+                "RNN_FCN": "/models.RNN_FCN",
+                "RNN_FCNPlus": "/models.RNN_FCNPlus"
+            }
+        },
+        "empty3": {
+            "Wavelet-based NNs": {
+                "mWDN": "/models.mWDN"
+            }
+        },
+        "empty4": {
+            "Transformers": {
+                "TransformerModel": "/models.TransformerModel",
+                "Time Series Transformer (TST)": "/models.TST",
+                "Time Series Transformer Plus (TSTPlus)": "/models.TSTPlus"
+            }
+        },
+        "Tabular Model": "/models.TabModel",
+        "MultiInputNet": "/models.MultiInputNet"
+    },
+    "Utilities": {
+        "Time series utilities": "/utils"
+    }
+}
