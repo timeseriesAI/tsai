@@ -171,7 +171,7 @@ def get_UCR_data(dsid, path='.', parent_dir='data/UCR', on_disk=True, return_spl
         return X, y, splits
 
 # Cell
-def check_data(X, y=None, splits=None):
+def check_data(X, y=None, splits=None, show_plot=True):
     try: X_is_nan = np.isnan(X).sum()
     except: X_is_nan = 'couldn not be checked'
     if X.ndim == 3:
@@ -196,3 +196,4 @@ def check_data(X, y=None, splits=None):
         n_splits = len(_splits)
         overlap = check_splits_overlap(splits)
         print(f'splits - n_splits: {len(_splits)} shape: {_splits}  overlap: {overlap}')
+        if show_plot: plot_splits(splits)

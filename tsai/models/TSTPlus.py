@@ -113,12 +113,13 @@ class MultiHeadAttention(Module):
         output = self.W_O(context)                                                           # context: [bs x q_len x d_model]
 
         if self.res_attention: return output, attn, scores
-        else: return output, attn
+        else: return output, attn                                                            # output: [bs x q_len x d_model]
+
 
 # Cell
 class TSTEncoderLayer(Module):
-    def __init__(self, d_model:int, n_heads:int, d_k:Optional[int]=None, d_v:Optional[int]=None, d_ff:int=256, res_dropout:float=0.1, activation:str="gelu",
-                res_attention:bool=False):
+    def __init__(self, q_len:int, d_model:int, n_heads:int, d_k:Optional[int]=None, d_v:Optional[int]=None, d_ff:int=256,
+                 res_dropout:float=0.1, activation:str="gelu", res_attention:bool=False):
 
         assert d_model // n_heads, f"d_model ({d_model}) must be divisible by n_heads ({n_heads})"
         d_k = ifnone(d_k, d_model // n_heads)
@@ -130,14 +131,14 @@ class TSTEncoderLayer(Module):
 
         # Add & Norm
         self.dropout_attn = nn.Dropout(res_dropout)
-        self.batchnorm_attn = nn.BatchNorm1d(d_model)
+        self.batchnorm_attn = nn.BatchNorm1d(q_len)
 
         # Position-wise Feed-Forward
         self.ff = nn.Sequential(nn.Linear(d_model, d_ff), self._get_activation_fn(activation), nn.Linear(d_ff, d_model))
 
         # Add & Norm
         self.dropout_ffn = nn.Dropout(res_dropout)
-        self.batchnorm_ffn = nn.BatchNorm1d(d_model)
+        self.batchnorm_ffn = nn.BatchNorm1d(q_len)
 
     def forward(self, src:Tensor, prev:Optional[Tensor]=None, attn_mask:Optional[Tensor]=None) -> Tensor:
 
@@ -149,14 +150,14 @@ class TSTEncoderLayer(Module):
             src2, attn = self.self_attn(src, src, src, attn_mask=attn_mask)
         ## Add & Norm
         src = src + self.dropout_attn(src2) # Add: residual connection with residual dropout
-        src = self.batchnorm_attn(src.permute(1,2,0)).permute(2,0,1) # Norm: batchnorm (requires d_model features to be in dim 1)
+        src = self.batchnorm_attn(src) # Norm: batchnorm
 
         # Feed-forward sublayer
         ## Position-wise Feed-Forward
         src2 = self.ff(src)
         ## Add & Norm
         src = src + self.dropout_ffn(src2) # Add: residual connection with residual dropout
-        src = self.batchnorm_ffn(src.permute(1,2,0)).permute(2,0,1) # Norm: batchnorm (requires d_model features to be in dim 1)
+        src = self.batchnorm_ffn(src) # Norm: batchnorm
 
         if self.res_attention:
             return src, scores
@@ -189,7 +190,7 @@ class TSTPlus(Module):
     def __init__(self, c_in:int, c_out:int, seq_len:int, max_seq_len:Optional[int]=512,
                  n_layers:int=3, d_model:int=128, n_heads:int=16, d_k:Optional[int]=None, d_v:Optional[int]=None,
                  d_ff:int=256, res_dropout:float=0.1, activation:str="gelu", res_attention:bool=False,
-                 pe:str='exp1d', learn_pe:bool=True, flatten:bool=True, fc_dropout:float=0., concat_pool:bool=False, bn:bool=False, custom_head:Optional=None,
+                 pe:str='normal', learn_pe:bool=True, flatten:bool=True, fc_dropout:float=0., concat_pool:bool=False, bn:bool=False, custom_head:Optional=None,
                  y_range:Optional[tuple]=None, verbose:bool=False, **kwargs):
         r"""TST (Time Series Transformer) is a Transformer that takes continuous time series as inputs.
         As mentioned in the paper, the input must be standardized by_var based on the entire training set.
@@ -207,7 +208,7 @@ class TSTPlus(Module):
             activation: the activation function of intermediate layer, relu or gelu.
             res_attention: if True Residual MultiHeadAttention is applied.
             num_layers: the number of sub-encoder-layers in the encoder.
-            pe: type of positional encoder. Available types: 'exp1d', 'lin1d', 'exp2d', 'lin2d', 'sincos', 'gauss', 'zeros', None.
+            pe: type of positional encoder. Available types: 'exp1d', 'lin1d', 'exp2d', 'lin2d', 'sincos', 'gauss' or 'normal', 'uniform', 'zeros', None.
             learn_pe: learned positional encoder (True, default) or fixed positional encoder.
             flatten: this will flatten the encoder output to be able to apply an mlp type of head (default=True)
             fc_dropout: dropout applied to the final fully connected layer.
@@ -248,20 +249,26 @@ class TSTPlus(Module):
             W_pos = torch.zeros((q_len, d_model), device=default_device()) # pe = None and learn_pe = False can be used to measure impact of pe
             learn_pe = False
         elif pe == 'zeros': W_pos = torch.zeros((q_len, d_model), device=default_device())
-        elif pe == 'gauss': W_pos = torch.normal(0, 1, (q_len, d_model), device=default_device())
+        elif pe == 'normal' or pe == 'gauss':
+            W_pos = torch.zeros((q_len, d_model), device=default_device())
+            torch.nn.init.normal_(W_pos, mean=0.0, std=1.0)
+        elif pe == 'uniform':
+            W_pos = torch.zeros((q_len, d_model), device=default_device())
+            nn.init.uniform_(W_pos, a=0.0, b=1.0)
         elif pe == 'lin1d': W_pos = Coord1dPosEncoding(q_len, exponential=False, normalize=True)
         elif pe == 'exp1d': W_pos = Coord1dPosEncoding(q_len, exponential=True, normalize=True)
         elif pe == 'lin2d': W_pos = Coord2dPosEncoding(q_len, d_model, exponential=False, normalize=True)
         elif pe == 'exp2d': W_pos = Coord2dPosEncoding(q_len, d_model, exponential=True, normalize=True)
         elif pe == 'sincos': W_pos = SinCosPosEncoding(q_len, d_model, normalize=True)
-        else: raise ValueError(f"{pe} is not a valid pe (positional encoder. Available types: 'gauss' (default), 'zeros', lin1d', 'exp1d', '2d', 'sincos'.)")
+        else: raise ValueError(f"{pe} is not a valid pe (positional encoder. Available types: 'gauss'=='normal', \
+            'zeros', 'uniform', 'lin1d', 'exp1d', 'lin2d', 'exp2d', 'sincos', None.)")
         self.W_pos = nn.Parameter(W_pos, requires_grad=learn_pe)
 
         # Residual dropout
         self.res_dropout = nn.Dropout(res_dropout)
 
         # Encoder
-        encoder_layer = TSTEncoderLayer(d_model, n_heads, d_k=d_k, d_v=d_v, d_ff=d_ff, res_dropout=res_dropout, activation=activation,
+        encoder_layer = TSTEncoderLayer(q_len, d_model, n_heads, d_k=d_k, d_v=d_v, d_ff=d_ff, res_dropout=res_dropout, activation=activation,
                                         res_attention=res_attention)
         self.encoder = TSTEncoder(encoder_layer, n_layers, res_attention=res_attention)
         self.transpose = Transpose(-1, -2, contiguous=True)

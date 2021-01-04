@@ -510,10 +510,10 @@ class TSDataLoaders(NumpyDataLoaders):
 
 
 def get_ts_dls(X, y=None, splits=None, sel_vars=None, sel_steps=None, tfms=None, inplace=True,
-            path='.', bs=64, batch_tfms=None, num_workers=0, device=None, shuffle_train=True, **kwargs):
+            path='.', bs=64, batch_tfms=None, num_workers=0, device=None, shuffle_train=True, drop_last=True, **kwargs):
     dsets = TSDatasets(X, y, splits=splits, sel_vars=sel_vars, sel_steps=sel_steps, tfms=tfms, inplace=inplace, **kwargs)
     dls   = TSDataLoaders.from_dsets(dsets.train, dsets.valid, path=path, bs=bs, batch_tfms=batch_tfms, num_workers=num_workers,
-                                     device=device, shuffle_train=shuffle_train, **kwargs)
+                                     device=device, shuffle_train=shuffle_train, drop_last=drop_last, **kwargs)
     return dls
 
 get_tsimage_dls = get_ts_dls
