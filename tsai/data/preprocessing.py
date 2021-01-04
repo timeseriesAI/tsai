@@ -48,17 +48,18 @@ class OneHot(Transform):
 class TSStandardize(Transform):
     "Standardizes batch of type `TSTensor`"
     parameters, order = L('mean', 'std'), 90
-    def __init__(self, mean=None, std=None, by_sample=False, by_var=False, verbose=False):
+    def __init__(self, mean=None, std=None, by_sample=False, by_var=False, by_step=False, verbose=False):
         self.mean = tensor(mean) if mean is not None else None
         self.std = tensor(std) if std is not None else None
-        self.by_sample, self.by_var = by_sample, by_var
-        if by_sample and by_var: self.axes = (2)
-        elif by_sample: self.axes = (1, 2)
-        elif by_var: self.axes = (0, 2)
-        else: self.axes = ()
+        self.by_sample, self.by_var, self.by_step = by_sample, by_var, by_step
+        drop_axes = []
+        if by_sample: drop_axes.append(0)
+        if by_var: drop_axes.append(1)
+        if by_step: drop_axes.append(2)
+        self.axes = tuple([ax for ax in (0, 1, 2) if ax not in drop_axes])
         self.verbose = verbose
         if self.mean is not None or self.std is not None:
-            pv(f'{self.__class__.__name__} mean={self.mean}, std={self.std}, by_sample={self.by_sample}, by_var={self.by_var}\n', self.verbose)
+            pv(f'{self.__class__.__name__} mean={self.mean}, std={self.std}, by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step}\n', self.verbose)
 
     @classmethod
     def from_stats(cls, mean, std): return cls(mean, std)
@@ -68,17 +69,17 @@ class TSStandardize(Transform):
             x, *_ = dl.one_batch()
             self.mean, self.std = x.mean(self.axes, keepdim=self.axes!=()), x.std(self.axes, keepdim=self.axes!=()) + 1e-7
             if len(self.mean.shape) == 0:
-                pv(f'{self.__class__.__name__} mean={self.mean}, std={self.std}, by_sample={self.by_sample}, by_var={self.by_var}\n',
+                pv(f'{self.__class__.__name__} mean={self.mean}, std={self.std}, by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step}\n',
                    self.verbose)
             else:
-                pv(f'{self.__class__.__name__} mean shape={self.mean.shape}, std shape={self.std.shape}, by_sample={self.by_sample}, by_var={self.by_var}\n',
+                pv(f'{self.__class__.__name__} mean shape={self.mean.shape}, std shape={self.std.shape}, by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step}\n',
                    self.verbose)
 
     def encodes(self, o:TSTensor):
         if self.by_sample: self.mean, self.std = o.mean(self.axes, keepdim=self.axes!=()), o.std(self.axes, keepdim=self.axes!=()) + 1e-7
         return (o - self.mean) / self.std
 
-    def __repr__(self): return f'{self.__class__.__name__}(by_sample={self.by_sample}, by_var={self.by_var})'
+    def __repr__(self): return f'{self.__class__.__name__}(by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step})'
 
 # Cell
 @patch
@@ -103,16 +104,19 @@ class TSNormalize(Transform):
     "Normalizes batch of type `TSTensor`"
     parameters, order = L('min', 'max'), 90
 
-    def __init__(self, min=None, max=None, range=(-1, 1), by_sample=False, by_var=False, verbose=False):
+    def __init__(self, min=None, max=None, range=(-1, 1), by_sample=False, by_var=False, by_step=False, verbose=False):
         self.min = tensor(min) if min is not None else None
         self.max = tensor(max) if max is not None else None
         self.range_min, self.range_max = range
-        self.by_sample, self.by_var = by_sample, by_var
-        if by_sample and by_var: self.axes = (2)
-        elif by_sample: self.axes = (1, 2)
-        elif by_var: self.axes = (0, 2)
-        else: self.axes = ()
+        self.by_sample, self.by_var, self.by_step = by_sample, by_var, by_step
+        drop_axes = []
+        if by_sample: drop_axes.append(0)
+        if by_var: drop_axes.append(1)
+        if by_step: drop_axes.append(2)
+        self.axes = tuple([ax for ax in (0, 1, 2) if ax not in drop_axes])
         self.verbose = verbose
+        if self.min is not None or self.max is not None:
+            pv(f'{self.__class__.__name__} min={self.min}, max={self.max}, by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step}\n', self.verbose)
 
     @classmethod
     def from_stats(cls, min, max, range_min=0, range_max=1): return cls(min, max, self.range_min, self.range_max)
@@ -122,9 +126,9 @@ class TSNormalize(Transform):
             x, *_ = dl.one_batch()
             self.min, self.max = x.mul_min(self.axes, keepdim=self.axes!=()), x.mul_max(self.axes, keepdim=self.axes!=())
             if len(self.min.shape) == 0:
-                pv(f'{self.__class__.__name__} min={self.min}, max={self.max}, by_sample={self.by_sample}, by_var={self.by_var}\n', self.verbose)
+                pv(f'{self.__class__.__name__} min={self.min}, max={self.max}, by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step}\n', self.verbose)
             else:
-                pv(f'{self.__class__.__name__} min shape={self.min.shape}, max shape={self.max.shape}, by_sample={self.by_sample}, by_var={self.by_var}\n',
+                pv(f'{self.__class__.__name__} min shape={self.min.shape}, max shape={self.max.shape}, by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step}\n',
                    self.verbose)
 
     def encodes(self, o:TSTensor):
@@ -132,7 +136,7 @@ class TSNormalize(Transform):
         return torch.clamp(((o - self.min) / (self.max - self.min)) * (self.range_max - self.range_min) + self.range_min,
                            self.range_min, self.range_max)
 
-    def __repr__(self): return f'{self.__class__.__name__}(by_sample={self.by_sample}, by_var={self.by_var})'
+    def __repr__(self): return f'{self.__class__.__name__}(by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step})'
 
 # Cell
 class TSClipOutliers(Transform):

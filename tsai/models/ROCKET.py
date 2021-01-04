@@ -114,7 +114,7 @@ class ROCKET(nn.Module):
 
     def forward(self, x):
         for i in range(self.n_kernels):
-            out = self.convs[i](x)
+            out = self.convs[i](x).detach().cpu()
             _max = out.max(dim=-1)[0]
             _ppv = torch.gt(out, 0).sum(dim=-1).float() / out.shape[-1]
             cat = torch.cat((_max, _ppv), dim=-1)
@@ -131,8 +131,8 @@ def create_rocket_features(dl, n_kernels=10_000, kss=[7, 9, 11], device=None):
     """
     model = ROCKET(dl.vars, dl.len, n_kernels=n_kernels, kss=kss, device=device)
     for i,(xb,yb) in enumerate(progress_bar(dl)):
-        _x_out = model(xb).detach().cpu().numpy()
-        _y_out = yb.detach().cpu().numpy()
+        _x_out = model(xb)
+        _y_out = yb
         x_out = _x_out if i == 0 else torch.cat([x_out, _x_out])
         y_out = _y_out if i == 0 else torch.cat([y_out, _y_out])
-    return x_out, y_out
+    return x_out.numpy(), y_out.numpy()
