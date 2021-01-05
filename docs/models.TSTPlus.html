@@ -610,7 +610,7 @@ nb_path: "nbs/108c_models.TSTPlus.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSTEncoderLayer" class="doc_header"><code>class</code> <code>TSTEncoderLayer</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TSTPlus.py#L119" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTEncoderLayer</code>(<strong><code>d_model</code></strong>:<code>int</code>, <strong><code>n_heads</code></strong>:<code>int</code>, <strong><code>d_k</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>d_v</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>d_ff</code></strong>:<code>int</code>=<em><code>256</code></em>, <strong><code>res_dropout</code></strong>:<code>float</code>=<em><code>0.1</code></em>, <strong><code>activation</code></strong>:<code>str</code>=<em><code>'gelu'</code></em>, <strong><code>res_attention</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <code>Module</code></p>
+<h2 id="TSTEncoderLayer" class="doc_header"><code>class</code> <code>TSTEncoderLayer</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TSTPlus.py#L120" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTEncoderLayer</code>(<strong><code>q_len</code></strong>:<code>int</code>, <strong><code>d_model</code></strong>:<code>int</code>, <strong><code>n_heads</code></strong>:<code>int</code>, <strong><code>d_k</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>d_v</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>d_ff</code></strong>:<code>int</code>=<em><code>256</code></em>, <strong><code>res_dropout</code></strong>:<code>float</code>=<em><code>0.1</code></em>, <strong><code>activation</code></strong>:<code>str</code>=<em><code>'gelu'</code></em>, <strong><code>res_attention</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -639,7 +639,7 @@ nb_path: "nbs/108c_models.TSTPlus.ipynb"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">128</span><span class="p">)</span>
-<span class="n">output</span> <span class="o">=</span> <span class="n">TSTEncoderLayer</span><span class="p">(</span><span class="n">d_model</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">n_heads</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">d_k</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">d_v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">d_ff</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">res_dropout</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;gelu&#39;</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">TSTEncoderLayer</span><span class="p">(</span><span class="n">q_len</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">d_model</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">n_heads</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">d_k</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">d_v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">d_ff</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">res_dropout</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;gelu&#39;</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span>
 <span class="n">output</span><span class="o">.</span><span class="n">shape</span>
 </pre></div>
 
@@ -677,7 +677,7 @@ nb_path: "nbs/108c_models.TSTPlus.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSTEncoder" class="doc_header"><code>class</code> <code>TSTEncoder</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TSTPlus.py#L172" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTEncoder</code>(<strong><code>encoder_layer</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>res_attention</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <code>Module</code></p>
+<h2 id="TSTEncoder" class="doc_header"><code>class</code> <code>TSTEncoder</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TSTPlus.py#L173" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTEncoder</code>(<strong><code>encoder_layer</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>res_attention</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -709,7 +709,7 @@ nb_path: "nbs/108c_models.TSTPlus.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSTPlus" class="doc_header"><code>class</code> <code>TSTPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TSTPlus.py#L188" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTPlus</code>(<strong><code>c_in</code></strong>:<code>int</code>, <strong><code>c_out</code></strong>:<code>int</code>, <strong><code>seq_len</code></strong>:<code>int</code>, <strong><code>max_seq_len</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>512</code></em>, <strong><code>n_layers</code></strong>:<code>int</code>=<em><code>3</code></em>, <strong><code>d_model</code></strong>:<code>int</code>=<em><code>128</code></em>, <strong><code>n_heads</code></strong>:<code>int</code>=<em><code>16</code></em>, <strong><code>d_k</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>d_v</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>d_ff</code></strong>:<code>int</code>=<em><code>256</code></em>, <strong><code>res_dropout</code></strong>:<code>float</code>=<em><code>0.1</code></em>, <strong><code>activation</code></strong>:<code>str</code>=<em><code>'gelu'</code></em>, <strong><code>res_attention</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>pe</code></strong>:<code>str</code>=<em><code>'exp1d'</code></em>, <strong><code>learn_pe</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>flatten</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>fc_dropout</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>concat_pool</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>bn</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>custom_head</code></strong>:<code>Optional</code>=<em><code>None</code></em>, <strong><code>y_range</code></strong>:<code>Optional</code>[<code>tuple</code>]=<em><code>None</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Module</code></p>
+<h2 id="TSTPlus" class="doc_header"><code>class</code> <code>TSTPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TSTPlus.py#L189" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTPlus</code>(<strong><code>c_in</code></strong>:<code>int</code>, <strong><code>c_out</code></strong>:<code>int</code>, <strong><code>seq_len</code></strong>:<code>int</code>, <strong><code>max_seq_len</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>512</code></em>, <strong><code>n_layers</code></strong>:<code>int</code>=<em><code>3</code></em>, <strong><code>d_model</code></strong>:<code>int</code>=<em><code>128</code></em>, <strong><code>n_heads</code></strong>:<code>int</code>=<em><code>16</code></em>, <strong><code>d_k</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>d_v</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>d_ff</code></strong>:<code>int</code>=<em><code>256</code></em>, <strong><code>res_dropout</code></strong>:<code>float</code>=<em><code>0.1</code></em>, <strong><code>activation</code></strong>:<code>str</code>=<em><code>'gelu'</code></em>, <strong><code>res_attention</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>pe</code></strong>:<code>str</code>=<em><code>'normal'</code></em>, <strong><code>learn_pe</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>flatten</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>fc_dropout</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>concat_pool</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>bn</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>custom_head</code></strong>:<code>Optional</code>=<em><code>None</code></em>, <strong><code>y_range</code></strong>:<code>Optional</code>[<code>tuple</code>]=<em><code>None</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -778,7 +778,7 @@ nb_path: "nbs/108c_models.TSTPlus.ipynb"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>model parameters: 484610
+<pre>model parameters: 486146
 </pre>
 </div>
 </div>
@@ -821,7 +821,7 @@ nb_path: "nbs/108c_models.TSTPlus.ipynb"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>model parameters: 539138
+<pre>model parameters: 608770
 </pre>
 </div>
 </div>
@@ -857,7 +857,7 @@ nb_path: "nbs/108c_models.TSTPlus.ipynb"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>model parameters: 419586
+<pre>model parameters: 421122
 </pre>
 </div>
 </div>
@@ -893,7 +893,7 @@ nb_path: "nbs/108c_models.TSTPlus.ipynb"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>model parameters: 552704
+<pre>model parameters: 554240
 </pre>
 </div>
 </div>
@@ -957,7 +957,7 @@ nb_path: "nbs/108c_models.TSTPlus.ipynb"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>model parameters: 412546
+<pre>model parameters: 411730
 </pre>
 </div>
 </div>
@@ -995,7 +995,7 @@ nb_path: "nbs/108c_models.TSTPlus.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MultiTSTPlus" class="doc_header"><code>class</code> <code>MultiTSTPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TSTPlus.py#L314" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MultiTSTPlus</code>(<strong><code>feats</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>max_seq_len</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>512</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>n_layers</code></strong>:<code>int</code>=<em><code>3</code></em>, <strong><code>d_model</code></strong>:<code>int</code>=<em><code>128</code></em>, <strong><code>n_heads</code></strong>:<code>int</code>=<em><code>16</code></em>, <strong><code>d_k</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>d_v</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>d_ff</code></strong>:<code>int</code>=<em><code>256</code></em>, <strong><code>res_dropout</code></strong>:<code>float</code>=<em><code>0.1</code></em>, <strong><code>activation</code></strong>:<code>str</code>=<em><code>'gelu'</code></em>, <strong><code>res_attention</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>pe</code></strong>:<code>str</code>=<em><code>'exp1d'</code></em>, <strong><code>learn_pe</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>flatten</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>fc_dropout</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>concat_pool</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>bn</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>y_range</code></strong>:<code>Optional</code>[<code>tuple</code>]=<em><code>None</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <code>Module</code></p>
+<h2 id="MultiTSTPlus" class="doc_header"><code>class</code> <code>MultiTSTPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TSTPlus.py#L321" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MultiTSTPlus</code>(<strong><code>feats</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>max_seq_len</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>512</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>n_layers</code></strong>:<code>int</code>=<em><code>3</code></em>, <strong><code>d_model</code></strong>:<code>int</code>=<em><code>128</code></em>, <strong><code>n_heads</code></strong>:<code>int</code>=<em><code>16</code></em>, <strong><code>d_k</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>d_v</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>d_ff</code></strong>:<code>int</code>=<em><code>256</code></em>, <strong><code>res_dropout</code></strong>:<code>float</code>=<em><code>0.1</code></em>, <strong><code>activation</code></strong>:<code>str</code>=<em><code>'gelu'</code></em>, <strong><code>res_attention</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>pe</code></strong>:<code>str</code>=<em><code>'normal'</code></em>, <strong><code>learn_pe</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>flatten</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>fc_dropout</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>concat_pool</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>bn</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>y_range</code></strong>:<code>Optional</code>[<code>tuple</code>]=<em><code>None</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 

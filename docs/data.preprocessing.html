@@ -279,7 +279,7 @@ nb_path: "nbs/003_data.preprocessing.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSStandardize" class="doc_header"><code>class</code> <code>TSStandardize</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/preprocessing.py#L48" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSStandardize</code>(<strong><code>mean</code></strong>=<em><code>None</code></em>, <strong><code>std</code></strong>=<em><code>None</code></em>, <strong><code>by_sample</code></strong>=<em><code>False</code></em>, <strong><code>by_var</code></strong>=<em><code>False</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>) :: <code>Transform</code></p>
+<h2 id="TSStandardize" class="doc_header"><code>class</code> <code>TSStandardize</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/preprocessing.py#L48" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSStandardize</code>(<strong><code>mean</code></strong>=<em><code>None</code></em>, <strong><code>std</code></strong>=<em><code>None</code></em>, <strong><code>by_sample</code></strong>=<em><code>False</code></em>, <strong><code>by_var</code></strong>=<em><code>False</code></em>, <strong><code>by_step</code></strong>=<em><code>False</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>) :: <code>Transform</code></p>
 </blockquote>
 <p>Standardizes batch of type <a href="/tsai/data.core.html#TSTensor"><code>TSTensor</code></a></p>
 
@@ -311,7 +311,7 @@ nb_path: "nbs/003_data.preprocessing.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Tensor.mul_min" class="doc_header"><code>Tensor.mul_min</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/preprocessing.py#L84" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Tensor.mul_min</code>(<strong><code>x</code></strong>:<code>NumpyTensor'&gt;)</code>, <strong><code>axes</code></strong>=<em><code>()</code></em>, <strong><code>keepdim</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="Tensor.mul_min" class="doc_header"><code>Tensor.mul_min</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/preprocessing.py#L85" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Tensor.mul_min</code>(<strong><code>x</code></strong>:<code>NumpyTensor'&gt;)</code>, <strong><code>axes</code></strong>=<em><code>()</code></em>, <strong><code>keepdim</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 
 </div>
@@ -335,7 +335,7 @@ nb_path: "nbs/003_data.preprocessing.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TSTensor.mul_min" class="doc_header"><code>TSTensor.mul_min</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/preprocessing.py#L84" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TSTensor.mul_min</code>(<strong><code>x</code></strong>:<code>NumpyTensor'&gt;)</code>, <strong><code>axes</code></strong>=<em><code>()</code></em>, <strong><code>keepdim</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="TSTensor.mul_min" class="doc_header"><code>TSTensor.mul_min</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/preprocessing.py#L85" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TSTensor.mul_min</code>(<strong><code>x</code></strong>:<code>NumpyTensor'&gt;)</code>, <strong><code>axes</code></strong>=<em><code>()</code></em>, <strong><code>keepdim</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 
 </div>
@@ -359,7 +359,7 @@ nb_path: "nbs/003_data.preprocessing.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="NumpyTensor.mul_min" class="doc_header"><code>NumpyTensor.mul_min</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/preprocessing.py#L84" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>NumpyTensor.mul_min</code>(<strong><code>x</code></strong>:<code>NumpyTensor'&gt;)</code>, <strong><code>axes</code></strong>=<em><code>()</code></em>, <strong><code>keepdim</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="NumpyTensor.mul_min" class="doc_header"><code>NumpyTensor.mul_min</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/preprocessing.py#L85" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>NumpyTensor.mul_min</code>(<strong><code>x</code></strong>:<code>NumpyTensor'&gt;)</code>, <strong><code>axes</code></strong>=<em><code>()</code></em>, <strong><code>keepdim</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 
 </div>
@@ -383,7 +383,7 @@ nb_path: "nbs/003_data.preprocessing.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Tensor.mul_max" class="doc_header"><code>Tensor.mul_max</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/preprocessing.py#L93" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Tensor.mul_max</code>(<strong><code>x</code></strong>:<code>NumpyTensor'&gt;)</code>, <strong><code>axes</code></strong>=<em><code>()</code></em>, <strong><code>keepdim</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="Tensor.mul_max" class="doc_header"><code>Tensor.mul_max</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/preprocessing.py#L94" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Tensor.mul_max</code>(<strong><code>x</code></strong>:<code>NumpyTensor'&gt;)</code>, <strong><code>axes</code></strong>=<em><code>()</code></em>, <strong><code>keepdim</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 
 </div>
@@ -407,7 +407,7 @@ nb_path: "nbs/003_data.preprocessing.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TSTensor.mul_max" class="doc_header"><code>TSTensor.mul_max</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/preprocessing.py#L93" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TSTensor.mul_max</code>(<strong><code>x</code></strong>:<code>NumpyTensor'&gt;)</code>, <strong><code>axes</code></strong>=<em><code>()</code></em>, <strong><code>keepdim</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="TSTensor.mul_max" class="doc_header"><code>TSTensor.mul_max</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/preprocessing.py#L94" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TSTensor.mul_max</code>(<strong><code>x</code></strong>:<code>NumpyTensor'&gt;)</code>, <strong><code>axes</code></strong>=<em><code>()</code></em>, <strong><code>keepdim</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 
 </div>
@@ -431,7 +431,7 @@ nb_path: "nbs/003_data.preprocessing.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="NumpyTensor.mul_max" class="doc_header"><code>NumpyTensor.mul_max</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/preprocessing.py#L93" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>NumpyTensor.mul_max</code>(<strong><code>x</code></strong>:<code>NumpyTensor'&gt;)</code>, <strong><code>axes</code></strong>=<em><code>()</code></em>, <strong><code>keepdim</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="NumpyTensor.mul_max" class="doc_header"><code>NumpyTensor.mul_max</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/preprocessing.py#L94" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>NumpyTensor.mul_max</code>(<strong><code>x</code></strong>:<code>NumpyTensor'&gt;)</code>, <strong><code>axes</code></strong>=<em><code>()</code></em>, <strong><code>keepdim</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 
 </div>
@@ -455,7 +455,7 @@ nb_path: "nbs/003_data.preprocessing.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSNormalize" class="doc_header"><code>class</code> <code>TSNormalize</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/preprocessing.py#L102" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSNormalize</code>(<strong><code>min</code></strong>=<em><code>None</code></em>, <strong><code>max</code></strong>=<em><code>None</code></em>, <strong><code>range</code></strong>=<em><code>(-1, 1)</code></em>, <strong><code>by_sample</code></strong>=<em><code>False</code></em>, <strong><code>by_var</code></strong>=<em><code>False</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>) :: <code>Transform</code></p>
+<h2 id="TSNormalize" class="doc_header"><code>class</code> <code>TSNormalize</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/preprocessing.py#L103" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSNormalize</code>(<strong><code>min</code></strong>=<em><code>None</code></em>, <strong><code>max</code></strong>=<em><code>None</code></em>, <strong><code>range</code></strong>=<em><code>(-1, 1)</code></em>, <strong><code>by_sample</code></strong>=<em><code>False</code></em>, <strong><code>by_var</code></strong>=<em><code>False</code></em>, <strong><code>by_step</code></strong>=<em><code>False</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>) :: <code>Transform</code></p>
 </blockquote>
 <p>Normalizes batch of type <a href="/tsai/data.core.html#TSTensor"><code>TSTensor</code></a></p>
 
@@ -500,7 +500,7 @@ nb_path: "nbs/003_data.preprocessing.ipynb"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>TSStandardize mean shape=(128, 1, 1), std shape=(128, 1, 1), by_sample=True, by_var=False
+<pre>TSStandardize mean shape=(128, 1, 1), std shape=(128, 1, 1), by_sample=True, by_var=False, by_step=False
 
 </pre>
 </div>
@@ -606,7 +606,7 @@ nb_path: "nbs/003_data.preprocessing.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSClipOutliers" class="doc_header"><code>class</code> <code>TSClipOutliers</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/preprocessing.py#L138" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSClipOutliers</code>(<strong><code>min</code></strong>=<em><code>None</code></em>, <strong><code>max</code></strong>=<em><code>None</code></em>, <strong><code>by_sample</code></strong>=<em><code>False</code></em>, <strong><code>by_var</code></strong>=<em><code>False</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>) :: <code>Transform</code></p>
+<h2 id="TSClipOutliers" class="doc_header"><code>class</code> <code>TSClipOutliers</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/preprocessing.py#L142" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSClipOutliers</code>(<strong><code>min</code></strong>=<em><code>None</code></em>, <strong><code>max</code></strong>=<em><code>None</code></em>, <strong><code>by_sample</code></strong>=<em><code>False</code></em>, <strong><code>by_var</code></strong>=<em><code>False</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>) :: <code>Transform</code></p>
 </blockquote>
 <p>Clip outliers batch of type <a href="/tsai/data.core.html#TSTensor"><code>TSTensor</code></a> based on the IQR</p>
 
@@ -679,7 +679,7 @@ nb_path: "nbs/003_data.preprocessing.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSRobustScale" class="doc_header"><code>class</code> <code>TSRobustScale</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/preprocessing.py#L175" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRobustScale</code>(<strong><code>median</code></strong>=<em><code>None</code></em>, <strong><code>min</code></strong>=<em><code>None</code></em>, <strong><code>max</code></strong>=<em><code>None</code></em>, <strong><code>by_sample</code></strong>=<em><code>False</code></em>, <strong><code>by_var</code></strong>=<em><code>False</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>) :: <code>Transform</code></p>
+<h2 id="TSRobustScale" class="doc_header"><code>class</code> <code>TSRobustScale</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/preprocessing.py#L179" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRobustScale</code>(<strong><code>median</code></strong>=<em><code>None</code></em>, <strong><code>min</code></strong>=<em><code>None</code></em>, <strong><code>max</code></strong>=<em><code>None</code></em>, <strong><code>by_sample</code></strong>=<em><code>False</code></em>, <strong><code>by_var</code></strong>=<em><code>False</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>) :: <code>Transform</code></p>
 </blockquote>
 <p>This Scaler removes the median and scales the data according to the quantile range (defaults to IQR: Interquartile Range)</p>
 
@@ -726,9 +726,9 @@ nb_path: "nbs/003_data.preprocessing.ipynb"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(-0.6082351207733154,
- 1.067160725593567,
- -2.7678210735321045,
+<pre>(-0.6113468408584595,
+ 1.1624133586883545,
+ -2.617042064666748,
  2.5364139080047607)</pre>
 </div>
 
@@ -751,7 +751,7 @@ nb_path: "nbs/003_data.preprocessing.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSDiff" class="doc_header"><code>class</code> <code>TSDiff</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/preprocessing.py#L214" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDiff</code>(<strong><code>lag</code></strong>=<em><code>1</code></em>, <strong><code>pad</code></strong>=<em><code>True</code></em>) :: <code>Transform</code></p>
+<h2 id="TSDiff" class="doc_header"><code>class</code> <code>TSDiff</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/preprocessing.py#L218" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDiff</code>(<strong><code>lag</code></strong>=<em><code>1</code></em>, <strong><code>pad</code></strong>=<em><code>True</code></em>) :: <code>Transform</code></p>
 </blockquote>
 <p>Differences batch of type <a href="/tsai/data.core.html#TSTensor"><code>TSTensor</code></a></p>
 
@@ -802,7 +802,7 @@ nb_path: "nbs/003_data.preprocessing.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSLog" class="doc_header"><code>class</code> <code>TSLog</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/preprocessing.py#L226" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSLog</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
+<h2 id="TSLog" class="doc_header"><code>class</code> <code>TSLog</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/preprocessing.py#L230" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSLog</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
 </blockquote>
 <p>Log transforms batch of type <a href="/tsai/data.core.html#TSTensor"><code>TSTensor</code></a>. For positive values only</p>
 
@@ -852,7 +852,7 @@ nb_path: "nbs/003_data.preprocessing.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSLogReturn" class="doc_header"><code>class</code> <code>TSLogReturn</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/preprocessing.py#L236" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSLogReturn</code>(<strong><code>lag</code></strong>=<em><code>1</code></em>, <strong><code>pad</code></strong>=<em><code>True</code></em>) :: <code>Transform</code></p>
+<h2 id="TSLogReturn" class="doc_header"><code>class</code> <code>TSLogReturn</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/preprocessing.py#L240" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSLogReturn</code>(<strong><code>lag</code></strong>=<em><code>1</code></em>, <strong><code>pad</code></strong>=<em><code>True</code></em>) :: <code>Transform</code></p>
 </blockquote>
 <p>Calculates log-return of batch of type <a href="/tsai/data.core.html#TSTensor"><code>TSTensor</code></a>. For positive values only</p>
 
