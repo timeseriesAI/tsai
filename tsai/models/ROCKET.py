@@ -113,26 +113,24 @@ class ROCKET(nn.Module):
         self.to(device=device)
 
     def forward(self, x):
-        for i in range(self.n_kernels):
-            out = self.convs[i](x).detach().cpu()
+        _output = []
+        for i in progress_bar(range(self.n_kernels), leave=False, comment='kernel/kernels'):
+            out = self.convs[i](x).cpu()
             _max = out.max(dim=-1)[0]
             _ppv = torch.gt(out, 0).sum(dim=-1).float() / out.shape[-1]
-            cat = torch.cat((_max, _ppv), dim=-1)
-            output = cat if i == 0 else torch.cat((output, cat), dim=-1)
-        return output
+            _output.append(_max)
+            _output.append(_ppv)
+        return torch.cat(_output, dim=1)
 
 # Cell
-def create_rocket_features(dl, n_kernels=10_000, kss=[7, 9, 11], device=None):
+def create_rocket_features(dl, model):
     """Args:
-
+        model     : ROCKET model instance
         dl        : single TSDataLoader (for example dls.train or dls.valid)
-        n_kernels : number of kernels created in ROCKET
-        kss       : filter sizes used by ROCKET
     """
-    model = ROCKET(dl.vars, dl.len, n_kernels=n_kernels, kss=kss, device=device)
-    for i,(xb,yb) in enumerate(progress_bar(dl)):
-        _x_out = model(xb)
-        _y_out = yb
-        x_out = _x_out if i == 0 else torch.cat([x_out, _x_out])
-        y_out = _y_out if i == 0 else torch.cat([y_out, _y_out])
-    return x_out.numpy(), y_out.numpy()
+    _x_out = []
+    _y_out = []
+    for i,(xb,yb) in enumerate(progress_bar(dl, comment='batch/batches')):
+        _x_out.append(model(xb).cpu())
+        _y_out.append(yb.cpu())
+    return torch.cat(_x_out).numpy(), torch.cat(_y_out).numpy()
