@@ -2,17 +2,17 @@
 
 __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor', 'to3darray', 'to2darray',
            'to1darray', 'to3d', 'to2d', 'to1d', 'to2dPlus', 'to3dPlus', 'to2dPlusTensor', 'to2dPlusArray',
-           'to3dPlusTensor', 'to3dPlusArray', 'todtype', 'bytes2size', 'bytes2GB', 'delete_all_in_dir', 'reverse_dict',
-           'is_tuple', 'itemify', 'isnone', 'exists', 'ifelse', 'is_not_close', 'test_not_close', 'test_type',
-           'test_ok', 'test_not_ok', 'test_error', 'assert_fn', 'test_gt', 'test_ge', 'test_lt', 'test_le', 'stack',
-           'stack_pad', 'match_seq_len', 'random_shuffle', 'cat2int', 'cycle_dl', 'cycle_dl_to_device', 'cache_memmap',
-           'memmap2cache', 'get_func_defaults', 'get_idx_from_df_col_vals', 'get_sublist_idxs', 'flatten_list',
-           'display_pd_df', 'ttest', 'tscore', 'ttest_tensor', 'pcc', 'scc', 'a', 'b', 'remove_fn', 'npsave', 'np_save',
-           'permute_2D', 'random_normal', 'random_half_normal', 'random_normal_tensor', 'random_half_normal_tensor',
-           'clip_outliers', 'default_dpi', 'get_plot_fig', 'fig2buf', 'plot_scatter', 'jointplot_scatter',
-           'jointplot_kde', 'get_idxs', 'apply_cmap', 'torch_tile', 'to_tsfresh_df', 'pcorr', 'scorr', 'torch_diff',
-           'get_outliers_IQR', 'get_percentile', 'torch_clamp', 'torch_slice_by_dim', 'concat', 'reduce_memory_usage',
-           'cls_name', 'roll2d', 'roll3d', 'random_roll2d', 'random_roll3d']
+           'to3dPlusTensor', 'to3dPlusArray', 'todtype', 'bytes2size', 'bytes2GB', 'get_size', 'delete_all_in_dir',
+           'reverse_dict', 'is_tuple', 'itemify', 'isnone', 'exists', 'ifelse', 'is_not_close', 'test_not_close',
+           'test_type', 'test_ok', 'test_not_ok', 'test_error', 'assert_fn', 'test_gt', 'test_ge', 'test_lt', 'test_le',
+           'stack', 'stack_pad', 'match_seq_len', 'random_shuffle', 'cat2int', 'cycle_dl', 'cycle_dl_to_device',
+           'cache_memmap', 'memmap2cache', 'get_func_defaults', 'get_idx_from_df_col_vals', 'get_sublist_idxs',
+           'flatten_list', 'display_pd_df', 'ttest', 'tscore', 'ttest_tensor', 'pcc', 'scc', 'a', 'b', 'remove_fn',
+           'npsave', 'np_save', 'permute_2D', 'random_normal', 'random_half_normal', 'random_normal_tensor',
+           'random_half_normal_tensor', 'clip_outliers', 'default_dpi', 'get_plot_fig', 'fig2buf', 'plot_scatter',
+           'jointplot_scatter', 'jointplot_kde', 'get_idxs', 'apply_cmap', 'torch_tile', 'to_tsfresh_df', 'pcorr',
+           'scorr', 'torch_diff', 'get_outliers_IQR', 'get_percentile', 'torch_clamp', 'torch_slice_by_dim', 'concat',
+           'reduce_memory_usage', 'cls_name', 'roll2d', 'roll3d', 'random_roll2d', 'random_roll3d']
 
 # Cell
 from .imports import *
@@ -157,6 +157,11 @@ def bytes2size(size_bytes):
 
 def bytes2GB(byts):
     return round(byts / math.pow(1024, 3), 2)
+
+def get_size(o, return_str=False):
+    s = sys.getsizeof(o)
+    if return_str: return bytes2size(s)
+    else: return s
 
 # Cell
 def delete_all_in_dir(tgt_dir, exception=None):

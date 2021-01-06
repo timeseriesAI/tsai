@@ -5,8 +5,8 @@ __all__ = ['noop', 'lin_zero_init', 'SwishBeta', 'same_padding1d', 'Pad1d', 'Con
            'Conv', 'ConvBN', 'ConvIN', 'CoordConv', 'CoordConvBN', 'SepConv', 'SepConvBN', 'SepConvIN', 'SepCoordConv',
            'SepCoordConvBN', 'ResBlock1dPlus', 'SEModule1d', 'Norm', 'BN1d', 'IN1d', 'LambdaPlus', 'Squeeze',
            'Unsqueeze', 'Add', 'Concat', 'Permute', 'Transpose', 'View', 'Reshape', 'Max', 'LastStep', 'Noop',
-           'Sharpen', 'MaxPPVPool1d', 'MPPV1d', 'Sequential', 'Temp_Scale', 'Vector_Scale', 'Matrix_Scale',
-           'get_calibrator', 'GAP1d', 'GACP1d', 'SqueezeExciteBlock', 'create_pool_head', 'pool_head',
+           'Sharpen', 'MaxPPVPool1d', 'MPPV1d', 'Sequential', 'TimeDistributed', 'Temp_Scale', 'Vector_Scale',
+           'Matrix_Scale', 'get_calibrator', 'GAP1d', 'GACP1d', 'SqueezeExciteBlock', 'create_pool_head', 'pool_head',
            'create_pool_plus_head', 'pool_plus_head', 'create_conv_head', 'conv_head', 'create_mlp_head', 'mlp_head',
            'create_fc_head', 'fc_head', 'create_rnn_head', 'rnn_head', 'create_conv_lin_3d_head', 'conv_lin_3d_head',
            'heads', 'GaussianNoise', 'gambler_loss', 'CrossEntropyLossOneHot', 'ttest_bin_loss', 'ttest_reg_loss',
@@ -371,6 +371,31 @@ class Sequential(nn.Sequential):
         for i, module in enumerate(self._modules.values()):
             x = module(*x) if isinstance(x, (list, tuple, L)) else module(x)
         return x
+
+# Cell
+class TimeDistributed(nn.Module):
+    def __init__(self, module, batch_first=False):
+        super(TimeDistributed, self).__init__()
+        self.module = module
+        self.batch_first = batch_first
+
+    def forward(self, x):
+
+        if len(x.size()) <= 2:
+            return self.module(x)
+
+        # Squash samples and timesteps into a single axis
+        x_reshape = x.contiguous().view(-1, x.size(-1))  # (samples * timesteps, input_size)
+
+        y = self.module(x_reshape)
+
+        # We have to reshape Y
+        if self.batch_first:
+            y = y.contiguous().view(x.size(0), -1, y.size(-1))  # (samples, timesteps, output_size)
+        else:
+            y = y.view(-1, x.size(1), y.size(-1))  # (timesteps, samples, output_size)
+
+        return y
 
 # Cell
 class Temp_Scale(Module):
