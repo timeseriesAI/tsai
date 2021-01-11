@@ -37,11 +37,14 @@ entries:
       title: Label-mixing transformations
       url: /data.mixed_augmentation
     - output: web,pdf
-      title: Tabular data
-      url: /data.tabular
-    - output: web,pdf
       title: Imaging time series
       url: /data.image
+    - output: web,pdf
+      title: Featurizing time series
+      url: /data.features
+    - output: web,pdf
+      title: Tabular data
+      url: /data.tabular
     - output: web,pdf
       title: Mixed data
       url: /data.mixed
@@ -64,7 +67,7 @@ entries:
       - output: web
         subfolderitems:
         - output: web,pdf
-          title: Noisy student
+          title: 'Self-training: Noisy Student'
           url: /callback.noisy_student
         title: Semi-supervised learning
     output: web

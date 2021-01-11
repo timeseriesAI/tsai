@@ -232,19 +232,39 @@ class TSMagScalePerVar(RandTransform):
 class TSRandomResizedCrop(RandTransform):
     "Randomly amplifies a sequence focusing on a random section of the steps"
     order = 90
-    def __init__(self, magnitude=0.1, ex=None, mode='linear', **kwargs):
-        "mode:  'nearest' | 'linear' | 'area'"
+    def __init__(self, magnitude=0.1, size=None, scale=None, ex=None, mode='linear', **kwargs):
+        """
+        Args:
+            size: None, int or float
+            scale: None or tuple of 2 floats 0 < float <= 1
+            mode:  'nearest' | 'linear' | 'area'
+
+        """
         self.magnitude, self.ex, self.mode = magnitude, ex, mode
+        if scale is not None:
+            assert is_listy(scale) and len(scale) == 2 and min(scale) > 0 and min(scale) <= 1, "scale must be a tuple with 2 floats 0 < float <= 1"
+        self.size,self.scale = size,scale
         super().__init__(**kwargs)
     def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
         seq_len = o.shape[-1]
-        lambd = np.random.beta(self.magnitude, self.magnitude)
-        lambd = max(lambd, 1 - lambd)
+        if self.size is not None:
+            size = self.size if isinstance(self.size, Integral) else int(round(self.size * seq_len))
+        else:
+            size = seq_len
+        if self.scale is not None:
+            lambd = np.random.uniform(self.scale[0], self.scale[1])
+        else:
+            lambd = np.random.beta(self.magnitude, self.magnitude)
+            lambd = max(lambd, 1 - lambd)
         win_len = int(round(seq_len * lambd))
-        if win_len == seq_len: return o
-        start = np.random.randint(0, seq_len - win_len)
-        return F.interpolate(o[..., start : start + win_len], size=seq_len, mode=self.mode, align_corners=None if self.mode in ['nearest', 'area'] else False)
+        if win_len == seq_len:
+            if size == seq_len: return o
+            _slice = slice(None)
+        else:
+            start = np.random.randint(0, seq_len - win_len)
+            _slice = slice(start, start + win_len)
+        return F.interpolate(o[..., _slice], size=size, mode=self.mode, align_corners=None if self.mode in ['nearest', 'area'] else False)
 
 TSRandomZoomIn = TSRandomResizedCrop
 
@@ -320,15 +340,18 @@ class TSRandomTimeStep(RandTransform):
 class TSBlur(RandTransform):
     "Blurs a sequence applying a filter of type [1, 0, 1]"
     order = 90
-    def __init__(self, magnitude=1., ex=None, **kwargs):
+    def __init__(self, magnitude=1., ex=None, filt_len=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
-        self.filterargs = np.array([1, 0, 1])
+        if filt_len is None:
+            filterargs = [1, 0, 1]
+        else:
+            filterargs = ([1] * max(1, filt_len // 2) + [0] + [1] * max(1, filt_len // 2))
+        self.filterargs = np.array(filterargs)
+        self.filterargs = self.filterargs/self.filterargs.sum()
         super().__init__(**kwargs)
     def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
-        w = self.filterargs * np.random.rand(3)
-        w = w / w.sum()
-        output = o.new(convolve1d(o.cpu(), w, mode='nearest'))
+        output = o.new(convolve1d(o.cpu(), self.filterargs, mode='nearest'))
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
@@ -336,15 +359,19 @@ class TSBlur(RandTransform):
 class TSSmooth(RandTransform):
     "Smoothens a sequence applying a filter of type [1, 5, 1]"
     order = 90
-    def __init__(self, magnitude=1., ex=None, **kwargs):
+    def __init__(self, magnitude=1., ex=None, filt_len=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         self.filterargs = np.array([1, 5, 1])
+        if filt_len is None:
+            filterargs = [1, 5, 1]
+        else:
+            filterargs = ([1] * max(1, filt_len // 2) + [5] + [1] * max(1, filt_len // 2))
+        self.filterargs = np.array(filterargs)
+        self.filterargs = self.filterargs/self.filterargs.sum()
         super().__init__(**kwargs)
     def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
-        w = self.filterargs * np.random.rand(3)
-        w = w / w.sum()
-        output = o.new(convolve1d(o.cpu(), w, mode='nearest'))
+        output = o.new(convolve1d(o.cpu(), self.filterargs, mode='nearest'))
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 

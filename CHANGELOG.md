@@ -10,11 +10,11 @@
 * Data:
     * Validation: added split visualization (show_plot=True by default).
     * Data preprocessing: add option to TSStandardize or TSNormalize by_step.
-    
+    * Featurize time series: added tsfresh library to allow the creation of features from time series.     
 * Models: 
     * Updated ROCKET to speed up feature creation and allow usage of large datasets.
     * Added change_model_head utility function to ease the process of changing an instantiated models head.
-    * conv_lin_3d_head function to allow generation of 3d output tensors. This may be useful for multivariate, multi-horizon direct (non-recursive) time series forecasting.
+    * conv_lin_3d_head function to allow generation of 3d output tensors. This may be useful for multivariate, multi-horizon direct (non-recursive) time series forecasting, multi-output regression tasks, etc.
     * Updated TST (Time series transformer) to allow the use of residual attention (based on He, R., Ravula, A., Kanagal, B., & Ainslie, J. (2020). Realformer: Transformer Likes Informed Attention. arXiv preprint arXiv:2012.11747.)
     * provided new functionality to transfer model's weights (useful when using pre-trained models). 
     * updated build_ts_model to be able to use pretrained model weights.

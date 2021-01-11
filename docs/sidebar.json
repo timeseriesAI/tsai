@@ -11,8 +11,9 @@
         "Preprocessing data": "/data.preprocessing",
         "Label-invariant transformations": "/data.transforms",
         "Label-mixing transformations": "/data.mixed_augmentation",
-        "Tabular data": "/data.tabular",
         "Imaging time series": "/data.image",
+        "Featurizing time series": "/data.features",
+        "Tabular data": "/data.tabular",
         "Mixed data": "/data.mixed"
     },
     "Training": {
@@ -22,7 +23,7 @@
         "Callbacks": "/callback.core",
         "": {
             "Semi-supervised learning": {
-                "Noisy student": "/callback.noisy_student"
+                "Self-training: Noisy Student": "/callback.noisy_student"
             }
         }
     },
