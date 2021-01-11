@@ -12,7 +12,7 @@ from .models.utils import *
 @patch
 def show_batch(self:Learner, figsize=(16, 10), **kwargs):
     cbs = self.cbs
-    self.cbs = [cb for cb in self.cbs if cb.__class__.__name__ not in ['TrainEvalCallback','Recorder','ProgressCallback']]
+    self.cbs = L([cb for cb in self.cbs if cb.__class__.__name__ not in ['TrainEvalCallback','Recorder','ProgressCallback']])
     with self:
         self.epoch, self.training = 0, True
         b = self.dls.one_batch()
