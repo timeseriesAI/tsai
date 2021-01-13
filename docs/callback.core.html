@@ -195,9 +195,9 @@ nb_path: "nbs/010_callback.core.ipynb"
   <tbody>
     <tr>
       <td>0</td>
-      <td>1.557752</td>
-      <td>1.576078</td>
-      <td>0.216667</td>
+      <td>1.454734</td>
+      <td>1.555357</td>
+      <td>0.172222</td>
       <td>00:08</td>
     </tr>
   </tbody>
@@ -272,7 +272,7 @@ nb_path: "nbs/010_callback.core.ipynb"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>TransformScheduler(&lt;fastai.callback.schedule._Annealer object at 0x7fd2abf910d0&gt;)</pre>
+<pre>TransformScheduler(&lt;fastai.callback.schedule._Annealer object at 0x7f8d6a95e910&gt;)</pre>
 </div>
 
 </div>
@@ -374,7 +374,7 @@ nb_path: "nbs/010_callback.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ShowGraph" class="doc_header"><code>class</code> <code>ShowGraph</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/callback/core.py#L61" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ShowGraph</code>(<strong><code>after_create</code></strong>=<em><code>None</code></em>, <strong><code>before_fit</code></strong>=<em><code>None</code></em>, <strong><code>before_epoch</code></strong>=<em><code>None</code></em>, <strong><code>before_train</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_pred</code></strong>=<em><code>None</code></em>, <strong><code>after_loss</code></strong>=<em><code>None</code></em>, <strong><code>before_backward</code></strong>=<em><code>None</code></em>, <strong><code>before_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_step</code></strong>=<em><code>None</code></em>, <strong><code>after_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_train</code></strong>=<em><code>None</code></em>, <strong><code>after_train</code></strong>=<em><code>None</code></em>, <strong><code>before_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_fit</code></strong>=<em><code>None</code></em>, <strong><code>after_fit</code></strong>=<em><code>None</code></em>) :: <code>Callback</code></p>
+<h2 id="ShowGraph" class="doc_header"><code>class</code> <code>ShowGraph</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/callback/core.py#L61" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ShowGraph</code>(<strong><code>after_create</code></strong>=<em><code>None</code></em>, <strong><code>before_fit</code></strong>=<em><code>None</code></em>, <strong><code>before_epoch</code></strong>=<em><code>None</code></em>, <strong><code>before_train</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_pred</code></strong>=<em><code>None</code></em>, <strong><code>after_loss</code></strong>=<em><code>None</code></em>, <strong><code>before_backward</code></strong>=<em><code>None</code></em>, <strong><code>before_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_step</code></strong>=<em><code>None</code></em>, <strong><code>after_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_train</code></strong>=<em><code>None</code></em>, <strong><code>after_train</code></strong>=<em><code>None</code></em>, <strong><code>before_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_fit</code></strong>=<em><code>None</code></em>, <strong><code>after_fit</code></strong>=<em><code>None</code></em>) :: <code>ShowGraphCallback</code></p>
 </blockquote>
 <p>(Modified) Update a graph of training and validation loss</p>
 
@@ -412,7 +412,7 @@ nb_path: "nbs/010_callback.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="UBDAug" class="doc_header"><code>class</code> <code>UBDAug</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/callback/core.py#L88" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>UBDAug</code>(<strong><code>batch_tfms</code></strong>:<code>list</code>, <strong><code>N</code></strong>:<code>int</code>=<em><code>2</code></em>, <strong><code>C</code></strong>:<code>int</code>=<em><code>4</code></em>, <strong><code>S</code></strong>:<code>int</code>=<em><code>1</code></em>) :: <code>Callback</code></p>
+<h2 id="UBDAug" class="doc_header"><code>class</code> <code>UBDAug</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/callback/core.py#L80" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>UBDAug</code>(<strong><code>batch_tfms</code></strong>:<code>list</code>, <strong><code>N</code></strong>:<code>int</code>=<em><code>2</code></em>, <strong><code>C</code></strong>:<code>int</code>=<em><code>4</code></em>, <strong><code>S</code></strong>:<code>int</code>=<em><code>1</code></em>) :: <code>Callback</code></p>
 </blockquote>
 <p>A callback to implement the uncertainty-based data augmentation.</p>
 
@@ -482,10 +482,10 @@ nb_path: "nbs/010_callback.core.ipynb"
   <tbody>
     <tr>
       <td>0</td>
-      <td>1.900390</td>
-      <td>1.778392</td>
-      <td>0.211111</td>
-      <td>00:13</td>
+      <td>1.786508</td>
+      <td>1.764510</td>
+      <td>0.188889</td>
+      <td>00:16</td>
     </tr>
   </tbody>
 </table>

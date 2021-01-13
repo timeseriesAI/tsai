@@ -18,6 +18,10 @@
     * Updated TST (Time series transformer) to allow the use of residual attention (based on He, R., Ravula, A., Kanagal, B., & Ainslie, J. (2020). Realformer: Transformer Likes Informed Attention. arXiv preprint arXiv:2012.11747.)
     * provided new functionality to transfer model's weights (useful when using pre-trained models). 
     * updated build_ts_model to be able to use pretrained model weights.
+* Training:
+    * TSBERT: a new callback has been added to be able to train a model in a self-supervised manner (similar to BERT).
+* Tutorial notebooks: 
+    * I've added a new tutorial notebook to demonstrate how to apply TSBERT (self-supervised method for time series).
 
 ### Bug Fixes
 * Data: 

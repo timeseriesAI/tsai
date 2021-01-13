@@ -14,6 +14,8 @@
 
 `tsai`is an open-source deep learning package built on top of Pytorch & fastai focused on state-of-the-art techniques for time series classification, regression and forecasting.
 
+⚠️ If you are interested in applying self-supervised learning to time series, you may want to check our new tutorial notebook: [08_Self_Supervised_TSBERT.ipynb](https://github.com/timeseriesAI/tsai/blob/master/tutorial_nbs/08_Self_Supervised_TSBERT.ipynb)
+
 Here's the link to the [documentation](https://timeseriesai.github.io/tsai/).
 
 ## Install
