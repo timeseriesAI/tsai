@@ -27,11 +27,13 @@ class MixHandler1D(Callback):
         self.distrib = Beta(alpha, alpha)
 
     def before_fit(self):
-        self.stack_y = getattr(self.learn.loss_func, 'y_int', False)
-        if self.stack_y: self.old_lf, self.learn.loss_func = self.learn.loss_func, self.lf
+        self.labeled = True if len(self.dls.tls) > 1 else False
+        if self.labeled:
+            self.stack_y = getattr(self.learn.loss_func, 'y_int', False)
+            if self.stack_y: self.old_lf, self.learn.loss_func = self.learn.loss_func, self.lf
 
     def after_fit(self):
-        if self.stack_y: self.learn.loss_func = self.old_lf
+        if self.labeled and self.stack_y: self.learn.loss_func = self.old_lf
 
     def lf(self, pred, *yb):
         if not self.training: return self.old_lf(pred, *yb)
@@ -46,12 +48,14 @@ class MixUp1D(MixHandler1D):
         super().__init__(alpha)
 
     def before_batch(self):
-        lam = self.distrib.sample((self.y.size(0), ))
+        lam = self.distrib.sample((self.x.size(0), ))
         self.lam = torch.max(lam, 1 - lam).to(self.x.device)
-        shuffle = torch.randperm(self.y.size(0))
-        xb1, self.yb1 = self.x[shuffle], tuple((self.y[shuffle], ))
+        shuffle = torch.randperm(self.x.size(0))
+        xb1 = self.x[shuffle]
         self.learn.xb = L(xb1, self.xb).map_zip(torch.lerp, weight=unsqueeze(self.lam, n=self.x.ndim - 1))
-        if not self.stack_y: self.learn.yb = L(self.yb1, self.yb).map_zip(torch.lerp, weight=unsqueeze(self.lam, n=self.y.ndim - 1))
+        if self.labeled:
+            self.yb1 = tuple((self.y[shuffle], ))
+            if not self.stack_y: self.learn.yb = L(self.yb1, self.yb).map_zip(torch.lerp, weight=unsqueeze(self.lam, n=self.y.ndim - 1))
 
 # Cell
 class CutMix1D(MixHandler1D):
@@ -64,12 +68,14 @@ class CutMix1D(MixHandler1D):
         bs, *_, seq_len = self.x.size()
         self.lam = self.distrib.sample((1, ))
         shuffle = torch.randperm(bs)
-        xb1, self.yb1 = self.x[shuffle], tuple((self.y[shuffle], ))
+        xb1 = self.x[shuffle]
         x1, x2 = self.rand_bbox(seq_len, self.lam)
         self.learn.xb[0][..., x1:x2] = xb1[..., x1:x2]
         self.lam = (1 - (x2 - x1) / float(seq_len)).item()
-        if not self.stack_y:
-            self.learn.yb = tuple(L(self.yb1, self.yb).map_zip(torch.lerp, weight=unsqueeze(self.lam, n=self.y.ndim - 1)))
+        if self.labeled:
+            self.yb1 = tuple((self.y[shuffle], ))
+            if not self.stack_y:
+                self.learn.yb = tuple(L(self.yb1, self.yb).map_zip(torch.lerp, weight=unsqueeze(self.lam, n=self.y.ndim - 1)))
 
     def rand_bbox(self, seq_len, lam):
         cut_rat = torch.sqrt(1. - lam)

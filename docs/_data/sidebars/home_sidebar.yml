@@ -69,6 +69,9 @@ entries:
         - output: web,pdf
           title: 'Self-training: Noisy Student'
           url: /callback.noisy_student
+        - output: web,pdf
+          title: 'Self-supervised learning: TSBERT'
+          url: /callback.TSBERT
         title: Semi-supervised learning
     output: web
     title: Training

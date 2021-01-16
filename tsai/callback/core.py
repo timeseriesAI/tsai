@@ -58,20 +58,12 @@ class TransformScheduler(Callback):
         return f'{self.__class__.__name__}({self.schedule_func})'
 
 # Cell
-class ShowGraph(Callback):
+class ShowGraph(ShowGraphCallback):
     "(Modified) Update a graph of training and validation loss"
-    run_after,run_valid=ProgressCallback,False
-
-    def before_fit(self):
-        self.run = not hasattr(self.learn, 'lr_finder') and not hasattr(self, "gather_preds")
-        if not(self.run): return
-        self.nb_batches = []
-        assert hasattr(self.learn, 'progress')
-
-    def after_train(self): self.nb_batches.append(self.train_iter)
 
     def after_epoch(self):
         "Plot validation loss in the pbar graph"
+        if not self.nb_batches: return
         rec = self.learn.recorder
         iters = range_of(rec.losses)
         val_losses = [v[1] for v in rec.values]

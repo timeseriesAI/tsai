@@ -23,7 +23,8 @@
         "Callbacks": "/callback.core",
         "": {
             "Semi-supervised learning": {
-                "Self-training: Noisy Student": "/callback.noisy_student"
+                "Self-training: Noisy Student": "/callback.noisy_student",
+                "Self-supervised learning: TSBERT": "/callback.TSBERT"
             }
         }
     },

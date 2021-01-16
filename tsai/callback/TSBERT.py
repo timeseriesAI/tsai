@@ -10,6 +10,9 @@ from ..models.utils import *
 from ..models.layers import *
 
 # Cell
+from torch.distributions.beta import Beta
+
+# Cell
 def create_subsequence_mask(o, r=.15, lm=3, stateful=True, sync=False):
     if o.ndim == 2: o = o[None]
     n_masks, mask_dims, mask_len = o.shape
@@ -55,25 +58,26 @@ class TSBERT_Loss(Module):
 # Cell
 class TSBERT(Callback):
     def __init__(self, r:float=.15, subsequence_mask:bool=True, lm:float=3., stateful:bool=True, sync:bool=False, variable_mask:bool=False,
-                 crit:callable=None, target_dir:str='./data/TSBERT', fname:str='model',verbose:bool=True):
+                 dropout:float=.1, crit:callable=None, target_dir:str='./data/TSBERT', fname:str='model', verbose:bool=True):
         r"""
         Callback used to perform the autoregressive task of denoising the input after a binary mask has been applied.
 
         Args:
-            mask_shape: expected mask shape (tuple). e.g batch size, n_vars, timesteps
             r: proba of masking.
             subsequence_mask: apply a mask to random subsequences.
             lm: average mask len when using stateful (geometric) masking.
             stateful: geometric distribution is applied so that average mask length is lm.
             sync: all variables have the same masking.
             variable_mask: apply a mask to random variables.
+            dropout: dropout applied to the head of the model during pretraining.
             crit: loss function that will be used. If None MSELossFlat().
             target_dir : directory where trained model will be stored.
             fname : file name that will be used to save the pretrained model.
     """
-        self.subsequence_mask,self.variable_mask=subsequence_mask,variable_mask
-        assert self.subsequence_mask or self.variable_mask, 'you must set subsequence_mask and/or variable_mask to True'
-        self.r,self.lm,self.stateful,self.sync,self.crit,self.target_dir,self.fname,self.verbose = r,lm,stateful,sync,crit,Path(target_dir),fname,verbose
+        assert subsequence_mask or variable_mask, 'you must set subsequence_mask and/or variable_mask to True'
+        store_attr("subsequence_mask,variable_mask,dropout,r,lm,stateful,sync,crit,fname,verbose")
+        self.target_dir = Path(target_dir)
+
 
     def before_fit(self):
         # modify loss for denoising task
@@ -83,17 +87,18 @@ class TSBERT(Callback):
         # save initial model head
         assert hasattr(self.learn.model, "head"), f"you can only use {cls_name(self)} with models that have .head attribute"
         backbone, head = split_model(self.learn.model)
-        self.head = head
+        self.ori_head = head
         self.learn.model = backbone
 
         # prepare model for denoising task
         with torch.no_grad():
             b = self.learn.dls.train.one_batch()
-            ni = b[0].shape[1]
             out = self.learn.model(b[0])
-            assert out.ndim == 3, "make sure the backbone (after model.head = Noop) produces a 3d output [bs x nf x seq_len]"
+            assert out.ndim == 3, "make sure the backbone (model.head = Noop) produces a 3d output [bs x nf x seq_len]"
+            ni = b[0].shape[1]
             no = out.shape[1]
-            self.learn.model.head = nn.Conv1d(no, ni, 1).to(b[0].device) # equivalent to linear layer applied to dim=1
+            self.learn.model.head = nn.Sequential(nn.Dropout(self.dropout),
+                                                  nn.Conv1d(no, ni, 1)).to(b[0].device) # equivalent to linear layer applied to dim=1
             assert self.learn.model(b[0]).shape == b[0].shape, f"{cls_name(self)} cannot recreate a tensor with the input shape"
 
     def before_batch(self):
@@ -114,7 +119,7 @@ class TSBERT(Callback):
     def after_fit(self):
         if self.epoch == self.n_epoch - 1 and not "LRFinder" in [cls_name(cb) for cb in self.learn.cbs]:
             self.learn.loss_func = self.old_loss_func
-            self.learn.model.head = self.head
+            self.learn.model.head = self.ori_head
             PATH = Path(f'{self.target_dir/self.fname}.pth')
             if not os.path.exists(PATH.parent): os.makedirs(PATH.parent)
             torch.save(self.learn.model.state_dict(), PATH)
