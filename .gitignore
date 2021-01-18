@@ -152,3 +152,6 @@ export/*
 *.txt
 *.jpg
 /nbs/docs/*
+*.zip
+*/UCR/
+*/Monash/
