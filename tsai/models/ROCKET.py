@@ -130,7 +130,7 @@ def create_rocket_features(dl, model):
     """
     _x_out = []
     _y_out = []
-    for i,(xb,yb) in enumerate(progress_bar(dl, comment='batch/batches')):
+    for i,(xb,yb) in enumerate(progress_bar(dl, leave=False, comment='batch/batches')):
         _x_out.append(model(xb).cpu())
         _y_out.append(yb.cpu())
     return torch.cat(_x_out).numpy(), torch.cat(_y_out).numpy()

@@ -6,8 +6,11 @@
 ## 0.2.14
 
 ### New Features
-
-
+* Data:
+    * External: added a new function get_Monash_data to get extrinsic regression data.
+* Models: 
+    * Added show_batch functionality to TSBERT. 
+    
 
 ## 0.2.13
 

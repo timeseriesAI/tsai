@@ -90,7 +90,7 @@ def create_scripts(max_elapsed=60):
 
 
 class Timer:
-    def start(self, verbose=False): 
+    def start(self, verbose=True): 
         self.all_elapsed = 0
         self.n = 0
         self.verbose = verbose
@@ -116,8 +116,9 @@ class Timer:
         if self.all_elapsed == 0: self.all_elapsed = elapsed
         else: self.all_elapsed += elapsed
         total_elapsed = end_dt - self.start_dt0
-        pv(f'Elapsed time ({self.n:3}): {elapsed}', self.verbose)
-        pv(f'Elapsed time (all): {self.all_elapsed}', self.verbose)
+        if self.n > 1:
+            pv(f'Elapsed time ({self.n:3}): {elapsed}', self.verbose)
+            pv(f'Elapsed time (all): {self.all_elapsed}', self.verbose)
         pv(f'Total time        : {total_elapsed}', self.verbose)
         delattr(self, "start_dt0")
         delattr(self, "start_dt")

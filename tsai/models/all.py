@@ -18,6 +18,7 @@ from .RNNPlus import *
 from .RNN_FCN import *
 from .RNN_FCNPlus import *
 from .ROCKET import *
+from .MINIROCKET import *
 from .TransformerModel import *
 from .TST import *
 from .TSTPlus import *

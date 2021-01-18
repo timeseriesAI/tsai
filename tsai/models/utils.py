@@ -108,7 +108,8 @@ def build_ts_model(arch, c_in=None, c_out=None, seq_len=None, d=None, dls=None, 
         seq_len = ifnone(seq_len, dls.len)
         d = ifnone(d, dls.d)
     if d is not None and not 'custom_head' in kwargs.keys(): kwargs['custom_head'] = partial(create_conv_lin_3d_head, d=d)
-    if sum([1 for v in ['RNN_FCN', 'LSTM_FCN', 'RNNPlus', 'LSTMPlus', 'GRUPlus', 'InceptionTimePlus', 'GRU_FCN', 'OmniScaleCNN', 'mWDN', 'TST', 'XCM', 'MLP']
+    if sum([1 for v in ['RNN_FCN', 'LSTM_FCN', 'RNNPlus', 'LSTMPlus', 'GRUPlus', 'InceptionTimePlus',
+                        'GRU_FCN', 'OmniScaleCNN', 'mWDN', 'TST', 'XCM', 'MLP', 'MINIROCKET']
             if v in arch.__name__]):
         pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} seq_len={seq_len} device={device}, kwargs={kwargs})', verbose)
         model = arch(c_in, c_out, seq_len=seq_len, **kwargs).to(device=device)

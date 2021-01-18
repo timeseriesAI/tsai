@@ -2,7 +2,7 @@
 
 __all__ = ['InceptionModulePlus', 'InceptionBlockPlus', 'InceptionTimePlus', 'InCoordTime', 'XCoordTime',
            'InceptionTimePlus17x17', 'InceptionTimePlus32x32', 'InceptionTimePlus47x47', 'InceptionTimePlus62x62',
-           'MultiInceptionTimePlus']
+           'InceptionTimeXLPlus', 'MultiInceptionTimePlus']
 
 # Cell
 from ..imports import *
@@ -141,6 +141,8 @@ InceptionTimePlus47x47 = partial(InceptionTimePlus, nf=47, depth=9)
 setattr(InceptionTimePlus47x47, '__name__', 'InceptionTimePlus47x47')
 InceptionTimePlus62x62 = partial(InceptionTimePlus, nf=62, depth=9)
 setattr(InceptionTimePlus62x62, '__name__', 'InceptionTimePlus62x62')
+InceptionTimeXLPlus = partial(InceptionTimePlus, nf=64, depth=12)
+setattr(InceptionTimeXLPlus, '__name__', 'InceptionTimeXLPlus')
 
 # Cell
 @delegates(InceptionTimePlus.__init__)

@@ -448,7 +448,7 @@ class TSDataLoader(NumpyDataLoader):
         if x.ndim >=4: return x.shape[-3]
         return x.shape[-2]
     @property
-    def len(self): return self.dataset[0][0].shape[-1]
+    def len(self): return self.one_batch()[0].shape[-1]
 
 # Cell
 _batch_tfms = ('after_item','before_batch','after_batch')

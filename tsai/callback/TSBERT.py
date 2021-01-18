@@ -56,6 +56,8 @@ class TSBERT_Loss(Module):
         return self.crit(preds[self.mask], target[self.mask])
 
 # Cell
+import matplotlib.colors as mcolors
+
 class TSBERT(Callback):
     def __init__(self, r:float=.15, subsequence_mask:bool=True, lm:float=3., stateful:bool=True, sync:bool=False, variable_mask:bool=False,
                  dropout:float=.1, crit:callable=None, target_dir:str='./data/TSBERT', fname:str='model', verbose:bool=True):
@@ -83,11 +85,14 @@ class TSBERT(Callback):
         # modify loss for denoising task
         self.old_loss_func = self.learn.loss_func
         self.learn.loss_func = TSBERT_Loss(self.crit)
+        self.learn.TSBERT = self
+
+        #remove and store metrics
+        self.learn.metrics = L([])
 
         # save initial model head
         assert hasattr(self.learn.model, "head"), f"you can only use {cls_name(self)} with models that have .head attribute"
-        backbone, head = split_model(self.learn.model)
-        self.ori_head = head
+        backbone = split_model(self.learn.model)[0]
         self.learn.model = backbone
 
         # prepare model for denoising task
@@ -96,6 +101,7 @@ class TSBERT(Callback):
             out = self.learn.model(b[0])
             assert out.ndim == 3, "make sure the backbone (model.head = Noop) produces a 3d output [bs x nf x seq_len]"
             ni = b[0].shape[1]
+            if 1 / ni > self.r: self.variable_mask = False
             no = out.shape[1]
             self.learn.model.head = nn.Sequential(nn.Dropout(self.dropout),
                                                   nn.Conv1d(no, ni, 1)).to(b[0].device) # equivalent to linear layer applied to dim=1
@@ -110,18 +116,51 @@ class TSBERT(Callback):
                 mask = create_variable_mask(self.x, r=self.r)
         elif self.subsequence_mask:
             mask = create_subsequence_mask(self.x, r=self.r, lm=self.lm, stateful=self.stateful, sync=self.sync)
-        else:
+        elif self.variable_mask:
             mask = create_variable_mask(self.x, r=self.r)
+        else:
+            raise ValueError('You need to set subsequence_mask and/ or variable_mask to True in TSBERT.')
+
         self.learn.yb = (self.x,)
         self.learn.xb = (self.x * mask,)
         self.learn.loss_func.mask = (mask == 0) # boolean mask
+        self.mask = mask
 
     def after_fit(self):
         if self.epoch == self.n_epoch - 1 and not "LRFinder" in [cls_name(cb) for cb in self.learn.cbs]:
-            self.learn.loss_func = self.old_loss_func
-            self.learn.model.head = self.ori_head
             PATH = Path(f'{self.target_dir/self.fname}.pth')
             if not os.path.exists(PATH.parent): os.makedirs(PATH.parent)
             torch.save(self.learn.model.state_dict(), PATH)
             pv(f"\npre-trained model weights_path='{PATH}'\n", self.verbose)
-        self.learn.remove_cb(self)
+
+    def show_preds(self, max_n=9, nrows=3, ncols=3, figsize=None, sharex=True, **kwargs):
+        b = self.learn.dls.valid.one_batch()
+        self.learn._split(b)
+        xb = self.xb[0].detach().cpu().numpy()
+        bs, nvars, seq_len = xb.shape
+        self.learn('before_batch')
+        pred = learn.model(*self.learn.xb).detach().cpu().numpy()
+        mask = self.mask.cpu().numpy()
+        masked_pred = np.ma.masked_where(mask, pred)
+        ncols = min(ncols, math.ceil(bs / ncols))
+        nrows = min(nrows, math.ceil(bs / ncols))
+        max_n = min(max_n, bs, nrows*ncols)
+        if figsize is None: figsize = (ncols*6, math.ceil(max_n/ncols)*4)
+        fig, ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=figsize, sharex=sharex, **kwargs)
+        idxs = np.random.permutation(np.arange(bs))
+        colors = list(mcolors.TABLEAU_COLORS.keys()) + random_shuffle(list(mcolors.CSS4_COLORS.keys()))
+        i = 0
+        for row in ax:
+            for col in row:
+                color_iter = iter(colors)
+                for j in range(nvars):
+                    try:
+                        color = next(color_iter)
+                    except:
+                        color_iter = iter(colors)
+                        color = next(color_iter)
+                    col.plot(xb[idxs[i]][j], alpha=.5, color=color)
+                    col.plot(masked_pred[idxs[i]][j], marker='o', markersize=4, color=color)
+                i += 1
+        plt.tight_layout()
+        plt.show()
