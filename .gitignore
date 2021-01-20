@@ -153,4 +153,5 @@ old/*
 /nbs/docs/*
 *.zip
 */data/
-
+*/export/
+*/nbs/models/
