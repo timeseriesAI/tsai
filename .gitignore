@@ -142,7 +142,6 @@ checklink/cookies.txt
 
 
 old/*
-export/*
 *_dev*
 *.npy
 *.ts
