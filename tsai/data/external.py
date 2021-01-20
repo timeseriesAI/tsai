@@ -2,8 +2,8 @@
 
 __all__ = ['decompress_from_url', 'get_UCR_univariate_list', 'UCR_univariate_list', 'get_UCR_multivariate_list',
            'UCR_multivariate_list', 'UCR_list', 'classification_list', 'get_UCR_data', 'get_classification_data',
-           'check_data', 'get_Monash_regression_list', 'Monash_list', 'regression_list', 'get_Monash_data',
-           'get_regression_data']
+           'check_data', 'load_from_tsfile_to_dataframe2', 'get_Monash_regression_list', 'Monash_list',
+           'regression_list', 'get_Monash_data', 'get_regression_data']
 
 # Cell
 from ..imports import *
@@ -19,7 +19,6 @@ try: from urllib import urlretrieve
 except ImportError: from urllib.request import urlretrieve
 import shutil
 from pyunpack import Archive
-from scipy.io import arff
 from sktime.utils.data_io import load_from_tsfile_to_dataframe
 from sktime.datasets import load_UCR_UEA_dataset
 from sktime.utils.validation.panel import check_X
@@ -118,7 +117,7 @@ len(UCR_list)
 # Cell
 def get_UCR_data(dsid, path='.', parent_dir='data/UCR', on_disk=True, return_split=True, split_data=True, force_download=False, verbose=False):
     dsid_list = [ds for ds in UCR_list if ds.lower() == dsid.lower()]
-    assert len(dsid) > 0, f'{dsid} is not a UCR dataset'
+    assert len(dsid_list) > 0, f'{dsid} is not a UCR dataset'
     dsid = dsid_list[0]
     return_split = return_split and split_data # keep return_split for compatibility. It will be replaced by split_data
     if dsid in ['InsectWingbeat']:
@@ -131,7 +130,7 @@ def get_UCR_data(dsid, path='.', parent_dir='data/UCR', on_disk=True, return_spl
         src_website = 'http://www.timeseriesclassification.com/Downloads'
         decompress_from_url(f'{src_website}/{dsid}.zip', target_dir=full_tgt_dir, verbose=verbose)
         if dsid == 'DuckDuckGeese':
-            with zipfile.ZipFile(Path('data/UCR/DuckDuckGeese/DuckDuckGeese_ts.zip'), 'r') as zip_ref:
+            with zipfile.ZipFile(Path(f'{full_parent_dir}/DuckDuckGeese/DuckDuckGeese_ts.zip'), 'r') as zip_ref:
                 zip_ref.extractall(Path(parent_dir))
         pv('loading ts files to dataframe...', verbose)
         X_train_df, y_train = load_from_tsfile_to_dataframe(full_tgt_dir/f'{dsid}_TRAIN.ts')
@@ -214,7 +213,7 @@ def check_data(X, y=None, splits=None, show_plot=True):
 # Cell
 # This code comes from https://github.com/ChangWeiTan/TSRegression. As of Jan 16th, 2021 there's no pip install available.
 
-def _load_from_tsfile_to_dataframe(full_file_path_and_name, return_separate_X_and_y=True, replace_missing_vals_with='NaN'):
+def load_from_tsfile_to_dataframe2(full_file_path_and_name, return_separate_X_and_y=True, replace_missing_vals_with='NaN'):
     """Loads data from a .ts file into a Pandas DataFrame.
     Parameters
     ----------
@@ -727,8 +726,8 @@ def get_Monash_regression_list():
         "BeijingPM10Quality", "Covid3Month", "LiveFuelMoistureContent",
         "FloodModeling1", "FloodModeling2", "FloodModeling3",
         "AppliancesEnergy", "BenzeneConcentration", "NewsHeadlineSentiment",
-        "NewsTitleSentiment", "BIDMC32RR", "BIDMC32HR", "BIDMC32SpO2",
-        "IEEEPPG", "PPGDalia"
+        "NewsTitleSentiment", "IEEEPPG",
+        #"BIDMC32RR", "BIDMC32HR", "BIDMC32SpO2", "PPGDalia" # Cannot be downloaded
     ])
 
 Monash_list = get_Monash_regression_list()
@@ -738,7 +737,7 @@ len(Monash_list)
 # Cell
 def get_Monash_data(dsid, path='./data/Monash', on_disk=True, split_data=True, force_download=False, verbose=False):
     dsid_list = [rd for rd in Monash_list if rd.lower() == dsid.lower()]
-    assert len(dsid) > 0, f'{dsid} is not a UCR dataset'
+    assert len(dsid_list) > 0, f'{dsid} is not a Monash dataset'
     dsid = dsid_list[0]
     full_tgt_dir = Path(path)/dsid
     pv(f'Dataset: {dsid}', verbose)
@@ -758,9 +757,9 @@ def get_Monash_data(dsid, path='./data/Monash', on_disk=True, split_data=True, f
         elif dsid == 'AustraliaRainfall': id = 3902654
         elif dsid == 'PPGDalia': id = 3902728
         elif dsid == 'IEEEPPG': id = 3902710
-        elif dsid == 'BIDMCRR': id = 3902685
-        elif dsid == 'BIDMCHR': id = 3902676
-        elif dsid == 'BIDMCSpO2': id = 3902688
+        elif dsid == 'BIDMCRR' or dsid == 'BIDM32CRR': id = 3902685
+        elif dsid == 'BIDMCHR' or dsid == 'BIDM32CHR': id = 3902676
+        elif dsid == 'BIDMCSpO2' or dsid == 'BIDM32CSpO2': id = 3902688
         elif dsid == 'NewsHeadlineSentiment': id = 3902718
         elif dsid == 'NewsTitleSentiment': id = 3902726
         elif dsid == 'Covid3Month': id = 3902690
@@ -778,10 +777,10 @@ def get_Monash_data(dsid, path='./data/Monash', on_disk=True, split_data=True, f
                 else: return None, None, None
             pv('...download complete', verbose)
             if split == 'TRAIN':
-                X_train, y_train = _load_from_tsfile_to_dataframe(fname)
+                X_train, y_train = load_from_tsfile_to_dataframe2(fname)
                 X_train = check_X(X_train, coerce_to_numpy=True).astype(np.float32)
             else:
-                X_valid, y_valid = _load_from_tsfile_to_dataframe(fname)
+                X_valid, y_valid = load_from_tsfile_to_dataframe2(fname)
                 X_valid = check_X(X_valid, coerce_to_numpy=True).astype(np.float32)
         np.save(f'{full_tgt_dir}/X_train.npy', X_train)
         np.save(f'{full_tgt_dir}/y_train.npy', y_train)

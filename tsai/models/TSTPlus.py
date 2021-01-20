@@ -190,7 +190,7 @@ class TSTPlus(Module):
     def __init__(self, c_in:int, c_out:int, seq_len:int, max_seq_len:Optional[int]=512,
                  n_layers:int=3, d_model:int=128, n_heads:int=16, d_k:Optional[int]=None, d_v:Optional[int]=None,
                  d_ff:int=256, res_dropout:float=0.1, activation:str="gelu", res_attention:bool=True,
-                 pe:str='normal', learn_pe:bool=True, flatten:bool=True, fc_dropout:float=0.,
+                 pe:str='zeros', learn_pe:bool=True, flatten:bool=True, fc_dropout:float=0.,
                  concat_pool:bool=True, bn:bool=False, custom_head:Optional=None,
                  y_range:Optional[tuple]=None, verbose:bool=False, **kwargs):
         r"""TST (Time Series Transformer) is a Transformer that takes continuous time series as inputs.
@@ -209,7 +209,9 @@ class TSTPlus(Module):
             activation: the activation function of intermediate layer, relu or gelu.
             res_attention: if True Residual MultiHeadAttention is applied.
             num_layers: the number of sub-encoder-layers in the encoder.
-            pe: type of positional encoder. Available types: 'exp1d', 'lin1d', 'exp2d', 'lin2d', 'sincos', 'gauss' or 'normal', 'uniform', 'zeros', None.
+            pe: type of positional encoder.
+                Available types (for experimenting): None, 'exp1d', 'lin1d', 'exp2d', 'lin2d', 'sincos', 'gauss' or 'normal',
+                'uniform', 'zero', 'zeros' (default, as in the paper).
             learn_pe: learned positional encoder (True, default) or fixed positional encoder.
             flatten: this will flatten the encoder output to be able to apply an mlp type of head (default=True)
             fc_dropout: dropout applied to the final fully connected layer.
@@ -249,12 +251,13 @@ class TSTPlus(Module):
         if pe == None:
             W_pos = torch.zeros((q_len, d_model), device=default_device()) # pe = None and learn_pe = False can be used to measure impact of pe
             learn_pe = False
+        elif pe == 'zero': W_pos = torch.zeros((q_len, 1), device=default_device())
         elif pe == 'zeros': W_pos = torch.zeros((q_len, d_model), device=default_device())
         elif pe == 'normal' or pe == 'gauss':
-            W_pos = torch.zeros((q_len, d_model), device=default_device())
+            W_pos = torch.zeros((q_len, 1), device=default_device())
             torch.nn.init.normal_(W_pos, mean=0.0, std=0.1)
         elif pe == 'uniform':
-            W_pos = torch.zeros((q_len, d_model), device=default_device())
+            W_pos = torch.zeros((q_len, 1), device=default_device())
             nn.init.uniform_(W_pos, a=0.0, b=0.1)
         elif pe == 'lin1d': W_pos = Coord1dPosEncoding(q_len, exponential=False, normalize=True)
         elif pe == 'exp1d': W_pos = Coord1dPosEncoding(q_len, exponential=True, normalize=True)
@@ -262,7 +265,7 @@ class TSTPlus(Module):
         elif pe == 'exp2d': W_pos = Coord2dPosEncoding(q_len, d_model, exponential=True, normalize=True)
         elif pe == 'sincos': W_pos = SinCosPosEncoding(q_len, d_model, normalize=True)
         else: raise ValueError(f"{pe} is not a valid pe (positional encoder. Available types: 'gauss'=='normal', \
-            'zeros', 'uniform', 'lin1d', 'exp1d', 'lin2d', 'exp2d', 'sincos', None.)")
+            'zeros', 'zero', uniform', 'lin1d', 'exp1d', 'lin2d', 'exp2d', 'sincos', None.)")
         self.W_pos = nn.Parameter(W_pos, requires_grad=learn_pe)
 
         # Residual dropout

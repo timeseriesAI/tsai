@@ -171,7 +171,7 @@ class TST(Module):
             self.W_P = nn.Linear(c_in, d_model) # Eq 1: projection of feature vectors onto a d-dim vector space
 
         # Positional encoding
-        W_pos = torch.normal(0, .1, (q_len, d_model), device=default_device())
+        W_pos = torch.zeros((q_len, d_model), device=default_device())
         self.W_pos = nn.Parameter(W_pos, requires_grad=True)
 
         # Residual dropout
