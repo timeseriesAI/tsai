@@ -14,6 +14,12 @@ from sktime.transformations.panel.rocket._minirocket_multivariate import _fit_mu
 from sktime.transformations.panel.rocket._minirocket_multivariate import _transform_multi as minirocket_transform_multi
 
 # Cell
+from sklearn.pipeline import make_pipeline
+from sktime.transformations.panel.rocket import MiniRocketMultivariate
+from sklearn.linear_model import RidgeCV, RidgeClassifierCV
+from sklearn.metrics import mean_squared_error, make_scorer
+
+# Cell
 # This is an unofficial MINIROCKET implementation in Pytorch developed by Ignacio Oguiza - timeseriesAI@gmail.com based on:
 # Dempster, A., Schmidt, D. F., & Webb, G. I. (2020). MINIROCKET: A Very Fast (Almost) Deterministic Transform for Time Series Classification.
 # arXiv preprint arXiv:2012.08791.
@@ -65,11 +71,6 @@ def get_minirocket_features(X, num_features=10_000, max_dilations_per_kernel=32,
     return X_tfm
 
 # Cell
-from sklearn.pipeline import make_pipeline
-from sktime.transformations.panel.rocket import MiniRocketMultivariate
-from sklearn.linear_model import RidgeCV, RidgeClassifierCV
-from sklearn.metrics import mean_squared_error, make_scorer
-
 class MiniRocket(sklearn.pipeline.Pipeline):
     def __init__(self, regression=False, num_features=10000, max_dilations_per_kernel=32, random_state=None,
                  alphas=np.logspace(-3, 3, 13), *, normalize=True, memory=None, verbose=False, scoring=None, **kwargs):
