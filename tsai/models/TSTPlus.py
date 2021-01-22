@@ -148,6 +148,7 @@ class TSTEncoderLayer(Module):
             src2, attn, scores = self.self_attn(src, src, src, prev, attn_mask=attn_mask)
         else:
             src2, attn = self.self_attn(src, src, src, attn_mask=attn_mask)
+        self.attn = attn
         ## Add & Norm
         src = src + self.dropout_attn(src2) # Add: residual connection with residual dropout
         src = self.batchnorm_attn(src) # Norm: batchnorm
@@ -167,7 +168,8 @@ class TSTEncoderLayer(Module):
     def _get_activation_fn(self, activation):
         if activation.lower() == "relu": return nn.ReLU()
         elif activation.lower() == "gelu": return nn.GELU()
-        raise ValueError(f'{activation} is not available. You can use "relu" or "gelu"')
+        else: return activation()
+#         raise ValueError(f'{activation} is not available. You can use "relu" or "gelu"')
 
 # Cell
 class TSTEncoder(Module):
@@ -189,7 +191,7 @@ class TSTEncoder(Module):
 class TSTPlus(Module):
     def __init__(self, c_in:int, c_out:int, seq_len:int, max_seq_len:Optional[int]=512,
                  n_layers:int=3, d_model:int=128, n_heads:int=16, d_k:Optional[int]=None, d_v:Optional[int]=None,
-                 d_ff:int=256, res_dropout:float=0.1, activation:str="gelu", res_attention:bool=True,
+                 d_ff:int=256, res_dropout:float=0.1, act:str="gelu", res_attention:bool=True,
                  pe:str='zeros', learn_pe:bool=True, flatten:bool=True, fc_dropout:float=0.,
                  concat_pool:bool=True, bn:bool=False, custom_head:Optional=None,
                  y_range:Optional[tuple]=None, verbose:bool=False, **kwargs):
@@ -206,7 +208,7 @@ class TSTPlus(Module):
             d_v: size of the learned linear projection of values in the MHA. Usual values: 16-512. Default: None -> (d_model/n_heads) = 32.
             d_ff: the dimension of the feedforward network model.
             res_dropout: amount of residual dropout applied in the encoder.
-            activation: the activation function of intermediate layer, relu or gelu.
+            act: the activation function of intermediate layer, relu or gelu.
             res_attention: if True Residual MultiHeadAttention is applied.
             num_layers: the number of sub-encoder-layers in the encoder.
             pe: type of positional encoder.
@@ -272,7 +274,7 @@ class TSTPlus(Module):
         self.res_dropout = nn.Dropout(res_dropout)
 
         # Encoder
-        encoder_layer = TSTEncoderLayer(q_len, d_model, n_heads, d_k=d_k, d_v=d_v, d_ff=d_ff, res_dropout=res_dropout, activation=activation,
+        encoder_layer = TSTEncoderLayer(q_len, d_model, n_heads, d_k=d_k, d_v=d_v, d_ff=d_ff, res_dropout=res_dropout, activation=act,
                                         res_attention=res_attention)
         self.encoder = TSTEncoder(encoder_layer, n_layers, res_attention=res_attention)
         self.transpose = Transpose(-1, -2, contiguous=True)
@@ -315,9 +317,14 @@ class TSTPlus(Module):
 
     def show_pe(self, cmap='viridis', figsize=None):
         plt.figure(figsize=figsize)
-        plt.pcolormesh(self.W_pos.detach().cpu(), cmap=cmap)
+        plt.pcolormesh(self.W_pos.detach().cpu().T, cmap=cmap)
         plt.title('Positional Encoding')
         plt.colorbar()
+        plt.show()
+        plt.figure(figsize=figsize)
+        plt.title('Positional Encoding - value along time axis')
+        plt.plot(F.relu(self.W_pos.data).mean(1).cpu())
+        plt.plot(-F.relu(-self.W_pos.data).mean(1).cpu())
         plt.show()
 
 # Cell

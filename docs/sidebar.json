@@ -49,6 +49,7 @@
                 "ResCNN": "/models.ResCNN",
                 "TCN": "/models.TCN",
                 "ROCKET": "/models.ROCKET",
+                "MINIROCKET": "/models.MINIROCKET",
                 "InceptionTime": "/models.InceptionTime",
                 "InceptionTimePlus": "/models.InceptionTimePlus",
                 "XceptionTime": "/models.XceptionTime",

@@ -9,8 +9,8 @@ __all__ = ['noop', 'lin_zero_init', 'SwishBeta', 'same_padding1d', 'Pad1d', 'Con
            'Matrix_Scale', 'get_calibrator', 'GAP1d', 'GACP1d', 'SqueezeExciteBlock', 'create_pool_head', 'pool_head',
            'create_pool_plus_head', 'pool_plus_head', 'create_conv_head', 'conv_head', 'create_mlp_head', 'mlp_head',
            'create_fc_head', 'fc_head', 'create_rnn_head', 'rnn_head', 'create_conv_lin_3d_head', 'conv_lin_3d_head',
-           'heads', 'GaussianNoise', 'gambler_loss', 'CrossEntropyLossOneHot', 'ttest_bin_loss', 'ttest_reg_loss',
-           'CenterLoss', 'CenterPlusLoss', 'FocalLoss', 'TweedieLoss']
+           'create_lin_3d_head', 'lin_3d_head', 'heads', 'GaussianNoise', 'gambler_loss', 'CrossEntropyLossOneHot',
+           'ttest_bin_loss', 'ttest_reg_loss', 'CenterLoss', 'CenterPlusLoss', 'FocalLoss', 'TweedieLoss']
 
 # Cell
 from torch.nn.init import normal_
@@ -585,7 +585,23 @@ class create_conv_lin_3d_head(nn.Sequential):
 conv_lin_3d_head = create_conv_lin_3d_head
 
 # Cell
-heads = [mlp_head, fc_head, pool_head, pool_plus_head, conv_head, rnn_head, conv_lin_3d_head]
+class create_lin_3d_head(nn.Sequential):
+    "Module to create a 3d output head with linear layers"
+
+    def __init__(self, n_in, n_out, seq_len, d=None, lin_first=False, bn=True, act=None, fc_dropout=0.):
+
+        layers = [Flatten()]
+        _n_out = n_out * d if d is not None else n_out
+        layers += LinBnDrop(n_in * seq_len, _n_out, bn=bn, p=fc_dropout, act=act, lin_first=lin_first)
+        if d is not None:
+            layers += [Reshape(n_out, d)]
+
+        super().__init__(*layers)
+
+lin_3d_head = create_lin_3d_head
+
+# Cell
+heads = [mlp_head, fc_head, pool_head, pool_plus_head, conv_head, rnn_head, conv_lin_3d_head, lin_3d_head]
 
 # Cell
 class GaussianNoise(Module):
@@ -710,7 +726,7 @@ class TweedieLoss(Module):
         inp = inp.flatten()
         targ = targ.flatten()
         torch.clamp_min_(inp, self.eps)
-        a = targ * torch.exp((1 - p) * torch.log(inp)) / (1 - p)
-        b = torch.exp((2 - p) * torch.log(inp)) / (2 - p)
+        a = targ * torch.exp((1 - self.p) * torch.log(inp)) / (1 - self.p)
+        b = torch.exp((2 - self.p) * torch.log(inp)) / (2 - self.p)
         loss = -a + b
         return loss.mean()

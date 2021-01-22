@@ -3,7 +3,8 @@
 __all__ = ['get_layers', 'is_layer', 'is_linear', 'is_bn', 'is_conv_linear', 'is_affine_layer', 'is_conv', 'has_bias',
            'has_weight', 'has_weight_or_bias', 'check_bias', 'check_weight', 'transfer_weights', 'build_ts_model',
            'build_tabular_model', 'build_tsimage_model', 'count_parameters', 'build_model', 'create_model',
-           'create_tabular_model', 'get_clones', 'get_nf', 'split_model', 'seq_len_calculator', 'change_model_head']
+           'create_tabular_model', 'get_clones', 'get_nf', 'split_model', 'seq_len_calculator', 'change_model_head',
+           'naive_forecast']
 
 # Cell
 from fastai.tabular.model import *
@@ -107,7 +108,7 @@ def build_ts_model(arch, c_in=None, c_out=None, seq_len=None, d=None, dls=None, 
         c_out = ifnone(c_out, dls.c)
         seq_len = ifnone(seq_len, dls.len)
         d = ifnone(d, dls.d)
-    if d is not None and not 'custom_head' in kwargs.keys(): kwargs['custom_head'] = partial(create_conv_lin_3d_head, d=d)
+    if d is not None and not 'custom_head' in kwargs.keys(): kwargs['custom_head'] = partial(create_lin_3d_head, d=d)
     if sum([1 for v in ['RNN_FCN', 'LSTM_FCN', 'RNNPlus', 'LSTMPlus', 'GRUPlus', 'InceptionTimePlus',
                         'GRU_FCN', 'OmniScaleCNN', 'mWDN', 'TST', 'XCM', 'MLP', 'MINIROCKET']
             if v in arch.__name__]):
@@ -204,3 +205,6 @@ def change_model_head(model, custom_head, **kwargs):
     r"""Replaces a model's head by a custom head as long as the model has a head, head_nf, c_out and seq_len attributes"""
     model.head = custom_head(model.head_nf, model.c_out, model.seq_len, **kwargs)
     return model
+
+# Cell
+def naive_forecast(o, split, lag=1): return o[array(split)-lag]

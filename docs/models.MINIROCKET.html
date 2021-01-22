@@ -47,6 +47,13 @@ nb_path: "nbs/111b_models.MINIROCKET.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
 <div class="output_wrapper">
 <div class="output">
 
@@ -54,7 +61,7 @@ nb_path: "nbs/111b_models.MINIROCKET.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MINIROCKET" class="doc_header"><code>class</code> <code>MINIROCKET</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/MINIROCKET.py#L22" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MINIROCKET</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>1</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Module</code></p>
+<h2 id="MINIROCKET" class="doc_header"><code>class</code> <code>MINIROCKET</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/MINIROCKET.py#L28" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MINIROCKET</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>1</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Module</code></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -116,8 +123,10 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_minirocket_features" class="doc_header"><code>get_minirocket_features</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/MINIROCKET.py#L50" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_minirocket_features</code>(<strong><code>X</code></strong>, <strong><code>num_features</code></strong>=<em><code>10000</code></em>, <strong><code>max_dilations_per_kernel</code></strong>=<em><code>32</code></em>, <strong><code>on_disk</code></strong>=<em><code>True</code></em>, <strong><code>path</code></strong>=<em><code>'./data/MINIROCKET'</code></em>, <strong><code>fname</code></strong>=<em><code>'X_tfm'</code></em>)</p>
+<h4 id="get_minirocket_features" class="doc_header"><code>get_minirocket_features</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/MINIROCKET.py#L56" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_minirocket_features</code>(<strong><code>X</code></strong>, <strong><code>num_features</code></strong>=<em><code>10000</code></em>, <strong><code>max_dilations_per_kernel</code></strong>=<em><code>32</code></em>, <strong><code>on_disk</code></strong>=<em><code>True</code></em>, <strong><code>path</code></strong>=<em><code>'./data/MINIROCKET'</code></em>, <strong><code>fname</code></strong>=<em><code>'X_tfm'</code></em>, <strong><code>features_last</code></strong>=<em><code>True</code></em>, <strong><code>random_state</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
+<p>Args:
+    features_last: set to True when using features with MiniRocketClassifier or MiniRocketRegressor. Set to False when using MINIROCKET (Pytorch).</p>
 
 </div>
 
@@ -175,7 +184,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 <span class="kn">from</span> <span class="nn">tsai.learner</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="n">tfms</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">TSClassification</span><span class="p">()]</span>
 <span class="n">batch_tfms</span> <span class="o">=</span> <span class="n">TSStandardize</span><span class="p">(</span><span class="n">by_sample</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">X_tfm</span> <span class="o">=</span> <span class="n">get_minirocket_features</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="n">X_tfm</span> <span class="o">=</span> <span class="n">get_minirocket_features</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">features_last</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X_tfm</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="n">batch_tfms</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
 <span class="n">learn</span> <span class="o">=</span> <span class="n">ts_learner</span><span class="p">(</span><span class="n">dls</span><span class="p">,</span> <span class="n">MINIROCKET</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">accuracy</span><span class="p">)</span>
 <span class="n">learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">1e-4</span><span class="p">,</span> <span class="n">cbs</span><span class="o">=</span><span class="n">ReduceLROnPlateau</span><span class="p">(</span><span class="n">factor</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">min_lr</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">patience</span><span class="o">=</span><span class="mi">10</span><span class="p">))</span>
@@ -206,75 +215,151 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
     <tr>
       <td>0</td>
       <td>1.791758</td>
-      <td>1.648941</td>
-      <td>0.688889</td>
+      <td>1.649458</td>
+      <td>0.777778</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>1</td>
-      <td>1.714794</td>
-      <td>1.520851</td>
-      <td>0.738889</td>
+      <td>1.715329</td>
+      <td>1.520847</td>
+      <td>0.800000</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>2</td>
-      <td>1.642579</td>
-      <td>1.404281</td>
+      <td>1.643196</td>
+      <td>1.403778</td>
       <td>0.750000</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>3</td>
-      <td>1.574165</td>
-      <td>1.300622</td>
-      <td>0.744444</td>
+      <td>1.574901</td>
+      <td>1.298822</td>
+      <td>0.755556</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>4</td>
-      <td>1.509786</td>
-      <td>1.207501</td>
-      <td>0.761111</td>
+      <td>1.510524</td>
+      <td>1.204355</td>
+      <td>0.800000</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>5</td>
-      <td>1.449206</td>
-      <td>1.124447</td>
-      <td>0.761111</td>
+      <td>1.449859</td>
+      <td>1.120118</td>
+      <td>0.794444</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>6</td>
-      <td>1.392265</td>
-      <td>1.051256</td>
-      <td>0.761111</td>
+      <td>1.392823</td>
+      <td>1.044967</td>
+      <td>0.794444</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>7</td>
-      <td>1.338886</td>
-      <td>0.985668</td>
-      <td>0.761111</td>
+      <td>1.339268</td>
+      <td>0.977746</td>
+      <td>0.800000</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>8</td>
-      <td>1.288809</td>
-      <td>0.927343</td>
-      <td>0.772222</td>
+      <td>1.289000</td>
+      <td>0.918103</td>
+      <td>0.800000</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>9</td>
       <td>1.241870</td>
-      <td>0.875704</td>
-      <td>0.772222</td>
+      <td>0.864982</td>
+      <td>0.794444</td>
       <td>00:00</td>
     </tr>
   </tbody>
 </table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="MiniRocketClassifier" class="doc_header"><code>class</code> <code>MiniRocketClassifier</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/MINIROCKET.py#L81" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocketClassifier</code>() :: <code>Pipeline</code></p>
+</blockquote>
+<p>Pipeline of transforms with a final estimator.</p>
+<p>Sequentially apply a list of transforms and a final estimator.
+Intermediate steps of the pipeline must be 'transforms', that is, they
+must implement fit and transform methods.
+The final estimator only needs to implement fit.
+The transformers in the pipeline can be cached using <code>memory</code> argument.</p>
+<p>The purpose of the pipeline is to assemble several steps that can be
+cross-validated together while setting different parameters.
+For this, it enables setting parameters of the various steps using their
+names and the parameter name separated by a '__', as in the example below.
+A step's estimator may be replaced entirely by setting the parameter
+with its name to another estimator, or a transformer removed by setting
+it to 'passthrough' or <code>None</code>.</p>
+<p>Read more in the :ref:<code>User Guide &lt;pipeline&gt;</code>.</p>
+<p>.. versionadded:: 0.5</p>
+<h2 id="Parameters">Parameters<a class="anchor-link" href="#Parameters"> </a></h2><p>steps : list
+    List of (name, transform) tuples (implementing fit/transform) that are
+    chained, in the order in which they are chained, with the last object
+    an estimator.</p>
+<p>memory : str or object with the joblib.Memory interface, default=None
+    Used to cache the fitted transformers of the pipeline. By default,
+    no caching is performed. If a string is given, it is the path to
+    the caching directory. Enabling caching triggers a clone of
+    the transformers before fitting. Therefore, the transformer
+    instance given to the pipeline cannot be inspected
+    directly. Use the attribute <code>named_steps</code> or <code>steps</code> to
+    inspect estimators within the pipeline. Caching the
+    transformers is advantageous when fitting is time consuming.</p>
+<p>verbose : bool, default=False
+    If True, the time elapsed while fitting each step will be printed as it
+    is completed.</p>
+<h2 id="Attributes">Attributes<a class="anchor-link" href="#Attributes"> </a></h2><p>named_steps : :class:<code>~sklearn.utils.Bunch</code>
+    Dictionary-like object, with the following attributes.
+    Read-only attribute to access any step parameter by user given name.
+    Keys are step names and values are steps parameters.</p>
+<h2 id="See-Also">See Also<a class="anchor-link" href="#See-Also"> </a></h2><p>make_pipeline : Convenience function for simplified pipeline construction.</p>
+<h2 id="Examples">Examples<a class="anchor-link" href="#Examples"> </a></h2><blockquote><blockquote><blockquote><p>from sklearn.svm import SVC
+from sklearn.preprocessing import StandardScaler
+from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split
+from sklearn.pipeline import Pipeline
+X, y = make_classification(random_state=0)
+X_train, X_test, y_train, y_test = train_test_split(X, y,
+...                                                     random_state=0)
+pipe = Pipeline([('scaler', StandardScaler()), ('svc', SVC())])</p>
+<h1 id="The-pipeline-can-be-used-as-any-other-estimator">The pipeline can be used as any other estimator<a class="anchor-link" href="#The-pipeline-can-be-used-as-any-other-estimator"> </a></h1><h1 id="and-avoids-leaking-the-test-set-into-the-train-set">and avoids leaking the test set into the train set<a class="anchor-link" href="#and-avoids-leaking-the-test-set-into-the-train-set"> </a></h1><p>pipe.fit(X_train, y_train)
+Pipeline(steps=[('scaler', StandardScaler()), ('svc', SVC())])
+pipe.score(X_test, y_test)
+0.88</p>
+</blockquote>
+</blockquote>
+</blockquote>
+
 </div>
 
 </div>
@@ -303,7 +388,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MiniRocket" class="doc_header"><code>class</code> <code>MiniRocket</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/MINIROCKET.py#L73" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocket</code>() :: <code>Pipeline</code></p>
+<h2 id="MiniRocketRegressor" class="doc_header"><code>class</code> <code>MiniRocketRegressor</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/MINIROCKET.py#L100" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocketRegressor</code>() :: <code>Pipeline</code></p>
 </blockquote>
 <p>Pipeline of transforms with a final estimator.</p>
 <p>Sequentially apply a list of transforms and a final estimator.
@@ -385,13 +470,20 @@ pipe.score(X_test, y_test)
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;OliveOil&#39;</span>
 <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">)</span>
-<span class="bp">cls</span> <span class="o">=</span> <span class="n">MiniRocket</span><span class="p">()</span>
+<span class="bp">cls</span> <span class="o">=</span> <span class="n">MiniRocketClassifier</span><span class="p">()</span>
 <span class="bp">cls</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
 <span class="bp">cls</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
 </pre></div>
@@ -429,7 +521,7 @@ pipe.score(X_test, y_test)
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;AppliancesEnergy&#39;</span>
 <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">get_Monash_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">)</span>
 <span class="n">rmse_scorer</span> <span class="o">=</span> <span class="n">make_scorer</span><span class="p">(</span><span class="n">mean_squared_error</span><span class="p">,</span> <span class="n">greater_is_better</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">MiniRocket</span><span class="p">(</span><span class="n">regression</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="n">rmse_scorer</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">MiniRocketRegressor</span><span class="p">(</span><span class="n">scoring</span><span class="o">=</span><span class="n">rmse_scorer</span><span class="p">)</span>
 <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
 <span class="n">y_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
 <span class="n">mse</span> <span class="o">=</span> <span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
@@ -449,7 +541,7 @@ pipe.score(X_test, y_test)
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(4.11300813394409, 2.0280552590952965)</pre>
+<pre>(4.877116250523794, 2.2084194009571174)</pre>
 </div>
 
 </div>

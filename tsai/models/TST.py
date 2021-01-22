@@ -107,7 +107,8 @@ class TSTEncoderLayer(Module):
     def _get_activation_fn(self, activation):
         if activation == "relu": return nn.ReLU()
         elif activation == "gelu": return nn.GELU()
-        raise ValueError(f'{activation} is not available. You can use "relu" or "gelu"')
+        else: return activation()
+#         raise ValueError(f'{activation} is not available. You can use "relu" or "gelu"')
 
 # Cell
 class TSTEncoder(Module):
@@ -124,7 +125,7 @@ class TSTEncoder(Module):
 class TST(Module):
     def __init__(self, c_in:int, c_out:int, seq_len:int, max_seq_len:Optional[int]=None,
                  n_layers:int=3, d_model:int=128, n_heads:int=16, d_k:Optional[int]=None, d_v:Optional[int]=None,
-                 d_ff:int=256, res_dropout:float=0.1, activation:str="gelu", fc_dropout:float=0.,
+                 d_ff:int=256, res_dropout:float=0.1, act:str="gelu", fc_dropout:float=0.,
                  y_range:Optional[tuple]=None, verbose:bool=False, **kwargs):
         r"""TST (Time Series Transformer) is a Transformer that takes continuous time series as inputs.
         As mentioned in the paper, the input must be standardized by_var based on the entire training set.
@@ -139,7 +140,7 @@ class TST(Module):
             d_v: size of the learned linear projection of values in the MHA. Usual values: 16-512. Default: None -> (d_model/n_heads) = 32.
             d_ff: the dimension of the feedforward network model.
             res_dropout: amount of residual dropout applied in the encoder.
-            activation: the activation function of intermediate layer, relu or gelu.
+            act: the activation function of intermediate layer, relu or gelu.
             num_layers: the number of sub-encoder-layers in the encoder.
             fc_dropout: dropout applied to the final fully connected layer.
             y_range: range of possible y values (used in regression tasks).
@@ -178,7 +179,7 @@ class TST(Module):
         self.res_dropout = nn.Dropout(res_dropout)
 
         # Encoder
-        encoder_layer = TSTEncoderLayer(d_model, n_heads, d_k=d_k, d_v=d_v, d_ff=d_ff, res_dropout=res_dropout, activation=activation)
+        encoder_layer = TSTEncoderLayer(d_model, n_heads, d_k=d_k, d_v=d_v, d_ff=d_ff, res_dropout=res_dropout, activation=act)
         self.encoder = TSTEncoder(encoder_layer, n_layers)
         self.flatten = Flatten()
 

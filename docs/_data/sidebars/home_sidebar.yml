@@ -125,6 +125,9 @@ entries:
           title: ROCKET
           url: /models.ROCKET
         - output: web,pdf
+          title: MINIROCKET
+          url: /models.MINIROCKET
+        - output: web,pdf
           title: InceptionTime
           url: /models.InceptionTime
         - output: web,pdf

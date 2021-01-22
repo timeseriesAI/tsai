@@ -3,7 +3,8 @@
 __all__ = ['decompress_from_url', 'get_UCR_univariate_list', 'UCR_univariate_list', 'get_UCR_multivariate_list',
            'UCR_multivariate_list', 'UCR_list', 'classification_list', 'get_UCR_data', 'get_classification_data',
            'check_data', 'load_from_tsfile_to_dataframe2', 'get_Monash_regression_list', 'Monash_list',
-           'regression_list', 'get_Monash_data', 'get_regression_data']
+           'regression_list', 'get_Monash_data', 'get_regression_data', 'get_forecasting_list', 'forecasting_list',
+           'get_forecasting_data']
 
 # Cell
 from ..imports import *
@@ -126,7 +127,7 @@ def get_UCR_data(dsid, path='.', parent_dir='data/UCR', on_disk=True, return_spl
     full_parent_dir = Path(path)/parent_dir
     full_tgt_dir = full_parent_dir/dsid
     if not os.path.exists(full_tgt_dir): os.makedirs(full_tgt_dir)
-    if force_download or not all([os.path.isfile(f'{full_parent_dir}/{dsid}/{fn}.npy') for fn in ['X_train', 'X_valid', 'y_train', 'y_valid', 'X', 'y']]):
+    if force_download or not all([os.path.isfile(f'{full_tgt_dir}/{fn}.npy') for fn in ['X_train', 'X_valid', 'y_train', 'y_valid', 'X', 'y']]):
         src_website = 'http://www.timeseriesclassification.com/Downloads'
         decompress_from_url(f'{src_website}/{dsid}.zip', target_dir=full_tgt_dir, verbose=verbose)
         if dsid == 'DuckDuckGeese':
@@ -817,3 +818,81 @@ def get_Monash_data(dsid, path='./data/Monash', on_disk=True, split_data=True, f
 
 
 get_regression_data = get_Monash_data
+
+# Cell
+def get_forecasting_list():
+    return sorted([
+        "Sunspots", "Weather"
+    ])
+
+forecasting_list = get_forecasting_list()
+
+# Cell
+def get_forecasting_data(dsid, path='./data/forecasting/', force_download=False, verbose=True, **kwargs):
+
+    dsid_list = [fd for fd in forecasting_list if fd.lower() == dsid.lower()]
+    assert len(dsid_list) > 0, f'{dsid} is not a forecasting dataset'
+    dsid = dsid_list[0]
+    if dsid == 'Weather': full_tgt_dir = Path(path)/f'{dsid}.csv.zip'
+    else: full_tgt_dir = Path(path)/f'{dsid}.csv'
+    pv(f'Dataset: {dsid}', verbose)
+    if dsid == 'Sunspots': url = "https://storage.googleapis.com/laurencemoroney-blog.appspot.com/Sunspots.csv"
+    elif dsid == 'Weather': url = 'https://storage.googleapis.com/tensorflow/tf-keras-datasets/jena_climate_2009_2016.csv.zip'
+
+    try:
+        pv("downloading data...", verbose)
+        if force_download:
+            try: os.remove(full_tgt_dir)
+            except OSError: pass
+        download_data(url, full_tgt_dir, force_download=force_download, **kwargs)
+        pv(f"...data downloaded. Path = {full_tgt_dir}", verbose)
+
+        if dsid == 'Sunspots':
+            df = pd.read_csv(full_tgt_dir, parse_dates=['Date'], index_col=['Date'])
+            return df['Monthly Mean Total Sunspot Number'].asfreq('1M').to_frame()
+
+        elif dsid == 'Weather':
+            # This code comes from a great Keras time-series tutorial notebook (https://www.tensorflow.org/tutorials/structured_data/time_series)
+            df = pd.read_csv(full_tgt_dir)
+            df = df[5::6] # slice [start:stop:step], starting from index 5 take every 6th record.
+
+            date_time = pd.to_datetime(df.pop('Date Time'), format='%d.%m.%Y %H:%M:%S')
+
+            # remove error (negative wind)
+            wv = df['wv (m/s)']
+            bad_wv = wv == -9999.0
+            wv[bad_wv] = 0.0
+
+            max_wv = df['max. wv (m/s)']
+            bad_max_wv = max_wv == -9999.0
+            max_wv[bad_max_wv] = 0.0
+
+            wv = df.pop('wv (m/s)')
+            max_wv = df.pop('max. wv (m/s)')
+
+            # Convert to radians.
+            wd_rad = df.pop('wd (deg)')*np.pi / 180
+
+            # Calculate the wind x and y components.
+            df['Wx'] = wv*np.cos(wd_rad)
+            df['Wy'] = wv*np.sin(wd_rad)
+
+            # Calculate the max wind x and y components.
+            df['max Wx'] = max_wv*np.cos(wd_rad)
+            df['max Wy'] = max_wv*np.sin(wd_rad)
+
+            timestamp_s = date_time.map(datetime.timestamp)
+            day = 24*60*60
+            year = (365.2425)*day
+
+            df['Day sin'] = np.sin(timestamp_s * (2 * np.pi / day))
+            df['Day cos'] = np.cos(timestamp_s * (2 * np.pi / day))
+            df['Year sin'] = np.sin(timestamp_s * (2 * np.pi / year))
+            df['Year cos'] = np.cos(timestamp_s * (2 * np.pi / year))
+            df.reset_index(drop=True, inplace=True)
+            return df
+        else:
+            return full_tgt_dir
+    except:
+        warnings.warn(f"Cannot download {dsid} dataset")
+        return
