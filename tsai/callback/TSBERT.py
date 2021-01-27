@@ -69,7 +69,7 @@ import matplotlib.colors as mcolors
 class TSBERT(Callback):
     def __init__(self, r:float=.15, subsequence_mask:bool=True, lm:float=3., stateful:bool=True, sync:bool=False, variable_mask:bool=False,
                  future_mask:bool=False, custom_mask:Optional=None, dropout:float=.1, crit:callable=None,
-                 target_dir:str='./data/TSBERT', fname:str='model', verbose:bool=True):
+                 target_dir:str='./data/TSBERT', fname:str='model', cut:int=-1, verbose:bool=True):
         r"""
         Callback used to perform the autoregressive task of denoising the input after a binary mask has been applied.
 
@@ -86,12 +86,13 @@ class TSBERT(Callback):
             crit: loss function that will be used. If None MSELossFlat().
             target_dir : directory where trained model will be stored.
             fname : file name that will be used to save the pretrained model.
+            cut: used to determine where will the model be cut to remove the head. Default is -1.
     """
         assert subsequence_mask or variable_mask or future_mask or custom_mask, \
         'you must set (subsequence_mask and/or variable_mask) or future_mask to True or use a custom_mask'
         if custom_mask is not None and (future_mask or subsequence_mask or variable_mask): warnings.warn("Only custom_mask will be used")
         elif future_mask and (subsequence_mask or variable_mask): warnings.warn("Only future_mask will be used")
-        store_attr("subsequence_mask,variable_mask,future_mask,custom_mask,dropout,r,lm,stateful,sync,crit,fname,verbose")
+        store_attr("subsequence_mask,variable_mask,future_mask,custom_mask,dropout,r,lm,stateful,sync,crit,fname,cut,verbose")
         self.target_dir = Path(target_dir)
 
 
@@ -105,9 +106,7 @@ class TSBERT(Callback):
         self.learn.metrics = L([])
 
         # save initial model head
-        # assert hasattr(self.learn.model, "head"), f"you can only use {cls_name(self)} with models that have .head attribute"
-        # backbone = split_model(self.learn.model)[0]
-        self.learn.model = self.learn.model[:-1]
+        self.learn.model = self.learn.model[:self.cut]
 
         # prepare model for denoising task
         with torch.no_grad():
@@ -156,7 +155,7 @@ class TSBERT(Callback):
         xb = self.xb[0].detach().cpu().numpy()
         bs, nvars, seq_len = xb.shape
         self.learn('before_batch')
-        pred = learn.model(*self.learn.xb).detach().cpu().numpy()
+        pred = self.learn.model(*self.learn.xb).detach().cpu().numpy()
         mask = self.mask.cpu().numpy()
         masked_pred = np.ma.masked_where(mask, pred)
         ncols = min(ncols, math.ceil(bs / ncols))

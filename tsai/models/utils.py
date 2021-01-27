@@ -77,18 +77,17 @@ def ts_splitter(m):
     return L(m[:-1], m[-1]).map(params)
 
 
-def transfer_weights(model, weights_path:Path, device:torch.device=None, exclude_head:bool=True):
+def transfer_weights(model, weights_path:Path, device:torch.device=None, exclude_head:bool=True, cut:int=-1):
     """Utility function that allows to easily transfer weights between models.
     Taken from the great self-supervised repository created by Kerem Turgutlu.
     https://github.com/KeremTurgutlu/self_supervised/blob/d87ebd9b4961c7da0efd6073c42782bbc61aaa2e/self_supervised/utils.py"""
 
     device = ifnone(device, default_device())
-    state_dict = model[:-1].state_dict()
+    state_dict = model[:cut].state_dict() if exclude_head else model.state_dict()
     new_state_dict = torch.load(weights_path, map_location=device)
     matched_layers = 0
     unmatched_layers = []
     for name, param in state_dict.items():
-        if exclude_head and 'head' in name: continue
         if name in new_state_dict:
             matched_layers += 1
             input_param = new_state_dict[name]
@@ -106,7 +105,7 @@ def transfer_weights(model, weights_path:Path, device:torch.device=None, exclude
 
 
 def build_ts_model(arch, c_in=None, c_out=None, seq_len=None, d=None, dls=None, device=None, verbose=False,
-                   pretrained=False, weights_path=None, exclude_head=True, **kwargs):
+                   pretrained=False, weights_path=None, exclude_head=True, cut=-1, **kwargs):
 
     device = ifnone(device, default_device())
     if dls is not None:
@@ -141,7 +140,7 @@ def build_ts_model(arch, c_in=None, c_out=None, seq_len=None, d=None, dls=None, 
 
     if pretrained:
         assert weights_path is not None, "you need to pass a valid weights_path to use a pre-trained model"
-        transfer_weights(model, weights_path, exclude_head=exclude_head, device=device)
+        transfer_weights(model, weights_path, exclude_head=exclude_head, cut=cut, device=device)
     return model
 
 build_model = build_ts_model
