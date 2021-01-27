@@ -18,9 +18,8 @@ class FCNPlus(Module):
                                     act=None if residual else act, act_kwargs=act_kwargs)
         if residual: self.shortcut = BN1(layers[2]) if c_in == layers[2] else ConvBlock(c_in, layers[2], 1, coord=coord, act=None)
         self.add = Add() if residual else noop
-        self.gap = nn.AdaptiveAvgPool1d(1)
-        self.squeeze = Squeeze(-1)
-        self.fc = nn.Linear(layers[-1], c_out)
+        self.head_nf = layers[2]
+        self.head = nn.Sequential(nn.AdaptiveAvgPool1d(1), Squeeze(-1), nn.Linear(layers[-1], c_out))
 
     def forward(self, x):
         if self.residual: res = x
@@ -28,5 +27,4 @@ class FCNPlus(Module):
         x = self.convblock2(x)
         x = self.convblock3(x)
         if self.residual: x = self.add(x, self.shortcut(res))
-        x = self.squeeze(self.gap(x))
-        return self.fc(x)
+        return self.head(x)

@@ -148,7 +148,7 @@ setattr(InceptionTimeXLPlus, '__name__', 'InceptionTimeXLPlus')
 @delegates(InceptionTimePlus.__init__)
 class MultiInceptionTimePlus(Module):
     _arch = InceptionTimePlus
-    def __init__(self, feat_mask, c_out, seq_len=None, custom_head=None, **kwargs):
+    def __init__(self, feat_mask, c_out, seq_len=None, custom_head=None, device=None, **kwargs):
         r"""
         MultiInceptionTimePlus is a class that allows you to create a model with multiple branches of InceptionTimePlus.
 
@@ -156,15 +156,15 @@ class MultiInceptionTimePlus(Module):
             - feat_mask: list with number of features that will be passed to each body.
         """
         self.feat_mask = [feat_mask] if isinstance(feat_mask, int) else feat_mask
+        self.device = ifnone(device, default_device())
 
         # Backbone
         self.branches = nn.ModuleList()
         self.head_nf = 0
         for feat in self.feat_mask:
-            m = create_model(self._arch, c_in=feat, c_out=c_out, seq_len=seq_len, custom_head=custom_head, **kwargs)
-            self.head_nf += m.head_nf
-            m.head = Noop
-            self.branches.append(m)
+            m = build_ts_model(self._arch, c_in=feat, c_out=c_out, seq_len=seq_len, device=self.device, **kwargs)
+            with torch.no_grad(): self.head_nf += m[0](torch.randn(1, feat, ifnone(seq_len, 10)).to(self.device)).shape[1]
+            self.branches.append(m[0])
 
         # Head
         self.c_out = c_out
@@ -173,6 +173,7 @@ class MultiInceptionTimePlus(Module):
             self.head = self._arch.create_head(self, self.head_nf, c_out, seq_len, **kwargs)
         else:
             self.head = custom_head(self.head_nf, c_out, seq_len, **kwargs)
+        self.to(self.device)
 
     def forward(self, x):
         x = torch.split(x, self.feat_mask, dim=1)

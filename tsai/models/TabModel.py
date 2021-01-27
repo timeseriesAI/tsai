@@ -29,6 +29,10 @@ class TabModel(Module):
         self.head = nn.Sequential(*_head)
 
     def forward(self, x_cat, x_cont=None):
+        x = self._backbone_forward(x_cat, x_cont)
+        return self.head(x)
+
+    def _backbone_forward(self, x_cat, x_cont=None):
         if self.n_emb != 0:
             x = [e(x_cat[:,i]) for i,e in enumerate(self.embeds)]
             x = torch.cat(x, 1)
@@ -37,4 +41,4 @@ class TabModel(Module):
             if self.bn_cont is not None: x_cont = self.bn_cont(x_cont)
             x = torch.cat([x, x_cont], 1) if self.n_emb != 0 else x_cont
         x = self.layers(x)
-        return self.head(x)
+        return x

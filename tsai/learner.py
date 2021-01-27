@@ -166,7 +166,7 @@ def show_probas(self:Learner, figsize=(6,6), ds_idx=1, dl=None, one_batch=False,
 
 # Cell
 @delegates(build_ts_model)
-def ts_learner(dls, arch=None,
+def ts_learner(dls, arch=None, splitter=trainable_params,
                # learner args
                loss_func=None, opt_func=Adam, lr=defaults.lr, cbs=None, metrics=None, path=None,
                model_dir='models', wd=None, wd_bn_bias=False, train_bn=True, moms=(0.95,0.85,0.95),
@@ -175,10 +175,15 @@ def ts_learner(dls, arch=None,
 
     if arch is None: arch = InceptionTime
     model = build_ts_model(arch, dls=dls, **kwargs)
-
+    try:
+        model[0]
+        subscriptable = True
+    except:
+        subscriptable = False
+    if subscriptable: splitter = ts_splitter
     learn = Learner(dls=dls, model=model,
-                    loss_func=loss_func, opt_func=opt_func, lr=lr, cbs=cbs, metrics=metrics, path=path,
-                    model_dir=model_dir, wd=wd, wd_bn_bias=wd_bn_bias, train_bn=train_bn, moms=moms)
+                    loss_func=loss_func, opt_func=opt_func, lr=lr, cbs=cbs, metrics=metrics, path=path, splitter=splitter,
+                    model_dir=model_dir, wd=wd, wd_bn_bias=wd_bn_bias, train_bn=train_bn, moms=moms, )
 
     # keep track of args for loggers
     store_attr('arch', self=learn)

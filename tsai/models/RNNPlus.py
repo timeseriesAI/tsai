@@ -12,9 +12,12 @@ from .layers import *
 class _RNNPlus_Base(Module):
     def __init__(self, c_in, c_out, seq_len=None, hidden_size=100, n_layers=1, bias=True, rnn_dropout=0, bidirectional=False, fc_dropout=0.,
                  last_step=True, bn=False, custom_head=None, y_range=None, **kwargs):
+
         if not last_step: assert seq_len, 'you need to enter a seq_len to use flatten=True'
-        self.rnn = self._cell(c_in, hidden_size, num_layers=n_layers, bias=bias, batch_first=True, dropout=rnn_dropout, bidirectional=bidirectional)
-        self.transpose = Transpose(-1, -2, contiguous=True)
+
+        # Backbone
+        self.backbone = _RNN_Backbone(self._cell, c_in, c_out, seq_len=seq_len, hidden_size=hidden_size, n_layers=n_layers, bias=bias,
+                                      rnn_dropout=rnn_dropout,  bidirectional=bidirectional)
 
         # Head
         self.head_nf = hidden_size * (1 + bidirectional)
@@ -22,9 +25,7 @@ class _RNNPlus_Base(Module):
         else: self.head = self.create_head(self.head_nf, c_out, seq_len, last_step=last_step, fc_dropout=fc_dropout, bn=bn, y_range=y_range)
 
     def forward(self, x):
-        x = x.transpose(2,1)                               # [batch_size x n_vars x seq_len] --> [batch_size x seq_len x n_vars]
-        output, _ = self.rnn(x)                            # [batch_size x seq_len x hidden_size * (1 + bidirectional)]
-        output = self.transpose(output)                    # [batch_size x hidden_size * (1 + bidirectional) x seq_len]
+        output = self.backbone(x)        # [batch_size x n_vars x seq_len] --> [batch_size x hidden_size * (1 + bidirectional) x seq_len]
         return self.head(output)
 
     def create_head(self, nf, c_out, seq_len, last_step=True, fc_dropout=0., bn=False, y_range=None):
@@ -37,6 +38,17 @@ class _RNNPlus_Base(Module):
         if y_range: layers += [SigmoidRange(*y_range)]
         return nn.Sequential(*layers)
 
+
+class _RNN_Backbone(Module):
+    def __init__(self, cell, c_in, c_out, seq_len=None, hidden_size=100, n_layers=1, bias=True, rnn_dropout=0, bidirectional=False):
+        self.rnn = cell(c_in, hidden_size, num_layers=n_layers, bias=bias, batch_first=True, dropout=rnn_dropout, bidirectional=bidirectional)
+        self.transpose = Transpose(-1, -2, contiguous=True)
+
+    def forward(self, x):
+        x = x.transpose(2,1)                               # [batch_size x n_vars x seq_len] --> [batch_size x seq_len x n_vars]
+        output, _ = self.rnn(x)                            # [batch_size x seq_len x hidden_size * (1 + bidirectional)]
+        output = self.transpose(output)                    # [batch_size x hidden_size * (1 + bidirectional) x seq_len]
+        return output
 
 class RNNPlus(_RNNPlus_Base):
     _cell = nn.RNN

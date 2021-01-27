@@ -9,8 +9,8 @@ __all__ = ['NumpyTensor', 'ToNumpyTensor', 'TSTensor', 'ToTSTensor', 'ToFloat', 
 # Cell
 from ..imports import *
 from ..utils import *
-from .external import *
 from .validation import *
+from .external import *
 
 # Cell
 from matplotlib.ticker import PercentFormatter
@@ -39,7 +39,7 @@ class NumpyTensor(TensorBase):
         elif self.ndim != 2: self = type(self)(to2d(self))
         self = self.detach().cpu().numpy()
         ax = ifnone(ax, ctx)
-        if ax is None: fig, ax = plt.subplots(**kwargs)
+        if ax is None: _, ax = plt.subplots(**kwargs)
         ax.plot(self.T)
         ax.axis(xmin=0, xmax=self.shape[-1] - 1)
         ax.set_title(title, weight='bold', color=title_color)
@@ -193,7 +193,7 @@ class NumpyDatasets(Datasets):
         if color == "random": color = random_shuffle(L(mcolors.CSS4_COLORS.keys()))
         elif color is None: color = ['m', 'orange', 'darkblue', 'lightgray']
         figsize = ifnone(figsize, (8, 6))
-        fig = plt.figure(figsize=figsize, **kwargs)
+        plt.figure(figsize=figsize, **kwargs)
         ax = plt.axes()
         ax.set_axisbelow(True)
         plt.grid(color='gainsboro', linewidth=.1)
@@ -214,7 +214,7 @@ class NumpyDatasets(Datasets):
     def items(self): return tuple([tl.items for tl in self.tls])
     @items.setter
     def items(self, vs):
-        for tl,c in zip(self.tls, vs): tl.items = v
+        for tl,v in zip(self.tls, vs): tl.items = v
 
     @property
     def cat(self):
@@ -325,7 +325,7 @@ def get_subset_dset(dset, idxs):
         if isinstance(dset, TSDatasets):
             return TSDatasets(tls=new_tls, n_inp=dset.n_inp, inplace=dset.inplace, tfms=dset.tfms, sel_vars=dset.sel_vars, sel_steps=dset.sel_steps)
         elif isinstance(dset, NumpyDatasets):
-            return NumpyDatasets(tls=new_tls, n_inp=dset.n_inp, inplace=inplace, tfms=dset.tfms)
+            return NumpyDatasets(tls=new_tls, n_inp=dset.n_inp, inplace=dset.inplace, tfms=dset.tfms)
         elif isinstance(dset, Datasets): return Datasets(tls=new_tls)
     elif isinstance(dset, TfmdLists):
         return dset._new(items, split_idx=dset.split_idx)

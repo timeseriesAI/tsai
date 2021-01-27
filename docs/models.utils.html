@@ -349,7 +349,32 @@ nb_path: "nbs/100b_models.utils.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="transfer_weights" class="doc_header"><code>transfer_weights</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L75" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>transfer_weights</code>(<strong><code>model</code></strong>, <strong><code>weights_path</code></strong>:<code>Path</code>, <strong><code>device</code></strong>:<code>device</code>=<em><code>None</code></em>, <strong><code>exclude_head</code></strong>:<code>bool</code>=<em><code>True</code></em>)</p>
+<h4 id="ts_splitter" class="doc_header"><code>ts_splitter</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L75" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ts_splitter</code>(<strong><code>m</code></strong>)</p>
+</blockquote>
+<p>Split of a model between body and head</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="transfer_weights" class="doc_header"><code>transfer_weights</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L80" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>transfer_weights</code>(<strong><code>model</code></strong>, <strong><code>weights_path</code></strong>:<code>Path</code>, <strong><code>device</code></strong>:<code>device</code>=<em><code>None</code></em>, <strong><code>exclude_head</code></strong>:<code>bool</code>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Utility function that allows to easily transfer weights between models.
 Taken from the great self-supervised repository created by Kerem Turgutlu.
@@ -376,7 +401,7 @@ Taken from the great self-supervised repository created by Kerem Turgutlu.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="build_ts_model" class="doc_header"><code>build_ts_model</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L103" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>build_ts_model</code>(<strong><code>arch</code></strong>, <strong><code>c_in</code></strong>=<em><code>None</code></em>, <strong><code>c_out</code></strong>=<em><code>None</code></em>, <strong><code>seq_len</code></strong>=<em><code>None</code></em>, <strong><code>d</code></strong>=<em><code>None</code></em>, <strong><code>dls</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong><code>weights_path</code></strong>=<em><code>None</code></em>, <strong><code>exclude_head</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="build_ts_model" class="doc_header"><code>build_ts_model</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L108" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>build_ts_model</code>(<strong><code>arch</code></strong>, <strong><code>c_in</code></strong>=<em><code>None</code></em>, <strong><code>c_out</code></strong>=<em><code>None</code></em>, <strong><code>seq_len</code></strong>=<em><code>None</code></em>, <strong><code>d</code></strong>=<em><code>None</code></em>, <strong><code>dls</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong><code>weights_path</code></strong>=<em><code>None</code></em>, <strong><code>exclude_head</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -400,7 +425,7 @@ Taken from the great self-supervised repository created by Kerem Turgutlu.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="build_tabular_model" class="doc_header"><code>build_tabular_model</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L137" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>build_tabular_model</code>(<strong><code>arch</code></strong>, <strong><code>dls</code></strong>, <strong><code>layers</code></strong>=<em><code>None</code></em>, <strong><code>emb_szs</code></strong>=<em><code>None</code></em>, <strong><code>n_out</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>ps</code></strong>=<em><code>None</code></em>, <strong><code>embed_p</code></strong>=<em><code>0.0</code></em>, <strong><code>use_bn</code></strong>=<em><code>True</code></em>, <strong><code>bn_final</code></strong>=<em><code>False</code></em>, <strong><code>bn_cont</code></strong>=<em><code>True</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU(inplace=True)</code></em>)</p>
+<h4 id="build_tabular_model" class="doc_header"><code>build_tabular_model</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L151" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>build_tabular_model</code>(<strong><code>arch</code></strong>, <strong><code>dls</code></strong>, <strong><code>layers</code></strong>=<em><code>None</code></em>, <strong><code>emb_szs</code></strong>=<em><code>None</code></em>, <strong><code>n_out</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>ps</code></strong>=<em><code>None</code></em>, <strong><code>embed_p</code></strong>=<em><code>0.0</code></em>, <strong><code>use_bn</code></strong>=<em><code>True</code></em>, <strong><code>bn_final</code></strong>=<em><code>False</code></em>, <strong><code>bn_cont</code></strong>=<em><code>True</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU(inplace=True)</code></em>)</p>
 </blockquote>
 
 </div>
@@ -424,7 +449,7 @@ Taken from the great self-supervised repository created by Kerem Turgutlu.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="build_tsimage_model" class="doc_header"><code>build_tsimage_model</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L150" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>build_tsimage_model</code>(<strong><code>arch</code></strong>, <strong><code>c_in</code></strong>=<em><code>None</code></em>, <strong><code>c_out</code></strong>=<em><code>None</code></em>, <strong><code>dls</code></strong>=<em><code>None</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>p</code></strong>=<em><code>0.0</code></em>, <strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>stem_szs</code></strong>=<em><code>(32, 32, 64)</code></em>, <strong><code>widen</code></strong>=<em><code>1.0</code></em>, <strong><code>sa</code></strong>=<em><code>False</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU</code></em>, <strong><code>ndim</code></strong>=<em><code>2</code></em>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>2</code></em>, <strong><code>groups</code></strong>=<em><code>1</code></em>, <strong><code>reduction</code></strong>=<em><code>None</code></em>, <strong><code>nh1</code></strong>=<em><code>None</code></em>, <strong><code>nh2</code></strong>=<em><code>None</code></em>, <strong><code>dw</code></strong>=<em><code>False</code></em>, <strong><code>g2</code></strong>=<em><code>1</code></em>, <strong><code>sym</code></strong>=<em><code>False</code></em>, <strong><code>norm_type</code></strong>=<em><code>&lt;NormType.Batch: 1&gt;</code></em>, <strong><code>pool</code></strong>=<em><code>AvgPool</code></em>, <strong><code>pool_first</code></strong>=<em><code>True</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>bias</code></strong>=<em><code>None</code></em>, <strong><code>bn_1st</code></strong>=<em><code>True</code></em>, <strong><code>transpose</code></strong>=<em><code>False</code></em>, <strong><code>init</code></strong>=<em><code>'auto'</code></em>, <strong><code>xtra</code></strong>=<em><code>None</code></em>, <strong><code>bias_std</code></strong>=<em><code>0.01</code></em>, <strong><code>dilation</code></strong>:<code>Union</code>[<code>int</code>, <code>Tuple</code>[<code>int</code>, <code>int</code>]]=<em><code>1</code></em>, <strong><code>padding_mode</code></strong>:<code>str</code>=<em><code>'zeros'</code></em>)</p>
+<h4 id="build_tsimage_model" class="doc_header"><code>build_tsimage_model</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L170" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>build_tsimage_model</code>(<strong><code>arch</code></strong>, <strong><code>c_in</code></strong>=<em><code>None</code></em>, <strong><code>c_out</code></strong>=<em><code>None</code></em>, <strong><code>dls</code></strong>=<em><code>None</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>p</code></strong>=<em><code>0.0</code></em>, <strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>stem_szs</code></strong>=<em><code>(32, 32, 64)</code></em>, <strong><code>widen</code></strong>=<em><code>1.0</code></em>, <strong><code>sa</code></strong>=<em><code>False</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU</code></em>, <strong><code>ndim</code></strong>=<em><code>2</code></em>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>2</code></em>, <strong><code>groups</code></strong>=<em><code>1</code></em>, <strong><code>reduction</code></strong>=<em><code>None</code></em>, <strong><code>nh1</code></strong>=<em><code>None</code></em>, <strong><code>nh2</code></strong>=<em><code>None</code></em>, <strong><code>dw</code></strong>=<em><code>False</code></em>, <strong><code>g2</code></strong>=<em><code>1</code></em>, <strong><code>sym</code></strong>=<em><code>False</code></em>, <strong><code>norm_type</code></strong>=<em><code>&lt;NormType.Batch: 1&gt;</code></em>, <strong><code>pool</code></strong>=<em><code>AvgPool</code></em>, <strong><code>pool_first</code></strong>=<em><code>True</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>bias</code></strong>=<em><code>None</code></em>, <strong><code>bn_1st</code></strong>=<em><code>True</code></em>, <strong><code>transpose</code></strong>=<em><code>False</code></em>, <strong><code>init</code></strong>=<em><code>'auto'</code></em>, <strong><code>xtra</code></strong>=<em><code>None</code></em>, <strong><code>bias_std</code></strong>=<em><code>0.01</code></em>, <strong><code>dilation</code></strong>:<code>Union</code>[<code>int</code>, <code>Tuple</code>[<code>int</code>, <code>int</code>]]=<em><code>1</code></em>, <strong><code>padding_mode</code></strong>:<code>str</code>=<em><code>'zeros'</code></em>)</p>
 </blockquote>
 
 </div>
@@ -448,7 +473,7 @@ Taken from the great self-supervised repository created by Kerem Turgutlu.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="count_parameters" class="doc_header"><code>count_parameters</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L162" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>count_parameters</code>(<strong><code>model</code></strong>, <strong><code>trainable</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="count_parameters" class="doc_header"><code>count_parameters</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L182" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>count_parameters</code>(<strong><code>model</code></strong>, <strong><code>trainable</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 
 </div>
@@ -464,6 +489,64 @@ Taken from the great self-supervised repository created by Kerem Turgutlu.
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">tsai.data.all</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">tsai.models.TabModel</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;NATOPS&#39;</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">ts_features_df</span> <span class="o">=</span> <span class="n">get_ts_features</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>Feature Extraction: 100%|██████████| 40/40 [00:03&lt;00:00, 10.35it/s]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">cat_names</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">cont_names</span> <span class="o">=</span> <span class="n">ts_features_df</span><span class="o">.</span><span class="n">columns</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+<span class="n">y_names</span> <span class="o">=</span> <span class="s1">&#39;target&#39;</span>
+<span class="n">tab_dls</span> <span class="o">=</span> <span class="n">get_tabular_dls</span><span class="p">(</span><span class="n">ts_features_df</span><span class="p">,</span> <span class="n">cat_names</span><span class="o">=</span><span class="n">cat_names</span><span class="p">,</span> <span class="n">cont_names</span><span class="o">=</span><span class="n">cont_names</span><span class="p">,</span> <span class="n">y_names</span><span class="o">=</span><span class="n">y_names</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">)</span>
+<span class="n">tab_model</span> <span class="o">=</span> <span class="n">build_tabular_model</span><span class="p">(</span><span class="n">TabModel</span><span class="p">,</span> <span class="n">dls</span><span class="o">=</span><span class="n">tab_dls</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">first</span><span class="p">(</span><span class="n">tab_dls</span><span class="o">.</span><span class="n">train</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">tab_model</span><span class="p">(</span><span class="o">*</span><span class="n">b</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="mi">64</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
 
 </div>
     {% endraw %}
@@ -511,7 +594,7 @@ Taken from the great self-supervised repository created by Kerem Turgutlu.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_clones" class="doc_header"><code>get_clones</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L167" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_clones</code>(<strong><code>module</code></strong>, <strong><code>N</code></strong>)</p>
+<h4 id="get_clones" class="doc_header"><code>get_clones</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L187" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_clones</code>(<strong><code>module</code></strong>, <strong><code>N</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -580,9 +663,9 @@ Taken from the great self-supervised repository created by Kerem Turgutlu.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_nf" class="doc_header"><code>get_nf</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L171" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_nf</code>(<strong><code>m</code></strong>)</p>
+<h4 id="get_nf" class="doc_header"><code>get_nf</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L191" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_nf</code>(<strong><code>m</code></strong>)</p>
 </blockquote>
-<p>Get nf from model's last linear layer</p>
+<p>Get nf from model's first linear layer in head</p>
 
 </div>
 
@@ -597,45 +680,6 @@ Taken from the great self-supervised repository created by Kerem Turgutlu.
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">layers</span> <span class="o">=</span> <span class="p">[</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">100</span><span class="p">)]</span>
-<span class="n">layers</span> <span class="o">+=</span> <span class="p">[</span><span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)]</span>
-<span class="n">layers</span> <span class="o">+=</span> <span class="p">[</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">2</span><span class="p">)]</span>
-<span class="n">layers</span> <span class="o">+=</span> <span class="p">[</span><span class="n">SigmoidRange</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">))]</span>
-<span class="n">layers</span> <span class="o">+=</span> <span class="p">[</span><span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm1d</span><span class="p">(</span><span class="mi">2</span><span class="p">)]</span>
-<span class="n">m</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="o">*</span><span class="n">layers</span><span class="p">)</span>
-<span class="n">get_nf</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>100</pre>
-</div>
-
-</div>
-
-</div>
-</div>
 
 </div>
     {% endraw %}
@@ -651,7 +695,7 @@ Taken from the great self-supervised repository created by Kerem Turgutlu.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="split_model" class="doc_header"><code>split_model</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L177" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>split_model</code>(<strong><code>model</code></strong>, <strong><code>cut</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="split_model" class="doc_header"><code>split_model</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L196" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>split_model</code>(<strong><code>model</code></strong>, <strong><code>cut</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -682,7 +726,7 @@ Taken from the great self-supervised repository created by Kerem Turgutlu.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="seq_len_calculator" class="doc_header"><code>seq_len_calculator</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L199" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>seq_len_calculator</code>(<strong><code>seq_len</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="seq_len_calculator" class="doc_header"><code>seq_len_calculator</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L218" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>seq_len_calculator</code>(<strong><code>seq_len</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -748,7 +792,7 @@ Taken from the great self-supervised repository created by Kerem Turgutlu.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="change_model_head" class="doc_header"><code>change_model_head</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L204" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>change_model_head</code>(<strong><code>model</code></strong>, <strong><code>custom_head</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="change_model_head" class="doc_header"><code>change_model_head</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L223" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>change_model_head</code>(<strong><code>model</code></strong>, <strong><code>custom_head</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Replaces a model's head by a custom head as long as the model has a head, head_nf, c_out and seq_len attributes</p>
 
@@ -780,7 +824,7 @@ Taken from the great self-supervised repository created by Kerem Turgutlu.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="naive_forecast" class="doc_header"><code>naive_forecast</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L210" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>naive_forecast</code>(<strong><code>o</code></strong>, <strong><code>split</code></strong>, <strong><code>lag</code></strong>=<em><code>1</code></em>)</p>
+<h4 id="naive_forecast" class="doc_header"><code>naive_forecast</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L229" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>naive_forecast</code>(<strong><code>o</code></strong>, <strong><code>split</code></strong>, <strong><code>lag</code></strong>=<em><code>1</code></em>)</p>
 </blockquote>
 
 </div>

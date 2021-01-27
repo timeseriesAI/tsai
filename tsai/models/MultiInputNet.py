@@ -30,9 +30,13 @@ class MultiInputNet(Module):
         head_nf = 0
         min_nf = np.inf
         for i, model in enumerate(models):
-            self.heads.append(model.head)
-            model.head = Identity()
-            self.backbones.append(model)
+            try:
+                self.heads.append(model[-1])
+                self.backbones.append(model[:-1])
+            except:
+                self.heads.append(model.head)
+                model.head = Identity()
+                self.backbones.append(model)
             self.m.append(Sequential(self.backbones[-1], self.heads[-1]))
             head_nf += model.head_nf
             min_nf = min(min_nf, model.head_nf)
@@ -54,7 +58,6 @@ class MultiInputNet(Module):
         out = []
         for k in range(self.M):
             x = xs[k]
-
             # Create separate features
             feat = self.backbones[k](*x) if isinstance(x, (list, tuple, L)) else self.backbones[k](x)
 

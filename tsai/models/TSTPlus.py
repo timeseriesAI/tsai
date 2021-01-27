@@ -227,7 +227,58 @@ class TSTPlus(Module):
             x: bs (batch size) x nvars (aka features, variables, dimensions, channels) x seq_len (aka time steps)
             attn_mask: q_len x q_len
         """
-        self.c_out, self.seq_len = c_out, seq_len
+        # Backbone
+        self.backbone = _TSTBackbone(c_in, seq_len=seq_len, max_seq_len=max_seq_len,
+                 n_layers=n_layers, d_model=d_model, n_heads=n_heads, d_k=d_k, d_v=d_v,
+                 d_ff=d_ff, res_dropout=res_dropout, act=act, res_attention=res_attention,
+                 pe=pe, learn_pe=learn_pe, verbose=verbose, **kwargs)
+
+        # Head
+        self.head_nf = d_model
+        self.c_out = c_out
+        self.seq_len = self.backbone.seq_len
+        if custom_head: self.head = custom_head(self.head_nf, c_out, self.seq_len) # custom head passed as a partial func with all its kwargs
+        else: self.head = self.create_head(self.head_nf, c_out, self.seq_len, flatten=flatten, concat_pool=concat_pool,
+                                           fc_dropout=fc_dropout, bn=bn, y_range=y_range)
+
+
+    def create_head(self, nf, c_out, seq_len, flatten=True, concat_pool=False, fc_dropout=0., bn=False, y_range=None):
+        if flatten:
+            nf *= seq_len
+            layers = [Flatten()]
+        else:
+            if concat_pool: nf *= 2
+            layers = [GACP1d(1) if concat_pool else GAP1d(1)]
+        layers += [LinBnDrop(nf, c_out, bn=bn, p=fc_dropout)]
+        if y_range: layers += [SigmoidRange(*y_range)]
+        return nn.Sequential(*layers)
+
+
+    def forward(self, x:Tensor, attn_mask:Optional[Tensor]=None) -> Tensor:  # x: [bs x nvars x q_len], attn_mask: [q_len x q_len]
+        # Backbone
+        z = self.backbone(x, attn_mask)
+
+        # Classification/ Regression head
+        return self.head(z)
+
+    def show_pe(self, cmap='viridis', figsize=None):
+        plt.figure(figsize=figsize)
+        plt.pcolormesh(self.backbone.W_pos.detach().cpu().T, cmap=cmap)
+        plt.title('Positional Encoding')
+        plt.colorbar()
+        plt.show()
+        plt.figure(figsize=figsize)
+        plt.title('Positional Encoding - value along time axis')
+        plt.plot(F.relu(self.backbone.W_pos.data).mean(1).cpu())
+        plt.plot(-F.relu(-self.backbone.W_pos.data).mean(1).cpu())
+        plt.show()
+
+
+class _TSTBackbone(Module):
+    def __init__(self, c_in:int, seq_len:int, max_seq_len:Optional[int]=512,
+                 n_layers:int=3, d_model:int=128, n_heads:int=16, d_k:Optional[int]=None, d_v:Optional[int]=None,
+                 d_ff:int=256, res_dropout:float=0.1, act:str="gelu", res_attention:bool=True,
+                 pe:str='zeros', learn_pe:bool=True, verbose:bool=False, **kwargs):
 
         # Input encoding
         q_len = seq_len
@@ -248,6 +299,7 @@ class TSTPlus(Module):
             pv(f'Conv1d with kwargs={kwargs} applied to input to create input encodings\n', verbose)
         else:
             self.W_P = nn.Linear(c_in, d_model)        # Eq 1: projection of feature vectors onto a d-dim vector space
+        self.seq_len = q_len
 
         # Positional encoding
         if pe == None:
@@ -279,26 +331,6 @@ class TSTPlus(Module):
         self.encoder = TSTEncoder(encoder_layer, n_layers, res_attention=res_attention)
         self.transpose = Transpose(-1, -2, contiguous=True)
 
-        # Head
-        self.head_nf = d_model
-        self.c_out = c_out
-        self.seq_len = q_len
-        if custom_head: self.head = custom_head(self.head_nf, c_out, q_len) # custom head passed as a partial func with all its kwargs
-        else: self.head = self.create_head(self.head_nf, c_out, q_len, flatten=flatten, concat_pool=concat_pool, fc_dropout=fc_dropout, bn=bn, y_range=y_range)
-
-
-    def create_head(self, nf, c_out, seq_len, flatten=True, concat_pool=False, fc_dropout=0., bn=False, y_range=None):
-        if flatten:
-            nf *= seq_len
-            layers = [Flatten()]
-        else:
-            if concat_pool: nf *= 2
-            layers = [GACP1d(1) if concat_pool else GAP1d(1)]
-        layers += [LinBnDrop(nf, c_out, bn=bn, p=fc_dropout)]
-        if y_range: layers += [SigmoidRange(*y_range)]
-        return nn.Sequential(*layers)
-
-
     def forward(self, x:Tensor, attn_mask:Optional[Tensor]=None) -> Tensor:  # x: [bs x nvars x q_len], attn_mask: [q_len x q_len]
 
         # Input encoding
@@ -312,20 +344,7 @@ class TSTPlus(Module):
         z = self.encoder(u, attn_mask=attn_mask)                        # z: [bs x q_len x d_model]
         z = self.transpose(z)                                           # z: [bs x d_model x q_len]
 
-        # Classification/ Regression head
-        return self.head(z)
-
-    def show_pe(self, cmap='viridis', figsize=None):
-        plt.figure(figsize=figsize)
-        plt.pcolormesh(self.W_pos.detach().cpu().T, cmap=cmap)
-        plt.title('Positional Encoding')
-        plt.colorbar()
-        plt.show()
-        plt.figure(figsize=figsize)
-        plt.title('Positional Encoding - value along time axis')
-        plt.plot(F.relu(self.W_pos.data).mean(1).cpu())
-        plt.plot(-F.relu(-self.W_pos.data).mean(1).cpu())
-        plt.show()
+        return z
 
 # Cell
 @delegates(TSTPlus.__init__)
@@ -347,8 +366,7 @@ class MultiTSTPlus(Module):
         for feat in self.feats:
             m = create_model(self._arch, c_in=feat, c_out=c_out, seq_len=seq_len, max_seq_len=max_seq_len, **kwargs)
             self.head_nf += m.head_nf
-            m.head = Noop
-            self.branches.append(m)
+            self.branches.append(m[:-1])
 
         # Head
         self.c_out = c_out

@@ -542,7 +542,6 @@ def get_outliers_IQR(o, axis=None):
     Q1 = np.percentile(o, 25, axis=axis, keepdims=axis is not None)
     Q3 = np.percentile(o, 75, axis=axis, keepdims=axis is not None)
     IQR = Q3 - Q1
-    max, min = Q1 - 1.5 * IQR, Q3 + 1.5 * IQR
     return Q1 - 1.5 * IQR, Q3 + 1.5 * IQR
 
 def get_percentile(o, percentile, axis=None):

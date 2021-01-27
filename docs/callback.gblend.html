@@ -31,7 +31,7 @@ nb_path: "nbs/012_callback.gblend.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This is an unofficial PyTorch implementation by Ignacio Oguiza of  - oguiza@gmail.com based on: Wang, W., Tran, D., &amp; Feiszli, M. (2020). <strong>What Makes Training Multi-Modal Classification Networks Hard?</strong>. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (pp. 12695-12705).</p>
+<p>This is an unofficial PyTorch implementation by Ignacio Oguiza (timeseriesAI@gmail.com) based on: Wang, W., Tran, D., &amp; Feiszli, M. (2020). <strong>What Makes Training Multi-Modal Classification Networks Hard?</strong>. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (pp. 12695-12705).</p>
 
 </div>
 </div>
@@ -154,7 +154,7 @@ Pattern Recognition (pp. 12695-12705).</p>
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>Feature Extraction: 100%|██████████| 40/40 [00:04&lt;00:00,  9.53it/s]
+<pre>Feature Extraction: 100%|██████████| 40/40 [00:05&lt;00:00,  7.22it/s]
 </pre>
 </div>
 </div>
@@ -201,32 +201,40 @@ Pattern Recognition (pp. 12695-12705).</p>
 
 <div class="output_area">
 
+<div class="output_subarea output_text output_error">
+<pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">ModuleAttributeError</span>                      Traceback (most recent call last)
+<span class="ansi-green-fg">&lt;ipython-input-7-14c968530315&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
+<span class="ansi-green-intense-fg ansi-bold">     14</span> <span class="ansi-red-fg"># mixed</span>
+<span class="ansi-green-intense-fg ansi-bold">     15</span> mixed_dls <span class="ansi-blue-fg">=</span> get_mixed_dls<span class="ansi-blue-fg">(</span>ts_dls<span class="ansi-blue-fg">,</span> tab_dls<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-fg">---&gt; 16</span><span class="ansi-red-fg"> </span>MultiModalNet <span class="ansi-blue-fg">=</span> MultiInputNet<span class="ansi-blue-fg">(</span>ts_model<span class="ansi-blue-fg">,</span> tab_model<span class="ansi-blue-fg">,</span> c_out<span class="ansi-blue-fg">=</span>mixed_dls<span class="ansi-blue-fg">.</span>c<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     17</span> gblend <span class="ansi-blue-fg">=</span> GBlend<span class="ansi-blue-fg">(</span>V_pct<span class="ansi-blue-fg">=</span><span class="ansi-cyan-fg">.5</span><span class="ansi-blue-fg">,</span> n<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">(</span><span class="ansi-cyan-fg">10</span><span class="ansi-blue-fg">,</span> <span class="ansi-cyan-fg">5</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">,</span> sel_metric<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     18</span> learn <span class="ansi-blue-fg">=</span> Learner<span class="ansi-blue-fg">(</span>mixed_dls<span class="ansi-blue-fg">,</span> MultiModalNet<span class="ansi-blue-fg">,</span> metrics<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">[</span>accuracy<span class="ansi-blue-fg">,</span> RocAuc<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">,</span> cbs<span class="ansi-blue-fg">=</span>gblend<span class="ansi-blue-fg">)</span>
 
-<div class="output_html rendered_html output_subarea ">
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: left;">
-      <th>epoch</th>
-      <th>train_loss</th>
-      <th>valid_loss</th>
-      <th>accuracy</th>
-      <th>roc_auc_score</th>
-      <th>time</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>0</td>
-      <td>1.797320</td>
-      <td>1.781641</td>
-      <td>0.250000</td>
-      <td>0.712333</td>
-      <td>00:07</td>
-    </tr>
-  </tbody>
-</table>
+<span class="ansi-green-fg">~/anaconda3/lib/python3.7/site-packages/fastcore/meta.py</span> in <span class="ansi-cyan-fg">__call__</span><span class="ansi-blue-fg">(cls, *args, **kwargs)</span>
+<span class="ansi-green-intense-fg ansi-bold">     36</span>         <span class="ansi-green-fg">if</span> type<span class="ansi-blue-fg">(</span>res<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">==</span>cls<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">     37</span>             <span class="ansi-green-fg">if</span> hasattr<span class="ansi-blue-fg">(</span>res<span class="ansi-blue-fg">,</span><span class="ansi-blue-fg">&#39;__pre_init__&#39;</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span> res<span class="ansi-blue-fg">.</span>__pre_init__<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">*</span>args<span class="ansi-blue-fg">,</span><span class="ansi-blue-fg">**</span>kwargs<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-fg">---&gt; 38</span><span class="ansi-red-fg">             </span>res<span class="ansi-blue-fg">.</span>__init__<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">*</span>args<span class="ansi-blue-fg">,</span><span class="ansi-blue-fg">**</span>kwargs<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     39</span>             <span class="ansi-green-fg">if</span> hasattr<span class="ansi-blue-fg">(</span>res<span class="ansi-blue-fg">,</span><span class="ansi-blue-fg">&#39;__post_init__&#39;</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span> res<span class="ansi-blue-fg">.</span>__post_init__<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">*</span>args<span class="ansi-blue-fg">,</span><span class="ansi-blue-fg">**</span>kwargs<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     40</span>         <span class="ansi-green-fg">return</span> res
+
+<span class="ansi-green-fg">~/Documents/Machine_Learning/Jupyter_Notebooks/tsai/nbs/tsai/models/MultiInputNet.py</span> in <span class="ansi-cyan-fg">__init__</span><span class="ansi-blue-fg">(self, c_out, reshape_fn, multi_output, custom_head, device, *models, **kwargs)</span>
+<span class="ansi-green-intense-fg ansi-bold">     34</span>             self<span class="ansi-blue-fg">.</span>backbones<span class="ansi-blue-fg">.</span>append<span class="ansi-blue-fg">(</span>model<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">:</span><span class="ansi-blue-fg">-</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     35</span>             self<span class="ansi-blue-fg">.</span>m<span class="ansi-blue-fg">.</span>append<span class="ansi-blue-fg">(</span>Sequential<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">.</span>backbones<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">-</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">,</span> self<span class="ansi-blue-fg">.</span>heads<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">-</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-fg">---&gt; 36</span><span class="ansi-red-fg">             </span>head_nf <span class="ansi-blue-fg">+=</span> model<span class="ansi-blue-fg">.</span>head_nf
+<span class="ansi-green-intense-fg ansi-bold">     37</span>             min_nf <span class="ansi-blue-fg">=</span> min<span class="ansi-blue-fg">(</span>min_nf<span class="ansi-blue-fg">,</span> model<span class="ansi-blue-fg">.</span>head_nf<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     38</span> 
+
+<span class="ansi-green-fg">~/anaconda3/lib/python3.7/site-packages/torch/nn/modules/module.py</span> in <span class="ansi-cyan-fg">__getattr__</span><span class="ansi-blue-fg">(self, name)</span>
+<span class="ansi-green-intense-fg ansi-bold">    777</span>                 <span class="ansi-green-fg">return</span> modules<span class="ansi-blue-fg">[</span>name<span class="ansi-blue-fg">]</span>
+<span class="ansi-green-intense-fg ansi-bold">    778</span>         raise ModuleAttributeError(&#34;&#39;{}&#39; object has no attribute &#39;{}&#39;&#34;.format(
+<span class="ansi-green-fg">--&gt; 779</span><span class="ansi-red-fg">             type(self).__name__, name))
+</span><span class="ansi-green-intense-fg ansi-bold">    780</span> 
+<span class="ansi-green-intense-fg ansi-bold">    781</span>     <span class="ansi-green-fg">def</span> __setattr__<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">,</span> name<span class="ansi-blue-fg">:</span> str<span class="ansi-blue-fg">,</span> value<span class="ansi-blue-fg">:</span> Union<span class="ansi-blue-fg">[</span>Tensor<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">&#39;Module&#39;</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">)</span> <span class="ansi-blue-fg">-&gt;</span> <span class="ansi-green-fg">None</span><span class="ansi-blue-fg">:</span>
+
+<span class="ansi-red-fg">ModuleAttributeError</span>: &#39;Sequential&#39; object has no attribute &#39;head_nf&#39;</pre>
 </div>
-
 </div>
 
 </div>

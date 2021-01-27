@@ -2,31 +2,30 @@
 
 __all__ = ['decompress_from_url', 'get_UCR_univariate_list', 'UCR_univariate_list', 'get_UCR_multivariate_list',
            'UCR_multivariate_list', 'UCR_list', 'classification_list', 'get_UCR_data', 'get_classification_data',
-           'check_data', 'load_from_tsfile_to_dataframe2', 'get_Monash_regression_list', 'Monash_list',
-           'regression_list', 'get_Monash_data', 'get_regression_data', 'get_forecasting_list', 'forecasting_list',
-           'get_forecasting_data']
+           'check_data', 'get_Monash_regression_list', 'Monash_list', 'regression_list', 'get_Monash_data',
+           'get_regression_data', 'get_forecasting_list', 'forecasting_list', 'get_forecasting_data']
 
 # Cell
 from ..imports import *
 from ..utils import *
 from .validation import *
-from fastai.data.external import *
-from tqdm import tqdm
 
 # Cell
+from fastai.data.external import *
+from tqdm import tqdm
 import zipfile
 import tempfile
 try: from urllib import urlretrieve
 except ImportError: from urllib.request import urlretrieve
 import shutil
 from pyunpack import Archive
-from sktime.utils.data_io import load_from_tsfile_to_dataframe
 from sktime.datasets import load_UCR_UEA_dataset
 from sktime.utils.validation.panel import check_X
+from sktime.utils.data_io import load_from_tsfile_to_dataframe as ts2df
 
 # Cell
 def decompress_from_url(url, target_dir=None, verbose=False):
-    #Download
+    # Download
     try:
         pv("downloading data...", verbose)
         fname = os.path.basename(url)
@@ -36,19 +35,22 @@ def decompress_from_url(url, target_dir=None, verbose=False):
         pv("...data downloaded", verbose)
     except:
         shutil.rmtree(tmpdir)
-        if verbose: sys.stderr.write("Could not download url. Please, check url.\n")
+        if verbose:
+            sys.stderr.write("Could not download url. Please, check url.\n")
 
-    #Decompress
+    # Decompress
     try:
         pv("decompressing data...", verbose)
-        if not os.path.exists(target_dir): os.makedirs(target_dir)
+        if not os.path.exists(target_dir):
+            os.makedirs(target_dir)
         Archive(local_comp_fname).extractall(target_dir)
         shutil.rmtree(tmpdir)
         pv("...data decompressed", verbose)
         return target_dir
     except:
         shutil.rmtree(tmpdir)
-        if verbose: sys.stderr.write("Could not decompress file, aborting.\n")
+        if verbose:
+            sys.stderr.write("Could not decompress file, aborting.\n")
         return None
 
 # Cell
@@ -91,6 +93,7 @@ def get_UCR_univariate_list():
         'WordSynonyms', 'Worms', 'WormsTwoClass', 'Yoga'
     ]
 
+
 test_eq(len(get_UCR_univariate_list()), 128)
 
 UCR_univariate_list = get_UCR_univariate_list()
@@ -128,14 +131,24 @@ def get_UCR_data(dsid, path='.', parent_dir='data/UCR', on_disk=True, return_spl
     full_tgt_dir = full_parent_dir/dsid
     if not os.path.exists(full_tgt_dir): os.makedirs(full_tgt_dir)
     if force_download or not all([os.path.isfile(f'{full_tgt_dir}/{fn}.npy') for fn in ['X_train', 'X_valid', 'y_train', 'y_valid', 'X', 'y']]):
+
+        # Option A
         src_website = 'http://www.timeseriesclassification.com/Downloads'
         decompress_from_url(f'{src_website}/{dsid}.zip', target_dir=full_tgt_dir, verbose=verbose)
         if dsid == 'DuckDuckGeese':
             with zipfile.ZipFile(Path(f'{full_parent_dir}/DuckDuckGeese/DuckDuckGeese_ts.zip'), 'r') as zip_ref:
                 zip_ref.extractall(Path(parent_dir))
+        if not os.path.exists(full_tgt_dir/f'{dsid}_TRAIN.ts') or not os.path.exists(full_tgt_dir/f'{dsid}_TRAIN.ts') or \
+        Path(full_tgt_dir/f'{dsid}_TRAIN.ts').stat().st_size == 0 or Path(full_tgt_dir/f'{dsid}_TEST.ts').stat().st_size == 0:
+            print('It has not been possible to download the required files')
+            if return_split:
+                return None, None, None, None
+            else:
+                return None, None, None
+
         pv('loading ts files to dataframe...', verbose)
-        X_train_df, y_train = load_from_tsfile_to_dataframe(full_tgt_dir/f'{dsid}_TRAIN.ts')
-        X_valid_df, y_valid = load_from_tsfile_to_dataframe(full_tgt_dir/f'{dsid}_TEST.ts')
+        X_train_df, y_train = ts2df(full_tgt_dir/f'{dsid}_TRAIN.ts')
+        X_valid_df, y_valid = ts2df(full_tgt_dir/f'{dsid}_TEST.ts')
         pv('...ts files loaded', verbose)
         pv('preparing numpy arrays...', verbose)
         X_train_ = []
@@ -146,6 +159,12 @@ def get_UCR_data(dsid, path='.', parent_dir='data/UCR', on_disk=True, return_spl
         X_train = np.transpose(np.stack(X_train_, axis=-1), (0, 2, 1)).astype(np.float32)
         X_valid = np.transpose(np.stack(X_valid_, axis=-1), (0, 2, 1)).astype(np.float32)
         X_train, X_valid = match_seq_len(X_train, X_valid)
+
+        ## Option B
+#         X_train, y_train = load_UCR_UEA_dataset(dsid, split='train', return_X_y=True)
+#         X_train = check_X(X_train, coerce_to_numpy=True).astype(np.float32)
+#         X_valid, y_valid = load_UCR_UEA_dataset(dsid, split='test', return_X_y=True)
+#         X_valid = check_X(X_valid, coerce_to_numpy=True).astype(np.float32)
 
         np.save(f'{full_tgt_dir}/X_train.npy', X_train)
         np.save(f'{full_tgt_dir}/y_train.npy', y_train)
@@ -206,7 +225,6 @@ def check_data(X, y=None, splits=None, show_plot=True):
         if y_is_nan: warnings.warn('y must not contain nan values')
     if splits is not None:
         _splits = get_splits_len(splits)
-        n_splits = len(_splits)
         overlap = check_splits_overlap(splits)
         print(f'splits - n_splits: {len(_splits)} shape: {_splits}  overlap: {overlap}')
         if show_plot: plot_splits(splits)
@@ -214,7 +232,14 @@ def check_data(X, y=None, splits=None, show_plot=True):
 # Cell
 # This code comes from https://github.com/ChangWeiTan/TSRegression. As of Jan 16th, 2021 there's no pip install available.
 
-def load_from_tsfile_to_dataframe2(full_file_path_and_name, return_separate_X_and_y=True, replace_missing_vals_with='NaN'):
+# The following code is adapted from the python package sktime to read .ts file.
+class _TsFileParseException(Exception):
+    """
+    Should be raised when parsing a .ts file and the format is incorrect.
+    """
+    pass
+
+def _load_from_tsfile_to_dataframe2(full_file_path_and_name, return_separate_X_and_y=True, replace_missing_vals_with='NaN'):
     """Loads data from a .ts file into a Pandas DataFrame.
     Parameters
     ----------
@@ -267,13 +292,13 @@ def load_from_tsfile_to_dataframe2(full_file_path_and_name, return_separate_X_an
                 if line.startswith("@problemname"):
                     # Check that the data has not started
                     if data_started:
-                        raise TsFileParseException("metadata must come before data")
+                        raise _TsFileParseException("metadata must come before data")
                     # Check that the associated value is valid
                     tokens = line.split(' ')
                     token_len = len(tokens)
 
                     if token_len == 1:
-                        raise TsFileParseException("problemname tag requires an associated value")
+                        raise _TsFileParseException("problemname tag requires an associated value")
 
                     problem_name = line[len("@problemname") + 1:]
                     has_problem_name_tag = True
@@ -281,63 +306,63 @@ def load_from_tsfile_to_dataframe2(full_file_path_and_name, return_separate_X_an
                 elif line.startswith("@timestamps"):
                     # Check that the data has not started
                     if data_started:
-                        raise TsFileParseException("metadata must come before data")
+                        raise _TsFileParseException("metadata must come before data")
 
                     # Check that the associated value is valid
                     tokens = line.split(' ')
                     token_len = len(tokens)
 
                     if token_len != 2:
-                        raise TsFileParseException("timestamps tag requires an associated Boolean value")
+                        raise _TsFileParseException("timestamps tag requires an associated Boolean value")
                     elif tokens[1] == "true":
                         timestamps = True
                     elif tokens[1] == "false":
                         timestamps = False
                     else:
-                        raise TsFileParseException("invalid timestamps value")
+                        raise _TsFileParseException("invalid timestamps value")
                     has_timestamps_tag = True
                     metadata_started = True
                 elif line.startswith("@univariate"):
                     # Check that the data has not started
                     if data_started:
-                        raise TsFileParseException("metadata must come before data")
+                        raise _TsFileParseException("metadata must come before data")
 
                     # Check that the associated value is valid
                     tokens = line.split(' ')
                     token_len = len(tokens)
                     if token_len != 2:
-                        raise TsFileParseException("univariate tag requires an associated Boolean value")
+                        raise _TsFileParseException("univariate tag requires an associated Boolean value")
                     elif tokens[1] == "true":
                         univariate = True
                     elif tokens[1] == "false":
                         univariate = False
                     else:
-                        raise TsFileParseException("invalid univariate value")
+                        raise _TsFileParseException("invalid univariate value")
 
                     has_univariate_tag = True
                     metadata_started = True
                 elif line.startswith("@classlabel"):
                     # Check that the data has not started
                     if data_started:
-                        raise TsFileParseException("metadata must come before data")
+                        raise _TsFileParseException("metadata must come before data")
 
                     # Check that the associated value is valid
                     tokens = line.split(' ')
                     token_len = len(tokens)
 
                     if token_len == 1:
-                        raise TsFileParseException("classlabel tag requires an associated Boolean value")
+                        raise _TsFileParseException("classlabel tag requires an associated Boolean value")
 
                     if tokens[1] == "true":
                         class_labels = True
                     elif tokens[1] == "false":
                         class_labels = False
                     else:
-                        raise TsFileParseException("invalid classLabel value")
+                        raise _TsFileParseException("invalid classLabel value")
 
                     # Check if we have any associated class values
                     if token_len == 2 and class_labels:
-                        raise TsFileParseException("if the classlabel tag is true then class values must be supplied")
+                        raise _TsFileParseException("if the classlabel tag is true then class values must be supplied")
 
                     has_class_labels_tag = True
                     class_label_list = [token.strip() for token in tokens[2:]]
@@ -345,21 +370,21 @@ def load_from_tsfile_to_dataframe2(full_file_path_and_name, return_separate_X_an
                 elif line.startswith("@targetlabel"):
                     # Check that the data has not started
                     if data_started:
-                        raise TsFileParseException("metadata must come before data")
+                        raise _TsFileParseException("metadata must come before data")
 
                     # Check that the associated value is valid
                     tokens = line.split(' ')
                     token_len = len(tokens)
 
                     if token_len == 1:
-                        raise TsFileParseException("targetlabel tag requires an associated Boolean value")
+                        raise _TsFileParseException("targetlabel tag requires an associated Boolean value")
 
                     if tokens[1] == "true":
                         target_labels = True
                     elif tokens[1] == "false":
                         target_labels = False
                     else:
-                        raise TsFileParseException("invalid targetLabel value")
+                        raise _TsFileParseException("invalid targetLabel value")
 
                     has_target_labels_tag = True
                     class_val_list = []
@@ -367,10 +392,10 @@ def load_from_tsfile_to_dataframe2(full_file_path_and_name, return_separate_X_an
                 # Check if this line contains the start of data
                 elif line.startswith("@data"):
                     if line != "@data":
-                        raise TsFileParseException("data tag should not have an associated value")
+                        raise _TsFileParseException("data tag should not have an associated value")
 
                     if data_started and not metadata_started:
-                        raise TsFileParseException("metadata must come before data")
+                        raise _TsFileParseException("metadata must come before data")
                     else:
                         has_data_tag = True
                         data_started = True
@@ -380,7 +405,7 @@ def load_from_tsfile_to_dataframe2(full_file_path_and_name, return_separate_X_an
                     incomplete_regression_meta_data = not has_problem_name_tag or not has_timestamps_tag or not has_univariate_tag or not has_target_labels_tag or not has_data_tag
                     incomplete_classification_meta_data = not has_problem_name_tag or not has_timestamps_tag or not has_univariate_tag or not has_class_labels_tag or not has_data_tag
                     if incomplete_regression_meta_data and incomplete_classification_meta_data:
-                        raise TsFileParseException("a full set of metadata has not been provided before the data")
+                        raise _TsFileParseException("a full set of metadata has not been provided before the data")
 
                     # Replace any missing values with the value specified
                     line = line.replace("?", replace_missing_vals_with)
@@ -428,7 +453,7 @@ def load_from_tsfile_to_dataframe2(full_file_path_and_name, return_separate_X_an
                                         class_val = line[char_num:].strip()
 
                                         # if class_val not in class_val_list:
-                                        #     raise TsFileParseException(
+                                        #     raise _TsFileParseException(
                                         #         "the class value '" + class_val + "' on line " + str(
                                         #             line_num + 1) + " is not valid")
 
@@ -446,7 +471,7 @@ def load_from_tsfile_to_dataframe2(full_file_path_and_name, return_separate_X_an
                                         # Read in the data contained within the next tuple
 
                                         if line[char_num] != "(" and not target_labels:
-                                            raise TsFileParseException(
+                                            raise _TsFileParseException(
                                                 "dimension " + str(this_line_num_dimensions + 1) + " on line " + str(
                                                     line_num + 1) + " does not start with a '('")
 
@@ -458,7 +483,7 @@ def load_from_tsfile_to_dataframe2(full_file_path_and_name, return_separate_X_an
                                             char_num += 1
 
                                         if char_num >= line_len or line[char_num] != ")":
-                                            raise TsFileParseException(
+                                            raise _TsFileParseException(
                                                 "dimension " + str(this_line_num_dimensions + 1) + " on line " + str(
                                                     line_num + 1) + " does not end with a ')'")
 
@@ -490,7 +515,7 @@ def load_from_tsfile_to_dataframe2(full_file_path_and_name, return_separate_X_an
                                         last_comma_index = tuple_data.rfind(',')
 
                                         if last_comma_index == -1:
-                                            raise TsFileParseException(
+                                            raise _TsFileParseException(
                                                 "dimension " + str(this_line_num_dimensions + 1) + " on line " + str(
                                                     line_num + 1) + " contains a tuple that has no comma inside of it")
 
@@ -499,7 +524,7 @@ def load_from_tsfile_to_dataframe2(full_file_path_and_name, return_separate_X_an
                                             value = float(value)
 
                                         except ValueError:
-                                            raise TsFileParseException(
+                                            raise _TsFileParseException(
                                                 "dimension " + str(this_line_num_dimensions + 1) + " on line " + str(
                                                     line_num + 1) + " contains a tuple that does not have a valid numeric value")
 
@@ -532,22 +557,22 @@ def load_from_tsfile_to_dataframe2(full_file_path_and_name, return_separate_X_an
                                         # Make sure that the timestamps in the file (not just this dimension or case) are consistent
 
                                         if not timestamp_is_timestamp and not timestamp_is_int and not timestamp_is_float:
-                                            raise TsFileParseException(
+                                            raise _TsFileParseException(
                                                 "dimension " + str(this_line_num_dimensions + 1) + " on line " + str(
                                                     line_num + 1) + " contains a tuple that has an invalid timestamp '" + timestamp + "'")
 
                                         if previous_timestamp_was_float is not None and previous_timestamp_was_float and not timestamp_is_float:
-                                            raise TsFileParseException(
+                                            raise _TsFileParseException(
                                                 "dimension " + str(this_line_num_dimensions + 1) + " on line " + str(
                                                     line_num + 1) + " contains tuples where the timestamp format is inconsistent")
 
                                         if previous_timestamp_was_int is not None and previous_timestamp_was_int and not timestamp_is_int:
-                                            raise TsFileParseException(
+                                            raise _TsFileParseException(
                                                 "dimension " + str(this_line_num_dimensions + 1) + " on line " + str(
                                                     line_num + 1) + " contains tuples where the timestamp format is inconsistent")
 
                                         if previous_timestamp_was_timestamp is not None and previous_timestamp_was_timestamp and not timestamp_is_timestamp:
-                                            raise TsFileParseException(
+                                            raise _TsFileParseException(
                                                 "dimension " + str(this_line_num_dimensions + 1) + " on line " + str(
                                                     line_num + 1) + " contains tuples where the timestamp format is inconsistent")
 
@@ -590,12 +615,12 @@ def load_from_tsfile_to_dataframe2(full_file_path_and_name, return_separate_X_an
                                             values_for_dimension = []
 
                             elif has_another_value:
-                                raise TsFileParseException(
+                                raise _TsFileParseException(
                                     "dimension " + str(this_line_num_dimensions + 1) + " on line " + str(
                                         line_num + 1) + " ends with a ',' that is not followed by another tuple")
 
                             elif has_another_dimension and target_labels:
-                                raise TsFileParseException(
+                                raise _TsFileParseException(
                                     "dimension " + str(this_line_num_dimensions + 1) + " on line " + str(
                                         line_num + 1) + " ends with a ':' while it should list a class value")
 
@@ -614,18 +639,18 @@ def load_from_tsfile_to_dataframe2(full_file_path_and_name, return_separate_X_an
                                     num_dimensions = this_line_num_dimensions
 
                                 if num_dimensions != this_line_num_dimensions:
-                                    raise TsFileParseException("line " + str(
+                                    raise _TsFileParseException("line " + str(
                                         line_num + 1) + " does not have the same number of dimensions as the previous line of data")
 
                         # Check that we are not expecting some more data, and if not, store that processed above
 
                         if has_another_value:
-                            raise TsFileParseException(
+                            raise _TsFileParseException(
                                 "dimension " + str(this_line_num_dimensions + 1) + " on line " + str(
                                     line_num + 1) + " ends with a ',' that is not followed by another tuple")
 
                         elif has_another_dimension and target_labels:
-                            raise TsFileParseException(
+                            raise _TsFileParseException(
                                 "dimension " + str(this_line_num_dimensions + 1) + " on line " + str(
                                     line_num + 1) + " ends with a ':' while it should list a class value")
 
@@ -640,13 +665,13 @@ def load_from_tsfile_to_dataframe2(full_file_path_and_name, return_separate_X_an
                         # If this is the 1st line of data we have seen then note the dimensions
 
                         if not has_another_value and num_dimensions != this_line_num_dimensions:
-                            raise TsFileParseException("line " + str(
+                            raise _TsFileParseException("line " + str(
                                 line_num + 1) + " does not have the same number of dimensions as the previous line of data")
 
                         # Check if we should have class values, and if so that they are contained in those listed in the metadata
 
                         if target_labels and len(class_val_list) == 0:
-                            raise TsFileParseException("the cases have no associated class values")
+                            raise _TsFileParseException("the cases have no associated class values")
                     else:
                         dimensions = line.split(":")
                         # If first row then note the number of dimensions (that must be the same for all cases)
@@ -668,7 +693,7 @@ def load_from_tsfile_to_dataframe2(full_file_path_and_name, return_separate_X_an
 
                         # All dimensions should be included for all series, even if they are empty
                         if this_line_num_dimensions != num_dimensions:
-                            raise TsFileParseException("inconsistent number of dimensions. Expecting " + str(
+                            raise _TsFileParseException("inconsistent number of dimensions. Expecting " + str(
                                 num_dimensions) + " but have read " + str(this_line_num_dimensions))
 
                         # Process the data for each dimension
@@ -694,11 +719,11 @@ def load_from_tsfile_to_dataframe2(full_file_path_and_name, return_separate_X_an
         complete_classification_meta_data = has_problem_name_tag and has_timestamps_tag and has_univariate_tag and has_class_labels_tag and has_data_tag
 
         if metadata_started and not complete_regression_meta_data and not complete_classification_meta_data:
-            raise TsFileParseException("metadata incomplete")
+            raise _TsFileParseException("metadata incomplete")
         elif metadata_started and not data_started:
-            raise TsFileParseException("file contained metadata but no data")
+            raise _TsFileParseException("file contained metadata but no data")
         elif metadata_started and data_started and len(instance_list) == 0:
-            raise TsFileParseException("file contained metadata but no data")
+            raise _TsFileParseException("file contained metadata but no data")
 
         # Create a DataFrame from the data parsed above
         data = pd.DataFrame(dtype=np.float32)
@@ -717,7 +742,7 @@ def load_from_tsfile_to_dataframe2(full_file_path_and_name, return_separate_X_an
         else:
             return data
     else:
-        raise TsFileParseException("empty file")
+        raise _TsFileParseException("empty file")
 
 # Cell
 def get_Monash_regression_list():
@@ -768,7 +793,6 @@ def get_Monash_data(dsid, path='./data/Monash', on_disk=True, split_data=True, f
         for split in ['TRAIN', 'TEST']:
             url = f"https://zenodo.org/record/{id}/files/{dsid}_{split}.ts"
             fname = Path(path)/f'{dsid}/{dsid}_{split}.ts'
-
             pv('downloading data...', verbose)
             try:
                 download_data(url, fname, c_key='archive', force_download=force_download, timeout=4)
@@ -778,10 +802,10 @@ def get_Monash_data(dsid, path='./data/Monash', on_disk=True, split_data=True, f
                 else: return None, None, None
             pv('...download complete', verbose)
             if split == 'TRAIN':
-                X_train, y_train = load_from_tsfile_to_dataframe2(fname)
+                X_train, y_train = _load_from_tsfile_to_dataframe2(fname)
                 X_train = check_X(X_train, coerce_to_numpy=True).astype(np.float32)
             else:
-                X_valid, y_valid = load_from_tsfile_to_dataframe2(fname)
+                X_valid, y_valid = _load_from_tsfile_to_dataframe2(fname)
                 X_valid = check_X(X_valid, coerce_to_numpy=True).astype(np.float32)
         np.save(f'{full_tgt_dir}/X_train.npy', X_train)
         np.save(f'{full_tgt_dir}/y_train.npy', y_train)

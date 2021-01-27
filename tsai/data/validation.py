@@ -56,7 +56,7 @@ def TrainValidTestSplitter(n_splits:int=1, valid_size:Union[float, int]=0.2, tes
 
     def _inner(o, **kwargs):
         if stratify:
-            n_unique, unique_counts = np.unique(o, return_counts=True)
+            _, unique_counts = np.unique(o, return_counts=True)
             if np.min(unique_counts) >= 2 and np.min(unique_counts) >= n_splits: stratify_ = stratify
             elif np.min(unique_counts) < n_splits:
                 stratify_ = False

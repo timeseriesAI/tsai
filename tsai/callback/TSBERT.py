@@ -105,9 +105,9 @@ class TSBERT(Callback):
         self.learn.metrics = L([])
 
         # save initial model head
-        assert hasattr(self.learn.model, "head"), f"you can only use {cls_name(self)} with models that have .head attribute"
-        backbone = split_model(self.learn.model)[0]
-        self.learn.model = backbone
+        # assert hasattr(self.learn.model, "head"), f"you can only use {cls_name(self)} with models that have .head attribute"
+        # backbone = split_model(self.learn.model)[0]
+        self.learn.model = self.learn.model[:-1]
 
         # prepare model for denoising task
         with torch.no_grad():
