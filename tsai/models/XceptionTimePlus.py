@@ -69,22 +69,19 @@ class XceptionBlockPlus(Module):
 
 
 @delegates(XceptionBlockPlus.__init__)
-class XceptionTimePlus(Module):
+class XceptionTimePlus(nn.Sequential):
     def __init__(self, c_in, c_out, nf=16, nb_filters=None, coord=False, norm='Batch', concat_pool=False, adaptive_size=50, **kwargs):
         nf = ifnone(nf, nb_filters)
-        self.block = XceptionBlockPlus(c_in, nf, coord=coord, norm=norm, **kwargs)
-        self.gap1 = AdaptiveConcatPool1d(adaptive_size) if adaptive_size and concat_pool else nn.AdaptiveAvgPool1d(adaptive_size) if adaptive_size else noop
-        mult = 2 if adaptive_size and concat_pool else 1
-        self.conv1x1_1 = ConvBlock(nf * 32 * mult, nf * 16 * mult, 1, coord=coord, norm=norm)
-        self.conv1x1_2 = ConvBlock(nf * 16 * mult, nf * 8 * mult, 1, coord=coord, norm=norm)
-        self.conv1x1_3 = ConvBlock(nf * 8 * mult, c_out, 1, coord=coord, norm=norm)
-        self.gap2 = GAP1d(1)
+        # Backbone
+        backbone = XceptionBlockPlus(c_in, nf, coord=coord, norm=norm, **kwargs)
 
-    def forward(self, x):
-        x = self.block(x)
-        x = self.gap1(x)
-        x = self.conv1x1_1(x)
-        x = self.conv1x1_2(x)
-        x = self.conv1x1_3(x)
-        x = self.gap2(x)
-        return x
+        # Head
+        gap1 = AdaptiveConcatPool1d(adaptive_size) if adaptive_size and concat_pool else nn.AdaptiveAvgPool1d(adaptive_size) if adaptive_size else noop
+        mult = 2 if adaptive_size and concat_pool else 1
+        conv1x1_1 = ConvBlock(nf * 32 * mult, nf * 16 * mult, 1, coord=coord, norm=norm)
+        conv1x1_2 = ConvBlock(nf * 16 * mult, nf * 8 * mult, 1, coord=coord, norm=norm)
+        conv1x1_3 = ConvBlock(nf * 8 * mult, c_out, 1, coord=coord, norm=norm)
+        gap2 = GAP1d(1)
+        head = nn.Sequential(gap1, conv1x1_1, conv1x1_2, conv1x1_3, gap2)
+
+        super().__init__(OrderedDict([('backbone', backbone), ('head', head)]))

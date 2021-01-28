@@ -51,6 +51,8 @@ class _RNN_FCN_BasePlus(Module):
 
         # Concat
         x = self.concat([last_out, x])
+
+        # Head
         x = self.fc_dropout(x)
         x = self.fc(x)
         return x

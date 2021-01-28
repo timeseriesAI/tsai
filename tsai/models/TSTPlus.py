@@ -188,7 +188,7 @@ class TSTEncoder(Module):
             return output
 
 # Cell
-class TSTPlus(Module):
+class TSTPlus(nn.Sequential):
     def __init__(self, c_in:int, c_out:int, seq_len:int, max_seq_len:Optional[int]=512,
                  n_layers:int=3, d_model:int=128, n_heads:int=16, d_k:Optional[int]=None, d_v:Optional[int]=None,
                  d_ff:int=256, res_dropout:float=0.1, act:str="gelu", res_attention:bool=True,
@@ -202,15 +202,15 @@ class TSTPlus(Module):
             c_out: the number of target classes.
             seq_len: number of time steps in the time series.
             max_seq_len: useful to control the temporal resolution in long time series to avoid memory issues. Default=512.
-            d_model: total dimension of the model (number of features created by the model)
-            n_heads:  parallel attention heads.
+            d_model: total dimension of the model (number of features created by the model). Default: 128 (range(64-512))
+            n_heads:  parallel attention heads. Default:16 (range(8-16)).
             d_k: size of the learned linear projection of queries and keys in the MHA. Usual values: 16-512. Default: None -> (d_model/n_heads) = 32.
             d_v: size of the learned linear projection of values in the MHA. Usual values: 16-512. Default: None -> (d_model/n_heads) = 32.
-            d_ff: the dimension of the feedforward network model.
+            d_ff: the dimension of the feedforward network model. Default: 512 (range(256-512))
             res_dropout: amount of residual dropout applied in the encoder.
             act: the activation function of intermediate layer, relu or gelu.
             res_attention: if True Residual MultiHeadAttention is applied.
-            num_layers: the number of sub-encoder-layers in the encoder.
+            num_layers: number of layers (or blocks) in the encoder. Default: 3 (range(1-4))
             pe: type of positional encoder.
                 Available types (for experimenting): None, 'exp1d', 'lin1d', 'exp2d', 'lin2d', 'sincos', 'gauss' or 'normal',
                 'uniform', 'zero', 'zeros' (default, as in the paper).
@@ -228,7 +228,7 @@ class TSTPlus(Module):
             attn_mask: q_len x q_len
         """
         # Backbone
-        self.backbone = _TSTBackbone(c_in, seq_len=seq_len, max_seq_len=max_seq_len,
+        backbone = _TSTBackbone(c_in, seq_len=seq_len, max_seq_len=max_seq_len,
                  n_layers=n_layers, d_model=d_model, n_heads=n_heads, d_k=d_k, d_v=d_v,
                  d_ff=d_ff, res_dropout=res_dropout, act=act, res_attention=res_attention,
                  pe=pe, learn_pe=learn_pe, verbose=verbose, **kwargs)
@@ -236,10 +236,11 @@ class TSTPlus(Module):
         # Head
         self.head_nf = d_model
         self.c_out = c_out
-        self.seq_len = self.backbone.seq_len
-        if custom_head: self.head = custom_head(self.head_nf, c_out, self.seq_len) # custom head passed as a partial func with all its kwargs
-        else: self.head = self.create_head(self.head_nf, c_out, self.seq_len, flatten=flatten, concat_pool=concat_pool,
+        self.seq_len = backbone.seq_len
+        if custom_head: head = custom_head(self.head_nf, c_out, self.seq_len) # custom head passed as a partial func with all its kwargs
+        else: head = self.create_head(self.head_nf, c_out, self.seq_len, flatten=flatten, concat_pool=concat_pool,
                                            fc_dropout=fc_dropout, bn=bn, y_range=y_range)
+        super().__init__(OrderedDict([('backbone', backbone), ('head', head)]))
 
 
     def create_head(self, nf, c_out, seq_len, flatten=True, concat_pool=False, fc_dropout=0., bn=False, y_range=None):
@@ -253,13 +254,6 @@ class TSTPlus(Module):
         if y_range: layers += [SigmoidRange(*y_range)]
         return nn.Sequential(*layers)
 
-
-    def forward(self, x:Tensor, attn_mask:Optional[Tensor]=None) -> Tensor:  # x: [bs x nvars x q_len], attn_mask: [q_len x q_len]
-        # Backbone
-        z = self.backbone(x, attn_mask)
-
-        # Classification/ Regression head
-        return self.head(z)
 
     def show_pe(self, cmap='viridis', figsize=None):
         plt.figure(figsize=figsize)
@@ -366,7 +360,7 @@ class MultiTSTPlus(Module):
         for feat in self.feats:
             m = create_model(self._arch, c_in=feat, c_out=c_out, seq_len=seq_len, max_seq_len=max_seq_len, **kwargs)
             self.head_nf += m.head_nf
-            self.branches.append(m[:-1])
+            self.branches.append(m.backbone)
 
         # Head
         self.c_out = c_out

@@ -66,10 +66,11 @@ class TSBERT_Loss(Module):
 # Cell
 import matplotlib.colors as mcolors
 
+
 class TSBERT(Callback):
-    def __init__(self, r:float=.15, subsequence_mask:bool=True, lm:float=3., stateful:bool=True, sync:bool=False, variable_mask:bool=False,
-                 future_mask:bool=False, custom_mask:Optional=None, dropout:float=.1, crit:callable=None,
-                 target_dir:str='./data/TSBERT', fname:str='model', cut:int=-1, verbose:bool=True):
+    def __init__(self, r: float = .15, subsequence_mask: bool = True, lm: float = 3., stateful: bool = True, sync: bool = False, variable_mask: bool = False,
+                 future_mask: bool = False, custom_mask: Optional = None, dropout: float = .1, crit: callable = None,
+                 target_dir: str = './data/TSBERT', fname: str = 'model', verbose: bool = True):
         r"""
         Callback used to perform the autoregressive task of denoising the input after a binary mask has been applied.
 
@@ -86,15 +87,16 @@ class TSBERT(Callback):
             crit: loss function that will be used. If None MSELossFlat().
             target_dir : directory where trained model will be stored.
             fname : file name that will be used to save the pretrained model.
-            cut: used to determine where will the model be cut to remove the head. Default is -1.
     """
         assert subsequence_mask or variable_mask or future_mask or custom_mask, \
-        'you must set (subsequence_mask and/or variable_mask) or future_mask to True or use a custom_mask'
-        if custom_mask is not None and (future_mask or subsequence_mask or variable_mask): warnings.warn("Only custom_mask will be used")
-        elif future_mask and (subsequence_mask or variable_mask): warnings.warn("Only future_mask will be used")
-        store_attr("subsequence_mask,variable_mask,future_mask,custom_mask,dropout,r,lm,stateful,sync,crit,fname,cut,verbose")
+            'you must set (subsequence_mask and/or variable_mask) or future_mask to True or use a custom_mask'
+        if custom_mask is not None and (future_mask or subsequence_mask or variable_mask):
+            warnings.warn("Only custom_mask will be used")
+        elif future_mask and (subsequence_mask or variable_mask):
+            warnings.warn("Only future_mask will be used")
+        store_attr(
+            "subsequence_mask,variable_mask,future_mask,custom_mask,dropout,r,lm,stateful,sync,crit,fname,verbose")
         self.target_dir = Path(target_dir)
-
 
     def before_fit(self):
         # modify loss for denoising task
@@ -102,50 +104,44 @@ class TSBERT(Callback):
         self.learn.loss_func = TSBERT_Loss(self.crit)
         self.learn.TSBERT = self
 
-        #remove and store metrics
+        # remove and store metrics
         self.learn.metrics = L([])
 
-        # save initial model head
-        self.learn.model = self.learn.model[:self.cut]
-
-        # prepare model for denoising task
-        with torch.no_grad():
-            b = self.learn.dls.train.one_batch()
-            out = self.learn.model(b[0])
-            assert out.ndim == 3, "make sure the backbone (model.head = Noop) produces a 3d output [bs x nf x seq_len]"
-            ni = b[0].shape[1]
-            if 1 / ni > self.r: self.variable_mask = False
-            no = out.shape[1]
-            self.learn.model.head = nn.Sequential(nn.Dropout(self.dropout),
-                                                  nn.Conv1d(no, ni, 1)).to(b[0].device) # equivalent to linear layer applied to dim=1
-            assert self.learn.model(b[0]).shape == b[0].shape, f"{cls_name(self)} cannot recreate a tensor with the input shape"
+        # change head with conv layer (equivalent to linear layer applied to dim=1)
+        self.learn.model.head = nn.Sequential(nn.Dropout(self.dropout), nn.Conv1d(
+            self.learn.model.head_nf, self.learn.dls.vars, 1)).to(self.learn.dls.device)
 
     def before_batch(self):
-        if self.custom_mask is not None: mask = self.custom_mask(self.x)
+        if self.custom_mask is not None:
+            mask = self.custom_mask(self.x)
         elif self.future_mask:
             mask = create_future_mask(self.x, r=self.r)
         elif self.subsequence_mask and self.variable_mask:
             random_thr = 1/3 if self.sync == 'random' else 1/2
             if random.random() > random_thr:
-                mask = create_subsequence_mask(self.x, r=self.r, lm=self.lm, stateful=self.stateful, sync=self.sync)
+                mask = create_subsequence_mask(
+                    self.x, r=self.r, lm=self.lm, stateful=self.stateful, sync=self.sync)
             else:
                 mask = create_variable_mask(self.x, r=self.r)
         elif self.subsequence_mask:
-            mask = create_subsequence_mask(self.x, r=self.r, lm=self.lm, stateful=self.stateful, sync=self.sync)
+            mask = create_subsequence_mask(
+                self.x, r=self.r, lm=self.lm, stateful=self.stateful, sync=self.sync)
         elif self.variable_mask:
             mask = create_variable_mask(self.x, r=self.r)
         else:
-            raise ValueError('You need to set subsequence_mask and/ or variable_mask to True in TSBERT.')
+            raise ValueError(
+                'You need to set subsequence_mask and/ or variable_mask to True in TSBERT.')
 
         self.learn.yb = (self.x,)
         self.learn.xb = (self.x * mask,)
-        self.learn.loss_func.mask = (mask == 0) # boolean mask
+        self.learn.loss_func.mask = (mask == 0)  # boolean mask
         self.mask = mask
 
     def after_fit(self):
         if self.epoch == self.n_epoch - 1 and not "LRFinder" in [cls_name(cb) for cb in self.learn.cbs]:
             PATH = Path(f'{self.target_dir/self.fname}.pth')
-            if not os.path.exists(PATH.parent): os.makedirs(PATH.parent)
+            if not os.path.exists(PATH.parent):
+                os.makedirs(PATH.parent)
             torch.save(self.learn.model.state_dict(), PATH)
             pv(f"\npre-trained model weights_path='{PATH}'\n", self.verbose)
 
@@ -161,10 +157,13 @@ class TSBERT(Callback):
         ncols = min(ncols, math.ceil(bs / ncols))
         nrows = min(nrows, math.ceil(bs / ncols))
         max_n = min(max_n, bs, nrows*ncols)
-        if figsize is None: figsize = (ncols*6, math.ceil(max_n/ncols)*4)
-        fig, ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=figsize, sharex=sharex, **kwargs)
+        if figsize is None:
+            figsize = (ncols*6, math.ceil(max_n/ncols)*4)
+        fig, ax = plt.subplots(nrows=nrows, ncols=ncols,
+                               figsize=figsize, sharex=sharex, **kwargs)
         idxs = np.random.permutation(np.arange(bs))
-        colors = list(mcolors.TABLEAU_COLORS.keys()) + random_shuffle(list(mcolors.CSS4_COLORS.keys()))
+        colors = list(mcolors.TABLEAU_COLORS.keys()) + \
+            random_shuffle(list(mcolors.CSS4_COLORS.keys()))
         i = 0
         for row in ax:
             for col in row:
@@ -176,7 +175,8 @@ class TSBERT(Callback):
                         color_iter = iter(colors)
                         color = next(color_iter)
                     col.plot(xb[idxs[i]][j], alpha=.5, color=color)
-                    col.plot(masked_pred[idxs[i]][j], marker='o', markersize=4, color=color)
+                    col.plot(masked_pred[idxs[i]][j],
+                             marker='o', markersize=4, color=color)
                 i += 1
         plt.tight_layout()
         plt.show()

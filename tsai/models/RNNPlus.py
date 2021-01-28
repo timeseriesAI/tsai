@@ -9,24 +9,21 @@ from ..data.core import *
 from .layers import *
 
 # Cell
-class _RNNPlus_Base(Module):
+class _RNNPlus_Base(nn.Sequential):
     def __init__(self, c_in, c_out, seq_len=None, hidden_size=100, n_layers=1, bias=True, rnn_dropout=0, bidirectional=False, fc_dropout=0.,
                  last_step=True, bn=False, custom_head=None, y_range=None, **kwargs):
 
         if not last_step: assert seq_len, 'you need to enter a seq_len to use flatten=True'
 
         # Backbone
-        self.backbone = _RNN_Backbone(self._cell, c_in, c_out, seq_len=seq_len, hidden_size=hidden_size, n_layers=n_layers, bias=bias,
+        backbone = _RNN_Backbone(self._cell, c_in, c_out, seq_len=seq_len, hidden_size=hidden_size, n_layers=n_layers, bias=bias,
                                       rnn_dropout=rnn_dropout,  bidirectional=bidirectional)
 
         # Head
         self.head_nf = hidden_size * (1 + bidirectional)
-        if custom_head: self.head = custom_head(self.head_nf, c_out, seq_len) # custom head must have all required kwargs
-        else: self.head = self.create_head(self.head_nf, c_out, seq_len, last_step=last_step, fc_dropout=fc_dropout, bn=bn, y_range=y_range)
-
-    def forward(self, x):
-        output = self.backbone(x)        # [batch_size x n_vars x seq_len] --> [batch_size x hidden_size * (1 + bidirectional) x seq_len]
-        return self.head(output)
+        if custom_head: head = custom_head(self.head_nf, c_out, seq_len) # custom head must have all required kwargs
+        else: head = self.create_head(self.head_nf, c_out, seq_len, last_step=last_step, fc_dropout=fc_dropout, bn=bn, y_range=y_range)
+        super().__init__(OrderedDict([('backbone', backbone), ('head', head)]))
 
     def create_head(self, nf, c_out, seq_len, last_step=True, fc_dropout=0., bn=False, y_range=None):
         if last_step:

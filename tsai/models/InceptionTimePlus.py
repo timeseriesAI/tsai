@@ -88,7 +88,7 @@ class InceptionBlockPlus(Module):
 
 
 @delegates(InceptionModulePlus.__init__)
-class InceptionTimePlus(Module):
+class InceptionTimePlus(nn.Sequential):
     def __init__(self, c_in, c_out, seq_len=None, nf=32, nb_filters=None, concat_pool=False, fc_dropout=0., depth=6, stoch_depth=1.,
                  bn=False, y_range=None, flatten=False, custom_head=None, **kwargs):
 
@@ -98,15 +98,18 @@ class InceptionTimePlus(Module):
 
         if stoch_depth is not 0: keep_prob = np.linspace(1, stoch_depth, depth // 3)
         else: keep_prob = np.array([1] * depth // 3)
-        self.backbone = InceptionBlockPlus(c_in, nf, depth=depth, keep_prob=keep_prob, **kwargs)
+        backbone = InceptionBlockPlus(c_in, nf, depth=depth, keep_prob=keep_prob, **kwargs)
 
         #head
         self.head_nf = nf * 4
         self.c_out = c_out
         self.seq_len = seq_len
-        if custom_head: self.head = custom_head(self.head_nf, c_out, seq_len)
-        else: self.head = self.create_head(self.head_nf, c_out, seq_len, flatten=flatten, concat_pool=concat_pool,
+        if custom_head: head = custom_head(self.head_nf, c_out, seq_len)
+        else: head = self.create_head(self.head_nf, c_out, seq_len, flatten=flatten, concat_pool=concat_pool,
                                            fc_dropout=fc_dropout, bn=bn, y_range=y_range)
+
+        layers = OrderedDict([('backbone', nn.Sequential(backbone)), ('head', nn.Sequential(head))])
+        super().__init__(layers)
 
     def create_head(self, nf, c_out, seq_len, flatten=False, concat_pool=False, fc_dropout=0., bn=False, y_range=None, **kwargs):
         if flatten:
@@ -118,11 +121,6 @@ class InceptionTimePlus(Module):
         layers += [LinBnDrop(nf, c_out, bn=bn, p=fc_dropout)]
         if y_range: layers += [SigmoidRange(*y_range)]
         return nn.Sequential(*layers)
-
-    def forward(self, x):
-        x = self.backbone(x)
-        x = self.head(x)
-        return x
 
 
 class InCoordTime(InceptionTimePlus):
@@ -164,7 +162,7 @@ class MultiInceptionTimePlus(Module):
         for feat in self.feat_mask:
             m = build_ts_model(self._arch, c_in=feat, c_out=c_out, seq_len=seq_len, device=self.device, **kwargs)
             with torch.no_grad(): self.head_nf += m[0](torch.randn(1, feat, ifnone(seq_len, 10)).to(self.device)).shape[1]
-            self.branches.append(m[0])
+            self.branches.append(m.backbone)
 
         # Head
         self.c_out = c_out

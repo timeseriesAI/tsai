@@ -74,20 +74,21 @@ def check_weight(m, cond=noop, verbose=False):
 # Cell
 def ts_splitter(m):
     "Split of a model between body and head"
-    return L(m[:-1], m[-1]).map(params)
+    return L(m.backbone, m.head).map(params)
 
 
-def transfer_weights(model, weights_path:Path, device:torch.device=None, exclude_head:bool=True, cut:int=-1):
+def transfer_weights(model, weights_path:Path, device:torch.device=None, exclude_head:bool=True):
     """Utility function that allows to easily transfer weights between models.
     Taken from the great self-supervised repository created by Kerem Turgutlu.
     https://github.com/KeremTurgutlu/self_supervised/blob/d87ebd9b4961c7da0efd6073c42782bbc61aaa2e/self_supervised/utils.py"""
 
     device = ifnone(device, default_device())
-    state_dict = model[:cut].state_dict() if exclude_head else model.state_dict()
+    state_dict = model.state_dict()
     new_state_dict = torch.load(weights_path, map_location=device)
     matched_layers = 0
     unmatched_layers = []
     for name, param in state_dict.items():
+        if exclude_head and 'head' in name: continue
         if name in new_state_dict:
             matched_layers += 1
             input_param = new_state_dict[name]
@@ -129,18 +130,28 @@ def build_ts_model(arch, c_in=None, c_out=None, seq_len=None, d=None, dls=None, 
         pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} device={device}, kwargs={kwargs})', verbose)
         model = arch(c_in, c_out, **kwargs).to(device=device)
 
+    try:
+        model[0]
+        subscriptable = True
+    except:
+        subscriptable = False
     if hasattr(model, "head_nf"):  head_nf = model.head_nf
     else:
         try: head_nf = get_nf(model)
         except: head_nf = None
-    if head_nf is not None and 'Plus' in arch.__name__:
+
+    if not subscriptable and 'Plus' in arch.__name__:
         model = nn.Sequential(*model.children())
-        setattr(model, "head_nf", head_nf)
-    setattr(model, "__name__", arch.__name__)
+        model.backbone = model[:cut]
+        model.head = model[cut:]
 
     if pretrained:
         assert weights_path is not None, "you need to pass a valid weights_path to use a pre-trained model"
-        transfer_weights(model, weights_path, exclude_head=exclude_head, cut=cut, device=device)
+        transfer_weights(model, weights_path, exclude_head=exclude_head, device=device)
+
+    setattr(model, "head_nf", head_nf)
+    setattr(model, "__name__", arch.__name__)
+
     return model
 
 build_model = build_ts_model
@@ -192,7 +203,11 @@ def get_nf(m):
     return get_layers(m[-1], is_linear)[0].in_features
 
 # Cell
-def split_model(model, cut=None):
+def split_model(model, cut=-1):
+    try:
+        return model[:cut], model[cut:]
+    except:
+        pass
     if hasattr(model, "head"):
         head = model.head
         model.head = Identity()

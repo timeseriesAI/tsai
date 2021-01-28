@@ -24,12 +24,10 @@ class XResNet1dPlus(nn.Sequential):
         block_szs = [int(o*widen) for o in [64,128,256,512] +[256]*(len(layers)-4)]
         block_szs = [64//expansion] + block_szs
         blocks    = self._make_blocks(layers, block_szs, sa, coord, stride, **kwargs)
-        super().__init__(
-            *stem, MaxPool(ks=ks, stride=stride, padding=ks//2, ndim=1),
-            *blocks,
-            AdaptiveAvgPool(sz=1, ndim=1), Flatten(), nn.Dropout(fc_dropout),
-            nn.Linear(block_szs[-1]*expansion, n_out),
-        )
+        backbone = nn.Sequential(*stem, MaxPool(ks=ks, stride=stride, padding=ks//2, ndim=1), *blocks)
+        head = nn.Sequential(AdaptiveAvgPool(sz=1, ndim=1), Flatten(), nn.Dropout(fc_dropout),
+                             nn.Linear(block_szs[-1]*expansion, n_out))
+        super().__init__(OrderedDict([('backbone', backbone), ('head', head)]))
         self._init_cnn(self)
 
     def _make_blocks(self, layers, block_szs, sa, coord, stride, **kwargs):
