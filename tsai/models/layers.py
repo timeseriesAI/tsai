@@ -173,7 +173,7 @@ class AddCoords1d(Module):
     """Add coordinates to ease position identification without modifying mean and std"""
     def forward(self, x):
         bs, _, seq_len = x.shape
-        cc = torch.linspace(-1,1,x.shape[-1]).repeat(bs, 1, 1)
+        cc = torch.linspace(-1,1,x.shape[-1]).repeat(bs, 1, 1).to(x.device)
         cc = (cc - cc.mean()) / cc.std()
         x = torch.cat([x, cc], dim=1)
         return x

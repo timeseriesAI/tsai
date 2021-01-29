@@ -67,7 +67,7 @@ class TSStandardize(Transform):
 
     def setups(self, dl: DataLoader):
         if (self.mean is None or self.std is None):
-            x, *_ = dl.one_batch()
+            o, *_ = dl.one_batch()
             if self.by_var and is_listy(self.by_var):
                 _mean = []
                 _std = []
@@ -79,7 +79,7 @@ class TSStandardize(Transform):
                     _mean.append((o[:, f].mean(self.axes, keepdims=True)).repeat(1, var_group, 1))
                     _std.append((o[:, f].std(self.axes, keepdims=True)).repeat(1, var_group, 1))
                 self.mean, self.std = torch.cat(_mean, dim=1), torch.cat(_std, dim=1)
-            else: self.mean, self.std = x.mean(self.axes, keepdim=self.axes!=()), x.std(self.axes, keepdim=self.axes!=()) + self.eps
+            else: self.mean, self.std = o.mean(self.axes, keepdim=self.axes!=()), o.std(self.axes, keepdim=self.axes!=()) + self.eps
             if len(self.mean.shape) == 0:
                 pv(f'{self.__class__.__name__} mean={self.mean}, std={self.std}, by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step}\n',
                    self.verbose)
