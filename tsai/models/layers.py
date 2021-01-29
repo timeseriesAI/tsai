@@ -170,11 +170,11 @@ class SeparableConv1d(Module):
 
 # Cell
 class AddCoords1d(Module):
+    """Add coordinates to ease position identification without modifying mean and std"""
     def forward(self, x):
-        bs, _, seq_len = x.size()
-        cc = torch.arange(seq_len, device=device, dtype=torch.float) / (seq_len - 1)
-        cc = cc * 2 - 1
-        cc = cc.repeat(bs, 1, 1)
+        bs, _, seq_len = x.shape
+        cc = torch.linspace(-1,1,x.shape[-1]).repeat(bs, 1, 1)
+        cc = (cc - cc.mean()) / cc.std()
         x = torch.cat([x, cc], dim=1)
         return x
 
