@@ -162,7 +162,7 @@ class MultiInceptionTimePlus(nn.Sequential):
         for feat in self.feat_list:
             m = build_ts_model(self._arch, c_in=feat, c_out=c_out, seq_len=seq_len, **kwargs)
             with torch.no_grad():
-                self.head_nf += m[0](torch.randn(1, feat, ifnone(seq_len, 10))).shape[1]
+                self.head_nf += m[0](torch.randn(1, feat, ifnone(seq_len, 10)).to(self.device)).shape[1]
             branches.append(m.backbone)
         backbone = _Splitter(self.feat_list, branches)
 
