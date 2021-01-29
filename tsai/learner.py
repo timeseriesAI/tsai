@@ -166,7 +166,7 @@ def show_probas(self:Learner, figsize=(6,6), ds_idx=1, dl=None, one_batch=False,
 
 # Cell
 @delegates(build_ts_model)
-def ts_learner(dls, arch=None, splitter=trainable_params,
+def ts_learner(dls, arch=None, c_in=None, c_out=None, seq_len=None, d=None, splitter=trainable_params,
                # learner args
                loss_func=None, opt_func=Adam, lr=defaults.lr, cbs=None, metrics=None, path=None,
                model_dir='models', wd=None, wd_bn_bias=False, train_bn=True, moms=(0.95,0.85,0.95),
@@ -174,9 +174,9 @@ def ts_learner(dls, arch=None, splitter=trainable_params,
                **kwargs):
 
     if arch is None: arch = InceptionTime
-    model = build_ts_model(arch, dls=dls, **kwargs)
+    model = build_ts_model(arch, dls=dls, c_in=c_in, c_out=c_out, seq_len=seq_len, d=d, **kwargs)
     try:
-        model[0]
+        model[0], model[1]
         subscriptable = True
     except:
         subscriptable = False

@@ -131,7 +131,7 @@ def build_ts_model(arch, c_in=None, c_out=None, seq_len=None, d=None, dls=None, 
         model = arch(c_in, c_out, **kwargs).to(device=device)
 
     try:
-        model[0]
+        model[0], model[1]
         subscriptable = True
     except:
         subscriptable = False
@@ -203,30 +203,7 @@ def get_nf(m):
     return get_layers(m[-1], is_linear)[0].in_features
 
 # Cell
-def split_model(model, cut=-1):
-    try:
-        return model[:cut], model[cut:]
-    except:
-        pass
-    if hasattr(model, "head"):
-        head = model.head
-        model.head = Identity()
-        body = model
-        return body, head
-    elif is_listy(model):
-        if cut is None:
-            ll = list(enumerate(model.children()))
-            cut = next(i for i,o in reversed(ll) if has_pool_type(o))
-        if isinstance(cut, int):
-            body = nn.Sequential(*list(model.children())[:cut])
-            head = nn.Sequential(*list(model.children())[cut:])
-            return body, head
-        else:
-            print('This model cannot be split as a head attribute is not available')
-            return
-    else:
-        print('This model cannot be split as a head attribute is not available')
-        return
+def split_model(m): return m.backbone, m.head
 
 # Cell
 def seq_len_calculator(seq_len, **kwargs):

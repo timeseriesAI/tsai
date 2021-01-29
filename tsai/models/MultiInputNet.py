@@ -30,9 +30,9 @@ class MultiInputNet(Module):
         head_nf = 0
         min_nf = np.inf
         for i, model in enumerate(models):
-            try:
-                self.heads.append(model[-1])
-                self.backbones.append(model[:-1])
+            try: # if subscriptable
+                self.heads.append(model[1])
+                self.backbones.append(model[0])
             except:
                 self.heads.append(model.head)
                 model.head = Identity()

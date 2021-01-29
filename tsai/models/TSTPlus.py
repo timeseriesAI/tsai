@@ -342,37 +342,47 @@ class _TSTBackbone(Module):
 
 # Cell
 @delegates(TSTPlus.__init__)
-class MultiTSTPlus(Module):
+class MultiTSTPlus(nn.Sequential):
     _arch = TSTPlus
-    def __init__(self, feats, c_out, seq_len, max_seq_len:Optional[int]=512, custom_head=None, **kwargs):
+    def __init__(self, feat_list, c_out, seq_len, max_seq_len:Optional[int]=512, custom_head=None, **kwargs):
         r"""
         MultiTST is a class that allows you to create a model with multiple branches of TST.
 
         Args:
-            * feats: list with number of features that will be passed to each body.
+            * feat_list: list with number of features that will be passed to each body.
         """
-        self.feats = tuple(L(feats))
-        self.kwargs = kwargs
+        self.feat_list = [feat_list] if isinstance(feat_list, int) else feat_list
+        self.device = ifnone(device, default_device())
 
         # Backbone
-        self.branches = nn.ModuleList()
+        branches = nn.ModuleList()
         self.head_nf = 0
-        for feat in self.feats:
-            m = create_model(self._arch, c_in=feat, c_out=c_out, seq_len=seq_len, max_seq_len=max_seq_len, **kwargs)
-            self.head_nf += m.head_nf
-            self.branches.append(m.backbone)
+        for feat in self.feat_list:
+            m = build_ts_model(self._arch, c_in=feat, c_out=c_out, seq_len=seq_len, max_seq_len=max_seq_len, **kwargs)
+            with torch.no_grad():
+                self.head_nf += m[0](torch.randn(1, feat, ifnone(seq_len, 10)).to(self.device)).shape[1]
+            branches.append(m.backbone)
+        backbone = _Splitter(self.feat_list, branches)
 
         # Head
         self.c_out = c_out
         q_len = min(seq_len, max_seq_len)
         self.seq_len = q_len
         if custom_head is None:
-            self.head = self._arch.create_head(self, self.head_nf, c_out, q_len, **kwargs)
+            head = self._arch.create_head(self, self.head_nf, c_out, q_len, **kwargs)
         else:
-            self.head = custom_head(self.head_nf, c_out, q_len, **kwargs)
+            head = custom_head(self.head_nf, c_out, q_len, **kwargs)
 
+        layers = OrderedDict([('backbone', nn.Sequential(backbone)), ('head', nn.Sequential(head))])
+        super().__init__(layers)
+        self.to(self.device)
+
+
+class _Splitter(Module):
+    def __init__(self, feat_list, branches):
+        self.feat_list, self.branches = feat_list, branches
     def forward(self, x):
-        x = torch.split(x, self.feats, dim=1)
+        x = torch.split(x, self.feat_list, dim=1)
         for i, branch in enumerate(self.branches):
             out = branch(x[i]) if i == 0 else torch.cat([out, branch(x[i])], dim=1)
-        return self.head(out)
+        return out
