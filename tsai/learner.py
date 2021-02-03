@@ -59,11 +59,18 @@ def save_all(self:Learner, path='export', dls_fname='dls', model_fname='model', 
     pv(f"learner_fname = '{learner_fname}.pkl'", verbose)
 
 
-def load_all(path='export', dls_fname='dls', model_fname='model', learner_fname='learner', cpu=False, verbose=False):
+def load_all(path='export', dls_fname='dls', model_fname='model', learner_fname='learner', device=None, pickle_module=pickle, verbose=False):
+
+    if isinstance(device, int): device = torch.device('cuda', device)
+    elif device is None: device = default_device()
+    if device == 'cpu': cpu = True
+    else: cpu = None
+
 
     path = Path(path)
-    learn = load_learner(path/f'{learner_fname}.pkl', cpu=cpu)
+    learn = load_learner(path/f'{learner_fname}.pkl', cpu=cpu, pickle_module=pickle_module)
     learn.load(f'{model_fname}', with_opt=True)
+
 
     if learn.dls_type == "MixedDataLoaders":
         dls_fnames = []
@@ -71,7 +78,7 @@ def load_all(path='export', dls_fname='dls', model_fname='model', learner_fname=
         for i in range(learn.n_loaders[0]):
             _dl = []
             for j in range(learn.n_loaders[1]):
-                l = torch.load(path/f'{dls_fname}_{i}_{j}.pth')
+                l = torch.load(path/f'{dls_fname}_{i}_{j}.pth', map_location=device, pickle_module=pickle_module)
                 l = l.new(num_workers=0)
                 dls_fnames.append(f'{dls_fname}_{i}_{j}.pth')
                 _dl.append(l)
@@ -82,7 +89,7 @@ def load_all(path='export', dls_fname='dls', model_fname='model', learner_fname=
         loaders = []
         dls_fnames = []
         for i in range(learn.n_loaders):
-            dl = torch.load(path/f'{dls_fname}_{i}.pth')
+            dl = torch.load(path/f'{dls_fname}_{i}.pth', map_location=device, pickle_module=pickle_module)
             dl = dl.new(num_workers=0)
             first(dl)
             loaders.append(dl)
