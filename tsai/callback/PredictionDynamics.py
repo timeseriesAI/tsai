@@ -124,6 +124,6 @@ class PredictionDynamics(Callback):
             self.graph_ax.set_xlabel('y_pred', fontsize=12)
             self.graph_ax.set_ylabel('y_true', fontsize=12)
             self.graph_ax.grid(color='gainsboro', linewidth=.2)
-        title = f'Prediction Dynamics \nepoch: {self.epoch +1}/{self.n_epoch} - valid_loss: {learn.recorder.values[-1][1]:.6f}'
+        title = f'Prediction Dynamics \nepoch: {self.epoch +1}/{self.n_epoch} - valid_loss: {self.learn.recorder.values[-1][1]:.6f}'
         self.graph_ax.set_title(title)
         self.graph_out.update(self.graph_ax.figure)
