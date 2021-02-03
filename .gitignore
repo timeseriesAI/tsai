@@ -144,6 +144,7 @@ checklink/cookies.txt
 old/*
 *_dev*
 *.npy
+*.csv
 *.ts
 *.arff
 *.pth
@@ -152,6 +153,5 @@ old/*
 *.jpg
 */nbs/docs/*
 *.zip
-*/nbs/data/*
 */nbs/export/*
 */nbs/models/*

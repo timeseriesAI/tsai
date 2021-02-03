@@ -4,6 +4,7 @@ __all__ = ['PredictionDynamics']
 
 # Cell
 from fastai.callback.all import *
+from fastcore.basics import store_attr
 
 # Cell
 class PredictionDynamics(Callback):
