@@ -11,15 +11,22 @@
     * Modified TimeSplitter to also allow passing testing_size.
     * Utilities: add a simple function (standardize) to scale any data using splits.
     * Preprocessing: added a new class (Preprocess) to be able to preprocess data before creating the datasets/ dataloaders. This is mainly to test different target preprocessing techniques.
+    * Utils added Nan2Value batch transform to remove any nan values in the dataset.
+    * Added a new utility function to easy the creation of a single TSDataLoader when no splits are used (for example with unlabeled datasets).
     
 * Models: 
     * TST: Added option to visualize self-attention maps. 
-    * Added 3 models: MiniRocketClassifier and MiniRocketRegressor for datasets <10k samples, and MINIROCKET (Pytorch) which supports any dataset size. 
+    * Added 3 new SOTA models: MiniRocketClassifier and MiniRocketRegressor for datasets <10k samples, and MINIROCKET (Pytorch) which supports any dataset size. 
     * Added a simple function to create a naive forecast.
     * Added future_mask to TSBERT to be able to train forecasting models. 
     * Added option to pass any custom mask to TSBERT.
     
+* Training:
+    * PredictionDynamics callback: to allow you to visualize predictions during training.
     
+### Bug Fixes
+* Models: 
+    * Fixed bug that prevented models to freeze or unfreeze. Now all models that end with Plus can take predefined weights and learn.freeze()/ learn.unfreeze() will work as expected.
 
 ## 0.2.14
 

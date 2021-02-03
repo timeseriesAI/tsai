@@ -68,11 +68,12 @@ import matplotlib.colors as mcolors
 
 
 class TSBERT(Callback):
+    order = 60
     def __init__(self, r: float = .15, subsequence_mask: bool = True, lm: float = 3., stateful: bool = True, sync: bool = False, variable_mask: bool = False,
                  future_mask: bool = False, custom_mask: Optional = None, dropout: float = .1, crit: callable = None,
                  target_dir: str = './data/TSBERT', fname: str = 'model', verbose: bool = True):
         r"""
-        Callback used to perform the autoregressive task of denoising the input after a binary mask has been applied.
+        Callback used to perform the pretext task of reconstruct the original data after a binary mask has been applied.
 
         Args:
             r: proba of masking.
@@ -96,9 +97,16 @@ class TSBERT(Callback):
             warnings.warn("Only future_mask will be used")
         store_attr(
             "subsequence_mask,variable_mask,future_mask,custom_mask,dropout,r,lm,stateful,sync,crit,fname,verbose")
-        self.target_dir = Path(target_dir)
+        self.PATH = Path(f'{target_dir}/{fname}.pth')
+        if not os.path.exists(PATH.parent): os.makedirs(PATH.parent)
 
     def before_fit(self):
+        self.run = not hasattr(self, "lr_finder") and not hasattr(self, "gather_preds")
+        if not(self.run): return
+
+        #prepare to save best model
+        self.best = float('inf')
+
         # modify loss for denoising task
         self.old_loss_func = self.learn.loss_func
         self.learn.loss_func = TSBERT_Loss(self.crit)
@@ -137,13 +145,15 @@ class TSBERT(Callback):
         self.learn.loss_func.mask = (mask == 0)  # boolean mask
         self.mask = mask
 
+    def after_epoch(self):
+        val = self.learn.recorder.values[-1][-1]
+        if np.less(val, self.best):
+            self.best = val
+            torch.save(self.learn.model.state_dict(), self.PATH)
+            print(f"\nepoch: {self.epoch:3}  val_loss: {self.best:8.6f} - pretrained model weights_path='{self.PATH}'\n")
+
     def after_fit(self):
-        if self.epoch == self.n_epoch - 1 and not "LRFinder" in [cls_name(cb) for cb in self.learn.cbs]:
-            PATH = Path(f'{self.target_dir/self.fname}.pth')
-            if not os.path.exists(PATH.parent):
-                os.makedirs(PATH.parent)
-            torch.save(self.learn.model.state_dict(), PATH)
-            pv(f"\npre-trained model weights_path='{PATH}'\n", self.verbose)
+        self.run=True
 
     def show_preds(self, max_n=9, nrows=3, ncols=3, figsize=None, sharex=True, **kwargs):
         b = self.learn.dls.valid.one_batch()

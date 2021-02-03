@@ -79,7 +79,7 @@ nb_path: "nbs/100_models.layers.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="lin_zero_init" class="doc_header"><code>lin_zero_init</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L27" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>lin_zero_init</code>(<strong><code>layer</code></strong>)</p>
+<h4 id="lin_zero_init" class="doc_header"><code>lin_zero_init</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L28" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>lin_zero_init</code>(<strong><code>layer</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -110,7 +110,7 @@ nb_path: "nbs/100_models.layers.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SwishBeta" class="doc_header"><code>class</code> <code>SwishBeta</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L33" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SwishBeta</code>(<strong><code>beta</code></strong>=<em><code>1.0</code></em>) :: <code>Module</code></p>
+<h2 id="SwishBeta" class="doc_header"><code>class</code> <code>SwishBeta</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L34" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SwishBeta</code>(<strong><code>beta</code></strong>=<em><code>1.0</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -142,7 +142,7 @@ nb_path: "nbs/100_models.layers.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="same_padding1d" class="doc_header"><code>same_padding1d</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L40" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>same_padding1d</code>(<strong><code>seq_len</code></strong>, <strong><code>ks</code></strong>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>dilation</code></strong>=<em><code>1</code></em>)</p>
+<h4 id="same_padding1d" class="doc_header"><code>same_padding1d</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L41" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>same_padding1d</code>(<strong><code>seq_len</code></strong>, <strong><code>ks</code></strong>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>dilation</code></strong>=<em><code>1</code></em>)</p>
 </blockquote>
 <p>Same padding formula as used in Tensorflow</p>
 
@@ -167,7 +167,7 @@ nb_path: "nbs/100_models.layers.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Pad1d" class="doc_header"><code>class</code> <code>Pad1d</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L46" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Pad1d</code>(<strong><code>padding</code></strong>, <strong><code>value</code></strong>=<em><code>0.0</code></em>) :: <code>ConstantPad1d</code></p>
+<h2 id="Pad1d" class="doc_header"><code>class</code> <code>Pad1d</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L47" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Pad1d</code>(<strong><code>padding</code></strong>, <strong><code>value</code></strong>=<em><code>0.0</code></em>) :: <code>ConstantPad1d</code></p>
 </blockquote>
 <p>Pads the input tensor boundaries with a constant value.</p>
 <p>For <code>N</code>-dimensional padding, use :func:<code>torch.nn.functional.pad()</code>.</p>
@@ -230,7 +230,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Conv1dSame" class="doc_header"><code>class</code> <code>Conv1dSame</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L52" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conv1dSame</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>dilation</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>:<code>Union</code>[<code>int</code>, <code>Tuple</code>[<code>int</code>]]=<em><code>0</code></em>, <strong><code>groups</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>bias</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>padding_mode</code></strong>:<code>str</code>=<em><code>'zeros'</code></em>) :: <code>Module</code></p>
+<h2 id="Conv1dSame" class="doc_header"><code>class</code> <code>Conv1dSame</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L53" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conv1dSame</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>dilation</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>:<code>Union</code>[<code>int</code>, <code>Tuple</code>[<code>int</code>]]=<em><code>0</code></em>, <strong><code>groups</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>bias</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>padding_mode</code></strong>:<code>str</code>=<em><code>'zeros'</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Conv1d with padding='same'</p>
 
@@ -304,7 +304,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="same_padding2d" class="doc_header"><code>same_padding2d</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L66" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>same_padding2d</code>(<strong><code>H</code></strong>, <strong><code>W</code></strong>, <strong><code>ks</code></strong>, <strong><code>stride</code></strong>=<em><code>(1, 1)</code></em>, <strong><code>dilation</code></strong>=<em><code>(1, 1)</code></em>)</p>
+<h4 id="same_padding2d" class="doc_header"><code>same_padding2d</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L67" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>same_padding2d</code>(<strong><code>H</code></strong>, <strong><code>W</code></strong>, <strong><code>ks</code></strong>, <strong><code>stride</code></strong>=<em><code>(1, 1)</code></em>, <strong><code>dilation</code></strong>=<em><code>(1, 1)</code></em>)</p>
 </blockquote>
 <p>Same padding formula as used in Tensorflow</p>
 
@@ -329,7 +329,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Pad2d" class="doc_header"><code>class</code> <code>Pad2d</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L76" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Pad2d</code>(<strong><code>padding</code></strong>, <strong><code>value</code></strong>=<em><code>0.0</code></em>) :: <code>ConstantPad2d</code></p>
+<h2 id="Pad2d" class="doc_header"><code>class</code> <code>Pad2d</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L77" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Pad2d</code>(<strong><code>padding</code></strong>, <strong><code>value</code></strong>=<em><code>0.0</code></em>) :: <code>ConstantPad2d</code></p>
 </blockquote>
 <p>Pads the input tensor boundaries with a constant value.</p>
 <p>For <code>N</code>-dimensional padding, use :func:<code>torch.nn.functional.pad()</code>.</p>
@@ -391,7 +391,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  3.5000,  3.5000],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Conv2dSame" class="doc_header"><code>class</code> <code>Conv2dSame</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L82" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conv2dSame</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>ks</code></strong>=<em><code>(3, 3)</code></em>, <strong><code>stride</code></strong>=<em><code>(1, 1)</code></em>, <strong><code>dilation</code></strong>=<em><code>(1, 1)</code></em>, <strong><code>padding</code></strong>:<code>Union</code>[<code>int</code>, <code>Tuple</code>[<code>int</code>, <code>int</code>]]=<em><code>0</code></em>, <strong><code>groups</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>bias</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>padding_mode</code></strong>:<code>str</code>=<em><code>'zeros'</code></em>) :: <code>Module</code></p>
+<h2 id="Conv2dSame" class="doc_header"><code>class</code> <code>Conv2dSame</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L83" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conv2dSame</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>ks</code></strong>=<em><code>(3, 3)</code></em>, <strong><code>stride</code></strong>=<em><code>(1, 1)</code></em>, <strong><code>dilation</code></strong>=<em><code>(1, 1)</code></em>, <strong><code>padding</code></strong>:<code>Union</code>[<code>int</code>, <code>Tuple</code>[<code>int</code>, <code>int</code>]]=<em><code>0</code></em>, <strong><code>groups</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>bias</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>padding_mode</code></strong>:<code>str</code>=<em><code>'zeros'</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Conv2d with padding='same'</p>
 
@@ -416,7 +416,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  3.5000,  3.5000],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Conv2d" class="doc_header"><code>Conv2d</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L99" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Conv2d</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>kernel_size</code></strong>=<em><code>None</code></em>, <strong><code>ks</code></strong>=<em><code>None</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>'same'</code></em>, <strong><code>dilation</code></strong>=<em><code>1</code></em>, <strong><code>init</code></strong>=<em><code>'auto'</code></em>, <strong><code>bias_std</code></strong>=<em><code>0.01</code></em>, <strong><code>groups</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>bias</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>padding_mode</code></strong>:<code>str</code>=<em><code>'zeros'</code></em>)</p>
+<h4 id="Conv2d" class="doc_header"><code>Conv2d</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L100" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Conv2d</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>kernel_size</code></strong>=<em><code>None</code></em>, <strong><code>ks</code></strong>=<em><code>None</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>'same'</code></em>, <strong><code>dilation</code></strong>=<em><code>1</code></em>, <strong><code>init</code></strong>=<em><code>'auto'</code></em>, <strong><code>bias_std</code></strong>=<em><code>0.01</code></em>, <strong><code>groups</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>bias</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>padding_mode</code></strong>:<code>str</code>=<em><code>'zeros'</code></em>)</p>
 </blockquote>
 <p>conv1d layer with padding='same', 'valid', or any integer (defaults to 'same')</p>
 
@@ -476,7 +476,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  3.5000,  3.5000],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Chomp1d" class="doc_header"><code>class</code> <code>Chomp1d</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L113" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Chomp1d</code>(<strong><code>chomp_size</code></strong>) :: <code>Module</code></p>
+<h2 id="Chomp1d" class="doc_header"><code>class</code> <code>Chomp1d</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L114" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Chomp1d</code>(<strong><code>chomp_size</code></strong>) :: <code>Module</code></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -531,7 +531,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Conv1dCausal" class="doc_header"><code>class</code> <code>Conv1dCausal</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L123" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conv1dCausal</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>ks</code></strong>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>dilation</code></strong>=<em><code>1</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Module</code></p>
+<h2 id="Conv1dCausal" class="doc_header"><code>class</code> <code>Conv1dCausal</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L124" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conv1dCausal</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>ks</code></strong>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>dilation</code></strong>=<em><code>1</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -605,7 +605,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Conv1d" class="doc_header"><code>Conv1d</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L136" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Conv1d</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>kernel_size</code></strong>=<em><code>None</code></em>, <strong><code>ks</code></strong>=<em><code>None</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>'same'</code></em>, <strong><code>dilation</code></strong>=<em><code>1</code></em>, <strong><code>init</code></strong>=<em><code>'auto'</code></em>, <strong><code>bias_std</code></strong>=<em><code>0.01</code></em>, <strong><code>groups</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>bias</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>padding_mode</code></strong>:<code>str</code>=<em><code>'zeros'</code></em>)</p>
+<h4 id="Conv1d" class="doc_header"><code>Conv1d</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L137" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Conv1d</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>kernel_size</code></strong>=<em><code>None</code></em>, <strong><code>ks</code></strong>=<em><code>None</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>'same'</code></em>, <strong><code>dilation</code></strong>=<em><code>1</code></em>, <strong><code>init</code></strong>=<em><code>'auto'</code></em>, <strong><code>bias_std</code></strong>=<em><code>0.01</code></em>, <strong><code>groups</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>bias</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>padding_mode</code></strong>:<code>str</code>=<em><code>'zeros'</code></em>)</p>
 </blockquote>
 <p>conv1d layer with padding='same', 'causal', 'valid', or any integer (defaults to 'same')</p>
 
@@ -809,7 +809,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SeparableConv1d" class="doc_header"><code>class</code> <code>SeparableConv1d</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L154" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SeparableConv1d</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>ks</code></strong>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>'same'</code></em>, <strong><code>dilation</code></strong>=<em><code>1</code></em>, <strong><code>bias</code></strong>=<em><code>True</code></em>, <strong><code>bias_std</code></strong>=<em><code>0.01</code></em>) :: <code>Module</code></p>
+<h2 id="SeparableConv1d" class="doc_header"><code>class</code> <code>SeparableConv1d</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L155" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SeparableConv1d</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>ks</code></strong>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>'same'</code></em>, <strong><code>dilation</code></strong>=<em><code>1</code></em>, <strong><code>bias</code></strong>=<em><code>True</code></em>, <strong><code>bias_std</code></strong>=<em><code>0.01</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -863,9 +863,9 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="AddCoords1d" class="doc_header"><code>class</code> <code>AddCoords1d</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L172" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AddCoords1d</code>() :: <code>Module</code></p>
+<h2 id="AddCoords1d" class="doc_header"><code>class</code> <code>AddCoords1d</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L173" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AddCoords1d</code>() :: <code>Module</code></p>
 </blockquote>
-<p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
+<p>Add coordinates to ease position identification without modifying mean and std</p>
 
 </div>
 
@@ -894,9 +894,14 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">bs</span> <span class="o">=</span> <span class="mi">2</span>
 <span class="n">c_in</span> <span class="o">=</span> <span class="mi">3</span>
 <span class="n">c_out</span> <span class="o">=</span> <span class="mi">5</span>
-<span class="n">seq_len</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="n">seq_len</span> <span class="o">=</span> <span class="mi">50</span>
+
 <span class="n">t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_in</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">)</span>
+<span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="n">t</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span> <span class="o">/</span> <span class="n">t</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">AddCoords1d</span><span class="p">()(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_in</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">))</span>
+<span class="n">new_t</span> <span class="o">=</span> <span class="n">AddCoords1d</span><span class="p">()(</span><span class="n">t</span><span class="p">)</span>
+<span class="n">test_close</span><span class="p">(</span><span class="n">new_t</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1e-2</span><span class="p">)</span>
+<span class="n">test_close</span><span class="p">(</span><span class="n">new_t</span><span class="o">.</span><span class="n">std</span><span class="p">(),</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">1e-2</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -917,7 +922,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ConvBlock" class="doc_header"><code>class</code> <code>ConvBlock</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L182" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ConvBlock</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>kernel_size</code></strong>=<em><code>None</code></em>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>'same'</code></em>, <strong><code>bias</code></strong>=<em><code>None</code></em>, <strong><code>bias_std</code></strong>=<em><code>0.01</code></em>, <strong><code>norm</code></strong>=<em><code>'Batch'</code></em>, <strong><code>zero_norm</code></strong>=<em><code>False</code></em>, <strong><code>bn_1st</code></strong>=<em><code>True</code></em>, <strong><code>act</code></strong>=<em><code>ReLU</code></em>, <strong><code>act_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>init</code></strong>=<em><code>'auto'</code></em>, <strong><code>dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>xtra</code></strong>=<em><code>None</code></em>, <strong><code>coord</code></strong>=<em><code>False</code></em>, <strong><code>separable</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/tsai/models.layers.html#Sequential"><code>Sequential</code></a></p>
+<h2 id="ConvBlock" class="doc_header"><code>class</code> <code>ConvBlock</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L183" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ConvBlock</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>kernel_size</code></strong>=<em><code>None</code></em>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>'same'</code></em>, <strong><code>bias</code></strong>=<em><code>None</code></em>, <strong><code>bias_std</code></strong>=<em><code>0.01</code></em>, <strong><code>norm</code></strong>=<em><code>'Batch'</code></em>, <strong><code>zero_norm</code></strong>=<em><code>False</code></em>, <strong><code>bn_1st</code></strong>=<em><code>True</code></em>, <strong><code>act</code></strong>=<em><code>ReLU</code></em>, <strong><code>act_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>init</code></strong>=<em><code>'auto'</code></em>, <strong><code>dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>xtra</code></strong>=<em><code>None</code></em>, <strong><code>coord</code></strong>=<em><code>False</code></em>, <strong><code>separable</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/tsai/models.layers.html#Sequential"><code>Sequential</code></a></p>
 </blockquote>
 <p>Create a sequence of conv1d (<code>ni</code> to <code>nf</code>), activation (if <code>act_cls</code>) and <code>norm_type</code> layers.</p>
 
@@ -949,7 +954,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ResBlock1dPlus" class="doc_header"><code>class</code> <code>ResBlock1dPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L222" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ResBlock1dPlus</code>(<strong><code>expansion</code></strong>, <strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>coord</code></strong>=<em><code>False</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>groups</code></strong>=<em><code>1</code></em>, <strong><code>reduction</code></strong>=<em><code>None</code></em>, <strong><code>nh1</code></strong>=<em><code>None</code></em>, <strong><code>nh2</code></strong>=<em><code>None</code></em>, <strong><code>dw</code></strong>=<em><code>False</code></em>, <strong><code>g2</code></strong>=<em><code>1</code></em>, <strong><code>sa</code></strong>=<em><code>False</code></em>, <strong><code>sym</code></strong>=<em><code>False</code></em>, <strong><code>norm</code></strong>=<em><code>'Batch'</code></em>, <strong><code>zero_norm</code></strong>=<em><code>True</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU</code></em>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>pool</code></strong>=<em><code>AvgPool</code></em>, <strong><code>pool_first</code></strong>=<em><code>True</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>bias</code></strong>=<em><code>None</code></em>, <strong><code>ndim</code></strong>=<em><code>2</code></em>, <strong><code>norm_type</code></strong>=<em><code>&lt;NormType.Batch: 1&gt;</code></em>, <strong><code>bn_1st</code></strong>=<em><code>True</code></em>, <strong><code>transpose</code></strong>=<em><code>False</code></em>, <strong><code>init</code></strong>=<em><code>'auto'</code></em>, <strong><code>xtra</code></strong>=<em><code>None</code></em>, <strong><code>bias_std</code></strong>=<em><code>0.01</code></em>, <strong><code>dilation</code></strong>:<code>Union</code>[<code>int</code>, <code>Tuple</code>[<code>int</code>, <code>int</code>]]=<em><code>1</code></em>, <strong><code>padding_mode</code></strong>:<code>str</code>=<em><code>'zeros'</code></em>) :: <code>Module</code></p>
+<h2 id="ResBlock1dPlus" class="doc_header"><code>class</code> <code>ResBlock1dPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L223" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ResBlock1dPlus</code>(<strong><code>expansion</code></strong>, <strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>coord</code></strong>=<em><code>False</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>groups</code></strong>=<em><code>1</code></em>, <strong><code>reduction</code></strong>=<em><code>None</code></em>, <strong><code>nh1</code></strong>=<em><code>None</code></em>, <strong><code>nh2</code></strong>=<em><code>None</code></em>, <strong><code>dw</code></strong>=<em><code>False</code></em>, <strong><code>g2</code></strong>=<em><code>1</code></em>, <strong><code>sa</code></strong>=<em><code>False</code></em>, <strong><code>sym</code></strong>=<em><code>False</code></em>, <strong><code>norm</code></strong>=<em><code>'Batch'</code></em>, <strong><code>zero_norm</code></strong>=<em><code>True</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU</code></em>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>pool</code></strong>=<em><code>AvgPool</code></em>, <strong><code>pool_first</code></strong>=<em><code>True</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>bias</code></strong>=<em><code>None</code></em>, <strong><code>ndim</code></strong>=<em><code>2</code></em>, <strong><code>norm_type</code></strong>=<em><code>&lt;NormType.Batch: 1&gt;</code></em>, <strong><code>bn_1st</code></strong>=<em><code>True</code></em>, <strong><code>transpose</code></strong>=<em><code>False</code></em>, <strong><code>init</code></strong>=<em><code>'auto'</code></em>, <strong><code>xtra</code></strong>=<em><code>None</code></em>, <strong><code>bias_std</code></strong>=<em><code>0.01</code></em>, <strong><code>dilation</code></strong>:<code>Union</code>[<code>int</code>, <code>Tuple</code>[<code>int</code>, <code>int</code>]]=<em><code>1</code></em>, <strong><code>padding_mode</code></strong>:<code>str</code>=<em><code>'zeros'</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Resnet block from <code>ni</code> to <code>nh</code> with <code>stride</code></p>
 
@@ -981,7 +986,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="SEModule1d" class="doc_header"><code>SEModule1d</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L251" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>SEModule1d</code>(<strong><code>ni</code></strong>, <strong><code>reduction</code></strong>=<em><code>16</code></em>, <strong><code>act</code></strong>=<em><code>ReLU</code></em>, <strong><code>act_kwargs</code></strong>=<em><code>{}</code></em>)</p>
+<h4 id="SEModule1d" class="doc_header"><code>SEModule1d</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L252" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>SEModule1d</code>(<strong><code>ni</code></strong>, <strong><code>reduction</code></strong>=<em><code>16</code></em>, <strong><code>act</code></strong>=<em><code>ReLU</code></em>, <strong><code>act_kwargs</code></strong>=<em><code>{}</code></em>)</p>
 </blockquote>
 <p>Squeeze and excitation module for 1d</p>
 
@@ -1031,7 +1036,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Norm" class="doc_header"><code>Norm</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L260" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Norm</code>(<strong><code>nf</code></strong>, <strong><code>ndim</code></strong>=<em><code>1</code></em>, <strong><code>norm</code></strong>=<em><code>'Batch'</code></em>, <strong><code>zero_norm</code></strong>=<em><code>False</code></em>, <strong><code>init</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="Norm" class="doc_header"><code>Norm</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L261" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Norm</code>(<strong><code>nf</code></strong>, <strong><code>ndim</code></strong>=<em><code>1</code></em>, <strong><code>norm</code></strong>=<em><code>'Batch'</code></em>, <strong><code>zero_norm</code></strong>=<em><code>False</code></em>, <strong><code>init</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Norm layer with <code>nf</code> features and <code>ndim</code> with auto init.</p>
 
@@ -1151,7 +1156,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LambdaPlus" class="doc_header"><code>class</code> <code>LambdaPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L273" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LambdaPlus</code>(<strong><code>func</code></strong>, <strong>*<code>args</code></strong>, <strong>**<code>kwargs</code></strong>) :: <code>Module</code></p>
+<h2 id="LambdaPlus" class="doc_header"><code>class</code> <code>LambdaPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L274" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LambdaPlus</code>(<strong><code>func</code></strong>, <strong>*<code>args</code></strong>, <strong>**<code>kwargs</code></strong>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -1183,7 +1188,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Squeeze" class="doc_header"><code>class</code> <code>Squeeze</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L278" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Squeeze</code>(<strong><code>dim</code></strong>=<em><code>-1</code></em>) :: <code>Module</code></p>
+<h2 id="Squeeze" class="doc_header"><code>class</code> <code>Squeeze</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L279" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Squeeze</code>(<strong><code>dim</code></strong>=<em><code>-1</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -1208,7 +1213,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Unsqueeze" class="doc_header"><code>class</code> <code>Unsqueeze</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L284" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Unsqueeze</code>(<strong><code>dim</code></strong>=<em><code>-1</code></em>) :: <code>Module</code></p>
+<h2 id="Unsqueeze" class="doc_header"><code>class</code> <code>Unsqueeze</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L285" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Unsqueeze</code>(<strong><code>dim</code></strong>=<em><code>-1</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -1233,7 +1238,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Add" class="doc_header"><code>class</code> <code>Add</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L290" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Add</code>() :: <code>Module</code></p>
+<h2 id="Add" class="doc_header"><code>class</code> <code>Add</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L291" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Add</code>() :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -1258,7 +1263,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Concat" class="doc_header"><code>class</code> <code>Concat</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L295" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Concat</code>(<strong><code>dim</code></strong>=<em><code>1</code></em>) :: <code>Module</code></p>
+<h2 id="Concat" class="doc_header"><code>class</code> <code>Concat</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L296" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Concat</code>(<strong><code>dim</code></strong>=<em><code>1</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -1283,7 +1288,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Permute" class="doc_header"><code>class</code> <code>Permute</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L301" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Permute</code>(<strong>*<code>dims</code></strong>) :: <code>Module</code></p>
+<h2 id="Permute" class="doc_header"><code>class</code> <code>Permute</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L302" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Permute</code>(<strong>*<code>dims</code></strong>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -1308,7 +1313,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Transpose" class="doc_header"><code>class</code> <code>Transpose</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L307" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Transpose</code>(<strong>*<code>dims</code></strong>, <strong><code>contiguous</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
+<h2 id="Transpose" class="doc_header"><code>class</code> <code>Transpose</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L308" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Transpose</code>(<strong>*<code>dims</code></strong>, <strong><code>contiguous</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -1358,7 +1363,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Reshape" class="doc_header"><code>class</code> <code>Reshape</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L323" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Reshape</code>(<strong>*<code>shape</code></strong>) :: <code>Module</code></p>
+<h2 id="Reshape" class="doc_header"><code>class</code> <code>Reshape</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L324" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Reshape</code>(<strong>*<code>shape</code></strong>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -1383,7 +1388,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Max" class="doc_header"><code>class</code> <code>Max</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L329" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Max</code>(<strong><code>dim</code></strong>=<em><code>None</code></em>, <strong><code>keepdim</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
+<h2 id="Max" class="doc_header"><code>class</code> <code>Max</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L330" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Max</code>(<strong><code>dim</code></strong>=<em><code>None</code></em>, <strong><code>keepdim</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -1408,7 +1413,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LastStep" class="doc_header"><code>class</code> <code>LastStep</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L335" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LastStep</code>() :: <code>Module</code></p>
+<h2 id="LastStep" class="doc_header"><code>class</code> <code>LastStep</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L336" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LastStep</code>() :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -1489,7 +1494,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Sharpen" class="doc_header"><code>class</code> <code>Sharpen</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L343" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Sharpen</code>(<strong><code>T</code></strong>=<em><code>0.5</code></em>) :: <code>Module</code></p>
+<h2 id="Sharpen" class="doc_header"><code>class</code> <code>Sharpen</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L344" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Sharpen</code>(<strong><code>T</code></strong>=<em><code>0.5</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>This is used to increase confidence in predictions - MixMatch paper</p>
 
@@ -1541,7 +1546,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_png output_subarea ">
-<img src="data:image/png;base64,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
+<img src="data:image/png;base64,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
 "
 >
 </div>
@@ -1565,7 +1570,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MaxPPVPool1d" class="doc_header"><code>class</code> <code>MaxPPVPool1d</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L351" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MaxPPVPool1d</code>() :: <code>Module</code></p>
+<h2 id="MaxPPVPool1d" class="doc_header"><code>class</code> <code>MaxPPVPool1d</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L352" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MaxPPVPool1d</code>() :: <code>Module</code></p>
 </blockquote>
 <p>Drop-in replacement for AdaptiveConcatPool1d - multiplies nf by 2</p>
 
@@ -1590,7 +1595,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MPPV1d" class="doc_header"><code>class</code> <code>MPPV1d</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L359" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MPPV1d</code>() :: <code>Module</code></p>
+<h2 id="MPPV1d" class="doc_header"><code>class</code> <code>MPPV1d</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L360" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MPPV1d</code>() :: <code>Module</code></p>
 </blockquote>
 <p>MaxPPVPool1d + Flatten</p>
 
@@ -1645,7 +1650,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Sequential" class="doc_header"><code>class</code> <code>Sequential</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L368" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Sequential</code>(<strong>*<code>args</code></strong>:<code>Any</code>) :: <a href="/tsai/models.layers.html#Sequential"><code>Sequential</code></a></p>
+<h2 id="Sequential" class="doc_header"><code>class</code> <code>Sequential</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L369" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Sequential</code>(<strong>*<code>args</code></strong>:<code>Any</code>) :: <a href="/tsai/models.layers.html#Sequential"><code>Sequential</code></a></p>
 </blockquote>
 <p>Class that allows you to pass one or multiple inputs</p>
 
@@ -1677,7 +1682,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TimeDistributed" class="doc_header"><code>class</code> <code>TimeDistributed</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L376" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TimeDistributed</code>(<strong><code>module</code></strong>, <strong><code>batch_first</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
+<h2 id="TimeDistributed" class="doc_header"><code>class</code> <code>TimeDistributed</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L377" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TimeDistributed</code>(<strong><code>module</code></strong>, <strong><code>batch_first</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -1732,7 +1737,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Temp_Scale" class="doc_header"><code>class</code> <code>Temp_Scale</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L401" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Temp_Scale</code>(<strong><code>temp</code></strong>=<em><code>1.0</code></em>, <strong><code>dirichlet</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
+<h2 id="Temp_Scale" class="doc_header"><code>class</code> <code>Temp_Scale</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L402" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Temp_Scale</code>(<strong><code>temp</code></strong>=<em><code>1.0</code></em>, <strong><code>dirichlet</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Used to perform Temperature Scaling (dirichlet=False) or Single-parameter Dirichlet calibration (dirichlet=True)</p>
 
@@ -1757,7 +1762,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Vector_Scale" class="doc_header"><code>class</code> <code>Vector_Scale</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L413" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Vector_Scale</code>(<strong><code>n_classes</code></strong>=<em><code>1</code></em>, <strong><code>dirichlet</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
+<h2 id="Vector_Scale" class="doc_header"><code>class</code> <code>Vector_Scale</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L414" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Vector_Scale</code>(<strong><code>n_classes</code></strong>=<em><code>1</code></em>, <strong><code>dirichlet</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Used to perform Vector Scaling (dirichlet=False) or Diagonal Dirichlet calibration (dirichlet=True)</p>
 
@@ -1782,7 +1787,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Matrix_Scale" class="doc_header"><code>class</code> <code>Matrix_Scale</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L425" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Matrix_Scale</code>(<strong><code>n_classes</code></strong>=<em><code>1</code></em>, <strong><code>dirichlet</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
+<h2 id="Matrix_Scale" class="doc_header"><code>class</code> <code>Matrix_Scale</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L426" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Matrix_Scale</code>(<strong><code>n_classes</code></strong>=<em><code>1</code></em>, <strong><code>dirichlet</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Used to perform Matrix Scaling (dirichlet=False) or Dirichlet calibration (dirichlet=True)</p>
 
@@ -1807,7 +1812,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_calibrator" class="doc_header"><code>get_calibrator</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L440" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_calibrator</code>(<strong><code>calibrator</code></strong>=<em><code>None</code></em>, <strong><code>n_classes</code></strong>=<em><code>1</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="get_calibrator" class="doc_header"><code>get_calibrator</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L441" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_calibrator</code>(<strong><code>calibrator</code></strong>=<em><code>None</code></em>, <strong><code>n_classes</code></strong>=<em><code>1</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -1950,7 +1955,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="GAP1d" class="doc_header"><code>class</code> <code>GAP1d</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L451" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GAP1d</code>(<strong><code>output_size</code></strong>=<em><code>1</code></em>) :: <code>Module</code></p>
+<h2 id="GAP1d" class="doc_header"><code>class</code> <code>GAP1d</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L452" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GAP1d</code>(<strong><code>output_size</code></strong>=<em><code>1</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Global Adaptive Pooling + Flatten</p>
 
@@ -1975,7 +1980,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="GACP1d" class="doc_header"><code>class</code> <code>GACP1d</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L460" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GACP1d</code>(<strong><code>output_size</code></strong>=<em><code>1</code></em>) :: <code>Module</code></p>
+<h2 id="GACP1d" class="doc_header"><code>class</code> <code>GACP1d</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L461" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GACP1d</code>(<strong><code>output_size</code></strong>=<em><code>1</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Global AdaptiveConcatPool + Flatten</p>
 
@@ -2031,7 +2036,59 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SqueezeExciteBlock" class="doc_header"><code>class</code> <code>SqueezeExciteBlock</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L469" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SqueezeExciteBlock</code>(<strong><code>ni</code></strong>, <strong><code>reduction</code></strong>=<em><code>16</code></em>) :: <code>Module</code></p>
+<h2 id="LogitAdjustmentLayer" class="doc_header"><code>class</code> <code>LogitAdjustmentLayer</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L470" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LogitAdjustmentLayer</code>(<strong><code>class_priors</code></strong>) :: <code>Module</code></p>
+</blockquote>
+<p>Logit Adjustment for imbalanced datasets</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">bs</span><span class="p">,</span> <span class="n">n_classes</span> <span class="o">=</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">3</span>
+<span class="n">class_priors</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n_classes</span><span class="p">)</span>
+<span class="n">logits</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">n_classes</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">LogitAdjLayer</span><span class="p">(</span><span class="n">class_priors</span><span class="p">)(</span><span class="n">logits</span><span class="p">),</span> <span class="n">logits</span> <span class="o">+</span> <span class="n">class_priors</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="SqueezeExciteBlock" class="doc_header"><code>class</code> <code>SqueezeExciteBlock</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L480" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SqueezeExciteBlock</code>(<strong><code>ni</code></strong>, <strong><code>reduction</code></strong>=<em><code>16</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -2084,7 +2141,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="create_pool_head" class="doc_header"><code>create_pool_head</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L480" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_pool_head</code>(<strong>*<code>args</code></strong>, <strong><code>concat_pool</code></strong>=<em><code>False</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="create_pool_head" class="doc_header"><code>create_pool_head</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L491" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_pool_head</code>(<strong>*<code>args</code></strong>, <strong><code>concat_pool</code></strong>=<em><code>False</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -2168,7 +2225,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="create_pool_plus_head" class="doc_header"><code>create_pool_plus_head</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L493" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_pool_plus_head</code>(<strong>*<code>args</code></strong>, <strong><code>lin_ftrs</code></strong>=<em><code>None</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>concat_pool</code></strong>=<em><code>True</code></em>, <strong><code>bn_final</code></strong>=<em><code>False</code></em>, <strong><code>lin_first</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="create_pool_plus_head" class="doc_header"><code>create_pool_plus_head</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L504" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_pool_plus_head</code>(<strong>*<code>args</code></strong>, <strong><code>lin_ftrs</code></strong>=<em><code>None</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>concat_pool</code></strong>=<em><code>True</code></em>, <strong><code>bn_final</code></strong>=<em><code>False</code></em>, <strong><code>lin_first</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -2252,7 +2309,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="create_conv_head" class="doc_header"><code>create_conv_head</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L514" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_conv_head</code>(<strong>*<code>args</code></strong>, <strong><code>adaptive_size</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="create_conv_head" class="doc_header"><code>create_conv_head</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L525" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_conv_head</code>(<strong>*<code>args</code></strong>, <strong><code>adaptive_size</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -2343,7 +2400,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="create_mlp_head" class="doc_header"><code>create_mlp_head</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L530" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_mlp_head</code>(<strong><code>nf</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>flatten</code></strong>=<em><code>True</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="create_mlp_head" class="doc_header"><code>create_mlp_head</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L541" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_mlp_head</code>(<strong><code>nf</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>flatten</code></strong>=<em><code>True</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -2421,7 +2478,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="create_fc_head" class="doc_header"><code>create_fc_head</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L540" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_fc_head</code>(<strong><code>nf</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>flatten</code></strong>=<em><code>True</code></em>, <strong><code>lin_ftrs</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>bn_final</code></strong>=<em><code>False</code></em>, <strong><code>act</code></strong>=<em><code>ReLU(inplace=True)</code></em>)</p>
+<h4 id="create_fc_head" class="doc_header"><code>create_fc_head</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L551" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_fc_head</code>(<strong><code>nf</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>flatten</code></strong>=<em><code>True</code></em>, <strong><code>lin_ftrs</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>bn_final</code></strong>=<em><code>False</code></em>, <strong><code>act</code></strong>=<em><code>ReLU(inplace=True)</code></em>)</p>
 </blockquote>
 
 </div>
@@ -2498,7 +2555,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="create_rnn_head" class="doc_header"><code>create_rnn_head</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L553" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_rnn_head</code>(<strong>*<code>args</code></strong>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="create_rnn_head" class="doc_header"><code>create_rnn_head</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L564" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_rnn_head</code>(<strong>*<code>args</code></strong>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -2575,7 +2632,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="create_conv_lin_3d_head" class="doc_header"><code>class</code> <code>create_conv_lin_3d_head</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L564" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>create_conv_lin_3d_head</code>(<strong><code>n_in</code></strong>, <strong><code>n_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>d</code></strong>=<em><code>None</code></em>, <strong><code>conv_first</code></strong>=<em><code>True</code></em>, <strong><code>conv_bn</code></strong>=<em><code>True</code></em>, <strong><code>lin_first</code></strong>=<em><code>False</code></em>, <strong><code>lin_bn</code></strong>=<em><code>True</code></em>, <strong><code>act</code></strong>=<em><code>None</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/tsai/models.layers.html#Sequential"><code>Sequential</code></a></p>
+<h2 id="create_conv_lin_3d_head" class="doc_header"><code>class</code> <code>create_conv_lin_3d_head</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L575" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>create_conv_lin_3d_head</code>(<strong><code>n_in</code></strong>, <strong><code>n_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>d</code></strong>=<em><code>None</code></em>, <strong><code>conv_first</code></strong>=<em><code>True</code></em>, <strong><code>conv_bn</code></strong>=<em><code>True</code></em>, <strong><code>lin_first</code></strong>=<em><code>False</code></em>, <strong><code>lin_bn</code></strong>=<em><code>True</code></em>, <strong><code>act</code></strong>=<em><code>None</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/tsai/models.layers.html#Sequential"><code>Sequential</code></a></p>
 </blockquote>
 <p>Module to create a 3d output head</p>
 
@@ -2650,7 +2707,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="create_lin_3d_head" class="doc_header"><code>class</code> <code>create_lin_3d_head</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L588" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>create_lin_3d_head</code>(<strong><code>n_in</code></strong>, <strong><code>n_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>d</code></strong>=<em><code>None</code></em>, <strong><code>lin_first</code></strong>=<em><code>False</code></em>, <strong><code>bn</code></strong>=<em><code>True</code></em>, <strong><code>act</code></strong>=<em><code>None</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>) :: <a href="/tsai/models.layers.html#Sequential"><code>Sequential</code></a></p>
+<h2 id="create_lin_3d_head" class="doc_header"><code>class</code> <code>create_lin_3d_head</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L599" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>create_lin_3d_head</code>(<strong><code>n_in</code></strong>, <strong><code>n_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>d</code></strong>=<em><code>None</code></em>, <strong><code>lin_first</code></strong>=<em><code>False</code></em>, <strong><code>bn</code></strong>=<em><code>True</code></em>, <strong><code>act</code></strong>=<em><code>None</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>) :: <a href="/tsai/models.layers.html#Sequential"><code>Sequential</code></a></p>
 </blockquote>
 <p>Module to create a 3d output head with linear layers</p>
 
@@ -2730,7 +2787,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="GaussianNoise" class="doc_header"><code>class</code> <code>GaussianNoise</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L607" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GaussianNoise</code>(<strong><code>sigma</code></strong>=<em><code>0.1</code></em>, <strong><code>is_relative_detach</code></strong>=<em><code>True</code></em>) :: <code>Module</code></p>
+<h2 id="GaussianNoise" class="doc_header"><code>class</code> <code>GaussianNoise</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L618" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GaussianNoise</code>(<strong><code>sigma</code></strong>=<em><code>0.1</code></em>, <strong><code>is_relative_detach</code></strong>=<em><code>True</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Gaussian noise regularizer.</p>
 <p>Args:
@@ -2796,7 +2853,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="gambler_loss" class="doc_header"><code>gambler_loss</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L632" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gambler_loss</code>(<strong><code>reward</code></strong>=<em><code>2</code></em>)</p>
+<h4 id="gambler_loss" class="doc_header"><code>gambler_loss</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L643" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gambler_loss</code>(<strong><code>reward</code></strong>=<em><code>2</code></em>)</p>
 </blockquote>
 
 </div>
@@ -2841,7 +2898,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor(0.6714)</pre>
+<pre>tensor(0.6286)</pre>
 </div>
 
 </div>
@@ -2863,7 +2920,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="CrossEntropyLossOneHot" class="doc_header"><code>CrossEntropyLossOneHot</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L642" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>CrossEntropyLossOneHot</code>(<strong><code>output</code></strong>, <strong><code>target</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="CrossEntropyLossOneHot" class="doc_header"><code>CrossEntropyLossOneHot</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L653" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>CrossEntropyLossOneHot</code>(<strong><code>output</code></strong>, <strong><code>target</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -2907,7 +2964,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor(0.6741)</pre>
+<pre>tensor(0.7396)</pre>
 </div>
 
 </div>
@@ -2944,7 +3001,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor(0.5799, grad_fn=&lt;NllLossBackward&gt;)</pre>
+<pre>tensor(0.6353, grad_fn=&lt;NllLossBackward&gt;)</pre>
 </div>
 
 </div>
@@ -2999,7 +3056,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ttest_bin_loss" class="doc_header"><code>ttest_bin_loss</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L647" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ttest_bin_loss</code>(<strong><code>output</code></strong>, <strong><code>target</code></strong>)</p>
+<h4 id="ttest_bin_loss" class="doc_header"><code>ttest_bin_loss</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L658" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ttest_bin_loss</code>(<strong><code>output</code></strong>, <strong><code>target</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -3023,7 +3080,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ttest_reg_loss" class="doc_header"><code>ttest_reg_loss</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L651" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ttest_reg_loss</code>(<strong><code>output</code></strong>, <strong><code>target</code></strong>)</p>
+<h4 id="ttest_reg_loss" class="doc_header"><code>ttest_reg_loss</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L662" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ttest_reg_loss</code>(<strong><code>output</code></strong>, <strong><code>target</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -3075,7 +3132,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="CenterLoss" class="doc_header"><code>class</code> <code>CenterLoss</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L655" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CenterLoss</code>(<strong><code>c_out</code></strong>, <strong><code>logits_dim</code></strong>=<em><code>None</code></em>) :: <code>Module</code></p>
+<h2 id="CenterLoss" class="doc_header"><code>class</code> <code>CenterLoss</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L666" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CenterLoss</code>(<strong><code>c_out</code></strong>, <strong><code>logits_dim</code></strong>=<em><code>None</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Code in Pytorch has been slightly modified from: <a href="https://github.com/KaiyangZhou/pytorch-center-loss/blob/master/center_loss.py">https://github.com/KaiyangZhou/pytorch-center-loss/blob/master/center_loss.py</a>
 Based on paper: Wen et al. A Discriminative Feature Learning Approach for Deep Face Recognition. ECCV 2016.</p>
@@ -3104,7 +3161,7 @@ Based on paper: Wen et al. A Discriminative Feature Learning Approach for Deep F
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="CenterPlusLoss" class="doc_header"><code>class</code> <code>CenterPlusLoss</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L691" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CenterPlusLoss</code>(<strong><code>loss</code></strong>, <strong><code>c_out</code></strong>, <strong><code>λ</code></strong>=<em><code>0.01</code></em>, <strong><code>logits_dim</code></strong>=<em><code>None</code></em>) :: <code>Module</code></p>
+<h2 id="CenterPlusLoss" class="doc_header"><code>class</code> <code>CenterPlusLoss</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L702" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CenterPlusLoss</code>(<strong><code>loss</code></strong>, <strong><code>c_out</code></strong>, <strong><code>λ</code></strong>=<em><code>0.01</code></em>, <strong><code>logits_dim</code></strong>=<em><code>None</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -3151,8 +3208,8 @@ Based on paper: Wen et al. A Discriminative Feature Learning Approach for Deep F
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(tensor(9.2015, grad_fn=&lt;DivBackward0&gt;),
- TensorBase(2.3688, grad_fn=&lt;AliasBackward&gt;))</pre>
+<pre>(tensor(9.7996, grad_fn=&lt;DivBackward0&gt;),
+ TensorBase(2.3600, grad_fn=&lt;AliasBackward&gt;))</pre>
 </div>
 
 </div>
@@ -3207,7 +3264,7 @@ Based on paper: Wen et al. A Discriminative Feature Learning Approach for Deep F
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FocalLoss" class="doc_header"><code>class</code> <code>FocalLoss</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L702" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FocalLoss</code>(<strong><code>gamma</code></strong>=<em><code>0</code></em>, <strong><code>eps</code></strong>=<em><code>1e-07</code></em>) :: <code>Module</code></p>
+<h2 id="FocalLoss" class="doc_header"><code>class</code> <code>FocalLoss</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L713" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FocalLoss</code>(<strong><code>gamma</code></strong>=<em><code>0</code></em>, <strong><code>eps</code></strong>=<em><code>1e-07</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -3254,7 +3311,7 @@ Based on paper: Wen et al. A Discriminative Feature Learning Approach for Deep F
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>TensorBase(0.7449)</pre>
+<pre>TensorBase(0.7479)</pre>
 </div>
 
 </div>
@@ -3276,7 +3333,7 @@ Based on paper: Wen et al. A Discriminative Feature Learning Approach for Deep F
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TweedieLoss" class="doc_header"><code>class</code> <code>TweedieLoss</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L714" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TweedieLoss</code>(<strong><code>p</code></strong>=<em><code>1.5</code></em>, <strong><code>eps</code></strong>=<em><code>1e-10</code></em>) :: <code>Module</code></p>
+<h2 id="TweedieLoss" class="doc_header"><code>class</code> <code>TweedieLoss</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/layers.py#L725" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TweedieLoss</code>(<strong><code>p</code></strong>=<em><code>1.5</code></em>, <strong><code>eps</code></strong>=<em><code>1e-10</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -3322,7 +3379,7 @@ Based on paper: Wen et al. A Discriminative Feature Learning Approach for Deep F
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor(3.7499)</pre>
+<pre>tensor(3.7598)</pre>
 </div>
 
 </div>

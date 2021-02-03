@@ -21,6 +21,7 @@
         "Optimizers": "/optimizer",
         "Metrics": "/metrics",
         "Callbacks": "/callback.core",
+        "Prediction Dynamics": "/callback.PredictionDynamics",
         "": {
             "Semi-supervised learning": {
                 "Self-training: Noisy Student": "/callback.noisy_student",

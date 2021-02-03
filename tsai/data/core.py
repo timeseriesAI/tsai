@@ -4,7 +4,7 @@ __all__ = ['NumpyTensor', 'ToNumpyTensor', 'TSTensor', 'ToTSTensor', 'ToFloat', 
            'TSMultiLabelClassification', 'TSRegression', 'TSForecasting', 'NumpyTensorBlock', 'TSTensorBlock',
            'TorchDataset', 'NumpyDataset', 'TSDataset', 'NumpyDatasets', 'TSDatasets', 'add_ds', 'get_subset_dset',
            'NumpyDataLoader', 'show_tuple', 'TSDataLoader', 'NumpyDataLoaders', 'TSDataLoaders', 'get_ts_dls',
-           'get_subset_dl', 'get_tsimage_dls']
+           'get_ts_dl', 'get_subset_dl', 'get_tsimage_dls']
 
 # Cell
 from ..imports import *
@@ -416,7 +416,6 @@ class NumpyDataLoader(TfmdDL):
     @delegates(plt.subplots)
     def show_dist(self, figsize=None, **kwargs): self.dataset.show_dist(figsize=figsize, **kwargs)
 
-
     @property
     def c(self): return self.dataset.c
 
@@ -432,6 +431,13 @@ class NumpyDataLoader(TfmdDL):
             counts = torch.unique(self.ptls[1].detach().cpu().flatten(), return_counts=True, sorted=True)[-1]
             iw = (counts.sum() / counts)
             return (iw / iw.sum()).to(self.device)
+        else: return None
+
+    @property
+    def class_priors(self):
+        if self.cws is not None:
+            cp = 1. / (self.cws + 1e-8)
+            return (cp / cp.sum()).to(self.device)
         else: return None
 
 
@@ -511,10 +517,19 @@ class TSDataLoaders(NumpyDataLoaders):
 
 def get_ts_dls(X, y=None, splits=None, sel_vars=None, sel_steps=None, tfms=None, inplace=True,
             path='.', bs=64, batch_tfms=None, num_workers=0, device=None, shuffle_train=True, drop_last=True, **kwargs):
+    if splits is None: splits = (L(np.arange(len(X)).tolist()), L([]))
     dsets = TSDatasets(X, y, splits=splits, sel_vars=sel_vars, sel_steps=sel_steps, tfms=tfms, inplace=inplace, **kwargs)
     dls   = TSDataLoaders.from_dsets(dsets.train, dsets.valid, path=path, bs=bs, batch_tfms=batch_tfms, num_workers=num_workers,
                                      device=device, shuffle_train=shuffle_train, drop_last=drop_last, **kwargs)
     return dls
+
+def get_ts_dl(X, y=None, sel_vars=None, sel_steps=None, tfms=None, inplace=True,
+            path='.', bs=64, batch_tfms=None, num_workers=0, device=None, shuffle_train=True, drop_last=True, **kwargs):
+    splits = (L(np.arange(len(X)).tolist()), L([]))
+    dsets = TSDatasets(X, y, splits=splits, sel_vars=sel_vars, sel_steps=sel_steps, tfms=tfms, inplace=inplace, **kwargs)
+    dls   = TSDataLoaders.from_dsets(dsets.train, path=path, bs=bs, batch_tfms=batch_tfms, num_workers=num_workers,
+                                     device=device, shuffle_train=shuffle_train, drop_last=drop_last, **kwargs)
+    return dls.train
 
 get_tsimage_dls = get_ts_dls
 

@@ -97,9 +97,28 @@ nb_path: "nbs/106b_models.XceptionTimePlus.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="XceptionTimePlus" class="doc_header"><code>class</code> <code>XceptionTimePlus</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/XceptionTimePlus.py#L72" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>XceptionTimePlus</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>nf</code></strong>=<em><code>16</code></em>, <strong><code>nb_filters</code></strong>=<em><code>None</code></em>, <strong><code>coord</code></strong>=<em><code>False</code></em>, <strong><code>norm</code></strong>=<em><code>'Batch'</code></em>, <strong><code>concat_pool</code></strong>=<em><code>False</code></em>, <strong><code>adaptive_size</code></strong>=<em><code>50</code></em>, <strong><code>residual</code></strong>=<em><code>True</code></em>, <strong><code>zero_norm</code></strong>=<em><code>False</code></em>, <strong><code>act</code></strong>=<em><code>ReLU</code></em>, <strong><code>act_kwargs</code></strong>=<em><code>{}</code></em>) :: <code>Module</code></p>
+<h2 id="XceptionTimePlus" class="doc_header"><code>class</code> <code>XceptionTimePlus</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/XceptionTimePlus.py#L72" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>XceptionTimePlus</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>nf</code></strong>=<em><code>16</code></em>, <strong><code>nb_filters</code></strong>=<em><code>None</code></em>, <strong><code>coord</code></strong>=<em><code>False</code></em>, <strong><code>norm</code></strong>=<em><code>'Batch'</code></em>, <strong><code>concat_pool</code></strong>=<em><code>False</code></em>, <strong><code>adaptive_size</code></strong>=<em><code>50</code></em>, <strong><code>residual</code></strong>=<em><code>True</code></em>, <strong><code>zero_norm</code></strong>=<em><code>False</code></em>, <strong><code>act</code></strong>=<em><code>ReLU</code></em>, <strong><code>act_kwargs</code></strong>=<em><code>{}</code></em>) :: <a href="/tsai/models.layers.html#Sequential"><code>Sequential</code></a></p>
 </blockquote>
-<p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
+<p>A sequential container.
+Modules will be added to it in the order they are passed in the constructor.
+Alternatively, an ordered dict of modules can also be passed in.</p>
+<p>To make it easier to understand, here is a small example::</p>
+
+<pre><code># Example of using Sequential
+model = nn.Sequential(
+          nn.Conv2d(1,20,5),
+          nn.ReLU(),
+          nn.Conv2d(20,64,5),
+          nn.ReLU()
+        )
+
+# Example of using Sequential with OrderedDict
+model = nn.Sequential(OrderedDict([
+          ('conv1', nn.Conv2d(1,20,5)),
+          ('relu1', nn.ReLU()),
+          ('conv2', nn.Conv2d(20,64,5)),
+          ('relu2', nn.ReLU())
+        ]))</code></pre>
 
 </div>
 
@@ -230,7 +249,7 @@ nb_path: "nbs/106b_models.XceptionTimePlus.ipynb"
 
 <div class="output_text output_subarea output_execute_result">
 <pre>XceptionTimePlus(
-  (block): XceptionBlockPlus(
+  (backbone): XceptionBlockPlus(
     (xception): ModuleList(
       (0): XceptionModulePlus(
         (bottleneck): ConvBlock(
@@ -267,7 +286,7 @@ nb_path: "nbs/106b_models.XceptionTimePlus.ipynb"
             (1): Conv1d(4, 16, kernel_size=(1,), stride=(1,), bias=False)
           )
         )
-        (concat): Concat()
+        (concat): Concat(dim=1)
       )
       (1): XceptionModulePlus(
         (bottleneck): ConvBlock(
@@ -304,7 +323,7 @@ nb_path: "nbs/106b_models.XceptionTimePlus.ipynb"
             (1): Conv1d(65, 32, kernel_size=(1,), stride=(1,), bias=False)
           )
         )
-        (concat): Concat()
+        (concat): Concat(dim=1)
       )
       (2): XceptionModulePlus(
         (bottleneck): ConvBlock(
@@ -341,7 +360,7 @@ nb_path: "nbs/106b_models.XceptionTimePlus.ipynb"
             (1): Conv1d(129, 64, kernel_size=(1,), stride=(1,), bias=False)
           )
         )
-        (concat): Concat()
+        (concat): Concat(dim=1)
       )
       (3): XceptionModulePlus(
         (bottleneck): ConvBlock(
@@ -378,7 +397,7 @@ nb_path: "nbs/106b_models.XceptionTimePlus.ipynb"
             (1): Conv1d(257, 128, kernel_size=(1,), stride=(1,), bias=False)
           )
         )
-        (concat): Concat()
+        (concat): Concat(dim=1)
       )
     )
     (shortcut): ModuleList(
@@ -397,30 +416,32 @@ nb_path: "nbs/106b_models.XceptionTimePlus.ipynb"
       (0): ReLU()
       (1): ReLU()
     )
-    (add): Add()
+    (add): Add
   )
-  (gap1): AdaptiveAvgPool1d(output_size=50)
-  (conv1x1_1): ConvBlock(
-    (0): AddCoords1d()
-    (1): Conv1d(513, 256, kernel_size=(1,), stride=(1,), bias=False)
-    (2): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-    (3): ReLU()
-  )
-  (conv1x1_2): ConvBlock(
-    (0): AddCoords1d()
-    (1): Conv1d(257, 128, kernel_size=(1,), stride=(1,), bias=False)
-    (2): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-    (3): ReLU()
-  )
-  (conv1x1_3): ConvBlock(
-    (0): AddCoords1d()
-    (1): Conv1d(129, 2, kernel_size=(1,), stride=(1,), bias=False)
-    (2): BatchNorm1d(2, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-    (3): ReLU()
-  )
-  (gap2): GAP1d(
-    (gap): AdaptiveAvgPool1d(output_size=1)
-    (flatten): Flatten(full=False)
+  (head): Sequential(
+    (0): AdaptiveAvgPool1d(output_size=50)
+    (1): ConvBlock(
+      (0): AddCoords1d()
+      (1): Conv1d(513, 256, kernel_size=(1,), stride=(1,), bias=False)
+      (2): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (3): ReLU()
+    )
+    (2): ConvBlock(
+      (0): AddCoords1d()
+      (1): Conv1d(257, 128, kernel_size=(1,), stride=(1,), bias=False)
+      (2): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (3): ReLU()
+    )
+    (3): ConvBlock(
+      (0): AddCoords1d()
+      (1): Conv1d(129, 2, kernel_size=(1,), stride=(1,), bias=False)
+      (2): BatchNorm1d(2, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (3): ReLU()
+    )
+    (4): GAP1d(
+      (gap): AdaptiveAvgPool1d(output_size=1)
+      (flatten): Flatten(full=False)
+    )
   )
 )</pre>
 </div>

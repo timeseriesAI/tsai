@@ -4,7 +4,7 @@ __all__ = ['get_layers', 'is_layer', 'is_linear', 'is_bn', 'is_conv_linear', 'is
            'has_weight', 'has_weight_or_bias', 'check_bias', 'check_weight', 'ts_splitter', 'transfer_weights',
            'build_ts_model', 'build_tabular_model', 'build_tsimage_model', 'count_parameters', 'build_model',
            'create_model', 'create_tabular_model', 'get_clones', 'get_nf', 'split_model', 'seq_len_calculator',
-           'change_model_head', 'naive_forecast']
+           'change_model_head', 'naive_forecaster']
 
 # Cell
 from fastai.tabular.model import *
@@ -217,4 +217,4 @@ def change_model_head(model, custom_head, **kwargs):
     return model
 
 # Cell
-def naive_forecast(o, split, lag=1): return o[array(split)-lag]
+def naive_forecaster(o, split, lag=1): return o[np.asarray(split)-lag]

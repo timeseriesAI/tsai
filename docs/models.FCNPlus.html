@@ -6,8 +6,8 @@ title: FCNPlus
 keywords: fastai
 sidebar: home_sidebar
 
-summary: "This is an unofficial PyTorch implementation by Ignacio Oguiza - oguiza@gmail.com modified from:"
-description: "This is an unofficial PyTorch implementation by Ignacio Oguiza - oguiza@gmail.com modified from:"
+summary: "This is an unofficial PyTorch implementation by Ignacio Oguiza - timeseriesAI@gmail.com modified from:"
+description: "This is an unofficial PyTorch implementation by Ignacio Oguiza - timeseriesAI@gmail.com modified from:"
 nb_path: "nbs/103c_models.FCNPlus.ipynb"
 ---
 <!--
@@ -47,9 +47,28 @@ nb_path: "nbs/103c_models.FCNPlus.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FCNPlus" class="doc_header"><code>class</code> <code>FCNPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/FCNPlus.py#L10" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FCNPlus</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>layers</code></strong>=<em><code>[128, 256, 128]</code></em>, <strong><code>kss</code></strong>=<em><code>[7, 5, 3]</code></em>, <strong><code>coord</code></strong>=<em><code>False</code></em>, <strong><code>separable</code></strong>=<em><code>False</code></em>, <strong><code>zero_norm</code></strong>=<em><code>False</code></em>, <strong><code>act</code></strong>=<em><code>ReLU</code></em>, <strong><code>act_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>residual</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
+<h2 id="FCNPlus" class="doc_header"><code>class</code> <code>FCNPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/FCNPlus.py#L10" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FCNPlus</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>layers</code></strong>=<em><code>[128, 256, 128]</code></em>, <strong><code>kss</code></strong>=<em><code>[7, 5, 3]</code></em>, <strong><code>coord</code></strong>=<em><code>False</code></em>, <strong><code>separable</code></strong>=<em><code>False</code></em>, <strong><code>zero_norm</code></strong>=<em><code>False</code></em>, <strong><code>act</code></strong>=<em><code>ReLU</code></em>, <strong><code>act_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>residual</code></strong>=<em><code>False</code></em>) :: <a href="/tsai/models.layers.html#Sequential"><code>Sequential</code></a></p>
 </blockquote>
-<p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
+<p>A sequential container.
+Modules will be added to it in the order they are passed in the constructor.
+Alternatively, an ordered dict of modules can also be passed in.</p>
+<p>To make it easier to understand, here is a small example::</p>
+
+<pre><code># Example of using Sequential
+model = nn.Sequential(
+          nn.Conv2d(1,20,5),
+          nn.ReLU(),
+          nn.Conv2d(20,64,5),
+          nn.ReLU()
+        )
+
+# Example of using Sequential with OrderedDict
+model = nn.Sequential(OrderedDict([
+          ('conv1', nn.Conv2d(1,20,5)),
+          ('relu1', nn.ReLU()),
+          ('conv2', nn.Conv2d(20,64,5)),
+          ('relu2', nn.ReLU())
+        ]))</code></pre>
 
 </div>
 
@@ -168,20 +187,23 @@ nb_path: "nbs/103c_models.FCNPlus.ipynb"
 
 <div class="output_text output_subarea output_execute_result">
 <pre>FCNPlus(
-  (convblock1): ConvBlock(
-    (0): Conv1d(3, 128, kernel_size=(7,), stride=(1,), padding=(3,), bias=False)
-    (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-    (2): ReLU()
-  )
-  (convblock2): ConvBlock(
-    (0): Conv1d(128, 256, kernel_size=(5,), stride=(1,), padding=(2,), bias=False)
-    (1): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-    (2): ReLU()
-  )
-  (convblock3): ConvBlock(
-    (0): Conv1d(256, 128, kernel_size=(3,), stride=(1,), padding=(1,), bias=False)
-    (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-    (2): ReLU()
+  (backbone): _FCNBlockPlus(
+    (convblock1): ConvBlock(
+      (0): Conv1d(3, 128, kernel_size=(7,), stride=(1,), padding=(3,), bias=False)
+      (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (2): ReLU()
+    )
+    (convblock2): ConvBlock(
+      (0): Conv1d(128, 256, kernel_size=(5,), stride=(1,), padding=(2,), bias=False)
+      (1): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (2): ReLU()
+    )
+    (convblock3): ConvBlock(
+      (0): Conv1d(256, 128, kernel_size=(3,), stride=(1,), padding=(1,), bias=False)
+      (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (2): ReLU()
+    )
+    (add): Sequential()
   )
   (head): Sequential(
     (0): AdaptiveAvgPool1d(output_size=1)

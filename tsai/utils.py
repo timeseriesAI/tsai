@@ -11,8 +11,9 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'npsave', 'np_save', 'permute_2D', 'random_normal', 'random_half_normal', 'random_normal_tensor',
            'random_half_normal_tensor', 'clip_outliers', 'default_dpi', 'get_plot_fig', 'fig2buf', 'plot_scatter',
            'jointplot_scatter', 'jointplot_kde', 'get_idxs', 'apply_cmap', 'torch_tile', 'to_tsfresh_df', 'pcorr',
-           'scorr', 'torch_diff', 'get_outliers_IQR', 'get_percentile', 'torch_clamp', 'torch_slice_by_dim', 'concat',
-           'reduce_memory_usage', 'cls_name', 'roll2d', 'roll3d', 'random_roll2d', 'random_roll3d']
+           'scorr', 'torch_diff', 'get_outliers_IQR', 'get_percentile', 'torch_clamp', 'torch_slice_by_dim',
+           'torch_nanmean', 'torch_nanstd', 'concat', 'reduce_memory_usage', 'cls_name', 'roll2d', 'roll3d',
+           'random_roll2d', 'random_roll3d']
 
 # Cell
 from .imports import *
@@ -560,6 +561,22 @@ def torch_slice_by_dim(t, index, dim=-1, **kwargs):
     assert t.ndim == index.ndim, "t and index must have the same ndim"
     index = index.long()
     return torch.gather(t, dim, index, **kwargs)
+
+# Cell
+def torch_nanmean(o, dim=None, keepdim=False):
+    """There's currently no torch.nanmean function"""
+    if torch.isnan(o).any():
+        return torch.from_numpy(np.asarray(np.nanmean(o.cpu().numpy(), axis=dim, keepdims=keepdim))).to(o.device)
+    else:
+        return o.mean(dim=dim, keepdim=keepdim)
+
+
+def torch_nanstd(o, dim=None, keepdim=False):
+    """There's currently no torch.nanstd function"""
+    if torch.isnan(o).any():
+        return torch.from_numpy(np.asarray(np.nanstd(o.cpu().numpy(), axis=dim, keepdims=keepdim))).to(o.device)
+    else:
+        return o.std(dim=dim, keepdim=keepdim)
 
 # Cell
 def concat(*ls, dim=0):

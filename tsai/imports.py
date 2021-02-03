@@ -69,7 +69,7 @@ def last_saved(max_elapsed=60):
         print('Incorrect conversion! 😔')
         output = 0
     print(f'Total time elapsed {elapsed:.0f} s')
-    print(strftime("%A %D %T %Z"))
+    print(strftime("%A %d/%m/%y %T %Z"))
     return output
 
 

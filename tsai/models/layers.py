@@ -6,11 +6,12 @@ __all__ = ['noop', 'lin_zero_init', 'SwishBeta', 'same_padding1d', 'Pad1d', 'Con
            'SepCoordConvBN', 'ResBlock1dPlus', 'SEModule1d', 'Norm', 'BN1d', 'IN1d', 'LambdaPlus', 'Squeeze',
            'Unsqueeze', 'Add', 'Concat', 'Permute', 'Transpose', 'View', 'Reshape', 'Max', 'LastStep', 'Noop',
            'Sharpen', 'MaxPPVPool1d', 'MPPV1d', 'Sequential', 'TimeDistributed', 'Temp_Scale', 'Vector_Scale',
-           'Matrix_Scale', 'get_calibrator', 'GAP1d', 'GACP1d', 'SqueezeExciteBlock', 'create_pool_head', 'pool_head',
-           'create_pool_plus_head', 'pool_plus_head', 'create_conv_head', 'conv_head', 'create_mlp_head', 'mlp_head',
-           'create_fc_head', 'fc_head', 'create_rnn_head', 'rnn_head', 'create_conv_lin_3d_head', 'conv_lin_3d_head',
-           'create_lin_3d_head', 'lin_3d_head', 'heads', 'GaussianNoise', 'gambler_loss', 'CrossEntropyLossOneHot',
-           'ttest_bin_loss', 'ttest_reg_loss', 'CenterLoss', 'CenterPlusLoss', 'FocalLoss', 'TweedieLoss']
+           'Matrix_Scale', 'get_calibrator', 'GAP1d', 'GACP1d', 'LogitAdjustmentLayer', 'LogitAdjLayer',
+           'SqueezeExciteBlock', 'create_pool_head', 'pool_head', 'create_pool_plus_head', 'pool_plus_head',
+           'create_conv_head', 'conv_head', 'create_mlp_head', 'mlp_head', 'create_fc_head', 'fc_head',
+           'create_rnn_head', 'rnn_head', 'create_conv_lin_3d_head', 'conv_lin_3d_head', 'create_lin_3d_head',
+           'lin_3d_head', 'heads', 'GaussianNoise', 'gambler_loss', 'CrossEntropyLossOneHot', 'ttest_bin_loss',
+           'ttest_reg_loss', 'CenterLoss', 'CenterPlusLoss', 'FocalLoss', 'TweedieLoss']
 
 # Cell
 from torch.nn.init import normal_
@@ -464,6 +465,16 @@ class GACP1d(Module):
         self.flatten = Flatten()
     def forward(self, x):
         return self.flatten(self.gacp(x))
+
+# Cell
+class LogitAdjustmentLayer(Module):
+    "Logit Adjustment for imbalanced datasets"
+    def __init__(self, class_priors):
+        self.class_priors = class_priors
+    def forward(self, x):
+        return x.add(self.class_priors)
+
+LogitAdjLayer = LogitAdjustmentLayer
 
 # Cell
 class SqueezeExciteBlock(Module):

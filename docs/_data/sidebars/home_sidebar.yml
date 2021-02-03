@@ -63,6 +63,9 @@ entries:
     - output: web,pdf
       title: Callbacks
       url: /callback.core
+    - output: web,pdf
+      title: Prediction Dynamics
+      url: /callback.PredictionDynamics
       subfolders:
       - output: web
         subfolderitems:
