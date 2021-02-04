@@ -59,8 +59,6 @@ class PredictionDynamics(Callback):
         self.y_pred.extend(y_pred.flatten().numpy())
 
     def after_epoch(self):
-        "Plot validation preds during training"
-
         # Ground truth
         if self.epoch == 0:
             self.y_true = np.array(self.y_true)
@@ -96,9 +94,9 @@ class PredictionDynamics(Callback):
                 self._rand = []
                 for i, c in enumerate(self._classes):
                     self._rand.append(.5 * (np.random.rand(np.sum(y_true == c)) - .5))
-            self.graph_fig, self.graph_ax = plt.subplots(
-                1, figsize=self.figsize)
+            self.graph_fig, self.graph_ax = plt.subplots(1, figsize=self.figsize)
             self.graph_out = display(self.graph_ax.figure, display_id=True)
+            self.df_out = display(pd.DataFrame(), display_id=True)
         self.graph_ax.clear()
         if self.cat:
             for i, c in enumerate(self._classes):
@@ -124,6 +122,7 @@ class PredictionDynamics(Callback):
             self.graph_ax.set_xlabel('y_pred', fontsize=12)
             self.graph_ax.set_ylabel('y_true', fontsize=12)
             self.graph_ax.grid(color='gainsboro', linewidth=.2)
-        title = f'Prediction Dynamics \nepoch: {self.epoch +1}/{self.n_epoch} - valid_loss: {self.learn.recorder.values[-1][1]:.6f}'
-        self.graph_ax.set_title(title)
+        self.graph_ax.set_title(f'Prediction Dynamics \nepoch: {self.epoch +1}/{self.n_epoch}')
         self.graph_out.update(self.graph_ax.figure)
+        self.df_out.update(pd.DataFrame(np.stack(self.learn.recorder.values)[-1].reshape(1,-1),
+                                        columns=self.learn.recorder.metric_names[1:-1], index=[self.epoch]))

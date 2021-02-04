@@ -329,7 +329,7 @@ class _TSTBackbone(Module):
 
         # Input encoding
         if self.new_q_len: u = self.W_P(x).transpose(2,1) # Eq 2        # u: [bs x d_model x q_len] transposed to [bs x q_len x d_model]
-        else: u = self.W_P(x.transpose(2,1))              # Eq 1        # u: [bs x q_len x d_model] transposed to [bs x q_len x d_model]
+        else: u = self.W_P(x.transpose(2,1))              # Eq 1        # u: [bs x q_len x nvars] converted to [bs x q_len x d_model]
 
         # Positional encoding
         u = self.res_dropout(u + self.W_pos)

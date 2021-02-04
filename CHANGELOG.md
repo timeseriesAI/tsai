@@ -22,7 +22,7 @@
     * Added option to pass any custom mask to TSBERT.
     
 * Training:
-    * PredictionDynamics callback: to allow you to visualize predictions during training.
+    * PredictionDynamics callback: allows you to visualize predictions during training.
     
 ### Bug Fixes
 * Models: 

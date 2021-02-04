@@ -66,10 +66,9 @@ def load_all(path='export', dls_fname='dls', model_fname='model', learner_fname=
     if device == 'cpu': cpu = True
     else: cpu = None
 
-
     path = Path(path)
     learn = load_learner(path/f'{learner_fname}.pkl', cpu=cpu, pickle_module=pickle_module)
-    learn.load(f'{model_fname}', with_opt=True)
+    learn.load(f'{model_fname}', with_opt=True, device=device)
 
 
     if learn.dls_type == "MixedDataLoaders":
@@ -80,10 +79,11 @@ def load_all(path='export', dls_fname='dls', model_fname='model', learner_fname=
             for j in range(learn.n_loaders[1]):
                 l = torch.load(path/f'{dls_fname}_{i}_{j}.pth', map_location=device, pickle_module=pickle_module)
                 l = l.new(num_workers=0)
+                l.to(device)
                 dls_fnames.append(f'{dls_fname}_{i}_{j}.pth')
                 _dl.append(l)
-            _dls.append(MixedDataLoader(*_dl, path=learn.dls.path, device=learn.dls.device, shuffle=l.shuffle))
-        learn.dls = MixedDataLoaders(*_dls, path=learn.dls.path, device=learn.dls.device)
+            _dls.append(MixedDataLoader(*_dl, path=learn.dls.path, device=device, shuffle=l.shuffle))
+        learn.dls = MixedDataLoaders(*_dls, path=learn.dls.path, device=device)
 
     else:
         loaders = []
@@ -91,10 +91,11 @@ def load_all(path='export', dls_fname='dls', model_fname='model', learner_fname=
         for i in range(learn.n_loaders):
             dl = torch.load(path/f'{dls_fname}_{i}.pth', map_location=device, pickle_module=pickle_module)
             dl = dl.new(num_workers=0)
+            dl.to(device)
             first(dl)
             loaders.append(dl)
             dls_fnames.append(f'{dls_fname}_{i}.pth')
-        learn.dls = type(learn.dls)(*loaders, path=learn.dls.path, device=learn.dls.device)
+        learn.dls = type(learn.dls)(*loaders, path=learn.dls.path, device=device)
 
 
     pv(f'Learner loaded:', verbose)

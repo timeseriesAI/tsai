@@ -66,7 +66,8 @@ class MultiHeadAttention(Module):
 
 # Cell
 class TSTEncoderLayer(Module):
-    def __init__(self, d_model:int, n_heads:int, d_k:Optional[int]=None, d_v:Optional[int]=None, d_ff:int=256, res_dropout:float=0.1, activation:str="gelu"):
+    def __init__(self, q_len:int, d_model:int, n_heads:int, d_k:Optional[int]=None, d_v:Optional[int]=None, d_ff:int=256, res_dropout:float=0.1,
+                 activation:str="gelu"):
 
         assert d_model // n_heads, f"d_model ({d_model}) must be divisible by n_heads ({n_heads})"
         d_k = ifnone(d_k, d_model // n_heads)
@@ -77,14 +78,14 @@ class TSTEncoderLayer(Module):
 
         # Add & Norm
         self.dropout_attn = nn.Dropout(res_dropout)
-        self.batchnorm_attn = nn.BatchNorm1d(d_model)
+        self.batchnorm_attn = nn.BatchNorm1d(q_len)
 
         # Position-wise Feed-Forward
         self.ff = nn.Sequential(nn.Linear(d_model, d_ff), self._get_activation_fn(activation), nn.Linear(d_ff, d_model))
 
         # Add & Norm
         self.dropout_ffn = nn.Dropout(res_dropout)
-        self.batchnorm_ffn = nn.BatchNorm1d(d_model)
+        self.batchnorm_ffn = nn.BatchNorm1d(q_len)
 
     def forward(self, src:Tensor, mask:Optional[Tensor]=None) -> Tensor:
 
@@ -93,14 +94,14 @@ class TSTEncoderLayer(Module):
         src2, attn = self.self_attn(src, src, src, mask=mask)
         ## Add & Norm
         src = src + self.dropout_attn(src2) # Add: residual connection with residual dropout
-        src = self.batchnorm_attn(src.permute(1,2,0)).permute(2,0,1) # Norm: batchnorm (requires d_model features to be in dim 1)
+        src = self.batchnorm_attn(src)      # Norm: batchnorm
 
         # Feed-forward sublayer
         ## Position-wise Feed-Forward
         src2 = self.ff(src)
         ## Add & Norm
         src = src + self.dropout_ffn(src2) # Add: residual connection with residual dropout
-        src = self.batchnorm_ffn(src.permute(1,2,0)).permute(2,0,1) # Norm: batchnorm (requires d_model features to be in dim 1)
+        src = self.batchnorm_ffn(src) # Norm: batchnorm
 
         return src
 
@@ -179,7 +180,7 @@ class TST(Module):
         self.res_dropout = nn.Dropout(res_dropout)
 
         # Encoder
-        encoder_layer = TSTEncoderLayer(d_model, n_heads, d_k=d_k, d_v=d_v, d_ff=d_ff, res_dropout=res_dropout, activation=act)
+        encoder_layer = TSTEncoderLayer(q_len, d_model, n_heads, d_k=d_k, d_v=d_v, d_ff=d_ff, res_dropout=res_dropout, activation=act)
         self.encoder = TSTEncoder(encoder_layer, n_layers)
         self.flatten = Flatten()
 
@@ -198,7 +199,7 @@ class TST(Module):
 
         # Input encoding
         if self.new_q_len: u = self.W_P(x).transpose(2,1) # Eq 2        # u: [bs x d_model x q_len] transposed to [bs x q_len x d_model]
-        else: u = self.W_P(x.transpose(2,1)) # Eq 1                     # u: [bs x q_len x d_model] transposed to [bs x q_len x d_model]
+        else: u = self.W_P(x.transpose(2,1)) # Eq 1                     # u: [bs x q_len x nvars] converted to [bs x q_len x d_model]
 
         # Positional encoding
         u = self.res_dropout(u + self.W_pos)

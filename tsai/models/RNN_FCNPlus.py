@@ -7,14 +7,30 @@ from ..imports import *
 from .layers import *
 
 # Cell
-class _RNN_FCN_BasePlus(Module):
+class _RNN_FCN_BasePlus(nn.Sequential):
     def __init__(self, c_in, c_out, seq_len=None, hidden_size=100, rnn_layers=1, bias=True, cell_dropout=0, rnn_dropout=0.8, bidirectional=False, shuffle=True,
                  fc_dropout=0., conv_layers=[128, 256, 128], kss=[7, 5, 3], se=0):
 
         if shuffle: assert seq_len is not None, 'need seq_len if shuffle=True'
 
+        backbone = _RNN_FCN_Base_Backbone(self._cell, c_in, c_out, seq_len=seq_len, hidden_size=hidden_size, rnn_layers=rnn_layers, bias=bias,
+                                          cell_dropout=cell_dropout, rnn_dropout=rnn_dropout, bidirectional=bidirectional, shuffle=shuffle,
+                                          conv_layers=conv_layers, kss=kss, se=se)
+
+        head_layers = [nn.Dropout(fc_dropout)] if fc_dropout else []
+        head_layers += [nn.Linear(hidden_size * (1 + bidirectional) + conv_layers[-1], c_out)]
+        head = nn.Sequential(*head_layers)
+
+        layers = OrderedDict([('backbone', backbone), ('head', head)])
+        super().__init__(layers)
+
+
+class _RNN_FCN_Base_Backbone(Module):
+    def __init__(self, _cell, c_in, c_out, seq_len=None, hidden_size=100, rnn_layers=1, bias=True, cell_dropout=0, rnn_dropout=0.8, bidirectional=False,
+                 shuffle=True, conv_layers=[128, 256, 128], kss=[7, 5, 3], se=0):
+
         # RNN - first arg is usually c_in. Authors modified this to seq_len by not permuting x. This is what they call shuffled data.
-        self.rnn = self._cell(seq_len if shuffle else c_in, hidden_size, num_layers=rnn_layers, bias=bias, batch_first=True,
+        self.rnn = _cell(seq_len if shuffle else c_in, hidden_size, num_layers=rnn_layers, bias=bias, batch_first=True,
                               dropout=cell_dropout, bidirectional=bidirectional)
         self.rnn_dropout = nn.Dropout(rnn_dropout) if rnn_dropout else noop
         self.shuffle = Permute(0,2,1) if not shuffle else noop # You would normally permute x. Authors did the opposite.
@@ -30,9 +46,6 @@ class _RNN_FCN_BasePlus(Module):
 
         # Common
         self.concat = Concat()
-        self.fc_dropout = nn.Dropout(fc_dropout) if fc_dropout else noop
-        self.fc = nn.Linear(hidden_size * (1 + bidirectional) + conv_layers[-1], c_out)
-
 
     def forward(self, x):
         # RNN
@@ -51,10 +64,6 @@ class _RNN_FCN_BasePlus(Module):
 
         # Concat
         x = self.concat([last_out, x])
-
-        # Head
-        x = self.fc_dropout(x)
-        x = self.fc(x)
         return x
 
 
