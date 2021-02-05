@@ -25,6 +25,7 @@ from .TSTPlus import *
 from .XceptionTime import *
 from .XceptionTimePlus import *
 from .XCM import *
+from .XCMPlus import *
 from .XResNet1d import *
 from .XResNet1dPlus import *
 from fastai.vision.models.xresnet import *

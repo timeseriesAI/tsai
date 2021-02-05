@@ -138,6 +138,18 @@ def plot_metrics(self: Learner, **kwargs):
 # Cell
 @patch
 @delegates(subplots)
+def plot_final_losses(self:Learner, perc=.5, nrows=None, ncols=None, figsize=None, **kwargs):
+    n_values = len(self.recorder.values)
+    sel_idxs = int(round(n_values * perc))
+    new_values = stack(self.recorder.values)[-sel_idxs:]
+    plt.plot(np.arange(n_values)[-sel_idxs:], new_values[:, 0])
+    plt.plot(np.arange(n_values)[-sel_idxs:], new_values[:, 1])
+    plt.title(f'Losses in the final {perc:.0%} epochs')
+    plt.show()
+
+# Cell
+@patch
+@delegates(subplots)
 def show_probas(self:Learner, figsize=(6,6), ds_idx=1, dl=None, one_batch=False, max_n=None, **kwargs):
     recorder = copy(self.recorder) # This is to avoid loss of recorded values while generating preds
     if one_batch: dl = self.dls.one_batch()

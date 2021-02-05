@@ -56,7 +56,8 @@
                 "XceptionTime": "/models.XceptionTime",
                 "XceptionTimePlus": "/models.XceptionTimePlus",
                 "OmniScaleCNN": "/models.OmniScaleCNN",
-                "XCM": "/models.XCM"
+                "XCM": "/models.XCM",
+                "XCMPlus": "/models.XCMPlus"
             }
         },
         "empty2": {

@@ -4,7 +4,7 @@ __all__ = ['get_layers', 'is_layer', 'is_linear', 'is_bn', 'is_conv_linear', 'is
            'has_weight', 'has_weight_or_bias', 'check_bias', 'check_weight', 'ts_splitter', 'transfer_weights',
            'build_ts_model', 'build_tabular_model', 'build_tsimage_model', 'count_parameters', 'build_model',
            'create_model', 'create_tabular_model', 'get_clones', 'get_nf', 'split_model', 'seq_len_calculator',
-           'change_model_head', 'naive_forecaster']
+           'change_model_head', 'naive_forecaster', 'true_forecaster']
 
 # Cell
 from fastai.tabular.model import *
@@ -217,4 +217,16 @@ def change_model_head(model, custom_head, **kwargs):
     return model
 
 # Cell
-def naive_forecaster(o, split, lag=1): return o[np.asarray(split)-lag]
+def naive_forecaster(o, split, horizon=1):
+    if is_listy(horizon):
+        _f = []
+        for h in horizon:
+            _f.append(o[np.asarray(split)-h])
+        return np.stack(_f)
+    return o[np.asarray(split) - horizon]
+
+def true_forecaster(o, split, horizon=1):
+    o_true = o[split]
+    if is_listy(horizon):
+        o_true = o_true[np.newaxis].repeat(len(horizon), 0)
+    return o_true

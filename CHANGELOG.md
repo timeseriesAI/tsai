@@ -24,6 +24,9 @@
 * Training:
     * PredictionDynamics callback: allows you to visualize predictions during training.
     
+* Tutorial notebooks: 
+    * New notebook demonstrating the new PredictionDynamics callback.
+    
 ### Bug Fixes
 * Models: 
     * Fixed bug that prevented models to freeze or unfreeze. Now all models that end with Plus can take predefined weights and learn.freeze()/ learn.unfreeze() will work as expected.
