@@ -164,7 +164,7 @@ def show_probas(self:Learner, figsize=(6,6), ds_idx=1, dl=None, one_batch=False,
     plt.ylim(min(vals) - 1, max(vals))
     plt.xlim(0,1)
     plt.xticks(np.linspace(0,1,11), fontsize=12)
-    plt.yticks(classes, [self.dls.vocab[x] for x in classes], fontsize=12, rotation=45)
+    plt.yticks(classes, [self.dls.vocab[x] for x in classes], fontsize=12)
     plt.title('Predicted proba per true class' if nclasses > 2 else 'Predicted class 1 proba per true class', fontsize=14)
     plt.xlabel('Probability', fontsize=12)
     plt.ylabel('True class', fontsize=12)
