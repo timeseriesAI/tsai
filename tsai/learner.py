@@ -6,7 +6,9 @@ __all__ = ['load_all', 'load_learner_all', 'ts_learner', 'tsimage_learner', 'TSC
 # Cell
 from fastai.learner import *
 from fastai.vision.models.all import *
+from fastai.data.transforms import *
 from .imports import *
+from .data.core import *
 from .models.utils import *
 
 # Cell

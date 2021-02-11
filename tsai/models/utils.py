@@ -145,7 +145,7 @@ def build_ts_model(arch, c_in=None, c_out=None, seq_len=None, d=None, dls=None, 
         model.backbone = model[:cut]
         model.head = model[cut:]
 
-    if pretrained:
+    if pretrained and not ('xresnet' in arch.__name__ and not '1d' in arch.__name__):
         assert weights_path is not None, "you need to pass a valid weights_path to use a pre-trained model"
         transfer_weights(model, weights_path, exclude_head=exclude_head, device=device)
 

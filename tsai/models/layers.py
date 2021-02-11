@@ -538,7 +538,7 @@ def create_conv_head(*args, adaptive_size=None, y_range=None):
 conv_head = create_conv_head
 
 # Cell
-def create_mlp_head(nf, c_out, seq_len, flatten=True, fc_dropout=0., bn=False, y_range=None):
+def create_mlp_head(nf, c_out, seq_len=None, flatten=True, fc_dropout=0., bn=False, y_range=None):
     if flatten: nf *= seq_len
     layers = [Flatten()] if flatten else []
     layers += [LinBnDrop(nf, c_out, bn=bn, p=fc_dropout)]
@@ -548,7 +548,7 @@ def create_mlp_head(nf, c_out, seq_len, flatten=True, fc_dropout=0., bn=False, y
 mlp_head = create_mlp_head
 
 # Cell
-def create_fc_head(nf, c_out, seq_len, flatten=True, lin_ftrs=None, y_range=None, fc_dropout=0., bn=False, bn_final=False, act=nn.ReLU(inplace=True)):
+def create_fc_head(nf, c_out, seq_len=None, flatten=True, lin_ftrs=None, y_range=None, fc_dropout=0., bn=False, bn_final=False, act=nn.ReLU(inplace=True)):
     if flatten: nf *= seq_len
     layers = [Flatten()] if flatten else []
     lin_ftrs = [nf, 512, c_out] if lin_ftrs is None else [nf] + lin_ftrs + [c_out]
