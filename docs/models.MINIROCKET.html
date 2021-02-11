@@ -47,13 +47,6 @@ nb_path: "nbs/111b_models.MINIROCKET.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
 <div class="output_wrapper">
 <div class="output">
 
@@ -61,32 +54,8 @@ nb_path: "nbs/111b_models.MINIROCKET.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MINIROCKET" class="doc_header"><code>class</code> <code>MINIROCKET</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/MINIROCKET.py#L28" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MINIROCKET</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>1</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Module</code></p>
+<h2 id="MiniRocketFeatures" class="doc_header"><code>class</code> <code>MiniRocketFeatures</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/MINIROCKET.py#L23" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocketFeatures</code>()</p>
 </blockquote>
-<p>Base class for all neural network modules.</p>
-<p>Your models should also subclass this class.</p>
-<p>Modules can also contain other Modules, allowing to nest them in
-a tree structure. You can assign the submodules as regular attributes::</p>
-
-<pre><code>import torch.nn as nn
-import torch.nn.functional as F
-
-class Model(nn.Module):
-    def __init__(self):
-        super(Model, self).__init__()
-        self.conv1 = nn.Conv2d(1, 20, 5)
-        self.conv2 = nn.Conv2d(20, 20, 5)
-
-    def forward(self, x):
-        x = F.relu(self.conv1(x))
-        return F.relu(self.conv2(x))
-
-</code></pre>
-<p>Submodules assigned in this way will be registered, and will have their
-parameters converted too when you call :meth:<code>to</code>, etc.</p>
-<p>:ivar training: Boolean represents whether this module is in training or
-                evaluation mode.
-:vartype training: bool</p>
 
 </div>
 
@@ -94,13 +63,6 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 </div>
 </div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -123,10 +85,28 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_minirocket_features" class="doc_header"><code>get_minirocket_features</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/MINIROCKET.py#L56" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_minirocket_features</code>(<strong><code>X</code></strong>, <strong><code>num_features</code></strong>=<em><code>10000</code></em>, <strong><code>max_dilations_per_kernel</code></strong>=<em><code>32</code></em>, <strong><code>on_disk</code></strong>=<em><code>True</code></em>, <strong><code>path</code></strong>=<em><code>'./data/MINIROCKET'</code></em>, <strong><code>fname</code></strong>=<em><code>'X_tfm'</code></em>, <strong><code>features_last</code></strong>=<em><code>True</code></em>, <strong><code>random_state</code></strong>=<em><code>None</code></em>)</p>
+<h2 id="MiniRocket" class="doc_header"><code>class</code> <code>MiniRocket</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/MINIROCKET.py#L91" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocket</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>1</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/tsai/models.layers.html#Sequential"><code>Sequential</code></a></p>
 </blockquote>
-<p>Args:
-    features_last: set to True when using features with MiniRocketClassifier or MiniRocketRegressor. Set to False when using MINIROCKET (Pytorch).</p>
+<p>A sequential container.
+Modules will be added to it in the order they are passed in the constructor.
+Alternatively, an ordered dict of modules can also be passed in.</p>
+<p>To make it easier to understand, here is a small example::</p>
+
+<pre><code># Example of using Sequential
+model = nn.Sequential(
+          nn.Conv2d(1,20,5),
+          nn.ReLU(),
+          nn.Conv2d(20,64,5),
+          nn.ReLU()
+        )
+
+# Example of using Sequential with OrderedDict
+model = nn.Sequential(OrderedDict([
+          ('conv1', nn.Conv2d(1,20,5)),
+          ('relu1', nn.ReLU()),
+          ('conv2', nn.Conv2d(20,64,5)),
+          ('relu2', nn.ReLU())
+        ]))</code></pre>
 
 </div>
 
@@ -152,22 +132,64 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">&#39;NATOPS&#39;</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;ECGFiveDays&#39;</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">mrf</span> <span class="o">=</span> <span class="n">MiniRocketFeatures</span><span class="p">()</span>
+<span class="n">mrf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+<span class="n">X_tfm_train</span> <span class="o">=</span> <span class="n">mrf</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="s1">&#39;mrf_train&#39;</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">p1</span> <span class="o">=</span> <span class="n">mrf</span><span class="o">.</span><span class="n">parameters</span>
+<span class="n">mrf</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;mrf_</span><span class="si">{</span><span class="n">dsid</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="k">del</span> <span class="n">mrf</span>
+<span class="n">mrf</span> <span class="o">=</span> <span class="n">MiniRocketFeatures</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;mrf_</span><span class="si">{</span><span class="n">dsid</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">p2</span> <span class="o">=</span> <span class="n">mrf</span><span class="o">.</span><span class="n">parameters</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">)</span>
+<span class="n">X_tfm_valid</span> <span class="o">=</span> <span class="n">mrf</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="s1">&#39;mrf_valid&#39;</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
     </div>
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
 </div>
     {% endraw %}
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>With MINIROCKET we use need to:</p>
+<p>With MiniRocket we use need to:</p>
 <ol>
 <li>Transform X --&gt; X_tfm</li>
-<li>Train a MINIROCKET using previously calculated features</li>
+<li>Train a MiniRocket using previously calculated features (X_tfm)</li>
 </ol>
 
 </div>
@@ -182,11 +204,14 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">tsai.data.all</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">tsai.learner</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;ECGFiveDays&#39;</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">tfms</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">TSClassification</span><span class="p">()]</span>
-<span class="n">batch_tfms</span> <span class="o">=</span> <span class="n">TSStandardize</span><span class="p">(</span><span class="n">by_sample</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">X_tfm</span> <span class="o">=</span> <span class="n">get_minirocket_features</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">features_last</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">batch_tfms</span> <span class="o">=</span> <span class="n">TSStandardize</span><span class="p">(</span><span class="n">by_var</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">mrf</span> <span class="o">=</span> <span class="n">MiniRocketFeatures</span><span class="p">()</span>
+<span class="n">X_tfm</span> <span class="o">=</span> <span class="n">mrf</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 <span class="n">dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X_tfm</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="n">batch_tfms</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
-<span class="n">learn</span> <span class="o">=</span> <span class="n">ts_learner</span><span class="p">(</span><span class="n">dls</span><span class="p">,</span> <span class="n">MINIROCKET</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">accuracy</span><span class="p">)</span>
+<span class="n">learn</span> <span class="o">=</span> <span class="n">ts_learner</span><span class="p">(</span><span class="n">dls</span><span class="p">,</span> <span class="n">MiniRocket</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">accuracy</span><span class="p">)</span>
 <span class="n">learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">1e-4</span><span class="p">,</span> <span class="n">cbs</span><span class="o">=</span><span class="n">ReduceLROnPlateau</span><span class="p">(</span><span class="n">factor</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">min_lr</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">patience</span><span class="o">=</span><span class="mi">10</span><span class="p">))</span>
 </pre></div>
 
@@ -196,6 +221,15 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 <div class="output_wrapper">
 <div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+
+</div>
+
+</div>
 
 <div class="output_area">
 
@@ -214,72 +248,72 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
   <tbody>
     <tr>
       <td>0</td>
-      <td>1.791758</td>
-      <td>1.651912</td>
-      <td>0.688889</td>
+      <td>0.693147</td>
+      <td>0.526331</td>
+      <td>0.754936</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>1</td>
-      <td>1.716243</td>
-      <td>1.527375</td>
-      <td>0.783333</td>
+      <td>0.582386</td>
+      <td>0.435146</td>
+      <td>0.796748</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>2</td>
-      <td>1.645866</td>
-      <td>1.413943</td>
-      <td>0.755556</td>
+      <td>0.508790</td>
+      <td>0.368741</td>
+      <td>0.828107</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>3</td>
-      <td>1.579221</td>
-      <td>1.313193</td>
-      <td>0.766667</td>
+      <td>0.453322</td>
+      <td>0.312180</td>
+      <td>0.861789</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>4</td>
-      <td>1.516538</td>
-      <td>1.222329</td>
-      <td>0.772222</td>
+      <td>0.407587</td>
+      <td>0.262873</td>
+      <td>0.893148</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>5</td>
-      <td>1.457594</td>
-      <td>1.140383</td>
-      <td>0.772222</td>
+      <td>0.368117</td>
+      <td>0.220747</td>
+      <td>0.914053</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>6</td>
-      <td>1.402126</td>
-      <td>1.068308</td>
-      <td>0.772222</td>
+      <td>0.333499</td>
+      <td>0.185743</td>
+      <td>0.944251</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>7</td>
-      <td>1.350085</td>
-      <td>1.003734</td>
-      <td>0.783333</td>
+      <td>0.303106</td>
+      <td>0.157302</td>
+      <td>0.959350</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>8</td>
-      <td>1.301203</td>
-      <td>0.945729</td>
-      <td>0.777778</td>
+      <td>0.276519</td>
+      <td>0.134482</td>
+      <td>0.973287</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>9</td>
-      <td>1.255275</td>
-      <td>0.894096</td>
-      <td>0.777778</td>
+      <td>0.253316</td>
+      <td>0.116239</td>
+      <td>0.979094</td>
       <td>00:00</td>
     </tr>
   </tbody>
@@ -305,7 +339,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MiniRocketClassifier" class="doc_header"><code>class</code> <code>MiniRocketClassifier</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/MINIROCKET.py#L81" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocketClassifier</code>() :: <code>Pipeline</code></p>
+<h2 id="MiniRocketClassifier" class="doc_header"><code>class</code> <code>MiniRocketClassifier</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/MINIROCKET.py#L115" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocketClassifier</code>() :: <code>Pipeline</code></p>
 </blockquote>
 <p>Pipeline of transforms with a final estimator.</p>
 <p>Sequentially apply a list of transforms and a final estimator.
@@ -358,6 +392,30 @@ pipe.score(X_test, y_test)
 0.88</p>
 </blockquote>
 </blockquote>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="load_minirocket" class="doc_header"><code>load_minirocket</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/MINIROCKET.py#L171" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_minirocket</code>(<strong><code>fname</code></strong>=<em><code>'MiniRocket'</code></em>, <strong><code>path</code></strong>=<em><code>'./data'</code></em>)</p>
 </blockquote>
 
 </div>
@@ -388,7 +446,7 @@ pipe.score(X_test, y_test)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MiniRocketRegressor" class="doc_header"><code>class</code> <code>MiniRocketRegressor</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/MINIROCKET.py#L100" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocketRegressor</code>() :: <code>Pipeline</code></p>
+<h2 id="MiniRocketRegressor" class="doc_header"><code>class</code> <code>MiniRocketRegressor</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/MINIROCKET.py#L147" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocketRegressor</code>() :: <code>Pipeline</code></p>
 </blockquote>
 <p>Pipeline of transforms with a final estimator.</p>
 <p>Sequentially apply a list of transforms and a final estimator.
@@ -441,6 +499,30 @@ pipe.score(X_test, y_test)
 0.88</p>
 </blockquote>
 </blockquote>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="load_minirocket" class="doc_header"><code>load_minirocket</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/MINIROCKET.py#L171" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_minirocket</code>(<strong><code>fname</code></strong>=<em><code>'MiniRocket'</code></em>, <strong><code>path</code></strong>=<em><code>'./data'</code></em>)</p>
 </blockquote>
 
 </div>
@@ -482,10 +564,16 @@ pipe.score(X_test, y_test)
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;OliveOil&#39;</span>
+<span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;./data&#39;</span>
+<span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;MRClassifier&#39;</span>
+
 <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">)</span>
-<span class="bp">cls</span> <span class="o">=</span> <span class="n">MiniRocketClassifier</span><span class="p">()</span>
-<span class="bp">cls</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
-<span class="bp">cls</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">MiniRocketClassifier</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+<span class="k">del</span> <span class="n">model</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">load_minirocket</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -518,15 +606,17 @@ pipe.score(X_test, y_test)
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;AppliancesEnergy&#39;</span>
-<span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">get_Monash_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">)</span>
-<span class="n">rmse_scorer</span> <span class="o">=</span> <span class="n">make_scorer</span><span class="p">(</span><span class="n">mean_squared_error</span><span class="p">,</span> <span class="n">greater_is_better</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">MiniRocketRegressor</span><span class="p">(</span><span class="n">scoring</span><span class="o">=</span><span class="n">rmse_scorer</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;NATOPS&#39;</span>
+<span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;./data&#39;</span>
+<span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;MRClassifier&#39;</span>
+
+<span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">MiniRocketClassifier</span><span class="p">()</span>
 <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
-<span class="n">y_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
-<span class="n">mse</span> <span class="o">=</span> <span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
-<span class="n">rmse</span> <span class="o">=</span> <span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">squared</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">mse</span><span class="p">,</span> <span class="n">rmse</span>
+<span class="n">model</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+<span class="k">del</span> <span class="n">model</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">load_minirocket</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -541,7 +631,95 @@ pipe.score(X_test, y_test)
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(4.928361082328822, 2.2199912347414394)</pre>
+<pre>0.9111111111111111</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">mean_squared_error</span>
+<span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;Covid3Month&#39;</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">get_Monash_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">)</span>
+<span class="n">rmse_scorer</span> <span class="o">=</span> <span class="n">make_scorer</span><span class="p">(</span><span class="n">mean_squared_error</span><span class="p">,</span> <span class="n">greater_is_better</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">MiniRocketRegressor</span><span class="p">(</span><span class="n">scoring</span><span class="o">=</span><span class="n">rmse_scorer</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+<span class="k">del</span> <span class="n">model</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">load_minirocket</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+<span class="n">y_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="n">rmse</span> <span class="o">=</span> <span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">squared</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">rmse</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>0.041641458324160906</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">mean_squared_error</span>
+<span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;AppliancesEnergy&#39;</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">get_Monash_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">)</span>
+<span class="n">rmse_scorer</span> <span class="o">=</span> <span class="n">make_scorer</span><span class="p">(</span><span class="n">mean_squared_error</span><span class="p">,</span> <span class="n">greater_is_better</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">MiniRocketRegressor</span><span class="p">(</span><span class="n">scoring</span><span class="o">=</span><span class="n">rmse_scorer</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+<span class="k">del</span> <span class="n">model</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">load_minirocket</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+<span class="n">y_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="n">rmse</span> <span class="o">=</span> <span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">squared</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">rmse</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>2.30644069648352</pre>
 </div>
 
 </div>

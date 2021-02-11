@@ -517,7 +517,7 @@ Taken from the great self-supervised repository created by Kerem Turgutlu.
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>Feature Extraction: 100%|██████████| 40/40 [00:05&lt;00:00,  7.23it/s]
+<pre>Feature Extraction: 100%|██████████| 40/40 [00:03&lt;00:00, 10.15it/s]
 </pre>
 </div>
 </div>
@@ -826,7 +826,31 @@ Taken from the great self-supervised repository created by Kerem Turgutlu.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="naive_forecaster" class="doc_header"><code>naive_forecaster</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L220" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>naive_forecaster</code>(<strong><code>o</code></strong>, <strong><code>split</code></strong>, <strong><code>lag</code></strong>=<em><code>1</code></em>)</p>
+<h4 id="naive_forecaster" class="doc_header"><code>naive_forecaster</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L220" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>naive_forecaster</code>(<strong><code>o</code></strong>, <strong><code>split</code></strong>, <strong><code>horizon</code></strong>=<em><code>1</code></em>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="true_forecaster" class="doc_header"><code>true_forecaster</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/utils.py#L228" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>true_forecaster</code>(<strong><code>o</code></strong>, <strong><code>split</code></strong>, <strong><code>horizon</code></strong>=<em><code>1</code></em>)</p>
 </blockquote>
 
 </div>
@@ -855,7 +879,7 @@ Taken from the great self-supervised repository created by Kerem Turgutlu.
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span>
 <span class="n">split</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
-<span class="n">a</span><span class="p">,</span> <span class="n">naive_forecaster</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">split</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">a</span><span class="p">,</span> <span class="n">naive_forecaster</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">split</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">true_forecaster</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">split</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -870,12 +894,14 @@ Taken from the great self-supervised repository created by Kerem Turgutlu.
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(array([0.08849488, 0.1755054 , 0.51386213, 1.49582629, 1.53966986,
-        2.39126809, 2.64675149, 2.84561196, 3.45691119, 3.66488647,
-        4.65584886, 5.48402963, 6.33212877, 6.65446676, 6.76221858,
-        7.01204903, 7.17381667, 8.12494364, 9.11267184, 9.71279037]),
- array([3.66488647, 4.65584886, 5.48402963, 6.33212877, 6.65446676,
-        6.76221858, 7.01204903, 7.17381667, 8.12494364, 9.11267184]))</pre>
+<pre>(array([ 0.42742468,  1.17087678,  1.68750235,  2.48042878,  2.6794385 ,
+         3.04268319,  3.05297597,  3.18963579,  4.1052078 ,  4.17644467,
+         4.88568029,  5.59762148,  6.2369982 ,  6.97723618,  7.80022162,
+         8.78859312,  9.52986533,  9.66201371, 10.38975512, 11.28629426]),
+ array([ 4.17644467,  4.88568029,  5.59762148,  6.2369982 ,  6.97723618,
+         7.80022162,  8.78859312,  9.52986533,  9.66201371, 10.38975512]),
+ array([ 4.88568029,  5.59762148,  6.2369982 ,  6.97723618,  7.80022162,
+         8.78859312,  9.52986533,  9.66201371, 10.38975512, 11.28629426]))</pre>
 </div>
 
 </div>

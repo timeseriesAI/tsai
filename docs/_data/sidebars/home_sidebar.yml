@@ -148,6 +148,9 @@ entries:
         - output: web,pdf
           title: XCM
           url: /models.XCM
+        - output: web,pdf
+          title: XCMPlus
+          url: /models.XCMPlus
         title: 1D CNNs
       - output: web
         subfolderitems:

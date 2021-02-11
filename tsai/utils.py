@@ -10,10 +10,10 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'flatten_list', 'display_pd_df', 'ttest', 'tscore', 'ttest_tensor', 'pcc', 'scc', 'a', 'b', 'remove_fn',
            'npsave', 'np_save', 'permute_2D', 'random_normal', 'random_half_normal', 'random_normal_tensor',
            'random_half_normal_tensor', 'clip_outliers', 'default_dpi', 'get_plot_fig', 'fig2buf', 'plot_scatter',
-           'jointplot_scatter', 'jointplot_kde', 'get_idxs', 'apply_cmap', 'torch_tile', 'to_tsfresh_df', 'pcorr',
-           'scorr', 'torch_diff', 'get_outliers_IQR', 'get_percentile', 'torch_clamp', 'torch_slice_by_dim',
-           'torch_nanmean', 'torch_nanstd', 'concat', 'reduce_memory_usage', 'cls_name', 'roll2d', 'roll3d',
-           'random_roll2d', 'random_roll3d']
+           'get_idxs', 'apply_cmap', 'torch_tile', 'to_tsfresh_df', 'pcorr', 'scorr', 'torch_diff', 'get_outliers_IQR',
+           'get_percentile', 'torch_clamp', 'torch_slice_by_dim', 'torch_nanmean', 'torch_nanstd', 'concat',
+           'reduce_memory_usage', 'cls_name', 'roll2d', 'roll3d', 'random_roll2d', 'random_roll3d',
+           'create_empty_array']
 
 # Cell
 from .imports import *
@@ -474,16 +474,6 @@ def plot_scatter(x, y, deg=1):
     plt.show()
 
 # Cell
-import seaborn as sns
-def jointplot_scatter(x,y,**kwargs):
-    sns.jointplot(x, y, kind='scatter', **kwargs)
-    plt.show()
-
-def jointplot_kde(x,y,**kwargs):
-    sns.jointplot(x, y, kind='kde', **kwargs)
-    plt.show()
-
-# Cell
 def get_idxs(o, aList): return array([o.tolist().index(v) for v in aList])
 
 # Cell
@@ -685,3 +675,32 @@ def random_roll3d(o, axis=()):
         roll3 = np.random.randint(0, o.shape[2], o.shape[0]).reshape(-1, 1, 1)
         axis3 = axis3 - roll3
     return o[axis1, axis2, axis3]
+
+# Cell
+def create_empty_array(shape, fname=None, path='./data', on_disk=True, dtype='float32', mode='c', **kwargs):
+    """
+    Modes:
+        ‘r’:  Open existing file for reading only.
+        ‘r+’: Open existing file for reading and writing.
+        ‘w+’: Create or overwrite existing file for reading and writing.
+        ‘c’:  Copy-on-write: assignments affect data in memory, but changes are not saved to disk. The file on disk is read-only.
+    """
+    if on_disk:
+        assert fname is not None, 'you must provide a fname (filename)'
+        path = Path(path)
+        if not fname.endswith('npy'): fname = f'{fname}.npy'
+        filename = path/fname
+        filename.parent.mkdir(parents=True, exist_ok=True)
+        # Save a small empty array
+        _temp_fn = path/'temp_X.npy'
+        np.save(_temp_fn, np.empty(0))
+        # Create  & save file
+        arr = np.memmap(_temp_fn, dtype=dtype, mode='w+', shape=shape, **kwargs)
+        np.save(filename, arr)
+        del arr
+        os.remove(_temp_fn)
+        # Open file in selected mode
+        arr = np.load(filename, mmap_mode=mode)
+    else:
+        arr = np.empty(shape, dtype=dtype, **kwargs)
+    return arr

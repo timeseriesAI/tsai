@@ -16,9 +16,9 @@ from fastcore.test import *
 from fastcore.utils import *
 import torch
 import torch.nn as nn
-import psutil
 import scipy as sp
 import sklearn.metrics as skm
+from sklearn.metrics import make_scorer
 import gc
 import os
 from numbers import Integral

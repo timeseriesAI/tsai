@@ -6,6 +6,9 @@
 ## 0.2.15
 
 ### New Features
+* General:
+    * Added 3 new sklearn-type APIs: TSClassifier, TSRegressor and TSForecaster.
+    
 * Data:
     * External: added a new function get_forecasting_data to access some forecasting datasets.
     * Modified TimeSplitter to also allow passing testing_size.
@@ -13,10 +16,11 @@
     * Preprocessing: added a new class (Preprocess) to be able to preprocess data before creating the datasets/ dataloaders. This is mainly to test different target preprocessing techniques.
     * Utils added Nan2Value batch transform to remove any nan values in the dataset.
     * Added a new utility function to easy the creation of a single TSDataLoader when no splits are used (for example with unlabeled datasets).
+    * Added a new function to quickly create empty arrays on disk or in memory (create_empty_array). 
     
 * Models: 
     * TST: Added option to visualize self-attention maps. 
-    * Added 3 new SOTA models: MiniRocketClassifier and MiniRocketRegressor for datasets <10k samples, and MINIROCKET (Pytorch) which supports any dataset size. 
+    * Added 3 new SOTA models: MiniRocketClassifier and MiniRocketRegressor for datasets <10k samples, and MiniRocket (Pytorch) which supports any dataset size. 
     * Added a simple function to create a naive forecast.
     * Added future_mask to TSBERT to be able to train forecasting models. 
     * Added option to pass any custom mask to TSBERT.

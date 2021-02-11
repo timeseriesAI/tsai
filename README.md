@@ -18,6 +18,10 @@
 
 Here's the link to the [documentation](https://timeseriesai.github.io/tsai/).
 
+I've also added a new PredictionDynamics callback that will display the predictions during training. This is the type of output you would get in a classification task for example:
+
+![LSST_training](https://github.com/timeseriesAI/tsai/blob/master/nbs/multimedia/LSST_PD.gif?raw=true)
+
 ## Install
 
 You can install the **latest stable** version from pip:
