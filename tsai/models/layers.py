@@ -722,9 +722,7 @@ lin_3d_head = create_lin_3d_head
 def universal_pool_head(n_in, c_out, seq_len, output_size=1, by_channel=True, pool_n_layers=2, pool_ln=False, pool_dropout=0.5, pool_act=nn.ReLU(),
                    zero_init=True, bn=False, fc_dropout=0.):
     layers = [AdaptiveWeightedAvgPool1d(n_in, seq_len, output_size=output_size, by_channel=by_channel, n_layers=pool_n_layers, ln=pool_ln,
-                                     dropout=pool_dropout, act=pool_act)]
-    layers += [Flatten()]
-    layers += [LinBnDrop(n_in * output_size, c_out, p=fc_dropout, bn=bn)]
+                                        dropout=pool_dropout, act=pool_act), Flatten(), LinBnDrop(n_in * output_size, c_out, p=fc_dropout, bn=bn)]
     return nn.Sequential(*layers)
 
 # Cell
