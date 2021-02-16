@@ -2,13 +2,13 @@
 
 __all__ = ['TSIdentity', 'TSShuffle_HLs', 'TSShuffleSteps', 'TSMagAddNoise', 'TSMagMulNoise', 'random_curve_generator',
            'random_cum_curve_generator', 'random_cum_noise_generator', 'random_cum_linear_generator', 'TSTimeNoise',
-           'TSMagWarp', 'TSTimeWarp', 'TSWindowWarp', 'TSMagScale', 'TSMagScalePerVar', 'TSRandomResizedCrop',
-           'TSRandomZoomIn', 'TSWindowSlicing', 'TSRandomZoomOut', 'TSRandomTimeScale', 'TSRandomTimeStep', 'TSBlur',
-           'TSSmooth', 'maddest', 'TSFreqDenoise', 'TSRandomFreqNoise', 'TSRandomResizedLookBack',
-           'TSRandomLookBackOut', 'TSVarOut', 'TSCutOut', 'TSTimeStepOut', 'TSRandomCropPad', 'TSMaskOut',
-           'TSTranslateX', 'TSRandomShift', 'TSHorizontalFlip', 'TSRandomTrend', 'TSRandomRotate', 'TSVerticalFlip',
-           'TSResize', 'TSRandomSize', 'TSRandomLowRes', 'TSDownUpScale', 'TSRandomDownUpScale', 'all_TS_randaugs',
-           'RandAugment', 'TestTfm', 'get_tfm_name']
+           'TSMagWarp', 'TSTimeWarp', 'TSWindowWarp', 'TSMagScale', 'TSMagScalePerVar', 'TSMagScaleByVar',
+           'TSRandomResizedCrop', 'TSRandomZoomIn', 'TSWindowSlicing', 'TSRandomZoomOut', 'TSRandomTimeScale',
+           'TSRandomTimeStep', 'TSBlur', 'TSSmooth', 'maddest', 'TSFreqDenoise', 'TSRandomFreqNoise',
+           'TSRandomResizedLookBack', 'TSRandomLookBackOut', 'TSVarOut', 'TSCutOut', 'TSTimeStepOut', 'TSRandomCropPad',
+           'TSMaskOut', 'TSTranslateX', 'TSRandomShift', 'TSHorizontalFlip', 'TSRandomTrend', 'TSRandomRotate',
+           'TSVerticalFlip', 'TSResize', 'TSRandomSize', 'TSRandomLowRes', 'TSDownUpScale', 'TSRandomDownUpScale',
+           'all_TS_randaugs', 'RandAugment', 'TestTfm', 'get_tfm_name']
 
 # Cell
 from fastai.vision.augment import RandTransform
@@ -227,6 +227,8 @@ class TSMagScalePerVar(RandTransform):
         output = o * scale
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
+
+TSMagScaleByVar = TSMagScalePerVar
 
 # Cell
 class TSRandomResizedCrop(RandTransform):

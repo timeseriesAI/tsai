@@ -5,6 +5,13 @@
 
 ## 0.2.15
 
+### Updates
+* Tutorial notebooks:
+    * Updated 04 (regression) to use the recently released Monash, UEA & UCR Time Series Extrinsic Regression Repository (2020).
+    
+    
+## 0.2.15
+
 ### New Features
 * General:
     * Added 3 new sklearn-type APIs: TSClassifier, TSRegressor and TSForecaster.

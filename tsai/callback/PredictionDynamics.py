@@ -8,7 +8,7 @@ from ..imports import *
 
 # Cell
 class PredictionDynamics(Callback):
-    order, run_valid = 70, True
+    order, run_valid = 65, True
 
     def __init__(self, show_perc=1., figsize=(6, 6), alpha=.3, size=30, color='lime', cmap='gist_rainbow'):
 
@@ -84,6 +84,7 @@ class PredictionDynamics(Callback):
 
     def update_graph(self, y_pred, y_true, x_bounds=None, y_bounds=None):
         if not hasattr(self, 'graph_fig'):
+            self.df_out = display("", display_id=True)
             if self.cat:
                 self._cl_names = self.dls.vocab
                 self._classes = L(self.dls.vocab.o2i.values())
@@ -95,8 +96,7 @@ class PredictionDynamics(Callback):
                 for i, c in enumerate(self._classes):
                     self._rand.append(.5 * (np.random.rand(np.sum(y_true == c)) - .5))
             self.graph_fig, self.graph_ax = plt.subplots(1, figsize=self.figsize)
-            self.graph_out = display(self.graph_ax.figure, display_id=True)
-            self.df_out = display(pd.DataFrame(), display_id=True)
+            self.graph_out = display("", display_id=True)
         self.graph_ax.clear()
         if self.cat:
             for i, c in enumerate(self._classes):
@@ -123,6 +123,6 @@ class PredictionDynamics(Callback):
             self.graph_ax.set_ylabel('y_true', fontsize=12)
             self.graph_ax.grid(color='gainsboro', linewidth=.2)
         self.graph_ax.set_title(f'Prediction Dynamics \nepoch: {self.epoch +1}/{self.n_epoch}')
-        self.graph_out.update(self.graph_ax.figure)
         self.df_out.update(pd.DataFrame(np.stack(self.learn.recorder.values)[-1].reshape(1,-1),
                                         columns=self.learn.recorder.metric_names[1:-1], index=[self.epoch]))
+        self.graph_out.update(self.graph_ax.figure)

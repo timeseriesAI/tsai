@@ -21,20 +21,41 @@ from sklearn.linear_model import RidgeCV, RidgeClassifierCV
 # This is a wrapper used to extract features in the format required by the tsai library.
 
 class MiniRocketFeatures:
+    def __init__(self, standardize=False, by_sample=False, by_var=False, by_step=False):
+        self.standardize = standardize or by_sample or by_var or by_step
+        drop_axes = []
+        if by_sample: drop_axes.append(0)
+        if by_var: drop_axes.append(1)
+        if by_step: drop_axes.append(2)
+        self.axes = tuple([ax for ax in (0, 1, 2) if ax not in drop_axes])
+        self.by_sample = by_sample
+
     def fit(self, o, num_features=10_000, max_dilations_per_kernel=32):
         if o.dtype != 'float32': o = o.astype('float32')
         if o.ndim == 2:
             o = o[:, np.newaxis]
+        if self.standardize:
+            mean = o.mean(axis=self.axes, keepdims=True)
+            std = o.std(axis=self.axes, keepdims=True) + 1e-8
+            if not self.by_sample:
+                self.mean, self.std = mean, std
         if o.shape[1] == 1:
             parameters = minirocket_fit(o[0, 0][np.newaxis], num_features=num_features, max_dilations_per_kernel=max_dilations_per_kernel)
         else:
             parameters = minirocket_fit_multi(o[0][np.newaxis], num_features=num_features, max_dilations_per_kernel=max_dilations_per_kernel)
         self.parameters = parameters
 
-    def transform(self, o, fname='X_tfm', path='./data/MiniRocketFeatures', on_disk=True, mode='r+', chunksize=10_000):
+    def transform(self, o, fname='X_tfm', path='./data/MiniRocketFeatures', on_disk=True, mode='c', chunksize=10_000):
         if o.dtype != 'float32': o = o.astype('float32')
         if o.ndim == 2:
             o = o[:, np.newaxis]
+        if self.standardize:
+            if self.by_sample:
+                mean = o.mean(axis=self.axes, keepdims=True)
+                std = o.std(axis=self.axes, keepdims=True) + 1e-8
+            else:
+                mean, std = self.mean, self.std
+            o = (o - mean) / std
         if chunksize is None:
             if o.shape[1] == 1:
                 o_tfm = minirocket_transform(o[:, 0], self.parameters)[..., np.newaxis]
@@ -43,7 +64,7 @@ class MiniRocketFeatures:
             return o_tfm
         else:
             start = 0
-            pb = progress_bar(range(math.ceil(len(o) / chunksize)), leave=False)
+            pb = progress_bar(range(math.ceil(len(o) / chunksize)), leave=False, comment="creating MiniRocket features")
             for i in pb:
                 end = start + chunksize
                 if o.shape[1] == 1:
@@ -60,7 +81,7 @@ class MiniRocketFeatures:
             return o_tfm
 
     def fit_transform(self, o, num_features=10_000, max_dilations_per_kernel=32,
-                        fname='X_tfm', path='./data/MiniRocketFeatures', on_disk=True, mode='r+', chunksize=10_000):
+                        fname='X_tfm', path='./data/MiniRocketFeatures', on_disk=True, mode='c', chunksize=10_000):
         self.fit(o, num_features=num_features, max_dilations_per_kernel=max_dilations_per_kernel)
         return self.transform(o, fname=fname, path=path, on_disk=on_disk, mode=mode, chunksize=chunksize)
 

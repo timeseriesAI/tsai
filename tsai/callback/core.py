@@ -94,6 +94,7 @@ class ShowGraph(Callback):
         if len(self.names) < len(graphs): self.names += [''] * (len(graphs) - len(self.names))
         for g,n in zip(graphs,self.names): self.graph_ax.plot(*g, label=n)
         self.graph_ax.legend(loc='upper right')
+        self.graph_ax.grid(color='gainsboro', linewidth=.5)
         if x_bounds is not None: self.graph_ax.set_xlim(*x_bounds)
         if y_bounds is not None: self.graph_ax.set_ylim(*y_bounds)
         self.graph_ax.set_title(f'Losses\nepoch: {self.epoch +1}/{self.n_epoch}')

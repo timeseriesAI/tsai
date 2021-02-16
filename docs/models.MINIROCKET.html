@@ -54,7 +54,7 @@ nb_path: "nbs/111b_models.MINIROCKET.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MiniRocketFeatures" class="doc_header"><code>class</code> <code>MiniRocketFeatures</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/MINIROCKET.py#L23" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocketFeatures</code>()</p>
+<h2 id="MiniRocketFeatures" class="doc_header"><code>class</code> <code>MiniRocketFeatures</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/MINIROCKET.py#L23" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocketFeatures</code>(<strong><code>standardize</code></strong>=<em><code>False</code></em>, <strong><code>by_sample</code></strong>=<em><code>False</code></em>, <strong><code>by_var</code></strong>=<em><code>False</code></em>, <strong><code>by_step</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 
 </div>
@@ -85,7 +85,7 @@ nb_path: "nbs/111b_models.MINIROCKET.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MiniRocket" class="doc_header"><code>class</code> <code>MiniRocket</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/MINIROCKET.py#L91" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocket</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>1</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/tsai/models.layers.html#Sequential"><code>Sequential</code></a></p>
+<h2 id="MiniRocket" class="doc_header"><code>class</code> <code>MiniRocket</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/MINIROCKET.py#L112" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocket</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>1</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/tsai/models.layers.html#Sequential"><code>Sequential</code></a></p>
 </blockquote>
 <p>A sequential container.
 Modules will be added to it in the order they are passed in the constructor.
@@ -249,21 +249,21 @@ model = nn.Sequential(OrderedDict([
     <tr>
       <td>0</td>
       <td>0.693147</td>
-      <td>0.526331</td>
+      <td>0.526332</td>
       <td>0.754936</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>1</td>
       <td>0.582386</td>
-      <td>0.435146</td>
+      <td>0.435147</td>
       <td>0.796748</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>2</td>
-      <td>0.508790</td>
-      <td>0.368741</td>
+      <td>0.508791</td>
+      <td>0.368742</td>
       <td>0.828107</td>
       <td>00:00</td>
     </tr>
@@ -276,28 +276,28 @@ model = nn.Sequential(OrderedDict([
     </tr>
     <tr>
       <td>4</td>
-      <td>0.407587</td>
+      <td>0.407588</td>
       <td>0.262873</td>
       <td>0.893148</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>5</td>
-      <td>0.368117</td>
+      <td>0.368118</td>
       <td>0.220747</td>
       <td>0.914053</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>6</td>
-      <td>0.333499</td>
+      <td>0.333500</td>
       <td>0.185743</td>
       <td>0.944251</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>7</td>
-      <td>0.303106</td>
+      <td>0.303107</td>
       <td>0.157302</td>
       <td>0.959350</td>
       <td>00:00</td>
@@ -339,7 +339,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MiniRocketClassifier" class="doc_header"><code>class</code> <code>MiniRocketClassifier</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/MINIROCKET.py#L115" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocketClassifier</code>() :: <code>Pipeline</code></p>
+<h2 id="MiniRocketClassifier" class="doc_header"><code>class</code> <code>MiniRocketClassifier</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/MINIROCKET.py#L136" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocketClassifier</code>() :: <code>Pipeline</code></p>
 </blockquote>
 <p>Pipeline of transforms with a final estimator.</p>
 <p>Sequentially apply a list of transforms and a final estimator.
@@ -415,7 +415,7 @@ pipe.score(X_test, y_test)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="load_minirocket" class="doc_header"><code>load_minirocket</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/MINIROCKET.py#L171" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_minirocket</code>(<strong><code>fname</code></strong>=<em><code>'MiniRocket'</code></em>, <strong><code>path</code></strong>=<em><code>'./data'</code></em>)</p>
+<h4 id="load_minirocket" class="doc_header"><code>load_minirocket</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/MINIROCKET.py#L192" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_minirocket</code>(<strong><code>fname</code></strong>=<em><code>'MiniRocket'</code></em>, <strong><code>path</code></strong>=<em><code>'./data'</code></em>)</p>
 </blockquote>
 
 </div>
@@ -446,7 +446,7 @@ pipe.score(X_test, y_test)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MiniRocketRegressor" class="doc_header"><code>class</code> <code>MiniRocketRegressor</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/MINIROCKET.py#L147" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocketRegressor</code>() :: <code>Pipeline</code></p>
+<h2 id="MiniRocketRegressor" class="doc_header"><code>class</code> <code>MiniRocketRegressor</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/MINIROCKET.py#L168" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocketRegressor</code>() :: <code>Pipeline</code></p>
 </blockquote>
 <p>Pipeline of transforms with a final estimator.</p>
 <p>Sequentially apply a list of transforms and a final estimator.
@@ -522,7 +522,7 @@ pipe.score(X_test, y_test)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="load_minirocket" class="doc_header"><code>load_minirocket</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/MINIROCKET.py#L171" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_minirocket</code>(<strong><code>fname</code></strong>=<em><code>'MiniRocket'</code></em>, <strong><code>path</code></strong>=<em><code>'./data'</code></em>)</p>
+<h4 id="load_minirocket" class="doc_header"><code>load_minirocket</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/MINIROCKET.py#L192" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_minirocket</code>(<strong><code>fname</code></strong>=<em><code>'MiniRocket'</code></em>, <strong><code>path</code></strong>=<em><code>'./data'</code></em>)</p>
 </blockquote>
 
 </div>
@@ -631,7 +631,7 @@ pipe.score(X_test, y_test)
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>0.9111111111111111</pre>
+<pre>0.9166666666666666</pre>
 </div>
 
 </div>
@@ -675,7 +675,7 @@ pipe.score(X_test, y_test)
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>0.041641458324160906</pre>
+<pre>0.04165545582847702</pre>
 </div>
 
 </div>
@@ -719,7 +719,7 @@ pipe.score(X_test, y_test)
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>2.30644069648352</pre>
+<pre>2.2625414737288647</pre>
 </div>
 
 </div>

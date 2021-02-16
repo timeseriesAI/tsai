@@ -121,9 +121,9 @@ def plot_metrics(self: Recorder, nrows=None, ncols=None, figsize=None, **kwargs)
         ax.set_title(name if i > 1 else 'losses')
         ax.set_xlim(0, len(metrics[:, i])-1)
         ax.legend(loc='best')
+        ax.grid(color='gainsboro', linewidth=.5)
     plt.show()
 
-# Cell
 @patch
 @delegates(subplots)
 def plot_metrics(self: Learner, **kwargs):
@@ -135,10 +135,13 @@ def plot_metrics(self: Learner, **kwargs):
 def plot_final_losses(self:Learner, perc=.5, nrows=None, ncols=None, figsize=None, **kwargs):
     n_values = len(self.recorder.values)
     sel_idxs = int(round(n_values * perc))
-    new_values = stack(self.recorder.values)[-sel_idxs:]
-    plt.plot(np.arange(n_values)[-sel_idxs:], new_values[:, 0])
-    plt.plot(np.arange(n_values)[-sel_idxs:], new_values[:, 1])
-    plt.title(f'Losses in the final {perc:.0%} epochs')
+    new_values = np.stack(self.recorder.values)[-sel_idxs:]
+    x = np.arange(n_values)[-sel_idxs:]
+    plt.plot(x, new_values[:, 0])
+    plt.plot(x, new_values[:, 1])
+    plt.title(f'losses in the final {perc:.0%} epochs')
+    plt.grid(color='gainsboro', linewidth=.5)
+    plt.xlim(min(x), max(x))
     plt.show()
 
 # Cell
@@ -239,9 +242,13 @@ from .models.InceptionTime import *
 class TSClassifier(Learner):
     def __init__(self, X, y=None, splits=None, sel_vars=None, sel_steps=None, vocab=None, sort=True, add_na=False, inplace=True,
                  bs=64, shuffle=True, drop_last=True, num_workers=0, verbose=False, do_setup=True, batch_tfms=None,
-                 device=None, arch=None, pretrained=False, weights_path=None, exclude_head=True, cut=-1,
-                 loss_func=None, opt_func=Adam, lr=defaults.lr, splitter=trainable_params, cbs=None, metrics=None,
+                 device=None, arch=None, pretrained=False, weights_path=None, exclude_head=True, cut=-1, init=None,
+                 loss_func=None, opt_func=Adam, lr=defaults.lr, splitter=trainable_params, cbs=None, metrics=accuracy,
                  path='.', model_dir='models', wd=None, wd_bn_bias=False, train_bn=True, moms=(0.95, 0.85, 0.95), **kwargs):
+
+        #Splits
+        if splits is None:
+            splits = TSSplitter()(X)
 
         # DataLoaders
         tfms = [None, TSClassification(vocab=vocab, sort=sort, add_na=add_na)]
@@ -252,12 +259,12 @@ class TSClassifier(Learner):
         if arch is None:
             arch = InceptionTime
         if 'xresnet' in arch.__name__.lower() and not '1d' in arch.__name__.lower():
-            model = build_tsimage_model(arch, dls=dls, pretrained=pretrained, device=device, verbose=verbose, **kwargs)
+            model = build_tsimage_model(arch, dls=dls, pretrained=pretrained, init=init, device=device, verbose=verbose, **kwargs)
         elif 'tabularmodel' in arch.__name__.lower():
             build_tabular_model(arch, dls=dls, device=device, **kwargs)
         else:
             model = build_ts_model(arch, dls=dls, device=device, verbose=verbose, pretrained=pretrained, weights_path=weights_path,
-                               exclude_head=exclude_head, cut=cut, **kwargs)
+                               exclude_head=exclude_head, cut=cut, init=init, **kwargs)
         setattr(model, "__name__", arch.__name__)
         try:
             model[0], model[1]
@@ -272,9 +279,13 @@ class TSClassifier(Learner):
 class TSRegressor(Learner):
     def __init__(self, X, y=None, splits=None, sel_vars=None, sel_steps=None, inplace=True,
                  bs=64, shuffle=True, drop_last=True, num_workers=0, verbose=False, do_setup=True, batch_tfms=None,
-                 device=None, arch=None, pretrained=False, weights_path=None, exclude_head=True, cut=-1,
+                 device=None, arch=None, pretrained=False, weights_path=None, exclude_head=True, cut=-1, init=None,
                  loss_func=None, opt_func=Adam, lr=defaults.lr, splitter=trainable_params, cbs=None, metrics=None,
                  path='.', model_dir='models', wd=None, wd_bn_bias=False, train_bn=True, moms=(0.95, 0.85, 0.95), **kwargs):
+
+        #Splits
+        if splits is None:
+            splits = TSSplitter()(X)
 
         # DataLoaders
         tfms = [None, TSRegression()]
@@ -285,12 +296,12 @@ class TSRegressor(Learner):
         if arch is None:
             arch = InceptionTime
         if 'xresnet' in arch.__name__.lower() and not '1d' in arch.__name__.lower():
-            model = build_tsimage_model(arch, dls=dls, pretrained=pretrained, device=device, verbose=verbose, **kwargs)
+            model = build_tsimage_model(arch, dls=dls, pretrained=pretrained, init=init, device=device, verbose=verbose, **kwargs)
         elif 'tabularmodel' in arch.__name__.lower():
             build_tabular_model(arch, dls=dls, device=device, **kwargs)
         else:
             model = build_ts_model(arch, dls=dls, device=device, verbose=verbose, pretrained=pretrained, weights_path=weights_path,
-                               exclude_head=exclude_head, cut=cut, **kwargs)
+                               exclude_head=exclude_head, cut=cut, init=init, **kwargs)
         setattr(model, "__name__", arch.__name__)
         try:
             model[0], model[1]

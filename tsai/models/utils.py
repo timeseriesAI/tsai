@@ -106,7 +106,7 @@ def transfer_weights(model, weights_path:Path, device:torch.device=None, exclude
 
 
 def build_ts_model(arch, c_in=None, c_out=None, seq_len=None, d=None, dls=None, device=None, verbose=False,
-                   pretrained=False, weights_path=None, exclude_head=True, cut=-1, **kwargs):
+                   pretrained=False, weights_path=None, exclude_head=True, cut=-1, init=None, **kwargs):
 
     device = ifnone(device, default_device())
     if dls is not None:
@@ -149,6 +149,9 @@ def build_ts_model(arch, c_in=None, c_out=None, seq_len=None, d=None, dls=None, 
         assert weights_path is not None, "you need to pass a valid weights_path to use a pre-trained model"
         transfer_weights(model, weights_path, exclude_head=exclude_head, device=device)
 
+    if init is not None:
+        apply_init(model[1] if pretrained else model, init)
+
     setattr(model, "head_nf", head_nf)
     setattr(model, "__name__", arch.__name__)
 
@@ -178,7 +181,7 @@ create_tabular_model = build_tabular_model
 
 
 @delegates(XResNet.__init__)
-def build_tsimage_model(arch, c_in=None, c_out=None, dls=None, pretrained=False, device=None, verbose=False, **kwargs):
+def build_tsimage_model(arch, c_in=None, c_out=None, dls=None, pretrained=False, device=None, verbose=False, init=None, **kwargs):
     device = ifnone(device, default_device())
     if dls is not None:
         c_in = ifnone(c_in, dls.vars)
@@ -186,6 +189,8 @@ def build_tsimage_model(arch, c_in=None, c_out=None, dls=None, pretrained=False,
 
     model = arch(pretrained=pretrained, c_in=c_in, n_out=c_out, **kwargs).to(device=device)
     setattr(model, "__name__", arch.__name__)
+    if init is not None:
+        apply_init(model[1] if pretrained else model, init)
     return model
 
 
