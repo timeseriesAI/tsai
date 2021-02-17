@@ -98,7 +98,7 @@ class TSBERT(Callback):
         store_attr(
             "subsequence_mask,variable_mask,future_mask,custom_mask,dropout,r,lm,stateful,sync,crit,fname,verbose")
         self.PATH = Path(f'{target_dir}/{fname}.pth')
-        if not os.path.exists(PATH.parent): os.makedirs(PATH.parent)
+        if not os.path.exists(self.PATH.parent): os.makedirs(self.PATH.parent)
 
     def before_fit(self):
         self.run = not hasattr(self, "lr_finder") and not hasattr(self, "gather_preds")
@@ -116,6 +116,7 @@ class TSBERT(Callback):
         self.learn.metrics = L([])
 
         # change head with conv layer (equivalent to linear layer applied to dim=1)
+        assert hasattr(self.learn.model, "head"), "model must have a head attribute to be trained with TSBERT"
         self.learn.model.head = nn.Sequential(nn.Dropout(self.dropout), nn.Conv1d(
             self.learn.model.head_nf, self.learn.dls.vars, 1)).to(self.learn.dls.device)
 
@@ -147,10 +148,11 @@ class TSBERT(Callback):
 
     def after_epoch(self):
         val = self.learn.recorder.values[-1][-1]
-        if np.less(val, self.best):
+        if np.less(val, self.best) or self.epoch == self.n_epoch - 1:
             self.best = val
             torch.save(self.learn.model.state_dict(), self.PATH)
-            print(f"\nepoch: {self.epoch:3}  val_loss: {self.best:8.6f} - pretrained model weights_path='{self.PATH}'\n")
+            if self.verbose or self.epoch == self.n_epoch - 1:
+                print(f"\nepoch: {self.epoch:3}  val_loss: {self.best:8.6f} - pretrained model weights_path='{self.PATH}'\n")
 
     def after_fit(self):
         self.run=True
