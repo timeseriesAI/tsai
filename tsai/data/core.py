@@ -497,7 +497,7 @@ class NumpyDataLoaders(DataLoaders):
         return cls.from_dblock(dblock, source, **kwargs)
 
     @classmethod
-    def from_dsets(cls, *ds, path='.', bs=64, num_workers=None, batch_tfms=None, device=None, shuffle_train=True, drop_last=True, **kwargs):
+    def from_dsets(cls, *ds, path='.', bs=64, num_workers=0, batch_tfms=None, device=None, shuffle_train=True, drop_last=True, **kwargs):
         device = ifnone(device, default_device())
         if batch_tfms is not None and not isinstance(batch_tfms, list): batch_tfms = [batch_tfms]
         default = (shuffle_train,) + (False,) * (len(ds)-1)

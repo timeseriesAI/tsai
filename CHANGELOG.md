@@ -3,11 +3,16 @@
 <!-- do not remove -->
 
 
-## 0.2.15
+## 0.2.16
 
 ### Updates
 * Tutorial notebooks:
     * Updated 04 (regression) to use the recently released Monash, UEA & UCR Time Series Extrinsic Regression Repository (2020).
+    
+## New features:
+* Models:
+    * Added new pooling layers and 3 new heads: attentional_pool_head, universal_pool_head, gwa_pool_head
+    
     
     
 ## 0.2.15

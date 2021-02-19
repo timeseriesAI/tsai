@@ -174,7 +174,7 @@ def SlidingWindowPanel(window_len:int, unique_id_cols:list, stride:Union[None, i
         _x = []
         _y = []
         _key = []
-        for v in progress_bar(unique_id_values):
+        for v in progress_bar(unique_id_values, display=verbose, leave=False):
             x_v, y_v = SlidingWindow(window_len, stride=stride, start=start, get_x=get_x, get_y=get_y, y_func=y_func,
                                      horizon=horizon, seq_first=seq_first, check_leakage=check_leakage)(df[(df[unique_id_cols].values == v).sum(axis=1) == len(v)])
             if x_v is not None and len(x_v) > 0:

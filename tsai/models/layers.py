@@ -5,16 +5,17 @@ __all__ = ['noop', 'init_lin_zero', 'lin_zero_init', 'SwishBeta', 'same_padding1
            'AddCoords1d', 'ConvBlock', 'Conv', 'ConvBN', 'ConvIN', 'CoordConv', 'CoordConvBN', 'SepConv', 'SepConvBN',
            'SepConvIN', 'SepCoordConv', 'SepCoordConvBN', 'ResBlock1dPlus', 'SEModule1d', 'Norm', 'BN1d', 'IN1d',
            'LinLnDrop', 'LambdaPlus', 'Squeeze', 'Unsqueeze', 'Add', 'Concat', 'Permute', 'Transpose', 'View',
-           'Reshape', 'Max', 'LastStep', 'SoftMax', 'Noop', 'Sharpen', 'Sequential', 'TimeDistributed', 'Temp_Scale',
-           'Vector_Scale', 'Matrix_Scale', 'get_calibrator', 'LogitAdjustmentLayer', 'LogitAdjLayer', 'PPV', 'PPAuc',
-           'MaxPPVPool1d', 'AdaptiveWeightedAvgPool1d', 'GAP1d', 'GACP1d', 'GAWP1d', 'GlobalWeightedAveragePool1d',
-           'gwa_pool_head', 'GWAP1d', 'AttentionalPool1d', 'GAttP1d', 'attentional_pool_head', 'create_pool_head',
-           'pool_head', 'average_pool_head', 'concat_pool_head', 'max_pool_head', 'create_pool_plus_head',
-           'pool_plus_head', 'create_conv_head', 'conv_head', 'create_mlp_head', 'mlp_head', 'create_fc_head',
-           'fc_head', 'create_rnn_head', 'rnn_head', 'create_conv_lin_3d_head', 'conv_lin_3d_head',
-           'create_lin_3d_head', 'lin_3d_head', 'universal_pool_head', 'heads', 'SqueezeExciteBlock', 'GaussianNoise',
-           'gambler_loss', 'CrossEntropyLossOneHot', 'ttest_bin_loss', 'ttest_reg_loss', 'CenterLoss', 'CenterPlusLoss',
-           'FocalLoss', 'TweedieLoss']
+           'Reshape', 'Max', 'LastStep', 'SoftMax', 'Clamp', 'Noop', 'Sharpen', 'Sequential', 'TimeDistributed',
+           'Temp_Scale', 'Vector_Scale', 'Matrix_Scale', 'get_calibrator', 'LogitAdjustmentLayer', 'LogitAdjLayer',
+           'PPV', 'PPAuc', 'MaxPPVPool1d', 'AdaptiveWeightedAvgPool1d', 'GAP1d', 'GACP1d', 'GAWP1d',
+           'GlobalWeightedAveragePool1d', 'gwa_pool_head', 'GWAP1d', 'AttentionalPool1d', 'GAttP1d',
+           'attentional_pool_head', 'create_pool_head', 'pool_head', 'average_pool_head', 'concat_pool_head',
+           'max_pool_head', 'create_pool_plus_head', 'pool_plus_head', 'create_conv_head', 'conv_head',
+           'create_mlp_head', 'mlp_head', 'create_fc_head', 'fc_head', 'create_rnn_head', 'rnn_head',
+           'create_conv_lin_3d_head', 'conv_lin_3d_head', 'create_lin_3d_head', 'lin_3d_head', 'create_conv_3d_head',
+           'conv_3d_head', 'universal_pool_head', 'heads', 'SqueezeExciteBlock', 'GaussianNoise', 'gambler_loss',
+           'CrossEntropyLossOneHot', 'ttest_bin_loss', 'ttest_reg_loss', 'CenterLoss', 'CenterPlusLoss', 'FocalLoss',
+           'TweedieLoss']
 
 # Cell
 from torch.nn.init import normal_
@@ -362,6 +363,14 @@ class SoftMax(Module):
     def forward(self, x):
         return F.softmax(x, dim=self.dim)
     def __repr__(self): return f'{self.__class__.__name__}(dim={self.dim})'
+
+
+class Clamp(Module):
+    def __init__(self, min=None, max=None):
+        self.min, self.max = min, max
+    def forward(self, x):
+        return x.clamp(min=self.min, max=self.max)
+    def __repr__(self): return f'{self.__class__.__name__}(min={self.min}, max={self.max})'
 
 Noop = nn.Sequential()
 
@@ -717,6 +726,15 @@ class create_lin_3d_head(nn.Sequential):
         super().__init__(*layers)
 
 lin_3d_head = create_lin_3d_head
+
+# Cell
+class create_conv_3d_head(nn.Sequential):
+    "Module to create a 3d output head with a convolutional layer"
+    def __init__(self, n_in, c_out, seq_len, d, lin_first=False, bn=True, act=None, fc_dropout=0.):
+        assert d == seq_len, 'You can only use this head when learn.dls.len == learn.dls.d'
+        super().__init__(Conv(n_in, c_out, d))
+
+conv_3d_head = create_conv_3d_head
 
 # Cell
 def universal_pool_head(n_in, c_out, seq_len, output_size=1, by_channel=True, pool_n_layers=2, pool_ln=False, pool_dropout=0.5, pool_act=nn.ReLU(),

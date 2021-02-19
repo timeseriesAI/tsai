@@ -114,7 +114,11 @@ def build_ts_model(arch, c_in=None, c_out=None, seq_len=None, d=None, dls=None, 
         c_out = ifnone(c_out, dls.c)
         seq_len = ifnone(seq_len, dls.len)
         d = ifnone(d, dls.d)
-    if d is not None and not 'custom_head' in kwargs.keys(): kwargs['custom_head'] = partial(create_lin_3d_head, d=d)
+    if d is not None:
+        if 'custom_head' not in kwargs.keys():
+            kwargs['custom_head'] = partial(conv_3d_head, d=d)
+        else:
+            kwargs['custom_head'] = partial(kwargs['custom_head'], d=d)
     if sum([1 for v in ['RNN_FCN', 'LSTM_FCN', 'RNNPlus', 'LSTMPlus', 'GRUPlus', 'InceptionTimePlus',
                         'GRU_FCN', 'OmniScaleCNN', 'mWDN', 'TST', 'XCM', 'MLP', 'MiniRocket']
             if v in arch.__name__]):

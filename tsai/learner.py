@@ -9,6 +9,7 @@ from fastai.vision.models.all import *
 from fastai.data.transforms import *
 from .imports import *
 from .data.core import *
+from .data.validation import *
 from .models.utils import *
 
 # Cell
@@ -239,9 +240,13 @@ def get_X_preds(self:Learner, X, y=None, **kwargs):
 
 # Cell
 from .models.InceptionTime import *
+
+defaults.cat_tfms = TSClassification
+defaults.reg_tfms = TSRegression
+
 class TSClassifier(Learner):
     def __init__(self, X, y=None, splits=None, sel_vars=None, sel_steps=None, vocab=None, sort=True, add_na=False, inplace=True,
-                 bs=64, shuffle=True, drop_last=True, num_workers=0, verbose=False, do_setup=True, batch_tfms=None,
+                 bs=64, shuffle_train=True, drop_last=True, num_workers=0, verbose=False, do_setup=True, tfms=defaults.cat_tfms, batch_tfms=None,
                  device=None, arch=None, pretrained=False, weights_path=None, exclude_head=True, cut=-1, init=None,
                  loss_func=None, opt_func=Adam, lr=defaults.lr, splitter=trainable_params, cbs=None, metrics=accuracy,
                  path='.', model_dir='models', wd=None, wd_bn_bias=False, train_bn=True, moms=(0.95, 0.85, 0.95), **kwargs):
@@ -251,9 +256,9 @@ class TSClassifier(Learner):
             splits = TSSplitter()(X)
 
         # DataLoaders
-        tfms = [None, TSClassification(vocab=vocab, sort=sort, add_na=add_na)]
+        if tfms == defaults.cat_tfms: tfms=[None, TSClassification(vocab=vocab, sort=sort, add_na=add_na)]
         dls = get_ts_dls(X, y=y, splits=splits, sel_vars=sel_vars, sel_steps=sel_steps, tfms=tfms, inplace=inplace, path=path, bs=bs,
-                         batch_tfms=batch_tfms, num_workers=num_workers, device=device, shuffle_train=shuffle, drop_last=drop_last)
+                         batch_tfms=batch_tfms, num_workers=num_workers, device=device, shuffle_train=shuffle_train, drop_last=drop_last)
 
         # Model
         if arch is None:
@@ -277,8 +282,8 @@ class TSClassifier(Learner):
 
 
 class TSRegressor(Learner):
-    def __init__(self, X, y=None, splits=None, sel_vars=None, sel_steps=None, inplace=True,
-                 bs=64, shuffle=True, drop_last=True, num_workers=0, verbose=False, do_setup=True, batch_tfms=None,
+    def __init__(self, X, y=None, splits=None, sel_vars=None, sel_steps=None, inplace=True, bs=64, shuffle_train=True,
+                 drop_last=True, num_workers=0, verbose=False, do_setup=True, tfms=defaults.reg_tfms, batch_tfms=None,
                  device=None, arch=None, pretrained=False, weights_path=None, exclude_head=True, cut=-1, init=None,
                  loss_func=None, opt_func=Adam, lr=defaults.lr, splitter=trainable_params, cbs=None, metrics=None,
                  path='.', model_dir='models', wd=None, wd_bn_bias=False, train_bn=True, moms=(0.95, 0.85, 0.95), **kwargs):
@@ -288,9 +293,9 @@ class TSRegressor(Learner):
             splits = TSSplitter()(X)
 
         # DataLoaders
-        tfms = [None, TSRegression()]
+        if tfms == defaults.reg_tfms: tfms = [None, TSRegression()]
         dls = get_ts_dls(X, y=y, splits=splits, sel_vars=sel_vars, sel_steps=sel_steps, tfms=tfms, inplace=inplace, path=path, bs=bs,
-                         batch_tfms=batch_tfms, num_workers=num_workers, device=device, shuffle_train=shuffle, drop_last=drop_last)
+                         batch_tfms=batch_tfms, num_workers=num_workers, device=device, shuffle_train=shuffle_train, drop_last=drop_last)
 
         # Model
         if arch is None:
