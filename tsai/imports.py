@@ -36,6 +36,11 @@ PATH = Path(os.getcwd())
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 cpus = defaults.cpus
 
+import sys
+IS_COLAB = 'google.colab' in sys.modules
+if IS_COLAB:
+    from numba import config
+    config.THREADING_LAYER = 'omp'
 
 def save_nb(verbose=False):
     display(Javascript('IPython.notebook.save_checkpoint();'))

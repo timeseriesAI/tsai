@@ -14,27 +14,37 @@
 
 `tsai`is an open-source deep learning package built on top of Pytorch & fastai focused on state-of-the-art techniques for time series classification, regression and forecasting.
 
-⚠️ If you are interested in applying self-supervised learning to time series, you may want to check our new tutorial notebook: [08_Self_Supervised_TSBERT.ipynb](https://github.com/timeseriesAI/tsai/blob/master/tutorial_nbs/08_Self_Supervised_TSBERT.ipynb)
+* **Self-supervised learning:**
+If you are interested in applying self-supervised learning to time series, you may want to check our new tutorial notebook: [08_Self_Supervised_TSBERT.ipynb](https://github.com/timeseriesAI/tsai/blob/master/tutorial_nbs/08_Self_Supervised_TSBERT.ipynb)
+* **New visualization:**
+We've also added a new PredictionDynamics callback that will display the predictions during training. This is the type of output you would get in a classification task for example:
+![LSST_training](https://github.com/timeseriesAI/tsai/blob/master/nbs/multimedia/LSST_PD.gif?raw=true)
+
+## Installation
+
+You can install the **latest stable** version from pip using:
+```
+pip install tsai
+```
+
+Or you can install the cutting edge version of this library from github by doing:
+```
+pip install -Uqq git+https://github.com/timeseriesAI/tsai.git
+```
+
+Once the install is complete, you should restart your runtime and then run: 
+
+```
+from tsai.all import *
+```
+
+## Documentation
 
 Here's the link to the [documentation](https://timeseriesai.github.io/tsai/).
 
-I've also added a new PredictionDynamics callback that will display the predictions during training. This is the type of output you would get in a classification task for example:
-
-![LSST_training](https://github.com/timeseriesAI/tsai/blob/master/nbs/multimedia/LSST_PD.gif?raw=true)
-
-## Install
-
-You can install the **latest stable** version from pip:
-
-`pip install tsai`
-
-Or you can install the **bleeding edge** version of this library from github by doing:
-
-`pip install git+https://github.com/timeseriesAI/tsai.git@master`
-
 ## How to get started
 
-To get to know the `tsai` package, I'd suggest you start with this notebook in Google Colab: **[01_Intro_to_Time_Series_Classification](https://colab.research.google.com/github/timeseriesAI/tsai/blob/master/tutorial_nbs/01_Intro_to_Time_Series_Classification.ipynb)**
+To get to know the `tsai` package, we'd suggest you start with this notebook in Google Colab: **[01_Intro_to_Time_Series_Classification](https://colab.research.google.com/github/timeseriesAI/tsai/blob/master/tutorial_nbs/01_Intro_to_Time_Series_Classification.ipynb)**
 
 It provides an overview of a time series classification problem using fastai v2.
 
