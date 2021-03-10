@@ -106,7 +106,7 @@ class Timer:
         else: self.all_elapsed += elapsed
         pv(f'Elapsed time ({self.n:3}): {elapsed}', self.verbose)
         self.start_dt = datetime.now()
-        return elapsed
+        if not self.verbose: return elapsed
 
     def stop(self):
         end_dt = datetime.now()
@@ -118,10 +118,11 @@ class Timer:
         total_elapsed = end_dt - self.start_dt0
         if self.n > 1:
             pv(f'Elapsed time ({self.n:3}): {elapsed}', self.verbose)
-            pv(f'Elapsed time (all): {self.all_elapsed}', self.verbose)
-        pv(f'Total time        : {total_elapsed}', self.verbose)
+            pv(f'Total time        : {self.all_elapsed}', self.verbose)
+        else: 
+            pv(f'Total time        : {total_elapsed}', self.verbose)
         delattr(self, "start_dt0")
         delattr(self, "start_dt")
-        return total_elapsed
+        if not self.verbose: return total_elapsed
 
 timer = Timer()

@@ -30,4 +30,4 @@ def get_tabular_dls(df, procs=[Categorify, FillMissing, Normalize], cat_names=No
     pd.options.mode.chained_assignment=None
     to = TabularPandas(df, procs=procs, cat_names=cat_names, cont_names=cont_names, y_names=y_names, y_block=y_block,
                        splits=splits, do_setup=do_setup, inplace=inplace, reduce_memory=reduce_memory, device=device)
-    return to.dataloaders(do_setup=do_setup, device=device, **kwargs)
+    return to.dataloaders(device=device, **kwargs)

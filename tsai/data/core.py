@@ -144,10 +144,13 @@ class TSDataset():
     def c(self): return 0 if self.y is None else 1 if isinstance(self.y[0], float) else len(np.unique(self.y))
     @property
     def vars(self):
-        if self[0][0].ndim >=4: return self[0][0].shape[-3]
-        return self[0][0].shape[-2]
+        s = self[0][0] if isinstance(self[0], tuple) else self[0]
+        if s.ndim >= 4: return s.shape[-3]
+        return s.shape[-2]
     @property
-    def len(self): return self[0][0].shape[-1]
+    def len(self):
+        s = self[0][0] if isinstance(self[0], tuple) else self[0]
+        return s.shape[-1]
 
 # Cell
 @delegates(Datasets.__init__)
@@ -155,6 +158,8 @@ class NumpyDatasets(Datasets):
     "A dataset that creates tuples from X (and y) and applies `tfms` of type item_tfms"
     _xtype, _ytype = NumpyTensor, None # Expected X and y output types (must have a show method)
     def __init__(self, X=None, y=None, items=None, tfms=None, tls=None, n_inp=None, dl_type=None, inplace=True, **kwargs):
+        if X is not None and not isinstance(X, (np.ndarray, torch.Tensor)): X = np.asarray(X)
+        if y is not None and not isinstance(y, (np.ndarray, torch.Tensor)): y = np.asarray(y)
         self.inplace = inplace
         if tls is None:
             X = itemify(X, tup_id=0)
@@ -212,6 +217,7 @@ class NumpyDatasets(Datasets):
 
     @property
     def items(self): return tuple([tl.items for tl in self.tls])
+
     @items.setter
     def items(self, vs):
         for tl,v in zip(self.tls, vs): tl.items = v
@@ -254,6 +260,8 @@ class TSDatasets(NumpyDatasets):
     _xtype, _ytype = TSTensor, None # Expected X and y output types (torch.Tensor - default - or subclass)
     def __init__(self, X=None, y=None, items=None, sel_vars=None, sel_steps=None, tfms=None, tls=None, n_inp=None, dl_type=None,
                  inplace=True, **kwargs):
+        if X is not None and not isinstance(X, (np.ndarray, torch.Tensor)): X = np.asarray(X)
+        if y is not None and not isinstance(y, (np.ndarray, torch.Tensor)): y = np.asarray(y)
         self.inplace = inplace
         if tls is None:
             X = itemify(to3darray(X), tup_id=0)
@@ -276,12 +284,16 @@ class TSDatasets(NumpyDatasets):
 
     def subset(self, i): return type(self)(tls=L(tl.subset(i) for tl in self.tls), n_inp=self.n_inp, inplace=self.inplace, tfms=self.tfms,
                                            sel_vars=self.sel_vars, sel_steps=self.sel_steps, split=L(self.splits[i]) if self.splits is not None else None)
+
     @property
     def vars(self):
-        if self[0][0].ndim >=4: return self[0][0].shape[-3]
-        return self[0][0].shape[-2]
+        s = self[0] if isinstance(self, tuple) else self
+        if s.ndim >= 4: return s.shape[-3]
+        return s.shape[-2]
     @property
-    def len(self): return self[0][0].shape[-1]
+    def len(self):
+        s = self[0] if isinstance(self, tuple) else self
+        return s.shape[-1]
 
 
 def add_ds(dsets, X, y=None, inplace=True):
@@ -332,6 +344,15 @@ def get_subset_dset(dset, idxs):
     else: raise Exception(f"Expected a `Datasets`, `TfmdLists` of `TabularPandas` dataset but got {dset.__class__.__name__}")
 
 # Cell
+@patch
+def _one_pass(self:TfmdDL):
+    b = self.do_batch([self.do_item(0)])
+    if self.device is not None: b = to_device(b, self.device)
+    its = self.after_batch(b)
+    self._n_inp = 1 if not isinstance(its, (list,tuple)) or len(its)==1 else len(its)-1
+    self._types = explode_types(its)
+
+# Cell
 _batch_tfms = ('after_item','before_batch','after_batch')
 
 @delegates(TfmdDL.__init__)
@@ -359,7 +380,11 @@ class NumpyDataLoader(TfmdDL):
         if hasattr(self, "split_idxs"): self.input_idxs = self.split_idxs[it]
         return self.dataset[it]
 
-    def create_item(self, s): return s
+    def create_item(self, s):
+        if self.indexed: return self.dataset[s or 0]
+        elif s is None:  return next(self.it)
+        else: raise IndexError("Cannot index an iterable dataset numerically - must use `None`.")
+#         return s
 
 #     def get_idxs(self):
 #         idxs = Inf.count if self.indexed else Inf.nones
@@ -451,10 +476,13 @@ class TSDataLoader(NumpyDataLoader):
     def vars(self):
         b = self.one_batch()
         x = b[0] if isinstance(b, tuple) else b
-        if x.ndim >=4: return x.shape[-3]
+        if x.ndim >= 4: return x.shape[-3]
         return x.shape[-2]
     @property
-    def len(self): return self.one_batch()[0].shape[-1]
+    def len(self):
+        b = self.one_batch()
+        x = b[0] if isinstance(b, tuple) else b
+        return x.shape[-1]
 
 # Cell
 _batch_tfms = ('after_item','before_batch','after_batch')
@@ -479,6 +507,9 @@ class NumpyDataLoaders(DataLoaders):
         if isinstance(o, tuple): return self.decode(o)
         if o.ndim <= 1: return self.decodes(o)
         else: return L([self.decodes(oi) for oi in o])
+
+    def decode(self, b):
+        return to_cpu(self.after_batch.decode(self._retain_dl(b)))
 
 
     @classmethod

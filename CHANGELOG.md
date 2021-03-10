@@ -5,6 +5,10 @@
 
 ## 0.2.16
 
+### Bug Fixes
+* Data: 
+    * Updated df2xy function to fix a bug.
+
 ### Updates
 * Tutorial notebooks:
     * Updated 04 (regression) to use the recently released Monash, UEA & UCR Time Series Extrinsic Regression Repository (2020).
