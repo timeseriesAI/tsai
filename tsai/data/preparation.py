@@ -9,45 +9,89 @@ from ..utils import *
 from .validation import *
 
 # Cell
-def df2xy(df, sample_col=[], feat_col=[], step_col=[], data_cols=[], target_col=[], to3d=True, splits=None, sort=False):
+def df2xy(df, sample_col=None, feat_col=None, step_col=None, data_cols=None, target_col=None, to3d=True, splits=None, sort=False):
     r"""
     This function allows you to transform a pandas dataframe into X and y numpy arrays that can be used to craete a TSDataset.
     sample_col: column that uniquely identifies each sample.
     feat_col: used for multivariate datasets. It indicates which is the column that indicates the feature by row.
     step_col: used to indicate the order of the (time)steps when indicated in a column. It's only used to order data.
-    data_col: indicates where the data is located. If None, it means all columns (except the sample_col, feat_col, step_col and target_col)
+    data_col: indicates ths column/s where the data is located. If None, it means all columns (except the sample_col, feat_col, step_col and target_col)
     target_col: indicates the column/s where the target is.
     to3d: turns X to 3d (including univariate time series)
     sort: indicates whether the df needs to be sorted or not. If sorted, it will use sample col first, and feat_col second. For more complex sorting
           you'll need to pass a pre-sorted dataframe.
     """
-    if feat_col:
-        assert sample_col, 'You must pass a sample_col when you pass a feat_col'
-    sample_col, feat_col, target_col, data_cols, step_col = listify(sample_col), listify(feat_col), listify(target_col), listify(data_cols), listify(step_col)
-    if not data_cols:
-        data_cols = [col for col in df.columns if col not in sample_col + feat_col + step_col + target_col]
-    if sort:
-        df = df.sort_values(sample_col + feat_col + step_col)
+    if feat_col is not None:
+        assert sample_col is not None, 'You must pass a sample_col when you pass a feat_col'
+
+    passed_cols = []
+    sort_cols = []
+    if sample_col is not None:
+        if isinstance(sample_col, pd.core.indexes.base.Index): sample_col = sample_col.tolist()
+        sample_col = listify(sample_col)
+        passed_cols += sample_col
+        sort_cols += sample_col
+    if feat_col is not None:
+        if isinstance(feat_col, pd.core.indexes.base.Index): feat_col = feat_col.tolist()
+        feat_col = listify(feat_col)
+        passed_cols += feat_col
+        sort_cols += feat_col
+    if step_col is not None:
+        if isinstance(step_col, pd.core.indexes.base.Index): step_col = step_col.tolist()
+        step_col = listify(step_col)
+        passed_cols += step_col
+        sort_cols += step_col
+    if data_cols is not None:
+        if isinstance(data_cols, pd.core.indexes.base.Index): data_cols = data_cols.tolist()
+        data_cols = listify(data_cols)
+        passed_cols += data_cols
+    if target_col is not None:
+        if isinstance(target_col, pd.core.indexes.base.Index): target_col = target_col.tolist()
+        target_col = listify(target_col)
+        passed_cols += target_col
+
+    if data_cols is None:
+        data_cols = [col for col in df.columns if col not in passed_cols]
+    if sort and sort_cols:
+        df = df.sort_values(sort_cols)
 
     # X
     X = df.loc[:, data_cols].values
     if X.dtype == 'O':
         X = X.astype(np.float32)
-    n_samples = df[sample_col].nunique()[0] if sample_col else 1
-    if to3d or feat_col is not None:
-        n_feats = df[feat_col].nunique()[0] if feat_col else 1
+    if sample_col is not None:
+        unique_ids = df[sample_col[0]].unique().tolist()
+        n_samples = len(unique_ids)
+    else:
+        unique_ids = np.arange(len(df)).tolist()
+        n_samples = len(df)
+    if feat_col is not None:
+        n_feats = df[feat_col[0]].nunique()
         X = X.reshape(n_samples, n_feats, -1)
+    elif to3d:
+        X = X.reshape(n_samples, 1, -1)
 
     # y
-    if target_col:
-        y = df[target_col][df[sample_col[0]].ne(df[sample_col[0]].shift())].values.reshape(n_samples, -1)
-        if y.shape[-1] <= 1: y = y.ravel()
+    if target_col is not None:
+        if feat_col is not None and step_col is not None:
+            y = df[(df[feat_col[0]] == df[feat_col[0]].unique()[0]) & df[step_col[0]] == df[step_col[0]].unique()[0]][target_col]
+        elif feat_col is not None:
+            y = df[df[feat_col[0]] == df[feat_col[0]].unique()[0]][target_col]
+        elif step_col is not None:
+            y = df[df[step_col[0]] == df[step_col[0]].unique()[0]][target_col]
+        else:
+            y = df[target_col]
+        if len(target_col) >1:
+            y = y.values.reshape(-1, len(target_col))
+        else:
+            y = y.values.ravel()
     else:
         y = None
 
     # Output
     if splits is None: return X, y
     else: return split_xy(X, y, splits)
+
 
 def split_xy(X, y=None, splits=None):
     if splits is None:
