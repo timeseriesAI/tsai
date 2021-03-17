@@ -4,6 +4,10 @@
 
 ## 0.2.17
 
+### Breaking change:
+* Data:
+    * train_perc in get_splits has been changed to train_size to allow both floats or integers.
+
 ### Updates
 * Learner:
     * Updated 3 new learner APIs: TSClassifier, TSRegressor, TSForecaster. 

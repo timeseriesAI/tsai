@@ -188,6 +188,8 @@ def SlidingWindow(window_len:int, stride:Union[None, int]=1, start:int=0, get_x:
             if y.ndim >= 2:
                 for d in np.arange(1, y.ndim)[::-1]:
                     if y.shape[d] == 1: y = np.squeeze(y, axis=d)
+            if y.ndim == 3:
+                y = y.transpose(0, 2, 1)
             return X, y
         else: return X, None
     return _inner
