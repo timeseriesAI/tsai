@@ -190,7 +190,7 @@ def plot_splits(splits):
     plt.show()
 
 # Cell
-def get_splits(o, n_splits:int=1, valid_size:float=0.2, test_size:float=0., train_only:bool=False, train_perc:float=1., balance:bool=False,
+def get_splits(o, n_splits:int=1, valid_size:float=0.2, test_size:float=0., train_only:bool=False, train_size:Union[None, float, int]=None, balance:bool=False,
                shuffle:bool=True, stratify:bool=True, check_splits:bool=True, random_state:Union[None, int]=None, show_plot:bool=True, verbose:bool=False):
     '''Arguments:
         o            : object to which splits will be applied, usually target.
@@ -198,7 +198,8 @@ def get_splits(o, n_splits:int=1, valid_size:float=0.2, test_size:float=0., trai
         valid_size   : size of validation set. Only used if n_splits = 1. If n_splits > 1 valid_size = (1. - test_size) / n_splits.
         test_size    : size of test set. Default = 0.
         train_only   : if True valid set == train set. This may be useful for debugging purposes.
-        train_perc   : percentage of the train set used. Default = 1. Useful for to get learning curves with different train sizes.
+        train_size   : size of the train set used. Default = None (the remainder after assigning both valid and test).
+                        Useful for to get learning curves with different train sizes or get a small batch to debug a neural net.
         balance      : whether to balance data so that train always contain the same number of items per class.
         shuffle      : whether to shuffle data before splitting into batches. Note that the samples within each split will be shuffle.
         stratify     : whether to create folds preserving the percentage of samples for each class.
@@ -225,12 +226,16 @@ def get_splits(o, n_splits:int=1, valid_size:float=0.2, test_size:float=0., trai
                 for split in splits: cum_len += len(split)
             else: cum_len += len(splits)
             if not balance: assert len(o) == cum_len, f'len(o)={len(o)} while cum_len={cum_len}'
-    if train_perc and train_perc > 0 and train_perc < 1:
+    if train_size is not None and train_size != 1: # train_size=1 legacy
         if n_splits > 1:
             splits = list(splits)
             for i in range(n_splits):
                 splits[i] = list(splits[i])
-                splits[i][0] = L(np.random.choice(splits[i][0], int(len(splits[i][0]) * train_perc), False).tolist())
+                if isinstance(train_size, Integral):
+                    n_train_samples = train_size
+                elif train_size > 0 and train_size < 1:
+                    n_train_samples = int(len(splits[i][0]) * train_size)
+                splits[i][0] = L(np.random.choice(splits[i][0], n_train_samples, False).tolist())
                 if train_only:
                     if valid_size != 0: splits[i][1] = splits[i][0]
                     if test_size != 0: splits[i][2] = splits[i][0]
@@ -238,7 +243,11 @@ def get_splits(o, n_splits:int=1, valid_size:float=0.2, test_size:float=0., trai
             splits = tuple(splits)
         else:
             splits = list(splits)
-            splits[0] = L(np.random.choice(splits[0], int(len(splits[0]) * train_perc), False).tolist())
+            if isinstance(train_size, Integral):
+                n_train_samples = train_size
+            elif train_size > 0 and train_size < 1:
+                n_train_samples = int(len(splits[0]) * train_size)
+            splits[0] = L(np.random.choice(splits[0], n_train_samples, False).tolist())
             if train_only:
                 if valid_size != 0: splits[1] = splits[0]
                 if test_size != 0: splits[2] = splits[0]
