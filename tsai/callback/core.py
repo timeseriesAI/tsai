@@ -62,6 +62,9 @@ class ShowGraph(Callback):
     "(Modified) Update a graph of training and validation loss"
     order,run_valid=65,False
     names = ['train', 'valid']
+    def __init__(self, plot_metrics:bool=True, final_losses:bool=False):
+        store_attr("plot_metrics,final_losses")
+
 
     def before_fit(self):
         self.run = not hasattr(self.learn, 'lr_finder') and not hasattr(self, "gather_preds")
@@ -85,6 +88,7 @@ class ShowGraph(Callback):
 
     def after_fit(self):
         plt.close(self.graph_ax.figure)
+        if self.plot_metrics: self.learn.plot_metrics(final_losses=self.final_losses)
 
     def update_graph(self, graphs, x_bounds=None, y_bounds=None, figsize=(6,4)):
         if not hasattr(self, 'graph_fig'):

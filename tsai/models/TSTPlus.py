@@ -166,10 +166,10 @@ class TSTEncoderLayer(Module):
             return src
 
     def _get_activation_fn(self, activation):
-        if activation.lower() == "relu": return nn.ReLU()
+        if callable(activation): return activation()
+        elif activation.lower() == "relu": return nn.ReLU()
         elif activation.lower() == "gelu": return nn.GELU()
-        else: return activation()
-#         raise ValueError(f'{activation} is not available. You can use "relu" or "gelu"')
+        raise ValueError(f'{activation} is not available. You can use "relu", "gelu", or a callable')
 
 # Cell
 class TSTEncoder(Module):
@@ -191,7 +191,7 @@ class TSTEncoder(Module):
 class TSTPlus(nn.Sequential):
     def __init__(self, c_in:int, c_out:int, seq_len:int, max_seq_len:Optional[int]=512,
                  n_layers:int=3, d_model:int=128, n_heads:int=16, d_k:Optional[int]=None, d_v:Optional[int]=None,
-                 d_ff:int=256, res_dropout:float=0.1, act:str="gelu", res_attention:bool=True,
+                 d_ff:int=256, res_dropout:float=0.1, act:str="gelu", res_attention:bool=False,
                  pe:str='zeros', learn_pe:bool=True, flatten:bool=True, fc_dropout:float=0.,
                  concat_pool:bool=True, bn:bool=False, custom_head:Optional=None,
                  y_range:Optional[tuple]=None, verbose:bool=False, **kwargs):
