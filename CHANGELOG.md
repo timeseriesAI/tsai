@@ -2,6 +2,15 @@
 
 <!-- do not remove -->
 
+## 0.2.17
+
+### Updates
+* Learner:
+    * Updated 3 new learner APIs: TSClassifier, TSRegressor, TSForecaster. 
+    
+* ShowGraph callback:
+    * Callback optionally plots all metrics at the end of training.
+
 
 ## 0.2.16
 
