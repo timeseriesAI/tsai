@@ -437,6 +437,81 @@ nb_path: "nbs/005_data.tabular.ipynb"
 </div>
     {% endraw %}
 
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">TabTransformer</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="c1"># def __init__(self, *, categories, num_continuous, dim_out, dim=32, depth=6, heads=8, dim_head=16,</span>
+    <span class="c1">#              mlp_hidden_mults=(4, 2), mlp_act=None, num_special_tokens=2,  continuous_mean_std=None,</span>
+    <span class="c1">#              attn_dropout=0., ff_dropout=0.):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">emb_szs</span><span class="p">,</span> <span class="n">n_cont</span><span class="p">,</span> <span class="n">out_sz</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">heads</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">dim_head</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
+                 <span class="n">mlp_hidden_mults</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">mlp_act</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_special_tokens</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>  <span class="n">continuous_mean_std</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">attn_dropout</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">ff_dropout</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="n">categories</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">emb_szs</span><span class="p">]</span>
+
+        <span class="n">total_tokens</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">categories</span><span class="p">)</span> <span class="o">+</span> <span class="n">num_special_tokens</span>
+
+        <span class="c1"># for automatically offsetting unique category ids to the correct position in the categories embedding table</span>
+        <span class="n">categories_offset</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span>
+            <span class="nb">list</span><span class="p">(</span><span class="n">categories</span><span class="p">)),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">value</span><span class="o">=</span><span class="n">num_special_tokens</span><span class="p">)</span>
+        <span class="n">categories_offset</span> <span class="o">=</span> <span class="n">categories_offset</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s1">&#39;categories_offset&#39;</span><span class="p">,</span> <span class="n">categories_offset</span><span class="p">)</span>
+
+        <span class="c1"># continuous</span>
+        <span class="k">if</span> <span class="n">exists</span><span class="p">(</span><span class="n">continuous_mean_std</span><span class="p">):</span>
+            <span class="k">assert</span> <span class="n">continuous_mean_std</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">n_cont</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> \
+                <span class="sa">f</span><span class="s1">&#39;continuous_mean_std must have a shape of (</span><span class="si">{</span><span class="n">n_cont</span><span class="si">}</span><span class="s1">, 2) where the last dimension contains the mean and variance respectively&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s1">&#39;continuous_mean_std&#39;</span><span class="p">,</span> <span class="n">continuous_mean_std</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LayerNorm</span><span class="p">(</span><span class="n">n_cont</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_cont</span> <span class="o">=</span> <span class="n">n_cont</span>
+
+        <span class="c1"># transformer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span> <span class="o">=</span> <span class="n">_Transformer</span><span class="p">(</span><span class="n">num_tokens</span><span class="o">=</span><span class="n">total_tokens</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="n">dim</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="n">depth</span><span class="p">,</span> <span class="n">heads</span><span class="o">=</span><span class="n">heads</span><span class="p">,</span>
+                                        <span class="n">dim_head</span><span class="o">=</span><span class="n">dim_head</span><span class="p">,</span> <span class="n">attn_dropout</span><span class="o">=</span><span class="n">attn_dropout</span><span class="p">,</span> <span class="n">ff_dropout</span><span class="o">=</span><span class="n">ff_dropout</span><span class="p">)</span>
+
+        <span class="c1"># mlp to logits</span>
+        <span class="n">input_size</span> <span class="o">=</span> <span class="p">(</span><span class="n">dim</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">categories</span><span class="p">))</span> <span class="o">+</span> <span class="n">n_cont</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="n">input_size</span> <span class="o">//</span> <span class="mi">8</span>
+
+        <span class="n">hidden_dimensions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">l</span> <span class="o">*</span> <span class="n">t</span><span class="p">,</span> <span class="n">mlp_hidden_mults</span><span class="p">))</span>
+        <span class="n">all_dimensions</span> <span class="o">=</span> <span class="p">[</span><span class="n">input_size</span><span class="p">,</span> <span class="o">*</span><span class="n">hidden_dimensions</span><span class="p">,</span> <span class="n">out_sz</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">mlp</span> <span class="o">=</span> <span class="n">_MLP</span><span class="p">(</span><span class="n">all_dimensions</span><span class="p">,</span> <span class="n">act</span><span class="o">=</span><span class="n">mlp_act</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_categ</span><span class="p">,</span> <span class="n">x_cont</span><span class="p">):</span>
+        <span class="c1"># assert x_categ.shape[-1] == self.num_categories, f&#39;you must pass in {self.num_categories} values for your categories input&#39;</span>
+        <span class="n">x_categ</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">categories_offset</span>
+
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span><span class="p">(</span><span class="n">x_categ</span><span class="p">)</span>
+
+        <span class="n">flat_categ</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># assert x_cont.shape[1] == self.n_cont, f&#39;you must pass in {self.n_cont} values for your continuous input&#39;</span>
+
+        <span class="k">if</span> <span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">continuous_mean_std</span><span class="p">):</span>
+            <span class="n">mean</span><span class="p">,</span> <span class="n">std</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">continuous_mean_std</span><span class="o">.</span><span class="n">unbind</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">x_cont</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_cont</span> <span class="o">-</span> <span class="n">mean</span><span class="p">)</span> <span class="o">/</span> <span class="n">std</span>
+
+        <span class="n">normed_cont</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">x_cont</span><span class="p">)</span>
+
+        <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">flat_categ</span><span class="p">,</span> <span class="n">normed_cont</span><span class="p">),</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
 </div>
  
 
