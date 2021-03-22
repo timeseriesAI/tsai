@@ -90,6 +90,12 @@ class MultiHeadAttention(Module):
 
         self.res_attention = res_attention
 
+        # Scaled Dot-Product Attention (multiple heads)
+        if self.res_attention:
+            self.sdp_attn = ScaledDotProductAttention(self.d_k, self.res_attention)
+        else:
+            self.sdp_attn = ScaledDotProductAttention(self.d_k)
+
     def forward(self, Q:Tensor, K:Tensor, V:Tensor, prev:Optional[Tensor]=None, attn_mask:Optional[Tensor]=None):
 
         bs = Q.size(0)
@@ -101,9 +107,9 @@ class MultiHeadAttention(Module):
 
         # Scaled Dot-Product Attention (multiple heads)
         if self.res_attention:
-            context, attn, scores = ScaledDotProductAttention(self.d_k, self.res_attention)(q_s, k_s, v_s, prev=prev, attn_mask=attn_mask)
+            context, attn, scores = self.sdp_attn(q_s, k_s, v_s, prev=prev, attn_mask=attn_mask)
         else:
-            context, attn = ScaledDotProductAttention(self.d_k)(q_s, k_s, v_s, attn_mask=attn_mask)
+            context, attn = self.sdp_attn(q_s, k_s, v_s, attn_mask=attn_mask)
         # context: [bs x n_heads x q_len x d_v], attn: [bs x n_heads x q_len x q_len]
 
         # Concat
@@ -121,7 +127,7 @@ class TSTEncoderLayer(Module):
     def __init__(self, q_len:int, d_model:int, n_heads:int, d_k:Optional[int]=None, d_v:Optional[int]=None, d_ff:int=256,
                  res_dropout:float=0.1, activation:str="gelu", res_attention:bool=False):
 
-        assert d_model // n_heads, f"d_model ({d_model}) must be divisible by n_heads ({n_heads})"
+        assert not d_model%n_heads, f"d_model ({d_model}) must be divisible by n_heads ({n_heads})"
         d_k = ifnone(d_k, d_model // n_heads)
         d_v = ifnone(d_v, d_model // n_heads)
 

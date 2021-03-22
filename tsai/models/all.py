@@ -30,6 +30,7 @@ from .XResNet1d import *
 from .XResNet1dPlus import *
 from fastai.vision.models.xresnet import *
 from .TabModel import *
+from .TabTransformer import *
 from .MultiInputNet import *
 
 from .misc import *

@@ -4,6 +4,10 @@
 
 ## 0.2.17
 
+## New features:
+* Models:
+    * Added TabTransformer, a state-of-the-art tabular transformer released in Dec 2020.
+
 ### Breaking change:
 * Data:
     * train_perc in get_splits has been changed to train_size to allow both floats or integers.
