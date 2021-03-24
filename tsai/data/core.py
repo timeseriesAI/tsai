@@ -378,6 +378,7 @@ class NumpyDataLoader(TfmdDL):
         it = b if self.shuffle else slice(b[0], b[0] + self.bs)
         self.idxs = L(b)
         if hasattr(self, "split_idxs"): self.input_idxs = self.split_idxs[it]
+        else: self.input_idxs = self.idxs
         return self.dataset[it]
 
     def create_item(self, s):

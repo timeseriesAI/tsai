@@ -4,6 +4,10 @@
 
 ## 0.2.17
 
+### Bug Fixes
+* Models: 
+    * Fixed an issue in TST and TSTPlus related to encoder layer creation.
+
 ## New features:
 * Models:
     * Added TabTransformer, a state-of-the-art tabular transformer released in Dec 2020.
