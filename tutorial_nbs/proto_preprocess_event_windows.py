@@ -1,0 +1,68 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# Sample Signals with Events
+
+from fastcore.foundation import L
+from fastcore.meta import delegates
+import numpy as np
+import random
+
+NoneType = type(None)
+
+def _sliding_events(all_events, sig_lengths, width=100, offset=None, limit=None, include_empty=False):
+    offset = offset if offset else -width//2
+    offsetR = width + offset
+    for i, events in enumerate(all_events):
+        length = sig_lengths if isinstance(sig_lengths, int) else sig_lengths[i]
+        events =  [e for e in events if e+offset >=0 and e+offsetR <  length]  # trim overlap
+        if len(events) > 0:
+            if limit and len(events) > limit:
+                random.shuffle(events)
+                events = events[:limit]
+            for idx in events:
+                yield i, idx+offset, idx+offsetR
+        elif include_empty:
+            idx = random.randint(sig_lengths[i]-width)
+            yield i, idx, idx+width
+        else:
+            continue
+
+def _compute_new_splits(m, orig_splits):
+    N = len(orig_splits)
+    split_map = {i_orig:i_split for i_split, split in enumerate(orig_splits) for i_orig in split}
+    return L([[i for i, i_orig in enumerate(m) if split_map[i_orig] == i_split]
+              for i_split in range(N)])
+
+def _compute_new_folds(m, orig_folds):
+    return np.array([orig_folds[i] for i in m])
+
+@delegates(_sliding_events)
+def preprocess_sliding_event_window(X, y, events, splits=None, folds=None, **kwargs):
+    """
+Inputs:
+      X: signal data, can be uniform or ragged, with or without channels 
+      y: label data 
+      events: List of event positions  for each signal  
+      width: window size in samples
+      offset: start of window vs event, window centered by default
+      limit: max windows per signal, 
+      include_empty: include randomly selected window if no events
+      splits: splits data, will be mapped to windows data if present
+      folds:  folds data, will be mapped to windows data if present
+      *note: splits and folds are mutually exclusive
+Returns:
+      X_win: windows signals 
+      y_win: labels for windowed signals
+      folds_win or folds_win: Optional, depending on if splits or folds specified
+"""
+    sig_lengths = X.shape[-1] if len(X.shape) > 1  else [x.shape[-1] for x in X]
+    X_win, y_win, m = zip(*[[X[i_orig][..., idx_l:idx_r], y[i_orig], i_orig]
+        for (i_orig, idx_l, idx_r) in _sliding_events(events, sig_lengths, **kwargs)])
+    
+    if not isinstance(splits, NoneType):
+        return np.array(X_win), y_win, _compute_new_splits(m, splits)
+    elif not isinstance(folds, NoneType):
+        return np.array(X_win), y_win, _compute_new_folds(m, folds)
+    else:
+        return np.array(X_win), y_win
