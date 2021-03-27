@@ -557,7 +557,9 @@ index = {"totensor": "000_utils.ipynb",
          "MultiInputNet": "130_models.MultiInputNet.ipynb",
          "InputWrapper": "140_models.misc.ipynb",
          "ResidualWrapper": "140_models.misc.ipynb",
-         "RecursiveWrapper": "140_models.misc.ipynb"}
+         "RecursiveWrapper": "140_models.misc.ipynb",
+         "get_sample_data": "200_data.synthetic.ipynb",
+         "preprocess_sliding_event_window": "201_data.event_preprocessing.ipynb"}
 
 modules = ["utils.py",
            "data/validation.py",
@@ -612,7 +614,9 @@ modules = ["utils.py",
            "models/TabModel.py",
            "models/TabTransformer.py",
            "models/MultiInputNet.py",
-           "models/misc.py"]
+           "models/misc.py",
+           "data/synthetic.py",
+           "data/event_preprocessing.py"]
 
 doc_url = "https://timeseriesAI.github.io/tsai/"
 
