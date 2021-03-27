@@ -71,7 +71,7 @@ nb_path: "nbs/006_data.mixed.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MixedDataLoaders" class="doc_header"><code>class</code> <code>MixedDataLoaders</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/mixed.py#L122" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MixedDataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>) :: <code>DataLoaders</code></p>
+<h2 id="MixedDataLoaders" class="doc_header"><code>class</code> <code>MixedDataLoaders</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/mixed.py#L118" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MixedDataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>) :: <code>DataLoaders</code></p>
 </blockquote>
 <p>Basic wrapper around several <code>DataLoader</code>s.</p>
 
@@ -103,7 +103,7 @@ nb_path: "nbs/006_data.mixed.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_mixed_dls" class="doc_header"><code>get_mixed_dls</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/mixed.py#L125" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_mixed_dls</code>(<strong>*<code>dls</code></strong>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="get_mixed_dls" class="doc_header"><code>get_mixed_dls</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/mixed.py#L121" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_mixed_dls</code>(<strong>*<code>dls</code></strong>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -176,91 +176,91 @@ nb_path: "nbs/006_data.mixed.ipynb"
     <tr>
       <th>0</th>
       <td>Private</td>
-      <td>HS-grad</td>
-      <td>Married-civ-spouse</td>
-      <td>50.000000</td>
-      <td>162631.998777</td>
+      <td>Some-college</td>
+      <td>Never-married</td>
+      <td>32.000000</td>
+      <td>182974.999972</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>Private</td>
-      <td>Some-college</td>
-      <td>Separated</td>
-      <td>59.000000</td>
-      <td>140569.000899</td>
-      <td>&gt;=50k</td>
+      <td>Local-gov</td>
+      <td>Bachelors</td>
+      <td>Never-married</td>
+      <td>57.999999</td>
+      <td>283634.999461</td>
+      <td>&lt;50k</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>Local-gov</td>
+      <td>Private</td>
       <td>HS-grad</td>
-      <td>Married-civ-spouse</td>
-      <td>42.000000</td>
-      <td>263871.002027</td>
+      <td>Never-married</td>
+      <td>30.000000</td>
+      <td>35644.000734</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>3</th>
       <td>Private</td>
-      <td>Bachelors</td>
-      <td>Never-married</td>
-      <td>29.000000</td>
-      <td>115677.001986</td>
-      <td>&lt;50k</td>
+      <td>Masters</td>
+      <td>Married-civ-spouse</td>
+      <td>41.000000</td>
+      <td>93793.000804</td>
+      <td>&gt;=50k</td>
     </tr>
     <tr>
       <th>4</th>
       <td>Private</td>
       <td>Some-college</td>
-      <td>Never-married</td>
-      <td>27.000000</td>
-      <td>158647.001565</td>
+      <td>Divorced</td>
+      <td>38.000000</td>
+      <td>252896.998445</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>5</th>
       <td>Private</td>
-      <td>HS-grad</td>
-      <td>Divorced</td>
-      <td>29.000000</td>
-      <td>32897.000888</td>
-      <td>&lt;50k</td>
+      <td>Bachelors</td>
+      <td>Married-civ-spouse</td>
+      <td>68.000001</td>
+      <td>138713.998519</td>
+      <td>&gt;=50k</td>
     </tr>
     <tr>
       <th>6</th>
-      <td>Self-emp-not-inc</td>
+      <td>Private</td>
       <td>HS-grad</td>
-      <td>Married-civ-spouse</td>
-      <td>55.000001</td>
-      <td>422249.008882</td>
+      <td>Never-married</td>
+      <td>32.000000</td>
+      <td>84178.997710</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>7</th>
       <td>Private</td>
       <td>HS-grad</td>
-      <td>Divorced</td>
-      <td>55.000001</td>
-      <td>305759.005569</td>
+      <td>Never-married</td>
+      <td>22.000000</td>
+      <td>141028.000349</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>8</th>
-      <td>Private</td>
-      <td>7th-8th</td>
-      <td>Married-spouse-absent</td>
-      <td>60.000000</td>
-      <td>36076.996929</td>
-      <td>&lt;50k</td>
+      <td>Local-gov</td>
+      <td>Masters</td>
+      <td>Widowed</td>
+      <td>58.999999</td>
+      <td>303454.995440</td>
+      <td>&gt;=50k</td>
     </tr>
     <tr>
       <th>9</th>
-      <td>Private</td>
-      <td>10th</td>
-      <td>Divorced</td>
-      <td>60.000000</td>
-      <td>291903.999650</td>
+      <td>State-gov</td>
+      <td>HS-grad</td>
+      <td>Widowed</td>
+      <td>59.999999</td>
+      <td>129446.997627</td>
       <td>&lt;50k</td>
     </tr>
   </tbody>
@@ -286,20 +286,20 @@ nb_path: "nbs/006_data.mixed.ipynb"
     <tr>
       <th>0</th>
       <td>False</td>
-      <td>5.0</td>
+      <td>4.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>1</th>
       <td>False</td>
-      <td>11.0</td>
-      <td>&gt;=50k</td>
+      <td>6.0</td>
+      <td>&lt;50k</td>
     </tr>
     <tr>
       <th>2</th>
       <td>False</td>
-      <td>13.0</td>
-      <td>&gt;=50k</td>
+      <td>9.0</td>
+      <td>&lt;50k</td>
     </tr>
     <tr>
       <th>3</th>
@@ -310,26 +310,26 @@ nb_path: "nbs/006_data.mixed.ipynb"
     <tr>
       <th>4</th>
       <td>False</td>
-      <td>9.0</td>
+      <td>13.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>5</th>
       <td>False</td>
-      <td>13.0</td>
-      <td>&lt;50k</td>
+      <td>14.0</td>
+      <td>&gt;=50k</td>
     </tr>
     <tr>
       <th>6</th>
-      <td>True</td>
+      <td>False</td>
       <td>10.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>7</th>
       <td>False</td>
-      <td>9.0</td>
-      <td>&lt;50k</td>
+      <td>15.0</td>
+      <td>&gt;=50k</td>
     </tr>
     <tr>
       <th>8</th>
@@ -340,7 +340,7 @@ nb_path: "nbs/006_data.mixed.ipynb"
     <tr>
       <th>9</th>
       <td>False</td>
-      <td>9.0</td>
+      <td>12.0</td>
       <td>&lt;50k</td>
     </tr>
   </tbody>
@@ -364,6 +364,7 @@ nb_path: "nbs/006_data.mixed.ipynb"
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">dls</span> <span class="o">=</span> <span class="n">get_mixed_dls</span><span class="p">(</span><span class="n">dls1</span><span class="p">,</span> <span class="n">dls2</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
 <span class="n">first</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">train</span><span class="p">)</span>
+<span class="n">first</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">valid</span><span class="p">)</span>
 <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">dls</span><span class="p">,</span><span class="s1">&#39;export/mixed_dls.pth&#39;</span><span class="p">)</span>
 <span class="k">del</span> <span class="n">dls</span>
 <span class="n">dls</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;export/mixed_dls.pth&#39;</span><span class="p">)</span>
@@ -397,73 +398,73 @@ nb_path: "nbs/006_data.mixed.ipynb"
     <tr>
       <th>0</th>
       <td>Private</td>
-      <td>HS-grad</td>
+      <td>Bachelors</td>
       <td>Married-civ-spouse</td>
-      <td>70.000000</td>
-      <td>282641.998684</td>
-      <td>&gt;=50k</td>
+      <td>38.000000</td>
+      <td>617897.996908</td>
+      <td>&lt;50k</td>
     </tr>
     <tr>
       <th>1</th>
       <td>Private</td>
-      <td>Some-college</td>
-      <td>Divorced</td>
-      <td>55.000001</td>
-      <td>164856.999276</td>
+      <td>HS-grad</td>
+      <td>Widowed</td>
+      <td>42.000000</td>
+      <td>42345.996025</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>Local-gov</td>
-      <td>Bachelors</td>
-      <td>Never-married</td>
-      <td>34.000000</td>
-      <td>183801.000028</td>
+      <td>Without-pay</td>
+      <td>Assoc-acdm</td>
+      <td>Married-civ-spouse</td>
+      <td>61.999999</td>
+      <td>170113.999231</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>?</td>
-      <td>HS-grad</td>
-      <td>Married-civ-spouse</td>
+      <td>Private</td>
+      <td>Some-college</td>
+      <td>Never-married</td>
       <td>21.000000</td>
-      <td>207988.000357</td>
+      <td>275420.999876</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>?</td>
-      <td>HS-grad</td>
+      <td>Self-emp-inc</td>
+      <td>Some-college</td>
       <td>Married-civ-spouse</td>
-      <td>61.000000</td>
-      <td>222394.998746</td>
-      <td>&lt;50k</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>Self-emp-not-inc</td>
-      <td>Prof-school</td>
-      <td>Married-civ-spouse</td>
-      <td>42.000000</td>
-      <td>201907.999827</td>
+      <td>43.000000</td>
+      <td>130126.000804</td>
       <td>&gt;=50k</td>
     </tr>
     <tr>
-      <th>6</th>
+      <th>5</th>
       <td>Private</td>
-      <td>Bachelors</td>
+      <td>HS-grad</td>
       <td>Never-married</td>
+      <td>26.000000</td>
+      <td>122206.000137</td>
+      <td>&lt;50k</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Federal-gov</td>
+      <td>HS-grad</td>
+      <td>Divorced</td>
       <td>37.000000</td>
-      <td>40954.995306</td>
+      <td>81852.998038</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>7</th>
-      <td>Private</td>
-      <td>HS-grad</td>
-      <td>Never-married</td>
-      <td>33.000000</td>
-      <td>133278.002611</td>
+      <td>State-gov</td>
+      <td>Some-college</td>
+      <td>Separated</td>
+      <td>39.000000</td>
+      <td>218249.000136</td>
       <td>&lt;50k</td>
     </tr>
   </tbody>
@@ -489,49 +490,49 @@ nb_path: "nbs/006_data.mixed.ipynb"
     <tr>
       <th>0</th>
       <td>False</td>
-      <td>9.0</td>
-      <td>&gt;=50k</td>
+      <td>13.0</td>
+      <td>&lt;50k</td>
     </tr>
     <tr>
       <th>1</th>
       <td>False</td>
-      <td>10.0</td>
+      <td>9.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>2</th>
       <td>False</td>
-      <td>13.0</td>
+      <td>12.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>3</th>
       <td>False</td>
-      <td>9.0</td>
+      <td>10.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>4</th>
       <td>False</td>
-      <td>9.0</td>
-      <td>&lt;50k</td>
+      <td>10.0</td>
+      <td>&gt;=50k</td>
     </tr>
     <tr>
       <th>5</th>
       <td>False</td>
-      <td>15.0</td>
-      <td>&gt;=50k</td>
+      <td>9.0</td>
+      <td>&lt;50k</td>
     </tr>
     <tr>
       <th>6</th>
       <td>False</td>
-      <td>13.0</td>
+      <td>9.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>7</th>
       <td>False</td>
-      <td>9.0</td>
+      <td>10.0</td>
       <td>&lt;50k</td>
     </tr>
   </tbody>
@@ -568,7 +569,7 @@ nb_path: "nbs/006_data.mixed.ipynb"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;__main__.MixedDataLoader at 0x7ffc5416bb10&gt;</pre>
+<pre>&lt;__main__.MixedDataLoader at 0x7f8563082d50&gt;</pre>
 </div>
 
 </div>
@@ -602,22 +603,22 @@ nb_path: "nbs/006_data.mixed.ipynb"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>((tensor([[ 5, 12,  3],
-          [ 5, 16,  1],
-          [ 3, 10,  5],
-          [ 1, 12,  3],
-          [ 1, 12,  3],
-          [ 7, 15,  3],
-          [ 5, 10,  5],
-          [ 5, 12,  5]]),
-  tensor([[ 2.3033,  0.8681],
-          [ 1.2043, -0.2391],
-          [-0.3343, -0.0611],
-          [-1.2868,  0.1663],
-          [ 1.6439,  0.3017],
-          [ 0.2518,  0.1092],
-          [-0.1145, -1.4039],
-          [-0.4076, -0.5360]])),
+<pre>((tensor([[ 5, 10,  3],
+          [ 5, 12,  7],
+          [ 9,  8,  3],
+          [ 5, 16,  5],
+          [ 6, 16,  3],
+          [ 5, 12,  5],
+          [ 2, 12,  1],
+          [ 8, 16,  6]]),
+  tensor([[-0.0440,  4.0707],
+          [ 0.2492, -1.3949],
+          [ 1.7156, -0.1816],
+          [-1.2905,  0.8184],
+          [ 0.3225, -0.5613],
+          [-0.9239, -0.6365],
+          [-0.1174, -1.0198],
+          [ 0.0293,  0.2755]])),
  (tensor([[1],
           [1],
           [1],
@@ -626,14 +627,14 @@ nb_path: "nbs/006_data.mixed.ipynb"
           [1],
           [1],
           [1]]),
-  tensor([[-0.4249],
-          [-0.0324],
-          [ 1.1451],
-          [-0.4249],
-          [-0.4249],
-          [ 1.9301],
-          [ 1.1451],
-          [-0.4249]])))</pre>
+  tensor([[ 1.1442],
+          [-0.4264],
+          [ 0.7515],
+          [-0.0337],
+          [-0.0337],
+          [-0.4264],
+          [-0.4264],
+          [-0.0337]])))</pre>
 </div>
 
 </div>

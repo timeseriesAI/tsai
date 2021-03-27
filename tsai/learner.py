@@ -10,6 +10,7 @@ from .imports import *
 from .data.core import *
 from .data.validation import *
 from .models.utils import *
+from .models.InceptionTimePlus import *
 
 # Cell
 @patch
@@ -200,7 +201,7 @@ def ts_learner(dls, arch=None, c_in=None, c_out=None, seq_len=None, d=None, spli
                # other model args
                **kwargs):
 
-    if arch is None: arch = InceptionTime
+    if arch is None: arch = InceptionTimePlus
     model = build_ts_model(arch, dls=dls, c_in=c_in, c_out=c_out, seq_len=seq_len, d=d, **kwargs)
     try:
         model[0], model[1]

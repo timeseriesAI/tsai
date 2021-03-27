@@ -48,7 +48,7 @@ def Coord1dPosEncoding(q_len, exponential=False, normalize=True, device=default_
 # Cell
 class ScaledDotProductAttention(Module):
     def __init__(self, d_k:int, res_attention:bool=False): self.d_k,self.res_attention = d_k,res_attention
-    def forward(self, q:Tensor, k:Tensor, v:Tensor, prev:Optional[Tensor]=None, attn_mask:Optional[Tensor]=None):
+    def forward(self, q:Tensor, k:Tensor, v:Tensor, prev:Optional[Tensor]=None, key_padding_mask:Optional[Tensor]=None, attn_mask:Optional[Tensor]=None):
 
         # MatMul (q, k) - similarity scores for all pairs of positions in an input sequence
         scores = torch.matmul(q, k)                                    # scores : [bs x n_heads x q_len x q_len]
@@ -57,11 +57,15 @@ class ScaledDotProductAttention(Module):
         scores = scores / (self.d_k ** 0.5)
 
         # Attention mask (optional)
-        if attn_mask is not None:                                     # mask with shape [q_len x q_len]
+        if attn_mask is not None:                                     # attn_mask with shape [q_len x q_len]
             if attn_mask.dtype == torch.bool:
                 scores.masked_fill_(attn_mask, float('-inf'))
             else:
                 scores += attn_mask
+
+        # Key padding mask (optional)
+        if key_padding_mask is not None:                                     # key_padding_mask with shape [bs x q_len]
+            scores.masked_fill_(key_padding_mask.unsqueeze(1).unsqueeze(2), float('-inf'))
 
         # SoftMax
         if prev is not None: scores = scores + prev
@@ -96,7 +100,7 @@ class MultiHeadAttention(Module):
         else:
             self.sdp_attn = ScaledDotProductAttention(self.d_k)
 
-    def forward(self, Q:Tensor, K:Tensor, V:Tensor, prev:Optional[Tensor]=None, attn_mask:Optional[Tensor]=None):
+    def forward(self, Q:Tensor, K:Tensor, V:Tensor, prev:Optional[Tensor]=None, key_padding_mask:Optional[Tensor]=None, attn_mask:Optional[Tensor]=None):
 
         bs = Q.size(0)
 
@@ -109,7 +113,7 @@ class MultiHeadAttention(Module):
         if self.res_attention:
             context, attn, scores = self.sdp_attn(q_s, k_s, v_s, prev=prev, attn_mask=attn_mask)
         else:
-            context, attn = self.sdp_attn(q_s, k_s, v_s, attn_mask=attn_mask)
+            context, attn = self.sdp_attn(q_s, k_s, v_s, key_padding_mask=key_padding_mask, attn_mask=attn_mask)
         # context: [bs x n_heads x q_len x d_v], attn: [bs x n_heads x q_len x q_len]
 
         # Concat
@@ -125,7 +129,7 @@ class MultiHeadAttention(Module):
 # Cell
 class _TSTEncoderLayer(Module):
     def __init__(self, q_len:int, d_model:int, n_heads:int, d_k:Optional[int]=None, d_v:Optional[int]=None, d_ff:int=256,
-                 res_dropout:float=0.1, activation:str="gelu", res_attention:bool=False):
+                 res_dropout:float=0.1, bias:bool=True, activation:str="gelu", res_attention:bool=False):
 
         assert not d_model%n_heads, f"d_model ({d_model}) must be divisible by n_heads ({n_heads})"
         d_k = ifnone(d_k, d_model // n_heads)
@@ -140,20 +144,20 @@ class _TSTEncoderLayer(Module):
         self.batchnorm_attn = nn.BatchNorm1d(q_len)
 
         # Position-wise Feed-Forward
-        self.ff = nn.Sequential(nn.Linear(d_model, d_ff), self._get_activation_fn(activation), nn.Linear(d_ff, d_model))
+        self.ff = nn.Sequential(nn.Linear(d_model, d_ff, bias=bias), self._get_activation_fn(activation), nn.Linear(d_ff, d_model, bias=bias))
 
         # Add & Norm
         self.dropout_ffn = nn.Dropout(res_dropout)
         self.batchnorm_ffn = nn.BatchNorm1d(q_len)
 
-    def forward(self, src:Tensor, prev:Optional[Tensor]=None, attn_mask:Optional[Tensor]=None) -> Tensor:
+    def forward(self, src:Tensor, prev:Optional[Tensor]=None, key_padding_mask:Optional[Tensor]=None, attn_mask:Optional[Tensor]=None) -> Tensor:
 
         # Multi-Head attention sublayer
         ## Multi-Head attention
         if self.res_attention:
-            src2, attn, scores = self.self_attn(src, src, src, prev, attn_mask=attn_mask)
+            src2, attn, scores = self.self_attn(src, src, src, prev, key_padding_mask=key_padding_mask, attn_mask=attn_mask)
         else:
-            src2, attn = self.self_attn(src, src, src, attn_mask=attn_mask)
+            src2, attn = self.self_attn(src, src, src, key_padding_mask=key_padding_mask, attn_mask=attn_mask)
         self.attn = attn
         ## Add & Norm
         src = src + self.dropout_attn(src2) # Add: residual connection with residual dropout
@@ -181,24 +185,25 @@ class _TSTEncoderLayer(Module):
 class _TSTEncoder(Module):
     def __init__(self, q_len, d_model, n_heads, d_k=None, d_v=None, d_ff=None, res_dropout=0.1, activation='gelu', res_attention=False, n_layers=1):
         self.layers = nn.ModuleList([_TSTEncoderLayer(q_len, d_model, n_heads=n_heads, d_k=d_k, d_v=d_v, d_ff=d_ff, res_dropout=res_dropout,
-                                                            activation=activation, res_attention=res_attention) for i in range(n_layers)])
+                                                      activation=activation, res_attention=res_attention) for i in range(n_layers)])
         self.res_attention = res_attention
 
-    def forward(self, src, attn_mask=None):
+    def forward(self, src:Tensor, key_padding_mask:Optional[Tensor]=None, attn_mask:Optional[Tensor]=None):
         output = src
         scores = None
         if self.res_attention:
-            for mod in self.layers: output, scores = mod(output, prev=scores, attn_mask=attn_mask)
+            for mod in self.layers: output, scores = mod(output, prev=scores, key_padding_mask=key_padding_mask, attn_mask=attn_mask)
             return output
         else:
-            for mod in self.layers: output = mod(output, attn_mask=attn_mask)
+            for mod in self.layers: output = mod(output, key_padding_mask=key_padding_mask, attn_mask=attn_mask)
             return output
 
 # Cell
 class _TSTBackbone(Module):
     def __init__(self, c_in:int, seq_len:int, max_seq_len:Optional[int]=512,
                  n_layers:int=3, d_model:int=128, n_heads:int=16, d_k:Optional[int]=None, d_v:Optional[int]=None,
-                 d_ff:int=256, res_dropout:float=0.1, act:str="gelu", res_attention:bool=True,
+                 d_ff:int=256, res_dropout:float=0.1, act:str="gelu",
+                 key_padding_mask:bool=True, attn_mask:Optional[Tensor]=None, res_attention:bool=True,
                  pe:str='zeros', learn_pe:bool=True, verbose:bool=False, **kwargs):
 
         # Input encoding
@@ -248,10 +253,17 @@ class _TSTBackbone(Module):
 
         # Encoder
         self.encoder = _TSTEncoder(q_len, d_model, n_heads, d_k=d_k, d_v=d_v, d_ff=d_ff, res_dropout=res_dropout,
-                                       activation=act, res_attention=res_attention, n_layers=n_layers)
+                                   activation=act, res_attention=res_attention, n_layers=n_layers)
         self.transpose = Transpose(-1, -2, contiguous=True)
+        self.key_padding_mask = key_padding_mask
+        self.attn_mask = attn_mask
 
-    def forward(self, x:Tensor, attn_mask:Optional[Tensor]=None) -> Tensor:  # x: [bs x nvars x q_len], attn_mask: [q_len x q_len]
+    def forward(self, x:Tensor) -> Tensor:
+        # x: [bs x nvars x q_len]
+        if self.key_padding_mask and torch.isnan(x).any():
+            key_padding_mask = TSMask(torch.isnan(x).float().mean(1).bool())   # key_padding_mask: [bs x q_len]
+        else:
+            key_padding_mask = None
 
         # Input encoding
         if self.new_q_len: u = self.W_P(x).transpose(2,1) # Eq 2        # u: [bs x d_model x q_len] transposed to [bs x q_len x d_model]
@@ -261,8 +273,8 @@ class _TSTBackbone(Module):
         u = self.res_dropout(u + self.W_pos)
 
         # Encoder
-        z = self.encoder(u, attn_mask=attn_mask)                        # z: [bs x q_len x d_model]
-        z = self.transpose(z)                                           # z: [bs x d_model x q_len]
+        z = self.encoder(u, key_padding_mask=key_padding_mask, attn_mask=self.attn_mask)    # z: [bs x q_len x d_model]
+        z = self.transpose(z)                                                               # z: [bs x d_model x q_len]
 
         return z
 
@@ -270,8 +282,8 @@ class _TSTBackbone(Module):
 class TSTPlus(nn.Sequential):
     def __init__(self, c_in:int, c_out:int, seq_len:int, max_seq_len:Optional[int]=512,
                  n_layers:int=3, d_model:int=128, n_heads:int=16, d_k:Optional[int]=None, d_v:Optional[int]=None,
-                 d_ff:int=256, res_dropout:float=0.1, act:str="gelu", res_attention:bool=False,
-                 pe:str='zeros', learn_pe:bool=True, flatten:bool=True, fc_dropout:float=0.,
+                 d_ff:int=256, res_dropout:float=0.1, act:str="gelu", key_padding_mask:bool=True, attn_mask:Optional[Tensor]=None,
+                 res_attention:bool=False, pe:str='zeros', learn_pe:bool=True, flatten:bool=True, fc_dropout:float=0.,
                  concat_pool:bool=True, bn:bool=False, custom_head:Optional=None,
                  y_range:Optional[tuple]=None, verbose:bool=False, **kwargs):
         r"""TST (Time Series Transformer) is a Transformer that takes continuous time series as inputs.
@@ -288,6 +300,8 @@ class TSTPlus(nn.Sequential):
             d_ff: the dimension of the feedforward network model. Default: 512 (range(256-512))
             res_dropout: amount of residual dropout applied in the encoder.
             act: the activation function of intermediate layer, relu or gelu.
+            key_padding_mask: a padding mask will be applied to attention if True to those steps in a sample where all features are nan.
+            attn_mask: a mask will be applied to attention if a tensor of shape [min(seq_len, max_seq_len) x min(seq_len, max_seq_len)] if provided.
             res_attention: if True Residual MultiHeadAttention is applied.
             num_layers: number of layers (or blocks) in the encoder. Default: 3 (range(1-4))
             pe: type of positional encoder.
@@ -309,8 +323,8 @@ class TSTPlus(nn.Sequential):
         # Backbone
         backbone = _TSTBackbone(c_in, seq_len=seq_len, max_seq_len=max_seq_len,
                                 n_layers=n_layers, d_model=d_model, n_heads=n_heads, d_k=d_k, d_v=d_v,
-                                d_ff=d_ff, res_dropout=res_dropout, act=act, res_attention=res_attention,
-                                pe=pe, learn_pe=learn_pe, verbose=verbose, **kwargs)
+                                d_ff=d_ff, res_dropout=res_dropout, act=act, key_padding_mask=key_padding_mask, attn_mask=attn_mask,
+                                res_attention=res_attention, pe=pe, learn_pe=learn_pe, verbose=verbose, **kwargs)
 
         # Head
         self.head_nf = d_model

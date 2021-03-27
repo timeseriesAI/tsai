@@ -78,7 +78,6 @@ class MixedDataLoader():
             outs = tuple(L(outs)[self.y_idxs]) if len(self.y_idxs) > 1 else L(outs)[self.y_idxs][0]
             yield inps, outs
 
-
     def one_batch(self):
         "Grab one batch of data"
         with self.fake_l.no_multiproc(): res = first(self)
@@ -86,14 +85,11 @@ class MixedDataLoader():
         return res
 
     def shuffle_fn(self, idxs):
-        "Generate the same idxs for all dls in each batch"
-        if not self.shuffle:
-            self.rng = np.arange(len(idxs)).tolist()
-        else:
-            if self.count == 0: self.rng = self.loaders[0].rng.sample(idxs, len(idxs))
-            self.count += 1
-            if self.count == len(self.loaders): self.count = 0
-        return self.rng
+        "Generate the same idxs for all dls in each batch when shuffled"
+        if self.count == 0: self.shuffled_idxs = np.random.permutation(idxs)
+        self.count += 1
+        if self.count == len(self.loaders): self.count = 0
+        return self.shuffled_idxs
 
     def show_batch(self):
         "Show a batch of data"

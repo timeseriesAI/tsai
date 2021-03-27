@@ -53,7 +53,6 @@ class MultiInputNet(Module):
         self.to(device=device)
 
     def forward(self, xs):
-
         xs = tuple(*xs) if len(xs) == 1 else xs
         out = []
         for k in range(self.M):
