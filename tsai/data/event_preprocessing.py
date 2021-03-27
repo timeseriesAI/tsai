@@ -7,7 +7,7 @@ from ..imports import *
 from ..utils import *
 from .validation import *
 
-# Cell
+# Internal Cell
 def _sliding_events(all_events, sig_lengths, width=100, offset=None, limit=None, include_empty=False):
     offset = offset if offset else -width//2
     offsetR = width + offset
@@ -26,14 +26,14 @@ def _sliding_events(all_events, sig_lengths, width=100, offset=None, limit=None,
         else:
             continue
 
-# Cell
+# Internal Cell
 def _compute_new_splits(m, orig_splits):
     N = len(orig_splits)
     split_map = {i_orig:i_split for i_split, split in enumerate(orig_splits) for i_orig in split}
     return L([[i for i, i_orig in enumerate(m) if split_map[i_orig] == i_split]
               for i_split in range(N)])
 
-# Cell
+# Internal Cell
 def _compute_new_folds(m, orig_folds):
     return np.array([orig_folds[i] for i in m])
 

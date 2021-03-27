@@ -7,7 +7,7 @@ from ..imports import *
 from ..utils import *
 from .validation import *
 
-# Cell
+# Internal Cell
 def _get_sample_signals(length=1000, n_sig=10):
     if (isinstance(length, tuple) or isinstance(length, tuple)):
         assert len(length) == 2
@@ -27,7 +27,7 @@ def _get_sample_signals(length=1000, n_sig=10):
     else:
         return np.array(all_sig)
 
-# Cell
+# Internal Cell
 def _get_sample_events(data):
     """Use signal peaks for sample events"""
     results = []
@@ -37,7 +37,7 @@ def _get_sample_events(data):
         results.append(np.where(peaks)[0])
     return results
 
-# Cell
+# Internal Cell
 def _get_sample_folds(n_sig, n_fold):
     folds = np.array([*range(n_fold)]*((n_sig+n_fold-1)//n_fold))
     np.random.shuffle(folds)
@@ -45,7 +45,7 @@ def _get_sample_folds(n_sig, n_fold):
     assert len(folds) == n_sig
     return folds
 
-# Cell
+# Internal Cell
 def _get_sample_splits(n_sig, split_pct):
     assert isinstance(split_pct, float) or isinstance(split_pct, tuple) or isinstance(split_pct, list)
     all_indices = [*range(n_sig)]
