@@ -13,16 +13,17 @@ def _sliding_events(all_events, sig_lengths, width=100, offset=None, limit=None,
     offsetR = width + offset
     for i, events in enumerate(all_events):
         length = sig_lengths if isinstance(sig_lengths, int) else sig_lengths[i]
-        events =  [e for e in events if e+offset >=0 and e+offsetR <  length]  # trim overlap
+        events =  [(idx, e) for idx, e in enumerate(events)
+                   if e+offset >=0 and e+offsetR <  length]  # trim overlap
         if len(events) > 0:
             if limit and len(events) > limit:
                 random.shuffle(events)
                 events = events[:limit]
-            for idx in events:
-                yield i, idx+offset, idx+offsetR
+            for i_e, e in events:
+                yield i, e+offset, e+offsetR, i_e
         elif include_empty:
-            idx = random.randint(sig_lengths[i]-width)
-            yield i, idx, idx+width
+            e = random.randint(sig_lengths[i]-width)
+            yield i, e, e+width, None
         else:
             continue
 
@@ -39,7 +40,9 @@ def _compute_new_folds(m, orig_folds):
 
 # Cell
 @delegates(_sliding_events)
-def preprocess_sliding_event_window(X, y, events, splits=None, folds=None, **kwargs):
+def preprocess_sliding_event_window(X, y, events,
+                                    has_label_per_event=False, has_label_per_sample=False,
+                                    splits=None, folds=None, **kwargs):
     """
 Inputs:
       X: signal data, can be uniform or ragged, with or without channels
@@ -47,7 +50,9 @@ Inputs:
       events: List of event positions  for each signal
       width: window size in samples
       offset: start of window vs event, window centered by default
-      limit: max windows per signal,
+      limit: max windows per signal
+      has_label_per_event:  returns lavel data corresponsing to specific event
+      has_label_per_sample: returns labels within window
       include_empty: include randomly selected window if no events
       splits: splits data, will be mapped to windows data if present
       folds:  folds data, will be mapped to windows data if present
@@ -57,9 +62,17 @@ Returns:
       y_win: labels for windowed signals
       folds_win or folds_win: Optional, depending on if splits or folds specified
 """
+    assert not (has_label_per_sample and 'include_empty' in kwargs and kwargs['include_empty']) ## not supported
     sig_lengths = X.shape[-1] if len(X.shape) > 1  else [x.shape[-1] for x in X]
-    X_win, y_win, m = zip(*[[X[i_orig][..., idx_l:idx_r], y[i_orig], i_orig]
-        for (i_orig, idx_l, idx_r) in _sliding_events(events, sig_lengths, **kwargs)])
+    if has_label_per_event:
+        X_win, y_win, m = zip(*[[X[i_orig][..., idx_l:idx_r], y[i_orig][i_e], i_orig]
+            for (i_orig, idx_l, idx_r, i_e) in _sliding_events(events, sig_lengths, **kwargs)])
+    elif has_label_per_sample:
+        X_win, y_win, m = zip(*[[X[i_orig][..., idx_l:idx_r], y[i_orig][idx_l:idx_r], i_orig]
+            for (i_orig, idx_l, idx_r, i_e) in _sliding_events(events, sig_lengths, **kwargs)])
+    else:
+        X_win, y_win, m = zip(*[[X[i_orig][..., idx_l:idx_r], y[i_orig], i_orig]
+            for (i_orig, idx_l, idx_r, i_e) in _sliding_events(events, sig_lengths, **kwargs)])
 
     if not isinstance(splits, NoneType):
         return np.array(X_win), y_win, _compute_new_splits(m, splits)
