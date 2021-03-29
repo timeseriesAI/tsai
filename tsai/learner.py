@@ -10,6 +10,7 @@ from .imports import *
 from .data.core import *
 from .data.validation import *
 from .models.utils import *
+from .models.InceptionTimePlus import *
 
 # Cell
 @patch
@@ -200,7 +201,7 @@ def ts_learner(dls, arch=None, c_in=None, c_out=None, seq_len=None, d=None, spli
                # other model args
                **kwargs):
 
-    if arch is None: arch = InceptionTime
+    if arch is None: arch = InceptionTimePlus
     model = build_ts_model(arch, dls=dls, c_in=c_in, c_out=c_out, seq_len=seq_len, d=d, **kwargs)
     try:
         model[0], model[1]
@@ -208,6 +209,10 @@ def ts_learner(dls, arch=None, c_in=None, c_out=None, seq_len=None, d=None, spli
     except:
         subscriptable = False
     if subscriptable: splitter = ts_splitter
+    if loss_func is None:
+        if hasattr(dls, 'loss_func'): loss_func = dls.loss_func
+        elif hasattr(dls, 'cat') and not dls.cat: loss_func = MSELossFlat()
+        elif hasattr(dls, 'train_ds') and hasattr(dls.train_ds, 'loss_func'): loss_func = dls.train_ds.loss_func
     learn = Learner(dls=dls, model=model,
                     loss_func=loss_func, opt_func=opt_func, lr=lr, cbs=cbs, metrics=metrics, path=path, splitter=splitter,
                     model_dir=model_dir, wd=wd, wd_bn_bias=wd_bn_bias, train_bn=train_bn, moms=moms, )

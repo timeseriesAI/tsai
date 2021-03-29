@@ -4,9 +4,17 @@
 
 ## 0.2.17
 
+### Bug Fixes
+* Models: 
+    * Fixed an issue in TST and TSTPlus related to encoder layer creation.
+
 ## New features:
 * Models:
     * Added TabTransformer, a state-of-the-art tabular transformer released in Dec 2020.
+    * TSTPlus now supports padding masks (passed as nan values) by default.
+* Data:
+    * Added a Nan2Value batch transform that removes any nan value in the tensor by zero or median.
+    * Faster dataloader when suffle == True.
 
 ### Breaking change:
 * Data:

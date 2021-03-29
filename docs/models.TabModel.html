@@ -65,7 +65,7 @@ nb_path: "nbs/120_models.TabModel.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TabModel" class="doc_header"><code>class</code> <code>TabModel</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TabModel.py#L10" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabModel</code>(<strong><code>emb_szs</code></strong>, <strong><code>n_cont</code></strong>, <strong><code>out_sz</code></strong>, <strong><code>layers</code></strong>, <strong><code>ps</code></strong>=<em><code>None</code></em>, <strong><code>embed_p</code></strong>=<em><code>0.0</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>use_bn</code></strong>=<em><code>True</code></em>, <strong><code>bn_final</code></strong>=<em><code>False</code></em>, <strong><code>bn_cont</code></strong>=<em><code>True</code></em>, <strong><code>act</code></strong>=<em><code>ReLU(inplace=True)</code></em>) :: <a href="/tsai/models.layers.html#Sequential"><code>Sequential</code></a></p>
+<h2 id="TabModel" class="doc_header"><code>class</code> <code>TabModel</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TabModel.py#L10" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabModel</code>(<strong><code>emb_szs</code></strong>, <strong><code>n_cont</code></strong>, <strong><code>c_out</code></strong>, <strong><code>layers</code></strong>=<em><code>None</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>None</code></em>, <strong><code>embed_p</code></strong>=<em><code>0.0</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>use_bn</code></strong>=<em><code>True</code></em>, <strong><code>bn_final</code></strong>=<em><code>False</code></em>, <strong><code>bn_cont</code></strong>=<em><code>True</code></em>, <strong><code>lin_first</code></strong>=<em><code>False</code></em>, <strong><code>act</code></strong>=<em><code>ReLU(inplace=True)</code></em>, <strong><code>skip</code></strong>=<em><code>False</code></em>) :: <a href="/tsai/models.TabFusionTransformer.html#Sequential"><code>Sequential</code></a></p>
 </blockquote>
 <p>Basic model for tabular data.</p>
 
@@ -90,9 +90,34 @@ nb_path: "nbs/120_models.TabModel.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TabBackbone" class="doc_header"><code>class</code> <code>TabBackbone</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TabModel.py#L24" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabBackbone</code>(<strong><code>emb_szs</code></strong>, <strong><code>n_cont</code></strong>, <strong><code>out_sz</code></strong>, <strong><code>layers</code></strong>, <strong><code>ps</code></strong>=<em><code>None</code></em>, <strong><code>embed_p</code></strong>=<em><code>0.0</code></em>, <strong><code>use_bn</code></strong>=<em><code>True</code></em>, <strong><code>bn_final</code></strong>=<em><code>False</code></em>, <strong><code>bn_cont</code></strong>=<em><code>True</code></em>, <strong><code>act</code></strong>=<em><code>ReLU(inplace=True)</code></em>) :: <code>Module</code></p>
+<h2 id="TabBackbone" class="doc_header"><code>class</code> <code>TabBackbone</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TabModel.py#L25" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabBackbone</code>(<strong><code>emb_szs</code></strong>, <strong><code>n_cont</code></strong>, <strong><code>embed_p</code></strong>=<em><code>0.0</code></em>, <strong><code>bn_cont</code></strong>=<em><code>True</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="TabHead" class="doc_header"><code>class</code> <code>TabHead</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TabModel.py#L44" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabHead</code>(<strong><code>emb_szs</code></strong>, <strong><code>n_cont</code></strong>, <strong><code>c_out</code></strong>, <strong><code>layers</code></strong>=<em><code>None</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>use_bn</code></strong>=<em><code>True</code></em>, <strong><code>bn_final</code></strong>=<em><code>False</code></em>, <strong><code>lin_first</code></strong>=<em><code>False</code></em>, <strong><code>act</code></strong>=<em><code>ReLU(inplace=True)</code></em>, <strong><code>skip</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
+</blockquote>
+<p>Basic head for tabular data.</p>
 
 </div>
 
@@ -166,21 +191,21 @@ nb_path: "nbs/120_models.TabModel.ipynb"
   </thead>
   <tbody>
     <tr>
-      <th>21426</th>
+      <th>14458</th>
       <td>Private</td>
-      <td>Bachelors</td>
+      <td>HS-grad</td>
       <td>Married-civ-spouse</td>
-      <td>Sales</td>
-      <td>Husband</td>
+      <td>Adm-clerical</td>
+      <td>Wife</td>
       <td>White</td>
       <td>False</td>
-      <td>51.0</td>
-      <td>186303.0</td>
-      <td>13.0</td>
+      <td>41.0</td>
+      <td>178002.0</td>
+      <td>9.0</td>
       <td>&gt;=50k</td>
     </tr>
     <tr>
-      <th>20318</th>
+      <th>25443</th>
       <td>Private</td>
       <td>Some-college</td>
       <td>Never-married</td>
@@ -188,51 +213,51 @@ nb_path: "nbs/120_models.TabModel.ipynb"
       <td>Own-child</td>
       <td>White</td>
       <td>False</td>
-      <td>19.0</td>
-      <td>163015.0</td>
+      <td>24.0</td>
+      <td>142528.0</td>
       <td>10.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
-      <th>12108</th>
-      <td>Private</td>
+      <th>30430</th>
+      <td>Self-emp-not-inc</td>
       <td>Some-college</td>
-      <td>Never-married</td>
-      <td>Other-service</td>
+      <td>Divorced</td>
+      <td>Exec-managerial</td>
       <td>Not-in-family</td>
       <td>White</td>
       <td>False</td>
-      <td>25.0</td>
-      <td>186925.0</td>
+      <td>47.0</td>
+      <td>173613.0</td>
       <td>10.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
-      <th>30389</th>
-      <td>Local-gov</td>
-      <td>HS-grad</td>
+      <th>18434</th>
+      <td>Private</td>
+      <td>Some-college</td>
       <td>Married-civ-spouse</td>
-      <td>Handlers-cleaners</td>
+      <td>Exec-managerial</td>
       <td>Husband</td>
       <td>White</td>
       <td>False</td>
-      <td>64.0</td>
-      <td>237379.0</td>
-      <td>9.0</td>
+      <td>25.0</td>
+      <td>114483.0</td>
+      <td>10.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
-      <th>19262</th>
-      <td>Private</td>
-      <td>HS-grad</td>
-      <td>Married-civ-spouse</td>
-      <td>Machine-op-inspct</td>
-      <td>Husband</td>
+      <th>28000</th>
+      <td>?</td>
+      <td>11th</td>
+      <td>Never-married</td>
+      <td>?</td>
+      <td>Own-child</td>
       <td>White</td>
       <td>False</td>
-      <td>24.0</td>
-      <td>293324.0</td>
-      <td>9.0</td>
+      <td>17.0</td>
+      <td>215743.0</td>
+      <td>7.0</td>
       <td>&lt;50k</td>
     </tr>
   </tbody>

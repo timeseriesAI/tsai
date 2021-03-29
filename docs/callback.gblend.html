@@ -154,7 +154,7 @@ Pattern Recognition (pp. 12695-12705).</p>
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>Feature Extraction: 100%|██████████| 40/40 [00:05&lt;00:00,  7.22it/s]
+<pre>Feature Extraction: 100%|██████████| 40/40 [00:03&lt;00:00, 10.37it/s]
 </pre>
 </div>
 </div>
@@ -201,40 +201,53 @@ Pattern Recognition (pp. 12695-12705).</p>
 
 <div class="output_area">
 
-<div class="output_subarea output_text output_error">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">ModuleAttributeError</span>                      Traceback (most recent call last)
-<span class="ansi-green-fg">&lt;ipython-input-7-14c968530315&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
-<span class="ansi-green-intense-fg ansi-bold">     14</span> <span class="ansi-red-fg"># mixed</span>
-<span class="ansi-green-intense-fg ansi-bold">     15</span> mixed_dls <span class="ansi-blue-fg">=</span> get_mixed_dls<span class="ansi-blue-fg">(</span>ts_dls<span class="ansi-blue-fg">,</span> tab_dls<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-fg">---&gt; 16</span><span class="ansi-red-fg"> </span>MultiModalNet <span class="ansi-blue-fg">=</span> MultiInputNet<span class="ansi-blue-fg">(</span>ts_model<span class="ansi-blue-fg">,</span> tab_model<span class="ansi-blue-fg">,</span> c_out<span class="ansi-blue-fg">=</span>mixed_dls<span class="ansi-blue-fg">.</span>c<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">     17</span> gblend <span class="ansi-blue-fg">=</span> GBlend<span class="ansi-blue-fg">(</span>V_pct<span class="ansi-blue-fg">=</span><span class="ansi-cyan-fg">.5</span><span class="ansi-blue-fg">,</span> n<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">(</span><span class="ansi-cyan-fg">10</span><span class="ansi-blue-fg">,</span> <span class="ansi-cyan-fg">5</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">,</span> sel_metric<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">     18</span> learn <span class="ansi-blue-fg">=</span> Learner<span class="ansi-blue-fg">(</span>mixed_dls<span class="ansi-blue-fg">,</span> MultiModalNet<span class="ansi-blue-fg">,</span> metrics<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">[</span>accuracy<span class="ansi-blue-fg">,</span> RocAuc<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">,</span> cbs<span class="ansi-blue-fg">=</span>gblend<span class="ansi-blue-fg">)</span>
-
-<span class="ansi-green-fg">~/anaconda3/lib/python3.7/site-packages/fastcore/meta.py</span> in <span class="ansi-cyan-fg">__call__</span><span class="ansi-blue-fg">(cls, *args, **kwargs)</span>
-<span class="ansi-green-intense-fg ansi-bold">     36</span>         <span class="ansi-green-fg">if</span> type<span class="ansi-blue-fg">(</span>res<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">==</span>cls<span class="ansi-blue-fg">:</span>
-<span class="ansi-green-intense-fg ansi-bold">     37</span>             <span class="ansi-green-fg">if</span> hasattr<span class="ansi-blue-fg">(</span>res<span class="ansi-blue-fg">,</span><span class="ansi-blue-fg">&#39;__pre_init__&#39;</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span> res<span class="ansi-blue-fg">.</span>__pre_init__<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">*</span>args<span class="ansi-blue-fg">,</span><span class="ansi-blue-fg">**</span>kwargs<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-fg">---&gt; 38</span><span class="ansi-red-fg">             </span>res<span class="ansi-blue-fg">.</span>__init__<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">*</span>args<span class="ansi-blue-fg">,</span><span class="ansi-blue-fg">**</span>kwargs<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">     39</span>             <span class="ansi-green-fg">if</span> hasattr<span class="ansi-blue-fg">(</span>res<span class="ansi-blue-fg">,</span><span class="ansi-blue-fg">&#39;__post_init__&#39;</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span> res<span class="ansi-blue-fg">.</span>__post_init__<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">*</span>args<span class="ansi-blue-fg">,</span><span class="ansi-blue-fg">**</span>kwargs<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">     40</span>         <span class="ansi-green-fg">return</span> res
-
-<span class="ansi-green-fg">~/Documents/Machine_Learning/Jupyter_Notebooks/tsai/nbs/tsai/models/MultiInputNet.py</span> in <span class="ansi-cyan-fg">__init__</span><span class="ansi-blue-fg">(self, c_out, reshape_fn, multi_output, custom_head, device, *models, **kwargs)</span>
-<span class="ansi-green-intense-fg ansi-bold">     34</span>             self<span class="ansi-blue-fg">.</span>backbones<span class="ansi-blue-fg">.</span>append<span class="ansi-blue-fg">(</span>model<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">:</span><span class="ansi-blue-fg">-</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">     35</span>             self<span class="ansi-blue-fg">.</span>m<span class="ansi-blue-fg">.</span>append<span class="ansi-blue-fg">(</span>Sequential<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">.</span>backbones<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">-</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">,</span> self<span class="ansi-blue-fg">.</span>heads<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">-</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
-<span class="ansi-green-fg">---&gt; 36</span><span class="ansi-red-fg">             </span>head_nf <span class="ansi-blue-fg">+=</span> model<span class="ansi-blue-fg">.</span>head_nf
-<span class="ansi-green-intense-fg ansi-bold">     37</span>             min_nf <span class="ansi-blue-fg">=</span> min<span class="ansi-blue-fg">(</span>min_nf<span class="ansi-blue-fg">,</span> model<span class="ansi-blue-fg">.</span>head_nf<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">     38</span> 
-
-<span class="ansi-green-fg">~/anaconda3/lib/python3.7/site-packages/torch/nn/modules/module.py</span> in <span class="ansi-cyan-fg">__getattr__</span><span class="ansi-blue-fg">(self, name)</span>
-<span class="ansi-green-intense-fg ansi-bold">    777</span>                 <span class="ansi-green-fg">return</span> modules<span class="ansi-blue-fg">[</span>name<span class="ansi-blue-fg">]</span>
-<span class="ansi-green-intense-fg ansi-bold">    778</span>         raise ModuleAttributeError(&#34;&#39;{}&#39; object has no attribute &#39;{}&#39;&#34;.format(
-<span class="ansi-green-fg">--&gt; 779</span><span class="ansi-red-fg">             type(self).__name__, name))
-</span><span class="ansi-green-intense-fg ansi-bold">    780</span> 
-<span class="ansi-green-intense-fg ansi-bold">    781</span>     <span class="ansi-green-fg">def</span> __setattr__<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">,</span> name<span class="ansi-blue-fg">:</span> str<span class="ansi-blue-fg">,</span> value<span class="ansi-blue-fg">:</span> Union<span class="ansi-blue-fg">[</span>Tensor<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">&#39;Module&#39;</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">)</span> <span class="ansi-blue-fg">-&gt;</span> <span class="ansi-green-fg">None</span><span class="ansi-blue-fg">:</span>
-
-<span class="ansi-red-fg">ModuleAttributeError</span>: &#39;Sequential&#39; object has no attribute &#39;head_nf&#39;</pre>
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/Users/nacho/anaconda3/lib/python3.7/site-packages/fastai/callback/core.py:50: UserWarning: You are shadowing an attribute (M) that exists in the learner. Use `self.learn.M` to avoid this
+  warn(f&#34;You are shadowing an attribute ({name}) that exists in the learner. Use `self.learn.{name}` to avoid this&#34;)
+</pre>
 </div>
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+"
+>
+</div>
+
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: left;">
+      <th>epoch</th>
+      <th>train_loss</th>
+      <th>valid_loss</th>
+      <th>accuracy</th>
+      <th>roc_auc_score</th>
+      <th>time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>1.841828</td>
+      <td>1.709158</td>
+      <td>0.427778</td>
+      <td>0.685815</td>
+      <td>00:07</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
 </div>
 
 </div>

@@ -22,10 +22,10 @@ def get_tabular_dls(df, procs=[Categorify, FillMissing, Normalize], cat_names=No
     if y_names is not None and not isinstance(y_names, (list, L)):
         if isinstance(y_names, pd.core.indexes.base.Index): y_names = y_names.tolist()
         else: y_names = [y_names]
-    if cat_names is not None: assert len([cat_name for cat_name  in cat_names if cat_name in y_names]) == 0, \
-        'make sure the y_names are not included in the cat_names'
-    if cont_names is not None: assert len([cont_name for cont_name  in cont_names if cont_name in y_names]) == 0, \
-    'make sure the y_names are not included in the cont_names'
+    if cat_names is not None and len([cat_name for cat_name  in cat_names if cat_name in y_names]) != 0:
+        warnings.warn('y_names are included in cont_names!')
+    if cont_names is not None and len([cont_name for cont_name  in cont_names if cont_name in y_names]) != 0:
+        warnings.warn('y_names are included in cont_names!')
     y_block = ifnone(y_block, RegressionBlock() if isinstance(df[y_names].values.flatten()[-1], float) else CategoryBlock())
     pd.options.mode.chained_assignment=None
     to = TabularPandas(df, procs=procs, cat_names=cat_names, cont_names=cont_names, y_names=y_names, y_block=y_block,
