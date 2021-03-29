@@ -31,7 +31,7 @@ class NumpyTensor(TensorBase):
 
     def __repr__(self):
         if self.ndim > 0: return f'NumpyTensor(shape:{tuple(self.shape)})'
-        else: return f'NumpyTensor({self})'
+        else: return f'{self}'
 
 
     def show(self, ax=None, ctx=None, title=None, title_color='black', **kwargs):
@@ -86,6 +86,7 @@ class TSLabelTensor(NumpyTensor):
 # Cell
 class ToFloat(Transform):
     "Transforms an object dtype to float"
+    loss_func=MSELossFlat()
     def encodes(self, o:torch.Tensor): return o.float()
     def encodes(self, o): return o.astype(np.float32)
     def decodes(self, o): return TitledFloat(o) if o.ndim==0 else TitledTuple(o_.item() for o_ in o)
@@ -131,10 +132,6 @@ class NumpyDataset():
         if self.types is None: return (self.X[idx], self.y[idx]) if self.y is not None else (self.X[idx])
         else: return (self.types[0](self.X[idx]), self.types[1](self.y[idx])) if self.y is not None else (self.types[0](self.X[idx]))
     def __len__(self): return len(self.X)
-    @property
-    def c(self): return 0 if self.y is None else 1 if isinstance(self.y[0], float) else len(np.unique(self.y))
-    @property
-    def d(self): return 0 if self.y is None else 1 if not hasattr(self[0][1], '__len__') else len(self[0][1])
 
 
 class TSDataset():
@@ -148,19 +145,6 @@ class TSDataset():
             return (self.types[0](self.X[idx, self.sel_vars, self.sel_steps]), self.types[1](self.y[idx])) if self.y is not None \
             else (self.types[0](self.X[idx]))
     def __len__(self): return len(self.X)
-    @property
-    def c(self): return 0 if self.y is None else 1 if isinstance(self.y[0], float) else len(np.unique(self.y))
-    @property
-    def vars(self):
-        s = self[0][0] if isinstance(self[0], tuple) else self[0]
-        if s.ndim >= 4: return s.shape[-3]
-        return s.shape[-2]
-    @property
-    def len(self):
-        s = self[0][0] if isinstance(self[0], tuple) else self[0]
-        return s.shape[-1]
-    @property
-    def d(self): return 0 if self.y is None else 1 if not hasattr(self[0][1], '__len__') else len(self[0][1])
 
 # Cell
 @delegates(Datasets.__init__)
@@ -199,74 +183,12 @@ class NumpyDatasets(Datasets):
         self.show(self[idx], **kwargs)
         plt.show()
 
-    @delegates(plt.subplots)
-    def show_dist(self, figsize=None, color=None, **kwargs):
-        if self.c == 0:
-            print('\nunlabeled dataset.\n')
-            return
-        _y = self.ptls[1].flatten().detach().cpu().numpy()
-        if color == "random": color = random_shuffle(L(mcolors.CSS4_COLORS.keys()))
-        elif color is None: color = ['m', 'orange', 'darkblue', 'lightgray']
-        figsize = ifnone(figsize, (8, 6))
-        plt.figure(figsize=figsize, **kwargs)
-        ax = plt.axes()
-        ax.set_axisbelow(True)
-        plt.grid(color='gainsboro', linewidth=.1)
-        plt.title('Target distribution', fontweight='bold')
-        if self.cat:
-            data = np.unique(_y, return_counts=True)[1]
-            data = data / np.sum(data)
-            plt.bar(self.vocab, data, color=color, edgecolor='black')
-            plt.xticks(self.vocab)
-        else:
-            data = _y
-            weights=np.ones(len(data)) / len(data)
-            plt.hist(data, bins=min(len(_y) // 2, 100), weights=weights, color='violet', edgecolor='black')
-        plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
-        plt.show()
-
     @property
     def items(self): return tuple([tl.items for tl in self.tls])
 
     @items.setter
     def items(self, vs):
         for tl,v in zip(self.tls, vs): tl.items = v
-
-    @property
-    def cat(self):
-        if len(self[0]) == 1: return False
-        try:
-            if isinstance(self[0][-1].item(), Integral): return True
-            else: return False
-        except: pass
-        try:
-            if isinstance(self[0][-1][0].item(), Integral): return True
-            else: return False
-        except: pass
-        try:
-            if isinstance(self[0][-1][0][0].item(), Integral): return True
-            else: return False
-        except: pass
-        return False
-
-    @property
-    def c(self):
-        if not self.cat: return 1
-        return len(np.unique(self[:][-1]))
-
-    @property
-    def d(self):
-        if self.cat: return None
-        elif len(self[0]) == 1: return None
-        elif self[0][1].ndim == 0: return 1
-        try:
-            if len(self[0][1].shape) == 1: return self[0][1].shape[0]
-            return tuple(self[0][1].shape)
-        except: return None
-
-    @property
-    def loss_func(self):
-        return MSELossFlat() if not self.cat else CrossEntropyLossFlat()
 
 
 @delegates(NumpyDatasets.__init__)
@@ -299,16 +221,6 @@ class TSDatasets(NumpyDatasets):
 
     def subset(self, i): return type(self)(tls=L(tl.subset(i) for tl in self.tls), n_inp=self.n_inp, inplace=self.inplace, tfms=self.tfms,
                                            sel_vars=self.sel_vars, sel_steps=self.sel_steps, split=L(self.splits[i]) if self.splits is not None else None)
-
-    @property
-    def vars(self):
-        s = self[0] if isinstance(self, tuple) else self
-        if s.ndim >= 4: return s.shape[-3]
-        return s.shape[-2]
-    @property
-    def len(self):
-        s = self[0] if isinstance(self, tuple) else self
-        return s.shape[-1]
 
 
 def add_ds(dsets, X, y=None, inplace=True):
@@ -467,16 +379,55 @@ class NumpyDataLoader(TfmdDL):
             t[i][0].show(ctx=ctx, title=title, title_color=color)
 
     @delegates(plt.subplots)
-    def show_dist(self, figsize=None, **kwargs): self.dataset.show_dist(figsize=figsize, **kwargs)
+    def show_dist(self, figsize=None, color=None, **kwargs):
+        if self.c == 0:
+            print('\nunlabeled dataset.\n')
+            return
+        b = self.one_batch()
+        i = getattr(self, 'n_inp', 1 if len(b)==1 else len(b)-1)
+        yb = b[i:][0].flatten().detach().cpu().numpy()
+        if color == "random": color = random_shuffle(L(mcolors.CSS4_COLORS.keys()))
+        elif color is None: color = ['m', 'orange', 'darkblue', 'lightgray']
+        figsize = ifnone(figsize, (8, 6))
+        plt.figure(figsize=figsize, **kwargs)
+        ax = plt.axes()
+        ax.set_axisbelow(True)
+        plt.grid(color='gainsboro', linewidth=.1)
+        plt.title('Target distribution in a single batch', fontweight='bold')
+        if self.cat:
+            data = np.unique(yb, return_counts=True)[1]
+            data = data / np.sum(data)
+            plt.bar(self.vocab, data, color=color, edgecolor='black')
+            plt.xticks(self.vocab)
+        else:
+            weights=np.ones(len(yb)) / len(yb)
+            plt.hist(yb, bins=min(len(yb) // 2, 100), weights=weights, color='violet', edgecolor='black')
+        plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
+        plt.show()
 
     @property
-    def c(self): return self.dataset.c
+    def c(self):
+        if hasattr(self, "vocab"):
+            return len(self.vocab)
+        else:
+            return self.d if not is_listy(self.d) else reduce(lambda x, y: x * y, self.d, 1)
 
     @property
-    def d(self): return self.dataset.d
+    def d(self):
+        b = self.one_batch()
+        if len(b) == 1: return 0
+        i = getattr(self, 'n_inp', 1 if len(b)==1 else len(b)-1)
+        yb = b[i:]
+        if len(yb[0][0].shape) == 0: return 1
+        elif len(yb[0][0].shape) == 1: return yb[0][0].shape[0]
+        else: return list(yb[0][0].shape)
 
     @property
-    def cat(self): return self.dataset.cat
+    def cat(self): return hasattr(self, "vocab")
+
+#     @property
+#     def loss_func(self):
+#         return MSELossFlat() if not self.cat else CrossEntropyLossFlat()
 
     @property
     def cws(self):
@@ -503,14 +454,15 @@ class TSDataLoader(NumpyDataLoader):
     @property
     def vars(self):
         b = self.one_batch()
-        x = b[0] if isinstance(b, tuple) else b
-        if x.ndim >= 4: return x.shape[-3]
-        return x.shape[-2]
+        i = getattr(self, 'n_inp', 1 if len(b)==1 else len(b)-1)
+        xb = b[:i]
+        return xb[0][0].vars
     @property
     def len(self):
         b = self.one_batch()
-        x = b[0] if isinstance(b, tuple) else b
-        return x.shape[-1]
+        i = getattr(self, 'n_inp', 1 if len(b)==1 else len(b)-1)
+        xb = b[:i]
+        return xb[0][0].len
 
 # Cell
 _batch_tfms = ('after_item','before_batch','after_batch')
@@ -529,7 +481,7 @@ class NumpyDataLoaders(DataLoaders):
         return self.valid.new(self.valid.dataset.add_dataset(x, y=y))
 
     @delegates(plt.subplots)
-    def show_dist(self, figsize=None, **kwargs): self.dataset.show_dist(figsize=figsize, **kwargs)
+    def show_dist(self, figsize=None, **kwargs): self.loaders[0].show_dist(figsize=figsize, **kwargs)
 
     def decoder(self, o):
         if isinstance(o, tuple): return self.decode(o)

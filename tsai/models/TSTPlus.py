@@ -51,13 +51,16 @@ class ScaledDotProductAttention(Module):
     def forward(self, q:Tensor, k:Tensor, v:Tensor, prev:Optional[Tensor]=None, key_padding_mask:Optional[Tensor]=None, attn_mask:Optional[Tensor]=None):
 
         # MatMul (q, k) - similarity scores for all pairs of positions in an input sequence
-        scores = torch.matmul(q, k)                                    # scores : [bs x n_heads x q_len x q_len]
+        scores = torch.matmul(q, k)                                    # scores : [bs x n_heads x t_len x q_len]
 
         # Scale
         scores = scores / (self.d_k ** 0.5)
 
+        # Add previous scores (optional)
+        if prev is not None: scores = scores + prev
+
         # Attention mask (optional)
-        if attn_mask is not None:                                     # attn_mask with shape [q_len x q_len]
+        if attn_mask is not None:                                     # attn_mask with shape [q_len x q_len] - only used when t_len == q_len
             if attn_mask.dtype == torch.bool:
                 scores.masked_fill_(attn_mask, float('-inf'))
             else:
@@ -68,8 +71,6 @@ class ScaledDotProductAttention(Module):
             scores.masked_fill_(key_padding_mask.unsqueeze(1).unsqueeze(2), float('-inf'))
 
         # SoftMax
-        if prev is not None: scores = scores + prev
-
         attn = F.softmax(scores, dim=-1)                               # attn   : [bs x n_heads x q_len x q_len]
 
         # MatMul (attn, v)
@@ -108,7 +109,6 @@ class MultiHeadAttention(Module):
         q_s = self.W_Q(Q).view(bs, -1, self.n_heads, self.d_k).transpose(1,2)       # q_s    : [bs x n_heads x q_len x d_k]
         k_s = self.W_K(K).view(bs, -1, self.n_heads, self.d_k).permute(0,2,3,1)     # k_s    : [bs x n_heads x d_k x q_len] - transpose(1,2) + transpose(2,3)
         v_s = self.W_V(V).view(bs, -1, self.n_heads, self.d_v).transpose(1,2)       # v_s    : [bs x n_heads x q_len x d_v]
-        print(q_s.shape, k_s.shape, v_s.shape)
 
         # Scaled Dot-Product Attention (multiple heads)
         if self.res_attention:
@@ -229,6 +229,38 @@ class _TSTBackbone(Module):
         self.seq_len = q_len
 
         # Positional encoding
+        self.W_pos = self._positional_encoding(pe, learn_pe, q_len, d_model)
+
+        # Residual dropout
+        self.res_dropout = nn.Dropout(res_dropout)
+
+        # Encoder
+        self.encoder = _TSTEncoder(q_len, d_model, n_heads, d_k=d_k, d_v=d_v, d_ff=d_ff, res_dropout=res_dropout,
+                                   activation=act, res_attention=res_attention, n_layers=n_layers)
+        self.transpose = Transpose(-1, -2, contiguous=True)
+        self.key_padding_mask = key_padding_mask
+        self.attn_mask = attn_mask
+
+    def forward(self, x:Tensor) -> Tensor:  # x: [bs x nvars x q_len]
+
+        # Padding mask
+        key_padding_mask = self._key_padding_mask(x)
+
+        # Input encoding
+        if self.new_q_len: u = self.W_P(x).transpose(2,1) # Eq 2        # u: [bs x d_model x q_len] transposed to [bs x q_len x d_model]
+        else: u = self.W_P(x.transpose(2,1))              # Eq 1        # u: [bs x q_len x nvars] converted to [bs x q_len x d_model]
+
+        # Positional encoding
+        u = self.res_dropout(u + self.W_pos)
+
+        # Encoder
+        z = self.encoder(u, key_padding_mask=key_padding_mask, attn_mask=self.attn_mask)    # z: [bs x q_len x d_model]
+        z = self.transpose(z)                                                               # z: [bs x d_model x q_len]
+
+        return z
+
+    def _positional_encoding(self, pe, learn_pe, q_len, d_model):
+        # Positional encoding
         if pe == None:
             W_pos = torch.zeros((q_len, d_model), device=default_device()) # pe = None and learn_pe = False can be used to measure impact of pe
             learn_pe = False
@@ -247,37 +279,13 @@ class _TSTBackbone(Module):
         elif pe == 'sincos': W_pos = SinCosPosEncoding(q_len, d_model, normalize=True)
         else: raise ValueError(f"{pe} is not a valid pe (positional encoder. Available types: 'gauss'=='normal', \
             'zeros', 'zero', uniform', 'lin1d', 'exp1d', 'lin2d', 'exp2d', 'sincos', None.)")
-        self.W_pos = nn.Parameter(W_pos, requires_grad=learn_pe)
+        return nn.Parameter(W_pos, requires_grad=learn_pe)
 
-        # Residual dropout
-        self.res_dropout = nn.Dropout(res_dropout)
-
-        # Encoder
-        self.encoder = _TSTEncoder(q_len, d_model, n_heads, d_k=d_k, d_v=d_v, d_ff=d_ff, res_dropout=res_dropout,
-                                   activation=act, res_attention=res_attention, n_layers=n_layers)
-        self.transpose = Transpose(-1, -2, contiguous=True)
-        self.key_padding_mask = key_padding_mask
-        self.attn_mask = attn_mask
-
-    def forward(self, x:Tensor) -> Tensor:
-        # x: [bs x nvars x q_len]
+    def _key_padding_mask(self, x):
         if self.key_padding_mask and torch.isnan(x).any():
-            key_padding_mask = TSMask(torch.isnan(x).float().mean(1).bool())   # key_padding_mask: [bs x q_len]
+            return TSMask(torch.isnan(x).float().mean(1).bool())   # key_padding_mask: [bs x q_len]
         else:
-            key_padding_mask = None
-
-        # Input encoding
-        if self.new_q_len: u = self.W_P(x).transpose(2,1) # Eq 2        # u: [bs x d_model x q_len] transposed to [bs x q_len x d_model]
-        else: u = self.W_P(x.transpose(2,1))              # Eq 1        # u: [bs x q_len x nvars] converted to [bs x q_len x d_model]
-
-        # Positional encoding
-        u = self.res_dropout(u + self.W_pos)
-
-        # Encoder
-        z = self.encoder(u, key_padding_mask=key_padding_mask, attn_mask=self.attn_mask)    # z: [bs x q_len x d_model]
-        z = self.transpose(z)                                                               # z: [bs x d_model x q_len]
-
-        return z
+            return None
 
 
 class TSTPlus(nn.Sequential):
@@ -301,8 +309,8 @@ class TSTPlus(nn.Sequential):
             d_ff: the dimension of the feedforward network model. Default: 512 (range(256-512))
             res_dropout: amount of residual dropout applied in the encoder.
             act: the activation function of intermediate layer, relu or gelu.
-            key_padding_mask: a padding mask will be applied to attention if True to those steps in a sample where all features are nan.
-            attn_mask: a mask will be applied to attention if a tensor of shape [min(seq_len, max_seq_len) x min(seq_len, max_seq_len)] if provided.
+            key_padding_mask: a boolean padding mask will be applied to attention if True to those steps in a sample where all features are nan.
+            attn_mask: a boolean mask will be applied to attention if a tensor of shape [min(seq_len, max_seq_len) x min(seq_len, max_seq_len)] if provided.
             res_attention: if True Residual MultiHeadAttention is applied.
             num_layers: number of layers (or blocks) in the encoder. Default: 3 (range(1-4))
             pe: type of positional encoder.

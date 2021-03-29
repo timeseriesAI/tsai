@@ -209,6 +209,10 @@ def ts_learner(dls, arch=None, c_in=None, c_out=None, seq_len=None, d=None, spli
     except:
         subscriptable = False
     if subscriptable: splitter = ts_splitter
+    if loss_func is None:
+        if hasattr(dls, 'loss_func'): loss_func = dls.loss_func
+        elif hasattr(dls, 'cat') and not dls.cat: loss_func = MSELossFlat()
+        elif hasattr(dls, 'train_ds') and hasattr(dls.train_ds, 'loss_func'): loss_func = dls.train_ds.loss_func
     learn = Learner(dls=dls, model=model,
                     loss_func=loss_func, opt_func=opt_func, lr=lr, cbs=cbs, metrics=metrics, path=path, splitter=splitter,
                     model_dir=model_dir, wd=wd, wd_bn_bias=wd_bn_bias, train_bn=train_bn, moms=moms, )

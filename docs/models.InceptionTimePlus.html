@@ -718,9 +718,9 @@ model = nn.Sequential(OrderedDict([
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">bs</span> <span class="o">=</span> <span class="mi">16</span>
 <span class="n">n_vars</span> <span class="o">=</span> <span class="mi">3</span>
 <span class="n">seq_len</span> <span class="o">=</span> <span class="mi">12</span>
-<span class="n">c_out</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">c_out</span> <span class="o">=</span> <span class="mi">10</span>
 <span class="n">xb</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">n_vars</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">)</span>
-<span class="n">new_head</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">conv_lin_3d_head</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">new_head</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">conv_lin_3d_head</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
 <span class="n">net</span> <span class="o">=</span> <span class="n">MultiInceptionTimePlus</span><span class="p">(</span><span class="n">n_vars</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">custom_head</span><span class="o">=</span><span class="n">new_head</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">net</span><span class="p">(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="n">net</span><span class="o">.</span><span class="n">head</span>
@@ -736,7 +736,7 @@ model = nn.Sequential(OrderedDict([
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>torch.Size([16, 2, 5])
+<pre>torch.Size([16, 5, 2])
 </pre>
 </div>
 </div>
@@ -749,11 +749,11 @@ model = nn.Sequential(OrderedDict([
 <pre>Sequential(
   (0): create_conv_lin_3d_head(
     (0): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-    (1): Conv1d(128, 2, kernel_size=(1,), stride=(1,), bias=False)
+    (1): Conv1d(128, 5, kernel_size=(1,), stride=(1,), bias=False)
     (2): Transpose(-1, -2)
     (3): BatchNorm1d(12, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
     (4): Transpose(-1, -2)
-    (5): Linear(in_features=12, out_features=5, bias=False)
+    (5): Linear(in_features=12, out_features=2, bias=False)
   )
 )</pre>
 </div>
