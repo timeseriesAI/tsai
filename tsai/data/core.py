@@ -80,7 +80,7 @@ class ToTSTensor(Transform):
 # Cell
 class TSLabelTensor(NumpyTensor):
     def __repr__(self):
-        if self.ndim == 0: return f'TSLabelTensor({self})'
+        if self.ndim == 0: return f'{self}'
         else: return f'TSLabelTensor(shape:{tuple(self.shape)})'
 
 # Cell
