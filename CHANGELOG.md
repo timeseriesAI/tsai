@@ -15,6 +15,8 @@
 * Data:
     * Added a Nan2Value batch transform that removes any nan value in the tensor by zero or median.
     * Faster dataloader when suffle == True.
+    * Added TSUndindowedDataset and TSUnwindowedDatasets, which apply window slicing online to prepare time series data. 
+    * Added TSMetaDataset and TSMetaDatasets, which allow you to use one or multiple X (and y) arrays as input. In this way, you won't need to merge all data into a single array. This will allow you to work with larger than memory datasets. 
 
 ### Breaking change:
 * Data:

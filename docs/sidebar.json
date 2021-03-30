@@ -9,12 +9,14 @@
         "Data preparation": "/data.preparation",
         "Splitting data": "/data.validation",
         "Preprocessing data": "/data.preprocessing",
+        "Unwindowed data": "/data.unwindowed",
         "Label-invariant transformations": "/data.transforms",
         "Label-mixing transformations": "/data.mixed_augmentation",
         "Imaging time series": "/data.image",
         "Featurizing time series": "/data.features",
         "Tabular data": "/data.tabular",
-        "Mixed data": "/data.mixed"
+        "Mixed data": "/data.mixed",
+        "MetaDatasets": "/data.metadatasets"
     },
     "Training": {
         "Learner": "/learner",
@@ -78,7 +80,12 @@
                 "Time Series Transformer Plus (TSTPlus)": "/models.TSTPlus"
             }
         },
-        "Tabular Model": "/models.TabModel",
+        "empty5": {
+            "Tabular models": {
+                "Tabular Model": "/models.TabModel",
+                "TabTransformer": "/models.TabTransformer"
+            }
+        },
         "MultiInputNet": "/models.MultiInputNet"
     },
     "Utilities": {
