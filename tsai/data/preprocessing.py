@@ -287,10 +287,21 @@ class TSAdd(Transform):
 # Cell
 class Nan2Value(Transform):
     "Replaces any nan values by a predefined value"
-    def __init__(self, value=0): self.value = value
     order = 90
+    def __init__(self, value=0, median=True, by_sample_and_var=True):
+        store_attr()
     def encodes(self, o:TSTensor):
-        if torch.isnan(o).any():
-            # o = torch.nan_to_num(o, nan=self.value) # available in torch 1.8.0
-            o[torch.isnan(o)] = self.value
+        mask = torch.isnan(o)
+        if mask.any():
+            if not self.median:
+                o[mask] = self.value
+                # return torch.nan_to_num(o, nan=self.value) # available in torch 1.8.0
+            else:
+                if self.by_sample_and_var:
+                    median = torch.median(o, dim=2, keepdim=True)[0].repeat(1, 1, o.shape[-1])
+                else:
+                    median = torch.median(o)
+                o[mask] = median[mask]
+                # Just in case any sample or var values are all nan
+                o[torch.isnan(o)] = torch.median(o)
         return o

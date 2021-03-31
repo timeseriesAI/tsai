@@ -28,8 +28,13 @@ class TSClassifier(Learner):
 
         # DataLoaders
         dls = get_ts_dls(X, y=y, splits=splits, sel_vars=sel_vars, sel_steps=sel_steps, tfms=tfms, inplace=inplace, path=path, bs=bs,
-                         batch_tfms=batch_tfms, num_workers=num_workers, device=device,
-                         shuffle_train=shuffle_train, drop_last=drop_last)
+                         batch_tfms=batch_tfms, num_workers=num_workers, device=device, shuffle_train=shuffle_train, drop_last=drop_last)
+
+        if loss_func is None:
+            if hasattr(dls, 'loss_func'): loss_func = dls.loss_func
+            elif hasattr(dls, 'cat') and not dls.cat: loss_func = MSELossFlat()
+            elif hasattr(dls, 'train_ds') and hasattr(dls.train_ds, 'loss_func'): loss_func = dls.train_ds.loss_func
+            else: loss_func = CrossEntropyLossFlat()
 
         # Model
         if init is True:
@@ -42,7 +47,7 @@ class TSClassifier(Learner):
             build_tabular_model(arch, dls=dls, device=device, **arch_config)
         else:
             model = build_ts_model(arch, dls=dls, device=device, verbose=verbose, pretrained=pretrained, weights_path=weights_path,
-                               exclude_head=exclude_head, cut=cut, init=init, **arch_config)
+                                   exclude_head=exclude_head, cut=cut, init=init, **arch_config)
         setattr(model, "__name__", arch.__name__)
         try:
             model[0], model[1]
@@ -75,6 +80,12 @@ class TSRegressor(Learner):
         dls = get_ts_dls(X, y=y, splits=splits, sel_vars=sel_vars, sel_steps=sel_steps, tfms=tfms, inplace=inplace, path=path, bs=bs,
                          batch_tfms=batch_tfms, num_workers=num_workers, device=device,
                          shuffle_train=shuffle_train, drop_last=drop_last)
+
+        if loss_func is None:
+            if hasattr(dls, 'loss_func'): loss_func = dls.loss_func
+            elif hasattr(dls, 'cat') and not dls.cat: loss_func = MSELossFlat()
+            elif hasattr(dls, 'train_ds') and hasattr(dls.train_ds, 'loss_func'): loss_func = dls.train_ds.loss_func
+            else: loss_func = MSELossFlat()
 
         # Model
         if init is True:
@@ -119,6 +130,12 @@ class TSForecaster(Learner):
         dls = get_ts_dls(X, y=y, splits=splits, sel_vars=sel_vars, sel_steps=sel_steps, tfms=tfms, inplace=inplace, path=path, bs=bs,
                          batch_tfms=batch_tfms, num_workers=num_workers, device=device,
                          shuffle_train=shuffle_train, drop_last=drop_last)
+
+        if loss_func is None:
+            if hasattr(dls, 'loss_func'): loss_func = dls.loss_func
+            elif hasattr(dls, 'cat') and not dls.cat: loss_func = MSELossFlat()
+            elif hasattr(dls, 'train_ds') and hasattr(dls.train_ds, 'loss_func'): loss_func = dls.train_ds.loss_func
+            else: loss_func = MSELossFlat()
 
         # Model
         if init is True:

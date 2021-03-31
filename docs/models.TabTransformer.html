@@ -74,7 +74,7 @@ nb_path: "nbs/121_models.TabTransformer.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Embedding" class="doc_header"><code>class</code> <code>Embedding</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TabTransformer.py#L23" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Embedding</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>std</code></strong>=<em><code>0.01</code></em>) :: <a href="/tsai/models.TabTransformer.html#Embedding"><code>Embedding</code></a></p>
+<h2 id="Embedding" class="doc_header"><code>class</code> <code>Embedding</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TabTransformer.py#L24" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Embedding</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>std</code></strong>=<em><code>0.01</code></em>) :: <a href="/tsai/models.TabTransformer.html#Embedding"><code>Embedding</code></a></p>
 </blockquote>
 <p>Embedding layer with truncated normal initialization</p>
 
@@ -99,7 +99,7 @@ nb_path: "nbs/121_models.TabTransformer.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="trunc_normal_" class="doc_header"><code>trunc_normal_</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TabTransformer.py#L30" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>trunc_normal_</code>(<strong><code>x</code></strong>, <strong><code>mean</code></strong>=<em><code>0.0</code></em>, <strong><code>std</code></strong>=<em><code>1.0</code></em>)</p>
+<h4 id="trunc_normal_" class="doc_header"><code>trunc_normal_</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TabTransformer.py#L32" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>trunc_normal_</code>(<strong><code>x</code></strong>, <strong><code>mean</code></strong>=<em><code>0.0</code></em>, <strong><code>std</code></strong>=<em><code>1.0</code></em>)</p>
 </blockquote>
 <p>Truncated normal initialization (approximation)</p>
 
@@ -124,7 +124,7 @@ nb_path: "nbs/121_models.TabTransformer.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SharedEmbedding" class="doc_header"><code>class</code> <code>SharedEmbedding</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TabTransformer.py#L36" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SharedEmbedding</code>(<strong><code>num_embeddings</code></strong>, <strong><code>embedding_dim</code></strong>, <strong><code>shared_embed</code></strong>=<em><code>True</code></em>, <strong><code>add_shared_embed</code></strong>=<em><code>False</code></em>, <strong><code>shared_embed_div</code></strong>=<em><code>8</code></em>) :: <code>Module</code></p>
+<h2 id="SharedEmbedding" class="doc_header"><code>class</code> <code>SharedEmbedding</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TabTransformer.py#L39" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SharedEmbedding</code>(<strong><code>num_embeddings</code></strong>, <strong><code>embedding_dim</code></strong>, <strong><code>shared_embed</code></strong>=<em><code>True</code></em>, <strong><code>add_shared_embed</code></strong>=<em><code>False</code></em>, <strong><code>shared_embed_div</code></strong>=<em><code>8</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -172,7 +172,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FullEmbeddingDropout" class="doc_header"><code>class</code> <code>FullEmbeddingDropout</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TabTransformer.py#L64" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FullEmbeddingDropout</code>(<strong><code>dropout</code></strong>:<code>float</code>) :: <code>Module</code></p>
+<h2 id="FullEmbeddingDropout" class="doc_header"><code>class</code> <code>FullEmbeddingDropout</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TabTransformer.py#L67" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FullEmbeddingDropout</code>(<strong><code>dropout</code></strong>:<code>float</code>) :: <code>Module</code></p>
 </blockquote>
 <p>From <a href="https://github.com/jrzaurin/pytorch-widedeep/blob/be96b57f115e4a10fde9bb82c35380a3ac523f52/pytorch_widedeep/models/tab_transformer.py#L153">https://github.com/jrzaurin/pytorch-widedeep/blob/be96b57f115e4a10fde9bb82c35380a3ac523f52/pytorch_widedeep/models/tab_transformer.py#L153</a></p>
 
@@ -197,7 +197,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ScaledDotProductAttention" class="doc_header"><code>class</code> <code>ScaledDotProductAttention</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TabTransformer.py#L76" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ScaledDotProductAttention</code>(<strong><code>d_k</code></strong>:<code>int</code>, <strong><code>res_attention</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <code>Module</code></p>
+<h2 id="ScaledDotProductAttention" class="doc_header"><code>class</code> <code>ScaledDotProductAttention</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TabTransformer.py#L101" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ScaledDotProductAttention</code>(<strong><code>d_k</code></strong>:<code>int</code>, <strong><code>res_attention</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -245,7 +245,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MultiHeadAttention" class="doc_header"><code>class</code> <code>MultiHeadAttention</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TabTransformer.py#L109" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MultiHeadAttention</code>(<strong><code>d_model</code></strong>:<code>int</code>, <strong><code>n_heads</code></strong>:<code>int</code>, <strong><code>d_k</code></strong>:<code>int</code>, <strong><code>d_v</code></strong>:<code>int</code>, <strong><code>res_attention</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <code>Module</code></p>
+<h2 id="MultiHeadAttention" class="doc_header"><code>class</code> <code>MultiHeadAttention</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TabTransformer.py#L133" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MultiHeadAttention</code>(<strong><code>d_model</code></strong>:<code>int</code>, <strong><code>n_heads</code></strong>:<code>int</code>, <strong><code>d_k</code></strong>:<code>int</code>, <strong><code>d_v</code></strong>:<code>int</code>, <strong><code>res_attention</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -293,7 +293,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TabTransformer" class="doc_header"><code>class</code> <code>TabTransformer</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TabTransformer.py#L254" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabTransformer</code>(<strong><code>classes</code></strong>, <strong><code>cont_names</code></strong>, <strong><code>c_out</code></strong>, <strong><code>column_embed</code></strong>=<em><code>True</code></em>, <strong><code>add_shared_embed</code></strong>=<em><code>False</code></em>, <strong><code>shared_embed_div</code></strong>=<em><code>8</code></em>, <strong><code>embed_dropout</code></strong>=<em><code>0.1</code></em>, <strong><code>drop_whole_embed</code></strong>=<em><code>False</code></em>, <strong><code>d_model</code></strong>=<em><code>32</code></em>, <strong><code>n_layers</code></strong>=<em><code>6</code></em>, <strong><code>n_heads</code></strong>=<em><code>8</code></em>, <strong><code>d_k</code></strong>=<em><code>None</code></em>, <strong><code>d_v</code></strong>=<em><code>None</code></em>, <strong><code>d_ff</code></strong>=<em><code>None</code></em>, <strong><code>res_attention</code></strong>=<em><code>True</code></em>, <strong><code>attention_act</code></strong>=<em><code>'gelu'</code></em>, <strong><code>res_dropout</code></strong>=<em><code>0.1</code></em>, <strong><code>norm_cont</code></strong>=<em><code>True</code></em>, <strong><code>mlp_mults</code></strong>=<em><code>(4, 2)</code></em>, <strong><code>mlp_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>mlp_act</code></strong>=<em><code>None</code></em>, <strong><code>mlp_skip</code></strong>=<em><code>False</code></em>, <strong><code>mlp_bn</code></strong>=<em><code>False</code></em>, <strong><code>bn_final</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
+<h2 id="TabTransformer" class="doc_header"><code>class</code> <code>TabTransformer</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/models/TabTransformer.py#L255" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabTransformer</code>(<strong><code>classes</code></strong>, <strong><code>cont_names</code></strong>, <strong><code>c_out</code></strong>, <strong><code>column_embed</code></strong>=<em><code>True</code></em>, <strong><code>add_shared_embed</code></strong>=<em><code>False</code></em>, <strong><code>shared_embed_div</code></strong>=<em><code>8</code></em>, <strong><code>embed_dropout</code></strong>=<em><code>0.1</code></em>, <strong><code>drop_whole_embed</code></strong>=<em><code>False</code></em>, <strong><code>d_model</code></strong>=<em><code>32</code></em>, <strong><code>n_layers</code></strong>=<em><code>6</code></em>, <strong><code>n_heads</code></strong>=<em><code>8</code></em>, <strong><code>d_k</code></strong>=<em><code>None</code></em>, <strong><code>d_v</code></strong>=<em><code>None</code></em>, <strong><code>d_ff</code></strong>=<em><code>None</code></em>, <strong><code>res_attention</code></strong>=<em><code>True</code></em>, <strong><code>attention_act</code></strong>=<em><code>'gelu'</code></em>, <strong><code>res_dropout</code></strong>=<em><code>0.1</code></em>, <strong><code>norm_cont</code></strong>=<em><code>True</code></em>, <strong><code>mlp_mults</code></strong>=<em><code>(4, 2)</code></em>, <strong><code>mlp_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>mlp_act</code></strong>=<em><code>None</code></em>, <strong><code>mlp_skip</code></strong>=<em><code>False</code></em>, <strong><code>mlp_bn</code></strong>=<em><code>False</code></em>, <strong><code>bn_final</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>

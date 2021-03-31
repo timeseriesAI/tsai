@@ -31,6 +31,9 @@ entries:
       title: Preprocessing data
       url: /data.preprocessing
     - output: web,pdf
+      title: Unwindowed data
+      url: /data.unwindowed
+    - output: web,pdf
       title: Label-invariant transformations
       url: /data.transforms
     - output: web,pdf
@@ -48,6 +51,9 @@ entries:
     - output: web,pdf
       title: Mixed data
       url: /data.mixed
+    - output: web,pdf
+      title: MetaDatasets
+      url: /data.metadatasets
     output: web
     title: Data
   - folderitems:
@@ -179,9 +185,15 @@ entries:
           title: Time Series Transformer Plus (TSTPlus)
           url: /models.TSTPlus
         title: Transformers
-    - output: web,pdf
-      title: Tabular Model
-      url: /models.TabModel
+      - output: web
+        subfolderitems:
+        - output: web,pdf
+          title: Tabular Model
+          url: /models.TabModel
+        - output: web,pdf
+          title: TabTransformer
+          url: /models.TabTransformer
+        title: Tabular models
     - output: web,pdf
       title: MultiInputNet
       url: /models.MultiInputNet
