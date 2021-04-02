@@ -317,8 +317,8 @@ def ReLabeler(cm):
         keys = cm.keys()
         if obj:
             new_cm = {k:v for k,v in zip(keys, [listify(v) for v in cm.values()])}
-            return np.array([new_cm[yi] if yi in keys else listify(yi) for yi in y], dtype=object)
+            return np.array([new_cm[yi] if yi in keys else listify(yi) for yi in y], dtype=object).reshape(*y.shape)
         else:
             new_cm = {k:v for k,v in zip(keys, [listify(v) for v in cm.values()])}
-            return np.array([new_cm[yi] if yi in keys else listify(yi) for yi in y])
+            return np.array([new_cm[yi] if yi in keys else listify(yi) for yi in y]).reshape(*y.shape)
     return _relabel
