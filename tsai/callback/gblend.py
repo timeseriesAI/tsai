@@ -55,7 +55,7 @@ class GBlend(Callback):
     def before_fit(self):
 
         # model
-        self.M = self.model.M
+        self.learn.M = self.model.M
         self.old_multi_output = self.learn.model.multi_output
         self.learn.model.multi_output = True
 
@@ -117,7 +117,7 @@ class GBlend(Callback):
         # _LV0 = []
         _LT = []
         _LV = []
-        for i in range(self.M + 1):
+        for i in range(self.learn.M + 1):
             model = torch.load(self.path/'gblend_model')
             learn = Learner(self.learn.new_dls[i], model.m[i], loss_func=GBlendLoss(),
                             opt_func=self.learn.opt_func, metrics=self.learn.metrics)
@@ -164,7 +164,7 @@ class GBlend(Callback):
         _LT = []
         _LV = []
         with torch.no_grad():
-            for i in range(self.M + 1):
+            for i in range(self.learn.M + 1):
                 model = torch.load(self.path/'gblend_model')
                 model.multi_output = False
                 model = model.m[i]
@@ -189,9 +189,9 @@ class GBlend(Callback):
         if hasattr(self.learn, "ws") and self.show_plot:
             widths = np.diff(self.super_epochs)
             cum_ws = 0
-            for i in range(self.M + 1):
+            for i in range(self.learn.M + 1):
                 plt.bar(self.super_epochs[:-1] + widths/2, stack(self.learn.ws)[:, i], bottom=cum_ws, width=widths,
-                        label=f'k={i+1}' if i < self.M else f'fused')
+                        label=f'k={i+1}' if i < self.learn.M else f'fused')
                 cum_ws += stack(self.learn.ws)[:, i]
             plt.xlim(0, self.super_epochs[-1])
             plt.ylim(0, 1)

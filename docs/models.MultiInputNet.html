@@ -80,6 +80,7 @@ nb_path: "nbs/130_models.MultiInputNet.ipynb"
 <span class="kn">from</span> <span class="nn">tsai.models.utils</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">tsai.models.InceptionTimePlus</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">tsai.models.TabModel</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">tsai.learner</span> <span class="kn">import</span> <span class="o">*</span>
 </pre></div>
 
     </div>
@@ -111,7 +112,7 @@ nb_path: "nbs/130_models.MultiInputNet.ipynb"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>Feature Extraction: 100%|██████████| 40/40 [00:03&lt;00:00, 10.85it/s]
+<pre>Feature Extraction: 100%|██████████| 40/40 [00:04&lt;00:00,  9.48it/s]
 </pre>
 </div>
 </div>
@@ -173,14 +174,48 @@ nb_path: "nbs/130_models.MultiInputNet.ipynb"
   <tbody>
     <tr>
       <td>0</td>
-      <td>1.794394</td>
-      <td>1.647609</td>
-      <td>0.400000</td>
-      <td>0.803259</td>
+      <td>1.754837</td>
+      <td>1.603121</td>
+      <td>0.494444</td>
+      <td>0.881074</td>
       <td>00:05</td>
     </tr>
   </tbody>
 </table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="p">(</span><span class="n">cat</span><span class="p">,</span> <span class="n">cont</span><span class="p">)),</span><span class="n">yb</span> <span class="o">=</span> <span class="n">mixed_dls</span><span class="o">.</span><span class="n">one_batch</span><span class="p">()</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">model</span><span class="p">((</span><span class="n">ts</span><span class="p">,</span> <span class="p">(</span><span class="n">cat</span><span class="p">,</span> <span class="n">cont</span><span class="p">)))</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>torch.Size([64, 6])</pre>
 </div>
 
 </div>
@@ -214,50 +249,6 @@ nb_path: "nbs/130_models.MultiInputNet.ipynb"
 
 <div class="output_text output_subarea output_execute_result">
 <pre>(6, 6, True)</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">dls</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">one_batch</span><span class="p">()</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>((TSTensor(samples:64, vars:24, len:51),
-  (tensor([], size=(64, 0), dtype=torch.int64),
-   tensor([[ 0.5705,  0.9112,  0.5705,  ..., -1.2493, -0.9131, -1.0031],
-           [-0.6821, -0.9772, -0.6821,  ...,  0.3241,  0.0881,  0.8444],
-           [ 0.1946,  0.3996,  0.1946,  ..., -1.3933, -0.9556, -0.8486],
-           ...,
-           [ 0.0433, -0.0804,  0.0433,  ..., -0.3324, -0.4491, -0.2332],
-           [-2.0681, -2.0730, -2.0681,  ..., -0.2105, -0.3623, -0.6172],
-           [-0.7103, -0.9552, -0.7103,  ..., -1.5821, -0.9989, -1.7734]]))),
- TensorCategory([0, 3, 2, 2, 5, 5, 0, 1, 5, 0, 2, 1, 1, 1, 5, 3, 3, 1, 2, 4, 5, 2, 1, 4,
-         3, 1, 4, 3, 2, 4, 3, 4, 1, 0, 0, 5, 4, 3, 1, 2, 5, 5, 4, 1, 5, 0, 3, 2,
-         4, 1, 4, 0, 0, 0, 4, 4, 3, 0, 4, 4, 4, 2, 3, 1]))</pre>
 </div>
 
 </div>
