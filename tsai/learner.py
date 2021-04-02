@@ -18,6 +18,16 @@ def show_batch(self:Learner, **kwargs):
     self.dls.show_batch(**kwargs)
 
 # Cell
+# This is a patch to fix issue created by release 2.7.0
+@patch
+def one_batch(self:Learner, i, b):
+    self.iter = i
+#     b_on_device = tuple( e.to(device=self.dls.device) for e in b if hasattr(e, "to")) if self.dls.device is not None else b
+    b_on_device = to_device(b, device=self.dls.device) if self.dls.device is not None else b
+    self._split(b_on_device)
+    self._with_events(self._do_one_batch, 'batch', CancelBatchException)
+
+# Cell
 @patch
 def save_all(self:Learner, path='export', dls_fname='dls', model_fname='model', learner_fname='learner', verbose=False):
     path = Path(path)
@@ -211,8 +221,9 @@ def ts_learner(dls, arch=None, c_in=None, c_out=None, seq_len=None, d=None, spli
     if subscriptable: splitter = ts_splitter
     if loss_func is None:
         if hasattr(dls, 'loss_func'): loss_func = dls.loss_func
-        elif hasattr(dls, 'cat') and not dls.cat: loss_func = MSELossFlat()
         elif hasattr(dls, 'train_ds') and hasattr(dls.train_ds, 'loss_func'): loss_func = dls.train_ds.loss_func
+        elif hasattr(dls, 'cat') and not dls.cat: loss_func = MSELossFlat()
+
     learn = Learner(dls=dls, model=model,
                     loss_func=loss_func, opt_func=opt_func, lr=lr, cbs=cbs, metrics=metrics, path=path, splitter=splitter,
                     model_dir=model_dir, wd=wd, wd_bn_bias=wd_bn_bias, train_bn=train_bn, moms=moms, )

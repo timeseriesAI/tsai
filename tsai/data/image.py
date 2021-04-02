@@ -24,9 +24,16 @@ class TSImage(TensorImage):
         res = super().__getitem__(idx)
         return res.as_subclass(type(self))
 
+    @property
+    def vars(self):
+        return self.shape[-3]
+
+    @property
+    def len(self): return self.shape[-2:]
+
     def __repr__(self):
-        if self.numel() == 1: return f'{self}'
-        else: return f'TSImage(shape:{tuple(self.shape)})'
+        if self.ndim == 0: return f'{self}'
+        else: return f'TSImage(shape:{self.shape})'
 
     def show(self, **kwargs):
         if self.ndim < 3:
@@ -164,9 +171,9 @@ class TSToMTF(Transform):
     r"""Transforms a time series batch to a 4d TSImage (bs, n_vars, size, size) by applying Markov Transition Field"""
     order = 98
 
-    def __init__(self, size=224, cmap=None, **kwargs):
+    def __init__(self, size=224, cmap=None, n_bins=5, **kwargs):
         self.size,self.cmap = size,cmap
-        self.encoder = MarkovTransitionField(**kwargs)
+        self.encoder = MarkovTransitionField(n_bins=n_bins, **kwargs)
 
     def encodes(self, o: TSTensor):
         bs, *_, seq_len = o.shape

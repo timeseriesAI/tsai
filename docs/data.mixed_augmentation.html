@@ -61,7 +61,7 @@ nb_path: "nbs/003c_data.mixed_augmentation.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MixHandler1D" class="doc_header"><code>class</code> <code>MixHandler1D</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/mixed_augmentation.py#L22" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MixHandler1D</code>(<strong><code>alpha</code></strong>=<em><code>0.5</code></em>) :: <code>Callback</code></p>
+<h2 id="MixHandler1d" class="doc_header"><code>class</code> <code>MixHandler1d</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/mixed_augmentation.py#L21" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MixHandler1d</code>(<strong><code>alpha</code></strong>=<em><code>0.5</code></em>) :: <code>Callback</code></p>
 </blockquote>
 <p>A handler class for implementing mixed sample data augmentation</p>
 
@@ -93,7 +93,7 @@ nb_path: "nbs/003c_data.mixed_augmentation.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MixUp1D" class="doc_header"><code>class</code> <code>MixUp1D</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/mixed_augmentation.py#L44" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MixUp1D</code>(<strong><code>alpha</code></strong>=<em><code>0.4</code></em>) :: <a href="/tsai/data.mixed_augmentation.html#MixHandler1D"><code>MixHandler1D</code></a></p>
+<h2 id="MixUp1d" class="doc_header"><code>class</code> <code>MixUp1d</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/mixed_augmentation.py#L43" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MixUp1d</code>(<strong><code>alpha</code></strong>=<em><code>0.4</code></em>) :: <a href="/tsai/data.mixed_augmentation.html#MixHandler1d"><code>MixHandler1d</code></a></p>
 </blockquote>
 <p>Implementation of <a href="https://arxiv.org/abs/1710.09412">https://arxiv.org/abs/1710.09412</a></p>
 
@@ -123,6 +123,7 @@ nb_path: "nbs/003c_data.mixed_augmentation.ipynb"
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">tsai.models.utils</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">tsai.models.ResNet</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">tsai.learner</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;NATOPS&#39;</span>
 <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">return_split</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">tfms</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">Categorize</span><span class="p">()]</span>
@@ -145,7 +146,7 @@ nb_path: "nbs/003c_data.mixed_augmentation.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">Learner</span><span class="p">(</span><span class="n">dls</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">cbs</span><span class="o">=</span><span class="n">MixUp1D</span><span class="p">(</span><span class="mf">0.4</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">Learner</span><span class="p">(</span><span class="n">dls</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">cbs</span><span class="o">=</span><span class="n">MixUp1d</span><span class="p">(</span><span class="mf">0.4</span><span class="p">))</span>
 <span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 
@@ -172,8 +173,8 @@ nb_path: "nbs/003c_data.mixed_augmentation.ipynb"
   <tbody>
     <tr>
       <td>0</td>
-      <td>1.817825</td>
-      <td>1.756645</td>
+      <td>1.814203</td>
+      <td>1.782917</td>
       <td>00:03</td>
     </tr>
   </tbody>
@@ -199,7 +200,7 @@ nb_path: "nbs/003c_data.mixed_augmentation.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="CutMix1D" class="doc_header"><code>class</code> <code>CutMix1D</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/mixed_augmentation.py#L63" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CutMix1D</code>(<strong><code>alpha</code></strong>=<em><code>1.0</code></em>) :: <a href="/tsai/data.mixed_augmentation.html#MixHandler1D"><code>MixHandler1D</code></a></p>
+<h2 id="CutMix1d" class="doc_header"><code>class</code> <code>CutMix1d</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/data/mixed_augmentation.py#L62" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CutMix1d</code>(<strong><code>alpha</code></strong>=<em><code>1.0</code></em>) :: <a href="/tsai/data.mixed_augmentation.html#MixHandler1d"><code>MixHandler1d</code></a></p>
 </blockquote>
 <p>Implementation of <code>https://arxiv.org/abs/1905.04899</code></p>
 
@@ -233,7 +234,7 @@ nb_path: "nbs/003c_data.mixed_augmentation.ipynb"
 <span class="n">batch_tfms</span> <span class="o">=</span> <span class="n">TSStandardize</span><span class="p">()</span>
 <span class="n">dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="n">batch_tfms</span><span class="p">)</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">build_model</span><span class="p">(</span><span class="n">ResNet</span><span class="p">,</span> <span class="n">dls</span><span class="o">=</span><span class="n">dls</span><span class="p">)</span>
-<span class="n">learn</span> <span class="o">=</span> <span class="n">Learner</span><span class="p">(</span><span class="n">dls</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">cbs</span><span class="o">=</span><span class="n">CutMix1D</span><span class="p">(</span><span class="mf">1.</span><span class="p">))</span>
+<span class="n">learn</span> <span class="o">=</span> <span class="n">Learner</span><span class="p">(</span><span class="n">dls</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">cbs</span><span class="o">=</span><span class="n">CutMix1d</span><span class="p">(</span><span class="mf">1.</span><span class="p">))</span>
 <span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 
@@ -260,8 +261,8 @@ nb_path: "nbs/003c_data.mixed_augmentation.ipynb"
   <tbody>
     <tr>
       <td>0</td>
-      <td>1.823273</td>
-      <td>1.787005</td>
+      <td>1.795043</td>
+      <td>1.738316</td>
       <td>00:03</td>
     </tr>
   </tbody>

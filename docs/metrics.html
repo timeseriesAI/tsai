@@ -54,7 +54,7 @@ nb_path: "nbs/007_metrics.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="MatthewsCorrCoefBinary" class="doc_header"><code>MatthewsCorrCoefBinary</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/metrics.py#L14" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>MatthewsCorrCoefBinary</code>(<strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="MatthewsCorrCoefBinary" class="doc_header"><code>MatthewsCorrCoefBinary</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/metrics.py#L15" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>MatthewsCorrCoefBinary</code>(<strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Matthews correlation coefficient for single-label classification problems</p>
 
@@ -86,7 +86,220 @@ nb_path: "nbs/007_metrics.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_task_metrics" class="doc_header"><code>get_task_metrics</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/metrics.py#L19" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_task_metrics</code>(<strong><code>dls</code></strong>, <strong><code>binary_metrics</code></strong>=<em><code>None</code></em>, <strong><code>multi_class_metrics</code></strong>=<em><code>None</code></em>, <strong><code>regression_metrics</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="get_task_metrics" class="doc_header"><code>get_task_metrics</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/metrics.py#L20" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_task_metrics</code>(<strong><code>dls</code></strong>, <strong><code>binary_metrics</code></strong>=<em><code>None</code></em>, <strong><code>multi_class_metrics</code></strong>=<em><code>None</code></em>, <strong><code>regression_metrics</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>True</code></em>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>All metrics applicable to multi classification have been created by Doug Williams (<a href="https://github.com/williamsdoug">https://github.com/williamsdoug</a>). Thanks a lot Doug!!</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="accuracy_multi" class="doc_header"><code>accuracy_multi</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L203" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>accuracy_multi</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>, <strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>)</p>
+</blockquote>
+<p>Compute accuracy when <code>inp</code> and <code>targ</code> are the same size.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="metrics_multi_common" class="doc_header"><code>metrics_multi_common</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/metrics.py#L42" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>metrics_multi_common</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>, <strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>by_sample</code></strong>=<em><code>False</code></em>)</p>
+</blockquote>
+<p>Computes TP, TN, FP, FN when <code>inp</code> and <code>targ</code> are the same size.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="precision_multi" class="doc_header"><code>precision_multi</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/metrics.py#L59" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>precision_multi</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>, <strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>)</p>
+</blockquote>
+<p>Computes precision when <code>inp</code> and <code>targ</code> are the same size.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="recall_multi" class="doc_header"><code>recall_multi</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/metrics.py#L73" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>recall_multi</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>, <strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>)</p>
+</blockquote>
+<p>Computes recall when <code>inp</code> and <code>targ</code> are the same size.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="specificity_multi" class="doc_header"><code>specificity_multi</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/metrics.py#L87" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>specificity_multi</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>, <strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>)</p>
+</blockquote>
+<p>Computes specificity (true negative rate) when <code>inp</code> and <code>targ</code> are the same size.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="balanced_accuracy_multi" class="doc_header"><code>balanced_accuracy_multi</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/metrics.py#L101" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>balanced_accuracy_multi</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>, <strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>)</p>
+</blockquote>
+<p>Computes balanced accuracy when <code>inp</code> and <code>targ</code> are the same size.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="Fbeta_multi" class="doc_header"><code>Fbeta_multi</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/metrics.py#L119" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Fbeta_multi</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>, <strong><code>beta</code></strong>=<em><code>1.0</code></em>, <strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>)</p>
+</blockquote>
+<p>Computes Fbeta when <code>inp</code> and <code>targ</code> are the same size.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="F1_multi" class="doc_header"><code>F1_multi</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/metrics.py#L142" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>F1_multi</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
