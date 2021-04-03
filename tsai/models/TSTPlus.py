@@ -8,6 +8,7 @@ from ..imports import *
 from ..utils import *
 from .layers import *
 from .utils import *
+from ..data.core import *
 
 # Cell
 def SinCosPosEncoding(q_len, d_model, normalize=True):
