@@ -46,92 +46,6 @@ nb_path: "nbs/009_optimizer.ipynb"
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># &quot;&quot;&quot; Lookahead Optimizer Wrapper.</span>
-<span class="c1"># Implemented by Mikhail Grankin (Github: mgrankin) in his excellent collection of Pytorch optimizers https://github.com/mgrankin/over9000</span>
-<span class="c1"># Implementation modified from: https://github.com/alphadl/lookahead.pytorch</span>
-<span class="c1"># Paper: `Lookahead Optimizer: k steps forward, 1 step back` - https://arxiv.org/abs/1907.08610</span>
-<span class="c1"># &quot;&quot;&quot;</span>
-<span class="c1"># class LookAhead(torch.optim.Optimizer):</span>
-<span class="c1">#     def __init__(self, base_optimizer, alpha=0.5, k=6):</span>
-<span class="c1">#         if not 0.0 &lt;= alpha &lt;= 1.0: raise ValueError(f&#39;Invalid slow update rate: {alpha}&#39;)</span>
-<span class="c1">#         if not 1 &lt;= k: raise ValueError(f&#39;Invalid lookahead steps: {k}&#39;)</span>
-<span class="c1">#         defaults = dict(lookahead_alpha=alpha, lookahead_k=k, lookahead_step=0)</span>
-<span class="c1">#         self.base_optimizer = base_optimizer</span>
-<span class="c1">#         self.param_groups = self.base_optimizer.param_groups</span>
-<span class="c1">#         self.defaults = base_optimizer.defaults</span>
-<span class="c1">#         self.defaults.update(defaults)</span>
-<span class="c1">#         self.state = defaultdict(dict)</span>
-<span class="c1">#         # manually add our defaults to the param groups</span>
-<span class="c1">#         for name, default in defaults.items():</span>
-<span class="c1">#             for group in self.param_groups: group.setdefault(name, default)</span>
-
-<span class="c1">#     def update_slow(self, group):</span>
-<span class="c1">#         for fast_p in group[&quot;params&quot;]:</span>
-<span class="c1">#             if fast_p.grad is None: continue</span>
-<span class="c1">#             param_state = self.state[fast_p]</span>
-<span class="c1">#             if &#39;slow_buffer&#39; not in param_state:</span>
-<span class="c1">#                 param_state[&#39;slow_buffer&#39;] = torch.empty_like(fast_p.data)</span>
-<span class="c1">#                 param_state[&#39;slow_buffer&#39;].copy_(fast_p.data)</span>
-<span class="c1">#             slow = param_state[&#39;slow_buffer&#39;]</span>
-<span class="c1">#             slow.add_(group[&#39;lookahead_alpha&#39;], fast_p.data - slow)</span>
-<span class="c1">#             fast_p.data.copy_(slow)</span>
-
-<span class="c1">#     def sync_lookahead(self):</span>
-<span class="c1">#         for group in self.param_groups:</span>
-<span class="c1">#             self.update_slow(group)</span>
-
-<span class="c1">#     def step(self, closure=None):</span>
-<span class="c1">#         loss = self.base_optimizer.step(closure)</span>
-<span class="c1">#         for group in self.param_groups:</span>
-<span class="c1">#             group[&#39;lookahead_step&#39;] += 1</span>
-<span class="c1">#             if group[&#39;lookahead_step&#39;] % group[&#39;lookahead_k&#39;] == 0: self.update_slow(group)</span>
-<span class="c1">#         return loss</span>
-
-<span class="c1">#     def state_dict(self):</span>
-<span class="c1">#         fast_state_dict = self.base_optimizer.state_dict()</span>
-<span class="c1">#         slow_state = {(id(k) if isinstance(k, torch.Tensor) else k): v for k, v in self.state.items()}</span>
-<span class="c1">#         fast_state = fast_state_dict[&#39;state&#39;]</span>
-<span class="c1">#         param_groups = fast_state_dict[&#39;param_groups&#39;]</span>
-<span class="c1">#         return {&#39;state&#39;: fast_state, &#39;slow_state&#39;: slow_state, &#39;param_groups&#39;: param_groups}</span>
-
-<span class="c1">#     def load_state_dict(self, state_dict):</span>
-<span class="c1">#         fast_state_dict = {&#39;state&#39;: state_dict[&#39;state&#39;], &#39;param_groups&#39;: state_dict[&#39;param_groups&#39;]}</span>
-<span class="c1">#         self.base_optimizer.load_state_dict(fast_state_dict)</span>
-
-<span class="c1">#         # We want to restore the slow state, but share param_groups reference</span>
-<span class="c1">#         # with base_optimizer. This is a bit redundant but least code</span>
-<span class="c1">#         slow_state_new = False</span>
-<span class="c1">#         if &#39;slow_state&#39; not in state_dict:</span>
-<span class="c1">#             print(&#39;Loading state_dict from optimizer without Lookahead applied.&#39;)</span>
-<span class="c1">#             state_dict[&#39;slow_state&#39;] = defaultdict(dict)</span>
-<span class="c1">#             slow_state_new = True</span>
-<span class="c1">#         slow_state_dict = {</span>
-<span class="c1">#             &#39;state&#39;: state_dict[&#39;slow_state&#39;],</span>
-<span class="c1">#             &#39;param_groups&#39;: state_dict[&#39;param_groups&#39;],  # this is pointless but saves code</span>
-<span class="c1">#         }</span>
-<span class="c1">#         super(Lookahead, self).load_state_dict(slow_state_dict)</span>
-<span class="c1">#         self.param_groups = self.base_optimizer.param_groups  # make both ref same container</span>
-<span class="c1">#         if slow_state_new:</span>
-<span class="c1">#             # reapply defaults to catch missing lookahead specific ones</span>
-<span class="c1">#             for name, default in self.defaults.items():</span>
-<span class="c1">#                 for group in self.param_groups:</span>
-<span class="c1">#                     group.setdefault(name, default)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
 <div class="output">
@@ -160,135 +74,19 @@ nb_path: "nbs/009_optimizer.ipynb"
 </div>
     {% endraw %}
 
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="Ralamb" class="doc_header"><code>class</code> <code>Ralamb</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/optimizer.py#L19" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Ralamb</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>betas</code></strong>=<em><code>(0.9, 0.999)</code></em>, <strong><code>eps</code></strong>=<em><code>1e-08</code></em>, <strong><code>weight_decay</code></strong>=<em><code>0</code></em>) :: <code>Optimizer</code></p>
-</blockquote>
-<p>Base class for all optimizers.</p>
-<p>.. warning::
-    Parameters need to be specified as collections that have a deterministic
-    ordering that is consistent between runs. Examples of objects that don't
-    satisfy those properties are sets and iterators over values of dictionaries.</p>
-<p>Arguments:
-    params (iterable): an iterable of :class:<code>torch.Tensor</code> s or
-        :class:<code>dict</code> s. Specifies what Tensors should be optimized.
-    defaults: (dict): a dict containing default values of optimization
-        options (used when a parameter group doesn't specify them).</p>
-
-</div>
-
-</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>You can natively use any of the optimizers included in the fastai library. You just need to pass it to the learner as the opt_func.</p>
+<p>In addition, you will be able to use any of the optimizers from:</p>
+<ul>
+<li>Pytorch</li>
+<li>torch_optimizer (<a href="https://github.com/jettify/pytorch-optimizer">https://github.com/jettify/pytorch-optimizer</a>)</li>
+</ul>
+<p>If you want to use any these last 2, you can use the wrap_optimizer function. Here are a few examples:</p>
 
 </div>
 </div>
-
 </div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="RangerLars" class="doc_header"><code>RangerLars</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/optimizer.py#L98" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>RangerLars</code>(<strong><code>params</code></strong>, <strong>*<code>args</code></strong>, <strong><code>alpha</code></strong>=<em><code>0.5</code></em>, <strong><code>k</code></strong>=<em><code>6</code></em>, <strong>**<code>kwargs</code></strong>)</p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="AdaBelief" class="doc_header"><code>class</code> <code>AdaBelief</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/optimizer.py#L110" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AdaBelief</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>betas</code></strong>=<em><code>(0.9, 0.999)</code></em>, <strong><code>eps</code></strong>=<em><code>1e-08</code></em>, <strong><code>weight_decay</code></strong>=<em><code>0</code></em>, <strong><code>amsgrad</code></strong>=<em><code>False</code></em>, <strong><code>weight_decouple</code></strong>=<em><code>False</code></em>, <strong><code>fixed_decay</code></strong>=<em><code>False</code></em>, <strong><code>rectify</code></strong>=<em><code>False</code></em>) :: <code>Optimizer</code></p>
-</blockquote>
-<p>Implements AdaBelief algorithm. Modified from Adam in PyTorch
-Arguments:
-    params (iterable): iterable of parameters to optimize or dicts defining
-        parameter groups
-    lr (float, optional): learning rate (default: 1e-3)
-    betas (Tuple[float, float], optional): coefficients used for computing
-        running averages of gradient and its square (default: (0.9, 0.999))
-    eps (float, optional): term added to the denominator to improve
-        numerical stability (default: 1e-8)
-    weight<em>decay (float, optional): weight decay (L2 penalty) (default: 0)
-    amsgrad (boolean, optional): whether to use the AMSGrad variant of this
-        algorithm from the paper <code>On the Convergence of Adam and Beyond</code></em>
-        (default: False)
-    weight_decouple (boolean, optional): ( default: False) If set as True, then
-        the optimizer uses decoupled weight decay as in AdamW
-    fixed_decay (boolean, optional): (default: False) This is used when weight_decouple
-        is set as True.
-        When fixed<em>decay == True, the weight decay is performed as
-        $W</em>{new} = W<em>{old} - W</em>{old} \times decay$.
-        When fixed_decay == False, the weight decay is performed as
-        $W<em>{new} = W</em>{old} - W_{old} \times decay \times lr$. Note that in this case, the
-        weight decay ratio decreases with learning rate (lr).
-    rectify (boolean, optional): (default: False) If set as True, then perform the rectified
-        update similar to RAdam
-reference: AdaBelief Optimizer, adapting stepsizes by the belief in observed gradients
-           NeurIPS 2020 Spotlight</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
