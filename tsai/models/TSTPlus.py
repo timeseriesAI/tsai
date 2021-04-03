@@ -245,7 +245,7 @@ class _TSTBackbone(Module):
     def forward(self, x:Tensor) -> Tensor:  # x: [bs x nvars x q_len]
 
         # Padding mask
-        key_padding_mask = self._key_padding_mask(x)
+        x, key_padding_mask = self._key_padding_mask(x)
 
         # Input encoding
         if self.new_q_len: u = self.W_P(x).transpose(2,1) # Eq 2        # u: [bs x d_model x q_len] transposed to [bs x q_len x d_model]
@@ -283,10 +283,13 @@ class _TSTBackbone(Module):
         return nn.Parameter(W_pos, requires_grad=learn_pe)
 
     def _key_padding_mask(self, x):
-        if self.key_padding_mask and torch.isnan(x).any():
-            return TSMaskTensor(torch.isnan(x).float().mean(1).bool())   # key_padding_mask: [bs x q_len]
+        mask = torch.isnan(x)
+        x[mask] = 0
+        if self.key_padding_mask and mask.any():
+            mask = TSMaskTensor(mask.float().mean(1).bool())   # key_padding_mask: [bs x q_len]
+            return x, mask
         else:
-            return None
+            return x, None
 
 
 class TSTPlus(nn.Sequential):
