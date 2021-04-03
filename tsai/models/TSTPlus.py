@@ -286,7 +286,7 @@ class _TSTBackbone(Module):
         mask = torch.isnan(x)
         x[mask] = 0
         if self.key_padding_mask and mask.any():
-            mask = TSMaskTensor(mask.float().mean(1).bool())   # key_padding_mask: [bs x q_len]
+            mask = TSMaskTensor((mask.float().mean(1)==1).bool())   # key_padding_mask: [bs x q_len]
             return x, mask
         else:
             return x, None
