@@ -114,8 +114,8 @@ class MVP(Callback):
     order = 60
 
     def __init__(self, r: float = .15, subsequence_mask: bool = True, lm: float = 3., stateful: bool = True, sync: bool = False, variable_mask: bool = False,
-                 future_mask: bool = False, custom_mask: Optional = None, dropout: float = .1, crit: callable = None, replace_head:bool=True,
-                 target_dir: str = './data/MVP', fname: str = 'model', save_best: bool = True, save_model: bool = True, verbose: bool = False):
+                 future_mask: bool = False, custom_mask: Optional = None, dropout: float = .1, crit: callable = None, weights_path:Optional[str]=None,
+                 target_dir: str = './data/MVP', fname: str = 'model', save_best: bool = True, verbose: bool = False):
         r"""
         Callback used to perform the pretext task of reconstruct the original data after a binary mask has been applied.
 
@@ -130,12 +130,11 @@ class MVP(Callback):
             custom_mask: allows to pass any type of mask with input tensor and output tensor.
             dropout: dropout applied to the head of the model during pretraining.
             crit: loss function that will be used. If None MSELossFlat().
-            replace_head: indicates if the models head needs to be replaced by a head that is capable of recreating the input. Defaults to True.
-                          You can set it to False when continuing training from a checkpoint.
+            weights_path: indicates the path to pretrained weights. This is useful when you want to continue training from a checkpoint. It will load the
+                          pretrained weights to the model with the MVP head.
             target_dir : directory where trained model will be stored.
             fname : file name that will be used to save the pretrained model.
             save_best: saves best model weights
-            save_model: saves both state_dict() and model when True. If False, only state_dict() is saved.
     """
         assert subsequence_mask or variable_mask or future_mask or custom_mask, \
             'you must set (subsequence_mask and/or variable_mask) or future_mask to True or use a custom_mask'
@@ -143,15 +142,11 @@ class MVP(Callback):
             warnings.warn("Only custom_mask will be used")
         elif future_mask and (subsequence_mask or variable_mask):
             warnings.warn("Only future_mask will be used")
-        store_attr("subsequence_mask,variable_mask,future_mask,custom_mask,dropout,r,lm,stateful,sync,crit,replace_head,fname,save_best,save_model,verbose")
+        store_attr("subsequence_mask,variable_mask,future_mask,custom_mask,dropout,r,lm,stateful,sync,crit,weights_path,fname,save_best,verbose")
         self.PATH = Path(f'{target_dir}/{self.fname}')
         if not os.path.exists(self.PATH.parent):
             os.makedirs(self.PATH.parent)
-        if save_model:
-            self.path_text = f"pretrained model_path='{self.PATH}_model.pth'; weights_path='{self.PATH}.pth'"
-        else:
-            self.path_text = f"pretrained weights_path='{self.PATH}.pth'"
-
+        self.path_text = f"pretrained weights_path='{self.PATH}.pth'"
 
     def before_fit(self):
         self.run = not hasattr(self, "lr_finder") and not hasattr(self, "gather_preds")
@@ -169,11 +164,13 @@ class MVP(Callback):
         self.learn.metrics = L([])
 
         # change head with conv layer (equivalent to linear layer applied to dim=1)
-        if self.replace_head:
-            assert hasattr(self.learn.model, "head"), "model must have a head attribute to be trained with MVP"
-            self.learn.model.head = nn.Sequential(nn.Dropout(self.dropout),
-                                                  nn.Conv1d(self.learn.model.head_nf, self.learn.dls.vars, 1)
-                                                 ).to(self.learn.dls.device)
+        assert hasattr(self.learn.model, "head"), "model must have a head attribute to be trained with MVP"
+        self.learn.model.head = nn.Sequential(nn.Dropout(self.dropout),
+                                              nn.Conv1d(self.learn.model.head_nf, self.learn.dls.vars, 1)
+                                             ).to(self.learn.dls.device)
+        if self.weights_path is not None:
+            transfer_weights(learn.model, self.weights_path, device=self.learn.dls.device, exclude_head=False)
+
         with torch.no_grad():
             xb = torch.randn(2, self.learn.dls.vars, self.learn.dls.len).to(self.learn.dls.device)
             assert xb.shape == learn.model(xb).shape, 'the model cannot reproduce the input shape'
@@ -192,15 +189,11 @@ class MVP(Callback):
             if np.less(val, self.best):
                 self.best = val
                 self.best_epoch = self.epoch
-                if self.save_model:
-                    torch.save(self.learn.model, f'{self.PATH}_model.pth')
                 torch.save(self.learn.model.state_dict(), f'{self.PATH}.pth')
                 pv(f"best epoch: {self.best_epoch:3}  val_loss: {self.best:8.6f} - {self.path_text}", self.verbose or (self.epoch == self.n_epoch - 1))
             elif self.epoch == self.n_epoch - 1:
                 print(f"\nepochs: {self.n_epoch} best epoch: {self.best_epoch:3}  val_loss: {self.best:8.6f} - {self.path_text}\n")
         elif self.epoch == self.n_epoch - 1:
-            if self.save_model:
-                torch.save(self.learn.model, f'{self.PATH}_model.pth')
             torch.save(self.learn.model.state_dict(), f'{self.PATH}.pth')
             print(f"\nepoch: {self.epoch:3}  val_loss: {val:8.6f} - {self.path_text}\n")
 
