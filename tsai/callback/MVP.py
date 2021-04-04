@@ -150,6 +150,8 @@ class MVP(Callback):
 
     def before_fit(self):
         self.run = not hasattr(self, "lr_finder") and not hasattr(self, "gather_preds")
+        if 'SaveModelCallback' in [cb.__class__.__name__ for cb in self.learn.cbs]:
+            self.save_best =  False # avoid saving if SaveModelCallback is being used
         if not(self.run): return
 
         # prepare to save best model
@@ -193,9 +195,6 @@ class MVP(Callback):
                 pv(f"best epoch: {self.best_epoch:3}  val_loss: {self.best:8.6f} - {self.path_text}", self.verbose or (self.epoch == self.n_epoch - 1))
             elif self.epoch == self.n_epoch - 1:
                 print(f"\nepochs: {self.n_epoch} best epoch: {self.best_epoch:3}  val_loss: {self.best:8.6f} - {self.path_text}\n")
-        elif self.epoch == self.n_epoch - 1:
-            torch.save(self.learn.model.state_dict(), f'{self.PATH}.pth')
-            print(f"\nepoch: {self.epoch:3}  val_loss: {val:8.6f} - {self.path_text}\n")
 
     def after_fit(self):
         self.run = True
