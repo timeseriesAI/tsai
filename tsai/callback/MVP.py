@@ -34,6 +34,7 @@ def create_subsequence_mask(o, r=.15, lm=3, stateful=True, sync=False):
             dist_a = _dist_a if i == 0 else torch.cat((dist_a, _dist_a), dim=-1)
             dist_b = _dist_b if i == 0 else torch.cat((dist_b, _dist_b), dim=-1)
             if (dist_a + dist_b).sum() >= numels: break
+            else: max_len *= 2
         dist_len = torch.argmax(((dist_a + dist_b).cumsum(0) >= numels).float()) + 1
         if dist_len%2: dist_len += 1
         repeats = torch.cat((dist_a[:dist_len], dist_b[:dist_len]), -1).flatten()
