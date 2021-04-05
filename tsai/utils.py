@@ -555,8 +555,12 @@ def torch_slice_by_dim(t, index, dim=-1, **kwargs):
 # Cell
 def torch_nanmean(o, dim=None, keepdim=False):
     """There's currently no torch.nanmean function"""
-    if torch.isnan(o).any():
-        return torch.from_numpy(np.asarray(np.nanmean(o.cpu().numpy(), axis=dim, keepdims=keepdim))).to(o.device)
+    mask = torch.isnan(o)
+    if mask.any():
+        o = torch.from_numpy(np.asarray(np.nanmean(o.cpu().numpy(), axis=dim, keepdims=keepdim))).to(o.device)
+        mask = torch.isnan(o)
+        o[mask] = 0
+        return o
     else:
         return o.mean(dim=dim, keepdim=keepdim)
 

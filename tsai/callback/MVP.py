@@ -14,62 +14,61 @@ from ..models.layers import *
 from torch.distributions.beta import Beta
 
 # Cell
+from torch.distributions.geometric import Geometric
+
 def create_subsequence_mask(o, r=.15, lm=3, stateful=True, sync=False):
+    device = o.device
     if o.ndim == 2: o = o[None]
     n_masks, mask_dims, mask_len = o.shape
     if sync == 'random': sync = random.random() > .5
     dims = 1 if sync else mask_dims
-    numels = n_masks * dims * mask_len
-    pm = 1 / lm
-    pu = np.clip(pm * (r / max(1e-6, 1 - r)), 1e-3, 1)
-    a, b, proba_a, proba_b = ([1], [0], pu, pm) if random.random() > pm else ([0], [1], pm, pu)
     if stateful:
+        numels = n_masks * dims * mask_len
+        pm = torch.tensor([1 / lm], device=device)
+        pu = torch.clip(pm * (r / max(1e-6, 1 - r)), 1e-3, 1)
+        zot, proba_a, proba_b = (torch.tensor([1.,0.], device=device), pu, pm) if random.random() > pm else (torch.tensor([0.,1.], device=device), pm, pu)
         max_len = max(1, 2 * math.ceil(numels // (1/pm + 1/pu)))
         for i in range(10):
-            _dist_a = np.random.geometric(proba_a, max_len)
-            _dist_b = np.random.geometric(proba_b, max_len)
-            dist_a = _dist_a if i == 0 else np.concatenate((dist_a, _dist_a), axis=-1)
-            dist_b = _dist_b if i == 0 else np.concatenate((dist_b, _dist_b), axis=-1)
-            if (dist_a + dist_b).sum() >= numels:
-                break
-            else:
-                max_len *= 2
-        dist_len = np.argmax((dist_a + dist_b).cumsum() >= numels) + 1
-        l = [a*ax + b*bx for (ax, bx) in zip(dist_a[:dist_len], dist_b[:dist_len])]
-        _mask = list(itertools.chain.from_iterable(l))[:numels]
-        mask = o.new(_mask).reshape(n_masks, dims, mask_len)
+            _dist_a = (Geometric(probs=proba_a).sample([max_len])+1).long()
+            _dist_b = (Geometric(probs=proba_b).sample([max_len])+1).long()
+            dist_a = _dist_a if i == 0 else torch.cat((dist_a, _dist_a), dim=-1)
+            dist_b = _dist_b if i == 0 else torch.cat((dist_b, _dist_b), dim=-1)
+            if (dist_a + dist_b).sum() >= numels: break
+        dist_len = torch.argmax(((dist_a + dist_b).cumsum(0) >= numels).float()) + 1
+        if dist_len%2: dist_len += 1
+        repeats = torch.cat((dist_a[:dist_len], dist_b[:dist_len]), -1).flatten()
+        zot = zot.repeat(dist_len).reshape(-1,1)
+        mask = torch.repeat_interleave(zot, repeats, dim=0).flatten()[:numels].reshape(n_masks, dims, mask_len)
     else:
-        mask = o.new(np.random.binomial(1, 1 - r, (n_masks, dims, mask_len))) # faster than torch.distributions.binomial.Binomial
+        mask = torch.distributions.binomial.Binomial(1, torch.tensor(1-r, device=device)).sample((n_masks, dims, mask_len))
     if sync: mask = mask.repeat(1, mask_dims, 1)
     return mask
 
 def create_variable_mask(o, r=.15):
+    device = o.device
     n_masks, mask_dims, mask_len = o.shape
-    _mask = np.ones((n_masks * mask_dims, mask_len))
+    _mask = torch.ones((n_masks * mask_dims, mask_len), device=device)
     if int(mask_dims * r) > 0:
         n_masked_vars = int(n_masks * mask_dims * r)
-        sel_dims = np.random.choice(n_masks * mask_dims, n_masked_vars, False)
+        p = torch.tensor([1./(n_masks * mask_dims)], device=device).repeat([n_masks * mask_dims])
+        sel_dims = p.multinomial(num_samples=n_masked_vars, replacement=False)
         _mask[sel_dims] = 0
-    mask = o.new(_mask).reshape(*o.shape)
+    mask = _mask.reshape(*o.shape)
     return mask
 
 def create_future_mask(o, r=.15, sync=False):
+    device = o.device
     if o.ndim == 2: o = o[None]
     n_masks, mask_dims, mask_len = o.shape
     if sync == 'random': sync = random.random() > .5
     if sync:
         sel_steps = int(round(mask_len * r))
-        _mask = np.ones((1, 1, mask_len))
+        _mask = torch.ones((1, 1, mask_len), device=device)
         _mask[..., -sel_steps:] = 0
-        mask = o.new(_mask).repeat(n_masks, mask_dims, 1)
+        mask = _mask.repeat(n_masks, mask_dims, 1)
     else:
-        _mask = np.ones((n_masks, mask_dims, mask_len))
-        for i in range(n_masks):
-            for j in range(mask_dims):
-                steps = int(np.random.uniform(0, 2*r*mask_len))
-                if steps == 0: continue
-                _mask[i, j, -steps:] = 0
-    mask = o.new(_mask)
+        mask = torch.distributions.binomial.Binomial(1, torch.tensor(1-.15, device=device)).sample((n_masks, mask_dims, mask_len))
+        mask = torch.sort(mask,dim=-1, descending=True)[0]
     return mask
 
 # Cell
