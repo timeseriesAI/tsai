@@ -38,8 +38,8 @@ def create_subsequence_mask(o, r=.15, lm=3, stateful=True, sync=False):
         dist_len = torch.argmax(((dist_a + dist_b).cumsum(0) >= numels).float()) + 1
         if dist_len%2: dist_len += 1
         repeats = torch.cat((dist_a[:dist_len], dist_b[:dist_len]), -1).flatten()
-        zot = zot.repeat(dist_len).reshape(-1,1)
-        mask = torch.repeat_interleave(zot, repeats, dim=0).flatten()[:numels].reshape(n_masks, dims, mask_len)
+        zot = zot.repeat(dist_len)
+        mask = torch.repeat_interleave(zot, repeats, dim=0)[:numels].reshape(n_masks, dims, mask_len)
     else:
         mask = torch.distributions.binomial.Binomial(1, torch.tensor(1-r, device=device)).sample((n_masks, dims, mask_len))
     if sync: mask = mask.repeat(1, mask_dims, 1)
