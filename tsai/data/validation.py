@@ -259,7 +259,6 @@ def get_splits(o, n_splits:int=1, valid_size:float=0.2, test_size:float=0., trai
 def TSSplitter(valid_size:Union[int, float]=0.2, test_size:Union[int, float]=0., show_plot:bool=True):
     "Create function that splits `items` between train/val with `valid_size` without shuffling data."
     def _inner(o):
-
         valid_cut = valid_size if isinstance(valid_size, Integral) else int(round(valid_size * len(o)))
         if test_size:
             test_cut = test_size if isinstance(test_size, Integral) else int(round(test_size * len(o)))
@@ -268,7 +267,11 @@ def TSSplitter(valid_size:Union[int, float]=0.2, test_size:Union[int, float]=0.,
             splits = L(idx[:-valid_cut - test_cut].tolist()), L(idx[-valid_cut - test_cut: - test_cut].tolist()), L(idx[-test_cut:].tolist())
         else:
             splits = L(idx[:-valid_cut].tolist()), L(idx[-valid_cut:].tolist())
-        if show_plot: plot_splits(splits)
+        if show_plot:
+            if len(o) > 1_000_000:
+                warnings.warn('the splits are too large to be plotted')
+            else:
+                plot_splits(splits)
         return splits
     return _inner
 

@@ -232,17 +232,21 @@ def check_data(X, y=None, splits=None, show_plot=True):
     else:
         print(f'X      - shape: {X.shape}  type: {cls_name(X)}  dtype:{X.dtype}  isnan: {X_is_nan}')
     if not isinstance(X, np.ndarray): warnings.warn('X must be a np.ndarray')
-    if X_is_nan: warnings.warn('X must not contain nan values')
+    if X_is_nan:
+        warnings.warn('X must not contain nan values')
     if y is not None:
-        if isinstance(y[0], (Integral, str)):
+        y_shape = y.shape
+        y = y.ravel()
+        if isinstance(y[0], str):
             n_classes = f'{len(np.unique(y))} ({len(y)//len(np.unique(y))} samples per class) {L(np.unique(y).tolist())}'
             y_is_nan = 'nan' in [c.lower() for c in np.unique(y)]
-            print(f'y      - shape: {y.shape}  type: {cls_name(y)}  dtype:{y.dtype}  n_classes: {n_classes}  isnan: {y_is_nan}')
+            print(f'y      - shape: {y_shape}  type: {cls_name(y)}  dtype:{y.dtype}  n_classes: {n_classes}  isnan: {y_is_nan}')
         else:
             y_is_nan = np.isnan(y).sum()
-            print(f'y      - shape: {y.shape}  type: {cls_name(y)}  dtype:{y.dtype}  isnan: {y_is_nan}')
+            print(f'y      - shape: {y_shape}  type: {cls_name(y)}  dtype:{y.dtype}  isnan: {y_is_nan}')
         if not isinstance(y, np.ndarray): warnings.warn('y must be a np.ndarray')
-        if y_is_nan: warnings.warn('y must not contain nan values')
+        if y_is_nan:
+            warnings.warn('y must not contain nan values')
     if splits is not None:
         _splits = get_splits_len(splits)
         overlap = check_splits_overlap(splits)

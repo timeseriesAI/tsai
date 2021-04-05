@@ -175,7 +175,7 @@ class MVP(Callback):
 
         with torch.no_grad():
             xb = torch.randn(2, self.learn.dls.vars, self.learn.dls.len).to(self.learn.dls.device)
-            assert xb.shape == learn.model(xb).shape, 'the model cannot reproduce the input shape'
+            assert xb.shape == self.learn.model(xb).shape, 'the model cannot reproduce the input shape'
 
     def before_batch(self):
         self.learn.yb = (self.x,)
@@ -230,7 +230,7 @@ class MVP(Callback):
                         color = next(color_iter)
                     col.plot(xb[idxs[i]][j], alpha=.5, color=color)
                     col.plot(masked_pred[idxs[i]][j],
-                             marker='o', markersize=4, color=color)
+                             marker='o', markersize=4, linestyle='None', color=color)
                 i += 1
         plt.tight_layout()
         plt.show()

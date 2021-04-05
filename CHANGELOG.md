@@ -17,6 +17,7 @@
     * Faster dataloader when suffle == True.
     * Added TSUndindowedDataset and TSUnwindowedDatasets, which apply window slicing online to prepare time series data. 
     * Added TSMetaDataset and TSMetaDatasets, which allow you to use one or multiple X (and y) arrays as input. In this way, you won't need to merge all data into a single array. This will allow you to work with larger than memory datasets. 
+    * Added a new tutorial notebook that demonstrates both multi-class and multi-label classification using tsai.
 
 ### Breaking change:
 * Data:

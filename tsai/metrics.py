@@ -12,9 +12,9 @@ mk_class('ActivationType', **{o:o.lower() for o in ['No', 'Sigmoid', 'Softmax', 
          doc="All possible activation classes for `AccumMetric")
 
 # Cell
-def MatthewsCorrCoefBinary(thresh=.5, sample_weight=None):
+def MatthewsCorrCoefBinary(sample_weight=None):
     "Matthews correlation coefficient for single-label classification problems"
-    return skm_to_fastai(skm.matthews_corrcoef, activation=ActivationType.BinarySoftmax, thresh=thresh, sample_weight=sample_weight)
+    return AccumMetric(skm.matthews_corrcoef, dim_argmax=-1, activation=ActivationType.BinarySoftmax, thresh=.5, sample_weight=sample_weight)
 
 # Cell
 def get_task_metrics(dls, binary_metrics=None, multi_class_metrics=None, regression_metrics=None, verbose=True):

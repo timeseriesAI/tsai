@@ -412,9 +412,9 @@ class MultiTSTPlus(nn.Sequential):
         q_len = min(seq_len, max_seq_len)
         self.seq_len = q_len
         if custom_head is None:
-            head = self._arch.create_head(self, self.head_nf, c_out, q_len, **kwargs)
+            head = self._arch.create_head(self, self.head_nf, c_out, q_len)
         else:
-            head = custom_head(self.head_nf, c_out, q_len, **kwargs)
+            head = custom_head(self.head_nf, c_out, q_len)
 
         layers = OrderedDict([('backbone', nn.Sequential(backbone)), ('head', nn.Sequential(head))])
         super().__init__(layers)

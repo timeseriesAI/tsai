@@ -72,12 +72,15 @@ class TSStandardize(Transform):
                 _mean = []
                 _std = []
                 start = 0
-                for i,var_group in enumerate(self.by_var):
-                    end = start + var_group
-                    f = slice(start, end)
-                    start += var_group
-                    _mean.append((torch_nanmean(o[:, f], self.axes, keepdim=True)).repeat(1, var_group, 1))
-                    _std.append((torch_nanstd(o[:, f], self.axes, keepdim=True) + self.eps).repeat(1, var_group, 1))
+                for i,v in enumerate(self.by_var):
+                    if is_listy(v): f = v
+                    else:
+                        end = start + v
+                        f = slice(start, end)
+                        start += v
+                    repeats = len(v) if is_listy(v) else v
+                    _mean.append((torch_nanmean(o[:, f], self.axes, keepdim=True)).repeat(1, repeats, 1))
+                    _std.append((torch_nanstd(o[:, f], self.axes, keepdim=True) + self.eps).repeat(1, repeats, 1))
                 self.mean, self.std = torch.cat(_mean, dim=1), torch.cat(_std, dim=1)
             else: self.mean, self.std = o.mean(self.axes, keepdim=self.axes!=()), o.std(self.axes, keepdim=self.axes!=()) + self.eps
             if len(self.mean.shape) == 0:
@@ -92,10 +95,12 @@ class TSStandardize(Transform):
             if is_listy(self.by_var):
                 _o = []
                 start = 0
-                for i,var_group in enumerate(self.by_var):
-                    end = start + var_group
-                    f = slice(start, end)
-                    start += var_group
+                for i,v in enumerate(self.by_var):
+                    if is_listy(v): f = v
+                    else:
+                        end = start + v
+                        f = slice(start, end)
+                        start += v
                     o_mean = torch_nanmean(o[:, f], self.axes, keepdim=True)
                     o_std = torch_nanstd(o[:, f], self.axes, keepdim=True) + self.eps
                     _o.append((o[:, f] - o_mean) / o_std)
@@ -288,22 +293,28 @@ class TSAdd(Transform):
 class Nan2Value(Transform):
     "Replaces any nan values by a predefined value"
     order = 90
-    def __init__(self, value=0, median=True, by_sample_and_var=True):
+    def __init__(self, value=0, median=True, by_sample_and_var=False): # set to True when torch 1.8.0 is supported by fastai
         store_attr()
     def encodes(self, o:TSTensor):
         mask = torch.isnan(o)
         if mask.any():
             if not self.median:
-                o[mask] = self.value
+                median = self.value
+                o[mask] = median
                 # return torch.nan_to_num(o, nan=self.value) # available in torch 1.8.0
             else:
                 if self.by_sample_and_var:
                     median = torch.median(o, dim=2, keepdim=True)[0].repeat(1, 1, o.shape[-1])
+                    # median = torch.nanmedian(o, dim=2, keepdim=True)[0].repeat(1, 1, o.shape[-1]) # available in torch 1.8.0
+                    o[mask] = median[mask]
                 else:
                     median = torch.median(o)
-                o[mask] = median[mask]
+                    # median = torch.nanmedian(o) # available in torch 1.8.0
+                    o[mask] = median
                 # Just in case any sample or var values are all nan
-                o[torch.isnan(o)] = torch.median(o)
+                mask = torch.isnan(o)
+                if mask.any():
+                    o[mask] = self.value
         return o
 
 # Cell
