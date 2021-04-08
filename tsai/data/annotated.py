@@ -78,9 +78,9 @@ def preprocess_extract_annotation_windows(X, anns, y=None, splits=None, folds=No
         ret.append(y_win)
 
     if not isinstance(splits, NoneType):
-        return *ret, _compute_new_splits(m, splits)
+        return [*ret, _compute_new_splits(m, splits)]
     elif not isinstance(folds, NoneType):
-        return *ret, _compute_new_folds(m, folds)
+        return [*ret, _compute_new_folds(m, folds)]
     elif len(ret) == 1:
         return ret[0]
     else:
