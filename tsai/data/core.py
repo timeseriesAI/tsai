@@ -4,8 +4,7 @@ __all__ = ['NumpyTensor', 'ToNumpyTensor', 'TSTensor', 'ToTSTensor', 'TSLabelTen
            'ToInt', 'TSClassification', 'TSRegression', 'TSForecasting', 'TSMultiLabelClassification',
            'NumpyTensorBlock', 'TSTensorBlock', 'TorchDataset', 'NumpyDataset', 'TSDataset', 'NumpyDatasets',
            'TSDatasets', 'add_ds', 'get_subset_dset', 'NumpyDataLoader', 'show_tuple', 'TSDataLoader',
-           'NumpyDataLoaders', 'TSDataLoaders', 'get_ts_dls', 'get_ts_dls', 'get_ts_dl', 'get_subset_dl',
-           'get_tsimage_dls']
+           'NumpyDataLoaders', 'TSDataLoaders', 'get_ts_dls', 'get_ts_dl', 'get_subset_dl', 'get_tsimage_dls']
 
 # Cell
 from ..imports import *
@@ -571,15 +570,6 @@ class NumpyDataLoaders(DataLoaders):
 class TSDataLoaders(NumpyDataLoaders):
     _xblock = TSTensorBlock
     _dl_type = TSDataLoader
-
-
-def get_ts_dls(X, y=None, splits=None, sel_vars=None, sel_steps=None, tfms=None, inplace=True,
-            path='.', bs=64, batch_tfms=None, num_workers=0, device=None, shuffle_train=True, drop_last=True, **kwargs):
-    if splits is None: splits = (L(np.arange(len(X)).tolist()), L([]))
-    dsets = TSDatasets(X, y, splits=splits, sel_vars=sel_vars, sel_steps=sel_steps, tfms=tfms, inplace=inplace, **kwargs)
-    dls   = TSDataLoaders.from_dsets(dsets.train, dsets.valid, path=path, bs=bs, batch_tfms=batch_tfms, num_workers=num_workers,
-                                     device=device, shuffle_train=shuffle_train, drop_last=drop_last, **kwargs)
-    return dls
 
 def get_ts_dls(X, y=None, splits=None, sel_vars=None, sel_steps=None, tfms=None, inplace=True,
             path='.', bs=64, batch_tfms=None, num_workers=0, device=None, shuffle_train=True, drop_last=True, **kwargs):
