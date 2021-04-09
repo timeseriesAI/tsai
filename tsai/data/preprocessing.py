@@ -109,9 +109,11 @@ class TSStandardize(Transform):
                     repeats = len(v) if is_listy(v) else v
                     _mean.append((torch_nanmean(o[:, f], self.axes, keepdim=True)).repeat(1, repeats, 1))
                     _std.append((torch_nanstd(o[:, f], self.axes, keepdim=True) + self.eps).repeat(1, repeats, 1))
-                self.mean, self.std = torch.cat(_mean, dim=1), torch.cat(_std, dim=1)
+                self.mean = torch.cat(_mean, dim=1)
+                self.std = torch.clamp_min(torch.cat(_std, dim=1), self.eps)
             else:
-                self.mean, self.std = torch_nanmean(o, dim=self.axes, keepdim=self.axes!=()), torch_nanstd(o, dim=self.axes, keepdim=self.axes!=()) + self.eps
+                self.mean = torch_nanmean(o, dim=self.axes, keepdim=self.axes!=())
+                self.std = torch.clamp_min(torch_nanstd(o, dim=self.axes, keepdim=self.axes!=()), self.eps)
             if len(self.mean.shape) == 0:
                 pv(f'{self.__class__.__name__} mean={self.mean}, std={self.std}, by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step}\n',
                    self.verbose)
@@ -131,11 +133,12 @@ class TSStandardize(Transform):
                         f = slice(start, end)
                         start += v
                     o_mean = torch_nanmean(o[:, f], self.axes, keepdim=True)
-                    o_std = torch_nanstd(o[:, f], self.axes, keepdim=True) + self.eps
+                    o_std = torch.clamp_min(torch_nanstd(o[:, f], self.axes, keepdim=True), self.eps)
                     _o.append((o[:, f] - o_mean) / o_std)
                 return torch.cat(_o, dim=1)
             else:
-                self.mean, self.std = torch_nanmean(o, dim=self.axes, keepdim=self.axes!=()), torch_nanstd(o, dim=self.axes, keepdim=self.axes!=()) + self.eps
+                self.mean = torch_nanmean(o, dim=self.axes, keepdim=self.axes!=())
+                self.std = torch.clamp_min(torch_nanstd(o, dim=self.axes, keepdim=self.axes!=()), self.eps)
         return (o - self.mean) / self.std
 
     def __repr__(self): return f'{self.__class__.__name__}(by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step})'
