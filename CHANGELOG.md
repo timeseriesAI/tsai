@@ -18,6 +18,8 @@
     * Added TSUndindowedDataset and TSUnwindowedDatasets, which apply window slicing online to prepare time series data. 
     * Added TSMetaDataset and TSMetaDatasets, which allow you to use one or multiple X (and y) arrays as input. In this way, you won't need to merge all data into a single array. This will allow you to work with larger than memory datasets. 
     * Added a new tutorial notebook that demonstrates both multi-class and multi-label classification using tsai.
+* Callbacks: 
+    * MVP is now much faster as masks are now created directly as cuda tensors. This has increased speed by 2.5x in some tests.
 
 ### Breaking change:
 * Data:
