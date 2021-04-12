@@ -8,7 +8,7 @@ from ..utils import *
 from .layers import *
 from .utils import *
 
-# Cell
+# Internal Cell
 class _ScaledDotProductAttention(Module):
     def __init__(self, d_k:int): self.d_k = d_k
     def forward(self, q:Tensor, k:Tensor, v:Tensor, mask:Optional[Tensor]=None):
@@ -30,7 +30,7 @@ class _ScaledDotProductAttention(Module):
 
         return context, attn
 
-# Cell
+# Internal Cell
 class _MultiHeadAttention(Module):
     def __init__(self, d_model:int, n_heads:int, d_k:int, d_v:int):
         r"""
@@ -64,7 +64,7 @@ class _MultiHeadAttention(Module):
 
         return output, attn
 
-# Cell
+# Internal Cell
 class _TSTEncoderLayer(Module):
     def __init__(self, q_len:int, d_model:int, n_heads:int, d_k:Optional[int]=None, d_v:Optional[int]=None, d_ff:int=256, res_dropout:float=0.1,
                  activation:str="gelu"):
@@ -111,7 +111,7 @@ class _TSTEncoderLayer(Module):
         else: return activation()
 #         raise ValueError(f'{activation} is not available. You can use "relu" or "gelu"')
 
-# Cell
+# Internal Cell
 class _TSTEncoder(Module):
     def __init__(self, q_len, d_model, n_heads, d_k=None, d_v=None, d_ff=None, res_dropout=0.1, activation='gelu', n_layers=1):
 

@@ -128,7 +128,7 @@ class MultiHeadAttention(Module):
         else: return output, attn                                                            # output: [bs x q_len x d_model]
 
 
-# Cell
+# Internal Cell
 class _TSTEncoderLayer(Module):
     def __init__(self, q_len:int, d_model:int, n_heads:int, d_k:Optional[int]=None, d_v:Optional[int]=None, d_ff:int=256,
                  res_dropout:float=0.1, bias:bool=True, activation:str="gelu", res_attention:bool=False, pre_norm:bool=False):
@@ -191,7 +191,7 @@ class _TSTEncoderLayer(Module):
         elif activation.lower() == "gelu": return nn.GELU()
         raise ValueError(f'{activation} is not available. You can use "relu", "gelu", or a callable')
 
-# Cell
+# Internal Cell
 class _TSTEncoder(Module):
     def __init__(self, q_len, d_model, n_heads, d_k=None, d_v=None, d_ff=None, res_dropout=0.1, activation='gelu', res_attention=False, n_layers=1,
                  pre_norm:bool=False):
@@ -209,7 +209,7 @@ class _TSTEncoder(Module):
             for mod in self.layers: output = mod(output, key_padding_mask=key_padding_mask, attn_mask=attn_mask)
             return output
 
-# Cell
+# Internal Cell
 class _TSTBackbone(Module):
     def __init__(self, c_in:int, seq_len:int, max_seq_len:Optional[int]=512,
                  n_layers:int=3, d_model:int=128, n_heads:int=16, d_k:Optional[int]=None, d_v:Optional[int]=None,
@@ -300,7 +300,7 @@ class _TSTBackbone(Module):
         else:
             return x, None
 
-
+# Cell
 class TSTPlus(nn.Sequential):
     def __init__(self, c_in:int, c_out:int, seq_len:int, max_seq_len:Optional[int]=512,
                  n_layers:int=3, d_model:int=128, n_heads:int=16, d_k:Optional[int]=None, d_v:Optional[int]=None,
@@ -420,7 +420,7 @@ class MultiTSTPlus(nn.Sequential):
         super().__init__(layers)
         self.to(self.device)
 
-
+# Internal Cell
 class _Splitter(Module):
     def __init__(self, feat_list, branches):
         self.feat_list, self.branches = feat_list, branches

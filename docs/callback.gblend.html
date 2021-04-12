@@ -54,7 +54,7 @@ nb_path: "nbs/062_callback.gblend.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="GBlendLoss" class="doc_header"><code>class</code> <code>GBlendLoss</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/callback/gblend.py#L14" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GBlendLoss</code>(<strong><code>crit</code></strong>=<em><code>None</code></em>, <strong><code>w</code></strong>=<em><code>None</code></em>) :: <code>Module</code></p>
+<h2 id="GBlendLoss" class="doc_header"><code>class</code> <code>GBlendLoss</code><a href="tsai/callback/gblend.py#L14" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GBlendLoss</code>(<strong><code>crit</code></strong>=<em><code>None</code></em>, <strong><code>w</code></strong>=<em><code>None</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Wrapper loss used by the gradient blending callback to allow weights applied to each modality.</p>
 
@@ -86,7 +86,7 @@ nb_path: "nbs/062_callback.gblend.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="GBlend" class="doc_header"><code>class</code> <code>GBlend</code><a href="https://github.com/timeseriesAI/tsai/tree/master/tsai/callback/gblend.py#L32" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GBlend</code>(<strong><code>V_pct</code></strong>=<em><code>0.1</code></em>, <strong><code>n</code></strong>:<code>Union</code>[<code>NoneType</code>, <code>int</code>, <code>tuple</code>, <code>list</code>]=<em><code>(10, 5)</code></em>, <strong><code>sel_metric</code></strong>:<code>Optional</code>[<code>str</code>]=<em><code>None</code></em>, <strong><code>show_plot</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>path</code></strong>:<code>str</code>=<em><code>'./data/gblend'</code></em>) :: <code>Callback</code></p>
+<h2 id="GBlend" class="doc_header"><code>class</code> <code>GBlend</code><a href="tsai/callback/gblend.py#L32" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GBlend</code>(<strong><code>V_pct</code></strong>=<em><code>0.1</code></em>, <strong><code>n</code></strong>:<code>Union</code>[<code>NoneType</code>, <code>int</code>, <code>tuple</code>, <code>list</code>]=<em><code>(10, 5)</code></em>, <strong><code>sel_metric</code></strong>:<code>Optional</code>[<code>str</code>]=<em><code>None</code></em>, <strong><code>show_plot</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>path</code></strong>:<code>str</code>=<em><code>'./data/gblend'</code></em>) :: <code>Callback</code></p>
 </blockquote>
 <p>A callback to implement multi-modal gradient blending.</p>
 <p>This is an unofficial PyTorch implementation by Ignacio Oguiza of  - oguiza@gmail.com based on: Wang, W., Tran, D., &amp; Feiszli, M. (2020).

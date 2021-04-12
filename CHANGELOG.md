@@ -7,6 +7,7 @@
 ### Bug Fixes
 * Models: 
     * Fixed an issue in TST and TSTPlus related to encoder layer creation.
+    * Fixed issue in TSStandardize when passing tensor with nan values
 
 ## New features:
 * Models:
@@ -18,12 +19,14 @@
     * Added TSUndindowedDataset and TSUnwindowedDatasets, which apply window slicing online to prepare time series data. 
     * Added TSMetaDataset and TSMetaDatasets, which allow you to use one or multiple X (and y) arrays as input. In this way, you won't need to merge all data into a single array. This will allow you to work with larger than memory datasets. 
     * Added a new tutorial notebook that demonstrates both multi-class and multi-label classification using tsai.
+    * Upgraded df2Xy to accept y_func that allows calculation of different types of targets
 * Callbacks: 
     * MVP is now much faster as masks are now created directly as cuda tensors. This has increased speed by 2.5x in some tests.
 
 ### Breaking change:
 * Data:
     * train_perc in get_splits has been changed to train_size to allow both floats or integers.
+    * df2Xy API has been modified
 
 ### Updates
 * Learner:
