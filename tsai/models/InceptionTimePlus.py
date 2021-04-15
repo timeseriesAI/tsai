@@ -96,7 +96,7 @@ class InceptionTimePlus(nn.Sequential):
         self.fc_dropout, self.c_out, self.y_range = fc_dropout, c_out, y_range
         self.c_out = c_out
 
-        if stoch_depth is not 0: keep_prob = np.linspace(1, stoch_depth, depth // 3)
+        if stoch_depth != 0: keep_prob = np.linspace(1, stoch_depth, depth // 3)
         else: keep_prob = np.array([1] * depth // 3)
         backbone = InceptionBlockPlus(c_in, nf, depth=depth, keep_prob=keep_prob, **kwargs)
 

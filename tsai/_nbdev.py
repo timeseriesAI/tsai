@@ -6,7 +6,7 @@ index = {}
 
 modules = []
 
-doc_url = "https://timeseriesAI.github.io/tsai/"
+doc_url = "https://timeseriesAI.github.io/"
 
 git_url = "https://github.com/timeseriesAI/tsai/tree/master/"
 

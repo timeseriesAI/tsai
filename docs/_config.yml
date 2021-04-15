@@ -1,4 +1,4 @@
-baseurl: /tsai/
+baseurl: /
 collections:
   tooltips:
     output: false
