@@ -121,13 +121,14 @@ class Timer:
         if self.all_elapsed == 0: self.all_elapsed = elapsed
         else: self.all_elapsed += elapsed
         total_elapsed = end_dt - self.start_dt0
-        if self.n > 1:
-            pv(f'Elapsed time ({self.n:3}): {elapsed}', self.verbose)
-            pv(f'Total time        : {self.all_elapsed}', self.verbose)
-        else: 
-            pv(f'Total time        : {total_elapsed}', self.verbose)
         delattr(self, "start_dt0")
         delattr(self, "start_dt")
-        if not self.verbose: return total_elapsed
+        if self.verbose:
+            if self.n > 1:
+                print(f'Elapsed time ({self.n:3}): {elapsed}')
+                print(f'Total time        : {self.all_elapsed}')
+            else: 
+                print(f'Total time        : {total_elapsed}')
+        else: return total_elapsed
 
 timer = Timer()

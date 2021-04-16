@@ -132,6 +132,9 @@ def build_ts_model(arch, c_in=None, c_out=None, seq_len=None, d=None, dls=None, 
     elif 'xresnet' in arch.__name__ and not '1d' in arch.__name__:
         pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} device={device}, kwargs={kwargs})', verbose)
         model = (arch(c_in=c_in, n_out=c_out, **kwargs)).to(device=device)
+    elif 'minirockethead' in arch.__name__.lower():
+        pv(f'arch: {arch.__name__}(c_in={c_in} seq_len={seq_len} device={device}, kwargs={kwargs})', verbose)
+        model = (arch(c_in, c_out, seq_len=1, **kwargs)).to(device=device)
     elif 'rocket' in arch.__name__.lower():
         pv(f'arch: {arch.__name__}(c_in={c_in} seq_len={seq_len} device={device}, kwargs={kwargs})', verbose)
         model = (arch(c_in=c_in, seq_len=seq_len, **kwargs)).to(device=device)
