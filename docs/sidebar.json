@@ -51,8 +51,6 @@
                 "XResNet1dPlus": "/models.XResNet1dPlus.html",
                 "ResCNN": "/models.ResCNN.html",
                 "TCN": "/models.TCN.html",
-                "ROCKET": "/models.ROCKET.html",
-                "MINIROCKET": "/models.MINIROCKET.html",
                 "InceptionTime": "/models.InceptionTime.html",
                 "InceptionTimePlus": "/models.InceptionTimePlus.html",
                 "XceptionTime": "/models.XceptionTime.html",
@@ -64,31 +62,37 @@
         },
         "empty2": {
             "RNN-CNNs": {
-                "RNN_FCN": "/models.RNN_FCN",
-                "RNN_FCNPlus": "/models.RNN_FCNPlus"
+                "RNN_FCN": "/models.RNN_FCN.html",
+                "RNN_FCNPlus": "/models.RNN_FCNPlus.html"
             }
         },
         "empty3": {
             "Wavelet-based NNs": {
-                "mWDN": "/models.mWDN"
+                "mWDN": "/models.mWDN.html"
             }
         },
         "empty4": {
             "Transformers": {
-                "TransformerModel": "/models.TransformerModel",
-                "Time Series Transformer (TST)": "/models.TST",
-                "Time Series Transformer Plus (TSTPlus)": "/models.TSTPlus"
+                "TransformerModel": "/models.TransformerModel.html",
+                "Time Series Transformer (TST)": "/models.TST.html",
+                "Time Series Transformer Plus (TSTPlus)": "/models.TSTPlus.html"
             }
         },
         "empty5": {
-            "Tabular models": {
-                "Tabular Model": "/models.TabModel",
-                "TabTransformer": "/models.TabTransformer"
+            "ROCKETs": {
+                "ROCKET": "/models.ROCKET.html",
+                "MINIROCKET": "/models.MINIROCKET.html"
             }
         },
-        "MultiInputNet": "/models.MultiInputNet"
+        "empty6": {
+            "Tabular models": {
+                "Tabular Model": "/models.TabModel.html",
+                "TabTransformer": "/models.TabTransformer.html"
+            }
+        },
+        "MultiInputNet": "/models.MultiInputNet.html"
     },
     "Utilities": {
-        "Time series utilities": "/utils"
+        "Time series utilities": "/utils.html"
     }
 }
