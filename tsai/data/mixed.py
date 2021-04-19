@@ -23,6 +23,8 @@ class MixedDataLoader():
         self.c = None
         bs = ifnone(bs, min([dl.bs for dl in loaders]))
         for i, dl in enumerate(loaders): # ensure all dls have the same bs
+            if hasattr(dl, 'vars'): self.vars = dl.vars
+            if hasattr(dl, 'len'): self.len = dl.len
             dl.bs = bs
             dl.shuffle_fn = self.shuffle_fn
             if self.c is None and hasattr(dl, "c"): self.c = dl.c

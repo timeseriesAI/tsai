@@ -1,65 +1,65 @@
 {
     "Getting started": {
         "Overview": "/",
-        "Tutorials":"/tutorials"
+        "Tutorials":"/tutorials.html"
     },
     "Data": {
-        "Data core": "/data.core",
-        "Loading data": "/data.load",
-        "Data preparation": "/data.preparation",
-        "Splitting data": "/data.validation",
-        "Preprocessing data": "/data.preprocessing",
-        "Unwindowed data": "/data.unwindowed",
-        "Label-invariant transformations": "/data.transforms",
-        "Label-mixing transformations": "/data.mixed_augmentation",
-        "Imaging time series": "/data.image",
-        "Featurizing time series": "/data.features",
-        "Tabular data": "/data.tabular",
-        "Mixed data": "/data.mixed",
-        "MetaDatasets": "/data.metadatasets"
+        "Data core": "/data.core.html",
+        "Loading data": "/data.load.html",
+        "Data preparation": "/data.preparation.html",
+        "Splitting data": "/data.validation.html",
+        "Preprocessing data": "/data.preprocessing.html",
+        "Unwindowed data": "/data.unwindowed.html",
+        "Label-invariant transformations": "/data.transforms.html",
+        "Label-mixing transformations": "/data.mixed_augmentation.html",
+        "Imaging time series": "/data.image.html",
+        "Featurizing time series": "/data.features.html",
+        "Tabular data": "/data.tabular.html",
+        "Mixed data": "/data.mixed.html",
+        "MetaDatasets": "/data.metadatasets.html"
     },
     "Training": {
-        "Learner": "/learner",
-        "Optimizers": "/optimizer",
-        "Metrics": "/metrics",
-        "Callbacks": "/callback.core",
-        "Prediction Dynamics": "/callback.PredictionDynamics",
+        "Learner": "/learner.html",
+        "Optimizers": "/optimizer.html",
+        "Metrics": "/metrics.html",
+        "Callbacks": "/callback.core.html",
+        "Prediction Dynamics": "/callback.PredictionDynamics.html",
         "": {
             "Semi-supervised learning": {
-                "Self-training: Noisy Student": "/callback.noisy_student",
-                "Self-supervised learning: TSBERT": "/callback.TSBERT"
+                "Self-training: Noisy Student": "/callback.noisy_student.html",
+                "Self-supervised learning: TSBERT": "/callback.TSBERT.html"
             }
         }
     },
     "Models": {
-        "Layers": "/models.layers",
-        "Utilities": "/models.utils",
-        "MLP": "/models.MLP",
+        "Layers": "/models.layers.html",
+        "Utilities": "/models.utils.html",
+        "MLP": "/models.MLP.html",
         "": {
             "RNNs": {
-                "RNN": "/models.RNN",
-                "RNNPlus": "/models.RNNPlus"
+                "RNN": "/models.RNN.html",
+                "RNNPlus": "/models.RNNPlus.html"
             }
         },
         "empty1": {
             "1D CNNs": {
-                "FCN": "/models.FCN",
-                "FCNPlus": "/models.FCNPlus",
-                "ResNet": "/models.ResNet",
-                "ResNetPlus": "/models.ResNetPlus",
-                "XResNet1d": "/models.XResNet1d",
-                "XResNet1dPlus": "/models.XResNet1dPlus",
-                "ResCNN": "/models.ResCNN",
-                "TCN": "/models.TCN",
-                "ROCKET": "/models.ROCKET",
-                "MINIROCKET": "/models.MINIROCKET",
-                "InceptionTime": "/models.InceptionTime",
-                "InceptionTimePlus": "/models.InceptionTimePlus",
-                "XceptionTime": "/models.XceptionTime",
-                "XceptionTimePlus": "/models.XceptionTimePlus",
-                "OmniScaleCNN": "/models.OmniScaleCNN",
-                "XCM": "/models.XCM",
-                "XCMPlus": "/models.XCMPlus"
+                "FCN": "/models.FCN.html",
+                "FCNPlus": "/models.FCNPlus.html",
+                "ResNet": "/models.ResNet.html",
+                "ResNetPlus": "/models.ResNetPlus.html",
+                "XResNet1d": "/models.XResNet1d.html",
+                "XResNet1dPlus": "/models.XResNet1dPlus.html",
+                "ResCNN": "/models.ResCNN.html",
+                "TCN": "/models.TCN.html",
+                "ROCKET": "/models.ROCKET.html",
+                "MINIROCKET": "/models.MINIROCKET.html",
+                "InceptionTime": "/models.InceptionTime.html",
+                "InceptionTimePlus": "/models.InceptionTimePlus.html",
+                "XceptionTime": "/models.XceptionTime.html",
+                "XceptionTimePlus": "/models.XceptionTimePlus.html",
+                "OmniScaleCNN": "/models.OmniScaleCNN.html",
+                "XCM": "/models.XCM.html",
+                "XCMPlus": "/models.XCMPlus.html"
             }
         },
         "empty2": {

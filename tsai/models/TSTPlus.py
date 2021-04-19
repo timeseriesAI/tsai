@@ -48,11 +48,25 @@ def Coord1dPosEncoding(q_len, exponential=False, normalize=True, device=default_
 
 # Cell
 class ScaledDotProductAttention(Module):
-    def __init__(self, d_k:int, res_attention:bool=False): self.d_k,self.res_attention = d_k,res_attention
+    def __init__(self, d_k:int, res_attention:bool=False):
+        self.d_k,self.res_attention = d_k,res_attention
+
     def forward(self, q:Tensor, k:Tensor, v:Tensor, prev:Optional[Tensor]=None, key_padding_mask:Optional[Tensor]=None, attn_mask:Optional[Tensor]=None):
+        '''
+        Input shape:
+            q               : [bs x n_heads x q_len x d_k]
+            k               : [bs x n_heads x d_k x seq_len]
+            v               : [bs x n_heads x seq_len x d_k]
+            key_padding_mask: [bs x seq_len]
+            attn_mask       : [seq_len x seq_len]
+
+        Output shape:
+            context: [bs x n_heads x q_len x d_v]
+            attn   : [bs x n_heads x q_len x seq_len]
+        '''
 
         # MatMul (q, k) - similarity scores for all pairs of positions in an input sequence
-        scores = torch.matmul(q, k)                                    # scores : [bs x n_heads x t_len x q_len]
+        scores = torch.matmul(q, k)                                   # scores : [bs x n_heads x q_len x seq_len]
 
         # Scale
         scores = scores / (self.d_k ** 0.5)
@@ -61,18 +75,18 @@ class ScaledDotProductAttention(Module):
         if prev is not None: scores = scores + prev
 
         # Attention mask (optional)
-        if attn_mask is not None:                                     # attn_mask with shape [q_len x q_len] - only used when t_len == q_len
+        if attn_mask is not None:                                     # attn_mask with shape [q_len x seq_len] - only used when q_len == seq_len
             if attn_mask.dtype == torch.bool:
                 scores.masked_fill_(attn_mask, float('-inf'))
             else:
                 scores += attn_mask
 
         # Key padding mask (optional)
-        if key_padding_mask is not None:                                     # key_padding_mask with shape [bs x q_len]
+        if key_padding_mask is not None:                              # key_padding_mask with shape [bs x seq_len]
             scores.masked_fill_(key_padding_mask.unsqueeze(1).unsqueeze(2), float('-inf'))
 
         # SoftMax
-        attn = F.softmax(scores, dim=-1)                               # attn   : [bs x n_heads x q_len x q_len]
+        attn = F.softmax(scores, dim=-1)                               # attn   : [bs x n_heads x q_len x seq_len]
 
         # MatMul (attn, v)
         context = torch.matmul(attn, v)                                # context: [bs x n_heads x q_len x d_v]

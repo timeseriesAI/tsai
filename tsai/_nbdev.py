@@ -8,7 +8,7 @@ modules = []
 
 doc_url = "https://timeseriesAI.github.io/"
 
-git_url = "https://github.com/timeseriesAI/tsai/tree/master/"
+git_url = "https://github.com/timeseriesAI/tsai/tree/main/"
 
 def custom_doc_links(name): return None
   "models/RNNPlus.py",
