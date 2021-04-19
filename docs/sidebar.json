@@ -5,7 +5,7 @@
     },
     "Data": {
         "Data core": "/data.core.html",
-        "Loading data": "/data.load.html",
+        "Loading data": "/data.external.html",
         "Data preparation": "/data.preparation.html",
         "Splitting data": "/data.validation.html",
         "Preprocessing data": "/data.preprocessing.html",
@@ -27,7 +27,7 @@
         "": {
             "Semi-supervised learning": {
                 "Self-training: Noisy Student": "/callback.noisy_student.html",
-                "Self-supervised learning: TSBERT": "/callback.TSBERT.html"
+                "Self-supervised learning: MVP": "/callback.MVP.html"
             }
         }
     },

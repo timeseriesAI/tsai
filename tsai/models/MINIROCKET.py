@@ -17,6 +17,7 @@ from sktime.transformations.panel.rocket._minirocket_multivariate import _fit_mu
 from sktime.transformations.panel.rocket._minirocket_multivariate import _transform_multi as minirocket_transform_multi
 from sktime.transformations.panel.rocket import MiniRocketMultivariate
 from sklearn.linear_model import RidgeCV, RidgeClassifierCV
+from sklearn.ensemble import VotingClassifier, VotingRegressor
 
 # Cell
 class MiniRocketClassifier(sklearn.pipeline.Pipeline):
@@ -49,7 +50,7 @@ class MiniRocketClassifier(sklearn.pipeline.Pipeline):
         with open(f'{filename}.pkl', 'wb') as output:
             pickle.dump(self, output, pickle.HIGHEST_PROTOCOL)
 
-
+# Cell
 def load_minirocket(fname, path='./models'):
     path = Path(path)
     filename = path/fname
@@ -84,7 +85,7 @@ class MiniRocketRegressor(sklearn.pipeline.Pipeline):
         with open(f'{filename}.pkl', 'wb') as output:
             pickle.dump(self, output, pickle.HIGHEST_PROTOCOL)
 
-
+# Cell
 def load_minirocket(fname, path='./models'):
     path = Path(path)
     filename = path/fname
@@ -93,7 +94,6 @@ def load_minirocket(fname, path='./models'):
     return output
 
 # Cell
-from sklearn.ensemble import VotingClassifier
 class MiniRocketVotingClassifier(VotingClassifier):
     def __init__(self, n_estimators=5, weights=None, n_jobs=-1, num_features=10_000, max_dilations_per_kernel=32, random_state=None,
                  alphas=np.logspace(-3, 3, 7), normalize_features=True, memory=None, verbose=False, scoring=None, class_weight=None, **kwargs):
@@ -115,7 +115,7 @@ class MiniRocketVotingClassifier(VotingClassifier):
         with open(f'{filename}.pkl', 'wb') as output:
             pickle.dump(self, output, pickle.HIGHEST_PROTOCOL)
 
-
+# Cell
 def get_minirocket_preds(X, fname, path='./models', model=None):
     if X.ndim == 1: X = X[np.newaxis][np.newaxis]
     elif X.ndim == 2: X = X[np.newaxis]
@@ -124,8 +124,6 @@ def get_minirocket_preds(X, fname, path='./models', model=None):
     return model.predict(X)
 
 # Cell
-from sklearn.ensemble import VotingRegressor
-
 class MiniRocketVotingRegressor(VotingRegressor):
     def __init__(self, n_estimators=5, weights=None, n_jobs=-1, num_features=10_000, max_dilations_per_kernel=32, random_state=None,
                  alphas=np.logspace(-3, 3, 7), normalize_features=True, memory=None, verbose=False, scoring=None, **kwargs):

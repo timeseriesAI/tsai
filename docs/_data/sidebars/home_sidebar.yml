@@ -20,7 +20,7 @@ entries:
       url: /data.core.html
     - output: web,pdf
       title: Loading data
-      url: /data.load.html
+      url: /data.external.html
     - output: web,pdf
       title: Data preparation
       url: /data.preparation.html
@@ -79,8 +79,8 @@ entries:
           title: 'Self-training: Noisy Student'
           url: /callback.noisy_student.html
         - output: web,pdf
-          title: 'Self-supervised learning: TSBERT'
-          url: /callback.TSBERT.html
+          title: 'Self-supervised learning: MVP'
+          url: /callback.MVP.html
         title: Semi-supervised learning
     output: web
     title: Training
