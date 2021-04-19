@@ -151,7 +151,6 @@ old/*
 *.pkl
 *.txt
 *.jpg
-*/nbs/docs/*
 *.zip
 */nbs/export/*
 */nbs/models/*
