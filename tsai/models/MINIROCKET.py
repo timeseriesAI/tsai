@@ -21,6 +21,7 @@ from sklearn.ensemble import VotingClassifier, VotingRegressor
 
 # Cell
 class MiniRocketClassifier(sklearn.pipeline.Pipeline):
+    """Time series classification using MINIROCKET features and a linear classifier"""
     def __init__(self, num_features=10_000, max_dilations_per_kernel=32, random_state=None,
                  alphas=np.logspace(-3, 3, 7), normalize_features=True, memory=None, verbose=False, scoring=None, class_weight=None, **kwargs):
         """
@@ -60,6 +61,7 @@ def load_minirocket(fname, path='./models'):
 
 # Cell
 class MiniRocketRegressor(sklearn.pipeline.Pipeline):
+    """Time series regression using MINIROCKET features and a linear regressor"""
     def __init__(self, num_features=10000, max_dilations_per_kernel=32, random_state=None,
                  alphas=np.logspace(-3, 3, 7), *, normalize_features=True, memory=None, verbose=False, scoring=None, **kwargs):
         """
@@ -95,6 +97,7 @@ def load_minirocket(fname, path='./models'):
 
 # Cell
 class MiniRocketVotingClassifier(VotingClassifier):
+    """Time series classification ensemble using MINIROCKET features, a linear classifier and majority voting"""
     def __init__(self, n_estimators=5, weights=None, n_jobs=-1, num_features=10_000, max_dilations_per_kernel=32, random_state=None,
                  alphas=np.logspace(-3, 3, 7), normalize_features=True, memory=None, verbose=False, scoring=None, class_weight=None, **kwargs):
         store_attr()
@@ -125,6 +128,7 @@ def get_minirocket_preds(X, fname, path='./models', model=None):
 
 # Cell
 class MiniRocketVotingRegressor(VotingRegressor):
+    """Time series regression ensemble using MINIROCKET features, a linear regressor and a voting regressor"""
     def __init__(self, n_estimators=5, weights=None, n_jobs=-1, num_features=10_000, max_dilations_per_kernel=32, random_state=None,
                  alphas=np.logspace(-3, 3, 7), normalize_features=True, memory=None, verbose=False, scoring=None, **kwargs):
         store_attr()
@@ -152,7 +156,8 @@ import torch.nn.functional as F
 import numpy as np
 
 class MiniRocketFeatures(nn.Module):
-    r"""This is a Pytorch implementation of MiniRocket developed by Malcolm McLean and Ignacio Oguiza
+    """This is a Pytorch implementation of MiniRocket developed by Malcolm McLean and Ignacio Oguiza
+
     MiniRocket paper citation:
     @article{dempster_etal_2020,
       author  = {Dempster, Angus and Schmidt, Daniel F and Webb, Geoffrey I},

@@ -84,11 +84,15 @@ def apply_kernels(X, kernels):
 
 # Cell
 class ROCKET(nn.Module):
+    """RandOm Convolutional KErnel Transform
+
+    ROCKET is a GPU Pytorch implementation of the ROCKET functions generate_kernels
+    and apply_kernels that can be used  with univariate and multivariate time series.
+    """
+
     def __init__(self, c_in, seq_len, n_kernels=10_000, kss=[7, 9, 11], device=None, verbose=False):
 
         '''
-        ROCKET is a GPU Pytorch implementation of the ROCKET functions generate_kernels
-        and apply_kernels that can be used  with univariate and multivariate time series.
         Input: is a 3d torch tensor of type torch.float32. When used with univariate TS,
         make sure you transform the 2d to 3d by adding unsqueeze(1).
         c_in: number of channels or features. For univariate c_in is 1.
@@ -142,6 +146,8 @@ get_rocket_features = create_rocket_features
 
 # Cell
 class RocketClassifier(sklearn.pipeline.Pipeline):
+    """Time series classification using ROCKET features and a linear classifier"""
+
     def __init__(self, num_kernels=10_000, normalize_input=True, random_state=None,
                  alphas=np.logspace(-3, 3, 7), normalize_features=True, memory=None, verbose=False, scoring=None, class_weight=None, **kwargs):
         """
@@ -180,6 +186,8 @@ def load_rocket(fname='Rocket', path='./models'):
 
 # Cell
 class RocketRegressor(sklearn.pipeline.Pipeline):
+    """Time series regression using ROCKET features and a linear regressor"""
+
     def __init__(self, num_kernels=10_000, normalize_input=True, random_state=None,
                  alphas=np.logspace(-3, 3, 7), normalize_features=True, memory=None, verbose=False, scoring=None, **kwargs):
         """
@@ -187,11 +195,10 @@ class RocketRegressor(sklearn.pipeline.Pipeline):
         For a larger dataset, you can use ROCKET (in Pytorch).
         scoring = None --> defaults to r2.
 
-        Rocket args:
+        Args:
             num_kernels     : int, number of random convolutional kernels (default 10,000)
             normalize_input : boolean, whether or not to normalise the input time series per instance (default True)
             random_state    : int (ignored unless int due to compatability with Numba), random seed (optional, default None)
-
         """
         self.steps = [('rocket', Rocket(num_kernels=num_kernels, normalise=normalize_input, random_state=random_state)),
                       ('ridgecv', RidgeCV(alphas=alphas, normalize=normalize_features, scoring=scoring, **kwargs))]
