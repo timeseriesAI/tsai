@@ -135,30 +135,9 @@ nb_path: "nbs/111_models.ROCKET.ipynb"
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="ROCKET" class="doc_header"><code>class</code> <code>ROCKET</code><a href="tsai/models/ROCKET.py#L86" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ROCKET</code>(<strong><code>c_in</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>n_kernels</code></strong>=<em><code>10000</code></em>, <strong><code>kss</code></strong>=<em><code>[7, 9, 11]</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
-<p>Base class for all neural network modules.</p>
-<p>Your models should also subclass this class.</p>
-<p>Modules can also contain other Modules, allowing to nest them in
-a tree structure. You can assign the submodules as regular attributes::</p>
-
-<pre><code>import torch.nn as nn
-import torch.nn.functional as F
-
-class Model(nn.Module):
-    def __init__(self):
-        super(Model, self).__init__()
-        self.conv1 = nn.Conv2d(1, 20, 5)
-        self.conv2 = nn.Conv2d(20, 20, 5)
-
-    def forward(self, x):
-        x = F.relu(self.conv1(x))
-        return F.relu(self.conv2(x))
-
-</code></pre>
-<p>Submodules assigned in this way will be registered, and will have their
-parameters converted too when you call :meth:<code>to</code>, etc.</p>
-<p>:ivar training: Boolean represents whether this module is in training or
-                evaluation mode.
-:vartype training: bool</p>
+<p>RandOm Convolutional KErnel Transform</p>
+<p>ROCKET is a GPU Pytorch implementation of the ROCKET functions generate_kernels
+and apply_kernels that can be used  with univariate and multivariate time series.</p>
 
 </div>
 
@@ -188,7 +167,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="create_rocket_features" class="doc_header"><code>create_rocket_features</code><a href="tsai/models/ROCKET.py#L129" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_rocket_features</code>(<strong><code>dl</code></strong>, <strong><code>model</code></strong>, <strong><code>verbose</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="create_rocket_features" class="doc_header"><code>create_rocket_features</code><a href="tsai/models/ROCKET.py#L133" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_rocket_features</code>(<strong><code>dl</code></strong>, <strong><code>model</code></strong>, <strong><code>verbose</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Args:
 model     : ROCKET model instance
@@ -288,59 +267,39 @@ dl        : single TSDataLoader (for example dls.train or dls.valid)</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RocketClassifier" class="doc_header"><code>class</code> <code>RocketClassifier</code><a href="tsai/models/ROCKET.py#L144" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RocketClassifier</code>() :: <code>Pipeline</code></p>
+<h2 id="RocketClassifier" class="doc_header"><code>class</code> <code>RocketClassifier</code><a href="tsai/models/ROCKET.py#L148" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RocketClassifier</code>() :: <code>Pipeline</code></p>
 </blockquote>
-<p>Pipeline of transforms with a final estimator.</p>
-<p>Sequentially apply a list of transforms and a final estimator.
-Intermediate steps of the pipeline must be 'transforms', that is, they
-must implement fit and transform methods.
-The final estimator only needs to implement fit.
-The transformers in the pipeline can be cached using <code>memory</code> argument.</p>
-<p>The purpose of the pipeline is to assemble several steps that can be
-cross-validated together while setting different parameters.
-For this, it enables setting parameters of the various steps using their
-names and the parameter name separated by a '__', as in the example below.
-A step's estimator may be replaced entirely by setting the parameter
-with its name to another estimator, or a transformer removed by setting
-it to 'passthrough' or <code>None</code>.</p>
-<p>Read more in the :ref:<code>User Guide &lt;pipeline&gt;</code>.</p>
-<p>.. versionadded:: 0.5</p>
-<h2 id="Parameters">Parameters<a class="anchor-link" href="#Parameters"> </a></h2><p>steps : list
-    List of (name, transform) tuples (implementing fit/transform) that are
-    chained, in the order in which they are chained, with the last object
-    an estimator.</p>
-<p>memory : str or object with the joblib.Memory interface, default=None
-    Used to cache the fitted transformers of the pipeline. By default,
-    no caching is performed. If a string is given, it is the path to
-    the caching directory. Enabling caching triggers a clone of
-    the transformers before fitting. Therefore, the transformer
-    instance given to the pipeline cannot be inspected
-    directly. Use the attribute <code>named_steps</code> or <code>steps</code> to
-    inspect estimators within the pipeline. Caching the
-    transformers is advantageous when fitting is time consuming.</p>
-<p>verbose : bool, default=False
-    If True, the time elapsed while fitting each step will be printed as it
-    is completed.</p>
-<h2 id="Attributes">Attributes<a class="anchor-link" href="#Attributes"> </a></h2><p>named_steps : :class:<code>~sklearn.utils.Bunch</code>
-    Dictionary-like object, with the following attributes.
-    Read-only attribute to access any step parameter by user given name.
-    Keys are step names and values are steps parameters.</p>
-<h2 id="See-Also">See Also<a class="anchor-link" href="#See-Also"> </a></h2><p>make_pipeline : Convenience function for simplified pipeline construction.</p>
-<h2 id="Examples">Examples<a class="anchor-link" href="#Examples"> </a></h2><blockquote><blockquote><blockquote><p>from sklearn.svm import SVC
-from sklearn.preprocessing import StandardScaler
-from sklearn.datasets import make_classification
-from sklearn.model_selection import train_test_split
-from sklearn.pipeline import Pipeline
-X, y = make_classification(random_state=0)
-X_train, X_test, y_train, y_test = train_test_split(X, y,
-...                                                     random_state=0)
-pipe = Pipeline([('scaler', StandardScaler()), ('svc', SVC())])</p>
-<h1 id="The-pipeline-can-be-used-as-any-other-estimator">The pipeline can be used as any other estimator<a class="anchor-link" href="#The-pipeline-can-be-used-as-any-other-estimator"> </a></h1><h1 id="and-avoids-leaking-the-test-set-into-the-train-set">and avoids leaking the test set into the train set<a class="anchor-link" href="#and-avoids-leaking-the-test-set-into-the-train-set"> </a></h1><p>pipe.fit(X_train, y_train)
-Pipeline(steps=[('scaler', StandardScaler()), ('svc', SVC())])
-pipe.score(X_test, y_test)
-0.88</p>
-</blockquote>
-</blockquote>
+<p>Time series classification using ROCKET features and a linear classifier</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="load_rocket" class="doc_header"><code>load_rocket</code><a href="tsai/models/ROCKET.py#L180" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_rocket</code>(<strong><code>fname</code></strong>=<em><code>'Rocket'</code></em>, <strong><code>path</code></strong>=<em><code>'./models'</code></em>)</p>
 </blockquote>
 
 </div>
@@ -371,91 +330,9 @@ pipe.score(X_test, y_test)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="load_rocket" class="doc_header"><code>load_rocket</code><a href="tsai/models/ROCKET.py#L174" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_rocket</code>(<strong><code>fname</code></strong>=<em><code>'Rocket'</code></em>, <strong><code>path</code></strong>=<em><code>'./models'</code></em>)</p>
+<h2 id="RocketRegressor" class="doc_header"><code>class</code> <code>RocketRegressor</code><a href="tsai/models/ROCKET.py#L188" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RocketRegressor</code>() :: <code>Pipeline</code></p>
 </blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="RocketRegressor" class="doc_header"><code>class</code> <code>RocketRegressor</code><a href="tsai/models/ROCKET.py#L182" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RocketRegressor</code>() :: <code>Pipeline</code></p>
-</blockquote>
-<p>Pipeline of transforms with a final estimator.</p>
-<p>Sequentially apply a list of transforms and a final estimator.
-Intermediate steps of the pipeline must be 'transforms', that is, they
-must implement fit and transform methods.
-The final estimator only needs to implement fit.
-The transformers in the pipeline can be cached using <code>memory</code> argument.</p>
-<p>The purpose of the pipeline is to assemble several steps that can be
-cross-validated together while setting different parameters.
-For this, it enables setting parameters of the various steps using their
-names and the parameter name separated by a '__', as in the example below.
-A step's estimator may be replaced entirely by setting the parameter
-with its name to another estimator, or a transformer removed by setting
-it to 'passthrough' or <code>None</code>.</p>
-<p>Read more in the :ref:<code>User Guide &lt;pipeline&gt;</code>.</p>
-<p>.. versionadded:: 0.5</p>
-<h2 id="Parameters">Parameters<a class="anchor-link" href="#Parameters"> </a></h2><p>steps : list
-    List of (name, transform) tuples (implementing fit/transform) that are
-    chained, in the order in which they are chained, with the last object
-    an estimator.</p>
-<p>memory : str or object with the joblib.Memory interface, default=None
-    Used to cache the fitted transformers of the pipeline. By default,
-    no caching is performed. If a string is given, it is the path to
-    the caching directory. Enabling caching triggers a clone of
-    the transformers before fitting. Therefore, the transformer
-    instance given to the pipeline cannot be inspected
-    directly. Use the attribute <code>named_steps</code> or <code>steps</code> to
-    inspect estimators within the pipeline. Caching the
-    transformers is advantageous when fitting is time consuming.</p>
-<p>verbose : bool, default=False
-    If True, the time elapsed while fitting each step will be printed as it
-    is completed.</p>
-<h2 id="Attributes">Attributes<a class="anchor-link" href="#Attributes"> </a></h2><p>named_steps : :class:<code>~sklearn.utils.Bunch</code>
-    Dictionary-like object, with the following attributes.
-    Read-only attribute to access any step parameter by user given name.
-    Keys are step names and values are steps parameters.</p>
-<h2 id="See-Also">See Also<a class="anchor-link" href="#See-Also"> </a></h2><p>make_pipeline : Convenience function for simplified pipeline construction.</p>
-<h2 id="Examples">Examples<a class="anchor-link" href="#Examples"> </a></h2><blockquote><blockquote><blockquote><p>from sklearn.svm import SVC
-from sklearn.preprocessing import StandardScaler
-from sklearn.datasets import make_classification
-from sklearn.model_selection import train_test_split
-from sklearn.pipeline import Pipeline
-X, y = make_classification(random_state=0)
-X_train, X_test, y_train, y_test = train_test_split(X, y,
-...                                                     random_state=0)
-pipe = Pipeline([('scaler', StandardScaler()), ('svc', SVC())])</p>
-<h1 id="The-pipeline-can-be-used-as-any-other-estimator">The pipeline can be used as any other estimator<a class="anchor-link" href="#The-pipeline-can-be-used-as-any-other-estimator"> </a></h1><h1 id="and-avoids-leaking-the-test-set-into-the-train-set">and avoids leaking the test set into the train set<a class="anchor-link" href="#and-avoids-leaking-the-test-set-into-the-train-set"> </a></h1><p>pipe.fit(X_train, y_train)
-Pipeline(steps=[('scaler', StandardScaler()), ('svc', SVC())])
-pipe.score(X_test, y_test)
-0.88</p>
-</blockquote>
-</blockquote>
-</blockquote>
+<p>Time series regression using ROCKET features and a linear regressor</p>
 
 </div>
 
@@ -502,7 +379,7 @@ pipe.score(X_test, y_test)
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>0.9333333333333333
+<pre>0.9
 </pre>
 </div>
 </div>
@@ -541,7 +418,7 @@ pipe.score(X_test, y_test)
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>0.8777777777777778
+<pre>0.8833333333333333
 </pre>
 </div>
 </div>
@@ -586,7 +463,7 @@ pipe.score(X_test, y_test)
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>0.04258100394476704</pre>
+<pre>0.04253489315496336</pre>
 </div>
 
 </div>
@@ -631,7 +508,7 @@ pipe.score(X_test, y_test)
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>2.3595831375616703</pre>
+<pre>2.4185885416566766</pre>
 </div>
 
 </div>
