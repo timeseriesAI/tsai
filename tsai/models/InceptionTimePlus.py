@@ -89,12 +89,11 @@ class InceptionBlockPlus(Module):
 
 @delegates(InceptionModulePlus.__init__)
 class InceptionTimePlus(nn.Sequential):
-    def __init__(self, c_in, c_out, seq_len=None, nf=32, nb_filters=None, concat_pool=False, fc_dropout=0., depth=6, stoch_depth=1.,
-                 bn=False, y_range=None, flatten=False, custom_head=None, **kwargs):
+    def __init__(self, c_in, c_out, seq_len=None, nf=32, nb_filters=None, depth=6, stoch_depth=1.,
+                 flatten=False, concat_pool=False, fc_dropout=0., bn=False, y_range=None, custom_head=None, **kwargs):
 
-        nf = ifnone(nf, nb_filters) # for compatibility
-        self.fc_dropout, self.c_out, self.y_range = fc_dropout, c_out, y_range
-        self.c_out = c_out
+        if nb_filters is not None: nf = nb_filters
+        else: nf = ifnone(nf, nb_filters) # for compatibility
 
         if stoch_depth != 0: keep_prob = np.linspace(1, stoch_depth, depth // 3)
         else: keep_prob = np.array([1] * depth // 3)
@@ -106,12 +105,12 @@ class InceptionTimePlus(nn.Sequential):
         self.seq_len = seq_len
         if custom_head: head = custom_head(self.head_nf, c_out, seq_len)
         else: head = self.create_head(self.head_nf, c_out, seq_len, flatten=flatten, concat_pool=concat_pool,
-                                           fc_dropout=fc_dropout, bn=bn, y_range=y_range)
+                                      fc_dropout=fc_dropout, bn=bn, y_range=y_range)
 
         layers = OrderedDict([('backbone', nn.Sequential(backbone)), ('head', nn.Sequential(head))])
         super().__init__(layers)
 
-    def create_head(self, nf, c_out, seq_len, flatten=False, concat_pool=False, fc_dropout=0., bn=False, y_range=None, **kwargs):
+    def create_head(self, nf, c_out, seq_len, flatten=False, concat_pool=False, fc_dropout=0., bn=False, y_range=None):
         if flatten:
             nf *= seq_len
             layers = [Flatten()]
@@ -145,13 +144,13 @@ setattr(InceptionTimeXLPlus, '__name__', 'InceptionTimeXLPlus')
 # Cell
 @delegates(InceptionTimePlus.__init__)
 class MultiInceptionTimePlus(nn.Sequential):
+    """Class that allows you to create a model with multiple branches of InceptionTimePlus."""
     _arch = InceptionTimePlus
-    def __init__(self, feat_list, c_out, seq_len=None, custom_head=None, device=None, **kwargs):
-        r"""
-        MultiInceptionTimePlus is a class that allows you to create a model with multiple branches of InceptionTimePlus.
-
+    def __init__(self, feat_list, c_out, seq_len=None, nf=32, nb_filters=None, depth=6, stoch_depth=1.,
+                flatten=False, concat_pool=False, fc_dropout=0., bn=False, y_range=None, custom_head=None, device=None, **kwargs):
+        """
         Args:
-            - feat_list: list with number of features that will be passed to each body.
+            feat_list: list with number of features that will be passed to each body.
         """
         self.feat_list = [feat_list] if isinstance(feat_list, int) else feat_list
         self.device = ifnone(device, default_device())
@@ -160,7 +159,8 @@ class MultiInceptionTimePlus(nn.Sequential):
         branches = nn.ModuleList()
         self.head_nf = 0
         for feat in self.feat_list:
-            m = build_ts_model(self._arch, c_in=feat, c_out=c_out, seq_len=seq_len, **kwargs)
+            m = build_ts_model(self._arch, c_in=feat, c_out=c_out, seq_len=seq_len, nf=nf, nb_filters=nb_filters,
+                               depth=depth, stoch_depth=stoch_depth, **kwargs)
             with torch.no_grad():
                 self.head_nf += m[0](torch.randn(1, feat, ifnone(seq_len, 10)).to(self.device)).shape[1]
             branches.append(m.backbone)
@@ -170,9 +170,10 @@ class MultiInceptionTimePlus(nn.Sequential):
         self.c_out = c_out
         self.seq_len = seq_len
         if custom_head is None:
-            head = self._arch.create_head(self, self.head_nf, c_out, seq_len, **kwargs)
+            head = self._arch.create_head(self, self.head_nf, c_out, seq_len, flatten=flatten, concat_pool=concat_pool,
+                                          fc_dropout=fc_dropout, bn=bn, y_range=y_range)
         else:
-            head = custom_head(self.head_nf, c_out, seq_len, **kwargs)
+            head = custom_head(self.head_nf, c_out, seq_len)
 
         layers = OrderedDict([('backbone', nn.Sequential(backbone)), ('head', nn.Sequential(head))])
         super().__init__(layers)

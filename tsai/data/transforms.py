@@ -660,14 +660,13 @@ class TSResize(RandTransform):
 class TSRandomSize(RandTransform):
     "Randomly resizes the sequence length of a time series"
     order = 90
-    def __init__(self, magnitude=0., ex=None, mode='linear', **kwargs):
+    def __init__(self, magnitude=0.1, ex=None, mode='linear', **kwargs):
         "mode:  'nearest' | 'linear' | 'area'"
         self.magnitude, self.ex, self.mode = magnitude, ex, mode
         super().__init__(**kwargs)
     def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
-        size_perc = 1 / (1 + (random_half_normal() if random.random() > 1/3 else - random_half_normal() / 2) * (1 + self.magnitude))
-        if random.random() > .5: size_perc = 1. / size_perc
+        size_perc = 1 + random_half_normal() * self.magnitude * (-1 if random.random() > .5 else 1)
         return F.interpolate(o, size=int(size_perc * o.shape[-1]), mode=self.mode, align_corners=None if self.mode in ['nearest', 'area'] else False)
 
 # Cell
