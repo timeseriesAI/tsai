@@ -2,9 +2,16 @@
 
 <!-- do not remove -->
 
+## 0.2.18
+
+### Bug Fixes:
+* Models: 
+    * Fixed an issue in InceptionTimePlus with stochastic depth regularization (stoch_depth parameter)
+
+
 ## 0.2.17
 
-### Bug Fixes
+### Bug Fixes:
 * Models: 
     * Fixed an issue in TST and TSTPlus related to encoder layer creation.
     * Fixed issue in TSStandardize when passing tensor with nan values
@@ -23,7 +30,7 @@
 * Callbacks: 
     * MVP is now much faster as masks are now created directly as cuda tensors. This has increased speed by 2.5x in some tests.
 
-### Breaking change:
+### Breaking changes:
 * Data:
     * train_perc in get_splits has been changed to train_size to allow both floats or integers.
     * df2Xy API has been modified

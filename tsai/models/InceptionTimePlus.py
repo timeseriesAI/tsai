@@ -79,14 +79,13 @@ class InceptionBlockPlus(Module):
     def forward(self, x):
         res = x
         for i in range(self.depth):
-            if self.training and self.keep_prob[i//3] < 1. and self.keep_prob[i//3] < random.random() and self.residual and i % 3 == 2:
-                res = x = self.act[i//3](self.shortcut[i//3](res))
-            else:
+            if self.keep_prob[i] > random.random() or not self.training:
                 x = self.inception[i](x)
-                if self.residual and i % 3 == 2: res = x = self.act[i//3](self.add(x, self.shortcut[i//3](res)))
+            if self.residual and i % 3 == 2:
+                res = x = self.act[i//3](self.add(x, self.shortcut[i//3](res)))
         return x
 
-
+# Cell
 @delegates(InceptionModulePlus.__init__)
 class InceptionTimePlus(nn.Sequential):
     def __init__(self, c_in, c_out, seq_len=None, nf=32, nb_filters=None, depth=6, stoch_depth=1.,
@@ -95,8 +94,8 @@ class InceptionTimePlus(nn.Sequential):
         if nb_filters is not None: nf = nb_filters
         else: nf = ifnone(nf, nb_filters) # for compatibility
 
-        if stoch_depth != 0: keep_prob = np.linspace(1, stoch_depth, depth // 3)
-        else: keep_prob = np.array([1] * depth // 3)
+        if stoch_depth != 0: keep_prob = np.linspace(1, stoch_depth, depth)
+        else: keep_prob = np.array([1] * depth)
         backbone = InceptionBlockPlus(c_in, nf, depth=depth, keep_prob=keep_prob, **kwargs)
 
         #head
@@ -121,7 +120,7 @@ class InceptionTimePlus(nn.Sequential):
         if y_range: layers += [SigmoidRange(*y_range)]
         return nn.Sequential(*layers)
 
-
+# Cell
 class InCoordTime(InceptionTimePlus):
     def __init__(self, *args, coord=True, zero_norm=True, **kwargs):
         super().__init__(*args, coord=coord, zero_norm=zero_norm, **kwargs)
