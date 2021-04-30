@@ -81,7 +81,8 @@
         "empty5": {
             "ROCKETs": {
                 "ROCKET": "/models.ROCKET.html",
-                "MINIROCKET": "/models.MINIROCKET.html"
+                "MINIROCKET": "/models.MINIROCKET.html",
+                "MINIROCKET_Pytorch": "/models.MINIROCKET_Pytorch.html"
             }
         },
         "empty6": {

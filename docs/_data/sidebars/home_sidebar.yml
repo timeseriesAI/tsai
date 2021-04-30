@@ -187,6 +187,9 @@ entries:
         - output: web,pdf
           title: MINIROCKET
           url: /models.MINIROCKET.html
+        - output: web,pdf
+          title: MINIROCKET_Pytorch
+          url: /models.MINIROCKET_Pytorch.html
         title: ROCKETs
       - output: web
         subfolderitems:

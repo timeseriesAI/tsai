@@ -39,6 +39,39 @@ nb_path: "nbs/111b_models.MINIROCKET.ipynb"
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">create_scripts</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&lt;function tsai.imports.create_scripts(max_elapsed=60)&gt;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -54,7 +87,7 @@ nb_path: "nbs/111b_models.MINIROCKET.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MiniRocketClassifier" class="doc_header"><code>class</code> <code>MiniRocketClassifier</code><a href="tsai/models/MINIROCKET.py#L23" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocketClassifier</code>() :: <code>Pipeline</code></p>
+<h2 id="MiniRocketClassifier" class="doc_header"><code>class</code> <code>MiniRocketClassifier</code><a href="tsai/models/MINIROCKET.py#L22" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocketClassifier</code>() :: <code>Pipeline</code></p>
 </blockquote>
 <p>Time series classification using MINIROCKET features and a linear classifier</p>
 
@@ -119,7 +152,7 @@ nb_path: "nbs/111b_models.MINIROCKET.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="load_minirocket" class="doc_header"><code>load_minirocket</code><a href="tsai/models/MINIROCKET.py#L91" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_minirocket</code>(<strong><code>fname</code></strong>, <strong><code>path</code></strong>=<em><code>'./models'</code></em>)</p>
+<h4 id="load_minirocket" class="doc_header"><code>load_minirocket</code><a href="tsai/models/MINIROCKET.py#L90" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_minirocket</code>(<strong><code>fname</code></strong>, <strong><code>path</code></strong>=<em><code>'./models'</code></em>)</p>
 </blockquote>
 
 </div>
@@ -150,7 +183,7 @@ nb_path: "nbs/111b_models.MINIROCKET.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MiniRocketRegressor" class="doc_header"><code>class</code> <code>MiniRocketRegressor</code><a href="tsai/models/MINIROCKET.py#L63" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocketRegressor</code>() :: <code>Pipeline</code></p>
+<h2 id="MiniRocketRegressor" class="doc_header"><code>class</code> <code>MiniRocketRegressor</code><a href="tsai/models/MINIROCKET.py#L62" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocketRegressor</code>() :: <code>Pipeline</code></p>
 </blockquote>
 <p>Time series regression using MINIROCKET features and a linear regressor</p>
 
@@ -182,7 +215,7 @@ nb_path: "nbs/111b_models.MINIROCKET.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="load_minirocket" class="doc_header"><code>load_minirocket</code><a href="tsai/models/MINIROCKET.py#L91" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_minirocket</code>(<strong><code>fname</code></strong>, <strong><code>path</code></strong>=<em><code>'./models'</code></em>)</p>
+<h4 id="load_minirocket" class="doc_header"><code>load_minirocket</code><a href="tsai/models/MINIROCKET.py#L90" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_minirocket</code>(<strong><code>fname</code></strong>, <strong><code>path</code></strong>=<em><code>'./models'</code></em>)</p>
 </blockquote>
 
 </div>
@@ -213,7 +246,7 @@ nb_path: "nbs/111b_models.MINIROCKET.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MiniRocketVotingClassifier" class="doc_header"><code>class</code> <code>MiniRocketVotingClassifier</code><a href="tsai/models/MINIROCKET.py#L99" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocketVotingClassifier</code>() :: <code>VotingClassifier</code></p>
+<h2 id="MiniRocketVotingClassifier" class="doc_header"><code>class</code> <code>MiniRocketVotingClassifier</code><a href="tsai/models/MINIROCKET.py#L98" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocketVotingClassifier</code>() :: <code>VotingClassifier</code></p>
 </blockquote>
 <p>Time series classification ensemble using MINIROCKET features, a linear classifier and majority voting</p>
 
@@ -245,7 +278,7 @@ nb_path: "nbs/111b_models.MINIROCKET.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_minirocket_preds" class="doc_header"><code>get_minirocket_preds</code><a href="tsai/models/MINIROCKET.py#L122" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_minirocket_preds</code>(<strong><code>X</code></strong>, <strong><code>fname</code></strong>, <strong><code>path</code></strong>=<em><code>'./models'</code></em>, <strong><code>model</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="get_minirocket_preds" class="doc_header"><code>get_minirocket_preds</code><a href="tsai/models/MINIROCKET.py#L121" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_minirocket_preds</code>(<strong><code>X</code></strong>, <strong><code>fname</code></strong>, <strong><code>path</code></strong>=<em><code>'./models'</code></em>, <strong><code>model</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -276,7 +309,7 @@ nb_path: "nbs/111b_models.MINIROCKET.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MiniRocketVotingRegressor" class="doc_header"><code>class</code> <code>MiniRocketVotingRegressor</code><a href="tsai/models/MINIROCKET.py#L130" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocketVotingRegressor</code>() :: <code>VotingRegressor</code></p>
+<h2 id="MiniRocketVotingRegressor" class="doc_header"><code>class</code> <code>MiniRocketVotingRegressor</code><a href="tsai/models/MINIROCKET.py#L129" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocketVotingRegressor</code>() :: <code>VotingRegressor</code></p>
 </blockquote>
 <p>Time series regression ensemble using MINIROCKET features, a linear regressor and a voting regressor</p>
 
@@ -349,7 +382,7 @@ nb_path: "nbs/111b_models.MINIROCKET.ipynb"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>0.9055555555555556</pre>
+<pre>0.9222222222222223</pre>
 </div>
 
 </div>
@@ -431,7 +464,7 @@ nb_path: "nbs/111b_models.MINIROCKET.ipynb"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>0.041572913651439565</pre>
+<pre>0.04159226078258895</pre>
 </div>
 
 </div>
@@ -475,7 +508,7 @@ nb_path: "nbs/111b_models.MINIROCKET.ipynb"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>2.1370059371856556</pre>
+<pre>2.11075459259585</pre>
 </div>
 
 </div>
@@ -512,306 +545,7 @@ nb_path: "nbs/111b_models.MINIROCKET.ipynb"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>2.2454030672197036</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="MiniRocketFeatures" class="doc_header"><code>class</code> <code>MiniRocketFeatures</code><a href="tsai/models/MINIROCKET.py#L158" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocketFeatures</code>(<strong><code>c_in</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>num_features</code></strong>=<em><code>10000</code></em>, <strong><code>max_dilations_per_kernel</code></strong>=<em><code>32</code></em>, <strong><code>random_state</code></strong>=<em><code>None</code></em>) :: <code>Module</code></p>
-</blockquote>
-<p>This is a Pytorch implementation of MiniRocket developed by Malcolm McLean and Ignacio Oguiza</p>
-<p>MiniRocket paper citation:
-@article{dempster_etal_2020,
-  author  = {Dempster, Angus and Schmidt, Daniel F and Webb, Geoffrey I},
-  title   = {{MINIROCKET}: A Very Fast (Almost) Deterministic Transform for Time Series Classification},
-  year    = {2020},
-  journal = {arXiv:2012.08791}
-}
-Original paper: <a href="https://arxiv.org/abs/2012.08791">https://arxiv.org/abs/2012.08791</a>
-Original code:  <a href="https://github.com/angus924/minirocket">https://github.com/angus924/minirocket</a></p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_minirocket_features" class="doc_header"><code>get_minirocket_features</code><a href="tsai/models/MINIROCKET.py#L295" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_minirocket_features</code>(<strong><code>o</code></strong>, <strong><code>model</code></strong>, <strong><code>chunksize</code></strong>=<em><code>1024</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>to_np</code></strong>=<em><code>False</code></em>)</p>
-</blockquote>
-<p>Function used to split a large dataset into chunks, avoiding OOM error.</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="MiniRocketHead" class="doc_header"><code>class</code> <code>MiniRocketHead</code><a href="tsai/models/MINIROCKET.py#L308" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocketHead</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>1</code></em>, <strong><code>bn</code></strong>=<em><code>True</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>) :: <code>Sequential</code></p>
-</blockquote>
-<p>A sequential container.
-Modules will be added to it in the order they are passed in the constructor.
-Alternatively, an ordered dict of modules can also be passed in.</p>
-<p>To make it easier to understand, here is a small example::</p>
-
-<pre><code># Example of using Sequential
-model = nn.Sequential(
-          nn.Conv2d(1,20,5),
-          nn.ReLU(),
-          nn.Conv2d(20,64,5),
-          nn.ReLU()
-        )
-
-# Example of using Sequential with OrderedDict
-model = nn.Sequential(OrderedDict([
-          ('conv1', nn.Conv2d(1,20,5)),
-          ('relu1', nn.ReLU()),
-          ('conv2', nn.Conv2d(20,64,5)),
-          ('relu2', nn.ReLU())
-        ]))</code></pre>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="MiniRocket" class="doc_header"><code>class</code> <code>MiniRocket</code><a href="tsai/models/MINIROCKET.py#L321" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocket</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>num_features</code></strong>=<em><code>10000</code></em>, <strong><code>max_dilations_per_kernel</code></strong>=<em><code>32</code></em>, <strong><code>random_state</code></strong>=<em><code>None</code></em>, <strong><code>bn</code></strong>=<em><code>True</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0</code></em>) :: <code>Sequential</code></p>
-</blockquote>
-<p>A sequential container.
-Modules will be added to it in the order they are passed in the constructor.
-Alternatively, an ordered dict of modules can also be passed in.</p>
-<p>To make it easier to understand, here is a small example::</p>
-
-<pre><code># Example of using Sequential
-model = nn.Sequential(
-          nn.Conv2d(1,20,5),
-          nn.ReLU(),
-          nn.Conv2d(20,64,5),
-          nn.ReLU()
-        )
-
-# Example of using Sequential with OrderedDict
-model = nn.Sequential(OrderedDict([
-          ('conv1', nn.Conv2d(1,20,5)),
-          ('relu1', nn.ReLU()),
-          ('conv2', nn.Conv2d(20,64,5)),
-          ('relu2', nn.ReLU())
-        ]))</code></pre>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai.torch_core</span> <span class="kn">import</span> <span class="n">default_device</span>
-<span class="kn">from</span> <span class="nn">tsai.data.all</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">tsai.learner</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;ECGFiveDays&#39;</span>
-<span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">mrf</span> <span class="o">=</span> <span class="n">MiniRocketFeatures</span><span class="p">(</span><span class="n">c_in</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">seq_len</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">default_device</span><span class="p">())</span>
-<span class="n">X_train</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">default_device</span><span class="p">())</span>
-<span class="n">mrf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
-<span class="n">X_tfm</span> <span class="o">=</span> <span class="n">get_minirocket_features</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">mrf</span><span class="p">)</span>
-<span class="n">tfms</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">TSClassification</span><span class="p">()]</span>
-<span class="n">batch_tfms</span> <span class="o">=</span> <span class="n">TSStandardize</span><span class="p">(</span><span class="n">by_var</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X_tfm</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="n">batch_tfms</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
-<span class="n">learn</span> <span class="o">=</span> <span class="n">ts_learner</span><span class="p">(</span><span class="n">dls</span><span class="p">,</span> <span class="n">MiniRocketHead</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">accuracy</span><span class="p">)</span>
-<span class="n">learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1e-4</span><span class="p">,</span> <span class="n">cbs</span><span class="o">=</span><span class="n">ReduceLROnPlateau</span><span class="p">(</span><span class="n">factor</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">min_lr</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">patience</span><span class="o">=</span><span class="mi">10</span><span class="p">))</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_html rendered_html output_subarea ">
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: left;">
-      <th>epoch</th>
-      <th>train_loss</th>
-      <th>valid_loss</th>
-      <th>accuracy</th>
-      <th>time</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>0</td>
-      <td>0.693147</td>
-      <td>0.530266</td>
-      <td>0.752613</td>
-      <td>00:00</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai.torch_core</span> <span class="kn">import</span> <span class="n">default_device</span>
-<span class="kn">from</span> <span class="nn">tsai.data.all</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">tsai.learner</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;ECGFiveDays&#39;</span>
-<span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">tfms</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">TSClassification</span><span class="p">()]</span>
-<span class="n">batch_tfms</span> <span class="o">=</span> <span class="n">TSStandardize</span><span class="p">()</span>
-<span class="n">dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="n">batch_tfms</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
-<span class="n">learn</span> <span class="o">=</span> <span class="n">ts_learner</span><span class="p">(</span><span class="n">dls</span><span class="p">,</span> <span class="n">MiniRocket</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">accuracy</span><span class="p">)</span>
-<span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1e-2</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_html rendered_html output_subarea ">
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: left;">
-      <th>epoch</th>
-      <th>train_loss</th>
-      <th>valid_loss</th>
-      <th>accuracy</th>
-      <th>time</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>0</td>
-      <td>0.693147</td>
-      <td>0.711453</td>
-      <td>0.502904</td>
-      <td>00:10</td>
-    </tr>
-  </tbody>
-</table>
+<pre>2.2958481292101465</pre>
 </div>
 
 </div>
