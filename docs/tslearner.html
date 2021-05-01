@@ -1,6 +1,6 @@
 ---
 
-title: TSLearners: TSClassifier, TSRegressor, TSForecaster
+title: TSLearners (TSClassifier, TSRegressor, TSForecaster)
 
 
 keywords: fastai
@@ -36,6 +36,52 @@ nb_path: "nbs/052b_tslearner.ipynb"
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="TSClassifier-API">TSClassifier API<a class="anchor-link" href="#TSClassifier-API"> </a></h2><hr>
+<p><strong>Commonly used arguments:</strong></p>
+<ul>
+<li><strong>X:</strong> array-like of shape (n_samples, n_steps) or (n_samples, n_features, n_steps) with the input time series samples. Internally, they will be converted to torch tensors.</li>
+<li><strong>y:</strong> array-like of shape (n_samples), (n_samples, n_outputs) or (n_samples, n_features, n_outputs) with the target. Internally, they will be converted to torch tensors. Default=None. None is used for unlabeled datasets. </li>
+<li><strong>splits:</strong> lists of indices used to split data between train and validation. Default=None. If no splits are passed, data will be split 80:20 between train and test without shuffling.</li>
+<li><strong>tfms:</strong> item transforms that will be applied to each sample individually. Default=<code>[None, TSClassification()]</code> which is commonly used in most single label datasets. </li>
+<li><strong>batch_tfms:</strong> transforms applied to each batch. Default=None. </li>
+<li><strong>bs:</strong> batch size (if batch_size is provided then batch_size will override bs). An int or a list of ints can be passed. Default=<code>[64, 128]</code>. If a list of ints, the first one will be used for training, and the second for the valid (batch size can be larger as it doesn't require backpropagation which consumes more memory). </li>
+<li><strong>arch:</strong> indicates which architecture will be used. Default: InceptionTime.</li>
+<li><strong>arch_config:</strong> keyword arguments passed to the selected architecture. Default={}.</li>
+<li><strong>pretrained:</strong> indicates if pretrained model weights will be used. Default=False.</li>
+<li><strong>weights_path:</strong> indicates the path to the pretrained weights in case they are used.</li>
+<li><strong>loss_func:</strong> allows you to pass any loss function. Default=None (in which case CrossEntropyLossFlat() is applied).</li>
+<li><strong>opt_func:</strong> allows you to pass an optimizer. Default=Adam.</li>
+<li><strong>lr:</strong> learning rate. Default=0.001.</li>
+<li><strong>metrics:</strong> list of metrics passed to the Learner. Default=accuracy.</li>
+<li><strong>cbs:</strong> list of callbacks passed to the Learner. Default=None.</li>
+<li><strong>wd:</strong> is the default weight decay used when training the model. Default=None.</li>
+</ul>
+<p><strong>Less frequently used arguments:</strong></p>
+<ul>
+<li><strong>sel_vars:</strong> used to select which of the features in multivariate datasets are used. Default=None means all features are used. If necessary a list-like of indices can be used (eg.<code>[0,3,5]</code>).</li>
+<li><strong>sel_steps:</strong> used to select the steps used. Default=None means all steps are used. If necessary a list-like of indices can be used (eg. <code>slice(-50, None)</code> will select the last 50 steps from each time series).</li>
+<li><strong>inplace:</strong> indicates whether tfms are applied during instantiation or on-the-fly. Default=True, which means that tfms will be applied during instantiation. This results in a faster training.</li>
+<li><strong>shuffle_train:</strong> indicates whether to shuffle the training set every time the dataloader is fully read/iterated or not. This doesn't have an impact on the validation set which is never shuffled. Default=True.</li>
+<li><strong>drop_last:</strong> if True the last incomplete training batch is dropped (thus ensuring training batches of equal size). This doesn't have an impact on the validation set where samples are never dropped. Default=True.</li>
+<li><strong>num_workers:</strong> num_workers (int): how many subprocesses to use for data loading. 0 means that the data will be loaded in the main process. Default=0. </li>
+<li><strong>do_setup:</strong> ndicates if the Pipeline.setup method should be called during initialization. Default=True.</li>
+<li><strong>device:</strong> Defaults to default_device() which is CUDA by default. You can specify device as `torch.device('cpu').</li>
+<li><strong>verbose:</strong> controls the verbosity when fitting and predicting.</li>
+<li><strong>exclude_head:</strong> indicates whether the head of the pretrained model needs to be removed or not. Default=True.</li>
+<li><strong>cut:</strong> indicates the position where the pretrained model head needs to be cut. Defaults=-1.</li>
+<li><strong>init:</strong> allows you to set to None (no initialization applied), set to True (in which case nn.init.kaiming<em>normal</em> will be applied) or pass an initialization. Default=None.</li>
+<li><strong>splitter:</strong> To do transfer learning, you need to pass a splitter to Learner. This should be a function taking the model and returning a collection of parameter groups, e.g. a list of list of parameters. Default=trainable_params. If the model has a backbone and a head, it will then be split in those 2 groups.</li>
+<li><strong>path</strong> and <strong>model_dir:</strong> are used to save and/or load models. Often path will be inferred from dls, but you can override it or pass a Path object to model_dir.</li>
+<li><strong>wd_bn_bias:</strong> controls if weight decay is applied to BatchNorm layers and bias. Default=False.
+train_bn=True</li>
+<li><strong>moms:</strong> the default momentums used in Learner.fit_one_cycle. Default=(0.95, 0.85, 0.95).</li>
+</ul>
+
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -111,10 +157,10 @@ decodes: (Tabular,object) -&gt; decodes
   <tbody>
     <tr>
       <td>0</td>
-      <td>1.343916</td>
-      <td>1.369108</td>
-      <td>0.400000</td>
-      <td>00:11</td>
+      <td>1.578278</td>
+      <td>1.403795</td>
+      <td>0.133333</td>
+      <td>00:10</td>
     </tr>
   </tbody>
 </table>
@@ -128,6 +174,52 @@ decodes: (Tabular,object) -&gt; decodes
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="TSRegressor-API">TSRegressor API<a class="anchor-link" href="#TSRegressor-API"> </a></h2><hr>
+<p><strong>Commonly used arguments:</strong></p>
+<ul>
+<li><strong>X:</strong> array-like of shape (n_samples, n_steps) or (n_samples, n_features, n_steps) with the input time series samples. Internally, they will be converted to torch tensors.</li>
+<li><strong>y:</strong> array-like of shape (n_samples), (n_samples, n_outputs) or (n_samples, n_features, n_outputs) with the target. Internally, they will be converted to torch tensors. Default=None. None is used for unlabeled datasets. </li>
+<li><strong>splits:</strong> lists of indices used to split data between train and validation. Default=None. If no splits are passed, data will be split 80:20 between train and test without shuffling.</li>
+<li><strong>tfms:</strong> item transforms that will be applied to each sample individually. Default=<code>[None, TSRegression()]</code> which is commonly used in most single label datasets. </li>
+<li><strong>batch_tfms:</strong> transforms applied to each batch. Default=None. </li>
+<li><strong>bs:</strong> batch size (if batch_size is provided then batch_size will override bs). An int or a list of ints can be passed. Default=<code>[64, 128]</code>. If a list of ints, the first one will be used for training, and the second for the valid (batch size can be larger as it doesn't require backpropagation which consumes more memory). </li>
+<li><strong>arch:</strong> indicates which architecture will be used. Default: InceptionTime.</li>
+<li><strong>arch_config:</strong> keyword arguments passed to the selected architecture. Default={}.</li>
+<li><strong>pretrained:</strong> indicates if pretrained model weights will be used. Default=False.</li>
+<li><strong>weights_path:</strong> indicates the path to the pretrained weights in case they are used.</li>
+<li><strong>loss_func:</strong> allows you to pass any loss function. Default=None (in which case CrossEntropyLossFlat() is applied).</li>
+<li><strong>opt_func:</strong> allows you to pass an optimizer. Default=Adam.</li>
+<li><strong>lr:</strong> learning rate. Default=0.001.</li>
+<li><strong>metrics:</strong> list of metrics passed to the Learner. Default=None.</li>
+<li><strong>cbs:</strong> list of callbacks passed to the Learner. Default=None.</li>
+<li><strong>wd:</strong> is the default weight decay used when training the model. Default=None.</li>
+</ul>
+<p><strong>Less frequently used arguments:</strong></p>
+<ul>
+<li><strong>sel_vars:</strong> used to select which of the features in multivariate datasets are used. Default=None means all features are used. If necessary a list-like of indices can be used (eg.<code>[0,3,5]</code>).</li>
+<li><strong>sel_steps:</strong> used to select the steps used. Default=None means all steps are used. If necessary a list-like of indices can be used (eg. <code>slice(-50, None)</code> will select the last 50 steps from each time series).</li>
+<li><strong>inplace:</strong> indicates whether tfms are applied during instantiation or on-the-fly. Default=True, which means that tfms will be applied during instantiation. This results in a faster training.</li>
+<li><strong>shuffle_train:</strong> indicates whether to shuffle the training set every time the dataloader is fully read/iterated or not. This doesn't have an impact on the validation set which is never shuffled. Default=True.</li>
+<li><strong>drop_last:</strong> if True the last incomplete training batch is dropped (thus ensuring training batches of equal size). This doesn't have an impact on the validation set where samples are never dropped. Default=True.</li>
+<li><strong>num_workers:</strong> num_workers (int): how many subprocesses to use for data loading. 0 means that the data will be loaded in the main process. Default=0. </li>
+<li><strong>do_setup:</strong> ndicates if the Pipeline.setup method should be called during initialization. Default=True.</li>
+<li><strong>device:</strong> Defaults to default_device() which is CUDA by default. You can specify device as `torch.device('cpu').</li>
+<li><strong>verbose:</strong> controls the verbosity when fitting and predicting.</li>
+<li><strong>exclude_head:</strong> indicates whether the head of the pretrained model needs to be removed or not. Default=True.</li>
+<li><strong>cut:</strong> indicates the position where the pretrained model head needs to be cut. Defaults=-1.</li>
+<li><strong>init:</strong> allows you to set to None (no initialization applied), set to True (in which case nn.init.kaiming<em>normal</em> will be applied) or pass an initialization. Default=None.</li>
+<li><strong>splitter:</strong> To do transfer learning, you need to pass a splitter to Learner. This should be a function taking the model and returning a collection of parameter groups, e.g. a list of list of parameters. Default=trainable_params. If the model has a backbone and a head, it will then be split in those 2 groups.</li>
+<li><strong>path</strong> and <strong>model_dir:</strong> are used to save and/or load models. Often path will be inferred from dls, but you can override it or pass a Path object to model_dir.</li>
+<li><strong>wd_bn_bias:</strong> controls if weight decay is applied to BatchNorm layers and bias. Default=False.
+train_bn=True</li>
+<li><strong>moms:</strong> the default momentums used in Learner.fit_one_cycle. Default=(0.95, 0.85, 0.95).</li>
+</ul>
+
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -202,10 +294,10 @@ decodes: (object,object) -&gt; decodes
   <tbody>
     <tr>
       <td>0</td>
-      <td>225.368744</td>
-      <td>205.982208</td>
-      <td>13.934093</td>
-      <td>00:12</td>
+      <td>218.622879</td>
+      <td>201.526321</td>
+      <td>13.773471</td>
+      <td>00:08</td>
     </tr>
   </tbody>
 </table>
@@ -219,6 +311,52 @@ decodes: (object,object) -&gt; decodes
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="TSForecaster-API">TSForecaster API<a class="anchor-link" href="#TSForecaster-API"> </a></h2><hr>
+<p><strong>Commonly used arguments:</strong></p>
+<ul>
+<li><strong>X:</strong> array-like of shape (n_samples, n_steps) or (n_samples, n_features, n_steps) with the input time series samples. Internally, they will be converted to torch tensors.</li>
+<li><strong>y:</strong> array-like of shape (n_samples), (n_samples, n_outputs) or (n_samples, n_features, n_outputs) with the target. Internally, they will be converted to torch tensors. Default=None. None is used for unlabeled datasets. </li>
+<li><strong>splits:</strong> lists of indices used to split data between train and validation. Default=None. If no splits are passed, data will be split 80:20 between train and test without shuffling.</li>
+<li><strong>tfms:</strong> item transforms that will be applied to each sample individually. Default=<code>[None, TSForecasting()]</code> which is commonly used in most single label datasets. </li>
+<li><strong>batch_tfms:</strong> transforms applied to each batch. Default=None. </li>
+<li><strong>bs:</strong> batch size (if batch_size is provided then batch_size will override bs). An int or a list of ints can be passed. Default=<code>[64, 128]</code>. If a list of ints, the first one will be used for training, and the second for the valid (batch size can be larger as it doesn't require backpropagation which consumes more memory). </li>
+<li><strong>arch:</strong> indicates which architecture will be used. Default: InceptionTime.</li>
+<li><strong>arch_config:</strong> keyword arguments passed to the selected architecture. Default={}.</li>
+<li><strong>pretrained:</strong> indicates if pretrained model weights will be used. Default=False.</li>
+<li><strong>weights_path:</strong> indicates the path to the pretrained weights in case they are used.</li>
+<li><strong>loss_func:</strong> allows you to pass any loss function. Default=None (in which case CrossEntropyLossFlat() is applied).</li>
+<li><strong>opt_func:</strong> allows you to pass an optimizer. Default=Adam.</li>
+<li><strong>lr:</strong> learning rate. Default=0.001.</li>
+<li><strong>metrics:</strong> list of metrics passed to the Learner. Default=None.</li>
+<li><strong>cbs:</strong> list of callbacks passed to the Learner. Default=None.</li>
+<li><strong>wd:</strong> is the default weight decay used when training the model. Default=None.</li>
+</ul>
+<p><strong>Less frequently used arguments:</strong></p>
+<ul>
+<li><strong>sel_vars:</strong> used to select which of the features in multivariate datasets are used. Default=None means all features are used. If necessary a list-like of indices can be used (eg.<code>[0,3,5]</code>).</li>
+<li><strong>sel_steps:</strong> used to select the steps used. Default=None means all steps are used. If necessary a list-like of indices can be used (eg. <code>slice(-50, None)</code> will select the last 50 steps from each time series).</li>
+<li><strong>inplace:</strong> indicates whether tfms are applied during instantiation or on-the-fly. Default=True, which means that tfms will be applied during instantiation. This results in a faster training.</li>
+<li><strong>shuffle_train:</strong> indicates whether to shuffle the training set every time the dataloader is fully read/iterated or not. This doesn't have an impact on the validation set which is never shuffled. Default=True.</li>
+<li><strong>drop_last:</strong> if True the last incomplete training batch is dropped (thus ensuring training batches of equal size). This doesn't have an impact on the validation set where samples are never dropped. Default=True.</li>
+<li><strong>num_workers:</strong> num_workers (int): how many subprocesses to use for data loading. 0 means that the data will be loaded in the main process. Default=None. </li>
+<li><strong>do_setup:</strong> ndicates if the Pipeline.setup method should be called during initialization. Default=True.</li>
+<li><strong>device:</strong> Defaults to default_device() which is CUDA by default. You can specify device as `torch.device('cpu').</li>
+<li><strong>verbose:</strong> controls the verbosity when fitting and predicting.</li>
+<li><strong>exclude_head:</strong> indicates whether the head of the pretrained model needs to be removed or not. Default=True.</li>
+<li><strong>cut:</strong> indicates the position where the pretrained model head needs to be cut. Defaults=-1.</li>
+<li><strong>init:</strong> allows you to set to None (no initialization applied), set to True (in which case nn.init.kaiming<em>normal</em> will be applied) or pass an initialization. Default=None.</li>
+<li><strong>splitter:</strong> To do transfer learning, you need to pass a splitter to Learner. This should be a function taking the model and returning a collection of parameter groups, e.g. a list of list of parameters. Default=trainable_params. If the model has a backbone and a head, it will then be split in those 2 groups.</li>
+<li><strong>path</strong> and <strong>model_dir:</strong> are used to save and/or load models. Often path will be inferred from dls, but you can override it or pass a Path object to model_dir.</li>
+<li><strong>wd_bn_bias:</strong> controls if weight decay is applied to BatchNorm layers and bias. Default=False.
+train_bn=True</li>
+<li><strong>moms:</strong> the default momentums used in Learner.fit_one_cycle. Default=(0.95, 0.85, 0.95).</li>
+</ul>
+
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -317,10 +455,10 @@ downloading data...
   <tbody>
     <tr>
       <td>0</td>
-      <td>10957.403320</td>
-      <td>6261.960449</td>
-      <td>58.629318</td>
-      <td>01:35</td>
+      <td>10669.512695</td>
+      <td>6129.917480</td>
+      <td>57.897556</td>
+      <td>01:09</td>
     </tr>
   </tbody>
 </table>
