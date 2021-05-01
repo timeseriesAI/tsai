@@ -26,8 +26,8 @@
         "Prediction Dynamics": "/callback.PredictionDynamics.html",
         "": {
             "Semi-supervised learning": {
-                "Self-training: Noisy Student": "/callback.noisy_student.html",
-                "Self-supervised learning: MVP": "/callback.MVP.html"
+                "Self-training (Noisy Student)": "/callback.noisy_student.html",
+                "Self-supervised learning (MVP)": "/callback.MVP.html"
             }
         }
     },
