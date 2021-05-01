@@ -59,7 +59,7 @@ defaults:
       tooltip: true
 
 sidebars: [home_sidebar]
-baseurl: /tsai/tsai/
+baseurl: /
 plugins:
     - jekyll-remote-theme
     
