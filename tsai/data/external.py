@@ -34,24 +34,25 @@ def decompress_from_url(url, target_dir=None, verbose=False):
         local_comp_fname = os.path.join(tmpdir, fname)
         urlretrieve(url, local_comp_fname)
         pv("...data downloaded", verbose)
+
+        # Decompress
+        try:
+            pv("decompressing data...", verbose)
+            if not os.path.exists(target_dir): os.makedirs(target_dir)
+            Archive(local_comp_fname).extractall(target_dir)
+            shutil.rmtree(tmpdir)
+            pv("...data decompressed", verbose)
+            return target_dir
+        except:
+            shutil.rmtree(tmpdir)
+            if verbose:
+                sys.stderr.write("Could not decompress file, aborting.\n")
+            return None
+
     except:
         shutil.rmtree(tmpdir)
         if verbose:
             sys.stderr.write("Could not download url. Please, check url.\n")
-
-    # Decompress
-    try:
-        pv("decompressing data...", verbose)
-        if not os.path.exists(target_dir): os.makedirs(target_dir)
-        Archive(local_comp_fname).extractall(target_dir)
-        shutil.rmtree(tmpdir)
-        pv("...data decompressed", verbose)
-        return target_dir
-    except:
-        shutil.rmtree(tmpdir)
-        if verbose:
-            sys.stderr.write("Could not decompress file, aborting.\n")
-        return None
 
 # Cell
 def download_data(url, fname=None, c_key='archive', force_download=False, timeout=4, verbose=False):

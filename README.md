@@ -12,13 +12,15 @@
 [![PyPI](https://img.shields.io/pypi/v/tsai?color=blue&label=pypi%20version)](https://pypi.org/project/tsai/#description)
 [![Downloads](https://pepy.tech/badge/tsai)](https://pepy.tech/project/tsai)
 
-`tsai`is an open-source deep learning package built on top of Pytorch & fastai focused on state-of-the-art techniques for time series classification, regression and forecasting.
+`tsai` is an open-source deep learning package built on top of Pytorch & fastai focused on state-of-the-art techniques for time series classification, regression and forecasting.
 
 * **Self-supervised learning:**
 If you are interested in applying self-supervised learning to time series, you may want to check our new tutorial notebook: [08_Self_Supervised_TSBERT.ipynb](https://github.com/timeseriesAI/tsai/blob/master/tutorial_nbs/08_Self_Supervised_TSBERT.ipynb)
 * **New visualization:**
 We've also added a new PredictionDynamics callback that will display the predictions during training. This is the type of output you would get in a classification task for example:
-![LSST_training](https://github.com/timeseriesAI/tsai/blob/master/nbs/multimedia/LSST_PD.gif?raw=true)
+<p align="center">
+    <img src="https://github.com/timeseriesAI/tsai/blob/main/nbs/multimedia/LSST_PD.gif?raw=true">
+</p>
 
 ## Installation
 

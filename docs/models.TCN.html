@@ -65,7 +65,7 @@ nb_path: "nbs/113_models.TCN.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TemporalBlock" class="doc_header"><code>class</code> <code>TemporalBlock</code><a href="tsai/models/TCN.py#L21" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TemporalBlock</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>ks</code></strong>, <strong><code>stride</code></strong>, <strong><code>dilation</code></strong>, <strong><code>padding</code></strong>, <strong><code>dropout</code></strong>=<em><code>0.2</code></em>) :: <code>Module</code></p>
+<h2 id="TemporalBlock" class="doc_header"><code>class</code> <code>TemporalBlock</code><a href="tsai/models/TCN.py#L21" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TemporalBlock</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>ks</code></strong>, <strong><code>stride</code></strong>, <strong><code>dilation</code></strong>, <strong><code>padding</code></strong>, <strong><code>dropout</code></strong>=<em><code>0.0</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -90,7 +90,7 @@ nb_path: "nbs/113_models.TCN.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="temporalconvnet" class="doc_header"><code>temporalconvnet</code><a href="tsai/models/TCN.py#L46" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>temporalconvnet</code>(<strong><code>c_in</code></strong>, <strong><code>layers</code></strong>, <strong><code>ks</code></strong>=<em><code>2</code></em>, <strong><code>dropout</code></strong>=<em><code>0.2</code></em>)</p>
+<h4 id="TemporalConvNet" class="doc_header"><code>TemporalConvNet</code><a href="tsai/models/TCN.py#L47" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TemporalConvNet</code>(<strong><code>c_in</code></strong>, <strong><code>layers</code></strong>, <strong><code>ks</code></strong>=<em><code>2</code></em>, <strong><code>dropout</code></strong>=<em><code>0.0</code></em>)</p>
 </blockquote>
 
 </div>
@@ -114,7 +114,7 @@ nb_path: "nbs/113_models.TCN.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TCN" class="doc_header"><code>class</code> <code>TCN</code><a href="tsai/models/TCN.py#L56" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TCN</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>layers</code></strong>=<em><code>[25, 25, 25, 25, 25, 25, 25, 25]</code></em>, <strong><code>ks</code></strong>=<em><code>7</code></em>, <strong><code>conv_dropout</code></strong>=<em><code>0.2</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>) :: <code>Module</code></p>
+<h2 id="TCN" class="doc_header"><code>class</code> <code>TCN</code><a href="tsai/models/TCN.py#L56" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TCN</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>layers</code></strong>=<em><code>[25, 25, 25, 25, 25, 25, 25, 25]</code></em>, <strong><code>ks</code></strong>=<em><code>7</code></em>, <strong><code>conv_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -174,20 +174,20 @@ nb_path: "nbs/113_models.TCN.ipynb"
       (conv1): Conv1d(3, 25, kernel_size=(7,), stride=(1,), padding=(6,))
       (chomp1): Chomp1d()
       (relu1): ReLU()
-      (dropout1): Dropout(p=0.2, inplace=False)
+      (dropout1): Dropout(p=0.0, inplace=False)
       (conv2): Conv1d(25, 25, kernel_size=(7,), stride=(1,), padding=(6,))
       (chomp2): Chomp1d()
       (relu2): ReLU()
-      (dropout2): Dropout(p=0.2, inplace=False)
+      (dropout2): Dropout(p=0.0, inplace=False)
       (net): Sequential(
         (0): Conv1d(3, 25, kernel_size=(7,), stride=(1,), padding=(6,))
         (1): Chomp1d()
         (2): ReLU()
-        (3): Dropout(p=0.2, inplace=False)
+        (3): Dropout(p=0.0, inplace=False)
         (4): Conv1d(25, 25, kernel_size=(7,), stride=(1,), padding=(6,))
         (5): Chomp1d()
         (6): ReLU()
-        (7): Dropout(p=0.2, inplace=False)
+        (7): Dropout(p=0.0, inplace=False)
       )
       (downsample): Conv1d(3, 25, kernel_size=(1,), stride=(1,))
       (relu): ReLU()
@@ -196,20 +196,20 @@ nb_path: "nbs/113_models.TCN.ipynb"
       (conv1): Conv1d(25, 25, kernel_size=(7,), stride=(1,), padding=(12,), dilation=(2,))
       (chomp1): Chomp1d()
       (relu1): ReLU()
-      (dropout1): Dropout(p=0.2, inplace=False)
+      (dropout1): Dropout(p=0.0, inplace=False)
       (conv2): Conv1d(25, 25, kernel_size=(7,), stride=(1,), padding=(12,), dilation=(2,))
       (chomp2): Chomp1d()
       (relu2): ReLU()
-      (dropout2): Dropout(p=0.2, inplace=False)
+      (dropout2): Dropout(p=0.0, inplace=False)
       (net): Sequential(
         (0): Conv1d(25, 25, kernel_size=(7,), stride=(1,), padding=(12,), dilation=(2,))
         (1): Chomp1d()
         (2): ReLU()
-        (3): Dropout(p=0.2, inplace=False)
+        (3): Dropout(p=0.0, inplace=False)
         (4): Conv1d(25, 25, kernel_size=(7,), stride=(1,), padding=(12,), dilation=(2,))
         (5): Chomp1d()
         (6): ReLU()
-        (7): Dropout(p=0.2, inplace=False)
+        (7): Dropout(p=0.0, inplace=False)
       )
       (relu): ReLU()
     )
@@ -217,20 +217,20 @@ nb_path: "nbs/113_models.TCN.ipynb"
       (conv1): Conv1d(25, 25, kernel_size=(7,), stride=(1,), padding=(24,), dilation=(4,))
       (chomp1): Chomp1d()
       (relu1): ReLU()
-      (dropout1): Dropout(p=0.2, inplace=False)
+      (dropout1): Dropout(p=0.0, inplace=False)
       (conv2): Conv1d(25, 25, kernel_size=(7,), stride=(1,), padding=(24,), dilation=(4,))
       (chomp2): Chomp1d()
       (relu2): ReLU()
-      (dropout2): Dropout(p=0.2, inplace=False)
+      (dropout2): Dropout(p=0.0, inplace=False)
       (net): Sequential(
         (0): Conv1d(25, 25, kernel_size=(7,), stride=(1,), padding=(24,), dilation=(4,))
         (1): Chomp1d()
         (2): ReLU()
-        (3): Dropout(p=0.2, inplace=False)
+        (3): Dropout(p=0.0, inplace=False)
         (4): Conv1d(25, 25, kernel_size=(7,), stride=(1,), padding=(24,), dilation=(4,))
         (5): Chomp1d()
         (6): ReLU()
-        (7): Dropout(p=0.2, inplace=False)
+        (7): Dropout(p=0.0, inplace=False)
       )
       (relu): ReLU()
     )
@@ -238,20 +238,20 @@ nb_path: "nbs/113_models.TCN.ipynb"
       (conv1): Conv1d(25, 25, kernel_size=(7,), stride=(1,), padding=(48,), dilation=(8,))
       (chomp1): Chomp1d()
       (relu1): ReLU()
-      (dropout1): Dropout(p=0.2, inplace=False)
+      (dropout1): Dropout(p=0.0, inplace=False)
       (conv2): Conv1d(25, 25, kernel_size=(7,), stride=(1,), padding=(48,), dilation=(8,))
       (chomp2): Chomp1d()
       (relu2): ReLU()
-      (dropout2): Dropout(p=0.2, inplace=False)
+      (dropout2): Dropout(p=0.0, inplace=False)
       (net): Sequential(
         (0): Conv1d(25, 25, kernel_size=(7,), stride=(1,), padding=(48,), dilation=(8,))
         (1): Chomp1d()
         (2): ReLU()
-        (3): Dropout(p=0.2, inplace=False)
+        (3): Dropout(p=0.0, inplace=False)
         (4): Conv1d(25, 25, kernel_size=(7,), stride=(1,), padding=(48,), dilation=(8,))
         (5): Chomp1d()
         (6): ReLU()
-        (7): Dropout(p=0.2, inplace=False)
+        (7): Dropout(p=0.0, inplace=False)
       )
       (relu): ReLU()
     )
@@ -259,20 +259,20 @@ nb_path: "nbs/113_models.TCN.ipynb"
       (conv1): Conv1d(25, 25, kernel_size=(7,), stride=(1,), padding=(96,), dilation=(16,))
       (chomp1): Chomp1d()
       (relu1): ReLU()
-      (dropout1): Dropout(p=0.2, inplace=False)
+      (dropout1): Dropout(p=0.0, inplace=False)
       (conv2): Conv1d(25, 25, kernel_size=(7,), stride=(1,), padding=(96,), dilation=(16,))
       (chomp2): Chomp1d()
       (relu2): ReLU()
-      (dropout2): Dropout(p=0.2, inplace=False)
+      (dropout2): Dropout(p=0.0, inplace=False)
       (net): Sequential(
         (0): Conv1d(25, 25, kernel_size=(7,), stride=(1,), padding=(96,), dilation=(16,))
         (1): Chomp1d()
         (2): ReLU()
-        (3): Dropout(p=0.2, inplace=False)
+        (3): Dropout(p=0.0, inplace=False)
         (4): Conv1d(25, 25, kernel_size=(7,), stride=(1,), padding=(96,), dilation=(16,))
         (5): Chomp1d()
         (6): ReLU()
-        (7): Dropout(p=0.2, inplace=False)
+        (7): Dropout(p=0.0, inplace=False)
       )
       (relu): ReLU()
     )
@@ -280,20 +280,20 @@ nb_path: "nbs/113_models.TCN.ipynb"
       (conv1): Conv1d(25, 25, kernel_size=(7,), stride=(1,), padding=(192,), dilation=(32,))
       (chomp1): Chomp1d()
       (relu1): ReLU()
-      (dropout1): Dropout(p=0.2, inplace=False)
+      (dropout1): Dropout(p=0.0, inplace=False)
       (conv2): Conv1d(25, 25, kernel_size=(7,), stride=(1,), padding=(192,), dilation=(32,))
       (chomp2): Chomp1d()
       (relu2): ReLU()
-      (dropout2): Dropout(p=0.2, inplace=False)
+      (dropout2): Dropout(p=0.0, inplace=False)
       (net): Sequential(
         (0): Conv1d(25, 25, kernel_size=(7,), stride=(1,), padding=(192,), dilation=(32,))
         (1): Chomp1d()
         (2): ReLU()
-        (3): Dropout(p=0.2, inplace=False)
+        (3): Dropout(p=0.0, inplace=False)
         (4): Conv1d(25, 25, kernel_size=(7,), stride=(1,), padding=(192,), dilation=(32,))
         (5): Chomp1d()
         (6): ReLU()
-        (7): Dropout(p=0.2, inplace=False)
+        (7): Dropout(p=0.0, inplace=False)
       )
       (relu): ReLU()
     )
@@ -301,20 +301,20 @@ nb_path: "nbs/113_models.TCN.ipynb"
       (conv1): Conv1d(25, 25, kernel_size=(7,), stride=(1,), padding=(384,), dilation=(64,))
       (chomp1): Chomp1d()
       (relu1): ReLU()
-      (dropout1): Dropout(p=0.2, inplace=False)
+      (dropout1): Dropout(p=0.0, inplace=False)
       (conv2): Conv1d(25, 25, kernel_size=(7,), stride=(1,), padding=(384,), dilation=(64,))
       (chomp2): Chomp1d()
       (relu2): ReLU()
-      (dropout2): Dropout(p=0.2, inplace=False)
+      (dropout2): Dropout(p=0.0, inplace=False)
       (net): Sequential(
         (0): Conv1d(25, 25, kernel_size=(7,), stride=(1,), padding=(384,), dilation=(64,))
         (1): Chomp1d()
         (2): ReLU()
-        (3): Dropout(p=0.2, inplace=False)
+        (3): Dropout(p=0.0, inplace=False)
         (4): Conv1d(25, 25, kernel_size=(7,), stride=(1,), padding=(384,), dilation=(64,))
         (5): Chomp1d()
         (6): ReLU()
-        (7): Dropout(p=0.2, inplace=False)
+        (7): Dropout(p=0.0, inplace=False)
       )
       (relu): ReLU()
     )
@@ -322,26 +322,29 @@ nb_path: "nbs/113_models.TCN.ipynb"
       (conv1): Conv1d(25, 25, kernel_size=(7,), stride=(1,), padding=(768,), dilation=(128,))
       (chomp1): Chomp1d()
       (relu1): ReLU()
-      (dropout1): Dropout(p=0.2, inplace=False)
+      (dropout1): Dropout(p=0.0, inplace=False)
       (conv2): Conv1d(25, 25, kernel_size=(7,), stride=(1,), padding=(768,), dilation=(128,))
       (chomp2): Chomp1d()
       (relu2): ReLU()
-      (dropout2): Dropout(p=0.2, inplace=False)
+      (dropout2): Dropout(p=0.0, inplace=False)
       (net): Sequential(
         (0): Conv1d(25, 25, kernel_size=(7,), stride=(1,), padding=(768,), dilation=(128,))
         (1): Chomp1d()
         (2): ReLU()
-        (3): Dropout(p=0.2, inplace=False)
+        (3): Dropout(p=0.0, inplace=False)
         (4): Conv1d(25, 25, kernel_size=(7,), stride=(1,), padding=(768,), dilation=(128,))
         (5): Chomp1d()
         (6): ReLU()
-        (7): Dropout(p=0.2, inplace=False)
+        (7): Dropout(p=0.0, inplace=False)
       )
       (relu): ReLU()
     )
   )
-  (gap): AdaptiveAvgPool1d(output_size=1)
-  (fc): Linear(in_features=25, out_features=2, bias=True)
+  (gap): GAP1d(
+    (gap): AdaptiveAvgPool1d(output_size=1)
+    (flatten): Flatten(full=False)
+  )
+  (linear): Linear(in_features=25, out_features=2, bias=True)
 )</pre>
 </div>
 
