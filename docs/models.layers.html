@@ -1689,7 +1689,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Sequential" class="doc_header"><code>class</code> <code>Sequential</code><a href="tsai/models/layers.py#L386" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Sequential</code>(<strong>*<code>args</code></strong>:<code>Any</code>) :: <code>Sequential</code></p>
+<h2 id="Sequential" class="doc_header"><code>class</code> <code>Sequential</code><a href="tsai/models/layers.py#L386" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Sequential</code>(<strong>*<code>args</code></strong>) :: <code>Sequential</code></p>
 </blockquote>
 <p>Class that allows you to pass one or multiple inputs</p>
 
@@ -1721,32 +1721,9 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TimeDistributed" class="doc_header"><code>class</code> <code>TimeDistributed</code><a href="tsai/models/layers.py#L394" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TimeDistributed</code>(<strong><code>module</code></strong>, <strong><code>batch_first</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
+<h2 id="TimeDistributed" class="doc_header"><code>class</code> <code>TimeDistributed</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L504" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TimeDistributed</code>(<strong><code>module</code></strong>, <strong><code>low_mem</code></strong>=<em><code>False</code></em>, <strong><code>tdim</code></strong>=<em><code>1</code></em>) :: <code>Module</code></p>
 </blockquote>
-<p>Base class for all neural network modules.</p>
-<p>Your models should also subclass this class.</p>
-<p>Modules can also contain other Modules, allowing to nest them in
-a tree structure. You can assign the submodules as regular attributes::</p>
-
-<pre><code>import torch.nn as nn
-import torch.nn.functional as F
-
-class Model(nn.Module):
-    def __init__(self):
-        super(Model, self).__init__()
-        self.conv1 = nn.Conv2d(1, 20, 5)
-        self.conv2 = nn.Conv2d(20, 20, 5)
-
-    def forward(self, x):
-        x = F.relu(self.conv1(x))
-        return F.relu(self.conv2(x))
-
-</code></pre>
-<p>Submodules assigned in this way will be registered, and will have their
-parameters converted too when you call :meth:<code>to</code>, etc.</p>
-<p>:ivar training: Boolean represents whether this module is in training or
-                evaluation mode.
-:vartype training: bool</p>
+<p>Applies <code>module</code> over <code>tdim</code> identically for each step, use <code>low_mem</code> to compute one at a time.</p>
 
 </div>
 
