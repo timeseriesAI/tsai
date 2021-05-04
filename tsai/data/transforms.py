@@ -8,7 +8,7 @@ __all__ = ['TSIdentity', 'TSShuffle_HLs', 'TSShuffleSteps', 'TSMagAddNoise', 'TS
            'TSRandomResizedLookBack', 'TSRandomLookBackOut', 'TSVarOut', 'TSCutOut', 'TSTimeStepOut', 'TSRandomCropPad',
            'TSMaskOut', 'TSTranslateX', 'TSRandomShift', 'TSHorizontalFlip', 'TSRandomTrend', 'TSRandomRotate',
            'TSVerticalFlip', 'TSResize', 'TSRandomSize', 'TSRandomLowRes', 'TSDownUpScale', 'TSRandomDownUpScale',
-           'all_TS_randaugs', 'RandAugment', 'TestTfm', 'get_tfm_name']
+           'TSRandomConv', 'all_TS_randaugs', 'RandAugment', 'TestTfm', 'get_tfm_name']
 
 # Cell
 from fastai.vision.augment import RandTransform
@@ -714,6 +714,24 @@ class TSRandomDownUpScale(RandTransform):
         return output
 
 # Cell
+class TSRandomConv(RandTransform):
+    """Applies a convolution with a random kernel and random weights with required_grad=False"""
+    order = 90
+    def __init__(self, magnitude=0.05, ex=None, ks=[1, 3, 5, 7], **kwargs):
+        self.magnitude, self.ex, self.ks = magnitude, ex, ks
+        self.conv = nn.Conv1d(1, 1, 1, bias=False)
+        super().__init__(**kwargs)
+    def encodes(self, o: TSTensor):
+        if not self.magnitude or self.magnitude <= 0 or self.ks is None: return o
+        ks = np.random.choice(self.ks, 1)[0] if is_listy(self.ks) else self.ks
+        c_in = o.shape[1]
+        self.conv.weight = nn.Parameter(torch.rand(c_in, c_in, ks) * 2 / np.sqrt(c_in * ks), requires_grad=False).to(o.device)
+        self.conv.padding = ks // 2
+        output = (1 - self.magnitude) * o + self.magnitude * self.conv(o)
+        if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
+        return output
+
+# Cell
 all_TS_randaugs = [
 
     TSIdentity,
@@ -733,6 +751,7 @@ all_TS_randaugs = [
     (partial(TSMagWarp, ex=0), 0.02, 0.2),
     (TSMagScale, 0.2, 1.),
     (partial(TSMagScalePerVar, ex=0), 0.2, 1.),
+    (partial(TSRandomConv, ex=0), .05, .2),
     partial(TSBlur, ex=0),
     partial(TSSmooth, ex=0),
     partial(TSDownUpScale, ex=0),
