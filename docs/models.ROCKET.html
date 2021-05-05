@@ -54,7 +54,7 @@ nb_path: "nbs/111_models.ROCKET.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="generate_kernels" class="doc_header"><code>generate_kernels</code><a href="tsai/models/ROCKET.py#L28" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>generate_kernels</code>(<strong><code>input_length</code></strong>, <strong><code>num_kernels</code></strong>, <strong><code>kss</code></strong>=<em><code>[7, 9, 11]</code></em>, <strong><code>pad</code></strong>=<em><code>True</code></em>, <strong><code>dilate</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="generate_kernels" class="doc_header"><code>generate_kernels</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/ROCKET.py#L28" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>generate_kernels</code>(<strong><code>input_length</code></strong>, <strong><code>num_kernels</code></strong>, <strong><code>kss</code></strong>=<em><code>[7, 9, 11]</code></em>, <strong><code>pad</code></strong>=<em><code>True</code></em>, <strong><code>dilate</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 
 </div>
@@ -78,7 +78,7 @@ nb_path: "nbs/111_models.ROCKET.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="apply_kernel" class="doc_header"><code>apply_kernel</code><a href="tsai/models/ROCKET.py#L49" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>apply_kernel</code>(<strong><code>X</code></strong>, <strong><code>weights</code></strong>, <strong><code>length</code></strong>, <strong><code>bias</code></strong>, <strong><code>dilation</code></strong>, <strong><code>padding</code></strong>)</p>
+<h4 id="apply_kernel" class="doc_header"><code>apply_kernel</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/ROCKET.py#L49" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>apply_kernel</code>(<strong><code>X</code></strong>, <strong><code>weights</code></strong>, <strong><code>length</code></strong>, <strong><code>bias</code></strong>, <strong><code>dilation</code></strong>, <strong><code>padding</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -102,7 +102,7 @@ nb_path: "nbs/111_models.ROCKET.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="apply_kernels" class="doc_header"><code>apply_kernels</code><a href="tsai/models/ROCKET.py#L71" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>apply_kernels</code>(<strong><code>X</code></strong>, <strong><code>kernels</code></strong>)</p>
+<h4 id="apply_kernels" class="doc_header"><code>apply_kernels</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/ROCKET.py#L71" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>apply_kernels</code>(<strong><code>X</code></strong>, <strong><code>kernels</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -133,7 +133,7 @@ nb_path: "nbs/111_models.ROCKET.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ROCKET" class="doc_header"><code>class</code> <code>ROCKET</code><a href="tsai/models/ROCKET.py#L86" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ROCKET</code>(<strong><code>c_in</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>n_kernels</code></strong>=<em><code>10000</code></em>, <strong><code>kss</code></strong>=<em><code>[7, 9, 11]</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
+<h2 id="ROCKET" class="doc_header"><code>class</code> <code>ROCKET</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/ROCKET.py#L86" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ROCKET</code>(<strong><code>c_in</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>n_kernels</code></strong>=<em><code>10000</code></em>, <strong><code>kss</code></strong>=<em><code>[7, 9, 11]</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>RandOm Convolutional KErnel Transform</p>
 <p>ROCKET is a GPU Pytorch implementation of the ROCKET functions generate_kernels
@@ -167,7 +167,7 @@ and apply_kernels that can be used  with univariate and multivariate time series
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="create_rocket_features" class="doc_header"><code>create_rocket_features</code><a href="tsai/models/ROCKET.py#L133" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_rocket_features</code>(<strong><code>dl</code></strong>, <strong><code>model</code></strong>, <strong><code>verbose</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="create_rocket_features" class="doc_header"><code>create_rocket_features</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/ROCKET.py#L133" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_rocket_features</code>(<strong><code>dl</code></strong>, <strong><code>model</code></strong>, <strong><code>verbose</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Args:
 model     : ROCKET model instance
@@ -267,7 +267,7 @@ dl        : single TSDataLoader (for example dls.train or dls.valid)</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RocketClassifier" class="doc_header"><code>class</code> <code>RocketClassifier</code><a href="tsai/models/ROCKET.py#L148" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RocketClassifier</code>() :: <code>Pipeline</code></p>
+<h2 id="RocketClassifier" class="doc_header"><code>class</code> <code>RocketClassifier</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/ROCKET.py#L148" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RocketClassifier</code>() :: <code>Pipeline</code></p>
 </blockquote>
 <p>Time series classification using ROCKET features and a linear classifier</p>
 
@@ -299,7 +299,7 @@ dl        : single TSDataLoader (for example dls.train or dls.valid)</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="load_rocket" class="doc_header"><code>load_rocket</code><a href="tsai/models/ROCKET.py#L180" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_rocket</code>(<strong><code>fname</code></strong>=<em><code>'Rocket'</code></em>, <strong><code>path</code></strong>=<em><code>'./models'</code></em>)</p>
+<h4 id="load_rocket" class="doc_header"><code>load_rocket</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/ROCKET.py#L180" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_rocket</code>(<strong><code>fname</code></strong>=<em><code>'Rocket'</code></em>, <strong><code>path</code></strong>=<em><code>'./models'</code></em>)</p>
 </blockquote>
 
 </div>
@@ -330,7 +330,7 @@ dl        : single TSDataLoader (for example dls.train or dls.valid)</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RocketRegressor" class="doc_header"><code>class</code> <code>RocketRegressor</code><a href="tsai/models/ROCKET.py#L188" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RocketRegressor</code>() :: <code>Pipeline</code></p>
+<h2 id="RocketRegressor" class="doc_header"><code>class</code> <code>RocketRegressor</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/ROCKET.py#L188" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RocketRegressor</code>() :: <code>Pipeline</code></p>
 </blockquote>
 <p>Time series regression using ROCKET features and a linear regressor</p>
 

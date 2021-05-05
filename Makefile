@@ -21,9 +21,11 @@ docs: $(SRC)
 test:
 	nbdev_test_nbs
 
-release: pypi
-	nbdev_conda_package
+release: pypi conda_release
 	nbdev_bump_version
+
+conda_release:
+	fastrelease_conda_package
 
 pypi: dist
 	twine upload --repository pypi dist/*
