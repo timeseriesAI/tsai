@@ -9,11 +9,11 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'cache_memmap', 'memmap2cache', 'get_func_defaults', 'get_idx_from_df_col_vals', 'get_sublist_idxs',
            'flatten_list', 'display_pd_df', 'ttest', 'tscore', 'ttest_tensor', 'pcc', 'scc', 'a', 'b', 'remove_fn',
            'npsave', 'np_save', 'permute_2D', 'random_normal', 'random_half_normal', 'random_normal_tensor',
-           'random_half_normal_tensor', 'clip_outliers', 'default_dpi', 'get_plot_fig', 'fig2buf', 'plot_scatter',
-           'get_idxs', 'apply_cmap', 'torch_tile', 'to_tsfresh_df', 'pcorr', 'scorr', 'torch_diff', 'get_outliers_IQR',
-           'get_percentile', 'torch_clamp', 'torch_slice_by_dim', 'torch_nanmean', 'torch_nanstd', 'concat',
-           'reduce_memory_usage', 'cls_name', 'roll2d', 'roll3d', 'random_roll2d', 'random_roll3d',
-           'create_empty_array']
+           'random_half_normal_tensor', 'default_dpi', 'get_plot_fig', 'fig2buf', 'plot_scatter', 'get_idxs',
+           'apply_cmap', 'torch_tile', 'to_tsfresh_df', 'pcorr', 'scorr', 'torch_diff', 'get_outliers_IQR',
+           'clip_outliers', 'get_percentile', 'torch_clamp', 'torch_slice_by_dim', 'torch_nanmean', 'torch_nanstd',
+           'concat', 'reduce_memory_usage', 'cls_name', 'roll2d', 'roll3d', 'random_roll2d', 'random_roll3d',
+           'create_empty_array', 'np_save_compressed', 'np_load_compressed', 'np2memmap', 'series2periodic']
 
 # Cell
 from .imports import *
@@ -431,15 +431,6 @@ def random_half_normal_tensor(shape=1, device=None):
     return abs(torch.empty(shape, device=device).normal_(mean=0, std=1/3)).clamp_(0, 1)
 
 # Cell
-def clip_outliers(o):
-    Q1, Q3 = np.percentile(o, [25, 75])
-    IQR = Q3 - Q1
-    if isinstance(o, (np.ndarray, pd.core.series.Series)):
-        return np.clip(o, Q1 - 1.5 * IQR, Q3 + 1.5 * IQR)
-    elif isinstance(o, torch.Tensor):
-        return torch.clamp(o, Q1 - 1.5 * IQR, Q3 + 1.5 * IQR)
-
-# Cell
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 
 def default_dpi():
@@ -529,15 +520,31 @@ def torch_diff(t, lag=1, pad=True):
 
 # Cell
 def get_outliers_IQR(o, axis=None):
-    if isinstance(o, torch.Tensor): o = o.detach().cpu().numpy()
-    Q1 = np.percentile(o, 25, axis=axis, keepdims=axis is not None)
-    Q3 = np.percentile(o, 75, axis=axis, keepdims=axis is not None)
+    tt = False
+    if isinstance(o, torch.Tensor):
+        tt = True
+        device = o.device
+        tdtype = o.dtype
+        o = o.detach().cpu().numpy()
+    Q1 = np.nanpercentile(o, 25, axis=axis, keepdims=axis is not None)
+    Q3 = np.nanpercentile(o, 75, axis=axis, keepdims=axis is not None)
     IQR = Q3 - Q1
+    if tt:
+        Q1 = torch.tensor(Q1, dtype=tdtype, device=device)
+        Q3 = torch.tensor(Q3, dtype=tdtype, device=device)
+        IQR = torch.tensor(IQR, dtype=tdtype, device=device)
     return Q1 - 1.5 * IQR, Q3 + 1.5 * IQR
+
+def clip_outliers(o, axis=None):
+    min_outliers, max_outliers = get_outliers_IQR(o, axis=axis)
+    if isinstance(o, (np.ndarray, pd.core.series.Series)):
+        return np.clip(o, min_outliers, max_outliers)
+    elif isinstance(o, torch.Tensor):
+        return torch.clamp(o, min_outliers, max_outliers)
 
 def get_percentile(o, percentile, axis=None):
     if isinstance(o, torch.Tensor): o = o.detach().cpu().numpy()
-    return np.percentile(o, percentile, axis=axis, keepdims=axis is not None)
+    return np.nanpercentile(o, percentile, axis=axis, keepdims=axis is not None)
 
 def torch_clamp(o, min=None, max=None):
     r"""Clamp torch.Tensor using 1 or multiple dimensions"""
@@ -681,9 +688,9 @@ def random_roll3d(o, axis=()):
     return o[axis1, axis2, axis3]
 
 # Cell
-def create_empty_array(shape, fname=None, path='./data', on_disk=True, dtype='float32', mode='c', **kwargs):
+def create_empty_array(shape, fname=None, path='./data', on_disk=True, dtype='float32', mode='r+', **kwargs):
     """
-    Modes:
+    mode:
         ‘r’:  Open existing file for reading only.
         ‘r+’: Open existing file for reading and writing.
         ‘w+’: Create or overwrite existing file for reading and writing.
@@ -708,3 +715,52 @@ def create_empty_array(shape, fname=None, path='./data', on_disk=True, dtype='fl
     else:
         arr = np.empty(shape, dtype=dtype, **kwargs)
     return arr
+
+# Cell
+import gzip
+
+def np_save_compressed(arr, fname=None, path='./data', verbose=False, **kwargs):
+    assert fname is not None, 'you must provide a fname (filename)'
+    if fname.endswith('npy'): fname = f'{fname}.gz'
+    elif not fname.endswith('npy.gz'): fname = f'{fname}.npy.gz'
+    filename = Path(path)/fname
+    filename.parent.mkdir(parents=True, exist_ok=True)
+    f = gzip.GzipFile(filename, 'w', **kwargs)
+    np.save(file=f, arr=arr)
+    f.close()
+    pv(f'array saved to {filename}', verbose)
+
+def np_load_compressed(fname=None, path='./data', **kwargs):
+    assert fname is not None, 'you must provide a fname (filename)'
+    if fname.endswith('npy'): fname = f'{fname}.gz'
+    elif not fname.endswith('npy.gz'): fname = f'{fname}.npy.gz'
+    filename = Path(path)/fname
+    f = gzip.GzipFile(filename, 'r', **kwargs)
+    arr = np.load(f)
+    f.close()
+    return arr
+
+# Cell
+def np2memmap(arr, fname=None, path='./data', dtype='float32', mode='c', **kwargs):
+    """ Function that turns an ndarray into a memmap ndarray
+    mode:
+        ‘r’:  Open existing file for reading only.
+        ‘r+’: Open existing file for reading and writing.
+        ‘w+’: Create or overwrite existing file for reading and writing.
+        ‘c’:  Copy-on-write: assignments affect data in memory, but changes are not saved to disk. The file on disk is read-only.
+    """
+    assert fname is not None, 'you must provide a fname (filename)'
+    if not fname.endswith('npy'): fname = f'{fname}.npy'
+    filename = Path(path)/fname
+    filename.parent.mkdir(parents=True, exist_ok=True)
+    # Save file
+    np.save(filename, arr)
+    # Open file in selected mode
+    arr = np.load(filename, mmap_mode=mode)
+    return arr
+
+# Cell
+def series2periodic(series, max_val):
+    sin = np.sin(series.astype(float) / max_val * 2 * np.pi)
+    cos = np.cos(series.astype(float) / max_val * 2 * np.pi)
+    return sin, cos
