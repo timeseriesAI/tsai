@@ -13,7 +13,7 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'apply_cmap', 'torch_tile', 'to_tsfresh_df', 'pcorr', 'scorr', 'torch_diff', 'get_outliers_IQR',
            'clip_outliers', 'get_percentile', 'torch_clamp', 'torch_slice_by_dim', 'torch_nanmean', 'torch_nanstd',
            'concat', 'reduce_memory_usage', 'cls_name', 'roll2d', 'roll3d', 'random_roll2d', 'random_roll3d',
-           'create_empty_array', 'np_save_compressed', 'np_load_compressed', 'np2memmap', 'series2periodic']
+           'create_empty_array', 'np_save_compressed', 'np_load_compressed', 'np2memmap']
 
 # Cell
 from .imports import *
@@ -758,9 +758,3 @@ def np2memmap(arr, fname=None, path='./data', dtype='float32', mode='c', **kwarg
     # Open file in selected mode
     arr = np.load(filename, mmap_mode=mode)
     return arr
-
-# Cell
-def series2periodic(series, max_val):
-    sin = np.sin(series.astype(float) / max_val * 2 * np.pi)
-    cos = np.cos(series.astype(float) / max_val * 2 * np.pi)
-    return sin, cos
