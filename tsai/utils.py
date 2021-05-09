@@ -633,58 +633,68 @@ def cls_name(o): return o.__class__.__name__
 
 # Cell
 
-# This solution is based on https://stackoverflow.com/questions/20360675/roll-rows-of-a-matrix-independently
-def roll2d(o, roll1=None, roll2=None):
-    r"""Rolls a 2D object on the indicated axis"""
+def roll2d(o, roll1: Union[None, list, int] = None, roll2: Union[None, list, int] = None):
+    """Rolls a 2D object on the indicated axis
+    This solution is based on https://stackoverflow.com/questions/20360675/roll-rows-of-a-matrix-independently
+    """
+
     assert o.ndim == 2, "roll2D can only be applied to 2d objects"
     axis1, axis2 = np.ogrid[:o.shape[0], :o.shape[1]]
     if roll1 is not None:
-        axis1 = axis1 - roll1.reshape(-1, 1)
-    if roll2 is not None:
-        axis2 = axis2 - roll2.reshape(-1, 1)
+        if isinstance(roll1, int): axis1 = axis1 - np.array(roll1).reshape(1,1)
+        else: axis1 = np.array(roll1).reshape(o.shape[0],1)
+    if roll2:
+        if isinstance(roll2, int):  axis2 = axis2 - np.array(roll2).reshape(1,1)
+        else: axis2 = np.array(roll2).reshape(1,o.shape[1])
     return o[axis1, axis2]
 
 
-# This solution is based on https://stackoverflow.com/questions/20360675/roll-rows-of-a-matrix-independently
-def roll3d(o, roll1=None, roll2=None, roll3=None):
-    r"""Rolls a 3D object on the indicated axis"""
+def roll3d(o, roll1: Union[None, list, int] = None, roll2: Union[None, list, int] = None, roll3: Union[None, list, int] = None):
+    """Rolls a 3D object on the indicated axis
+    This solution is based on https://stackoverflow.com/questions/20360675/roll-rows-of-a-matrix-independently
+    """
+
     assert o.ndim == 3, "roll3D can only be applied to 3d objects"
-    axis1, axis2, axis2 = np.ogrid[:o.shape[0], :o.shape[1], :o.shape[2]]
+    axis1, axis2, axis3 = np.ogrid[:o.shape[0], :o.shape[1], :o.shape[2]]
     if roll1 is not None:
-        axis1 = axis1 - roll1.reshape(-1, 1)
-    if roll2 is not None:
-        axis2 = axis2 - roll2.reshape(-1, 1)
-    if roll3 is not None:
-        axis3 = axis3 - roll3.reshape(-1, 1)
+        if isinstance(roll1, int): axis1 = axis1 - np.array(roll1).reshape(1,1,1)
+        else: axis1 = np.array(roll1).reshape(o.shape[0],1,1)
+    if roll2:
+        if isinstance(roll2, int):  axis2 = axis2 - np.array(roll2).reshape(1,1,1)
+        else: axis2 = np.array(roll2).reshape(1,o.shape[1],1)
+    if roll3:
+        if isinstance(roll3, int):  axis3 = axis3 - np.array(roll3).reshape(1,1,1)
+        else: axis3 = np.array(roll3).reshape(1,1,o.shape[2])
     return o[axis1, axis2, axis3]
 
 
-# This solution is based on https://stackoverflow.com/questions/20360675/roll-rows-of-a-matrix-independently
 def random_roll2d(o, axis=()):
-    r"""Rolls a 2D object on the indicated axis"""
+    """Rolls a 2D object on the indicated axis
+    This solution is based on https://stackoverflow.com/questions/20360675/roll-rows-of-a-matrix-independently
+    """
+
+    assert o.ndim == 2, "roll2D can only be applied to 2d objects"
     axis1, axis2 = np.ogrid[:o.shape[0], :o.shape[1]]
     if 0 in axis:
-        roll1 = np.random.randint(0, o.shape[0], o.shape[0]).reshape(-1, 1)
-        axis1 = axis1 - roll1
+        axis1 = np.random.choice(np.arange(o.shape[0]), o.shape[0], replace).reshape(-1, 1)
     if 1 in axis:
-        roll2 = np.random.randint(0, o.shape[1], o.shape[0]).reshape(-1, 1)
-        axis2 = axis2 - roll2
+        axis2 = np.random.choice(np.arange(o.shape[1]), o.shape[1], replace).reshape(1, -1)
     return o[axis1, axis2]
 
 
-# This solution is based on https://stackoverflow.com/questions/20360675/roll-rows-of-a-matrix-independently
-def random_roll3d(o, axis=()):
-    r"""Rolls a 3D object on the indicated axis"""
+def random_roll3d(o, axis=(), replace=False):
+    """Randomly rolls a 3D object along the indicated axes
+    This solution is based on https://stackoverflow.com/questions/20360675/roll-rows-of-a-matrix-independently
+    """
+
+    assert o.ndim == 3, "random_roll3d can only be applied to 3d objects"
     axis1, axis2, axis3 = np.ogrid[:o.shape[0], :o.shape[1], :o.shape[2]]
     if 0 in axis:
-        roll1 = np.random.randint(0, o.shape[0], o.shape[0]).reshape(-1, 1, 1)
-        axis1 = axis1 - roll1
+        axis1 = np.random.choice(np.arange(o.shape[0]), o.shape[0], replace).reshape(-1, 1, 1)
     if 1 in axis:
-        roll2 = np.random.randint(0, o.shape[1], o.shape[0]).reshape(-1, 1, 1)
-        axis2 = axis2 - roll2
+        axis2 = np.random.choice(np.arange(o.shape[1]), o.shape[1], replace).reshape(1, -1, 1)
     if 2 in axis:
-        roll3 = np.random.randint(0, o.shape[2], o.shape[0]).reshape(-1, 1, 1)
-        axis3 = axis3 - roll3
+        axis3 = np.random.choice(np.arange(o.shape[2]), o.shape[2], replace).reshape(1, 1, -1)
     return o[axis1, axis2, axis3]
 
 # Cell
