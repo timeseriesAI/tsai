@@ -141,6 +141,10 @@ class TSStandardize(Transform):
                 self.std = torch.clamp_min(torch_nanstd(o, dim=self.axes, keepdim=self.axes!=()), self.eps)
         return (o - self.mean) / self.std
 
+    def decodes(self, o:TSTensor):
+        if self.mean is None or self.std is None: return o
+        return o * self.std + self.mean
+
     def __repr__(self): return f'{self.__class__.__name__}(by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step})'
 
 # Cell
