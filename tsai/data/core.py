@@ -386,12 +386,18 @@ class NumpyDataLoader(TfmdDL):
 
 
     @delegates(plt.subplots)
-    def show_batch(self, b=None, ctxs=None, max_n=9, nrows=3, ncols=3, figsize=None, unique=False, sharex=True, sharey=False, **kwargs):
+    def show_batch(self, b=None, ctxs=None, max_n=9, nrows=3, ncols=3, figsize=None, unique=False, sharex=True, sharey=False, decode=False, **kwargs):
         if unique:
             b = self.unique_batch(max_n=max_n)
             sharex, sharey = True, True
         elif b is None: b = self.one_batch()
-        db = self.decode_batch(b, max_n=max_n)
+        if not decode:                                        # decode = False allows you to see the data as seen by the model
+            after_batch = self.after_batch
+            self.after_batch = fastcore.transform.Pipeline()
+            db = self.decode_batch(b, max_n=max_n)
+            self.after_batch = after_batch
+        else:
+            db = self.decode_batch(b, max_n=max_n)
         ncols = min(ncols, math.ceil(len(db) / ncols))
         nrows = min(nrows, math.ceil(len(db) / ncols))
         max_n = min(max_n, len(db), nrows*ncols)
