@@ -271,7 +271,6 @@ def SlidingWindow(window_len:int, stride:Union[None, int]=1, start:int=0, pad_re
 
     """
     Applies a sliding window to a 1d or 2d input (np.ndarray, torch.Tensor or pd.DataFrame)
-
     Args:
         window_len      = length of lookback window
         stride          = n datapoints the window is moved ahead along the sequence. Default: 1. If None, stride=window_len (no overlap)
@@ -289,8 +288,6 @@ def SlidingWindow(window_len:int, stride:Union[None, int]=1, start:int=0, pad_re
         sort_by         = column/s used for sorting the array in ascending order
         ascending       = used in sorting
         check_leakage   = checks if there's leakage in the output between X and y
-
-
     Input:
         You can use np.ndarray, pd.DataFrame or torch.Tensor as input
         shape: (seq_len, ) or (seq_len, n_vars) if seq_first=True else (n_vars, seq_len)
@@ -320,17 +317,19 @@ def SlidingWindow(window_len:int, stride:Union[None, int]=1, start:int=0, pad_re
             X = o[:, _get_x]
             if get_y != []: y = o[:, _get_y]
         seq_len = len(X)
-        X_max_time = seq_len - start - max_horizon - window_len + 1
+        if get_y != []:
+            X_max_time = seq_len - start - max_horizon - window_len
+        else:
+            X_max_time = seq_len - start - window_len
         if X_max_time <= 0: return None, None
         if get_y == [] and pad_remainder and X_max_time % stride:
-            X_max_time = (2 + X_max_time // stride) * stride
-            _X = np.empty((X_max_time - len(X), *X.shape[1:]))
+            X_max_time = X_max_time - X_max_time % stride + stride
+            _X = np.empty((window_len + start + X_max_time - len(X), *X.shape[1:]))
             _X[:] = np.nan
             X = np.concatenate((X, _X))
-
         X_sub_windows = (start +
                          np.expand_dims(np.arange(window_len), 0) + # window len
-                         np.expand_dims(np.arange(X_max_time, step=stride), 0).T) # # subwindows
+                         np.expand_dims(np.arange(X_max_time + 1, step=stride), 0).T) # # subwindows
         X = np.transpose(X[X_sub_windows], (0, 2, 1))
         if get_y != [] and y is not None:
             y_start = start + window_len - 1
