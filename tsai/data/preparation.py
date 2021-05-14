@@ -265,9 +265,9 @@ def delta_timestamps_torch(mask, dir='forward'):
 # https://towardsdatascience.com/fast-and-robust-sliding-window-vectorization-with-numpy-3ad950ed62f5
 
 
-def SlidingWindow(window_len:int, stride:Union[None, int]=1, start:int=0, pad_remainder:bool=False, get_x:Union[None, int, list]=None,
-                  get_y:Union[None, int, list]=None, y_func:Optional[callable]=None, horizon:Union[int, list]=1, seq_first:bool=True,
-                  sort_by:Optional[list]=None, ascending:bool=True, check_leakage:bool=True):
+def SlidingWindow(window_len:int, stride:Union[None, int]=1, start:int=0, pad_remainder:bool=False, padding_value:float=np.nan,
+                  get_x:Union[None, int, list]=None, get_y:Union[None, int, list]=None, y_func:Optional[callable]=None,
+                  horizon:Union[int, list]=1, seq_first:bool=True, sort_by:Optional[list]=None, ascending:bool=True, check_leakage:bool=True):
 
     """
     Applies a sliding window to a 1d or 2d input (np.ndarray, torch.Tensor or pd.DataFrame)
@@ -276,6 +276,7 @@ def SlidingWindow(window_len:int, stride:Union[None, int]=1, start:int=0, pad_re
         stride          = n datapoints the window is moved ahead along the sequence. Default: 1. If None, stride=window_len (no overlap)
         start           = determines the step where the first window is applied: 0 (default), a given step (int), or random within the 1st stride (None).
         pad_remainder   = allows to pad remainder subsequences when the sliding window is applied and get_y == [] (unlabeled data).
+        padding_value   = value (float) that will be used for padding. Default: np.nan
         horizon         = number of future datapoints to predict:
                             * 0 for last step in each sub-window.
                             * n > 0 for a range of n future steps (1 to n).
@@ -325,7 +326,7 @@ def SlidingWindow(window_len:int, stride:Union[None, int]=1, start:int=0, pad_re
         if get_y == [] and pad_remainder and X_max_time % stride:
             X_max_time = X_max_time - X_max_time % stride + stride
             _X = np.empty((window_len + start + X_max_time - len(X), *X.shape[1:]))
-            _X[:] = np.nan
+            _X[:] = padding_value
             X = np.concatenate((X, _X))
         X_sub_windows = (start +
                          np.expand_dims(np.arange(window_len), 0) + # window len
@@ -352,7 +353,8 @@ def SlidingWindow(window_len:int, stride:Union[None, int]=1, start:int=0, pad_re
 SlidingWindowSplitter = SlidingWindow
 
 # Cell
-def SlidingWindowPanel(window_len:int, unique_id_cols:list, stride:Union[None, int]=1, start:int=0, pad_remainder:bool=False,
+def SlidingWindowPanel(window_len:int, unique_id_cols:list, stride:Union[None, int]=1, start:int=0,
+                       pad_remainder:bool=False, padding_value:float=np.nan,
                        get_x:Union[None, int, list]=None,  get_y:Union[None, int, list]=None, y_func:Optional[callable]=None,
                        horizon:Union[int, list]=1, seq_first:bool=True, sort_by:Optional[list]=None, ascending:bool=True,
                        check_leakage:bool=True, return_key:bool=False, verbose:bool=True):
@@ -366,6 +368,7 @@ def SlidingWindowPanel(window_len:int, unique_id_cols:list, stride:Union[None, i
         stride          = n datapoints the window is moved ahead along the sequence. Default: 1. If None, stride=window_len (no overlap)
         start           = determines the step where the first window is applied: 0 (default), a given step (int), or random within the 1st stride (None).
         pad_remainder   = allows to pad remainder subsequences when the sliding window is applied and get_y == [] (unlabeled data).
+        padding_value   = value (float) that will be used for padding. Default: np.nan
         horizon         = number of future datapoints to predict:
                             * 0 for last step in each sub-window.
                             * n > 0 for a range of n future steps (1 to n).
