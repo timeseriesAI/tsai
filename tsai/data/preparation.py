@@ -5,7 +5,7 @@ __all__ = ['df2Xy', 'split_Xy', 'df2xy', 'split_xy', 'df2np3d', 'add_missing_val
            'SlidingWindowSplitter', 'SlidingWindowPanel', 'SlidingWindowPanelSplitter', 'identify_padding']
 
 # Cell
-from ..imports import *s
+from ..imports import *
 from ..utils import *
 from .validation import *
 
