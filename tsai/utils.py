@@ -13,7 +13,7 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'apply_cmap', 'torch_tile', 'to_tsfresh_df', 'pcorr', 'scorr', 'torch_diff', 'get_outliers_IQR',
            'clip_outliers', 'get_percentile', 'torch_clamp', 'torch_slice_by_dim', 'torch_nanmean', 'torch_nanstd',
            'concat', 'reduce_memory_usage', 'cls_name', 'roll2d', 'roll3d', 'random_roll2d', 'random_roll3d',
-           'create_empty_array', 'np_save_compressed', 'np_load_compressed', 'np2memmap']
+           'create_empty_array', 'np_save_compressed', 'np_load_compressed', 'np2memmap', 'torch_mean_groupby']
 
 # Cell
 from .imports import *
@@ -768,3 +768,14 @@ def np2memmap(arr, fname=None, path='./data', dtype='float32', mode='c', **kwarg
     # Open file in selected mode
     arr = np.load(filename, mmap_mode=mode)
     return arr
+
+# Cell
+
+def torch_mean_groupby(o, idxs):
+    """Computes torch mean along axis 0 grouped by the idxs.
+    Need to ensure that idxs have the same order as o"""
+    if is_listy(idxs[0]): idxs = flatten_list(idxs)
+    flattened_idxs = torch.tensor(idxs)
+    idxs, vals = torch.unique(flattened_idxs, return_counts=True)
+    vs = torch.split_with_sizes(o, tuple(vals))
+    return torch.cat([v.mean(0).unsqueeze(0) for k,v in zip(idxs, vs)])
