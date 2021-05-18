@@ -265,30 +265,31 @@ def delta_timestamps_torch(mask, dir='forward'):
 # https://towardsdatascience.com/fast-and-robust-sliding-window-vectorization-with-numpy-3ad950ed62f5
 
 
-def SlidingWindow(window_len:int, stride:Union[None, int]=1, start:int=0, pad_remainder:bool=False, padding_value:float=np.nan,
+def SlidingWindow(window_len:int, stride:Union[None, int]=1, start:int=0, pad_remainder:bool=False, padding_value:float=np.nan, add_padding_feature:bool=True,
                   get_x:Union[None, int, list]=None, get_y:Union[None, int, list]=None, y_func:Optional[callable]=None,
                   horizon:Union[int, list]=1, seq_first:bool=True, sort_by:Optional[list]=None, ascending:bool=True, check_leakage:bool=True):
 
     """
     Applies a sliding window to a 1d or 2d input (np.ndarray, torch.Tensor or pd.DataFrame)
     Args:
-        window_len      = length of lookback window
-        stride          = n datapoints the window is moved ahead along the sequence. Default: 1. If None, stride=window_len (no overlap)
-        start           = determines the step where the first window is applied: 0 (default), a given step (int), or random within the 1st stride (None).
-        pad_remainder   = allows to pad remainder subsequences when the sliding window is applied and get_y == [] (unlabeled data).
-        padding_value   = value (float) that will be used for padding. Default: np.nan
-        horizon         = number of future datapoints to predict:
+        window_len          = length of lookback window
+        stride              = n datapoints the window is moved ahead along the sequence. Default: 1. If None, stride=window_len (no overlap)
+        start               = determines the step where the first window is applied: 0 (default), a given step (int), or random within the 1st stride (None).
+        pad_remainder       = allows to pad remainder subsequences when the sliding window is applied and get_y == [] (unlabeled data).
+        padding_value       = value (float) that will be used for padding. Default: np.nan
+        add_padding_feature = add an additional feature indicating whether each timestep is padded (1) or not (0).
+        horizon             = number of future datapoints to predict:
                             * 0 for last step in each sub-window.
                             * n > 0 for a range of n future steps (1 to n).
                             * n < 0 for a range of n past steps (-n + 1 to 0).
                             * list : for those exact timesteps.
-        get_x           = indices of columns that contain the independent variable (xs). If None, all data will be used as x.
-        get_y           = indices of columns that contain the target (ys). If None, all data will be used as y. [] means no y data is created (unlabeled data).
-        y_func          = function to calculate the ys based on the get_y col/s and each y sub-window. y_func must be a function applied to axis=1!
-        seq_first       = True if input shape (seq_len, n_vars), False if input shape (n_vars, seq_len)
-        sort_by         = column/s used for sorting the array in ascending order
-        ascending       = used in sorting
-        check_leakage   = checks if there's leakage in the output between X and y
+        get_x               = indices of columns that contain the independent variable (xs). If None, all data will be used as x.
+        get_y               = indices of columns that contain the target (ys). If None, all data will be used as y. [] means no y data is created (unlabeled data).
+        y_func              = function to calculate the ys based on the get_y col/s and each y sub-window. y_func must be a function applied to axis=1!
+        seq_first           = True if input shape (seq_len, n_vars), False if input shape (n_vars, seq_len)
+        sort_by             = column/s used for sorting the array in ascending order
+        ascending           = used in sorting
+        check_leakage       = checks if there's leakage in the output between X and y
     Input:
         You can use np.ndarray, pd.DataFrame or torch.Tensor as input
         shape: (seq_len, ) or (seq_len, n_vars) if seq_first=True else (n_vars, seq_len)
@@ -323,11 +324,16 @@ def SlidingWindow(window_len:int, stride:Union[None, int]=1, start:int=0, pad_re
         else:
             X_max_time = seq_len - start - window_len
         if X_max_time <= 0: return None, None
-        if get_y == [] and pad_remainder and X_max_time % stride:
-            X_max_time = X_max_time - X_max_time % stride + stride
-            _X = np.empty((window_len + start + X_max_time - len(X), *X.shape[1:]))
-            _X[:] = padding_value
-            X = np.concatenate((X, _X))
+        if get_y == [] and pad_remainder:
+            if add_padding_feature:
+                X = np.concatenate([X, np.zeros((X.shape[0], 1))], axis=1)
+            if X_max_time % stride:
+                X_max_time = X_max_time - X_max_time % stride + stride
+                _X = np.empty((window_len + start + X_max_time - len(X), *X.shape[1:]))
+                _X[:] = padding_value
+                if add_padding_feature:
+                    _X[:, -1] = 1
+                X = np.concatenate((X, _X))
         X_sub_windows = (start +
                          np.expand_dims(np.arange(window_len), 0) + # window len
                          np.expand_dims(np.arange(X_max_time + 1, step=stride), 0).T) # # subwindows
@@ -354,7 +360,7 @@ SlidingWindowSplitter = SlidingWindow
 
 # Cell
 def SlidingWindowPanel(window_len:int, unique_id_cols:list, stride:Union[None, int]=1, start:int=0,
-                       pad_remainder:bool=False, padding_value:float=np.nan,
+                       pad_remainder:bool=False, padding_value:float=np.nan, add_padding_feature:bool=True,
                        get_x:Union[None, int, list]=None,  get_y:Union[None, int, list]=None, y_func:Optional[callable]=None,
                        horizon:Union[int, list]=1, seq_first:bool=True, sort_by:Optional[list]=None, ascending:bool=True,
                        check_leakage:bool=True, return_key:bool=False, verbose:bool=True):
@@ -363,26 +369,27 @@ def SlidingWindowPanel(window_len:int, unique_id_cols:list, stride:Union[None, i
     Applies a sliding window to a pd.DataFrame.
 
     Args:
-        window_len      = length of lookback window
-        unique_id_cols  = pd.DataFrame columns that will be used to identify a time series for each entity.
-        stride          = n datapoints the window is moved ahead along the sequence. Default: 1. If None, stride=window_len (no overlap)
-        start           = determines the step where the first window is applied: 0 (default), a given step (int), or random within the 1st stride (None).
-        pad_remainder   = allows to pad remainder subsequences when the sliding window is applied and get_y == [] (unlabeled data).
-        padding_value   = value (float) that will be used for padding. Default: np.nan
-        horizon         = number of future datapoints to predict:
+        window_len          = length of lookback window
+        unique_id_cols      = pd.DataFrame columns that will be used to identify a time series for each entity.
+        stride              = n datapoints the window is moved ahead along the sequence. Default: 1. If None, stride=window_len (no overlap)
+        start               = determines the step where the first window is applied: 0 (default), a given step (int), or random within the 1st stride (None).
+        pad_remainder       = allows to pad remainder subsequences when the sliding window is applied and get_y == [] (unlabeled data).
+        padding_value       = value (float) that will be used for padding. Default: np.nan
+        add_padding_feature = add an additional feature indicating whether each timestep is padded (1) or not (0).
+        horizon             = number of future datapoints to predict:
                             * 0 for last step in each sub-window.
                             * n > 0 for a range of n future steps (1 to n).
                             * n < 0 for a range of n past steps (-n + 1 to 0).
                             * list : for those exact timesteps.
-        get_x           = indices of columns that contain the independent variable (xs). If None, all data will be used as x.
-        get_y           = indices of columns that contain the target (ys). If None, all data will be used as y. [] means no y data is created (unlabeled data).
-        y_func          = function to calculate the ys based on the get_y col/s and each y sub-window. y_func must be a function applied to axis=1!
-        seq_first       = True if input shape (seq_len, n_vars), False if input shape (n_vars, seq_len)
-        sort_by         = column/s used for sorting the array in ascending order
-        ascending       = used in sorting
-        check_leakage   = checks if there's leakage in the output between X and y
-        return_key      = when True, the key corresponsing to unique_id_cols for each sample is returned
-        verbose         = controls verbosity. True or 1 displays progress bar. 2 or more show records that cannot be created due to its length.
+        get_x               = indices of columns that contain the independent variable (xs). If None, all data will be used as x.
+        get_y               = indices of columns that contain the target (ys). If None, all data will be used as y. [] means no y data is created (unlabeled data).
+        y_func              = function to calculate the ys based on the get_y col/s and each y sub-window. y_func must be a function applied to axis=1!
+        seq_first           = True if input shape (seq_len, n_vars), False if input shape (n_vars, seq_len)
+        sort_by             = column/s used for sorting the array in ascending order
+        ascending           = used in sorting
+        check_leakage       = checks if there's leakage in the output between X and y
+        return_key          = when True, the key corresponsing to unique_id_cols for each sample is returned
+        verbose             = controls verbosity. True or 1 displays progress bar. 2 or more show records that cannot be created due to its length.
 
 
     Input:
@@ -402,7 +409,8 @@ def SlidingWindowPanel(window_len:int, unique_id_cols:list, stride:Union[None, i
         _y = []
         _key = []
         for v in progress_bar(unique_id_values, display=verbose, leave=False):
-            x_v, y_v = SlidingWindow(window_len, stride=stride, start=start, pad_remainder=pad_remainder, get_x=get_x, get_y=get_y, y_func=y_func,
+            x_v, y_v = SlidingWindow(window_len, stride=stride, start=start, pad_remainder=pad_remainder, padding_value=padding_value,
+                                     add_padding_feature=add_padding_feature, get_x=get_x, get_y=get_y, y_func=y_func,
                                      horizon=horizon, seq_first=seq_first,
                                      check_leakage=check_leakage)(df[(df[unique_id_cols].values == v).sum(axis=1) == len(v)])
             if x_v is not None and len(x_v) > 0:
