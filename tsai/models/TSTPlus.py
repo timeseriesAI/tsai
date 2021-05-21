@@ -270,7 +270,10 @@ class _TSTBackbone(Module):
     def forward(self, x:Tensor) -> Tensor:  # x: [bs x nvars x q_len]
 
         # Padding mask
-        x, key_padding_mask = self._key_padding_mask(x)
+        if self.key_padding_mask:
+            x, key_padding_mask = self._key_padding_mask(x)
+        else:
+            key_padding_mask = None
 
         # Input encoding
         if self.new_q_len: u = self.W_P(x).transpose(2,1) # Eq 2        # u: [bs x d_model x q_len] transposed to [bs x q_len x d_model]
@@ -310,22 +313,23 @@ class _TSTBackbone(Module):
     def _key_padding_mask(self, x):
         mask = torch.isnan(x)
         x[mask] = 0
-        if self.key_padding_mask and mask.any():
+        if mask.any():
             mask = TSMaskTensor((mask.float().mean(1)==1).bool())   # key_padding_mask: [bs x q_len]
             return x, mask
         else:
             return x, None
 
 # Cell
+
 class TSTPlus(nn.Sequential):
+    """TST (Time Series Transformer) is a Transformer that takes continuous time series as inputs"""
     def __init__(self, c_in:int, c_out:int, seq_len:int, max_seq_len:Optional[int]=512,
                  n_layers:int=3, d_model:int=128, n_heads:int=16, d_k:Optional[int]=None, d_v:Optional[int]=None,
                  d_ff:int=256, res_dropout:float=0.1, act:str="gelu", key_padding_mask:bool=True, attn_mask:Optional[Tensor]=None,
                  res_attention:bool=True, pre_norm:bool=False, pe:str='zeros', learn_pe:bool=True, flatten:bool=False, fc_dropout:float=0.,
                  concat_pool:bool=False, bn:bool=True, custom_head:Optional=None,
                  y_range:Optional[tuple]=None, verbose:bool=False, **kwargs):
-        r"""TST (Time Series Transformer) is a Transformer that takes continuous time series as inputs.
-        As mentioned in the paper, the input must be standardized by_var based on the entire training set.
+        """
         Args:
             c_in: the number of features (aka variables, dimensions, channels) in the time series dataset.
             c_out: the number of target classes.
@@ -354,10 +358,10 @@ class TSTPlus(nn.Sequential):
             custom_head: custom head that will be applied to the network. It must contain all kwargs (pass a partial function)
             y_range: range of possible y values (used in regression tasks).
             kwargs: nn.Conv1d kwargs. If not {}, a nn.Conv1d with those kwargs will be applied to original time series.
-
         Input shape:
             x: bs (batch size) x nvars (aka features, variables, dimensions, channels) x seq_len (aka time steps)
             attn_mask: q_len x q_len
+            As mentioned in the paper, the input must be standardized by_var based on the entire training set.
         """
         # Backbone
         backbone = _TSTBackbone(c_in, seq_len=seq_len, max_seq_len=max_seq_len,
