@@ -5,7 +5,7 @@ __all__ = ['noop', 'init_lin_zero', 'lin_zero_init', 'SwishBeta', 'same_padding1
            'AddCoords1d', 'ConvBlock', 'Conv', 'ConvBN', 'ConvIN', 'CoordConv', 'CoordConvBN', 'SepConv', 'SepConvBN',
            'SepConvIN', 'SepCoordConv', 'SepCoordConvBN', 'ResBlock1dPlus', 'SEModule1d', 'Norm', 'BN1d', 'IN1d',
            'LinLnDrop', 'LambdaPlus', 'Squeeze', 'Unsqueeze', 'Add', 'Concat', 'Permute', 'Transpose', 'View',
-           'Reshape', 'Max', 'LastStep', 'SoftMax', 'Clamp', 'Noop', 'Sharpen', 'Sequential', 'TimeDistributed',
+           'Reshape', 'Max', 'LastStep', 'SoftMax', 'Clamp', 'Clip', 'Noop', 'Sharpen', 'Sequential', 'TimeDistributed',
            'Temp_Scale', 'Vector_Scale', 'Matrix_Scale', 'get_calibrator', 'LogitAdjustmentLayer', 'LogitAdjLayer',
            'PPV', 'PPAuc', 'MaxPPVPool1d', 'AdaptiveWeightedAvgPool1d', 'GAP1d', 'GACP1d', 'GAWP1d',
            'GlobalWeightedAveragePool1d', 'gwa_pool_head', 'GWAP1d', 'AttentionalPool1d', 'GAttP1d',
@@ -371,6 +371,19 @@ class Clamp(Module):
     def forward(self, x):
         return x.clamp(min=self.min, max=self.max)
     def __repr__(self): return f'{self.__class__.__name__}(min={self.min}, max={self.max})'
+
+
+class Clip(Module):
+    def __init__(self, min=None, max=None):
+        self.min, self.max = min, max
+
+    def forward(self, x):
+        if self.min is not None:
+            x = torch.maximum(x, self.min)
+        if self.max is not None:
+            x = torch.minimum(x, self.max)
+        return x
+    def __repr__(self): return f'{self.__class__.__name__}()'
 
 Noop = nn.Sequential()
 

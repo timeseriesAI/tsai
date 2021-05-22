@@ -163,28 +163,34 @@ def add_missing_timestamps(df, datetime_col, groupby=None, fill_value=np.nan, ra
 # Cell
 def time_encoding(series, freq, max_val=None):
     """Transforms a pandas series of dtype datetime64 (of any freq) or DatetimeIndex into 2 float arrays
-    Available attributes: microsecond, second, minute, hour, day, dayofweek, dayofyear and month
+
+    Available options: microsecond, millisecond, second, minute, hour, day = day_of_month = dayofmonth,
+    day_of_week = weekday = dayofweek, day_of_year = dayofyear, week = week_of_year = weekofyear, month and year
     """
 
-    if freq == 'weekday' or freq == 'weekday': freq = 'dayofweek'
-    elif freq == 'dayofmonth': freq = 'day'
-    available_freqs = ['microsecond', 'second', 'minute', 'hour', 'day', 'dayofweek', 'dayofyear', 'month']
+    if freq == 'day_of_week' or freq == 'weekday': freq = 'dayofweek'
+    elif freq == 'day_of_month' or freq == 'dayofmonth': freq = 'day'
+    elif freq == 'day_of_year': freq = 'dayofyear'
+    available_freqs = ['microsecond', 'millisecond', 'second', 'minute', 'hour', 'day', 'dayofweek', 'dayofyear', 'week', 'month', 'year']
     assert freq in available_freqs
     if max_val is None:
         idx = available_freqs.index(freq)
-        max_val = [1_000_000, 60, 60, 24, 31, 7, 365, 12][idx]
+        max_val = [1_000_000, 1_000, 60, 60, 24, 31, 7, 366, 53, 12, 10][idx]
     try:
         series = series.to_series()
     except:
         pass
     if freq == 'microsecond': series = series.dt.microsecond
+    elif freq == 'millisecond': series = series.dt.microsecond // 1_000
     elif freq == 'second': series = series.dt.second
     elif freq == 'minute': series = series.dt.minute
     elif freq == 'hour': series = series.dt.hour
     elif freq == 'day': series = series.dt.day
     elif freq == 'dayofweek': series = series.dt.dayofweek
     elif freq == 'dayofyear': series = series.dt.dayofyear
+    elif freq == 'week': series = series.dt.isocalendar().week
     elif freq == 'month': series = series.dt.month
+    elif freq == 'year': series = series.dt.year - series.dt.year // 10 * 10
     sin = np.sin(series.values / max_val * 2 * np.pi)
     cos = np.cos(series.values / max_val * 2 * np.pi)
     return sin, cos
@@ -305,7 +311,8 @@ def SlidingWindow(window_len:int, stride:Union[None, int]=1, start:int=0, pad_re
     if min_horizon <= 0 and y_func is None and get_y != [] and check_leakage:
         assert get_x is not None and  get_y is not None and len([y for y in _get_y if y in _get_x]) == 0,  \
         'you need to change either horizon, get_x, get_y or use a y_func to avoid leakage'
-    stride = ifnone(stride, window_len)
+    if stride == 0 or stride is None:
+        stride = window_len
 
     def _inner(o):
         if not seq_first: o = o.T
@@ -323,7 +330,6 @@ def SlidingWindow(window_len:int, stride:Union[None, int]=1, start:int=0, pad_re
             X_max_time = seq_len - start - max_horizon - window_len
         else:
             X_max_time = seq_len - start - window_len
-        if X_max_time <= 0: return None, None
         if get_y == [] and pad_remainder:
             if add_padding_feature:
                 X = np.concatenate([X, np.zeros((X.shape[0], 1))], axis=1)
@@ -334,6 +340,7 @@ def SlidingWindow(window_len:int, stride:Union[None, int]=1, start:int=0, pad_re
                 if add_padding_feature:
                     _X[:, -1] = 1
                 X = np.concatenate((X, _X))
+        elif X_max_time <= 0: return None, None
         X_sub_windows = (start +
                          np.expand_dims(np.arange(window_len), 0) + # window len
                          np.expand_dims(np.arange(X_max_time + 1, step=stride), 0).T) # # subwindows

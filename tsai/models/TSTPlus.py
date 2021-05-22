@@ -147,7 +147,7 @@ class MultiHeadAttention(Module):
 # Internal Cell
 class _TSTEncoderLayer(Module):
     def __init__(self, q_len:int, d_model:int, n_heads:int, d_k:Optional[int]=None, d_v:Optional[int]=None, d_ff:int=256,
-                 res_dropout:float=0.1, bias:bool=True, activation:str="gelu", res_attention:bool=False, pre_norm:bool=False):
+                 res_dropout:float=0., bias:bool=True, activation:str="gelu", res_attention:bool=False, pre_norm:bool=False):
 
         assert not d_model%n_heads, f"d_model ({d_model}) must be divisible by n_heads ({n_heads})"
         d_k = ifnone(d_k, d_model // n_heads)
@@ -209,7 +209,7 @@ class _TSTEncoderLayer(Module):
 
 # Internal Cell
 class _TSTEncoder(Module):
-    def __init__(self, q_len, d_model, n_heads, d_k=None, d_v=None, d_ff=None, res_dropout=0.1, activation='gelu', res_attention=False, n_layers=1,
+    def __init__(self, q_len, d_model, n_heads, d_k=None, d_v=None, d_ff=None, res_dropout=0., activation='gelu', res_attention=False, n_layers=1,
                  pre_norm:bool=False):
         self.layers = nn.ModuleList([_TSTEncoderLayer(q_len, d_model, n_heads=n_heads, d_k=d_k, d_v=d_v, d_ff=d_ff, res_dropout=res_dropout,
                                                       activation=activation, res_attention=res_attention, pre_norm=pre_norm) for i in range(n_layers)])
@@ -229,7 +229,7 @@ class _TSTEncoder(Module):
 class _TSTBackbone(Module):
     def __init__(self, c_in:int, seq_len:int, max_seq_len:Optional[int]=512,
                  n_layers:int=3, d_model:int=128, n_heads:int=16, d_k:Optional[int]=None, d_v:Optional[int]=None,
-                 d_ff:int=256, res_dropout:float=0.1, act:str="gelu",
+                 d_ff:int=256, res_dropout:float=0., act:str="gelu",
                  key_padding_mask:bool=True, attn_mask:Optional[Tensor]=None, res_attention:bool=True, pre_norm:bool=False,
                  pe:str='zeros', learn_pe:bool=True, verbose:bool=False, **kwargs):
 
@@ -325,7 +325,7 @@ class TSTPlus(nn.Sequential):
     """TST (Time Series Transformer) is a Transformer that takes continuous time series as inputs"""
     def __init__(self, c_in:int, c_out:int, seq_len:int, max_seq_len:Optional[int]=512,
                  n_layers:int=3, d_model:int=128, n_heads:int=16, d_k:Optional[int]=None, d_v:Optional[int]=None,
-                 d_ff:int=256, res_dropout:float=0.1, act:str="gelu", key_padding_mask:bool=True, attn_mask:Optional[Tensor]=None,
+                 d_ff:int=256, res_dropout:float=0., act:str="gelu", key_padding_mask:bool=True, attn_mask:Optional[Tensor]=None,
                  res_attention:bool=True, pre_norm:bool=False, pe:str='zeros', learn_pe:bool=True, flatten:bool=False, fc_dropout:float=0.,
                  concat_pool:bool=False, bn:bool=True, custom_head:Optional=None,
                  y_range:Optional[tuple]=None, verbose:bool=False, **kwargs):
