@@ -13,7 +13,8 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'apply_cmap', 'torch_tile', 'to_tsfresh_df', 'pcorr', 'scorr', 'torch_diff', 'get_outliers_IQR',
            'clip_outliers', 'get_percentile', 'torch_clamp', 'torch_slice_by_dim', 'torch_nanmean', 'torch_nanstd',
            'concat', 'reduce_memory_usage', 'cls_name', 'roll2d', 'roll3d', 'random_roll2d', 'random_roll3d',
-           'create_empty_array', 'np_save_compressed', 'np_load_compressed', 'np2memmap', 'torch_mean_groupby']
+           'create_empty_array', 'np_save_compressed', 'np_load_compressed', 'np2memmap', 'torch_mean_groupby',
+           'torch_flip']
 
 # Cell
 from .imports import *
@@ -779,3 +780,10 @@ def torch_mean_groupby(o, idxs):
     idxs, vals = torch.unique(flattened_idxs, return_counts=True)
     vs = torch.split_with_sizes(o, tuple(vals))
     return torch.cat([v.mean(0).unsqueeze(0) for k,v in zip(idxs, vs)])
+
+# Cell
+def torch_flip(t, dims=-1):
+    if dims == -1: return t[..., np.arange(t.shape[dims])[::-1].copy()]
+    elif dims == 0: return t[np.arange(t.shape[dims])[::-1].copy()]
+    elif dims == 1: return t[:, np.arange(t.shape[dims])[::-1].copy()]
+    elif dims == 2: return t[:, :, np.arange(t.shape[dims])[::-1].copy()]
