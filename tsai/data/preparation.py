@@ -2,7 +2,7 @@
 
 __all__ = ['df2Xy', 'split_Xy', 'df2xy', 'split_xy', 'df2np3d', 'add_missing_value_cols', 'add_missing_timestamps',
            'time_encoding', 'delta_timestamps', 'add_delta_timestamp_cols', 'delta_timestamps_torch', 'forward_gaps',
-           'backward_gaps', 'nearest_gaps', 'SlidingWindow', 'SlidingWindowSplitter', 'SlidingWindowPanel',
+           'backward_gaps', 'nearest_gaps', 'all_gaps', 'SlidingWindow', 'SlidingWindowSplitter', 'SlidingWindowPanel',
            'SlidingWindowPanelSplitter', 'identify_padding']
 
 # Cell
@@ -301,12 +301,30 @@ def backward_gaps(o, nan_to_num=-1):
 def nearest_gaps(o):
     """Number of sequence steps to nearest real value along the last dimension of 3D arrays or tensors"""
 
+    forward = forward_gaps(o, nan_to_num=np.nan)
+    backward = backward_gaps(o, nan_to_num=np.nan)
     if isinstance(o, torch.Tensor):
-        gaps = torch.fmin(forward_gaps(o, nan_to_num=np.nan), backward_gaps(o, nan_to_num=np.nan))
+        gaps = torch.fmin(forward, backward)
         gaps[torch.isnan(gaps)] = -1
         return gaps
     elif isinstance(o, np.ndarray):
         gaps = np.fmin(forward_gaps(o, nan_to_num=np.nan), backward_gaps(o, nan_to_num=np.nan))
+        gaps[np.isnan(gaps)] = -1
+        return gaps
+    return gaps
+
+
+def all_gaps(o):
+    """Number of sequence steps from previous, to next and to nearest real value along the last dimension of 3D arrays or tensors"""
+
+    forward = forward_gaps(o, nan_to_num=np.nan)
+    backward = backward_gaps(o, nan_to_num=np.nan)
+    if isinstance(o, torch.Tensor):
+        gaps = torch.cat([forward, backward, torch.fmin(forward, backward)], dim=1)
+        gaps[torch.isnan(gaps)] = -1
+        return gaps
+    elif isinstance(o, np.ndarray):
+        gaps = np.concatenate([forward, backward, np.fmin(forward, backward)])
         gaps[np.isnan(gaps)] = -1
         return gaps
     return gaps
