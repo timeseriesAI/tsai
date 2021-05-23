@@ -158,6 +158,7 @@ class MultiInceptionTimePlus(nn.Sequential):
         branches = nn.ModuleList()
         self.head_nf = 0
         for feat in self.feat_list:
+            if is_listy(feat): feat = len(feat)
             m = build_ts_model(self._arch, c_in=feat, c_out=c_out, seq_len=seq_len, nf=nf, nb_filters=nb_filters,
                                depth=depth, stoch_depth=stoch_depth, **kwargs)
             with torch.no_grad():
@@ -178,11 +179,16 @@ class MultiInceptionTimePlus(nn.Sequential):
         super().__init__(layers)
         self.to(self.device)
 
+# Internal Cell
 class _Splitter(Module):
     def __init__(self, feat_list, branches):
         self.feat_list, self.branches = feat_list, branches
     def forward(self, x):
-        x = torch.split(x, self.feat_list, dim=1)
-        for i, branch in enumerate(self.branches):
-            out = branch(x[i]) if i == 0 else torch.cat([out, branch(x[i])], dim=1)
-        return out
+        if is_listy(self.feat_list[0]):
+            x = [x[:, feat] for feat in self.feat_list]
+        else:
+            x = torch.split(x, self.feat_list, dim=1)
+        _out = []
+        for xi, branch in zip(x, self.branches): _out.append(branch(xi))
+        output = torch.cat(_out, dim=1)
+        return output

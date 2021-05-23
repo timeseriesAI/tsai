@@ -412,7 +412,7 @@ class MultiTSTPlus(nn.Sequential):
         MultiTST is a class that allows you to create a model with multiple branches of TST.
 
         Args:
-            * feat_list: list with number of features that will be passed to each body.
+            * feat_list: list with number of features that will be passed to each body, or list of list with feature indices.
         """
         self.feat_list = [feat_list] if isinstance(feat_list, int) else feat_list
         self.device = ifnone(device, default_device())
@@ -421,6 +421,7 @@ class MultiTSTPlus(nn.Sequential):
         branches = nn.ModuleList()
         self.head_nf = 0
         for feat in self.feat_list:
+            if is_listy(feat): feat = len(feat)
             m = build_ts_model(self._arch, c_in=feat, c_out=c_out, seq_len=seq_len, max_seq_len=max_seq_len, **kwargs)
             with torch.no_grad():
                 self.head_nf += m[0](torch.randn(1, feat, ifnone(seq_len, 10)).to(self.device)).shape[1]
@@ -445,7 +446,11 @@ class _Splitter(Module):
     def __init__(self, feat_list, branches):
         self.feat_list, self.branches = feat_list, branches
     def forward(self, x):
-        x = torch.split(x, self.feat_list, dim=1)
-        for i, branch in enumerate(self.branches):
-            out = branch(x[i]) if i == 0 else torch.cat([out, branch(x[i])], dim=1)
-        return out
+        if is_listy(self.feat_list[0]):
+            x = [x[:, feat] for feat in self.feat_list]
+        else:
+            x = torch.split(x, self.feat_list, dim=1)
+        _out = []
+        for xi, branch in zip(x, self.branches): _out.append(branch(xi))
+        output = torch.cat(_out, dim=1)
+        return output
