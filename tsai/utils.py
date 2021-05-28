@@ -13,8 +13,9 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'apply_cmap', 'torch_tile', 'to_tsfresh_df', 'pcorr', 'scorr', 'torch_diff', 'get_outliers_IQR',
            'clip_outliers', 'get_percentile', 'torch_clamp', 'torch_slice_by_dim', 'torch_nanmean', 'torch_nanstd',
            'concat', 'reduce_memory_usage', 'cls_name', 'roll2d', 'roll3d', 'random_roll2d', 'random_roll3d',
-           'create_empty_array', 'np_save_compressed', 'np_load_compressed', 'np2memmap', 'torch_mean_groupby',
-           'torch_flip', 'torch_nan_to_num', 'torch_masked_to_num']
+           'rotate_axis0', 'rotate_axis1', 'rotate_axis2', 'create_empty_array', 'np_save_compressed',
+           'np_load_compressed', 'np2memmap', 'torch_mean_groupby', 'torch_flip', 'torch_nan_to_num',
+           'torch_masked_to_num']
 
 # Cell
 from .imports import *
@@ -697,6 +698,15 @@ def random_roll3d(o, axis=(), replace=False):
     if 2 in axis:
         axis3 = np.random.choice(np.arange(o.shape[2]), o.shape[2], replace).reshape(1, 1, -1)
     return o[axis1, axis2, axis3]
+
+def rotate_axis0(o, steps=1):
+    return o[np.arange(o.shape[0]) - steps]
+
+def rotate_axis1(o, steps=1):
+    return o[:, np.arange(o.shape[1]) - steps]
+
+def rotate_axis2(o, steps=1):
+    return o[:, :, np.arange(o.shape[2]) - steps]
 
 # Cell
 def create_empty_array(shape, fname=None, path='./data', on_disk=True, dtype='float32', mode='r+', **kwargs):
