@@ -14,7 +14,7 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'clip_outliers', 'get_percentile', 'torch_clamp', 'torch_slice_by_dim', 'torch_nanmean', 'torch_nanstd',
            'concat', 'reduce_memory_usage', 'cls_name', 'roll2d', 'roll3d', 'random_roll2d', 'random_roll3d',
            'create_empty_array', 'np_save_compressed', 'np_load_compressed', 'np2memmap', 'torch_mean_groupby',
-           'torch_flip']
+           'torch_flip', 'torch_nan_to_num', 'torch_masked_to_num']
 
 # Cell
 from .imports import *
@@ -787,3 +787,15 @@ def torch_flip(t, dims=-1):
     elif dims == 0: return t[np.arange(t.shape[dims])[::-1].copy()]
     elif dims == 1: return t[:, np.arange(t.shape[dims])[::-1].copy()]
     elif dims == 2: return t[:, :, np.arange(t.shape[dims])[::-1].copy()]
+
+# Cell
+
+def torch_nan_to_num(o, num=0, inplace=False):
+    mask = torch.isnan(o)
+    return torch_masked_to_num(o, mask, num=num, inplace=inplace)
+
+def torch_masked_to_num(o, mask, num=0, inplace=False):
+    if inplace:
+        o[:] = o.masked_fill(mask, num)
+    else:
+        return o.masked_fill(mask, num)
