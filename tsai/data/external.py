@@ -166,7 +166,7 @@ def get_UCR_data(dsid, path='.', parent_dir='data/UCR', on_disk=True, mode='c', 
         pv('preparing numpy arrays...', verbose)
         X_train_ = []
         X_valid_ = []
-        for i in progress_bar(range(X_train_df.shape[-1]), display=verbose, leave=False, comment=f'preparing {dsid} data'):
+        for i in progress_bar(range(X_train_df.shape[-1]), display=verbose, leave=False):
             X_train_.append(stack_pad(X_train_df[f'dim_{i}'])) # stack arrays even if they have different lengths
             X_valid_.append(stack_pad(X_valid_df[f'dim_{i}'])) # stack arrays even if they have different lengths
         X_train = np.transpose(np.stack(X_train_, axis=-1), (0, 2, 1))
