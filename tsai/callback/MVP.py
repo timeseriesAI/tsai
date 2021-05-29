@@ -157,6 +157,7 @@ class MVP(Callback):
         if self.crit is None:
             self.crit = MSELossFlat()
         self.learn.MVP = self
+        self.learn.TSBERT = self
 
         # remove and store metrics
         self.learn.metrics = L([])
