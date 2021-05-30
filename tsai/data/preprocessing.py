@@ -309,9 +309,8 @@ class TSLog(Transform):
     "Log transforms batch of type `TSTensor`. For positive values only"
     order = 90
 
-    def encodes(self, o:TSTensor):
-        return torch.log(o)
-
+    def encodes(self, o:TSTensor): return torch.log(o)
+    def decodes(self, o:TSTensor): return torch.exp(o)
     def __repr__(self): return f'{self.__class__.__name__}()'
 
 # Cell

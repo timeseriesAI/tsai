@@ -13,7 +13,9 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'apply_cmap', 'torch_tile', 'to_tsfresh_df', 'pcorr', 'scorr', 'torch_diff', 'get_outliers_IQR',
            'clip_outliers', 'get_percentile', 'torch_clamp', 'torch_slice_by_dim', 'torch_nanmean', 'torch_nanstd',
            'concat', 'reduce_memory_usage', 'cls_name', 'roll2d', 'roll3d', 'random_roll2d', 'random_roll3d',
-           'create_empty_array', 'np_save_compressed', 'np_load_compressed', 'np2memmap']
+           'rotate_axis0', 'rotate_axis1', 'rotate_axis2', 'create_empty_array', 'np_save_compressed',
+           'np_load_compressed', 'np2memmap', 'torch_mean_groupby', 'torch_flip', 'torch_nan_to_num',
+           'torch_masked_to_num']
 
 # Cell
 from .imports import *
@@ -697,6 +699,15 @@ def random_roll3d(o, axis=(), replace=False):
         axis3 = np.random.choice(np.arange(o.shape[2]), o.shape[2], replace).reshape(1, 1, -1)
     return o[axis1, axis2, axis3]
 
+def rotate_axis0(o, steps=1):
+    return o[np.arange(o.shape[0]) - steps]
+
+def rotate_axis1(o, steps=1):
+    return o[:, np.arange(o.shape[1]) - steps]
+
+def rotate_axis2(o, steps=1):
+    return o[:, :, np.arange(o.shape[2]) - steps]
+
 # Cell
 def create_empty_array(shape, fname=None, path='./data', on_disk=True, dtype='float32', mode='r+', **kwargs):
     """
@@ -768,3 +779,33 @@ def np2memmap(arr, fname=None, path='./data', dtype='float32', mode='c', **kwarg
     # Open file in selected mode
     arr = np.load(filename, mmap_mode=mode)
     return arr
+
+# Cell
+
+def torch_mean_groupby(o, idxs):
+    """Computes torch mean along axis 0 grouped by the idxs.
+    Need to ensure that idxs have the same order as o"""
+    if is_listy(idxs[0]): idxs = flatten_list(idxs)
+    flattened_idxs = torch.tensor(idxs)
+    idxs, vals = torch.unique(flattened_idxs, return_counts=True)
+    vs = torch.split_with_sizes(o, tuple(vals))
+    return torch.cat([v.mean(0).unsqueeze(0) for k,v in zip(idxs, vs)])
+
+# Cell
+def torch_flip(t, dims=-1):
+    if dims == -1: return t[..., np.arange(t.shape[dims])[::-1].copy()]
+    elif dims == 0: return t[np.arange(t.shape[dims])[::-1].copy()]
+    elif dims == 1: return t[:, np.arange(t.shape[dims])[::-1].copy()]
+    elif dims == 2: return t[:, :, np.arange(t.shape[dims])[::-1].copy()]
+
+# Cell
+
+def torch_nan_to_num(o, num=0, inplace=False):
+    mask = torch.isnan(o)
+    return torch_masked_to_num(o, mask, num=num, inplace=inplace)
+
+def torch_masked_to_num(o, mask, num=0, inplace=False):
+    if inplace:
+        o[:] = o.masked_fill(mask, num)
+    else:
+        return o.masked_fill(mask, num)

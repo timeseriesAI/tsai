@@ -259,5 +259,14 @@ def decoder(self:Learner, o): return L([self.dls.decodes(oi) for oi in o])
 # Cell
 @patch
 @delegates(GatherPredsCallback.__init__)
-def get_X_preds(self:Learner, X, y=None, **kwargs):
-    return self.get_preds(dl=self.dls.new_dl(X, y=y), **kwargs)
+def get_X_preds(self:Learner, X, y=None, bs=64, with_input=False, with_decoded=True, with_loss=False, **kwargs):
+    if with_loss and y is None:
+        print('cannot find loss as y=None')
+        with_loss=False
+    pred_pos = 3 if with_input else 2
+    dl = self.dls.new_dl(X, y=y)
+    dl.bs = bs
+    output = list(self.get_preds(dl=dl, with_input=with_input, with_decoded=with_decoded, with_loss=with_loss))
+    if with_decoded and hasattr(self.dls, 'vocab'):
+        output[2 + with_input] = L([self.dls.vocab[p] for p in output[2 + with_input]])
+    return tuple(output)

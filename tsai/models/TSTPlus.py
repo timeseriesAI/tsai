@@ -147,7 +147,7 @@ class MultiHeadAttention(Module):
 # Internal Cell
 class _TSTEncoderLayer(Module):
     def __init__(self, q_len:int, d_model:int, n_heads:int, d_k:Optional[int]=None, d_v:Optional[int]=None, d_ff:int=256,
-                 res_dropout:float=0.1, bias:bool=True, activation:str="gelu", res_attention:bool=False, pre_norm:bool=False):
+                 res_dropout:float=0., bias:bool=True, activation:str="gelu", res_attention:bool=False, pre_norm:bool=False):
 
         assert not d_model%n_heads, f"d_model ({d_model}) must be divisible by n_heads ({n_heads})"
         d_k = ifnone(d_k, d_model // n_heads)
@@ -209,7 +209,7 @@ class _TSTEncoderLayer(Module):
 
 # Internal Cell
 class _TSTEncoder(Module):
-    def __init__(self, q_len, d_model, n_heads, d_k=None, d_v=None, d_ff=None, res_dropout=0.1, activation='gelu', res_attention=False, n_layers=1,
+    def __init__(self, q_len, d_model, n_heads, d_k=None, d_v=None, d_ff=None, res_dropout=0., activation='gelu', res_attention=False, n_layers=1,
                  pre_norm:bool=False):
         self.layers = nn.ModuleList([_TSTEncoderLayer(q_len, d_model, n_heads=n_heads, d_k=d_k, d_v=d_v, d_ff=d_ff, res_dropout=res_dropout,
                                                       activation=activation, res_attention=res_attention, pre_norm=pre_norm) for i in range(n_layers)])
@@ -229,7 +229,7 @@ class _TSTEncoder(Module):
 class _TSTBackbone(Module):
     def __init__(self, c_in:int, seq_len:int, max_seq_len:Optional[int]=512,
                  n_layers:int=3, d_model:int=128, n_heads:int=16, d_k:Optional[int]=None, d_v:Optional[int]=None,
-                 d_ff:int=256, res_dropout:float=0.1, act:str="gelu",
+                 d_ff:int=256, res_dropout:float=0., act:str="gelu",
                  key_padding_mask:bool=True, attn_mask:Optional[Tensor]=None, res_attention:bool=True, pre_norm:bool=False,
                  pe:str='zeros', learn_pe:bool=True, verbose:bool=False, **kwargs):
 
@@ -270,7 +270,10 @@ class _TSTBackbone(Module):
     def forward(self, x:Tensor) -> Tensor:  # x: [bs x nvars x q_len]
 
         # Padding mask
-        x, key_padding_mask = self._key_padding_mask(x)
+        if self.key_padding_mask:
+            x, key_padding_mask = self._key_padding_mask(x)
+        else:
+            key_padding_mask = None
 
         # Input encoding
         if self.new_q_len: u = self.W_P(x).transpose(2,1) # Eq 2        # u: [bs x d_model x q_len] transposed to [bs x q_len x d_model]
@@ -310,22 +313,23 @@ class _TSTBackbone(Module):
     def _key_padding_mask(self, x):
         mask = torch.isnan(x)
         x[mask] = 0
-        if self.key_padding_mask and mask.any():
+        if mask.any():
             mask = TSMaskTensor((mask.float().mean(1)==1).bool())   # key_padding_mask: [bs x q_len]
             return x, mask
         else:
             return x, None
 
 # Cell
+
 class TSTPlus(nn.Sequential):
+    """TST (Time Series Transformer) is a Transformer that takes continuous time series as inputs"""
     def __init__(self, c_in:int, c_out:int, seq_len:int, max_seq_len:Optional[int]=512,
                  n_layers:int=3, d_model:int=128, n_heads:int=16, d_k:Optional[int]=None, d_v:Optional[int]=None,
-                 d_ff:int=256, res_dropout:float=0.1, act:str="gelu", key_padding_mask:bool=True, attn_mask:Optional[Tensor]=None,
-                 res_attention:bool=False, pre_norm:bool=False, pe:str='zeros', learn_pe:bool=True, flatten:bool=True, fc_dropout:float=0.,
-                 concat_pool:bool=True, bn:bool=False, custom_head:Optional=None,
+                 d_ff:int=256, res_dropout:float=0., act:str="gelu", key_padding_mask:bool=True, attn_mask:Optional[Tensor]=None,
+                 res_attention:bool=True, pre_norm:bool=False, pe:str='zeros', learn_pe:bool=True, flatten:bool=False, fc_dropout:float=0.,
+                 concat_pool:bool=False, bn:bool=True, custom_head:Optional=None,
                  y_range:Optional[tuple]=None, verbose:bool=False, **kwargs):
-        r"""TST (Time Series Transformer) is a Transformer that takes continuous time series as inputs.
-        As mentioned in the paper, the input must be standardized by_var based on the entire training set.
+        """
         Args:
             c_in: the number of features (aka variables, dimensions, channels) in the time series dataset.
             c_out: the number of target classes.
@@ -347,17 +351,17 @@ class TSTPlus(nn.Sequential):
                 Available types (for experimenting): None, 'exp1d', 'lin1d', 'exp2d', 'lin2d', 'sincos', 'gauss' or 'normal',
                 'uniform', 'zero', 'zeros' (default, as in the paper).
             learn_pe: learned positional encoder (True, default) or fixed positional encoder.
-            flatten: this will flatten the encoder output to be able to apply an mlp type of head (default=True)
+            flatten: this will flatten the encoder output to be able to apply an mlp type of head (default=False)
             fc_dropout: dropout applied to the final fully connected layer.
-            concat_pool: indicates whether global adaptive concat pooling will be used instead of global adaptive pooling.
+            concat_pool: indicates if global adaptive concat pooling will be used instead of global adaptive pooling.
             bn: indicates if batchnorm will be applied to the head.
             custom_head: custom head that will be applied to the network. It must contain all kwargs (pass a partial function)
             y_range: range of possible y values (used in regression tasks).
             kwargs: nn.Conv1d kwargs. If not {}, a nn.Conv1d with those kwargs will be applied to original time series.
-
         Input shape:
             x: bs (batch size) x nvars (aka features, variables, dimensions, channels) x seq_len (aka time steps)
             attn_mask: q_len x q_len
+            As mentioned in the paper, the input must be standardized by_var based on the entire training set.
         """
         # Backbone
         backbone = _TSTBackbone(c_in, seq_len=seq_len, max_seq_len=max_seq_len,
@@ -408,7 +412,7 @@ class MultiTSTPlus(nn.Sequential):
         MultiTST is a class that allows you to create a model with multiple branches of TST.
 
         Args:
-            * feat_list: list with number of features that will be passed to each body.
+            * feat_list: list with number of features that will be passed to each body, or list of list with feature indices.
         """
         self.feat_list = [feat_list] if isinstance(feat_list, int) else feat_list
         self.device = ifnone(device, default_device())
@@ -417,6 +421,7 @@ class MultiTSTPlus(nn.Sequential):
         branches = nn.ModuleList()
         self.head_nf = 0
         for feat in self.feat_list:
+            if is_listy(feat): feat = len(feat)
             m = build_ts_model(self._arch, c_in=feat, c_out=c_out, seq_len=seq_len, max_seq_len=max_seq_len, **kwargs)
             with torch.no_grad():
                 self.head_nf += m[0](torch.randn(1, feat, ifnone(seq_len, 10)).to(self.device)).shape[1]
@@ -441,7 +446,11 @@ class _Splitter(Module):
     def __init__(self, feat_list, branches):
         self.feat_list, self.branches = feat_list, branches
     def forward(self, x):
-        x = torch.split(x, self.feat_list, dim=1)
-        for i, branch in enumerate(self.branches):
-            out = branch(x[i]) if i == 0 else torch.cat([out, branch(x[i])], dim=1)
-        return out
+        if is_listy(self.feat_list[0]):
+            x = [x[:, feat] for feat in self.feat_list]
+        else:
+            x = torch.split(x, self.feat_list, dim=1)
+        _out = []
+        for xi, branch in zip(x, self.branches): _out.append(branch(xi))
+        output = torch.cat(_out, dim=1)
+        return output

@@ -5,7 +5,7 @@ __all__ = ['noop', 'init_lin_zero', 'lin_zero_init', 'SwishBeta', 'same_padding1
            'AddCoords1d', 'ConvBlock', 'Conv', 'ConvBN', 'ConvIN', 'CoordConv', 'CoordConvBN', 'SepConv', 'SepConvBN',
            'SepConvIN', 'SepCoordConv', 'SepCoordConvBN', 'ResBlock1dPlus', 'SEModule1d', 'Norm', 'BN1d', 'IN1d',
            'LinLnDrop', 'LambdaPlus', 'Squeeze', 'Unsqueeze', 'Add', 'Concat', 'Permute', 'Transpose', 'View',
-           'Reshape', 'Max', 'LastStep', 'SoftMax', 'Clamp', 'Noop', 'Sharpen', 'Sequential', 'TimeDistributed',
+           'Reshape', 'Max', 'LastStep', 'SoftMax', 'Clamp', 'Clip', 'Noop', 'Sharpen', 'Sequential', 'TimeDistributed',
            'Temp_Scale', 'Vector_Scale', 'Matrix_Scale', 'get_calibrator', 'LogitAdjustmentLayer', 'LogitAdjLayer',
            'PPV', 'PPAuc', 'MaxPPVPool1d', 'AdaptiveWeightedAvgPool1d', 'GAP1d', 'GACP1d', 'GAWP1d',
            'GlobalWeightedAveragePool1d', 'gwa_pool_head', 'GWAP1d', 'AttentionalPool1d', 'GAttP1d',
@@ -372,6 +372,19 @@ class Clamp(Module):
         return x.clamp(min=self.min, max=self.max)
     def __repr__(self): return f'{self.__class__.__name__}(min={self.min}, max={self.max})'
 
+
+class Clip(Module):
+    def __init__(self, min=None, max=None):
+        self.min, self.max = min, max
+
+    def forward(self, x):
+        if self.min is not None:
+            x = torch.maximum(x, self.min)
+        if self.max is not None:
+            x = torch.minimum(x, self.max)
+        return x
+    def __repr__(self): return f'{self.__class__.__name__}()'
+
 Noop = nn.Sequential()
 
 # Cell
@@ -502,30 +515,28 @@ class MaxPPVPool1d(Module):
 
 # Cell
 class AdaptiveWeightedAvgPool1d(Module):
-    def __init__(self, n_in, seq_len, output_size=1, by_channel=True, n_layers=2, ln=False, dropout=0.5, act=nn.ReLU(), zero_init=False):
-        if n_layers == 1:
-            act = None
-        self.output_size = output_size
-        self.conv = nn.Conv1d(n_in, output_size, 1) if not by_channel else None
+    '''Global Pooling layer that performs a weighted average along the temporal axis
+
+    It can be considered as a channel-wise form of local temporal attention. Inspired by the paper:
+    Hyun, J., Seong, H., & Kim, E. (2019). Universal Pooling--A New Pooling Method for Convolutional Neural Networks. arXiv preprint arXiv:1907.11440.'''
+
+    def __init__(self, n_in, seq_len, mult=2, n_layers=2, ln=False, dropout=0.5, act=nn.ReLU(), zero_init=True):
         layers = nn.ModuleList()
         for i in range(n_layers):
-            layers.append(LinLnDrop(seq_len, seq_len, ln=ln, p=dropout, act=act if i < n_layers-1 else None))
+            inp_mult = mult if i > 0 else 1
+            out_mult = mult if i < n_layers -1 else 1
+            p = dropout[i] if is_listy(dropout) else dropout
+            layers.append(LinLnDrop(seq_len * inp_mult, seq_len * out_mult, ln=False, p=p,
+                                    act=act if i < n_layers-1 and n_layers > 1 else None))
         self.layers = layers
         self.softmax = SoftMax(-1)
-        if zero_init:
-            init_lin_zero(self)
+        if zero_init: init_lin_zero(self)
 
     def forward(self, x):
-        gup = x
-        if self.conv is not None:
-            gup = self.conv(gup)
-        for l in self.layers:
-            gup = l(gup)
-        gup = self.softmax(gup)
-        _out = []
-        for i in range(self.output_size):
-            _out.append(torch.mul(x, gup[:, i][:, np.newaxis]).sum(-1))
-        return torch.stack(_out, -1)
+        wap = x
+        for l in self.layers: wap = l(wap)
+        wap = self.softmax(wap)
+        return torch.mul(x, wap).sum(-1)
 
 # Cell
 class GAP1d(Module):
@@ -548,20 +559,23 @@ class GACP1d(Module):
 
 class GAWP1d(Module):
     "Global AdaptiveWeightedAvgPool1d + Flatten"
-    def __init__(self, n_in, seq_len, output_size=1, by_channel=True, n_layers=2, ln=False, dropout=0.5, act=nn.ReLU(), zero_init=False):
-        self.gacp = AdaptiveWeightedAvgPool1d(n_in, seq_len, output_size=output_size, by_channel=by_channel, n_layers=n_layers,
-                                              ln=ln, dropout=dropout, act=act, zero_init=zero_init)
+    def __init__(self, n_in, seq_len, n_layers=2, ln=False, dropout=0.5, act=nn.ReLU(), zero_init=False):
+        self.gacp = AdaptiveWeightedAvgPool1d(n_in, seq_len, n_layers=n_layers, ln=ln, dropout=dropout, act=act, zero_init=zero_init)
         self.flatten = Flatten()
     def forward(self, x):
         return self.flatten(self.gacp(x))
 
 # Cell
 class GlobalWeightedAveragePool1d(Module):
-    r""" Global Weighted Average Pooling layer inspired by Building Efficient CNN Architecture for Offline Handwritten Chinese Character Recognition
-    https://arxiv.org/pdf/1804.01259.pdf"""
+    """ Global Weighted Average Pooling layer
+
+    Inspired by Building Efficient CNN Architecture for Offline Handwritten Chinese Character Recognition
+    https://arxiv.org/pdf/1804.01259.pdf
+    """
+
     def __init__(self, n_in, seq_len):
         self.weight = nn.Parameter(torch.ones(1, n_in, seq_len))
-        self.bias = nn.Parameter(torch.zeros(1, 1, seq_len))
+        self.bias = nn.Parameter(torch.zeros(1, n_in, seq_len))
 
     def forward(self, x):
         α = F.softmax(torch.sigmoid(x * self.weight + self.bias), dim=-1)
@@ -569,7 +583,7 @@ class GlobalWeightedAveragePool1d(Module):
 
 GWAP1d = GlobalWeightedAveragePool1d
 
-def gwa_pool_head(n_in, c_out, seq_len, bn=False, fc_dropout=0.):
+def gwa_pool_head(n_in, c_out, seq_len, bn=True, fc_dropout=0.):
     return nn.Sequential(GlobalWeightedAveragePool1d(n_in, seq_len), Flatten(), LinBnDrop(n_in, c_out, p=fc_dropout, bn=bn))
 
 # Cell
@@ -735,11 +749,10 @@ class create_conv_3d_head(nn.Sequential):
 conv_3d_head = create_conv_3d_head
 
 # Cell
-def universal_pool_head(n_in, c_out, seq_len, output_size=1, by_channel=True, pool_n_layers=2, pool_ln=False, pool_dropout=0.5, pool_act=nn.ReLU(),
-                   zero_init=True, bn=False, fc_dropout=0.):
-    layers = [AdaptiveWeightedAvgPool1d(n_in, seq_len, output_size=output_size, by_channel=by_channel, n_layers=pool_n_layers, ln=pool_ln,
-                                        dropout=pool_dropout, act=pool_act), Flatten(), LinBnDrop(n_in * output_size, c_out, p=fc_dropout, bn=bn)]
-    return nn.Sequential(*layers)
+def universal_pool_head(n_in, c_out, seq_len, mult=2, pool_n_layers=2, pool_ln=True, pool_dropout=0.5, pool_act=nn.ReLU(),
+                        zero_init=True, bn=True, fc_dropout=0.):
+    return nn.Sequential(AdaptiveWeightedAvgPool1d(n_in, seq_len, n_layers=pool_n_layers, mult=mult, ln=pool_ln, dropout=pool_dropout, act=pool_act),
+                         Flatten(), LinBnDrop(n_in, c_out, p=fc_dropout, bn=bn))
 
 # Cell
 heads = [mlp_head, fc_head, average_pool_head, max_pool_head, concat_pool_head, pool_plus_head, conv_head, rnn_head,
