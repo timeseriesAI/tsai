@@ -14,8 +14,16 @@
 
 `tsai` is an open-source deep learning package built on top of Pytorch & fastai focused on state-of-the-art techniques for time series classification, regression and forecasting.
 
+## New in tsai:
+
+* 🚀🚀 **MINIROCKET** a SOTA Time Series Classification model (now available in Pytorch):
+You can now check MiniRocket's performance in our new tutorial notebook [10_Time_Series_Classification_and_Regression_with_MiniRocket.ipynb](https://github.com/timeseriesAI/tsai/blob/main/tutorial_nbs/10_Time_Series_Classification_and_Regression_with_MiniRocket.ipynb)
+> "Using this method, it is possible to train and test a classifier on all of 109 datasets from the UCR archive to state-of-the-art accuracy in less than 10 minutes." A. Dempster et al. (Dec 2020)
+
+* **Multi-class and multi-label time series classification notebook:** you can also check our new tutorial notebook: [01a_MultiClass_MultiLabel_TSClassification.ipynb](https://github.com/timeseriesAI/tsai/blob/main/tutorial_nbs/01a_MultiClass_MultiLabel_TSClassification.ipynb)
 * **Self-supervised learning:**
-If you are interested in applying self-supervised learning to time series, you may check our new tutorial notebook: [08_Self_Supervised_TSBERT.ipynb](https://github.com/timeseriesAI/tsai/blob/master/tutorial_nbs/08_Self_Supervised_TSBERT.ipynb)
+If you are interested in applying self-supervised learning to time series, you may check our new tutorial notebook: [08_Self_Supervised_MVP.ipynb](https://github.com/timeseriesAI/tsai/blob/master/tutorial_nbs/08_Self_Supervised_TSBERT.ipynb)
+
 * **New visualization:**
 We've also added a new PredictionDynamics callback that will display the predictions during training. This is the type of output you would get in a classification task for example:
 <p align="center">
