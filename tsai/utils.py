@@ -4,16 +4,16 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'to1darray', 'to3d', 'to2d', 'to1d', 'to2dPlus', 'to3dPlus', 'to2dPlusTensor', 'to2dPlusArray',
            'to3dPlusTensor', 'to3dPlusArray', 'todtype', 'bytes2size', 'bytes2GB', 'get_size', 'delete_all_in_dir',
            'reverse_dict', 'is_tuple', 'itemify', 'isnone', 'exists', 'ifelse', 'is_not_close', 'test_not_close',
-           'test_type', 'test_ok', 'test_not_ok', 'test_error', 'assert_fn', 'test_gt', 'test_ge', 'test_lt', 'test_le',
-           'stack', 'stack_pad', 'match_seq_len', 'random_shuffle', 'cat2int', 'cycle_dl', 'cycle_dl_to_device',
-           'cache_memmap', 'memmap2cache', 'get_func_defaults', 'get_idx_from_df_col_vals', 'get_sublist_idxs',
-           'flatten_list', 'display_pd_df', 'ttest', 'tscore', 'ttest_tensor', 'pcc', 'scc', 'a', 'b', 'remove_fn',
-           'npsave', 'np_save', 'permute_2D', 'random_normal', 'random_half_normal', 'random_normal_tensor',
-           'random_half_normal_tensor', 'default_dpi', 'get_plot_fig', 'fig2buf', 'plot_scatter', 'get_idxs',
-           'apply_cmap', 'torch_tile', 'to_tsfresh_df', 'pcorr', 'scorr', 'torch_diff', 'get_outliers_IQR',
-           'clip_outliers', 'get_percentile', 'torch_clamp', 'torch_slice_by_dim', 'torch_nanmean', 'torch_nanstd',
-           'concat', 'reduce_memory_usage', 'cls_name', 'roll2d', 'roll3d', 'random_roll2d', 'random_roll3d',
-           'rotate_axis0', 'rotate_axis1', 'rotate_axis2', 'create_empty_array', 'np_save_compressed',
+           'test_type', 'test_ok', 'test_not_ok', 'test_error', 'test_eq_nan', 'assert_fn', 'test_gt', 'test_ge',
+           'test_lt', 'test_le', 'stack', 'stack_pad', 'match_seq_len', 'random_shuffle', 'cat2int', 'cycle_dl',
+           'cycle_dl_to_device', 'cache_memmap', 'memmap2cache', 'get_func_defaults', 'get_idx_from_df_col_vals',
+           'get_sublist_idxs', 'flatten_list', 'display_pd_df', 'ttest', 'tscore', 'ttest_tensor', 'pcc', 'scc', 'a',
+           'b', 'remove_fn', 'npsave', 'np_save', 'permute_2D', 'random_normal', 'random_half_normal',
+           'random_normal_tensor', 'random_half_normal_tensor', 'default_dpi', 'get_plot_fig', 'fig2buf',
+           'plot_scatter', 'get_idxs', 'apply_cmap', 'torch_tile', 'to_tsfresh_df', 'pcorr', 'scorr', 'torch_diff',
+           'get_outliers_IQR', 'clip_outliers', 'get_percentile', 'torch_clamp', 'torch_slice_by_dim', 'torch_nanmean',
+           'torch_nanstd', 'concat', 'reduce_memory_usage', 'cls_name', 'roll2d', 'roll3d', 'random_roll2d',
+           'random_roll3d', 'rotate_axis0', 'rotate_axis1', 'rotate_axis2', 'create_empty_array', 'np_save_compressed',
            'np_load_compressed', 'np2memmap', 'torch_mean_groupby', 'torch_flip', 'torch_nan_to_num',
            'torch_masked_to_num']
 
@@ -240,6 +240,13 @@ def test_error(error, f, *args, **kwargs):
     try: f(*args, **kwargs)
     except Exception as e:
         test_eq(str(e), error)
+
+
+def test_eq_nan(a,b):
+    "`test` that `a==b` excluding nan values (valid for torch.Tensor and np.ndarray)"
+    mask_a = torch.isnan(a) if isinstance(a, torch.Tensor) else np.isnan(a)
+    mask_b = torch.isnan(b) if isinstance(b, torch.Tensor) else np.isnan(b)
+    test(a[~mask_a],b[~mask_b],equals, '==')
 
 # Cell
 def assert_fn(*args, **kwargs): assert False, 'assertion test'
