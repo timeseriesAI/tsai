@@ -17,6 +17,11 @@ from .models.InceptionTimePlus import *
 def show_batch(self:Learner, **kwargs):
     self.dls.show_batch(**kwargs)
 
+@patch
+def remove_all_cbs(self:Learner, max_iters=10):
+    while len(self.cbs) > 0 and i < max_iters:  self.remove_cbs(self.cbs)
+    if len(self.cbs) > 0: print(f'Learner still has {len(self.cbs)} callbacks: {self.cbs}')
+
 # Cell
 @patch
 def one_batch(self:Learner, i, b): # this fixes a bug that will be managed in the next release of fastai
