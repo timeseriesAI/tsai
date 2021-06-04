@@ -19,7 +19,10 @@ def show_batch(self:Learner, **kwargs):
 
 @patch
 def remove_all_cbs(self:Learner, max_iters=10):
-    while len(self.cbs) > 0 and i < max_iters:  self.remove_cbs(self.cbs)
+    i = 0
+    while len(self.cbs) > 0 and i < max_iters:
+        self.remove_cbs(self.cbs)
+        i += 1
     if len(self.cbs) > 0: print(f'Learner still has {len(self.cbs)} callbacks: {self.cbs}')
 
 # Cell
