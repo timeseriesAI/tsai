@@ -17,6 +17,8 @@ from .models.InceptionTimePlus import *
 def show_batch(self:Learner, **kwargs):
     self.dls.show_batch(**kwargs)
 
+# Cell
+
 @patch
 def remove_all_cbs(self:Learner, max_iters=10):
     i = 0

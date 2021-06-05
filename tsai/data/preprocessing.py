@@ -47,30 +47,20 @@ class OneHot(Transform):
 
 # Cell
 class Nan2Value(Transform):
-    "Replaces any nan values by a predefined value"
+    "Replaces any nan values by a predefined value or median"
     order = 90
-    def __init__(self, value=0, median=True, by_sample_and_var=False): # set to True when torch 1.8.0 is supported by fastai
+    def __init__(self, value=0, median=False, by_sample_and_var=True):
         store_attr()
     def encodes(self, o:TSTensor):
         mask = torch.isnan(o)
         if mask.any():
-            if not self.median:
-                median = self.value
-                o[mask] = median
-                # return torch.nan_to_num(o, nan=self.value) # available in torch 1.8.0
-            else:
+            if self.median:
                 if self.by_sample_and_var:
-                    median = torch.median(o, dim=2, keepdim=True)[0].repeat(1, 1, o.shape[-1])
-                    # median = torch.nanmedian(o, dim=2, keepdim=True)[0].repeat(1, 1, o.shape[-1]) # available in torch 1.8.0
+                    median = torch.nanmedian(o, dim=2, keepdim=True)[0].repeat(1, 1, o.shape[-1])
                     o[mask] = median[mask]
                 else:
-                    median = torch.median(o)
-                    # median = torch.nanmedian(o) # available in torch 1.8.0
-                    o[mask] = median
-                # Just in case any sample or var values are all nan
-                mask = torch.isnan(o)
-                if mask.any():
-                    o[mask] = self.value
+                    o = torch.nan_to_num(o, torch.nanmedian(o))
+            o = torch.nan_to_num(o, self.value)
         return o
 
 # Cell
