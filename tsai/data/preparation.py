@@ -223,28 +223,24 @@ def backward_gaps(o, nan_to_num=0, normalize=True):
 
     if isinstance(o, torch.Tensor): o = torch_flip(o, -1)
     elif isinstance(o, np.ndarray): o = o[..., ::-1]
-    gaps = forward_gaps(o, nan_to_num=nan_to_num)
+    gaps = forward_gaps(o, nan_to_num=nan_to_num, normalize=normalize)
     if isinstance(o, torch.Tensor): gaps = torch_flip(gaps, -1)
     elif isinstance(o, np.ndarray): gaps = gaps[..., ::-1]
-    if normalize:
-        gaps[gaps > 0] = gaps[gaps > 0] / o.shape[-1]
     return gaps
 
 
 def nearest_gaps(o, nan_to_num=0, normalize=True):
     """Number of sequence steps to nearest real value along the last dimension of 3D arrays or tensors"""
 
-    forward = forward_gaps(o, nan_to_num=np.nan)
-    backward = backward_gaps(o, nan_to_num=np.nan)
+    forward = forward_gaps(o, nan_to_num=np.nan, normalize=normalize)
+    backward = backward_gaps(o, nan_to_num=np.nan, normalize=normalize)
     if isinstance(o, torch.Tensor):
         gaps = torch.fmin(forward, backward)
         gaps[torch.isnan(gaps)] = nan_to_num
         return gaps
     elif isinstance(o, np.ndarray):
-        gaps = np.fmin(forward_gaps(o, nan_to_num=np.nan), backward_gaps(o, nan_to_num=np.nan))
+        gaps = np.fmin(forward, backward)
         gaps[np.isnan(gaps)] = nan_to_num
-        if normalize:
-            gaps[gaps > 0] = gaps[gaps > 0] / o.shape[-1]
         return gaps
 
 
@@ -255,11 +251,11 @@ def get_gaps(o : Tensor, nan_to_num : int = 0, forward : bool = True, backward :
 
     _gaps = []
     if forward or nearest:
-        fwd = forward_gaps(o, nan_to_num=np.nan)
+        fwd = forward_gaps(o, nan_to_num=np.nan, normalize=normalize)
         if forward:
             _gaps.append(fwd)
     if backward or nearest:
-        bwd = backward_gaps(o, nan_to_num=np.nan)
+        bwd = backward_gaps(o, nan_to_num=np.nan, normalize=normalize)
         if backward:
             _gaps.append(bwd)
     if nearest:
@@ -274,8 +270,6 @@ def get_gaps(o : Tensor, nan_to_num : int = 0, forward : bool = True, backward :
     elif isinstance(o, np.ndarray):
         gaps = np.concatenate(_gaps, 1)
         gaps[np.isnan(gaps)] = nan_to_num
-    if normalize:
-        gaps[gaps > 0] = gaps[gaps > 0] / o.shape[-1]
     return gaps
 
 # Cell
