@@ -79,13 +79,13 @@ class ScaledDotProductAttention(Module):
         # Attention mask (optional)
         if attn_mask is not None:                                     # attn_mask with shape [q_len x seq_len] - only used when q_len == seq_len
             if attn_mask.dtype == torch.bool:
-                scores.masked_fill_(attn_mask, float('-inf'))
+                scores.masked_fill_(attn_mask, -np.inf)
             else:
                 scores += attn_mask
 
         # Key padding mask (optional)
         if key_padding_mask is not None:                              # key_padding_mask with shape [bs x seq_len]
-            scores.masked_fill_(key_padding_mask.unsqueeze(1).unsqueeze(2), float('-inf'))
+            scores.masked_fill_(key_padding_mask.unsqueeze(1).unsqueeze(2), -np.inf)
 
         # SoftMax
         attn = F.softmax(scores, dim=-1)                               # attn   : [bs x n_heads x q_len x seq_len]
@@ -233,7 +233,8 @@ class _TSTBackbone(Module):
     def __init__(self, c_in:int, seq_len:int, max_seq_len:Optional[int]=512,
                  n_layers:int=3, d_model:int=128, n_heads:int=16, d_k:Optional[int]=None, d_v:Optional[int]=None,
                  d_ff:int=256, res_dropout:float=0., act:str="gelu", store_attn:bool=False,
-                 key_padding_mask:bool=True, attn_mask:Optional[Tensor]=None, res_attention:bool=True, pre_norm:bool=False,
+                 key_padding_mask:bool=True, padding_var:Optional[int]=None,
+                 attn_mask:Optional[Tensor]=None, res_attention:bool=True, pre_norm:bool=False,
                  pe:str='zeros', learn_pe:bool=True, verbose:bool=False, **kwargs):
 
         # Input encoding
@@ -267,8 +268,7 @@ class _TSTBackbone(Module):
         self.encoder = _TSTEncoder(q_len, d_model, n_heads, d_k=d_k, d_v=d_v, d_ff=d_ff, res_dropout=res_dropout, pre_norm=pre_norm,
                                    activation=act, res_attention=res_attention, n_layers=n_layers, store_attn=store_attn)
         self.transpose = Transpose(-1, -2, contiguous=True)
-        self.key_padding_mask = key_padding_mask
-        self.attn_mask = attn_mask
+        self.key_padding_mask, self.padding_var, self.attn_mask = key_padding_mask, padding_var, attn_mask
 
     def forward(self, x:Tensor) -> Tensor:  # x: [bs x nvars x q_len]
 
@@ -314,13 +314,17 @@ class _TSTBackbone(Module):
         return nn.Parameter(W_pos, requires_grad=learn_pe)
 
     def _key_padding_mask(self, x):
-        mask = torch.isnan(x)
-        x[mask] = 0
-        if mask.any():
-            mask = TSMaskTensor((mask.float().mean(1)==1).bool())   # key_padding_mask: [bs x q_len]
+        if self.padding_var is not None:
+            mask = TSMaskTensor(x[:, self.padding_var] == 1)            # key_padding_mask: [bs x q_len]
             return x, mask
         else:
-            return x, None
+            mask = torch.isnan(x)
+            x[mask] = 0
+            if mask.any():
+                mask = TSMaskTensor((mask.float().mean(1)==1).bool())   # key_padding_mask: [bs x q_len]
+                return x, mask
+            else:
+                return x, None
 
 # Cell
 
@@ -328,8 +332,8 @@ class TSTPlus(nn.Sequential):
     """TST (Time Series Transformer) is a Transformer that takes continuous time series as inputs"""
     def __init__(self, c_in:int, c_out:int, seq_len:int, max_seq_len:Optional[int]=512,
                  n_layers:int=3, d_model:int=128, n_heads:int=16, d_k:Optional[int]=None, d_v:Optional[int]=None,
-                 d_ff:int=256, res_dropout:float=0., act:str="gelu", key_padding_mask:bool=True, attn_mask:Optional[Tensor]=None,
-                 res_attention:bool=True, pre_norm:bool=False, store_attn:bool=False,
+                 d_ff:int=256, res_dropout:float=0., act:str="gelu", key_padding_mask:bool=True, padding_var:Optional[int]=None,
+                 attn_mask:Optional[Tensor]=None, res_attention:bool=True, pre_norm:bool=False, store_attn:bool=False,
                  pe:str='zeros', learn_pe:bool=True, flatten:bool=True, fc_dropout:float=0.,
                  concat_pool:bool=False, bn:bool=False, custom_head:Optional=None,
                  y_range:Optional[tuple]=None, verbose:bool=False, **kwargs):
@@ -347,6 +351,7 @@ class TSTPlus(nn.Sequential):
             res_dropout: amount of residual dropout applied in the encoder.
             act: the activation function of intermediate layer, relu or gelu.
             key_padding_mask: a boolean padding mask will be applied to attention if True to those steps in a sample where all features are nan.
+            padding_var: (optional) an int indicating the variable that contains the padded steps (0: non-padded, 1: padded).
             attn_mask: a boolean mask will be applied to attention if a tensor of shape [min(seq_len, max_seq_len) x min(seq_len, max_seq_len)] if provided.
             res_attention: if True Residual MultiHeadAttention is applied.
             pre_norm: if True normalization will be applied as the first step in the sublayers. Defaults to False
@@ -371,9 +376,9 @@ class TSTPlus(nn.Sequential):
         # Backbone
         backbone = _TSTBackbone(c_in, seq_len=seq_len, max_seq_len=max_seq_len,
                                 n_layers=n_layers, d_model=d_model, n_heads=n_heads, d_k=d_k, d_v=d_v,
-                                d_ff=d_ff, res_dropout=res_dropout, act=act, key_padding_mask=key_padding_mask, attn_mask=attn_mask,
-                                res_attention=res_attention, pre_norm=pre_norm, store_attn=store_attn, pe=pe, learn_pe=learn_pe,
-                                verbose=verbose, **kwargs)
+                                d_ff=d_ff, res_dropout=res_dropout, act=act, key_padding_mask=key_padding_mask, padding_var=padding_var,
+                                attn_mask=attn_mask, res_attention=res_attention, pre_norm=pre_norm, store_attn=store_attn,
+                                pe=pe, learn_pe=learn_pe, verbose=verbose, **kwargs)
 
         # Head
         self.head_nf = d_model
