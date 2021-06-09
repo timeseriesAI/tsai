@@ -56,7 +56,7 @@ class InceptionBlock(Module):
 
 @delegates(InceptionModule.__init__)
 class InceptionTime(Module):
-    def __init__(self, c_in, c_out, nf=32, nb_filters=None, **kwargs):
+    def __init__(self, c_in, c_out, seq_len=None, nf=32, nb_filters=None, **kwargs):
         nf = ifnone(nf, nb_filters) # for compatibility
         self.inceptionblock = InceptionBlock(c_in, nf, **kwargs)
         self.gap = GAP1d(1)

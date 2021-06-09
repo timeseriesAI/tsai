@@ -3,10 +3,13 @@
 __all__ = ['MiniRocketFeatures', 'MRF', 'get_minirocket_features', 'MiniRocketHead', 'MiniRocket']
 
 # Cell
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
+from collections import OrderedDict
+
 
 class MiniRocketFeatures(nn.Module):
     """This is a Pytorch implementation of MiniRocket developed by Malcolm McLean and Ignacio Oguiza
@@ -159,19 +162,21 @@ def get_minirocket_features(o, model, chunksize=1024, use_cuda=None, to_np=False
     else: return features
 
 # Cell
-from collections import OrderedDict
 
 class MiniRocketHead(nn.Sequential):
     def __init__(self, c_in, c_out, seq_len=1, bn=True, fc_dropout=0.):
         layers = [nn.Flatten()]
-        if bn: layers += [nn.BatchNorm1d(c_in)]
-        if fc_dropout: layers += [nn.Dropout(fc_dropout)]
+        if bn:
+            layers += [nn.BatchNorm1d(c_in)]
+        if fc_dropout:
+            layers += [nn.Dropout(fc_dropout)]
         linear = nn.Linear(c_in, c_out)
         nn.init.constant_(linear.weight.data, 0)
         nn.init.constant_(linear.bias.data, 0)
         layers += [linear]
         head = nn.Sequential(*layers)
-        super().__init__(OrderedDict([('backbone', nn.Sequential()), ('head', head)]))
+        super().__init__(OrderedDict(
+            [('backbone', nn.Sequential()), ('head', head)]))
 
 # Cell
 class MiniRocket(nn.Sequential):
