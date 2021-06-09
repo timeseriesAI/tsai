@@ -66,7 +66,9 @@ class mWDNPlus(Module):
         self.blocks = nn.ModuleList()
         for i in range(levels): self.blocks.append(WaveBlock(c_in, c_out, seq_len // 2 ** i, wavelet=wavelet))
         self.model = build_model(arch, c_in, c_out, seq_len=seq_len, **arch_kwargs)
-        if hasattr(self.model, 'head'): self.head = self.model.head
+        if hasattr(self.model, 'head'):
+            self.head = self.model.head
+            self.head_nf = self.model.head_nf
 
     def forward(self,x):
         for i in range(self.levels):
