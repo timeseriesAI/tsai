@@ -29,10 +29,11 @@ class GBlendLoss(Module):
         return loss / sum(self.w)
 
 # Cell
+
 class GBlend(Callback):
     r"""A callback to implement multi-modal gradient blending.
 
-    This is an unofficial PyTorch implementation by Ignacio Oguiza of  - oguiza@gmail.com based on: Wang, W., Tran, D., & Feiszli, M. (2020).
+    This is an unofficial PyTorch implementation by Ignacio Oguiza of  - timeseriesAI@gmail.com based on: Wang, W., Tran, D., & Feiszli, M. (2020).
     What Makes Training Multi-Modal Classification Networks Hard?. In Proceedings of the IEEE/CVF Conference on Computer Vision and
     Pattern Recognition (pp. 12695-12705).
     """
@@ -60,7 +61,7 @@ class GBlend(Callback):
         self.learn.model.multi_output = True
 
         #loss
-        if cls_name(self.learn.loss_func) != 'GBlendLoss': self.learn.loss_func = GBlendLoss(crit=self.learn.loss_func)
+        self.learn.loss_func = GBlendLoss(crit=self.learn.loss_func)
 
         # calculate super_epochs
         if self.n is None:
@@ -80,7 +81,7 @@ class GBlend(Callback):
         # create T'(Tp) and V dataloaders
         n_out = len(self.learn.dls.train.dataset.ptls) - self.learn.dls.train.dataset.n_inp
         train_targets = self.learn.dls.train.dataset.ptls[-n_out]
-        Tp_idx, V_idx = get_splits(train_targets, valid_size=self.V_pct)
+        Tp_idx, V_idx = get_splits(train_targets, valid_size=self.V_pct, show_plot=False)
         _Tp_train_dls = []
         _V_train_dls = []
         self.learn.new_dls = []
@@ -119,7 +120,7 @@ class GBlend(Callback):
         _LV = []
         for i in range(self.learn.M + 1):
             model = torch.load(self.path/'gblend_model')
-            learn = Learner(self.learn.new_dls[i], model.m[i], loss_func=GBlendLoss(),
+            learn = Learner(self.learn.new_dls[i], model.m[i], loss_func=self.learn.loss_func,
                             opt_func=self.learn.opt_func, metrics=self.learn.metrics)
             learn.model.multi_output = False
             learn.remove_cbs(learn.cbs[1])

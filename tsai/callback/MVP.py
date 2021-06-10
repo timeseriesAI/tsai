@@ -27,8 +27,8 @@ def create_subsequence_mask(o, r=.15, lm=3, stateful=True, sync=False):
         numels = n_masks * dims * mask_len
         pm = torch.tensor([1 / lm], device=device)
         pu = torch.clip(pm * (r / max(1e-6, 1 - r)), 1e-3, 1)
-        zot, proba_a, proba_b = (torch.as_tensor([True, False], device=device), pu, pm) if random.random() > pm else \
-        (torch.as_tensor([False, True], device=device), pm, pu)
+        zot, proba_a, proba_b = (torch.as_tensor([False, True], device=device), pu, pm) if random.random() > pm else \
+        (torch.as_tensor([True, False], device=device), pm, pu)
         max_len = max(1, 2 * math.ceil(numels // (1/pm + 1/pu)))
         for i in range(10):
             _dist_a = (Geometric(probs=proba_a).sample([max_len])+1).long()
@@ -43,21 +43,21 @@ def create_subsequence_mask(o, r=.15, lm=3, stateful=True, sync=False):
         zot = zot.repeat(dist_len)
         mask = torch.repeat_interleave(zot, repeats)[:numels].reshape(n_masks, dims, mask_len)
     else:
-        probs = torch.tensor(1-r, device=device)
-        mask = Binomial(1, probs).sample((n_masks, dims, mask_len))
+        probs = torch.tensor(r, device=device)
+        mask = Binomial(1, probs).sample((n_masks, dims, mask_len)).bool()
     if sync: mask = mask.repeat(1, mask_dims, 1)
     return mask
 
 def create_variable_mask(o, r=.15):
     device = o.device
     n_masks, mask_dims, mask_len = o.shape
-    _mask = torch.ones((n_masks * mask_dims, mask_len), device=device)
+    _mask = torch.zeros((n_masks * mask_dims, mask_len), device=device)
     if int(mask_dims * r) > 0:
         n_masked_vars = int(n_masks * mask_dims * r)
         p = torch.tensor([1./(n_masks * mask_dims)], device=device).repeat([n_masks * mask_dims])
         sel_dims = p.multinomial(num_samples=n_masked_vars, replacement=False)
-        _mask[sel_dims] = 0
-    mask = _mask.reshape(*o.shape)
+        _mask[sel_dims] = 1
+    mask = _mask.reshape(*o.shape).bool()
     return mask
 
 def create_future_mask(o, r=.15, sync=False):
@@ -65,10 +65,10 @@ def create_future_mask(o, r=.15, sync=False):
     n_masks, mask_dims, mask_len = o.shape
     if sync == 'random': sync = random.random() > .5
     dims = 1 if sync else mask_dims
-    probs = torch.tensor(1-r, device=o.device)
+    probs = torch.tensor(r, device=o.device)
     mask = Binomial(1, probs).sample((n_masks, dims, mask_len))
     if sync: mask = mask.repeat(1, mask_dims, 1)
-    mask = torch.sort(mask,dim=-1, descending=True)[0]
+    mask = torch.sort(mask,dim=-1, descending=True)[0].bool()
     return mask
 
 def natural_mask(o):
@@ -78,7 +78,7 @@ def natural_mask(o):
     return torch.logical_and(mask2, ~mask1)
 
 # Cell
-def create_mask(o,  r=.15, lm=3, stateful=True, sync=False, subsequence_mask=True, variable_mask=False, future_mask=False, custom_mask=None):
+def create_mask(o,  r=.15, lm=3, stateful=True, sync=False, subsequence_mask=True, variable_mask=False, future_mask=False):
     if r <= 0 or r >=1:
         return torch.ones_like(o)
     if int(r * o.shape[1]) == 0:
@@ -89,8 +89,6 @@ def create_mask(o,  r=.15, lm=3, stateful=True, sync=False, subsequence_mask=Tru
             variable_mask = False
         else:
             subsequence_mask = False
-    if custom_mask is not None:
-        return custom_mask(o)
     elif future_mask:
         return create_future_mask(o, r=r)
     elif subsequence_mask:
@@ -108,8 +106,8 @@ class MVP(Callback):
     order = 60
 
     def __init__(self, r: float = .15, subsequence_mask: bool = True, lm: float = 3., stateful: bool = True, sync: bool = False, variable_mask: bool = False,
-                 future_mask: bool = False, custom_mask: Optional = None, dropout: float = .1, crit: callable = None, weights_path:Optional[str]=None,
-                 target_dir: str = './data/MVP', fname: str = 'model', save_best: bool = True, verbose: bool = False):
+                 future_mask: bool = False, custom_mask: Optional = None, nan_to_num : int = 0, dropout: float = .1, crit: callable = None,
+                 weights_path:Optional[str]=None, target_dir: str = './data/MVP', fname: str = 'model', save_best: bool = True, verbose: bool = False):
         r"""
         Callback used to perform the pretext task of reconstruct the original data after a binary mask has been applied.
 
@@ -121,7 +119,8 @@ class MVP(Callback):
             sync: all variables have the same masking.
             variable_mask: apply a mask to random variables. Only applicable to multivariate time series.
             future_mask: used to train a forecasting model.
-            custom_mask: allows to pass any type of mask with input tensor and output tensor.
+            custom_mask: allows to pass any type of mask with input tensor and output tensor. Values to mask should be set to True.
+            nan_to_num: integer used to fill masked values
             dropout: dropout applied to the head of the model during pretraining.
             crit: loss function that will be used. If None MSELossFlat().
             weights_path: indicates the path to pretrained weights. This is useful when you want to continue training from a checkpoint. It will load the
@@ -136,7 +135,7 @@ class MVP(Callback):
             warnings.warn("Only custom_mask will be used")
         elif future_mask and (subsequence_mask or variable_mask):
             warnings.warn("Only future_mask will be used")
-        store_attr("subsequence_mask,variable_mask,future_mask,custom_mask,dropout,r,lm,stateful,sync,crit,weights_path,fname,save_best,verbose")
+        store_attr("subsequence_mask,variable_mask,future_mask,custom_mask,dropout,r,lm,stateful,sync,crit,weights_path,fname,save_best,verbose,nan_to_num")
         self.PATH = Path(f'{target_dir}/{self.fname}')
         if not os.path.exists(self.PATH.parent):
             os.makedirs(self.PATH.parent)
@@ -174,19 +173,19 @@ class MVP(Callback):
             xb = torch.randn(2, self.learn.dls.vars, self.learn.dls.len).to(self.learn.dls.device)
             assert xb.shape == self.learn.model(xb).shape, 'the model cannot reproduce the input shape'
 
-#     def before_batch(self):
-#         self.learn.yb = (self.x,)
-#         mask = create_mask(self.x,  r=self.r, lm=self.lm, stateful=self.stateful, sync=self.sync, subsequence_mask=self.subsequence_mask,
-#                            variable_mask=self.variable_mask, future_mask=self.future_mask, custom_mask=self.custom_mask)
-#         self.learn.xb = (self.x * mask,)
-#         self.learn.loss_func.mask = (mask == 0)  # boolean mask
-#         self.mask = mask
-
     def before_batch(self):
-        self.mask = create_mask(self.x,  r=self.r, lm=self.lm, stateful=self.stateful, sync=self.sync, subsequence_mask=self.subsequence_mask,
-                                variable_mask=self.variable_mask, future_mask=self.future_mask, custom_mask=self.custom_mask).bool()
-        self.learn.yb = (torch_nan_to_num(self.x),)
-        self.learn.xb = (torch_masked_to_num(self.yb[0], self.mask), )
+        original_mask = torch.isnan(self.x)
+        if self.custom_mask is not None:
+            new_mask = custom_mask(self.x)
+        else:
+            new_mask = create_mask(self.x, r=self.r, lm=self.lm, stateful=self.stateful, sync=self.sync, subsequence_mask=self.subsequence_mask,
+                                   variable_mask=self.variable_mask, future_mask=self.future_mask).bool()
+        if original_mask.any():
+            self.mask = torch.logical_and(new_mask, ~original_mask)
+        else:
+            self.mask = new_mask
+        self.learn.yb = (torch.nan_to_num(self.x, self.nan_to_num),)
+        self.learn.xb = (self.yb[0].masked_fill(self.mask, self.nan_to_num), )
 
     def after_epoch(self):
         val = self.learn.recorder.values[-1][-1]
