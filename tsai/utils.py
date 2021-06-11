@@ -15,7 +15,7 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'torch_nanstd', 'concat', 'reduce_memory_usage', 'cls_name', 'roll2d', 'roll3d', 'random_roll2d',
            'random_roll3d', 'rotate_axis0', 'rotate_axis1', 'rotate_axis2', 'create_empty_array', 'np_save_compressed',
            'np_load_compressed', 'np2memmap', 'torch_mean_groupby', 'torch_flip', 'torch_nan_to_num',
-           'torch_masked_to_num']
+           'torch_masked_to_num', 'mpl_trend']
 
 # Cell
 from .imports import *
@@ -816,3 +816,8 @@ def torch_masked_to_num(o, mask, num=0, inplace=False):
         o[:] = o.masked_fill(mask, num)
     else:
         return o.masked_fill(mask, num)
+
+# Cell
+
+def mpl_trend(x, y, deg=1):
+    return np.poly1d(np.polyfit(x, y, deg))(x)
