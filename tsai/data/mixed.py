@@ -28,6 +28,8 @@ class MixedDataLoader():
                 self.vars = dl.vars
             if hasattr(dl, 'len'):
                 self.len = dl.len
+            if hasattr(dl, 'split_idxs'):
+                self.split_idxs = dl.split_idxs
             dl.bs = bs
             dl.shuffle_fn = self.shuffle_fn
             if self.c is None and hasattr(dl, "c"):
@@ -76,21 +78,20 @@ class MixedDataLoader():
         self.y_idxs = self._get_vals(outs)
 
     def __iter__(self):
-        z = zip(*[_loaders[i.fake_l.num_workers == 0](i.fake_l)
-                  for i in self.loaders])
+        z = zip(*[_loaders[i.fake_l.num_workers == 0](i.fake_l) for i in self.loaders])
         for b in z:
             inps = []
             outs = []
             if self.device is not None:
                 b = to_device(b, self.device)
             for batch, dl in zip(b, self.loaders):
+                if hasattr(dl, 'idxs'): self.idxs = dl.idxs
                 batch = dl.after_batch(batch)
                 inps += batch[:dl.n_inp]
                 outs += batch[dl.n_inp:]
             inps = tuple([tuple(L(inps)[idx]) if isinstance(idx, list) else inps[idx]
                           for idx in self.x_idxs]) if len(self.x_idxs) > 1 else tuple(L(outs)[self.x_idxs][0])
-            outs = tuple(L(outs)[self.y_idxs]) if len(
-                self.y_idxs) > 1 else L(outs)[self.y_idxs][0]
+            outs = tuple(L(outs)[self.y_idxs]) if len(self.y_idxs) > 1 else L(outs)[self.y_idxs][0]
             yield inps, outs
 
     def one_batch(self):
