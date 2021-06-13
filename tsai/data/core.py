@@ -524,6 +524,7 @@ class TSDataLoader(NumpyDataLoader):
         else: return xb[0].shape[-1]
 
 # Cell
+
 _batch_tfms = ('after_item','before_batch','after_batch')
 
 class NumpyDataLoaders(DataLoaders):
@@ -592,8 +593,7 @@ def get_ts_dls(X, y=None, splits=None, sel_vars=None, sel_steps=None, tfms=None,
     if splits is None: splits = (L(np.arange(len(X)).tolist()), L([]))
     dsets = TSDatasets(X, y, splits=splits, sel_vars=sel_vars, sel_steps=sel_steps, tfms=tfms, inplace=inplace)
     if weights is not None:
-        weights = [weights[split] for split in splits]
-        weights[1:] = None
+        weights = [weights[split] if i == 0 else None for i,split in enumerate(splits)]
     dls   = TSDataLoaders.from_dsets(dsets.train, dsets.valid, path=path, bs=bs, batch_tfms=batch_tfms, num_workers=num_workers,
                                      device=device, shuffle_train=shuffle_train, drop_last=drop_last, weights=weights, **kwargs)
     return dls
@@ -602,9 +602,6 @@ def get_ts_dl(X, y=None, sel_vars=None, sel_steps=None, tfms=None, inplace=True,
             path='.', bs=64, batch_tfms=None, num_workers=0, device=None, shuffle_train=True, drop_last=True, weights=None, **kwargs):
     splits = (L(np.arange(len(X)).tolist()), L([]))
     dsets = TSDatasets(X, y, splits=splits, sel_vars=sel_vars, sel_steps=sel_steps, tfms=tfms, inplace=inplace, **kwargs)
-    if weights is not None:
-        weights = [weights[split] for split in splits]
-        weights[1:] = None
     dls   = TSDataLoaders.from_dsets(dsets.train, path=path, bs=bs, batch_tfms=batch_tfms, num_workers=num_workers,
                                      device=device, shuffle_train=shuffle_train, drop_last=drop_last, weights=weights, **kwargs)
     return dls.train
