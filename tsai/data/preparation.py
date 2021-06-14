@@ -2,7 +2,8 @@
 
 __all__ = ['df2Xy', 'split_Xy', 'df2xy', 'split_xy', 'df2np3d', 'add_missing_value_cols', 'add_missing_timestamps',
            'time_encoding', 'forward_gaps', 'backward_gaps', 'nearest_gaps', 'get_gaps', 'add_delta_timestamp_cols',
-           'SlidingWindow', 'SlidingWindowPanel', 'SlidingWindowPanelSplitter', 'identify_padding']
+           'SlidingWindow', 'SlidingWindowSplitter', 'SlidingWindowPanel', 'SlidingWindowPanelSplitter',
+           'identify_padding']
 
 # Cell
 from ..imports import *
@@ -406,6 +407,8 @@ def SlidingWindow(window_len:int, stride:Union[None, int]=1, start:int=0, pad_re
             return X, y
         else: return X, None
     return _inner
+
+SlidingWindowSplitter = SlidingWindow
 
 # Cell
 def SlidingWindowPanel(window_len:int, unique_id_cols:list, stride:Union[None, int]=1, start:int=0,
