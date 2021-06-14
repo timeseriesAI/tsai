@@ -2,8 +2,7 @@
 
 __all__ = ['df2Xy', 'split_Xy', 'df2xy', 'split_xy', 'df2np3d', 'add_missing_value_cols', 'add_missing_timestamps',
            'time_encoding', 'forward_gaps', 'backward_gaps', 'nearest_gaps', 'get_gaps', 'add_delta_timestamp_cols',
-           'SlidingWindow', 'SlidingWindowSplitter', 'SlidingWindowPanel', 'SlidingWindowPanelSplitter',
-           'identify_padding']
+           'SlidingWindow', 'SlidingWindowPanel', 'SlidingWindowPanelSplitter', 'identify_padding']
 
 # Cell
 from ..imports import *
@@ -302,9 +301,8 @@ def add_delta_timestamp_cols(df, cols=None, groupby=None, forward=True, backward
 
 
 # Cell
-# SlidingWindow vectorization is based on "Fast and Robust Sliding Window Vectorization with NumPy" by Syafiq Kamarul Azman
-# https://towardsdatascience.com/fast-and-robust-sliding-window-vectorization-with-numpy-3ad950ed62f5
-
+# # SlidingWindow vectorization is based on "Fast and Robust Sliding Window Vectorization with NumPy" by Syafiq Kamarul Azman
+# # https://towardsdatascience.com/fast-and-robust-sliding-window-vectorization-with-numpy-3ad950ed62f5
 
 def SlidingWindow(window_len:int, stride:Union[None, int]=1, start:int=0, pad_remainder:bool=False, padding_value:float=np.nan, add_padding_feature:bool=True,
                   get_x:Union[None, int, list]=None, get_y:Union[None, int, list]=None, y_func:Optional[callable]=None,
@@ -325,7 +323,8 @@ def SlidingWindow(window_len:int, stride:Union[None, int]=1, start:int=0, pad_re
                             * n < 0 for a range of n past steps (-n + 1 to 0).
                             * list : for those exact timesteps.
         get_x               = indices of columns that contain the independent variable (xs). If None, all data will be used as x.
-        get_y               = indices of columns that contain the target (ys). If None, all data will be used as y. [] means no y data is created (unlabeled data).
+        get_y               = indices of columns that contain the target (ys). If None, all data will be used as y.
+                            [] means no y data is created (unlabeled data).
         y_func              = function to calculate the ys based on the get_y col/s and each y sub-window. y_func must be a function applied to axis=1!
         seq_first           = True if input shape (seq_len, n_vars), False if input shape (n_vars, seq_len)
         sort_by             = column/s used for sorting the array in ascending order
@@ -362,30 +361,40 @@ def SlidingWindow(window_len:int, stride:Union[None, int]=1, start:int=0, pad_re
             if get_y != []: y = o[:, _get_y]
         seq_len = len(X)
         if get_y != []:
-            X_max_time = seq_len - start - max_horizon - window_len
+            X_max_time = seq_len - start - window_len - max_horizon - 1
         else:
-            X_max_time = seq_len - start - window_len
-        if get_y == [] and pad_remainder:
+            X_max_time = seq_len - start - window_len - 1
+        if pad_remainder:
             if add_padding_feature:
                 X = np.concatenate([X, np.zeros((X.shape[0], 1))], axis=1)
-            if X_max_time % stride:
-                X_max_time = X_max_time - X_max_time % stride + stride
+            X_max_time = X_max_time - X_max_time % stride + stride
+            if window_len + start + X_max_time - len(X) >= 0:
                 _X = np.empty((window_len + start + X_max_time - len(X), *X.shape[1:]))
                 _X[:] = padding_value
                 if add_padding_feature:
                     _X[:, -1] = 1
                 X = np.concatenate((X, _X))
-        elif X_max_time <= 0: return None, None
+        elif X_max_time < 0: return None, None
         X_sub_windows = (start +
                          np.expand_dims(np.arange(window_len), 0) + # window len
-                         np.expand_dims(np.arange(X_max_time + 1, step=stride), 0).T) # # subwindows
+                         np.expand_dims(np.arange(X_max_time + 1, step=stride), 0).T
+                        ) # # subwindows
         X = np.transpose(X[X_sub_windows], (0, 2, 1))
         if get_y != [] and y is not None:
             y_start = start + window_len - 1
-            y_max_time = seq_len - y_start - max_horizon
+            y_max_time = seq_len - y_start - max_horizon - 1
+            div = 0
+            if pad_remainder:
+                div = y_max_time % stride
+                y_max_time = y_max_time - y_max_time % stride + stride
+                if window_len + start + y_max_time - len(y) >= 0:
+                    _y = np.empty((window_len + start + y_max_time - len(y), *y.shape[1:]))
+                    _y[:] = padding_value
+                    y = np.concatenate((y, _y))
             y_sub_windows = (y_start +
                              np.expand_dims(horizon_rng, 0) + # horizon_rng
-                             np.expand_dims(np.arange(y_max_time, step=stride), 0).T) # # subwindows
+                             np.expand_dims(np.arange(y_max_time + div, step=stride), 0).T
+                            ) # # subwindows
             y = y[y_sub_windows]
             if y_func is not None and len(y) > 0:
                 y = y_func(y)
@@ -397,8 +406,6 @@ def SlidingWindow(window_len:int, stride:Union[None, int]=1, start:int=0, pad_re
             return X, y
         else: return X, None
     return _inner
-
-SlidingWindowSplitter = SlidingWindow
 
 # Cell
 def SlidingWindowPanel(window_len:int, unique_id_cols:list, stride:Union[None, int]=1, start:int=0,

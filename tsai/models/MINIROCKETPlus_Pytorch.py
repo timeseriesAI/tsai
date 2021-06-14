@@ -254,15 +254,18 @@ class MiniRocketHead(nn.Sequential):
 class InceptionRocketFeaturesPlus(nn.Module):
     fitting = False
 
-    def __init__(self, c_in, seq_len, num_features=10_000, max_dilations_per_kernel=32, kernel_sizes=np.arange(3, 20, 2),
-                 max_num_channels=None, max_num_kernels=84, add_lsaz=True):
+    def __init__(self, c_in, seq_len, num_features=10_000, max_dilations_per_kernel=32, kernel_sizes=np.arange(3, 10, 2),
+                 max_num_channels=None, max_num_kernels=84, add_lsaz=True, same_n_feats_per_ks=False):
 
         super().__init__()
 
         self.minirocketfeatures = nn.ModuleList()
         kernel_sizes = [ks for ks in kernel_sizes if ks < seq_len]
         self.kernel_sizes, self.max_num_kernels = kernel_sizes, max_num_kernels
-        num_features_per_kernel_size = self._get_n_feat_per_ks(num_features)
+        if same_n_feats_per_ks:
+            num_features_per_kernel_size = [num_features // len(kernel_sizes)] * len(kernel_sizes)
+        else:
+            num_features_per_kernel_size = self._get_n_feat_per_ks(num_features)
 
         self.num_features = 0
         for kernel_size, num_features_this_kernel_size in zip(kernel_sizes, num_features_per_kernel_size):
@@ -273,7 +276,6 @@ class InceptionRocketFeaturesPlus(nn.Module):
                                                                   max_num_kernels=min(
                                                                       max_num_kernels, num_features_this_kernel_size),
                                                                   add_lsaz=add_lsaz))
-
             self.num_features += self.minirocketfeatures[-1].num_features * (1 + add_lsaz)
 
     def fit(self, X, chunksize=None):
@@ -301,12 +303,12 @@ class InceptionRocketFeaturesPlus(nn.Module):
 class InceptionRocketPlus(nn.Sequential):
 
     def __init__(self, c_in, c_out, seq_len, num_features=10_000, max_dilations_per_kernel=32, kernel_sizes=[3, 5, 7, 9],
-                 max_num_channels=None, max_num_kernels=84, add_lsaz=False, bn=True, fc_dropout=0):
+                 max_num_channels=None, max_num_kernels=84, same_n_feats_per_ks=False, add_lsaz=False, bn=True, fc_dropout=0):
 
         # Backbone
         backbone = InceptionRocketFeaturesPlus(c_in, seq_len, num_features=num_features, max_dilations_per_kernel=max_dilations_per_kernel,
                                                kernel_sizes=kernel_sizes, max_num_channels=max_num_channels, max_num_kernels=max_num_kernels,
-                                               add_lsaz=add_lsaz)
+                                               same_n_feats_per_ks=same_n_feats_per_ks, add_lsaz=add_lsaz)
         num_features = backbone.num_features
 
         # Head
