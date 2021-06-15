@@ -362,9 +362,9 @@ def SlidingWindow(window_len:int, stride:Union[None, int]=1, start:int=0, pad_re
             if get_y != []: y = o[:, _get_y]
         seq_len = len(X)
         if get_y != []:
-            X_max_time = seq_len - start - window_len - max_horizon - 1
+            X_max_time = seq_len - start - window_len - max_horizon - pad_remainder
         else:
-            X_max_time = seq_len - start - window_len - 1
+            X_max_time = seq_len - start - window_len - pad_remainder
         if pad_remainder:
             if add_padding_feature:
                 X = np.concatenate([X, np.zeros((X.shape[0], 1))], axis=1)
@@ -383,7 +383,7 @@ def SlidingWindow(window_len:int, stride:Union[None, int]=1, start:int=0, pad_re
         X = np.transpose(X[X_sub_windows], (0, 2, 1))
         if get_y != [] and y is not None:
             y_start = start + window_len - 1
-            y_max_time = seq_len - y_start - max_horizon - 1
+            y_max_time = seq_len - y_start - max_horizon - pad_remainder
             div = 0
             if pad_remainder:
                 div = y_max_time % stride
