@@ -72,6 +72,13 @@ nb_path: "nbs/110_models.mWDN.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
 <div class="output_wrapper">
 <div class="output">
 
@@ -79,9 +86,78 @@ nb_path: "nbs/110_models.mWDN.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="mWDN" class="doc_header"><code>class</code> <code>mWDN</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/mWDN.py#L61" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>mWDN</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>levels</code></strong>=<em><code>3</code></em>, <strong><code>wavelet</code></strong>=<em><code>None</code></em>, <strong><code>arch</code></strong>=<em><code>InceptionTime</code></em>, <strong><code>arch_kwargs</code></strong>=<em><code>{}</code></em>) :: <code>Module</code></p>
+<h2 id="mWDN" class="doc_header"><code>class</code> <code>mWDN</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/mWDN.py#L63" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>mWDN</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>levels</code></strong>=<em><code>3</code></em>, <strong><code>wavelet</code></strong>=<em><code>None</code></em>, <strong><code>arch</code></strong>=<em><code>InceptionTimePlus</code></em>, <strong><code>arch_kwargs</code></strong>=<em><code>{}</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="mWDNBlocks" class="doc_header"><code>class</code> <code>mWDNBlocks</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/mWDN.py#L78" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>mWDNBlocks</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>levels</code></strong>=<em><code>3</code></em>, <strong><code>wavelet</code></strong>=<em><code>None</code></em>) :: <code>Module</code></p>
+</blockquote>
+<p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="mWDNPlus" class="doc_header"><code>class</code> <code>mWDNPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/mWDN.py#L91" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>mWDNPlus</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>levels</code></strong>=<em><code>3</code></em>, <strong><code>wavelet</code></strong>=<em><code>None</code></em>, <strong><code>arch</code></strong>=<em><code>InceptionTimePlus</code></em>, <strong><code>arch_kwargs</code></strong>=<em><code>{}</code></em>) :: <a href="/models.TabFusionTransformer.html#Sequential"><code>Sequential</code></a></p>
+</blockquote>
+<p>A sequential container.
+Modules will be added to it in the order they are passed in the constructor.
+Alternatively, an ordered dict of modules can also be passed in.</p>
+<p>To make it easier to understand, here is a small example::</p>
+
+<pre><code># Example of using Sequential
+model = nn.Sequential(
+          nn.Conv2d(1,20,5),
+          nn.ReLU(),
+          nn.Conv2d(20,64,5),
+          nn.ReLU()
+        )
+
+# Example of using Sequential with OrderedDict
+model = nn.Sequential(OrderedDict([
+          ('conv1', nn.Conv2d(1,20,5)),
+          ('relu1', nn.ReLU()),
+          ('conv2', nn.Conv2d(20,64,5)),
+          ('relu2', nn.ReLU())
+        ]))</code></pre>
 
 </div>
 
@@ -112,8 +188,9 @@ nb_path: "nbs/110_models.mWDN.ipynb"
 <span class="n">seq_len</span> <span class="o">=</span> <span class="mi">12</span>
 <span class="n">c_out</span> <span class="o">=</span> <span class="mi">2</span>
 <span class="n">xb</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_in</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">)</span>
-<span class="n">m</span> <span class="o">=</span> <span class="n">mWDN</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">mWDN</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">)(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">])</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">mWDNPlus</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">model</span><span class="p">(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">])</span>
 </pre></div>
 
     </div>
@@ -130,7 +207,7 @@ nb_path: "nbs/110_models.mWDN.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">m</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">head</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">head_nf</span>
 </pre></div>
 
     </div>
@@ -145,136 +222,18 @@ nb_path: "nbs/110_models.mWDN.ipynb"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>mWDN(
-  (blocks): ModuleList(
-    (0): WaveBlock(
-      (mWDN_H): Linear(in_features=12, out_features=12, bias=True)
-      (mWDN_L): Linear(in_features=12, out_features=12, bias=True)
-      (sigmoid): Sigmoid()
-      (pool): AvgPool1d(kernel_size=(2,), stride=(2,), padding=(0,))
-    )
-    (1): WaveBlock(
-      (mWDN_H): Linear(in_features=6, out_features=6, bias=True)
-      (mWDN_L): Linear(in_features=6, out_features=6, bias=True)
-      (sigmoid): Sigmoid()
-      (pool): AvgPool1d(kernel_size=(2,), stride=(2,), padding=(0,))
-    )
-    (2): WaveBlock(
-      (mWDN_H): Linear(in_features=3, out_features=3, bias=True)
-      (mWDN_L): Linear(in_features=3, out_features=3, bias=True)
-      (sigmoid): Sigmoid()
-      (pool): AvgPool1d(kernel_size=(2,), stride=(2,), padding=(0,))
-    )
-  )
-  (classifier): InceptionTime(
-    (inceptionblock): InceptionBlock(
-      (inception): ModuleList(
-        (0): InceptionModule(
-          (bottleneck): Conv1d(3, 32, kernel_size=(1,), stride=(1,), bias=False)
-          (convs): ModuleList(
-            (0): Conv1d(32, 32, kernel_size=(39,), stride=(1,), padding=(19,), bias=False)
-            (1): Conv1d(32, 32, kernel_size=(19,), stride=(1,), padding=(9,), bias=False)
-            (2): Conv1d(32, 32, kernel_size=(9,), stride=(1,), padding=(4,), bias=False)
-          )
-          (maxconvpool): Sequential(
-            (0): MaxPool1d(kernel_size=3, stride=1, padding=1, dilation=1, ceil_mode=False)
-            (1): Conv1d(3, 32, kernel_size=(1,), stride=(1,), bias=False)
-          )
-          (concat): Concat()
-          (bn): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-          (act): ReLU()
-        )
-        (1): InceptionModule(
-          (bottleneck): Conv1d(128, 32, kernel_size=(1,), stride=(1,), bias=False)
-          (convs): ModuleList(
-            (0): Conv1d(32, 32, kernel_size=(39,), stride=(1,), padding=(19,), bias=False)
-            (1): Conv1d(32, 32, kernel_size=(19,), stride=(1,), padding=(9,), bias=False)
-            (2): Conv1d(32, 32, kernel_size=(9,), stride=(1,), padding=(4,), bias=False)
-          )
-          (maxconvpool): Sequential(
-            (0): MaxPool1d(kernel_size=3, stride=1, padding=1, dilation=1, ceil_mode=False)
-            (1): Conv1d(128, 32, kernel_size=(1,), stride=(1,), bias=False)
-          )
-          (concat): Concat()
-          (bn): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-          (act): ReLU()
-        )
-        (2): InceptionModule(
-          (bottleneck): Conv1d(128, 32, kernel_size=(1,), stride=(1,), bias=False)
-          (convs): ModuleList(
-            (0): Conv1d(32, 32, kernel_size=(39,), stride=(1,), padding=(19,), bias=False)
-            (1): Conv1d(32, 32, kernel_size=(19,), stride=(1,), padding=(9,), bias=False)
-            (2): Conv1d(32, 32, kernel_size=(9,), stride=(1,), padding=(4,), bias=False)
-          )
-          (maxconvpool): Sequential(
-            (0): MaxPool1d(kernel_size=3, stride=1, padding=1, dilation=1, ceil_mode=False)
-            (1): Conv1d(128, 32, kernel_size=(1,), stride=(1,), bias=False)
-          )
-          (concat): Concat()
-          (bn): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-          (act): ReLU()
-        )
-        (3): InceptionModule(
-          (bottleneck): Conv1d(128, 32, kernel_size=(1,), stride=(1,), bias=False)
-          (convs): ModuleList(
-            (0): Conv1d(32, 32, kernel_size=(39,), stride=(1,), padding=(19,), bias=False)
-            (1): Conv1d(32, 32, kernel_size=(19,), stride=(1,), padding=(9,), bias=False)
-            (2): Conv1d(32, 32, kernel_size=(9,), stride=(1,), padding=(4,), bias=False)
-          )
-          (maxconvpool): Sequential(
-            (0): MaxPool1d(kernel_size=3, stride=1, padding=1, dilation=1, ceil_mode=False)
-            (1): Conv1d(128, 32, kernel_size=(1,), stride=(1,), bias=False)
-          )
-          (concat): Concat()
-          (bn): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-          (act): ReLU()
-        )
-        (4): InceptionModule(
-          (bottleneck): Conv1d(128, 32, kernel_size=(1,), stride=(1,), bias=False)
-          (convs): ModuleList(
-            (0): Conv1d(32, 32, kernel_size=(39,), stride=(1,), padding=(19,), bias=False)
-            (1): Conv1d(32, 32, kernel_size=(19,), stride=(1,), padding=(9,), bias=False)
-            (2): Conv1d(32, 32, kernel_size=(9,), stride=(1,), padding=(4,), bias=False)
-          )
-          (maxconvpool): Sequential(
-            (0): MaxPool1d(kernel_size=3, stride=1, padding=1, dilation=1, ceil_mode=False)
-            (1): Conv1d(128, 32, kernel_size=(1,), stride=(1,), bias=False)
-          )
-          (concat): Concat()
-          (bn): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-          (act): ReLU()
-        )
-        (5): InceptionModule(
-          (bottleneck): Conv1d(128, 32, kernel_size=(1,), stride=(1,), bias=False)
-          (convs): ModuleList(
-            (0): Conv1d(32, 32, kernel_size=(39,), stride=(1,), padding=(19,), bias=False)
-            (1): Conv1d(32, 32, kernel_size=(19,), stride=(1,), padding=(9,), bias=False)
-            (2): Conv1d(32, 32, kernel_size=(9,), stride=(1,), padding=(4,), bias=False)
-          )
-          (maxconvpool): Sequential(
-            (0): MaxPool1d(kernel_size=3, stride=1, padding=1, dilation=1, ceil_mode=False)
-            (1): Conv1d(128, 32, kernel_size=(1,), stride=(1,), bias=False)
-          )
-          (concat): Concat()
-          (bn): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-          (act): ReLU()
-        )
-      )
-      (shortcut): ModuleList(
-        (0): ConvBlock(
-          (0): Conv1d(3, 128, kernel_size=(1,), stride=(1,), bias=False)
-          (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-        )
-        (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-      )
-      (add): Add()
-      (act): ReLU()
-    )
-    (gap): AdaptiveAvgPool1d(output_size=1)
-    (squeeze): Squeeze()
-    (fc): Linear(in_features=128, out_features=2, bias=True)
-  )
-)</pre>
+<pre>(Sequential(
+   (0): Sequential(
+     (0): GAP1d(
+       (gap): AdaptiveAvgPool1d(output_size=1)
+       (flatten): Flatten(full=False)
+     )
+     (1): LinBnDrop(
+       (0): Linear(in_features=128, out_features=2, bias=True)
+     )
+   )
+ ),
+ 128)</pre>
 </div>
 
 </div>

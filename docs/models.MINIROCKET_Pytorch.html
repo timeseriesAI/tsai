@@ -31,7 +31,7 @@ nb_path: "nbs/111c_models.MINIROCKET_Pytorch.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This is a Pytorch implementation of MiniRocket developed by Malcolm McLean and Ignacio Oguiza</p>
+<p>This is a Pytorch implementation of MiniRocket developed by Malcolm McLean and Ignacio Oguiza based on:</p>
 <p>Dempster, A., Schmidt, D. F., &amp; Webb, G. I. (2020). MINIROCKET: A Very Fast (Almost) Deterministic Transform for Time Series Classification. arXiv preprint arXiv:2012.08791.</p>
 <p>Original paper: <a href="https://arxiv.org/abs/2012.08791">https://arxiv.org/abs/2012.08791</a></p>
 <p>Original code:  <a href="https://github.com/angus924/minirocket">https://github.com/angus924/minirocket</a></p>
@@ -50,7 +50,7 @@ nb_path: "nbs/111c_models.MINIROCKET_Pytorch.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MiniRocketFeatures" class="doc_header"><code>class</code> <code>MiniRocketFeatures</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/MINIROCKET_Pytorch.py#L11" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocketFeatures</code>(<strong><code>c_in</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>num_features</code></strong>=<em><code>10000</code></em>, <strong><code>max_dilations_per_kernel</code></strong>=<em><code>32</code></em>, <strong><code>random_state</code></strong>=<em><code>None</code></em>) :: <code>Module</code></p>
+<h2 id="MiniRocketFeatures" class="doc_header"><code>class</code> <code>MiniRocketFeatures</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/MINIROCKET_Pytorch.py#L14" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocketFeatures</code>(<strong><code>c_in</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>num_features</code></strong>=<em><code>10000</code></em>, <strong><code>max_dilations_per_kernel</code></strong>=<em><code>32</code></em>, <strong><code>random_state</code></strong>=<em><code>None</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>This is a Pytorch implementation of MiniRocket developed by Malcolm McLean and Ignacio Oguiza</p>
 <p>MiniRocket paper citation:
@@ -91,7 +91,7 @@ Original code:  <a href="https://github.com/angus924/minirocket">https://github.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_minirocket_features" class="doc_header"><code>get_minirocket_features</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/MINIROCKET_Pytorch.py#L148" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_minirocket_features</code>(<strong><code>o</code></strong>, <strong><code>model</code></strong>, <strong><code>chunksize</code></strong>=<em><code>1024</code></em>, <strong><code>use_cuda</code></strong>=<em><code>None</code></em>, <strong><code>to_np</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="get_minirocket_features" class="doc_header"><code>get_minirocket_features</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/MINIROCKET_Pytorch.py#L151" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_minirocket_features</code>(<strong><code>o</code></strong>, <strong><code>model</code></strong>, <strong><code>chunksize</code></strong>=<em><code>1024</code></em>, <strong><code>use_cuda</code></strong>=<em><code>None</code></em>, <strong><code>to_np</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Function used to split a large dataset into chunks, avoiding OOM error.</p>
 
@@ -123,7 +123,7 @@ Original code:  <a href="https://github.com/angus924/minirocket">https://github.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MiniRocketHead" class="doc_header"><code>class</code> <code>MiniRocketHead</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/MINIROCKET_Pytorch.py#L164" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocketHead</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>1</code></em>, <strong><code>bn</code></strong>=<em><code>True</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>) :: <a href="/models.TabFusionTransformer.html#Sequential"><code>Sequential</code></a></p>
+<h2 id="MiniRocketHead" class="doc_header"><code>class</code> <code>MiniRocketHead</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/MINIROCKET_Pytorch.py#L166" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocketHead</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>1</code></em>, <strong><code>bn</code></strong>=<em><code>True</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>) :: <a href="/models.TabFusionTransformer.html#Sequential"><code>Sequential</code></a></p>
 </blockquote>
 <p>A sequential container.
 Modules will be added to it in the order they are passed in the constructor.
@@ -174,7 +174,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MiniRocket" class="doc_header"><code>class</code> <code>MiniRocket</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/MINIROCKET_Pytorch.py#L177" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocket</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>num_features</code></strong>=<em><code>10000</code></em>, <strong><code>max_dilations_per_kernel</code></strong>=<em><code>32</code></em>, <strong><code>random_state</code></strong>=<em><code>None</code></em>, <strong><code>bn</code></strong>=<em><code>True</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0</code></em>) :: <a href="/models.TabFusionTransformer.html#Sequential"><code>Sequential</code></a></p>
+<h2 id="MiniRocket" class="doc_header"><code>class</code> <code>MiniRocket</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/MINIROCKET_Pytorch.py#L182" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocket</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>num_features</code></strong>=<em><code>10000</code></em>, <strong><code>max_dilations_per_kernel</code></strong>=<em><code>32</code></em>, <strong><code>random_state</code></strong>=<em><code>None</code></em>, <strong><code>bn</code></strong>=<em><code>True</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0</code></em>) :: <a href="/models.TabFusionTransformer.html#Sequential"><code>Sequential</code></a></p>
 </blockquote>
 <p>A sequential container.
 Modules will be added to it in the order they are passed in the constructor.
@@ -265,9 +265,9 @@ model = nn.Sequential(OrderedDict([
     <tr>
       <td>0</td>
       <td>0.693147</td>
-      <td>0.531333</td>
-      <td>0.757259</td>
-      <td>00:01</td>
+      <td>0.531038</td>
+      <td>0.750290</td>
+      <td>00:00</td>
     </tr>
   </tbody>
 </table>
@@ -325,9 +325,9 @@ model = nn.Sequential(OrderedDict([
     <tr>
       <td>0</td>
       <td>0.693147</td>
-      <td>0.715753</td>
+      <td>0.706631</td>
       <td>0.502904</td>
-      <td>00:18</td>
+      <td>00:09</td>
     </tr>
   </tbody>
 </table>

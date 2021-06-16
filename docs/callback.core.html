@@ -130,7 +130,7 @@ nb_path: "nbs/060_callback.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="GamblersCallback" class="doc_header"><code>class</code> <code>GamblersCallback</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/callback/core.py#L18" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GamblersCallback</code>(<strong><code>after_create</code></strong>=<em><code>None</code></em>, <strong><code>before_fit</code></strong>=<em><code>None</code></em>, <strong><code>before_epoch</code></strong>=<em><code>None</code></em>, <strong><code>before_train</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_pred</code></strong>=<em><code>None</code></em>, <strong><code>after_loss</code></strong>=<em><code>None</code></em>, <strong><code>before_backward</code></strong>=<em><code>None</code></em>, <strong><code>before_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_step</code></strong>=<em><code>None</code></em>, <strong><code>after_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_train</code></strong>=<em><code>None</code></em>, <strong><code>after_train</code></strong>=<em><code>None</code></em>, <strong><code>before_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_fit</code></strong>=<em><code>None</code></em>, <strong><code>after_fit</code></strong>=<em><code>None</code></em>) :: <code>Callback</code></p>
+<h2 id="GamblersCallback" class="doc_header"><code>class</code> <code>GamblersCallback</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/callback/core.py#L19" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GamblersCallback</code>(<strong><code>after_create</code></strong>=<em><code>None</code></em>, <strong><code>before_fit</code></strong>=<em><code>None</code></em>, <strong><code>before_epoch</code></strong>=<em><code>None</code></em>, <strong><code>before_train</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_pred</code></strong>=<em><code>None</code></em>, <strong><code>after_loss</code></strong>=<em><code>None</code></em>, <strong><code>before_backward</code></strong>=<em><code>None</code></em>, <strong><code>before_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_step</code></strong>=<em><code>None</code></em>, <strong><code>after_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_train</code></strong>=<em><code>None</code></em>, <strong><code>after_train</code></strong>=<em><code>None</code></em>, <strong><code>before_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_fit</code></strong>=<em><code>None</code></em>, <strong><code>after_fit</code></strong>=<em><code>None</code></em>) :: <code>Callback</code></p>
 </blockquote>
 <p>A callback to use metrics with gambler's loss</p>
 
@@ -195,9 +195,9 @@ nb_path: "nbs/060_callback.core.ipynb"
   <tbody>
     <tr>
       <td>0</td>
-      <td>1.634024</td>
-      <td>1.519819</td>
-      <td>0.294444</td>
+      <td>1.489008</td>
+      <td>1.521763</td>
+      <td>0.077778</td>
       <td>00:05</td>
     </tr>
   </tbody>
@@ -229,7 +229,7 @@ nb_path: "nbs/060_callback.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TransformScheduler" class="doc_header"><code>class</code> <code>TransformScheduler</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/callback/core.py#L23" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TransformScheduler</code>(<strong><code>schedule_func</code></strong>:<code>callable</code>, <strong><code>show_plot</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <code>Callback</code></p>
+<h2 id="TransformScheduler" class="doc_header"><code>class</code> <code>TransformScheduler</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/callback/core.py#L24" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TransformScheduler</code>(<strong><code>schedule_func</code></strong>:<code>callable</code>, <strong><code>show_plot</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <code>Callback</code></p>
 </blockquote>
 <p>A callback to schedule batch transforms during training based on a function (sched_lin, sched_exp, sched_cos (default), etc)</p>
 
@@ -272,7 +272,7 @@ nb_path: "nbs/060_callback.core.ipynb"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>TransformScheduler(&lt;fastai.callback.schedule._Annealer object at 0x7f8f986f4750&gt;)</pre>
+<pre>TransformScheduler(&lt;fastai.callback.schedule._Annealer object at 0x7fef3ef44d90&gt;)</pre>
 </div>
 
 </div>
@@ -291,7 +291,7 @@ nb_path: "nbs/060_callback.core.ipynb"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
-<span class="n">f</span> <span class="o">=</span> <span class="n">combine_scheds</span><span class="p">([</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">],</span> <span class="p">[</span><span class="n">SchedLin</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">),</span> <span class="n">SchedCos</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="n">SchedLin</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="o">.</span><span class="mi">0</span><span class="p">),</span> <span class="p">])</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">combine_scheds</span><span class="p">([</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">],</span> <span class="p">[</span><span class="n">SchedLin</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">),</span> <span class="n">SchedCos</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="n">SchedLin</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">.0</span><span class="p">),</span> <span class="p">])</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="p">[</span><span class="n">f</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">p</span><span class="p">]);</span>
 </pre></div>
 
@@ -374,7 +374,7 @@ nb_path: "nbs/060_callback.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ShowGraph" class="doc_header"><code>class</code> <code>ShowGraph</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/callback/core.py#L61" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ShowGraph</code>(<strong><code>plot_metrics</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>final_losses</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <code>Callback</code></p>
+<h2 id="ShowGraph" class="doc_header"><code>class</code> <code>ShowGraph</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/callback/core.py#L62" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ShowGraph</code>(<strong><code>plot_metrics</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>final_losses</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <code>Callback</code></p>
 </blockquote>
 <p>(Modified) Update a graph of training and validation loss</p>
 
@@ -412,7 +412,7 @@ nb_path: "nbs/060_callback.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="UBDAug" class="doc_header"><code>class</code> <code>UBDAug</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/callback/core.py#L110" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>UBDAug</code>(<strong><code>batch_tfms</code></strong>:<code>list</code>, <strong><code>N</code></strong>:<code>int</code>=<em><code>2</code></em>, <strong><code>C</code></strong>:<code>int</code>=<em><code>4</code></em>, <strong><code>S</code></strong>:<code>int</code>=<em><code>1</code></em>) :: <code>Callback</code></p>
+<h2 id="UBDAug" class="doc_header"><code>class</code> <code>UBDAug</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/callback/core.py#L111" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>UBDAug</code>(<strong><code>batch_tfms</code></strong>:<code>list</code>, <strong><code>N</code></strong>:<code>int</code>=<em><code>2</code></em>, <strong><code>C</code></strong>:<code>int</code>=<em><code>4</code></em>, <strong><code>S</code></strong>:<code>int</code>=<em><code>1</code></em>) :: <code>Callback</code></p>
 </blockquote>
 <p>A callback to implement the uncertainty-based data augmentation.</p>
 
@@ -448,10 +448,10 @@ nb_path: "nbs/060_callback.core.ipynb"
 <span class="n">dsets</span> <span class="o">=</span> <span class="n">TSDatasets</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">)</span>
 <span class="n">dls</span> <span class="o">=</span> <span class="n">TSDataLoaders</span><span class="o">.</span><span class="n">from_dsets</span><span class="p">(</span><span class="n">dsets</span><span class="o">.</span><span class="n">train</span><span class="p">,</span> <span class="n">dsets</span><span class="o">.</span><span class="n">valid</span><span class="p">,</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="p">[</span><span class="n">TSStandardize</span><span class="p">()])</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">create_model</span><span class="p">(</span><span class="n">InceptionTime</span><span class="p">,</span> <span class="n">dls</span><span class="o">=</span><span class="n">dls</span><span class="p">)</span>
-<span class="n">TS_tfms</span> <span class="o">=</span> <span class="p">[</span><span class="n">TSMagScale</span><span class="p">(</span><span class="o">.</span><span class="mi">75</span><span class="p">,</span> <span class="n">p</span><span class="o">=.</span><span class="mi">5</span><span class="p">),</span> <span class="n">TSMagWarp</span><span class="p">(</span><span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span>  <span class="n">TSWindowWarp</span><span class="p">(</span><span class="o">.</span><span class="mi">25</span><span class="p">,</span> <span class="n">p</span><span class="o">=.</span><span class="mi">5</span><span class="p">),</span> 
-           <span class="n">TSSmooth</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span> <span class="n">TSRandomResizedCrop</span><span class="p">(</span><span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="n">p</span><span class="o">=.</span><span class="mi">5</span><span class="p">),</span> 
-           <span class="n">TSRandomCropPad</span><span class="p">(</span><span class="o">.</span><span class="mi">3</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span> 
-           <span class="n">TSMagAddNoise</span><span class="p">(</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span> <span class="n">p</span><span class="o">=.</span><span class="mi">5</span><span class="p">)]</span>
+<span class="n">TS_tfms</span> <span class="o">=</span> <span class="p">[</span><span class="n">TSMagScale</span><span class="p">(</span><span class="mf">.75</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">.5</span><span class="p">),</span> <span class="n">TSMagWarp</span><span class="p">(</span><span class="mf">.1</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span>  <span class="n">TSWindowWarp</span><span class="p">(</span><span class="mf">.25</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">.5</span><span class="p">),</span> 
+           <span class="n">TSSmooth</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span> <span class="n">TSRandomResizedCrop</span><span class="p">(</span><span class="mf">.1</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">.5</span><span class="p">),</span> 
+           <span class="n">TSRandomCropPad</span><span class="p">(</span><span class="mf">.3</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span> 
+           <span class="n">TSMagAddNoise</span><span class="p">(</span><span class="mf">.5</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">.5</span><span class="p">)]</span>
 
 <span class="n">ubda_cb</span> <span class="o">=</span> <span class="n">UBDAug</span><span class="p">(</span><span class="n">TS_tfms</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">S</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="n">learn</span> <span class="o">=</span> <span class="n">Learner</span><span class="p">(</span><span class="n">dls</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">cbs</span><span class="o">=</span><span class="n">ubda_cb</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">accuracy</span><span class="p">)</span>
@@ -482,10 +482,10 @@ nb_path: "nbs/060_callback.core.ipynb"
   <tbody>
     <tr>
       <td>0</td>
-      <td>1.944434</td>
-      <td>1.794236</td>
-      <td>0.033333</td>
-      <td>00:15</td>
+      <td>1.847636</td>
+      <td>1.812017</td>
+      <td>0.027778</td>
+      <td>00:12</td>
     </tr>
   </tbody>
 </table>
@@ -495,6 +495,38 @@ nb_path: "nbs/060_callback.core.ipynb"
 
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="WeightedPerSampleLoss" class="doc_header"><code>class</code> <code>WeightedPerSampleLoss</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/callback/core.py#L157" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>WeightedPerSampleLoss</code>(<strong><code>instance_weights</code></strong>) :: <code>Callback</code></p>
+</blockquote>
+<p>Basic class handling tweaks of the training loop by changing a <code>Learner</code> in various events</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
