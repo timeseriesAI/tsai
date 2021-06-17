@@ -61,11 +61,11 @@ class WaveBlock(Module):
 # Cell
 
 class mWDN(Module):
-    def __init__(self, c_in, c_out, seq_len, levels=3, wavelet=None, arch=InceptionTimePlus, arch_kwargs={}):
+    def __init__(self, c_in, c_out, seq_len, levels=3, wavelet=None, base_arch=InceptionTimePlus, **kwargs):
         self.levels=levels
         self.blocks = nn.ModuleList()
         for i in range(levels): self.blocks.append(WaveBlock(c_in, c_out, seq_len // 2 ** i, wavelet=wavelet))
-        self._model = build_model(arch, c_in, c_out, seq_len=seq_len, **arch_kwargs)
+        self._model = build_model(base_arch, c_in, c_out, seq_len=seq_len, **kwargs)
 
     def forward(self, x):
         for i in range(self.levels):
@@ -89,10 +89,11 @@ class mWDNBlocks(Module):
 
 
 class mWDNPlus(nn.Sequential):
-    def __init__(self, c_in, c_out, seq_len, levels=3, wavelet=None, arch=InceptionTimePlus, arch_kwargs={}):
+    def __init__(self, c_in, c_out, seq_len, levels=3, wavelet=None, base_model=None, base_arch=InceptionTimePlus, **kwargs):
 
-        model = build_model(arch, c_in, c_out, seq_len=seq_len, **arch_kwargs)
+        if base_model is None:
+            base_model = build_model(base_arch, c_in, c_out, seq_len=seq_len, **kwargs)
         blocks = mWDNBlocks(c_in, c_out, seq_len, levels=levels, wavelet=wavelet)
-        backbone = nn.Sequential(blocks, model.backbone)
-        super().__init__(OrderedDict([('backbone', backbone), ('head', model.head)]))
-        self.head_nf = model.head_nf
+        backbone = nn.Sequential(blocks, base_model.backbone)
+        super().__init__(OrderedDict([('backbone', backbone), ('head', base_model.head)]))
+        self.head_nf = base_model.head_nf
