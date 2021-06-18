@@ -276,13 +276,17 @@ def stack(o, axis=0, retain=True):
     else:
         return retain_type(np.stack(o, axis), o[0]) if retain else np.stack(o, axis)
 
-def stack_pad(l):
+def stack_pad(l, padding_value=np.nan):
+    'Converts a list of lists to a numpy array padding if necessary'
     def resize(row, size):
         new = np.array(row)
         new.resize(size)
         return new
-    row_length = max(l, key=len).__len__()
-    mat = np.array([resize(row, row_length) for row in l])
+    row_length = len(max(l, key=len))
+    if padding_value == 0:
+        mat = np.array([resize(row, row_length) for row in l])
+    else:
+        mat = np.array([row + [padding_value] * (row_length - len(row)) for row in l])
     return mat
 
 # Cell
