@@ -86,7 +86,7 @@ nb_path: "nbs/110_models.mWDN.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="mWDN" class="doc_header"><code>class</code> <code>mWDN</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/mWDN.py#L63" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>mWDN</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>levels</code></strong>=<em><code>3</code></em>, <strong><code>wavelet</code></strong>=<em><code>None</code></em>, <strong><code>arch</code></strong>=<em><code>InceptionTimePlus</code></em>, <strong><code>arch_kwargs</code></strong>=<em><code>{}</code></em>) :: <code>Module</code></p>
+<h2 id="mWDN" class="doc_header"><code>class</code> <code>mWDN</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/mWDN.py#L63" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>mWDN</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>levels</code></strong>=<em><code>3</code></em>, <strong><code>wavelet</code></strong>=<em><code>None</code></em>, <strong><code>base_arch</code></strong>=<em><code>InceptionTimePlus</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -136,7 +136,7 @@ nb_path: "nbs/110_models.mWDN.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="mWDNPlus" class="doc_header"><code>class</code> <code>mWDNPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/mWDN.py#L91" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>mWDNPlus</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>levels</code></strong>=<em><code>3</code></em>, <strong><code>wavelet</code></strong>=<em><code>None</code></em>, <strong><code>arch</code></strong>=<em><code>InceptionTimePlus</code></em>, <strong><code>arch_kwargs</code></strong>=<em><code>{}</code></em>) :: <a href="/models.TabFusionTransformer.html#Sequential"><code>Sequential</code></a></p>
+<h2 id="mWDNPlus" class="doc_header"><code>class</code> <code>mWDNPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/mWDN.py#L91" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>mWDNPlus</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>levels</code></strong>=<em><code>3</code></em>, <strong><code>wavelet</code></strong>=<em><code>None</code></em>, <strong><code>base_model</code></strong>=<em><code>None</code></em>, <strong><code>base_arch</code></strong>=<em><code>InceptionTimePlus</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/models.TabFusionTransformer.html#Sequential"><code>Sequential</code></a></p>
 </blockquote>
 <p>A sequential container.
 Modules will be added to it in the order they are passed in the constructor.
@@ -183,13 +183,16 @@ model = nn.Sequential(OrderedDict([
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">bs</span> <span class="o">=</span> <span class="mi">16</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">tsai.models.TSTPlus</span> <span class="kn">import</span> <span class="n">TSTPlus</span>
+<span class="n">bs</span> <span class="o">=</span> <span class="mi">16</span>
 <span class="n">c_in</span> <span class="o">=</span> <span class="mi">3</span>
 <span class="n">seq_len</span> <span class="o">=</span> <span class="mi">12</span>
 <span class="n">c_out</span> <span class="o">=</span> <span class="mi">2</span>
 <span class="n">xb</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_in</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">mWDN</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">)(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">])</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">mWDNPlus</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">mWDNPlus</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">fc_dropout</span><span class="o">=</span><span class="mf">.5</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">model</span><span class="p">(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">])</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">mWDNPlus</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">base_arch</span><span class="o">=</span><span class="n">TSTPlus</span><span class="p">,</span> <span class="n">fc_dropout</span><span class="o">=</span><span class="mf">.5</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">model</span><span class="p">(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">])</span>
 </pre></div>
 
@@ -223,14 +226,10 @@ model = nn.Sequential(OrderedDict([
 
 <div class="output_text output_subarea output_execute_result">
 <pre>(Sequential(
-   (0): Sequential(
-     (0): GAP1d(
-       (gap): AdaptiveAvgPool1d(output_size=1)
-       (flatten): Flatten(full=False)
-     )
-     (1): LinBnDrop(
-       (0): Linear(in_features=128, out_features=2, bias=True)
-     )
+   (0): Flatten(full=False)
+   (1): LinBnDrop(
+     (0): Dropout(p=0.5, inplace=False)
+     (1): Linear(in_features=1536, out_features=2, bias=True)
    )
  ),
  128)</pre>

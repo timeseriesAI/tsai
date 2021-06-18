@@ -157,10 +157,10 @@ decodes: (Tabular,object) -&gt; decodes
   <tbody>
     <tr>
       <td>0</td>
-      <td>1.375862</td>
-      <td>1.373495</td>
+      <td>1.412466</td>
+      <td>1.376013</td>
       <td>0.400000</td>
-      <td>00:10</td>
+      <td>00:35</td>
     </tr>
   </tbody>
 </table>
@@ -294,10 +294,10 @@ decodes: (object,object) -&gt; decodes
   <tbody>
     <tr>
       <td>0</td>
-      <td>219.988663</td>
-      <td>200.136536</td>
-      <td>13.722864</td>
-      <td>00:09</td>
+      <td>190.969406</td>
+      <td>179.400208</td>
+      <td>12.944217</td>
+      <td>00:35</td>
     </tr>
   </tbody>
 </table>
@@ -401,7 +401,7 @@ decodes: (object,object) -&gt; decodes
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">tsai.models.TSTPlus</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="n">ts</span> <span class="o">=</span> <span class="n">get_forecasting_data</span><span class="p">(</span><span class="s1">&#39;Sunspots&#39;</span><span class="p">)</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">get_forecasting_time_series</span><span class="p">(</span><span class="s1">&#39;Sunspots&#39;</span><span class="p">)</span>
 <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">SlidingWindowSplitter</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="n">horizon</span><span class="o">=</span><span class="mi">1</span><span class="p">)(</span><span class="n">ts</span><span class="p">)</span>
 <span class="n">splits</span> <span class="o">=</span> <span class="n">TSSplitter</span><span class="p">(</span><span class="mi">235</span><span class="p">)(</span><span class="n">y</span><span class="p">)</span>
 <span class="n">batch_tfms</span> <span class="o">=</span> <span class="p">[</span><span class="n">TSStandardize</span><span class="p">(</span><span class="n">by_var</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
@@ -455,10 +455,10 @@ downloading data...
   <tbody>
     <tr>
       <td>0</td>
-      <td>10523.219727</td>
-      <td>6044.070312</td>
-      <td>57.367836</td>
-      <td>00:58</td>
+      <td>10424.120117</td>
+      <td>6083.988281</td>
+      <td>57.795650</td>
+      <td>01:49</td>
     </tr>
   </tbody>
 </table>

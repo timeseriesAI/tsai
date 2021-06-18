@@ -3,8 +3,10 @@
 __all__ = ['decompress_from_url', 'download_data', 'get_UCR_univariate_list', 'UTSC_datasets', 'UCR_univariate_list',
            'get_UCR_multivariate_list', 'MTSC_datasets', 'UCR_multivariate_list', 'UCR_list', 'classification_list',
            'TSC_datasets', 'get_UCR_data', 'get_classification_data', 'check_data', 'get_Monash_regression_list',
-           'Monash_list', 'regression_list', 'TSR_datasets', 'get_Monash_data', 'get_regression_data',
-           'get_forecasting_list', 'forecasting_list', 'TSF_datasets', 'get_forecasting_data']
+           'Monash_regression_list', 'regression_list', 'TSR_datasets', 'get_Monash_regression_data',
+           'get_regression_data', 'get_forecasting_list', 'forecasting_list', 'TSF_datasets',
+           'get_forecasting_time_series', 'Monash_forecasting_list', 'convert_tsf_to_dataframe',
+           'get_Monash_forecasting_data', 'get_forecasting_data']
 
 # Cell
 from ..imports import *
@@ -781,14 +783,15 @@ def get_Monash_regression_list():
         #"BIDMC32RR", "BIDMC32HR", "BIDMC32SpO2", "PPGDalia" # Cannot be downloaded
     ])
 
-Monash_list = get_Monash_regression_list()
-regression_list = Monash_list
+Monash_regression_list = get_Monash_regression_list()
+regression_list = Monash_regression_list
 TSR_datasets = regression_datasets = regression_list
-len(Monash_list)
+len(Monash_regression_list)
 
 # Cell
-def get_Monash_data(dsid, path='./data/Monash', on_disk=True, mode='c', Xdtype='float32', ydtype=None, split_data=True, force_download=False, verbose=False):
-    dsid_list = [rd for rd in Monash_list if rd.lower() == dsid.lower()]
+def get_Monash_regression_data(dsid, path='./data/Monash', on_disk=True, mode='c', Xdtype='float32', ydtype=None, split_data=True, force_download=False,
+                               verbose=False):
+    dsid_list = [rd for rd in Monash_regression_list if rd.lower() == dsid.lower()]
     assert len(dsid_list) > 0, f'{dsid} is not a Monash dataset'
     dsid = dsid_list[0]
     full_tgt_dir = Path(path)/dsid
@@ -873,7 +876,7 @@ def get_Monash_data(dsid, path='./data/Monash', on_disk=True, mode='c', Xdtype='
         return X, y, splits
 
 
-get_regression_data = get_Monash_data
+get_regression_data = get_Monash_regression_data
 
 # Cell
 def get_forecasting_list():
@@ -885,7 +888,7 @@ forecasting_list = get_forecasting_list()
 TSF_datasets = forecasting_datasets = forecasting_list
 
 # Cell
-def get_forecasting_data(dsid, path='./data/forecasting/', force_download=False, verbose=True, **kwargs):
+def get_forecasting_time_series(dsid, path='./data/forecasting/', force_download=False, verbose=True, **kwargs):
 
     dsid_list = [fd for fd in forecasting_list if fd.lower() == dsid.lower()]
     assert len(dsid_list) > 0, f'{dsid} is not a forecasting dataset'
@@ -953,3 +956,272 @@ def get_forecasting_data(dsid, path='./data/forecasting/', force_download=False,
     except:
         warnings.warn(f"Cannot download {dsid} dataset")
         return
+
+# Cell
+
+Monash_forecasting_list = ['m1_yearly_dataset',
+                           'm1_quarterly_dataset',
+                           'm1_monthly_dataset',
+                           'm3_yearly_dataset',
+                           'm3_quarterly_dataset',
+                           'm3_monthly_dataset',
+                           'm3_other_dataset',
+                           'm4_yearly_dataset',
+                           'm4_quarterly_dataset',
+                           'm4_monthly_dataset',
+                           'm4_weekly_dataset',
+                           'm4_daily_dataset',
+                           'm4_hourly_dataset',
+                           'tourism_yearly_dataset',
+                           'tourism_quarterly_dataset',
+                           'tourism_monthly_dataset',
+                           'nn5_daily_dataset_with_missing_values',
+                           'nn5_daily_dataset_without_missing_values',
+                           'nn5_weekly_dataset',
+                           'cif_2016_dataset',
+                           'kaggle_web_traffic_dataset_with_missing_values',
+                           'kaggle_web_traffic_dataset_without_missing_values',
+                           'kaggle_web_traffic_weekly_dataset',
+                           'solar_10_minutes_dataset',
+                           'solar_weekly_dataset',
+                           'electricity_hourly_dataset',
+                           'electricity_weekly_dataset',
+                           'london_smart_meters_dataset_with_missing_values',
+                           'london_smart_meters_dataset_without_missing_values',
+                           'wind_farms_minutely_dataset_with_missing_values',
+                           'wind_farms_minutely_dataset_without_missing_values',
+                           'car_parts_dataset_with_missing_values',
+                           'car_parts_dataset_without_missing_values',
+                           'dominick_dataset',
+                           'fred_md_dataset',
+                           'traffic_hourly_dataset',
+                           'traffic_weekly_dataset',
+                           'pedestrian_counts_dataset',
+                           'hospital_dataset',
+                           'covid_deaths_dataset',
+                           'kdd_cup_2018_dataset_with_missing_values',
+                           'kdd_cup_2018_dataset_without_missing_values',
+                           'weather_dataset',
+                           'sunspot_dataset_with_missing_values',
+                           'sunspot_dataset_without_missing_values',
+                           'saugeenday_dataset',
+                           'us_births_dataset',
+                           'elecdemand_dataset',
+                           'solar_4_seconds_dataset',
+                           'wind_4_seconds_dataset',
+                           'Sunspots', 'Weather']
+
+# Cell
+
+## Original code available at: https://github.com/rakshitha123/TSForecasting
+# This repository contains the implementations related to the experiments of a set of publicly available datasets that are used in
+# the time series forecasting research space.
+
+# The benchmark datasets are available at: https://zenodo.org/communities/forecasting. For more details, please refer to our website:
+# https://forecastingdata.org/ and paper: https://arxiv.org/abs/2105.06643.
+
+# Citation:
+# @misc{godahewa2021monash,
+# author="Godahewa, Rakshitha and Bergmeir, Christoph and Webb, Geoffrey I. and Hyndman, Rob J. and Montero-Manso, Pablo",
+# title="Monash Time Series Forecasting Archive",
+# howpublished ="\url{https://arxiv.org/abs/2105.06643}",
+# year="2021"
+# }
+
+from sktime.utils.data_io import TsFileParseException
+# from datetime import datetime
+from numpy import distutils
+import distutils
+# import pandas as pd
+
+# Converts the contents in a .tsf file into a dataframe and returns it along with other meta-data of the dataset: frequency, horizon, whether the dataset contains missing values and whether the series have equal lengths
+#
+# Parameters
+# full_file_path_and_name - complete .tsf file path
+# replace_missing_vals_with - a term to indicate the missing values in series in the returning dataframe
+# value_column_name - Any name that is preferred to have as the name of the column containing series values in the returning dataframe
+def convert_tsf_to_dataframe(full_file_path_and_name, replace_missing_vals_with = 'NaN', value_column_name = "series_value"):
+    col_names = []
+    col_types = []
+    all_data = {}
+    line_count = 0
+    frequency = None
+    forecast_horizon = None
+    contain_missing_values = None
+    contain_equal_length = None
+    found_data_tag = False
+    found_data_section = False
+    started_reading_data_section = False
+
+    with open(full_file_path_and_name, 'r', encoding='cp1252') as file:
+        for line in file:
+            # Strip white space from start/end of line
+            line = line.strip()
+
+            if line:
+                if line.startswith("@"): # Read meta-data
+                    if not line.startswith("@data"):
+                        line_content = line.split(" ")
+                        if line.startswith("@attribute"):
+                            if (len(line_content) != 3):  # Attributes have both name and type
+                                raise TsFileParseException("Invalid meta-data specification.")
+
+                            col_names.append(line_content[1])
+                            col_types.append(line_content[2])
+                        else:
+                            if len(line_content) != 2:  # Other meta-data have only values
+                                raise TsFileParseException("Invalid meta-data specification.")
+
+                            if line.startswith("@frequency"):
+                                frequency = line_content[1]
+                            elif line.startswith("@horizon"):
+                                forecast_horizon = int(line_content[1])
+                            elif line.startswith("@missing"):
+                                contain_missing_values = bool(distutils.util.strtobool(line_content[1]))
+                            elif line.startswith("@equallength"):
+                                contain_equal_length = bool(distutils.util.strtobool(line_content[1]))
+
+                    else:
+                        if len(col_names) == 0:
+                            raise TsFileParseException("Missing attribute section. Attribute section must come before data.")
+
+                        found_data_tag = True
+                elif not line.startswith("#"):
+                    if len(col_names) == 0:
+                        raise TsFileParseException("Missing attribute section. Attribute section must come before data.")
+                    elif not found_data_tag:
+                        raise TsFileParseException("Missing @data tag.")
+                    else:
+                        if not started_reading_data_section:
+                            started_reading_data_section = True
+                            found_data_section = True
+                            all_series = []
+
+                            for col in col_names:
+                                all_data[col] = []
+
+                        full_info = line.split(":")
+
+                        if len(full_info) != (len(col_names) + 1):
+                            raise TsFileParseException("Missing attributes/values in series.")
+
+                        series = full_info[len(full_info) - 1]
+                        series = series.split(",")
+
+                        if(len(series) == 0):
+                            raise TsFileParseException("A given series should contains a set of comma separated numeric values. At least one numeric value should be there in a series. Missing values should be indicated with ? symbol")
+
+                        numeric_series = []
+
+                        for val in series:
+                            if val == "?":
+                                numeric_series.append(replace_missing_vals_with)
+                            else:
+                                numeric_series.append(float(val))
+
+                        if (numeric_series.count(replace_missing_vals_with) == len(numeric_series)):
+                            raise TsFileParseException("All series values are missing. A given series should contains a set of comma separated numeric values. At least one numeric value should be there in a series.")
+
+                        all_series.append(pd.Series(numeric_series).array)
+
+                        for i in range(len(col_names)):
+                            att_val = None
+                            if col_types[i] == "numeric":
+                                att_val = int(full_info[i])
+                            elif col_types[i] == "string":
+                                att_val = str(full_info[i])
+                            elif col_types[i] == "date":
+                                att_val = datetime.strptime(full_info[i], '%Y-%m-%d %H-%M-%S')
+                            else:
+                                raise TsFileParseException("Invalid attribute type.") # Currently, the code supports only numeric, string and date types. Extend this as required.
+
+                            if(att_val == None):
+                                raise TsFileParseException("Invalid attribute value.")
+                            else:
+                                all_data[col_names[i]].append(att_val)
+
+                line_count = line_count + 1
+
+        if line_count == 0:
+            raise TsFileParseException("Empty file.")
+        if len(col_names) == 0:
+            raise TsFileParseException("Missing attribute section.")
+        if not found_data_section:
+            raise TsFileParseException("Missing series information under data section.")
+
+        all_data[value_column_name] = all_series
+        loaded_data = pd.DataFrame(all_data)
+
+        return loaded_data, frequency, forecast_horizon, contain_missing_values, contain_equal_length
+
+# Cell
+
+def get_Monash_forecasting_data(dsid, path='./data/forecasting/', force_download=False, verbose=True):
+
+    pv(f'Dataset: {dsid}', verbose)
+    dsid = dsid.lower()
+
+    if dsid == 'm1_yearly_dataset': url = 'https://zenodo.org/record/4656193/files/m1_yearly_dataset.zip'
+    elif dsid == 'm1_quarterly_dataset': url = 'https://zenodo.org/record/4656154/files/m1_quarterly_dataset.zip'
+    elif dsid == 'm1_monthly_dataset': url = 'https://zenodo.org/record/4656159/files/m1_monthly_dataset.zip'
+    elif dsid == 'm3_yearly_dataset': url = 'https://zenodo.org/record/4656222/files/m3_yearly_dataset.zip'
+    elif dsid == 'm3_quarterly_dataset': url = 'https://zenodo.org/record/4656262/files/m3_quarterly_dataset.zip'
+    elif dsid == 'm3_monthly_dataset': url = 'https://zenodo.org/record/4656298/files/m3_monthly_dataset.zip'
+    elif dsid == 'm3_other_dataset': url = 'https://zenodo.org/record/4656335/files/m3_other_dataset.zip'
+    elif dsid == 'm4_yearly_dataset': url = 'https://zenodo.org/record/4656379/files/m4_yearly_dataset.zip'
+    elif dsid == 'm4_quarterly_dataset': url = 'https://zenodo.org/record/4656410/files/m4_quarterly_dataset.zip'
+    elif dsid == 'm4_monthly_dataset': url = 'https://zenodo.org/record/4656480/files/m4_monthly_dataset.zip'
+    elif dsid == 'm4_weekly_dataset': url = 'https://zenodo.org/record/4656522/files/m4_weekly_dataset.zip'
+    elif dsid == 'm4_daily_dataset': url = 'https://zenodo.org/record/4656548/files/m4_daily_dataset.zip'
+    elif dsid == 'm4_hourly_dataset': url = 'https://zenodo.org/record/4656589/files/m4_hourly_dataset.zip'
+    elif dsid == 'tourism_yearly_dataset': url = 'https://zenodo.org/record/4656103/files/tourism_yearly_dataset.zip'
+    elif dsid == 'tourism_quarterly_dataset': url = 'https://zenodo.org/record/4656093/files/tourism_quarterly_dataset.zip'
+    elif dsid == 'tourism_monthly_dataset': url = 'https://zenodo.org/record/4656096/files/tourism_monthly_dataset.zip'
+    elif dsid == 'nn5_daily_dataset_with_missing_values': url = 'https://zenodo.org/record/4656110/files/nn5_daily_dataset_with_missing_values.zip'
+    elif dsid == 'nn5_daily_dataset_without_missing_values': url = 'https://zenodo.org/record/4656117/files/nn5_daily_dataset_without_missing_values.zip'
+    elif dsid == 'nn5_weekly_dataset': url = 'https://zenodo.org/record/4656125/files/nn5_weekly_dataset.zip'
+    elif dsid == 'cif_2016_dataset': url = 'https://zenodo.org/record/4656042/files/cif_2016_dataset.zip'
+    elif dsid == 'kaggle_web_traffic_dataset_with_missing_values': url = 'https://zenodo.org/record/4656080/files/kaggle_web_traffic_dataset_with_missing_values.zip'
+    elif dsid == 'kaggle_web_traffic_dataset_without_missing_values': url = 'https://zenodo.org/record/4656075/files/kaggle_web_traffic_dataset_without_missing_values.zip'
+    elif dsid == 'kaggle_web_traffic_weekly': url = 'https://zenodo.org/record/4656664/files/kaggle_web_traffic_weekly_dataset.zip'
+    elif dsid == 'solar_10_minutes_dataset': url = 'https://zenodo.org/record/4656144/files/solar_10_minutes_dataset.zip'
+    elif dsid == 'solar_weekly_dataset': url = 'https://zenodo.org/record/4656151/files/solar_weekly_dataset.zip'
+    elif dsid == 'electricity_hourly_dataset': url = 'https://zenodo.org/record/4656140/files/electricity_hourly_dataset.zip'
+    elif dsid == 'electricity_weekly_dataset': url = 'https://zenodo.org/record/4656141/files/electricity_weekly_dataset.zip'
+    elif dsid == 'london_smart_meters_dataset_with_missing_values': url = 'https://zenodo.org/record/4656072/files/london_smart_meters_dataset_with_missing_values.zip'
+    elif dsid == 'london_smart_meters_dataset_without_missing_values': url = 'https://zenodo.org/record/4656091/files/london_smart_meters_dataset_without_missing_values.zip'
+    elif dsid == 'wind_farms_minutely_dataset_with_missing_values': url = 'https://zenodo.org/record/4654909/files/wind_farms_minutely_dataset_with_missing_values.zip'
+    elif dsid == 'wind_farms_minutely_dataset_without_missing_values': url = 'https://zenodo.org/record/4654858/files/wind_farms_minutely_dataset_without_missing_values.zip'
+    elif dsid == 'car_parts_dataset_with_missing_values': url = 'https://zenodo.org/record/4656022/files/car_parts_dataset_with_missing_values.zip'
+    elif dsid == 'car_parts_dataset_without_missing_values': url = 'https://zenodo.org/record/4656021/files/car_parts_dataset_without_missing_values.zip'
+    elif dsid == 'dominick_dataset': url = 'https://zenodo.org/record/4654802/files/dominick_dataset.zip'
+    elif dsid == 'fred_md_dataset': url = 'https://zenodo.org/record/4654833/files/fred_md_dataset.zip'
+    elif dsid == 'traffic_hourly_dataset': url = 'https://zenodo.org/record/4656132/files/traffic_hourly_dataset.zip'
+    elif dsid == 'traffic_weekly_dataset': url = 'https://zenodo.org/record/4656135/files/traffic_weekly_dataset.zip'
+    elif dsid == 'pedestrian_counts_dataset': url = 'https://zenodo.org/record/4656626/files/pedestrian_counts_dataset.zip'
+    elif dsid == 'hospital_dataset': url = 'https://zenodo.org/record/4656014/files/hospital_dataset.zip'
+    elif dsid == 'covid_deaths_dataset': url = 'https://zenodo.org/record/4656009/files/covid_deaths_dataset.zip'
+    elif dsid == 'kdd_cup_2018_dataset_with_missing_values': url = 'https://zenodo.org/record/4656719/files/kdd_cup_2018_dataset_with_missing_values.zip'
+    elif dsid == 'kdd_cup_2018_dataset_without_missing_values': url = 'https://zenodo.org/record/4656756/files/kdd_cup_2018_dataset_without_missing_values.zip'
+    elif dsid == 'weather_dataset': url = 'https://zenodo.org/record/4654822/files/weather_dataset.zip'
+    elif dsid == 'sunspot_dataset_with_missing_values': url = 'https://zenodo.org/record/4654773/files/sunspot_dataset_with_missing_values.zip'
+    elif dsid == 'sunspot_dataset_without_missing_values': url = 'https://zenodo.org/record/4654722/files/sunspot_dataset_without_missing_values.zip'
+    elif dsid == 'saugeenday_dataset': url = 'https://zenodo.org/record/4656058/files/saugeenday_dataset.zip'
+    elif dsid == 'us_births_dataset': url = 'https://zenodo.org/record/4656049/files/us_births_dataset.zip'
+    elif dsid == 'elecdemand_dataset': url = 'https://zenodo.org/record/4656069/files/elecdemand_dataset.zip'
+    elif dsid == 'solar_4_seconds_dataset': url = 'https://zenodo.org/record/4656027/files/solar_4_seconds_dataset.zip'
+    elif dsid == 'wind_4_seconds_dataset': url = 'https://zenodo.org/record/4656032/files/wind_4_seconds_dataset.zip'
+
+    path = Path(path)
+    full_path = path/dsid
+    pv("downloading data...", verbose)
+    untar_data(url, dest=path, force_download=force_download)
+    pv("...data downloaded", verbose)
+    pv("converting dataframe to numpy array...", verbose)
+    data, frequency, forecast_horizon, contain_missing_values, contain_equal_length = convert_tsf_to_dataframe(full_path)
+    X = to3d(stack_pad(data['series_value']))
+    pv("...dataframe converted to numpy array", verbose)
+    pv(f'X.shape: {X.shape}  freq: {frequency}  forecast_horizon: {forecast_horizon}  contain_missing_values: {contain_missing_values} contain_equal_length: {contain_equal_length}', verbose=verbose)
+    return X
+
+get_forecasting_data = get_Monash_forecasting_data
