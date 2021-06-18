@@ -147,6 +147,7 @@ old/*
 *.npy.gz
 *.csv
 *.ts
+*.tsf
 *.arff
 *.pth
 *.pkl

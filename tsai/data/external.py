@@ -4,9 +4,9 @@ __all__ = ['decompress_from_url', 'download_data', 'get_UCR_univariate_list', 'U
            'get_UCR_multivariate_list', 'MTSC_datasets', 'UCR_multivariate_list', 'UCR_list', 'classification_list',
            'TSC_datasets', 'get_UCR_data', 'get_classification_data', 'check_data', 'get_Monash_regression_list',
            'Monash_regression_list', 'regression_list', 'TSR_datasets', 'get_Monash_regression_data',
-           'get_regression_data', 'get_forecasting_list', 'forecasting_list', 'TSF_datasets',
-           'get_forecasting_time_series', 'Monash_forecasting_list', 'convert_tsf_to_dataframe',
-           'get_Monash_forecasting_data', 'get_forecasting_data']
+           'get_regression_data', 'get_forecasting_list', 'forecasting_time_series', 'get_forecasting_time_series',
+           'Monash_forecasting_list', 'forecasting_list', 'convert_tsf_to_dataframe', 'get_Monash_forecasting_data',
+           'get_forecasting_data']
 
 # Cell
 from ..imports import *
@@ -884,13 +884,12 @@ def get_forecasting_list():
         "Sunspots", "Weather"
     ])
 
-forecasting_list = get_forecasting_list()
-TSF_datasets = forecasting_datasets = forecasting_list
+forecasting_time_series = get_forecasting_list()
 
 # Cell
 def get_forecasting_time_series(dsid, path='./data/forecasting/', force_download=False, verbose=True, **kwargs):
 
-    dsid_list = [fd for fd in forecasting_list if fd.lower() == dsid.lower()]
+    dsid_list = [fd for fd in forecasting_time_series if fd.lower() == dsid.lower()]
     assert len(dsid_list) > 0, f'{dsid} is not a forecasting dataset'
     dsid = dsid_list[0]
     if dsid == 'Weather': full_tgt_dir = Path(path)/f'{dsid}.csv.zip'
@@ -1010,6 +1009,9 @@ Monash_forecasting_list = ['m1_yearly_dataset',
                            'solar_4_seconds_dataset',
                            'wind_4_seconds_dataset',
                            'Sunspots', 'Weather']
+
+
+forecasting_list = Monash_forecasting_list
 
 # Cell
 
@@ -1156,10 +1158,11 @@ def convert_tsf_to_dataframe(full_file_path_and_name, replace_missing_vals_with 
 
 # Cell
 
-def get_Monash_forecasting_data(dsid, path='./data/forecasting/', force_download=False, verbose=True):
+def get_Monash_forecasting_data(dsid, path='./data/forecasting/', force_download=False, remove_from_disk=False, verbose=True):
 
     pv(f'Dataset: {dsid}', verbose)
     dsid = dsid.lower()
+    assert dsid in Monash_forecasting_list, f'{dsid} not available in Monash_forecasting_list'
 
     if dsid == 'm1_yearly_dataset': url = 'https://zenodo.org/record/4656193/files/m1_yearly_dataset.zip'
     elif dsid == 'm1_quarterly_dataset': url = 'https://zenodo.org/record/4656154/files/m1_quarterly_dataset.zip'
@@ -1213,15 +1216,24 @@ def get_Monash_forecasting_data(dsid, path='./data/forecasting/', force_download
     elif dsid == 'wind_4_seconds_dataset': url = 'https://zenodo.org/record/4656032/files/wind_4_seconds_dataset.zip'
 
     path = Path(path)
-    full_path = path/dsid
+    full_path = path/f'{dsid}.tsf'
     pv("downloading data...", verbose)
+    if force_download:
+            try: os.remove(full_path)
+            except OSError: pass
     untar_data(url, dest=path, force_download=force_download)
+    os.rename(path/dsid, full_path)
     pv("...data downloaded", verbose)
     pv("converting dataframe to numpy array...", verbose)
     data, frequency, forecast_horizon, contain_missing_values, contain_equal_length = convert_tsf_to_dataframe(full_path)
     X = to3d(stack_pad(data['series_value']))
     pv("...dataframe converted to numpy array", verbose)
-    pv(f'X.shape: {X.shape}  freq: {frequency}  forecast_horizon: {forecast_horizon}  contain_missing_values: {contain_missing_values} contain_equal_length: {contain_equal_length}', verbose=verbose)
+    pv(f'\nX.shape: {X.shape}', verbose)
+    pv(f'freq: {frequency}', verbose)
+    pv(f'forecast_horizon: {forecast_horizon}', verbose)
+    pv(f'contain_missing_values: {contain_missing_values}', verbose)
+    pv(f'contain_equal_length: {contain_equal_length}', verbose=verbose)
+    if remove_from_disk: os.remove(full_path)
     return X
 
 get_forecasting_data = get_Monash_forecasting_data
