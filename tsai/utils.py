@@ -276,18 +276,12 @@ def stack(o, axis=0, retain=True):
     else:
         return retain_type(np.stack(o, axis), o[0]) if retain else np.stack(o, axis)
 
-def stack_pad(l, padding_value=np.nan):
-    'Converts a list of lists to a numpy array padding if necessary'
-    def resize(row, size):
-        new = np.array(row)
-        new.resize(size)
-        return new
-    row_length = len(max(l, key=len))
-    if padding_value == 0:
-        mat = np.array([resize(row, row_length) for row in l])
-    else:
-        mat = np.array([row + [padding_value] * (row_length - len(row)) for row in l])
-    return mat
+def stack_pad(o, padding_value=np.nan):
+    'Converts a an iterable into a numpy array using padding if necessary'
+    row_length = len(max(o, key=len))
+    result = np.full((len(o), row_length), padding_value)
+    for i,row in enumerate(o): result[i, :len(row)] = row
+    return result
 
 # Cell
 def match_seq_len(*arrays):
