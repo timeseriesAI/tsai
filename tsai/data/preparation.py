@@ -306,7 +306,7 @@ def add_delta_timestamp_cols(df, cols=None, groupby=None, forward=True, backward
 # # https://towardsdatascience.com/fast-and-robust-sliding-window-vectorization-with-numpy-3ad950ed62f5
 
 def SlidingWindow(window_len:int, stride:Union[None, int]=1, start:int=0, pad_remainder:bool=False, padding_value:float=np.nan, add_padding_feature:bool=True,
-                  get_x:Union[None, int, list]=None, get_y:Union[None, int, list]=None, y_func:Optional[callable]=None,
+                  get_x:Union[None, int, list]=None, get_y:Union[None, int, list]=None, y_func:Optional[callable]=None, copy:bool=False,
                   horizon:Union[int, list]=1, seq_first:bool=True, sort_by:Optional[list]=None, ascending:bool=True, check_leakage:bool=True):
 
     """
@@ -327,6 +327,7 @@ def SlidingWindow(window_len:int, stride:Union[None, int]=1, start:int=0, pad_re
         get_y               = indices of columns that contain the target (ys). If None, all data will be used as y.
                             [] means no y data is created (unlabeled data).
         y_func              = function to calculate the ys based on the get_y col/s and each y sub-window. y_func must be a function applied to axis=1!
+        copy                = copy the original object to avoid changes in it.
         seq_first           = True if input shape (seq_len, n_vars), False if input shape (n_vars, seq_len)
         sort_by             = column/s used for sorting the array in ascending order
         ascending           = used in sorting
@@ -350,6 +351,9 @@ def SlidingWindow(window_len:int, stride:Union[None, int]=1, start:int=0, pad_re
         stride = window_len
 
     def _inner(o):
+        if copy:
+            if isinstance(o, torch.Tensor):  o = o.clone()
+            else: o = o.copy()
         if not seq_first: o = o.T
         if isinstance(o, pd.DataFrame):
             if sort_by is not None: o.sort_values(by=sort_by, axis=0, ascending=ascending, inplace=True, ignore_index=True)
@@ -413,7 +417,7 @@ SlidingWindowSplitter = SlidingWindow
 # Cell
 def SlidingWindowPanel(window_len:int, unique_id_cols:list, stride:Union[None, int]=1, start:int=0,
                        pad_remainder:bool=False, padding_value:float=np.nan, add_padding_feature:bool=True,
-                       get_x:Union[None, int, list]=None,  get_y:Union[None, int, list]=None, y_func:Optional[callable]=None,
+                       get_x:Union[None, int, list]=None,  get_y:Union[None, int, list]=None, y_func:Optional[callable]=None, copy:bool=False,
                        horizon:Union[int, list]=1, seq_first:bool=True, sort_by:Optional[list]=None, ascending:bool=True,
                        check_leakage:bool=True, return_key:bool=False, verbose:bool=True):
 
@@ -436,6 +440,7 @@ def SlidingWindowPanel(window_len:int, unique_id_cols:list, stride:Union[None, i
         get_x               = indices of columns that contain the independent variable (xs). If None, all data will be used as x.
         get_y               = indices of columns that contain the target (ys). If None, all data will be used as y. [] means no y data is created (unlabeled data).
         y_func              = function to calculate the ys based on the get_y col/s and each y sub-window. y_func must be a function applied to axis=1!
+        copy                = copy the original object to avoid changes in it.
         seq_first           = True if input shape (seq_len, n_vars), False if input shape (n_vars, seq_len)
         sort_by             = column/s used for sorting the array in ascending order
         ascending           = used in sorting
@@ -453,10 +458,12 @@ def SlidingWindowPanel(window_len:int, unique_id_cols:list, stride:Union[None, i
     if sort_by is not None and not  is_listy(sort_by): sort_by = [sort_by]
     sort_by = unique_id_cols + (sort_by if sort_by is not None else [])
 
-    def _SlidingWindowPanel(df):
+    def _SlidingWindowPanel(o):
 
-        df.sort_values(by=sort_by, axis=0, ascending=ascending, inplace=True, ignore_index=True)
-        unique_id_values = df[unique_id_cols].drop_duplicates().values
+        if copy:
+            o = o.copy()
+        o.sort_values(by=sort_by, axis=0, ascending=ascending, inplace=True, ignore_index=True)
+        unique_id_values = o[unique_id_cols].drop_duplicates().values
         _x = []
         _y = []
         _key = []
@@ -464,7 +471,7 @@ def SlidingWindowPanel(window_len:int, unique_id_cols:list, stride:Union[None, i
             x_v, y_v = SlidingWindow(window_len, stride=stride, start=start, pad_remainder=pad_remainder, padding_value=padding_value,
                                      add_padding_feature=add_padding_feature, get_x=get_x, get_y=get_y, y_func=y_func,
                                      horizon=horizon, seq_first=seq_first,
-                                     check_leakage=check_leakage)(df[(df[unique_id_cols].values == v).sum(axis=1) == len(v)])
+                                     check_leakage=check_leakage)(o[(o[unique_id_cols].values == v).sum(axis=1) == len(v)])
             if x_v is not None and len(x_v) > 0:
                 _x.append(x_v)
                 if return_key: _key.append([v.tolist()] * len(x_v))
