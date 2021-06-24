@@ -275,11 +275,8 @@ def get_X_preds(self: Learner, X, y=None, bs=64, with_input=False, with_decoded=
         print('cannot find loss as y=None')
         with_loss = False
     dl = self.dls.new_dl(X, y=y)
-    dl.bs = bs
-    output = list(self.get_preds(dl=dl, with_input=with_input, with_decoded=with_decoded, with_loss=with_loss))
-    if with_decoded:
-        if hasattr(dl, 'vocab'):
-            output[2 + with_input] = L([dl.vocab[p] for p in output[2 + with_input]])
-        elif hasattr(dl, 'decode'):
-            output[2 + with_input] = dl.decode((output[2 + with_input].to(dl.device), ))[0]
+    dl.bs = ifnone(bs, self.dls.bs)
+    output = list(self.get_preds(dl=dl, with_input=with_input, with_decoded=with_decoded, with_loss=with_loss, reorder=False))
+    if with_decoded and hasattr(self.dls, 'vocab'):
+        output[2 + with_input] = L([self.dls.vocab[p] for p in output[2 + with_input]])
     return tuple(output)

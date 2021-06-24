@@ -321,10 +321,11 @@ class NumpyDataLoader(TfmdDL):
     def __init__(self, dataset, bs=64, shuffle=True, drop_last=True, num_workers=None, verbose=False, do_setup=True, batch_tfms=None, weights=None,
                  **kwargs):
         '''batch_tfms == after_batch (either can be used)'''
+
         if num_workers is None: num_workers = min(16, defaults.cpus)
         for nm in _batch_tfms:
             if nm == 'after_batch':
-                if batch_tfms is not None: kwargs[nm] = Pipeline(batch_tfms if isinstance(batch_tfms, list) else [batch_tfms])
+                if batch_tfms is not None: kwargs[nm] = Pipeline(batch_tfms if is_listy(batch_tfms) else [batch_tfms])
                 else: kwargs[nm] = Pipeline(kwargs.get(nm,None))
             else: kwargs[nm] = Pipeline(kwargs.get(nm,None))
         bs = min(bs, len(dataset))
@@ -336,6 +337,26 @@ class NumpyDataLoader(TfmdDL):
             for nm in _batch_tfms:
                 pv(f"Setting up {nm}: {kwargs[nm]}", verbose)
                 kwargs[nm].setup(self)
+
+    @delegates(DataLoader.new)
+    def new(self, dataset=None, cls=None, **kwargs):
+        after_batch = self.after_batch
+        res = super().new(dataset, cls, **kwargs)
+        self.after_batch = res.after_batch
+        if not hasattr(self, '_n_inp') or not hasattr(self, '_types'):
+            try:
+                self._one_pass()
+                res._n_inp,res._types = self._n_inp,self._types
+            except: print("Could not do one pass in your dataloader, there is something wrong in it")
+        else: res._n_inp,res._types = self._n_inp,self._types
+        return res
+
+    def new_dl(self, x, y=None):
+        if x.ndim == 1: x = [to2d(x)]
+        elif x.ndim ==2 and not is_listy(x): x = [x]
+        if y is not None and not is_listy(y) and not isinstance(y, (np.ndarray, torch.Tensor)): y = [y]
+        new_dloader = self.new(self.dataset.add_dataset(x, y=y))
+        return new_dloader
 
     def create_batch(self, b):
         it = b if self.shuffle else slice(b[0], b[0] + self.bs)
@@ -470,10 +491,6 @@ class NumpyDataLoader(TfmdDL):
     @property
     def cat(self): return hasattr(self, "vocab")
 
-#     @property
-#     def loss_func(self):
-#         return MSELossFlat() if not self.cat else CrossEntropyLossFlat()
-
     @property
     def cws(self):
         if self.cat:
@@ -504,6 +521,7 @@ def show_tuple(tup, **kwargs):
     elif is_listy(tup[1]): title = str(tup[1])[1:-1]
     else: title = str(tup[1])
     tup[0].show(title=title, **kwargs)
+
 
 class TSDataLoader(NumpyDataLoader):
     @property
@@ -538,7 +556,8 @@ class NumpyDataLoaders(DataLoaders):
         if x.ndim == 1: x = [to2d(x)]
         elif x.ndim ==2 and not is_listy(x): x = [x]
         if y is not None and not is_listy(y) and not isinstance(y, (np.ndarray, torch.Tensor)): y = [y]
-        return self.valid.new(self.valid.dataset.add_dataset(x, y=y))
+        new_dloader = self.valid.new(self.valid.dataset.add_dataset(x, y=y))
+        return new_dloader
 
     @delegates(plt.subplots)
     def show_dist(self, figsize=None, **kwargs): self.loaders[0].show_dist(figsize=figsize, **kwargs)
