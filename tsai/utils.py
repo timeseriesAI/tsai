@@ -571,20 +571,24 @@ def torch_nanmean(o, dim=None, keepdim=False):
     """There's currently no torch.nanmean function"""
     mask = torch.isnan(o)
     if mask.any():
-        o = torch.from_numpy(np.asarray(np.nanmean(o.cpu().numpy(), axis=dim, keepdims=keepdim))).to(o.device)
-        mask = torch.isnan(o)
-        o[mask] = 0
-        return o
+        output = torch.from_numpy(np.asarray(np.nanmean(o.cpu().numpy(), axis=dim, keepdims=keepdim))).to(o.device)
+        if output.shape == mask.shape:
+            output[mask] = 0
+        return output
     else:
-        return o.mean(dim=dim, keepdim=keepdim)
+        return torch.mean(o, dim=dim, keepdim=keepdim) if dim is not None else torch.mean(o)
 
 
 def torch_nanstd(o, dim=None, keepdim=False):
     """There's currently no torch.nanstd function"""
-    if torch.isnan(o).any():
-        return torch.from_numpy(np.asarray(np.nanstd(o.cpu().numpy(), axis=dim, keepdims=keepdim))).to(o.device)
+    mask = torch.isnan(o)
+    if mask.any():
+        output = torch.from_numpy(np.asarray(np.nanstd(o.cpu().numpy(), axis=dim, keepdims=keepdim))).to(o.device)
+        if output.shape == mask.shape:
+            output[mask] = 1
+        return output
     else:
-        return o.std(dim=dim, keepdim=keepdim)
+        return torch.std(o, dim=dim, keepdim=keepdim) if dim is not None else torch.std(o)
 
 # Cell
 def concat(*ls, dim=0):

@@ -74,9 +74,11 @@ class TSStandardize(Transform):
         self.by_sample, self.by_var, self.by_step = by_sample, by_var, by_step
         drop_axes = []
         if by_sample: drop_axes.append(0)
-        if by_var and not is_listy(by_var): drop_axes.append(1)
+        if by_var: drop_axes.append(1)
         if by_step: drop_axes.append(2)
         self.axes = tuple([ax for ax in (0, 1, 2) if ax not in drop_axes])
+        if by_var and is_listy(by_var):
+            self.list_axes = tuple([ax for ax in (0, 1, 2) if ax not in drop_axes]) + (1,)
         self.verbose = verbose
         if self.mean is not None or self.std is not None:
             pv(f'{self.__class__.__name__} mean={self.mean}, std={self.std}, by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step}\n', self.verbose)
@@ -88,23 +90,17 @@ class TSStandardize(Transform):
         if (self.mean is None or self.std is None):
             o, *_ = dl.one_batch()
             if self.by_var and is_listy(self.by_var):
-                _mean = []
-                _std = []
-                start = 0
-                for i,v in enumerate(self.by_var):
-                    if is_listy(v): f = v
-                    else:
-                        end = start + v
-                        f = slice(start, end)
-                        start += v
-                    repeats = len(v) if is_listy(v) else v
-                    _mean.append((torch_nanmean(o[:, f], self.axes, keepdim=True)).repeat(1, repeats, 1))
-                    _std.append((torch_nanstd(o[:, f], self.axes, keepdim=True) + self.eps).repeat(1, repeats, 1))
-                self.mean = torch.cat(_mean, dim=1)
-                self.std = torch.clamp_min(torch.cat(_std, dim=1), self.eps)
+                shape = torch.mean(o, dim=self.axes, keepdim=self.axes!=()).shape
+                mean = torch.zeros(*shape, device=o.device)
+                std = torch.ones(*shape, device=o.device)
+                for v in self.by_var:
+                    if not is_listy(v): v = [v]
+                    mean[:, v] = torch_nanmean(o[:, v], dim=self.axes if len(v) == 1 else self.list_axes, keepdim=True)
+                    std[:, v] = torch.clamp_min(torch_nanstd(o[:, v], dim=self.axes if len(v) == 1 else self.list_axes, keepdim=True), self.eps)
             else:
-                self.mean = torch_nanmean(o, dim=self.axes, keepdim=self.axes!=())
-                self.std = torch.clamp_min(torch_nanstd(o, dim=self.axes, keepdim=self.axes!=()), self.eps)
+                mean = torch_nanmean(o, dim=self.axes, keepdim=self.axes!=())
+                std = torch.clamp_min(torch_nanstd(o, dim=self.axes, keepdim=self.axes!=()), self.eps)
+            self.mean, self.std = mean, std
             if len(self.mean.shape) == 0:
                 pv(f'{self.__class__.__name__} mean={self.mean}, std={self.std}, by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step}\n',
                    self.verbose)
@@ -114,22 +110,18 @@ class TSStandardize(Transform):
 
     def encodes(self, o:TSTensor):
         if self.by_sample:
-            if is_listy(self.by_var):
-                _o = []
-                start = 0
-                for i,v in enumerate(self.by_var):
-                    if is_listy(v): f = v
-                    else:
-                        end = start + v
-                        f = slice(start, end)
-                        start += v
-                    o_mean = torch_nanmean(o[:, f], self.axes, keepdim=True)
-                    o_std = torch.clamp_min(torch_nanstd(o[:, f], self.axes, keepdim=True), self.eps)
-                    _o.append((o[:, f] - o_mean) / o_std)
-                return torch.cat(_o, dim=1)
+            if self.by_var and is_listy(self.by_var):
+                shape = torch.mean(o, dim=self.axes, keepdim=self.axes!=()).shape
+                mean = torch.zeros(*shape, device=o.device)
+                std = torch.ones(*shape, device=o.device)
+                for v in self.by_var:
+                    if not is_listy(v): v = [v]
+                    mean[:, v] = torch_nanmean(o[:, v], dim=self.axes if len(v) == 1 else self.list_axes, keepdim=True)
+                    std[:, v] = torch.clamp_min(torch_nanstd(o[:, v], dim=self.axes if len(v) == 1 else self.list_axes, keepdim=True), self.eps)
             else:
-                self.mean = torch_nanmean(o, dim=self.axes, keepdim=self.axes!=())
-                self.std = torch.clamp_min(torch_nanstd(o, dim=self.axes, keepdim=self.axes!=()), self.eps)
+                mean = torch_nanmean(o, dim=self.axes, keepdim=self.axes!=())
+                std = torch.clamp_min(torch_nanstd(o, dim=self.axes, keepdim=self.axes!=()), self.eps)
+            self.mean, self.std = mean, std
         return (o - self.mean) / self.std
 
     def decodes(self, o:TSTensor):
