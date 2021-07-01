@@ -65,7 +65,26 @@ class Nan2Value(Transform):
 
 # Cell
 class TSStandardize(Transform):
-    "Standardizes batch of type `TSTensor`"
+    """Standardizes batch of type `TSTensor`
+
+    Args:
+        - mean: you can pass a precalculated mean value as a torch tensor which is the one that will be used, or leave as None, in which case
+            it will be estimated using a batch.
+        - std: you can pass a precalculated std value as a torch tensor which is the one that will be used, or leave as None, in which case
+            it will be estimated using a batch. If both mean and std values are passed when instantiating TSStandardize, the rest of arguments won't be used.
+        - by_sample: if True, it will calculate mean and std for each individual sample. Otherwise based on the entire batch.
+        - by_var:
+            * False: mean and std will be the same for all variables.
+            * True: a mean and std will be be different for each variable.
+            * a list of ints: (like [0,1,3]) a different mean and std will be set for each variable on the list. Variables not included in the list
+            won't be standardized.
+            * a list that contains a list/lists: (like[0, [1,3]]) a different mean and std will be set for each element of the list. If multiple elements are
+            included in a list, the same mean and std will be set for those variable in the sublist/s. (in the example a mean and std is determined for
+            variable 0, and another one for variables 1 & 3 - the same one). Variables not included in the list won't be standardized.
+        - by_step: if False, it will standardize values for each time step.
+        - eps: it avoids dividing by 0
+    """
+
     parameters, order = L('mean', 'std'), 90
     def __init__(self, mean=None, std=None, by_sample=False, by_var=False, by_step=False, eps=1e-8, verbose=False):
         self.mean = tensor(mean) if mean is not None else None
