@@ -4,9 +4,46 @@
 
 ## 0.2.18
 
-### Bug Fixes:
+## New features:
+* Data:
+    * Update TSStandardize to accept some variables and/or groups of variables when using by_var.
+    * added option to pad labeled and unlabed datasets with SlidingWindow with a padding value
+    * added split_idxs and idxs to mixed_dls
+    * added sklearn preprocessing tfms
+    * added functions to measure sequence gaps
+    * added decodes to TSStandardize
+* Callbacks:
+    * change mask return values in MVP to True then mask
+    * updated MVP to accept nan values
+* Models:
+    * updated mWDN to take either model or arch
+    * added padding_var to TST
+    * added MiniRocketFeatures in Pytorch
+* Losses & metrics:
+    * added WeightedPerSampleLoss
+    * added mean_per_class_accuracy to metrics
+    * added mape metric
+    * added HuberLoss and LogCoshLoss
+* Learner:
+    * added Learner.remove_all_cbs
+    * updated get_X_preds to work with multilabel datasets
+* Miscellaneous:
+    * added natural mask that reuses missing data in the input
+    * added rotate_axis utility functions
+    
+### Bug Fixes:   
+* Callbacks:
+    * fixed and issue with inconsistency in show_preds in MVP
 * Models: 
     * Fixed an issue in InceptionTimePlus with stochastic depth regularization (stoch_depth parameter)
+    * Fixed issue with get_X_preds (different predictions when executed multiple times)
+    * fixed stoch_depth issue in InceptionTimePlus
+    * fixed kwargs issue in MultiInceptionTimePlus
+* Data:
+    * fixed issue in delta gap normalize
+* Learner:
+    * fixed bug in get_X_preds device
+    * updated get_X_preds to decode classification and regression outputs
 
 
 ## 0.2.17
