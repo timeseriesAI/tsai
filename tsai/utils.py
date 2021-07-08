@@ -15,7 +15,8 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'torch_nanstd', 'concat', 'reduce_memory_usage', 'cls_name', 'roll2d', 'roll3d', 'random_roll2d',
            'random_roll3d', 'rotate_axis0', 'rotate_axis1', 'rotate_axis2', 'create_empty_array', 'np_save_compressed',
            'np_load_compressed', 'np2memmap', 'torch_mean_groupby', 'torch_flip', 'torch_nan_to_num',
-           'torch_masked_to_num', 'mpl_trend']
+           'torch_masked_to_num', 'mpl_trend', 'int2digits', 'array2digits', 'encode_position_sincos',
+           'encode_position_linear']
 
 # Cell
 from .imports import *
@@ -823,3 +824,43 @@ def torch_masked_to_num(o, mask, num=0, inplace=False):
 
 def mpl_trend(x, y, deg=1):
     return np.poly1d(np.polyfit(x, y, deg))(x)
+
+# Cell
+
+def int2digits(o, n_digits=None, normalize=True):
+    if n_digits is not None:
+        iterable = '0' * (n_digits - len(str(abs(o)))) + str(abs(o))
+    else:
+        iterable = str(abs(o))
+    sign = np.sign(o)
+    digits = np.array([sign * int(d) for d in iterable])
+    if normalize:
+        digits = digits / 10
+    return digits
+
+
+def array2digits(o, n_digits=None, normalize=True):
+    output = np.array(list(map(partial(int2digits, n_digits=n_digits), o)))
+    if normalize:
+        output = output / 10
+    return output
+
+# Cell
+
+def encode_position_sincos(a, min_val=None, max_val=None):
+    if min_val is None:
+        min_val = np.nanmin(a)
+    if max_val is None:
+        max_val = np.nanmax(a)
+    sin = np.sin((a - min_val)/(max_val - min_val) * 2 * np.pi)
+    cos = np.cos((a - min_val)/(max_val - min_val) * 2 * np.pi)
+    return sin, cos
+
+# Cell
+
+def encode_position_linear(a, min_val=None, max_val=None, lin_range=(-1,1)):
+    if min_val is None:
+        min_val = np.nanmin(a)
+    if max_val is None:
+        max_val = np.nanmax(a)
+    return (((a - min_val)/(max_val - min_val)) * (lin_range[1] - lin_range[0]) + lin_range[0])
