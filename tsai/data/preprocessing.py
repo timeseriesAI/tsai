@@ -83,10 +83,11 @@ class TSStandardize(Transform):
             variable 0, and another one for variables 1 & 3 - the same one). Variables not included in the list won't be standardized.
         - by_step: if False, it will standardize values for each time step.
         - eps: it avoids dividing by 0
+        - use_single_batch: if True a single training batch will be used to calculate mean & std. Else the entire training set will be used.
     """
 
     parameters, order = L('mean', 'std'), 90
-    def __init__(self, mean=None, std=None, by_sample=False, by_var=False, by_step=False, eps=1e-8, verbose=False):
+    def __init__(self, mean=None, std=None, by_sample=False, by_var=False, by_step=False, eps=1e-8, use_single_batch=True, verbose=False):
         self.mean = tensor(mean) if mean is not None else None
         self.std = tensor(std) if std is not None else None
         self.eps = eps
@@ -98,6 +99,7 @@ class TSStandardize(Transform):
         self.axes = tuple([ax for ax in (0, 1, 2) if ax not in drop_axes])
         if by_var and is_listy(by_var):
             self.list_axes = tuple([ax for ax in (0, 1, 2) if ax not in drop_axes]) + (1,)
+        self.use_single_batch = use_single_batch
         self.verbose = verbose
         if self.mean is not None or self.std is not None:
             pv(f'{self.__class__.__name__} mean={self.mean}, std={self.std}, by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step}\n', self.verbose)
@@ -107,7 +109,10 @@ class TSStandardize(Transform):
 
     def setups(self, dl: DataLoader):
         if (self.mean is None or self.std is None):
-            o, *_ = dl.one_batch()
+            if self.use_single_batch or not hasattr(dl, 'ptls'):
+                o, *_ = dl.one_batch()
+            else:
+                o = dl.ptls[0]
             if self.by_var and is_listy(self.by_var):
                 shape = torch.mean(o, dim=self.axes, keepdim=self.axes!=()).shape
                 mean = torch.zeros(*shape, device=o.device)
@@ -172,7 +177,8 @@ class TSNormalize(Transform):
     "Normalizes batch of type `TSTensor`"
     parameters, order = L('min', 'max'), 90
 
-    def __init__(self, min=None, max=None, range=(-1, 1), by_sample=False, by_var=False, by_step=False, verbose=False):
+    def __init__(self, min=None, max=None, range=(-1, 1), by_sample=False, by_var=False, by_step=False, clip_values=True,
+                 use_single_batch=True, verbose=False):
         self.min = tensor(min) if min is not None else None
         self.max = tensor(max) if max is not None else None
         self.range_min, self.range_max = range
@@ -182,6 +188,10 @@ class TSNormalize(Transform):
         if by_var: drop_axes.append(1)
         if by_step: drop_axes.append(2)
         self.axes = tuple([ax for ax in (0, 1, 2) if ax not in drop_axes])
+        if by_var and is_listy(by_var):
+            self.list_axes = tuple([ax for ax in (0, 1, 2) if ax not in drop_axes]) + (1,)
+        self.clip_values = clip_values
+        self.use_single_batch = use_single_batch
         self.verbose = verbose
         if self.min is not None or self.max is not None:
             pv(f'{self.__class__.__name__} min={self.min}, max={self.max}, by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step}\n', self.verbose)
@@ -191,18 +201,49 @@ class TSNormalize(Transform):
 
     def setups(self, dl: DataLoader):
         if self.min is None or self.max is None:
-            x, *_ = dl.one_batch()
-            self.min, self.max = x.mul_min(self.axes, keepdim=self.axes!=()), x.mul_max(self.axes, keepdim=self.axes!=())
+            if self.use_single_batch or not hasattr(dl, 'ptls'):
+                o, *_ = dl.one_batch()
+            else:
+                o = dl.ptls[0]
+            if self.by_var and is_listy(self.by_var):
+                shape = torch.mean(o, dim=self.axes, keepdim=self.axes!=()).shape
+                _min = torch.zeros(*shape, device=o.device) + self.range_min
+                _max = torch.ones(*shape, device=o.device) + self.range_max
+                for v in self.by_var:
+                    if not is_listy(v): v = [v]
+                    _min[:, v] = o[:, v].mul_min(self.axes if len(v) == 1 else self.list_axes, keepdim=self.axes!=())
+                    _max[:, v] = o[:, v].mul_max(self.axes if len(v) == 1 else self.list_axes, keepdim=self.axes!=())
+            else:
+                _min, _max = o.mul_min(self.axes, keepdim=self.axes!=()), o.mul_max(self.axes, keepdim=self.axes!=())
+            self.min, self.max = _min, _max
             if len(self.min.shape) == 0:
-                pv(f'{self.__class__.__name__} min={self.min}, max={self.max}, by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step}\n', self.verbose)
+                pv(f'{self.__class__.__name__} min={self.min}, max={self.max}, by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step}\n',
+                   self.verbose)
             else:
                 pv(f'{self.__class__.__name__} min shape={self.min.shape}, max shape={self.max.shape}, by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step}\n',
                    self.verbose)
 
     def encodes(self, o:TSTensor):
-        if self.by_sample: self.min, self.max = o.mul_min(self.axes, keepdim=self.axes!=()), o.mul_max(self.axes, keepdim=self.axes!=())
-        return torch.clamp(((o - self.min) / (self.max - self.min)) * (self.range_max - self.range_min) + self.range_min,
-                           self.range_min, self.range_max)
+        if self.by_sample:
+            if self.by_var and is_listy(self.by_var):
+                shape = torch.mean(o, dim=self.axes, keepdim=self.axes!=()).shape
+                _min = torch.zeros(*shape, device=o.device) + self.range_min
+                _max = torch.ones(*shape, device=o.device) + self.range_max
+                for v in self.by_var:
+                    if not is_listy(v): v = [v]
+                    _min[:, v] = o[:, v].mul_min(self.axes, keepdim=self.axes!=())
+                    _max[:, v] = o[:, v].mul_max(self.axes, keepdim=self.axes!=())
+            else:
+                _min, _max = o.mul_min(self.axes, keepdim=self.axes!=()), o.mul_max(self.axes, keepdim=self.axes!=())
+            self.min, self.max = _min, _max
+        output = ((o - self.min) / (self.max - self.min)) * (self.range_max - self.range_min) + self.range_min
+        if self.clip_values:
+            if self.by_var and is_listy(self.by_var):
+                if not is_listy(v): v = [v]
+                output[:, v] = torch.clamp(output[:, v], self.range_min, self.range_max)
+            else:
+                output = torch.clamp(output, self.range_min, self.range_max)
+        return output
 
     def __repr__(self): return f'{self.__class__.__name__}(by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step})'
 
