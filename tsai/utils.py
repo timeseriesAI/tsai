@@ -568,28 +568,28 @@ def torch_slice_by_dim(t, index, dim=-1, **kwargs):
     return torch.gather(t, dim, index, **kwargs)
 
 # Cell
-def torch_nanmean(o, dim=None, keepdim=False):
+def torch_nanmean(o, dim=None, keepdims=False):
     """There's currently no torch.nanmean function"""
     mask = torch.isnan(o)
     if mask.any():
-        output = torch.from_numpy(np.asarray(np.nanmean(o.cpu().numpy(), axis=dim, keepdims=keepdim))).to(o.device)
+        output = torch.from_numpy(np.asarray(np.nanmean(o.cpu().numpy(), axis=dim, keepdims=keepdims))).to(o.device)
         if output.shape == mask.shape:
             output[mask] = 0
         return output
     else:
-        return torch.mean(o, dim=dim, keepdim=keepdim) if dim is not None else torch.mean(o)
+        return torch.mean(o, dim=dim, keepdims=keepdims) if dim is not None else torch.mean(o)
 
 
-def torch_nanstd(o, dim=None, keepdim=False):
+def torch_nanstd(o, dim=None, keepdims=False):
     """There's currently no torch.nanstd function"""
     mask = torch.isnan(o)
     if mask.any():
-        output = torch.from_numpy(np.asarray(np.nanstd(o.cpu().numpy(), axis=dim, keepdims=keepdim))).to(o.device)
+        output = torch.from_numpy(np.asarray(np.nanstd(o.cpu().numpy(), axis=dim, keepdims=keepdims))).to(o.device)
         if output.shape == mask.shape:
             output[mask] = 1
         return output
     else:
-        return torch.std(o, dim=dim, keepdim=keepdim) if dim is not None else torch.std(o)
+        return torch.std(o, dim=dim, keepdims=keepdims) if dim is not None else torch.std(o)
 
 # Cell
 def concat(*ls, dim=0):
