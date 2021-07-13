@@ -11,7 +11,7 @@ from typing import Callable
 
 class _TSTransformerBackbone(Module):
     def __init__(self, c_in:int, seq_len:int, n_layers:int=3, d_model:int=128, n_heads:int=16, d_head:Optional[int]=None, act:str='reglu',
-                 d_ff:int=256, attn_dropout:float=0., fc_dropout:float=0., res_attention:bool=True, pre_norm:bool=False,
+                 d_ff:int=256, attn_dropout:float=0., fc_dropout:float=0., res_attention:bool=False, pre_norm:bool=False,
                  random_steps:bool=True, use_cls_token:bool=True):
 
         self.res_attention, self.pre_norm, self.random_steps = res_attention, pre_norm, random_steps
@@ -61,7 +61,7 @@ class _TSTransformerBackbone(Module):
 
 class TSTransformerPlus(nn.Sequential):
     def __init__(self, c_in:int, c_out:int, seq_len:int, n_layers:int=3, d_model:int=128, n_heads:int=16, d_head:Optional[int]=None, act:str='reglu',
-                 d_ff:int=256, attn_dropout:float=0., fc_dropout:float=0., res_attention:bool=True, pre_norm:bool=False, use_cls_token:bool=True,
+                 d_ff:int=256, attn_dropout:float=0., fc_dropout:float=0., res_attention:bool=False, pre_norm:bool=False, use_cls_token:bool=True,
                  random_steps:bool=True, custom_head:Optional[Callable]=None):
 
         backbone = _TSTransformerBackbone(c_in, seq_len, n_layers=n_layers, d_model=d_model, n_heads=n_heads, d_head=d_head, act=act,

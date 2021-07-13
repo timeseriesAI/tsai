@@ -924,11 +924,16 @@ class ReGLU(Module):
 
 class PositionwiseFeedForward(nn.Sequential):
     def __init__(self, dim, mult=4, dropout=0., act='reglu'):
-        if act.lower() == 'relu': act_fn = nn.ReLU()
-        elif act.lower() == 'glu': act_fn = nn.GLU()
-        elif act.lower() == 'geglu': act_fn = GEGLU()
-        else: act_fn = ReGLU()
-        super().__init__(nn.Linear(dim, dim * mult * 2), ReGLU(), nn.Dropout(dropout), nn.Linear(dim * mult, dim))
+        if act.lower() == 'relu':
+            act_fn = nn.ReLU()
+            act_mult = 1
+        elif act.lower() == 'geglu':
+            act_fn = GEGLU()
+            act_mult = 2
+        else:
+            act_fn = ReGLU()
+            act_mult = 2
+        super().__init__(nn.Linear(dim, dim * mult * act_mult), act_fn, nn.Dropout(dropout), nn.Linear(dim * mult, dim))
 
 
 class TokenLayer(Module):
