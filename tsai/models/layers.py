@@ -15,7 +15,8 @@ __all__ = ['noop', 'init_lin_zero', 'lin_zero_init', 'SwishBeta', 'same_padding1
            'create_conv_lin_3d_head', 'conv_lin_3d_head', 'create_lin_3d_head', 'lin_3d_head', 'create_conv_3d_head',
            'conv_3d_head', 'universal_pool_head', 'heads', 'SqueezeExciteBlock', 'GaussianNoise', 'gambler_loss',
            'CrossEntropyLossOneHot', 'ttest_bin_loss', 'ttest_reg_loss', 'CenterLoss', 'CenterPlusLoss', 'FocalLoss',
-           'TweedieLoss']
+           'TweedieLoss', 'GEGLU', 'ReGLU', 'PositionwiseFeedForward', 'TokenLayer', 'ScaledDotProductAttention',
+           'MultiheadAttention']
 
 # Cell
 from torch.nn.init import normal_
@@ -906,3 +907,129 @@ class TweedieLoss(Module):
         b = torch.exp((2 - self.p) * torch.log(inp)) / (2 - self.p)
         loss = -a + b
         return loss.mean()
+
+# Cell
+
+class GEGLU(Module):
+    def forward(self, x):
+        x, gates = x.chunk(2, dim=-1)
+        return x * F.gelu(gates)
+
+
+class ReGLU(Module):
+    def forward(self, x):
+        x, gates = x.chunk(2, dim=-1)
+        return x * F.relu(gates)
+
+
+class PositionwiseFeedForward(nn.Sequential):
+    def __init__(self, dim, mult=4, dropout=0., act='reglu'):
+        if act.lower() == 'relu': act_fn = nn.ReLU()
+        elif act.lower() == 'glu': act_fn = nn.GLU()
+        elif act.lower() == 'geglu': act_fn = GEGLU()
+        else: act_fn = ReGLU()
+        super().__init__(nn.Linear(dim, dim * mult * 2), ReGLU(), nn.Dropout(dropout), nn.Linear(dim * mult, dim))
+
+
+class TokenLayer(Module):
+    def __init__(self, token=True): self.token = token
+    def forward(self, x): return x[:, 0] if self.token is not None else x.mean(1)
+    def __repr__(self): return f"{self.__class__.__name__}()"
+
+# Cell
+
+class ScaledDotProductAttention(Module):
+    def __init__(self, res_attention:bool=False):
+        self.res_attention = res_attention
+
+    def forward(self, q:Tensor, k:Tensor, v:Tensor, prev:Optional[Tensor]=None, key_padding_mask:Optional[Tensor]=None, attn_mask:Optional[Tensor]=None):
+        '''
+        Input shape:
+            q               : [bs x n_heads x max_q_len x d_k]
+            k               : [bs x n_heads x d_k x seq_len]
+            v               : [bs x n_heads x seq_len x d_k]
+            key_padding_mask: [bs x seq_len]
+            attn_mask       : [seq_len x seq_len]
+
+        Output shape:
+            context: [bs x n_heads x q_len x d_v]
+            attn   : [bs x n_heads x q_len x seq_len]
+        '''
+
+        # Scaled MatMul (q, k) - similarity scores for all pairs of positions in an input sequence
+        scores = torch.matmul(q / np.sqrt(q.shape[-2]), k)            # scores : [bs x n_heads x max_q_len x q_len]
+
+        # Add previous scores (optional)
+        if prev is not None: scores = scores + prev
+
+        # Attention mask (optional)
+        if attn_mask is not None:                                     # attn_mask with shape [q_len x seq_len] - only used when q_len == seq_len
+            if attn_mask.dtype == torch.bool:
+                scores.masked_fill_(attn_mask, -np.inf)
+            else:
+                scores += attn_mask
+
+        # Key padding mask (optional)
+        if key_padding_mask is not None:                              # mask with shape [q_len x q_len] (only when max_w_len == q_len)
+            scores.masked_fill_(key_padding_mask.unsqueeze(1).unsqueeze(2), -np.inf)
+
+        # SoftMax
+        attn = F.softmax(scores, dim=-1)                              # attn   : [bs x n_heads x max_q_len x q_len]
+
+        # MatMul (attn, v)
+        output = torch.matmul(attn, v)                                # output: [bs x n_heads x max_q_len x d_v]
+
+        if self.res_attention: return output, attn, scores
+        else: return output, attn
+
+# Cell
+
+class MultiheadAttention(Module):
+    def __init__(self, d_model:int, n_heads:int, d_k:Optional[int]=None, d_v:Optional[int]=None, res_attention:bool=False, dropout:float=0.):
+        """Multi Head Attention Layer
+
+        Input shape:
+            Q:       [batch_size (bs) x max_q_len x d_model]
+            K, V:    [batch_size (bs) x q_len x d_model]
+            mask:    [q_len x q_len]
+        """
+
+        d_k = ifnone(d_k, d_model // n_heads)
+        d_v = ifnone(d_v, d_model // n_heads)
+
+        self.n_heads, self.d_k, self.d_v = n_heads, d_k, d_v
+
+        self.W_Q = nn.Linear(d_model, d_k * n_heads, bias=False)
+        self.W_K = nn.Linear(d_model, d_k * n_heads, bias=False)
+        self.W_V = nn.Linear(d_model, d_v * n_heads, bias=False)
+        self.fc = nn.Linear(n_heads * d_v, d_model, bias=False)
+
+        # Scaled Dot-Product Attention (multiple heads)
+        self.res_attention = res_attention
+        self.sdp_attn = ScaledDotProductAttention(res_attention=self.res_attention)
+        self.dropout = nn.Dropout(dropout)
+
+    def forward(self, Q:Tensor, K:Tensor, V:Tensor, prev:Optional[Tensor]=None, key_padding_mask:Optional[Tensor]=None, attn_mask:Optional[Tensor]=None):
+
+        bs = Q.size(0)
+
+        # Linear (+ split in multiple heads)
+        q_s = self.W_Q(Q).view(bs, -1, self.n_heads, self.d_k).transpose(1,2)       # q_s    : [bs x n_heads x max_q_len x d_k]
+        k_s = self.W_K(K).view(bs, -1, self.n_heads, self.d_k).permute(0,2,3,1)     # k_s    : [bs x n_heads x d_k x q_len] - transpose(1,2) + transpose(2,3)
+        v_s = self.W_V(V).view(bs, -1, self.n_heads, self.d_v).transpose(1,2)       # v_s    : [bs x n_heads x q_len x d_v]
+
+        # Scaled Dot-Product Attention (multiple heads)
+        if self.res_attention:
+            output, attn, scores = self.sdp_attn(q_s, k_s, v_s, prev=prev, key_padding_mask=key_padding_mask, attn_mask=attn_mask)
+        else:
+            output, attn = self.sdp_attn(q_s, k_s, v_s, key_padding_mask=key_padding_mask, attn_mask=attn_mask)
+        # output: [bs x n_heads x q_len x d_v], attn: [bs x n_heads x q_len x q_len], scores: [bs x n_heads x max_q_len x q_len]
+
+        # Concat
+        output = output.transpose(1, 2).contiguous().view(bs, -1, self.n_heads * self.d_v) # output: [bs x q_len x n_heads * d_v]
+
+        # Dropout
+        output = self.dropout(self.fc(output))
+
+        if self.res_attention: return output, attn, scores
+        else: return output, attn                                                            # output: [bs x q_len x d_model]
