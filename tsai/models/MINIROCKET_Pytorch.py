@@ -59,7 +59,10 @@ class MiniRocketFeatures(nn.Module):
         np.random.seed(self.random_state)
         idxs = np.random.choice(num_samples, chunksize, False)
         self.fitting = True
-        self(X[idxs])
+        if isinstance(X, np.ndarray):
+            self(torch.from_numpy(X[idxs]).to(self.kernels.device))
+        else:
+            self(X[idxs].to(self.kernels.device))
         self.fitting = False
 
     def forward(self, x):
@@ -148,7 +151,7 @@ class MiniRocketFeatures(nn.Module):
 MRF = MiniRocketFeatures
 
 # Cell
-def get_minirocket_features(o, model, chunksize=1024, use_cuda=None, to_np=False):
+def get_minirocket_features(o, model, chunksize=1024, use_cuda=None, to_np=True):
     """Function used to split a large dataset into chunks, avoiding OOM error."""
     use = torch.cuda.is_available() if use_cuda is None else use_cuda
     device = torch.device(torch.cuda.current_device()) if use else torch.device('cpu')

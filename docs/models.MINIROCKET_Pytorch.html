@@ -91,7 +91,7 @@ Original code:  <a href="https://github.com/angus924/minirocket">https://github.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_minirocket_features" class="doc_header"><code>get_minirocket_features</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/MINIROCKET_Pytorch.py#L151" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_minirocket_features</code>(<strong><code>o</code></strong>, <strong><code>model</code></strong>, <strong><code>chunksize</code></strong>=<em><code>1024</code></em>, <strong><code>use_cuda</code></strong>=<em><code>None</code></em>, <strong><code>to_np</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="get_minirocket_features" class="doc_header"><code>get_minirocket_features</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/MINIROCKET_Pytorch.py#L154" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_minirocket_features</code>(<strong><code>o</code></strong>, <strong><code>model</code></strong>, <strong><code>chunksize</code></strong>=<em><code>1024</code></em>, <strong><code>use_cuda</code></strong>=<em><code>None</code></em>, <strong><code>to_np</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Function used to split a large dataset into chunks, avoiding OOM error.</p>
 
@@ -123,7 +123,7 @@ Original code:  <a href="https://github.com/angus924/minirocket">https://github.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MiniRocketHead" class="doc_header"><code>class</code> <code>MiniRocketHead</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/MINIROCKET_Pytorch.py#L166" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocketHead</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>1</code></em>, <strong><code>bn</code></strong>=<em><code>True</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>) :: <a href="/models.TabFusionTransformer.html#Sequential"><code>Sequential</code></a></p>
+<h2 id="MiniRocketHead" class="doc_header"><code>class</code> <code>MiniRocketHead</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/MINIROCKET_Pytorch.py#L169" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocketHead</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>1</code></em>, <strong><code>bn</code></strong>=<em><code>True</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>) :: <a href="/models.TabFusionTransformer.html#Sequential"><code>Sequential</code></a></p>
 </blockquote>
 <p>A sequential container.
 Modules will be added to it in the order they are passed in the constructor.
@@ -174,7 +174,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MiniRocket" class="doc_header"><code>class</code> <code>MiniRocket</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/MINIROCKET_Pytorch.py#L182" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocket</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>num_features</code></strong>=<em><code>10000</code></em>, <strong><code>max_dilations_per_kernel</code></strong>=<em><code>32</code></em>, <strong><code>random_state</code></strong>=<em><code>None</code></em>, <strong><code>bn</code></strong>=<em><code>True</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0</code></em>) :: <a href="/models.TabFusionTransformer.html#Sequential"><code>Sequential</code></a></p>
+<h2 id="MiniRocket" class="doc_header"><code>class</code> <code>MiniRocket</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/MINIROCKET_Pytorch.py#L185" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocket</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>num_features</code></strong>=<em><code>10000</code></em>, <strong><code>max_dilations_per_kernel</code></strong>=<em><code>32</code></em>, <strong><code>random_state</code></strong>=<em><code>None</code></em>, <strong><code>bn</code></strong>=<em><code>True</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0</code></em>) :: <a href="/models.TabFusionTransformer.html#Sequential"><code>Sequential</code></a></p>
 </blockquote>
 <p>A sequential container.
 Modules will be added to it in the order they are passed in the constructor.
@@ -230,7 +230,7 @@ model = nn.Sequential(OrderedDict([
 <span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;ECGFiveDays&#39;</span>
 <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">mrf</span> <span class="o">=</span> <span class="n">MiniRocketFeatures</span><span class="p">(</span><span class="n">c_in</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">seq_len</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">default_device</span><span class="p">())</span>
-<span class="n">X_train</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">default_device</span><span class="p">())</span>
+<span class="n">X_train</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>  <span class="c1"># X_train may either be a np.ndarray or a torch.Tensor</span>
 <span class="n">mrf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
 <span class="n">X_tfm</span> <span class="o">=</span> <span class="n">get_minirocket_features</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">mrf</span><span class="p">)</span>
 <span class="n">tfms</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">TSClassification</span><span class="p">()]</span>
@@ -265,8 +265,8 @@ model = nn.Sequential(OrderedDict([
     <tr>
       <td>0</td>
       <td>0.693147</td>
-      <td>0.531038</td>
-      <td>0.750290</td>
+      <td>0.528817</td>
+      <td>0.756098</td>
       <td>00:00</td>
     </tr>
   </tbody>
@@ -325,9 +325,9 @@ model = nn.Sequential(OrderedDict([
     <tr>
       <td>0</td>
       <td>0.693147</td>
-      <td>0.706631</td>
+      <td>0.710300</td>
       <td>0.502904</td>
-      <td>00:09</td>
+      <td>00:08</td>
     </tr>
   </tbody>
 </table>

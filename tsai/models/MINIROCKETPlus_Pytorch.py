@@ -87,13 +87,17 @@ class MiniRocketFeaturesPlus(nn.Module):
         return torch.cat(_features, dim=1)
 
     def fit(self, X, chunksize=None):
+        num_samples = X.shape[0]
         if chunksize is None:
-            chunksize = min(len(X), self.num_dilations * self.num_kernels)
+            chunksize = min(num_samples, self.num_dilations * self.num_kernels)
         else:
-            chunksize = min(len(X), chunksize)
-        idxs = np.random.choice(len(X), chunksize, False)
+            chunksize = min(num_samples, chunksize)
+        idxs = np.random.choice(num_samples, chunksize, False)
         self.fitting = True
-        self(X[idxs])
+        if isinstance(X, np.ndarray):
+            self(torch.from_numpy(X[idxs]).to(self.kernels.device))
+        else:
+            self(X[idxs].to(self.kernels.device))
         self.fitting = False
 
     def get_PPVs(self, C, bias):

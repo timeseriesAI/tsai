@@ -923,69 +923,72 @@ class ReGLU(Module):
 
 
 class PositionwiseFeedForward(nn.Sequential):
-    def __init__(self, dim, mult=4, dropout=0., act='reglu'):
-        if act.lower() == 'relu':
-            act_fn = nn.ReLU()
-            act_mult = 1
-        elif act.lower() == 'geglu':
-            act_fn = GEGLU()
-            act_mult = 2
-        else:
-            act_fn = ReGLU()
-            act_mult = 2
-        super().__init__(nn.Linear(dim, dim * mult * act_mult), act_fn, nn.Dropout(dropout), nn.Linear(dim * mult, dim))
+    def __init__(self, dim, dropout=0., act='reglu'):
+        act = act.lower()
+        act_mult = 2 if act in ['geglu', 'reglu'] else 1
+        if act == 'relu': act_fn = nn.ReLU()
+        elif act == 'gelu': act_fn = nn.GELU()
+        elif act == 'geglu': act_fn = GEGLU()
+        else: act_fn = ReGLU()
+        super().__init__(nn.Linear(dim, dim * act_mult),
+                         act_fn,
+                         nn.Dropout(dropout),
+                         nn.Linear(dim, dim),
+                         nn.Dropout(dropout))
 
 
 class TokenLayer(Module):
     def __init__(self, token=True): self.token = token
-    def forward(self, x): return x[:, 0] if self.token is not None else x.mean(1)
+    def forward(self, x): return x[..., 0] if self.token is not None else x.mean(-1)
     def __repr__(self): return f"{self.__class__.__name__}()"
 
 # Cell
-
 class ScaledDotProductAttention(Module):
-    def __init__(self, res_attention:bool=False):
-        self.res_attention = res_attention
+    """Scaled Dot-Product Attention module (Vaswani et al., 2017) with optional residual attention from previous layer (He et al, 2020)"""
+
+    def __init__(self, res_attention:bool=False):  self.res_attention = res_attention
 
     def forward(self, q:Tensor, k:Tensor, v:Tensor, prev:Optional[Tensor]=None, key_padding_mask:Optional[Tensor]=None, attn_mask:Optional[Tensor]=None):
         '''
         Input shape:
             q               : [bs x n_heads x max_q_len x d_k]
             k               : [bs x n_heads x d_k x seq_len]
-            v               : [bs x n_heads x seq_len x d_k]
+            v               : [bs x n_heads x seq_len x d_v]
+            prev            : [bs x n_heads x q_len x seq_len]
             key_padding_mask: [bs x seq_len]
-            attn_mask       : [seq_len x seq_len]
+            attn_mask       : [1 x seq_len x seq_len]
 
         Output shape:
-            context: [bs x n_heads x q_len x d_v]
+            output:  [bs x n_heads x q_len x d_v]
             attn   : [bs x n_heads x q_len x seq_len]
+            scores : [bs x n_heads x q_len x seq_len]
         '''
 
         # Scaled MatMul (q, k) - similarity scores for all pairs of positions in an input sequence
-        scores = torch.matmul(q / np.sqrt(q.shape[-2]), k)            # scores : [bs x n_heads x max_q_len x q_len]
+        attn_scores = torch.matmul(q / np.sqrt(q.shape[-2]), k)      # attn_scores : [bs x n_heads x max_q_len x q_len]
 
-        # Add previous scores (optional)
-        if prev is not None: scores = scores + prev
+        # Add pre-softmax attention scores from the previous layer (optional)
+        if prev is not None: attn_scores = attn_scores + prev
 
         # Attention mask (optional)
         if attn_mask is not None:                                     # attn_mask with shape [q_len x seq_len] - only used when q_len == seq_len
             if attn_mask.dtype == torch.bool:
-                scores.masked_fill_(attn_mask, -np.inf)
+                attn_scores.masked_fill_(attn_mask, -np.inf)
             else:
-                scores += attn_mask
+                attn_scores += attn_mask
 
         # Key padding mask (optional)
         if key_padding_mask is not None:                              # mask with shape [q_len x q_len] (only when max_w_len == q_len)
-            scores.masked_fill_(key_padding_mask.unsqueeze(1).unsqueeze(2), -np.inf)
+            attn_scores.masked_fill_(key_padding_mask.unsqueeze(1).unsqueeze(2), -np.inf)
 
-        # SoftMax
-        attn = F.softmax(scores, dim=-1)                              # attn   : [bs x n_heads x max_q_len x q_len]
+        # normalize the attention weights
+        attn_weights = F.softmax(attn_scores, dim=-1)                 # attn_weights   : [bs x n_heads x max_q_len x q_len]
 
-        # MatMul (attn, v)
-        output = torch.matmul(attn, v)                                # output: [bs x n_heads x max_q_len x d_v]
+        # compute the new values given the attention weights
+        output = torch.matmul(attn_weights, v)                        # output: [bs x n_heads x max_q_len x d_v]
 
-        if self.res_attention: return output, attn, scores
-        else: return output, attn
+        if self.res_attention: return output, attn_weights, attn_scores
+        else: return output, attn_weights
 
 # Cell
 
@@ -1007,34 +1010,38 @@ class MultiheadAttention(Module):
         self.W_Q = nn.Linear(d_model, d_k * n_heads, bias=False)
         self.W_K = nn.Linear(d_model, d_k * n_heads, bias=False)
         self.W_V = nn.Linear(d_model, d_v * n_heads, bias=False)
-        self.fc = nn.Linear(n_heads * d_v, d_model, bias=False)
 
         # Scaled Dot-Product Attention (multiple heads)
         self.res_attention = res_attention
         self.sdp_attn = ScaledDotProductAttention(res_attention=self.res_attention)
-        self.dropout = nn.Dropout(dropout)
 
-    def forward(self, Q:Tensor, K:Tensor, V:Tensor, prev:Optional[Tensor]=None, key_padding_mask:Optional[Tensor]=None, attn_mask:Optional[Tensor]=None):
+        # Poject output
+        project_out = not (n_heads == 1 and d_model == d_k)
+        self.to_out = nn.Sequential(nn.Linear(n_heads * d_v, d_model), nn.Dropout(dropout)) if project_out else nn.Identity()
+
+
+    def forward(self, Q:Tensor, K:Optional[Tensor]=None, V:Optional[Tensor]=None, prev:Optional[Tensor]=None,
+                key_padding_mask:Optional[Tensor]=None, attn_mask:Optional[Tensor]=None):
 
         bs = Q.size(0)
+        if K is None: K = Q
+        if V is None: V = Q
 
         # Linear (+ split in multiple heads)
         q_s = self.W_Q(Q).view(bs, -1, self.n_heads, self.d_k).transpose(1,2)       # q_s    : [bs x n_heads x max_q_len x d_k]
         k_s = self.W_K(K).view(bs, -1, self.n_heads, self.d_k).permute(0,2,3,1)     # k_s    : [bs x n_heads x d_k x q_len] - transpose(1,2) + transpose(2,3)
         v_s = self.W_V(V).view(bs, -1, self.n_heads, self.d_v).transpose(1,2)       # v_s    : [bs x n_heads x q_len x d_v]
 
-        # Scaled Dot-Product Attention (multiple heads)
+        # Apply Scaled Dot-Product Attention (multiple heads)
         if self.res_attention:
-            output, attn, scores = self.sdp_attn(q_s, k_s, v_s, prev=prev, key_padding_mask=key_padding_mask, attn_mask=attn_mask)
+            output, attn_weights, attn_scores = self.sdp_attn(q_s, k_s, v_s, prev=prev, key_padding_mask=key_padding_mask, attn_mask=attn_mask)
         else:
-            output, attn = self.sdp_attn(q_s, k_s, v_s, key_padding_mask=key_padding_mask, attn_mask=attn_mask)
+            output, attn_weights = self.sdp_attn(q_s, k_s, v_s, key_padding_mask=key_padding_mask, attn_mask=attn_mask)
         # output: [bs x n_heads x q_len x d_v], attn: [bs x n_heads x q_len x q_len], scores: [bs x n_heads x max_q_len x q_len]
 
-        # Concat
+        # back to the original inputs dimensions
         output = output.transpose(1, 2).contiguous().view(bs, -1, self.n_heads * self.d_v) # output: [bs x q_len x n_heads * d_v]
+        output = self.to_out(output)
 
-        # Dropout
-        output = self.dropout(self.fc(output))
-
-        if self.res_attention: return output, attn, scores
-        else: return output, attn                                                            # output: [bs x q_len x d_model]
+        if self.res_attention: return output, attn_weights, attn_scores
+        else: return output, attn_weights                                                  # output: [bs x q_len x d_model]

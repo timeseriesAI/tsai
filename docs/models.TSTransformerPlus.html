@@ -47,28 +47,32 @@ nb_path: "nbs/124_models.TSTransformerPlus.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSTransformerPlus" class="doc_header"><code>class</code> <code>TSTransformerPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/TSTransformerPlus.py#L56" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTransformerPlus</code>(<strong><code>c_in</code></strong>:<code>int</code>, <strong><code>c_out</code></strong>:<code>int</code>, <strong><code>seq_len</code></strong>:<code>int</code>, <strong><code>n_layers</code></strong>:<code>int</code>=<em><code>3</code></em>, <strong><code>d_model</code></strong>:<code>int</code>=<em><code>128</code></em>, <strong><code>n_heads</code></strong>:<code>int</code>=<em><code>16</code></em>, <strong><code>d_head</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>act</code></strong>:<code>str</code>=<em><code>'reglu'</code></em>, <strong><code>d_ff</code></strong>:<code>int</code>=<em><code>256</code></em>, <strong><code>attn_dropout</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>fc_dropout</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>res_attention</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>pre_norm</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>use_cls_token</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>custom_head</code></strong>:<code>Optional</code>[<code>Callable</code>]=<em><code>None</code></em>) :: <a href="/models.TabFusionTransformer.html#Sequential"><code>Sequential</code></a></p>
+<h2 id="TSTransformerPlus" class="doc_header"><code>class</code> <code>TSTransformerPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/TSTransformerPlus.py#L77" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTransformerPlus</code>(<strong><code>c_in</code></strong>:<code>int</code>, <strong><code>c_out</code></strong>:<code>int</code>, <strong><code>seq_len</code></strong>:<code>int</code>, <strong><code>n_layers</code></strong>:<code>int</code>=<em><code>6</code></em>, <strong><code>d_model</code></strong>:<code>int</code>=<em><code>128</code></em>, <strong><code>n_heads</code></strong>:<code>int</code>=<em><code>16</code></em>, <strong><code>d_head</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>act</code></strong>:<code>str</code>=<em><code>'reglu'</code></em>, <strong><code>d_ff</code></strong>:<code>int</code>=<em><code>256</code></em>, <strong><code>emb_dropout</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>encoder_dropout</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>pre_norm</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>use_cls_token</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>pct_random_steps</code></strong>:<code>float</code>=<em><code>1.0</code></em>, <strong><code>fc_dropout</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>bn</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>y_range</code></strong>:<code>Optional</code>[<code>tuple</code>]=<em><code>None</code></em>, <strong><code>custom_subsampling</code></strong>:<code>Optional</code>[<code>Callable</code>]=<em><code>None</code></em>, <strong><code>custom_head</code></strong>:<code>Optional</code>[<code>Callable</code>]=<em><code>None</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>True</code></em>) :: <a href="/models.TabFusionTransformer.html#Sequential"><code>Sequential</code></a></p>
 </blockquote>
-<p>A sequential container.
-Modules will be added to it in the order they are passed in the constructor.
-Alternatively, an ordered dict of modules can also be passed in.</p>
-<p>To make it easier to understand, here is a small example::</p>
+<p>Time series transformer model based on ViT (Vision Transformer):
+Dosovitskiy, A., Beyer, L., Kolesnikov, A., Weissenborn, D., Zhai, X., Unterthiner, T., ... &amp; Houlsby, N. (2020).
+An image is worth 16x16 words: Transformers for image recognition at scale. arXiv preprint arXiv:2010.11929.</p>
 
-<pre><code># Example of using Sequential
-model = nn.Sequential(
-          nn.Conv2d(1,20,5),
-          nn.ReLU(),
-          nn.Conv2d(20,64,5),
-          nn.ReLU()
-        )
+<pre><code>Args:
+    c_in: the number of features (aka variables, dimensions, channels) in the time series dataset.
+    c_out: the number of target classes.
+    seq_len: number of time steps in the time series.
+    n_layers: number of layers (or blocks) in the encoder. Default: 3 (range(1-4))
+    d_model: total dimension of the model (number of features created by the model). Default: 128 (range(64-512))
+    n_heads:  parallel attention heads. Default:16 (range(8-16)).
+    d_head: size of the learned linear projection of queries, keys and values in the MHA. Usual values: 16-512. Default: None -&gt; (d_model/n_heads) = 32.
+    d_ff: the dimension of the feedforward network model. Default: 512 (range(256-512))
+    act: the activation function of intermediate layer, relu, gelu, geglu, reglu.
+    pre_norm: if True normalization will be applied as the first step in the sublayers. Defaults to False
+    emb_dropout: dropout applied to to the embedded sequence steps.
+    encoder_dropout: dropout applied to the encoder (MultheadAttention and PositionwiseFeedForward layers).
+    bn: indicates if batchnorm will be applied to the head.
+    fc_dropout: dropout applied to the final fully connected layer.
+    y_range: range of possible y values (used in regression tasks).
+    custom_head: custom head that will be applied to the network. It must contain all kwargs (pass a partial function)
 
-# Example of using Sequential with OrderedDict
-model = nn.Sequential(OrderedDict([
-          ('conv1', nn.Conv2d(1,20,5)),
-          ('relu1', nn.ReLU()),
-          ('conv2', nn.Conv2d(20,64,5)),
-          ('relu2', nn.ReLU())
-        ]))</code></pre>
+Input shape:
+    x: bs (batch size) x nvars (aka features, variables, dimensions, channels) x seq_len (aka time steps)</code></pre>
 
 </div>
 
@@ -118,72 +122,400 @@ model = nn.Sequential(OrderedDict([
 <div class="output_text output_subarea output_execute_result">
 <pre>TSTransformerPlus(
   (backbone): _TSTransformerBackbone(
-    (lin): Linear(in_features=4, out_features=128, bias=True)
-    (layers): ModuleList(
-      (0): ModuleList(
-        (0): MultiheadAttention(
-          (W_Q): Linear(in_features=128, out_features=128, bias=False)
-          (W_K): Linear(in_features=128, out_features=128, bias=False)
-          (W_V): Linear(in_features=128, out_features=128, bias=False)
-          (fc): Linear(in_features=128, out_features=128, bias=False)
-          (sdp_attn): ScaledDotProductAttention()
-          (dropout): Dropout(p=0.0, inplace=False)
+    (to_embedding): Sequential(
+      (0): Transpose(1, 2)
+      (1): Linear(in_features=4, out_features=128, bias=True)
+    )
+    (emb_dropout): Dropout(p=0.0, inplace=False)
+    (encoder): _TransformerEncoder(
+      (layers): ModuleList(
+        (0): ModuleList(
+          (0): MultiheadAttention(
+            (W_Q): Linear(in_features=128, out_features=128, bias=False)
+            (W_K): Linear(in_features=128, out_features=128, bias=False)
+            (W_V): Linear(in_features=128, out_features=128, bias=False)
+            (sdp_attn): ScaledDotProductAttention()
+            (to_out): Sequential(
+              (0): Linear(in_features=128, out_features=128, bias=True)
+              (1): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (1): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+          (2): PositionwiseFeedForward(
+            (0): Linear(in_features=128, out_features=256, bias=True)
+            (1): ReGLU()
+            (2): Dropout(p=0.0, inplace=False)
+            (3): Linear(in_features=128, out_features=128, bias=True)
+            (4): Dropout(p=0.0, inplace=False)
+          )
+          (3): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
         )
-        (1): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
-        (2): PositionwiseFeedForward(
-          (0): Linear(in_features=128, out_features=1024, bias=True)
-          (1): ReGLU()
-          (2): Dropout(p=0.0, inplace=False)
-          (3): Linear(in_features=512, out_features=128, bias=True)
+        (1): ModuleList(
+          (0): MultiheadAttention(
+            (W_Q): Linear(in_features=128, out_features=128, bias=False)
+            (W_K): Linear(in_features=128, out_features=128, bias=False)
+            (W_V): Linear(in_features=128, out_features=128, bias=False)
+            (sdp_attn): ScaledDotProductAttention()
+            (to_out): Sequential(
+              (0): Linear(in_features=128, out_features=128, bias=True)
+              (1): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (1): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+          (2): PositionwiseFeedForward(
+            (0): Linear(in_features=128, out_features=256, bias=True)
+            (1): ReGLU()
+            (2): Dropout(p=0.0, inplace=False)
+            (3): Linear(in_features=128, out_features=128, bias=True)
+            (4): Dropout(p=0.0, inplace=False)
+          )
+          (3): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
         )
-        (3): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
-      )
-      (1): ModuleList(
-        (0): MultiheadAttention(
-          (W_Q): Linear(in_features=128, out_features=128, bias=False)
-          (W_K): Linear(in_features=128, out_features=128, bias=False)
-          (W_V): Linear(in_features=128, out_features=128, bias=False)
-          (fc): Linear(in_features=128, out_features=128, bias=False)
-          (sdp_attn): ScaledDotProductAttention()
-          (dropout): Dropout(p=0.0, inplace=False)
+        (2): ModuleList(
+          (0): MultiheadAttention(
+            (W_Q): Linear(in_features=128, out_features=128, bias=False)
+            (W_K): Linear(in_features=128, out_features=128, bias=False)
+            (W_V): Linear(in_features=128, out_features=128, bias=False)
+            (sdp_attn): ScaledDotProductAttention()
+            (to_out): Sequential(
+              (0): Linear(in_features=128, out_features=128, bias=True)
+              (1): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (1): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+          (2): PositionwiseFeedForward(
+            (0): Linear(in_features=128, out_features=256, bias=True)
+            (1): ReGLU()
+            (2): Dropout(p=0.0, inplace=False)
+            (3): Linear(in_features=128, out_features=128, bias=True)
+            (4): Dropout(p=0.0, inplace=False)
+          )
+          (3): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
         )
-        (1): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
-        (2): PositionwiseFeedForward(
-          (0): Linear(in_features=128, out_features=1024, bias=True)
-          (1): ReGLU()
-          (2): Dropout(p=0.0, inplace=False)
-          (3): Linear(in_features=512, out_features=128, bias=True)
+        (3): ModuleList(
+          (0): MultiheadAttention(
+            (W_Q): Linear(in_features=128, out_features=128, bias=False)
+            (W_K): Linear(in_features=128, out_features=128, bias=False)
+            (W_V): Linear(in_features=128, out_features=128, bias=False)
+            (sdp_attn): ScaledDotProductAttention()
+            (to_out): Sequential(
+              (0): Linear(in_features=128, out_features=128, bias=True)
+              (1): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (1): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+          (2): PositionwiseFeedForward(
+            (0): Linear(in_features=128, out_features=256, bias=True)
+            (1): ReGLU()
+            (2): Dropout(p=0.0, inplace=False)
+            (3): Linear(in_features=128, out_features=128, bias=True)
+            (4): Dropout(p=0.0, inplace=False)
+          )
+          (3): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
         )
-        (3): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
-      )
-      (2): ModuleList(
-        (0): MultiheadAttention(
-          (W_Q): Linear(in_features=128, out_features=128, bias=False)
-          (W_K): Linear(in_features=128, out_features=128, bias=False)
-          (W_V): Linear(in_features=128, out_features=128, bias=False)
-          (fc): Linear(in_features=128, out_features=128, bias=False)
-          (sdp_attn): ScaledDotProductAttention()
-          (dropout): Dropout(p=0.0, inplace=False)
+        (4): ModuleList(
+          (0): MultiheadAttention(
+            (W_Q): Linear(in_features=128, out_features=128, bias=False)
+            (W_K): Linear(in_features=128, out_features=128, bias=False)
+            (W_V): Linear(in_features=128, out_features=128, bias=False)
+            (sdp_attn): ScaledDotProductAttention()
+            (to_out): Sequential(
+              (0): Linear(in_features=128, out_features=128, bias=True)
+              (1): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (1): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+          (2): PositionwiseFeedForward(
+            (0): Linear(in_features=128, out_features=256, bias=True)
+            (1): ReGLU()
+            (2): Dropout(p=0.0, inplace=False)
+            (3): Linear(in_features=128, out_features=128, bias=True)
+            (4): Dropout(p=0.0, inplace=False)
+          )
+          (3): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
         )
-        (1): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
-        (2): PositionwiseFeedForward(
-          (0): Linear(in_features=128, out_features=1024, bias=True)
-          (1): ReGLU()
-          (2): Dropout(p=0.0, inplace=False)
-          (3): Linear(in_features=512, out_features=128, bias=True)
+        (5): ModuleList(
+          (0): MultiheadAttention(
+            (W_Q): Linear(in_features=128, out_features=128, bias=False)
+            (W_K): Linear(in_features=128, out_features=128, bias=False)
+            (W_V): Linear(in_features=128, out_features=128, bias=False)
+            (sdp_attn): ScaledDotProductAttention()
+            (to_out): Sequential(
+              (0): Linear(in_features=128, out_features=128, bias=True)
+              (1): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (1): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+          (2): PositionwiseFeedForward(
+            (0): Linear(in_features=128, out_features=256, bias=True)
+            (1): ReGLU()
+            (2): Dropout(p=0.0, inplace=False)
+            (3): Linear(in_features=128, out_features=128, bias=True)
+            (4): Dropout(p=0.0, inplace=False)
+          )
+          (3): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
         )
-        (3): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
       )
     )
   )
   (head): Sequential(
     (0): TokenLayer()
-    (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-    (2): Linear(in_features=128, out_features=2, bias=True)
+    (1): LinBnDrop(
+      (0): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (1): Linear(in_features=128, out_features=2, bias=False)
+    )
   )
 )</pre>
 </div>
 
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Subsampling">Subsampling<a class="anchor-link" href="#Subsampling"> </a></h3><p>It's a known fact that transformers cannot be directly applied to long sequences. To avoid this, we have included a way to subsample the sequence to generate a more manageable input.</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">tsai.data.validation</span> <span class="kn">import</span> <span class="n">get_splits</span>
+<span class="kn">from</span> <span class="nn">tsai.data.core</span> <span class="kn">import</span> <span class="n">get_ts_dls</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5000</span><span class="p">))</span> 
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">splits</span> <span class="o">=</span> <span class="n">get_splits</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="n">dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">)</span>
+<span class="n">xb</span><span class="p">,</span> <span class="n">yb</span> <span class="o">=</span> <span class="n">dls</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">one_batch</span><span class="p">()</span>
+<span class="n">xb</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+"
+>
+</div>
+
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>TSTensor(samples:8, vars:3, len:5000)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If you try to use TSTransformerPlus, it's likely you'll get an 'out-of-memory' error.</p>
+<p>To avoid this you can subsample the sequence reducing the input's length. This can be done in multiple ways. Here are a few examples:</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">custom_subsampling</span> <span class="o">=</span> <span class="n">Conv1d</span><span class="p">(</span><span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">ks</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">default_device</span><span class="p">())</span>
+<span class="n">custom_subsampling</span><span class="p">(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>torch.Size([8, 3, 100])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">custom_subsampling</span> <span class="o">=</span> <span class="n">Conv1d</span><span class="p">(</span><span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">2</span><span class="p">,</span> <span class="n">ks</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">default_device</span><span class="p">())</span>
+<span class="n">custom_subsampling</span><span class="p">(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>torch.Size([8, 2, 100])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">custom_subsampling</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="n">Pad1d</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span> <span class="mi">0</span><span class="p">),</span> <span class="n">nn</span><span class="o">.</span><span class="n">MaxPool1d</span><span class="p">(</span><span class="n">kernel_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">50</span><span class="p">))</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">default_device</span><span class="p">())</span>
+<span class="n">custom_subsampling</span><span class="p">(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>torch.Size([8, 3, 100])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">custom_subsampling</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="n">Pad1d</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span> <span class="mi">0</span><span class="p">),</span> <span class="n">nn</span><span class="o">.</span><span class="n">AvgPool1d</span><span class="p">(</span><span class="n">kernel_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">50</span><span class="p">))</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">default_device</span><span class="p">())</span>
+<span class="n">custom_subsampling</span><span class="p">(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>torch.Size([8, 3, 100])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Once you decide what type of transform you want to apply, you just need to pass the layer as the custom_subsampling attribute:</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">bs</span> <span class="o">=</span> <span class="mi">16</span>
+<span class="n">nvars</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">seq_len</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">c_out</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">xb</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">nvars</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">)</span>
+<span class="n">custom_subsampling</span> <span class="o">=</span> <span class="n">Conv1d</span><span class="p">(</span><span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">ks</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">TSTransformerPlus</span><span class="p">(</span><span class="n">nvars</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">custom_subsampling</span><span class="o">=</span><span class="n">custom_subsampling</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">model</span><span class="p">(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>custom_subsampling: (?, 4, 1000) --&gt; (?, 4, 334)
+</pre>
+</div>
 </div>
 
 </div>
