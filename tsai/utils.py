@@ -15,8 +15,7 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'torch_nanstd', 'concat', 'reduce_memory_usage', 'cls_name', 'roll2d', 'roll3d', 'random_roll2d',
            'random_roll3d', 'rotate_axis0', 'rotate_axis1', 'rotate_axis2', 'create_empty_array', 'np_save_compressed',
            'np_load_compressed', 'np2memmap', 'torch_mean_groupby', 'torch_flip', 'torch_nan_to_num',
-           'torch_masked_to_num', 'mpl_trend', 'int2digits', 'array2digits', 'encode_position_sincos',
-           'encode_position_linear']
+           'torch_masked_to_num', 'mpl_trend', 'int2digits', 'array2digits', 'sincos_encoding', 'encode_positions']
 
 # Cell
 from .imports import *
@@ -847,20 +846,30 @@ def array2digits(o, n_digits=None, normalize=True):
 
 # Cell
 
-def encode_position_sincos(a, min_val=None, max_val=None):
-    if min_val is None:
-        min_val = np.nanmin(a)
-    if max_val is None:
-        max_val = np.nanmax(a)
-    sin = np.sin((a - min_val)/(max_val - min_val) * 2 * np.pi)
-    cos = np.cos((a - min_val)/(max_val - min_val) * 2 * np.pi)
+def sincos_encoding(seq_len, device=None, to_np=False):
+    if to_np:
+        sin = np.sin(np.arange(seq_len) / seq_len * 2 * np.pi)
+        cos = np.cos(np.arange(seq_len) / seq_len * 2 * np.pi)
+    else:
+        device = default_device()
+        sin = torch.sin(torch.arange(seq_len, device=device) / seq_len * 2 * np.pi)
+        cos = torch.cos(torch.arange(seq_len, device=device) / seq_len * 2 * np.pi)
     return sin, cos
 
 # Cell
 
-def encode_position_linear(a, min_val=None, max_val=None, lin_range=(-1,1)):
+def encode_positions(pos_arr, min_val=None, max_val=None, linear=False, lin_range=(-1,1)):
+    """ Encodes an array with positions using a linear or sincos methods
+    """
+
     if min_val is None:
-        min_val = np.nanmin(a)
+        min_val = np.nanmin(pos_arr)
     if max_val is None:
-        max_val = np.nanmax(a)
-    return (((a - min_val)/(max_val - min_val)) * (lin_range[1] - lin_range[0]) + lin_range[0])
+        max_val = np.nanmax(pos_arr)
+
+    if linear:
+        return (((a - min_val)/(max_val - min_val)) * (lin_range[1] - lin_range[0]) + lin_range[0])
+    else:
+        sin = np.sin((pos_arr - min_val)/(max_val - min_val) * 2 * np.pi)
+        cos = np.cos((pos_arr - min_val)/(max_val - min_val) * 2 * np.pi)
+        return sin, cos
