@@ -142,7 +142,7 @@ class MVP(Callback):
         self.path_text = f"pretrained weights_path='{self.PATH}.pth'"
 
     def before_fit(self):
-        self.run = not hasattr(self, "lr_finder") and not hasattr(self, "gather_preds")
+        self.run = not hasattr(self, "gather_preds")
         if 'SaveModelCallback' in [cb.__class__.__name__ for cb in self.learn.cbs]:
             self.save_best =  False # avoid saving if SaveModelCallback is being used
         if not(self.run): return
