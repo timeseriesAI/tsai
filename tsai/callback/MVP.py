@@ -176,7 +176,7 @@ class MVP(Callback):
     def before_batch(self):
         original_mask = torch.isnan(self.x)
         if self.custom_mask is not None:
-            new_mask = custom_mask(self.x)
+            new_mask = self.custom_mask(self.x)
         else:
             new_mask = create_mask(self.x, r=self.r, lm=self.lm, stateful=self.stateful, sync=self.sync, subsequence_mask=self.subsequence_mask,
                                    variable_mask=self.variable_mask, future_mask=self.future_mask).bool()
