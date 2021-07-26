@@ -4,7 +4,7 @@ __all__ = ['TSIdentity', 'TSShuffle_HLs', 'TSShuffleSteps', 'TSMagAddNoise', 'TS
            'random_cum_curve_generator', 'random_cum_noise_generator', 'random_cum_linear_generator', 'TSTimeNoise',
            'TSMagWarp', 'TSTimeWarp', 'TSWindowWarp', 'TSMagScale', 'TSMagScalePerVar', 'TSMagScaleByVar',
            'TSRandomResizedCrop', 'TSRandomZoomIn', 'TSWindowSlicing', 'TSRandomZoomOut', 'TSRandomTimeScale',
-           'TSRandomTimeStep', 'TSBlur', 'TSSmooth', 'maddest', 'TSFreqDenoise', 'TSRandomFreqNoise',
+           'TSRandomTimeStep', 'TSResampleSteps', 'TSBlur', 'TSSmooth', 'maddest', 'TSFreqDenoise', 'TSRandomFreqNoise',
            'TSRandomResizedLookBack', 'TSRandomLookBackOut', 'TSVarOut', 'TSCutOut', 'TSTimeStepOut', 'TSRandomCropPad',
            'TSMaskOut', 'TSTranslateX', 'TSRandomShift', 'TSHorizontalFlip', 'TSRandomTrend', 'TSRandomRotate',
            'TSVerticalFlip', 'TSResize', 'TSRandomSize', 'TSRandomLowRes', 'TSDownUpScale', 'TSRandomDownUpScale',
@@ -337,6 +337,23 @@ class TSRandomTimeStep(RandTransform):
         output = F.interpolate(o[..., timesteps], size=seq_len, mode=self.mode, align_corners=None if self.mode in ['nearest', 'area'] else False)
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
+
+# Cell
+
+class TSResampleSteps(RandTransform):
+    "Transform that randomly selects (and optionally sort) sequence steps without modifying the sequence length"
+
+    order = 90
+    def __init__(self, seq_len_pct=1., replace=True, sort=True, magnitude=None, **kwargs):
+        assert 1 >= seq_len_pct >= 0, 'seq_len_pct must be 1 >= subsample >= 0'
+        self.seq_len_pct, self.replace, self.sort = seq_len_pct, replace, sort
+        super().__init__(**kwargs)
+
+    def encodes(self, o: TSTensor):
+        seq_len = o.shape[-1]
+        idxs = np.random.choice(seq_len, round(seq_len * self.seq_len_pct), self.replace)
+        if self.sort: idxs = np.sort(idxs)
+        return o[..., idxs]
 
 # Cell
 class TSBlur(RandTransform):
@@ -714,6 +731,7 @@ class TSRandomDownUpScale(RandTransform):
         return output
 
 # Cell
+
 class TSRandomConv(RandTransform):
     """Applies a convolution with a random kernel and random weights with required_grad=False"""
     order = 90
@@ -725,7 +743,9 @@ class TSRandomConv(RandTransform):
         if not self.magnitude or self.magnitude <= 0 or self.ks is None: return o
         ks = np.random.choice(self.ks, 1)[0] if is_listy(self.ks) else self.ks
         c_in = o.shape[1]
-        self.conv.weight = nn.Parameter(torch.rand(c_in, c_in, ks) * 2 / np.sqrt(c_in * ks), requires_grad=False).to(o.device)
+        weight = nn.Parameter(torch.zeros(c_in, c_in, ks, device=o.device, requires_grad=False))
+        nn.init.kaiming_normal_(weight)
+        self.conv.weight = weight
         self.conv.padding = ks // 2
         output = (1 - self.magnitude) * o + self.magnitude * self.conv(o)
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]

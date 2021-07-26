@@ -22,8 +22,11 @@ torch.set_num_threads(cpus)
 class InceptionModulePlus(Module):
     def __init__(self, ni, nf, ks=40, bottleneck=True, padding='same', coord=False, separable=False, dilation=1, stride=1, conv_dropout=0., sa=False, se=None,
                  norm='Batch', zero_norm=False, bn_1st=True, act=nn.ReLU, act_kwargs={}):
-        if isinstance(ks, Integral): ks = [ks // (2**i) for i in range(3)]
-        ks = [ksi if ksi % 2 != 0 else ksi - 1 for ksi in ks]  # ensure odd ks for padding='same'
+
+        if not (is_listy(ks) and len(ks) == 3):
+            if isinstance(ks, Integral): ks = [ks // (2**i) for i in range(3)]
+            ks = [ksi if ksi % 2 != 0 else ksi - 1 for ksi in ks]  # ensure odd ks for padding='same'
+
         bottleneck = False if ni == nf else bottleneck
         self.bottleneck = Conv(ni, nf, 1, coord=coord, bias=False) if bottleneck else noop #
         self.convs = nn.ModuleList()

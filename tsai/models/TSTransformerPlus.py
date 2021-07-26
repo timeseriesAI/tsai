@@ -58,15 +58,15 @@ class _TSTransformerBackbone(Module):
             x = self.input_layer(x)
 
         B, _, S = x.shape
-
         x = self.to_embedding(x)
-        if self.training and self.pct_random_steps < 1.:
-            idxs = np.tile(np.random.choice(S, round(S * self.pct_random_steps), False), math.ceil(1 / self.pct_random_steps))[:S]
-            x = x[:, idxs]
         if self.cls_token is not None:
             x = torch.cat((self.cls_token.repeat(B, 1, 1), x), dim=1)
         x += self.pos_embedding
         x = self.emb_dropout(x)
+
+        if self.training and self.pct_random_steps < 1.:
+            idxs = np.tile(np.random.choice(S, round(S * self.pct_random_steps), False), math.ceil(1 / self.pct_random_steps))[:S]
+            x = x[:, idxs]
 
         x = self.encoder(x)
 
