@@ -47,56 +47,6 @@ nb_path: "nbs/102_models.InceptionTime.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="InceptionModule" class="doc_header"><code>class</code> <code>InceptionModule</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/InceptionTime.py#L17" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>InceptionModule</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>ks</code></strong>=<em><code>40</code></em>, <strong><code>bottleneck</code></strong>=<em><code>True</code></em>) :: <code>Module</code></p>
-</blockquote>
-<p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="InceptionBlock" class="doc_header"><code>class</code> <code>InceptionBlock</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/InceptionTime.py#L37" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>InceptionBlock</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>=<em><code>32</code></em>, <strong><code>residual</code></strong>=<em><code>True</code></em>, <strong><code>depth</code></strong>=<em><code>6</code></em>, <strong><code>ks</code></strong>=<em><code>40</code></em>, <strong><code>bottleneck</code></strong>=<em><code>True</code></em>) :: <code>Module</code></p>
-</blockquote>
-<p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
 <h2 id="InceptionTime" class="doc_header"><code>class</code> <code>InceptionTime</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/InceptionTime.py#L58" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>InceptionTime</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>None</code></em>, <strong><code>nf</code></strong>=<em><code>32</code></em>, <strong><code>nb_filters</code></strong>=<em><code>None</code></em>, <strong><code>ks</code></strong>=<em><code>40</code></em>, <strong><code>bottleneck</code></strong>=<em><code>True</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
@@ -166,9 +116,9 @@ nb_path: "nbs/102_models.InceptionTime.ipynb"
 
 <div class="output_text output_subarea output_execute_result">
 <pre>InceptionTime(
-  (inceptionblock): InceptionBlock(
+  (inceptionblock): _InceptionBlock(
     (inception): ModuleList(
-      (0): InceptionModule(
+      (0): _InceptionModule(
         (bottleneck): Conv1d(3, 32, kernel_size=(1,), stride=(1,), bias=False)
         (convs): ModuleList(
           (0): Conv1d(32, 32, kernel_size=(39,), stride=(1,), padding=(19,), bias=False)
@@ -183,7 +133,7 @@ nb_path: "nbs/102_models.InceptionTime.ipynb"
         (bn): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
         (act): ReLU()
       )
-      (1): InceptionModule(
+      (1): _InceptionModule(
         (bottleneck): Conv1d(128, 32, kernel_size=(1,), stride=(1,), bias=False)
         (convs): ModuleList(
           (0): Conv1d(32, 32, kernel_size=(39,), stride=(1,), padding=(19,), bias=False)
@@ -198,7 +148,7 @@ nb_path: "nbs/102_models.InceptionTime.ipynb"
         (bn): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
         (act): ReLU()
       )
-      (2): InceptionModule(
+      (2): _InceptionModule(
         (bottleneck): Conv1d(128, 32, kernel_size=(1,), stride=(1,), bias=False)
         (convs): ModuleList(
           (0): Conv1d(32, 32, kernel_size=(39,), stride=(1,), padding=(19,), bias=False)
@@ -213,7 +163,7 @@ nb_path: "nbs/102_models.InceptionTime.ipynb"
         (bn): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
         (act): ReLU()
       )
-      (3): InceptionModule(
+      (3): _InceptionModule(
         (bottleneck): Conv1d(128, 32, kernel_size=(1,), stride=(1,), bias=False)
         (convs): ModuleList(
           (0): Conv1d(32, 32, kernel_size=(39,), stride=(1,), padding=(19,), bias=False)
@@ -228,7 +178,7 @@ nb_path: "nbs/102_models.InceptionTime.ipynb"
         (bn): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
         (act): ReLU()
       )
-      (4): InceptionModule(
+      (4): _InceptionModule(
         (bottleneck): Conv1d(128, 32, kernel_size=(1,), stride=(1,), bias=False)
         (convs): ModuleList(
           (0): Conv1d(32, 32, kernel_size=(39,), stride=(1,), padding=(19,), bias=False)
@@ -243,7 +193,7 @@ nb_path: "nbs/102_models.InceptionTime.ipynb"
         (bn): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
         (act): ReLU()
       )
-      (5): InceptionModule(
+      (5): _InceptionModule(
         (bottleneck): Conv1d(128, 32, kernel_size=(1,), stride=(1,), bias=False)
         (convs): ModuleList(
           (0): Conv1d(32, 32, kernel_size=(39,), stride=(1,), padding=(19,), bias=False)

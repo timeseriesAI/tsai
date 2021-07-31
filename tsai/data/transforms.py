@@ -344,15 +344,21 @@ class TSResampleSteps(RandTransform):
     "Transform that randomly selects (and optionally sort) sequence steps without modifying the sequence length"
 
     order = 90
-    def __init__(self, seq_len_pct=1., replace=True, sort=True, magnitude=None, **kwargs):
-        assert 1 >= seq_len_pct >= 0, 'seq_len_pct must be 1 >= subsample >= 0'
-        self.seq_len_pct, self.replace, self.sort = seq_len_pct, replace, sort
+    def __init__(self, step_pct=1., same_seq_len=True, magnitude=None, **kwargs):
+        assert step_pct > 0, 'seq_len_pct must be subsample > 0'
+        self.step_pct, self.same_seq_len = step_pct, same_seq_len
         super().__init__(**kwargs)
 
     def encodes(self, o: TSTensor):
-        seq_len = o.shape[-1]
-        idxs = np.random.choice(seq_len, round(seq_len * self.seq_len_pct), self.replace)
-        if self.sort: idxs = np.sort(idxs)
+        S = o.shape[-1]
+        if isinstance(self.step_pct, tuple):
+            step_pct = np.random.rand() * (self.step_pct[1] - self.step_pct[0]) + self.step_pct[0]
+        else:
+            step_pct = self.step_pct
+        if step_pct != 1 and self.same_seq_len:
+            idxs = np.sort(np.tile(np.random.choice(S, round(S * step_pct), True), math.ceil(1 / step_pct))[:S])
+        else:
+            idxs = np.sort(np.random.choice(S, round(S * step_pct), True))
         return o[..., idxs]
 
 # Cell

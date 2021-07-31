@@ -5,9 +5,9 @@ __all__ = ['noop', 'init_lin_zero', 'lin_zero_init', 'SwishBeta', 'same_padding1
            'AddCoords1d', 'ConvBlock', 'Conv', 'ConvBN', 'ConvIN', 'CoordConv', 'CoordConvBN', 'SepConv', 'SepConvBN',
            'SepConvIN', 'SepCoordConv', 'SepCoordConvBN', 'ResBlock1dPlus', 'SEModule1d', 'Norm', 'BN1d', 'IN1d',
            'LinLnDrop', 'LambdaPlus', 'Squeeze', 'Unsqueeze', 'Add', 'Concat', 'Permute', 'Transpose', 'View',
-           'Reshape', 'Max', 'LastStep', 'SoftMax', 'Clamp', 'Clip', 'Noop', 'Sharpen', 'Sequential', 'TimeDistributed',
-           'Temp_Scale', 'Vector_Scale', 'Matrix_Scale', 'get_calibrator', 'LogitAdjustmentLayer', 'LogitAdjLayer',
-           'PPV', 'PPAuc', 'MaxPPVPool1d', 'AdaptiveWeightedAvgPool1d', 'GAP1d', 'GACP1d', 'GAWP1d',
+           'Reshape', 'Max', 'LastStep', 'SoftMax', 'Clamp', 'Clip', 'Noop', 'DropPath', 'Sharpen', 'Sequential',
+           'TimeDistributed', 'Temp_Scale', 'Vector_Scale', 'Matrix_Scale', 'get_calibrator', 'LogitAdjustmentLayer',
+           'LogitAdjLayer', 'PPV', 'PPAuc', 'MaxPPVPool1d', 'AdaptiveWeightedAvgPool1d', 'GAP1d', 'GACP1d', 'GAWP1d',
            'GlobalWeightedAveragePool1d', 'gwa_pool_head', 'GWAP1d', 'AttentionalPool1d', 'GAttP1d',
            'attentional_pool_head', 'create_pool_head', 'pool_head', 'average_pool_head', 'concat_pool_head',
            'max_pool_head', 'create_pool_plus_head', 'pool_plus_head', 'create_conv_head', 'conv_head',
@@ -16,7 +16,7 @@ __all__ = ['noop', 'init_lin_zero', 'lin_zero_init', 'SwishBeta', 'same_padding1
            'conv_3d_head', 'universal_pool_head', 'heads', 'SqueezeExciteBlock', 'GaussianNoise', 'gambler_loss',
            'CrossEntropyLossOneHot', 'ttest_bin_loss', 'ttest_reg_loss', 'CenterLoss', 'CenterPlusLoss', 'FocalLoss',
            'TweedieLoss', 'GEGLU', 'ReGLU', 'PositionwiseFeedForward', 'TokenLayer', 'ScaledDotProductAttention',
-           'MultiheadAttention']
+           'MultiheadAttention', 'MultiConcatConv1d']
 
 # Cell
 from torch.nn.init import normal_
@@ -387,6 +387,28 @@ class Clip(Module):
     def __repr__(self): return f'{self.__class__.__name__}()'
 
 Noop = nn.Sequential()
+
+# Cell
+
+class DropPath(nn.Module):
+    """Drop paths (Stochastic Depth) per sample (when applied in main path of residual blocks).
+
+    It's similar to Dropout but it drops individual connections instead of nodes.
+    Modified from https://github.com/rwightman/pytorch-image-models (timm library)
+    """
+
+    def __init__(self, p=None):
+        super(DropPath, self).__init__()
+        self.p = p
+
+    def forward(self, x):
+        if self.p == 0. or not self.training: return x
+        keep_prob = 1 - self.p
+        shape = (x.shape[0],) + (1,) * (x.ndim - 1)
+        random_tensor = keep_prob + torch.rand(shape, dtype=x.dtype, device=x.device)
+        random_tensor.floor_()  # binarize
+        output = x.div(random_tensor.mean()) * random_tensor # divide by the actual mean to mantain the input mean
+        return output
 
 # Cell
 class Sharpen(Module):
@@ -923,17 +945,17 @@ class ReGLU(Module):
 
 
 class PositionwiseFeedForward(nn.Sequential):
-    def __init__(self, dim, dropout=0., act='reglu'):
+    def __init__(self, dim, dropout=0., act='reglu', mlp_ratio=1):
         act = act.lower()
         act_mult = 2 if act in ['geglu', 'reglu'] else 1
         if act == 'relu': act_fn = nn.ReLU()
         elif act == 'gelu': act_fn = nn.GELU()
         elif act == 'geglu': act_fn = GEGLU()
         else: act_fn = ReGLU()
-        super().__init__(nn.Linear(dim, dim * act_mult),
+        super().__init__(nn.Linear(dim, dim * act_mult * mlp_ratio),
                          act_fn,
                          nn.Dropout(dropout),
-                         nn.Linear(dim, dim),
+                         nn.Linear(dim * mlp_ratio, dim),
                          nn.Dropout(dropout))
 
 
@@ -993,7 +1015,8 @@ class ScaledDotProductAttention(Module):
 # Cell
 
 class MultiheadAttention(Module):
-    def __init__(self, d_model:int, n_heads:int, d_k:Optional[int]=None, d_v:Optional[int]=None, res_attention:bool=False, dropout:float=0.):
+    def __init__(self, d_model:int, n_heads:int, d_k:Optional[int]=None, d_v:Optional[int]=None, res_attention:bool=False,
+                 dropout:float=0., qkv_bias:bool=True):
         """Multi Head Attention Layer
 
         Input shape:
@@ -1007,9 +1030,9 @@ class MultiheadAttention(Module):
 
         self.n_heads, self.d_k, self.d_v = n_heads, d_k, d_v
 
-        self.W_Q = nn.Linear(d_model, d_k * n_heads, bias=False)
-        self.W_K = nn.Linear(d_model, d_k * n_heads, bias=False)
-        self.W_V = nn.Linear(d_model, d_v * n_heads, bias=False)
+        self.W_Q = nn.Linear(d_model, d_k * n_heads, bias=qkv_bias)
+        self.W_K = nn.Linear(d_model, d_k * n_heads, bias=qkv_bias)
+        self.W_V = nn.Linear(d_model, d_v * n_heads, bias=qkv_bias)
 
         # Scaled Dot-Product Attention (multiple heads)
         self.res_attention = res_attention
@@ -1044,4 +1067,24 @@ class MultiheadAttention(Module):
         output = self.to_out(output)
 
         if self.res_attention: return output, attn_weights, attn_scores
-        else: return output, attn_weights                                                  # output: [bs x q_len x d_model]
+        else: return output, attn_weights
+
+# Cell
+
+class MultiConcatConv1d(Module):
+    def __init__(self, ni, nf, kss=None, kernel_sizes=None, maxpool=True, stride=1):
+        kss = ifnone(kss, kernel_sizes)
+        assert kss is not None, "you need to pass a kss argument"
+        if not is_listy(kss): kss = [kss]
+        _nf = nf // (len(kss) + maxpool)
+        _total_nf = _nf * (len(kss) + maxpool)
+        self.layers = nn.ModuleList()
+        for k in kss:
+            self.layers.append(Conv1d(ni, _nf, k, stride=stride))
+        if maxpool: self.layers.append(nn.Sequential(nn.MaxPool1d(3, stride=stride, padding=1), Conv1d(ni, _nf, 1)))
+        self.to_output = Conv1d(_total_nf, nf, 1) if _total_nf != nf else nn.Identity()
+
+    def forward(self, x):
+        for i,l in enumerate(self.layers):
+            out = l(x) if i == 0 else torch.cat((out, l(x)), 1)
+        return self.to_output(out)

@@ -124,7 +124,7 @@ def build_ts_model(arch, c_in=None, c_out=None, seq_len=None, d=None, dls=None, 
             kwargs['custom_head'] = partial(lin_3d_head, d=d)
         else:
             kwargs['custom_head'] = partial(kwargs['custom_head'], d=d)
-    if sum([1 for v in ['RNN_FCN', 'LSTM_FCN', 'RNNPlus', 'LSTMPlus', 'GRUPlus', 'InceptionTime', 'TSTransformer',
+    if sum([1 for v in ['RNN_FCN', 'LSTM_FCN', 'RNNPlus', 'LSTMPlus', 'GRUPlus', 'InceptionTime', 'TSiT',
                         'GRU_FCN', 'OmniScaleCNN', 'mWDN', 'TST', 'XCM', 'MLP', 'MiniRocket', 'InceptionRocket']
             if v in arch.__name__]):
         pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} seq_len={seq_len} device={device}, kwargs={kwargs})', verbose)

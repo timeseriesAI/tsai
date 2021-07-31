@@ -35,7 +35,7 @@ from .TabModel import *
 from .TabTransformer import *
 from .TabFusionTransformer import *
 from .TSPerceiver import *
-from .TSTransformerPlus import *
+from .TSiTPlus import *
 from .MultiInputNet import *
 
 from .misc import *
