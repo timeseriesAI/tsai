@@ -3,8 +3,8 @@
 __all__ = ['NumpyTensor', 'ToNumpyTensor', 'TSTensor', 'ToTSTensor', 'show_tuple', 'TSLabelTensor', 'TSMaskTensor',
            'ToFloat', 'ToInt', 'TSClassification', 'TSRegression', 'TSForecasting', 'TSMultiLabelClassification',
            'NumpyTensorBlock', 'TSTensorBlock', 'TorchDataset', 'NumpyDataset', 'TSDataset', 'NoTfmLists',
-           'NumpyDatasets', 'TSDatasets', 'add_ds', 'NumpyDataLoader', 'TSDataLoader', 'NumpyDataLoaders',
-           'TSDataLoaders', 'get_ts_dls', 'get_ts_dl', 'get_subset_dl', 'get_tsimage_dls']
+           'TSTfmdLists', 'NumpyDatasets', 'TSDatasets', 'add_ds', 'NumpyDataLoader', 'TSDataLoader',
+           'NumpyDataLoaders', 'TSDataLoaders', 'get_ts_dls', 'get_ts_dl', 'get_subset_dl', 'get_tsimage_dls']
 
 # Cell
 from ..imports import *
@@ -114,7 +114,28 @@ class ToInt(Transform):
     def encodes(self, o): return o.astype(np.float32).astype(np.int64)
     def decodes(self, o): return TitledFloat(o) if o.ndim==0 else TitledTuple(o_.item() for o_ in o)
 
-TSClassification = Categorize
+
+class TSClassification(DisplayedTransform):
+    "Vectorized, reversible transform of category string to `vocab` id"
+    loss_func,order,vectorized=CrossEntropyLossFlat(),1,True
+
+    def __init__(self, vocab=None, sort=True, add_na=False):
+        if vocab is not None: vocab = CategoryMap(vocab, sort=sort, add_na=add_na)
+        store_attr()
+
+    def setups(self, dsets):
+        if self.vocab is None and dsets is not None: self.vocab = CategoryMap(dsets, sort=self.sort, add_na=self.add_na)
+        self.c = len(self.vocab)
+
+    def encodes(self, o):
+        try:
+            return TensorCategory((np.array(list(self.vocab.o2i.keys()))[:, None] == o).argmax(axis=0) if is_iter(o) else self.vocab.o2i[o])
+        except KeyError as e:
+            raise KeyError(f"Label '{o}' was not included in the training dataset") from e
+    def decodes(self, o):
+        return stack([Category(self.vocab[oi]) for oi in o]) if is_iter(o) else Category(self.vocab[o])
+
+# TSClassification = Categorize
 TSRegression = ToFloat
 TSForecasting = ToFloat
 
@@ -194,20 +215,29 @@ def _flatten_list(l):
 def _remove_brackets(l):
     return [li if (not li or not is_listy(li) or len(li) > 1) else li[0] for li in l]
 
-class NoTfmLists(FilteredBase, L, GetAttr):
+class NoTfmLists(TfmdLists):
     def __init__(self, items, tfms=None, splits=None, split_idx=None, types=None, **kwargs):
         self.splits = ifnone(splits, L(np.arange(len(items)).tolist(),[]))
         self._splits = np.asarray(_flatten_list(self.splits))
         store_attr('items,types,split_idx')
+        self.tfms = Pipeline(split_idx=split_idx)
     def subset(self, i, **kwargs): return type(self)(self.items, splits=self.splits[i], split_idx=i, do_setup=False, types=self.types, **kwargs)
-    def __getitem__(self, idx): return self.items[self._splits[[idx]]]
+    def __getitem__(self, it): return self.items[self._splits[it]]
     def __len__(self): return len(self._splits)
     def __repr__(self): return f"{self.__class__.__name__}: {self.items.__class__.__name__}{(len(self), *self.items.shape[1:])}"
     def _new(self, items, split_idx=None, **kwargs):
         split_idx = ifnone(split_idx, self.split_idx)
         return type(self)(items, split_idx=split_idx, do_setup=False, types=self.types, **kwargs)
+    def decode(self, o, **kwargs): return o
+    def new_empty(self): return self._new([])
 
 NoTfmLists.train, NoTfmLists.valid = add_props(lambda i,x: x.subset(i))
+
+class TSTfmdLists(TfmdLists):
+    def __getitem__(self, idx):
+        res = self._get(idx)
+        if self._after_item is None: return res
+        else: return self._after_item(res)
 
 # Cell
 
@@ -231,7 +261,8 @@ class NumpyDatasets(Datasets):
                 self.tfms, lts = [None] * len(items), [NoTfmLists] * len(items)
             else:
                 self.tfms = _remove_brackets(tfms)
-                lts = [NoTfmLists if t is None and not inplace else TfmdLists for t in self.tfms]
+#                 lts = [NoTfmLists if t is None and not inplace else TfmdLists for t in self.tfms]
+                lts = [NoTfmLists if (t is None and not inplace) else TSTfmdLists if getattr(t, 'vectorized', None) else TfmdLists for t in self.tfms]
 
             self.tls = L(lt(item, t, **kwargs) for lt,item,t in zip(lts, items, self.tfms))
             if len(items) == 2 and torch.is_tensor(self.tls[1][0]): self.typs = (self.typs[0], type(self.tls[1][0]))
@@ -242,9 +273,11 @@ class NumpyDatasets(Datasets):
 
         self.n_inp = 1
         self.zarr = ['zarr' in str(type(ptl)) for ptl in self.ptls]
-        if 'splits' in kwargs:  split_idxs = kwargs['splits']
-        else: split_idxs = L(np.arange(len(self.tls[0]) if len(self.tls[0]) > 0 else len(self.tls)).tolist())
-        if is_listy(split_idxs[0]): split_idxs = flatten_list(split_idxs)
+        if 'splits' in kwargs:
+            split_idxs = kwargs['splits']
+            try: split_idxs = flatten_list(split_idxs)
+            except: pass
+        else: split_idxs = L(np.arange(len(self.tls[0])).tolist())
         self.split_idxs = L(split_idxs)
 
     def __getitem__(self, it):
@@ -270,13 +303,6 @@ class NumpyDatasets(Datasets):
         self.show(self[idx], **kwargs)
         plt.show()
 
-    @property
-    def items(self): return tuple([tl.items for tl in self.tls])
-
-    @items.setter
-    def items(self, vs):
-        for tl,v in zip(self.tls, vs): tl.items = v
-
 # Cell
 
 @delegates(NumpyDatasets.__init__)
@@ -299,7 +325,8 @@ class TSDatasets(NumpyDatasets):
                 self.tfms, lts = [None] * len(items), [NoTfmLists] * len(items)
             else:
                 self.tfms = _remove_brackets(tfms)
-                lts = [NoTfmLists if t is None and not inplace else TfmdLists for t in self.tfms]
+#                 lts = [NoTfmLists if t is None and not inplace else TfmdLists for t in self.tfms]
+                lts = [NoTfmLists if (t is None and not inplace) else TSTfmdLists if getattr(t, 'vectorized', None) else TfmdLists for t in self.tfms]
 
             self.tls = L(lt(item, t, **kwargs) for lt,item,t in zip(lts, items, self.tfms))
             if len(items) == 2 and torch.is_tensor(self.tls[1][0]): self.typs = (self.typs[0], type(self.tls[1][0]))
@@ -312,9 +339,11 @@ class TSDatasets(NumpyDatasets):
 
         self.n_inp = 1
         self.zarr = ['zarr' in str(type(ptl)) for ptl in self.ptls]
-        if 'splits' in kwargs:  split_idxs = kwargs['splits']
-        else: split_idxs = L(np.arange(len(self.tls[0]) if len(self.tls[0]) > 0 else len(self.tls)).tolist())
-        if is_listy(split_idxs[0]): split_idxs = flatten_list(split_idxs)
+        if 'splits' in kwargs:
+            split_idxs = kwargs['splits']
+            try: split_idxs = flatten_list(split_idxs)
+            except: pass
+        else: split_idxs = L(np.arange(len(self.tls[0])).tolist())
         self.split_idxs = L(split_idxs)
 
     def __getitem__(self, it):
@@ -332,8 +361,6 @@ class TSDatasets(NumpyDatasets):
     def subset(self, i):
         return type(self)(tls=L([tl.subset(i) for tl in self.tls]), inplace=self.inplace, tfms=self.tfms,
                           sel_vars=self.sel_vars, sel_steps=self.sel_steps, splits=None if self.splits is None else self.splits[i], split_idx=i)
-
-    def __len__(self): return len(self.tls[0])
 
 # Cell
 
