@@ -10,7 +10,7 @@ from .core import *
 
 # Cell
 class TSMetaDataset():
-    " A dataset capable of indexing mutiple datasets at the same time!"
+    " A dataset capable of indexing mutiple datasets at the same time"
     def __init__(self, dataset_list, **kwargs):
         if not is_listy(dataset_list): dataset_list = [dataset_list]
         self.datasets = dataset_list

@@ -156,7 +156,7 @@ nb_path: "nbs/105_models.RNN.ipynb"
 <span class="n">bs</span> <span class="o">=</span> <span class="mi">16</span>
 <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">return_split</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">tfms</span>  <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">[</span><span class="n">Categorize</span><span class="p">()]]</span>
-<span class="n">dsets</span> <span class="o">=</span> <span class="n">TSDatasets</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">dsets</span> <span class="o">=</span> <span class="n">TSDatasets</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">)</span>
 <span class="n">dls</span>   <span class="o">=</span> <span class="n">TSDataLoaders</span><span class="o">.</span><span class="n">from_dsets</span><span class="p">(</span><span class="n">dsets</span><span class="o">.</span><span class="n">train</span><span class="p">,</span> <span class="n">dsets</span><span class="o">.</span><span class="n">valid</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="n">bs</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">LSTM</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">vars</span><span class="p">,</span> <span class="n">dls</span><span class="o">.</span><span class="n">c</span><span class="p">)</span>
 <span class="n">learn</span> <span class="o">=</span> <span class="n">Learner</span><span class="p">(</span><span class="n">dls</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span>  <span class="n">metrics</span><span class="o">=</span><span class="n">accuracy</span><span class="p">)</span>
@@ -187,9 +187,9 @@ nb_path: "nbs/105_models.RNN.ipynb"
   <tbody>
     <tr>
       <td>0</td>
-      <td>1.795245</td>
-      <td>1.774184</td>
-      <td>0.238889</td>
+      <td>1.809702</td>
+      <td>1.783900</td>
+      <td>0.188889</td>
       <td>00:02</td>
     </tr>
   </tbody>

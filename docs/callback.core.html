@@ -130,7 +130,7 @@ nb_path: "nbs/060_callback.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="GamblersCallback" class="doc_header"><code>class</code> <code>GamblersCallback</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/callback/core.py#L19" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GamblersCallback</code>(<strong><code>after_create</code></strong>=<em><code>None</code></em>, <strong><code>before_fit</code></strong>=<em><code>None</code></em>, <strong><code>before_epoch</code></strong>=<em><code>None</code></em>, <strong><code>before_train</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_pred</code></strong>=<em><code>None</code></em>, <strong><code>after_loss</code></strong>=<em><code>None</code></em>, <strong><code>before_backward</code></strong>=<em><code>None</code></em>, <strong><code>before_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_step</code></strong>=<em><code>None</code></em>, <strong><code>after_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_train</code></strong>=<em><code>None</code></em>, <strong><code>after_train</code></strong>=<em><code>None</code></em>, <strong><code>before_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_fit</code></strong>=<em><code>None</code></em>, <strong><code>after_fit</code></strong>=<em><code>None</code></em>) :: <code>Callback</code></p>
+<h2 id="GamblersCallback" class="doc_header"><code>class</code> <code>GamblersCallback</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/callback/core.py#L20" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GamblersCallback</code>(<strong><code>after_create</code></strong>=<em><code>None</code></em>, <strong><code>before_fit</code></strong>=<em><code>None</code></em>, <strong><code>before_epoch</code></strong>=<em><code>None</code></em>, <strong><code>before_train</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_pred</code></strong>=<em><code>None</code></em>, <strong><code>after_loss</code></strong>=<em><code>None</code></em>, <strong><code>before_backward</code></strong>=<em><code>None</code></em>, <strong><code>before_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_step</code></strong>=<em><code>None</code></em>, <strong><code>after_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_train</code></strong>=<em><code>None</code></em>, <strong><code>after_train</code></strong>=<em><code>None</code></em>, <strong><code>before_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_fit</code></strong>=<em><code>None</code></em>, <strong><code>after_fit</code></strong>=<em><code>None</code></em>) :: <code>Callback</code></p>
 </blockquote>
 <p>A callback to use metrics with gambler's loss</p>
 
@@ -195,10 +195,10 @@ nb_path: "nbs/060_callback.core.ipynb"
   <tbody>
     <tr>
       <td>0</td>
-      <td>1.655108</td>
-      <td>1.563293</td>
-      <td>0.205556</td>
-      <td>00:05</td>
+      <td>1.597046</td>
+      <td>1.563978</td>
+      <td>0.011111</td>
+      <td>00:14</td>
     </tr>
   </tbody>
 </table>
@@ -229,7 +229,7 @@ nb_path: "nbs/060_callback.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TransformScheduler" class="doc_header"><code>class</code> <code>TransformScheduler</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/callback/core.py#L24" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TransformScheduler</code>(<strong><code>schedule_func</code></strong>:<code>callable</code>, <strong><code>show_plot</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <code>Callback</code></p>
+<h2 id="TransformScheduler" class="doc_header"><code>class</code> <code>TransformScheduler</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/callback/core.py#L25" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TransformScheduler</code>(<strong><code>schedule_func</code></strong>:<code>callable</code>, <strong><code>show_plot</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <code>Callback</code></p>
 </blockquote>
 <p>A callback to schedule batch transforms during training based on a function (sched_lin, sched_exp, sched_cos (default), etc)</p>
 
@@ -272,7 +272,7 @@ nb_path: "nbs/060_callback.core.ipynb"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>TransformScheduler(&lt;fastai.callback.schedule._Annealer object at 0x7f8e71561710&gt;)</pre>
+<pre>TransformScheduler(&lt;fastai.callback.schedule._Annealer object at 0x7fd24e73cad0&gt;)</pre>
 </div>
 
 </div>
@@ -374,7 +374,7 @@ nb_path: "nbs/060_callback.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ShowGraph" class="doc_header"><code>class</code> <code>ShowGraph</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/callback/core.py#L62" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ShowGraph</code>(<strong><code>plot_metrics</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>final_losses</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <code>Callback</code></p>
+<h2 id="ShowGraph" class="doc_header"><code>class</code> <code>ShowGraph</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/callback/core.py#L63" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ShowGraph</code>(<strong><code>plot_metrics</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>final_losses</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <code>Callback</code></p>
 </blockquote>
 <p>(Modified) Update a graph of training and validation loss</p>
 
@@ -412,7 +412,7 @@ nb_path: "nbs/060_callback.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="UBDAug" class="doc_header"><code>class</code> <code>UBDAug</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/callback/core.py#L111" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>UBDAug</code>(<strong><code>batch_tfms</code></strong>:<code>list</code>, <strong><code>N</code></strong>:<code>int</code>=<em><code>2</code></em>, <strong><code>C</code></strong>:<code>int</code>=<em><code>4</code></em>, <strong><code>S</code></strong>:<code>int</code>=<em><code>1</code></em>) :: <code>Callback</code></p>
+<h2 id="UBDAug" class="doc_header"><code>class</code> <code>UBDAug</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/callback/core.py#L112" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>UBDAug</code>(<strong><code>batch_tfms</code></strong>:<code>list</code>, <strong><code>N</code></strong>:<code>int</code>=<em><code>2</code></em>, <strong><code>C</code></strong>:<code>int</code>=<em><code>4</code></em>, <strong><code>S</code></strong>:<code>int</code>=<em><code>1</code></em>) :: <code>Callback</code></p>
 </blockquote>
 <p>A callback to implement the uncertainty-based data augmentation.</p>
 
@@ -482,10 +482,10 @@ nb_path: "nbs/060_callback.core.ipynb"
   <tbody>
     <tr>
       <td>0</td>
-      <td>1.813517</td>
-      <td>1.754953</td>
+      <td>1.836210</td>
+      <td>1.776507</td>
       <td>0.194444</td>
-      <td>00:13</td>
+      <td>00:16</td>
     </tr>
   </tbody>
 </table>
@@ -510,7 +510,7 @@ nb_path: "nbs/060_callback.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="WeightedPerSampleLoss" class="doc_header"><code>class</code> <code>WeightedPerSampleLoss</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/callback/core.py#L157" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>WeightedPerSampleLoss</code>(<strong><code>instance_weights</code></strong>) :: <code>Callback</code></p>
+<h2 id="WeightedPerSampleLoss" class="doc_header"><code>class</code> <code>WeightedPerSampleLoss</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/callback/core.py#L158" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>WeightedPerSampleLoss</code>(<strong><code>instance_weights</code></strong>) :: <code>Callback</code></p>
 </blockquote>
 <p>Basic class handling tweaks of the training loop by changing a <code>Learner</code> in various events</p>
 
@@ -542,16 +542,15 @@ nb_path: "nbs/060_callback.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="BatchResampler" class="doc_header"><code>class</code> <code>BatchResampler</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/callback/core.py#L195" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BatchResampler</code>(<strong><code>sample_pct</code></strong>:<code>Optional</code>[<code>float</code>]=<em><code>None</code></em>, <strong><code>step_pct</code></strong>:<code>Optional</code>[<code>float</code>]=<em><code>None</code></em>, <strong><code>same_seq_len</code></strong>:<code>bool</code>=<em><code>True</code></em>) :: <code>Callback</code></p>
+<h2 id="BatchSubsampler" class="doc_header"><code>class</code> <code>BatchSubsampler</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/callback/core.py#L196" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BatchSubsampler</code>(<strong><code>sample_pct</code></strong>:<code>Optional</code>[<code>float</code>]=<em><code>None</code></em>, <strong><code>step_pct</code></strong>:<code>Optional</code>[<code>float</code>]=<em><code>None</code></em>, <strong><code>same_seq_len</code></strong>:<code>bool</code>=<em><code>True</code></em>) :: <code>Callback</code></p>
 </blockquote>
-<p>Callback that iteratively selects a random percentage of samples and/ or sequence steps with replacement from each training batch</p>
-<p>Args:
-    sample_pct:     percentage of random samples (or instances) that will be drawn. If 1. the output batch will contain the same number of samples
-                    as the input batch.
-    step_pct:       percentage of random sequence steps that will be drawn. If 1. the output batch will contain the same number of sequence steps
-                    as the input batch. If used with models that don't use a pooling layer, this must be set to 1 to keep the same dimensions.
-                    With CNNs, this value may be different.
-    same_seq_len:   If True, it ensures that the output has the same shape as the input, even if the step_pct chosen is &lt; 1. Defaults to True.</p>
+<p>Callback that selects a percentage of samples and/ or sequence steps with replacement from each training batch</p>
+<h1 id="Args:">Args:<a class="anchor-link" href="#Args:"> </a></h1><p>sample_pct:     percentage of random samples (or instances) that will be drawn. If 1. the output batch will contain the same number of samples
+                as the input batch.
+step_pct:       percentage of random sequence steps that will be drawn. If 1. the output batch will contain the same number of sequence steps
+                as the input batch. If used with models that don't use a pooling layer, this must be set to 1 to keep the same dimensions.
+                With CNNs, this value may be different.
+same_seq_len:   If True, it ensures that the output has the same shape as the input, even if the step_pct chosen is &lt; 1. Defaults to True.</p>
 
 </div>
 
@@ -581,7 +580,7 @@ nb_path: "nbs/060_callback.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="BatchLossFilter" class="doc_header"><code>class</code> <code>BatchLossFilter</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/callback/core.py#L243" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BatchLossFilter</code>(<strong><code>loss_perc</code></strong>=<em><code>1.0</code></em>, <strong><code>schedule_func</code></strong>:<code>Optional</code>[<code>callable</code>]=<em><code>None</code></em>) :: <code>Callback</code></p>
+<h2 id="BatchLossFilter" class="doc_header"><code>class</code> <code>BatchLossFilter</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/callback/core.py#L245" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BatchLossFilter</code>(<strong><code>loss_perc</code></strong>=<em><code>1.0</code></em>, <strong><code>schedule_func</code></strong>:<code>Optional</code>[<code>callable</code>]=<em><code>None</code></em>) :: <code>Callback</code></p>
 </blockquote>
 <p>Callback that selects the hardest samples in every batch representing a percentage of the total loss</p>
 
@@ -613,9 +612,113 @@ nb_path: "nbs/060_callback.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RandomWeightLossWrapper" class="doc_header"><code>class</code> <code>RandomWeightLossWrapper</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/callback/core.py#L275" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RandomWeightLossWrapper</code>(<strong><code>after_create</code></strong>=<em><code>None</code></em>, <strong><code>before_fit</code></strong>=<em><code>None</code></em>, <strong><code>before_epoch</code></strong>=<em><code>None</code></em>, <strong><code>before_train</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_pred</code></strong>=<em><code>None</code></em>, <strong><code>after_loss</code></strong>=<em><code>None</code></em>, <strong><code>before_backward</code></strong>=<em><code>None</code></em>, <strong><code>before_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_step</code></strong>=<em><code>None</code></em>, <strong><code>after_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_train</code></strong>=<em><code>None</code></em>, <strong><code>after_train</code></strong>=<em><code>None</code></em>, <strong><code>before_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_fit</code></strong>=<em><code>None</code></em>, <strong><code>after_fit</code></strong>=<em><code>None</code></em>) :: <code>Callback</code></p>
+<h2 id="RandomWeightLossWrapper" class="doc_header"><code>class</code> <code>RandomWeightLossWrapper</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/callback/core.py#L277" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RandomWeightLossWrapper</code>(<strong><code>after_create</code></strong>=<em><code>None</code></em>, <strong><code>before_fit</code></strong>=<em><code>None</code></em>, <strong><code>before_epoch</code></strong>=<em><code>None</code></em>, <strong><code>before_train</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_pred</code></strong>=<em><code>None</code></em>, <strong><code>after_loss</code></strong>=<em><code>None</code></em>, <strong><code>before_backward</code></strong>=<em><code>None</code></em>, <strong><code>before_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_step</code></strong>=<em><code>None</code></em>, <strong><code>after_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_train</code></strong>=<em><code>None</code></em>, <strong><code>after_train</code></strong>=<em><code>None</code></em>, <strong><code>before_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_fit</code></strong>=<em><code>None</code></em>, <strong><code>after_fit</code></strong>=<em><code>None</code></em>) :: <code>Callback</code></p>
 </blockquote>
 <p>Basic class handling tweaks of the training loop by changing a <code>Learner</code> in various events</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="SamplerWithReplacement" class="doc_header"><code>class</code> <code>SamplerWithReplacement</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/callback/core.py#L304" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SamplerWithReplacement</code>(<strong><code>after_create</code></strong>=<em><code>None</code></em>, <strong><code>before_fit</code></strong>=<em><code>None</code></em>, <strong><code>before_epoch</code></strong>=<em><code>None</code></em>, <strong><code>before_train</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_pred</code></strong>=<em><code>None</code></em>, <strong><code>after_loss</code></strong>=<em><code>None</code></em>, <strong><code>before_backward</code></strong>=<em><code>None</code></em>, <strong><code>before_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_step</code></strong>=<em><code>None</code></em>, <strong><code>after_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_train</code></strong>=<em><code>None</code></em>, <strong><code>after_train</code></strong>=<em><code>None</code></em>, <strong><code>before_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_fit</code></strong>=<em><code>None</code></em>, <strong><code>after_fit</code></strong>=<em><code>None</code></em>) :: <code>Callback</code></p>
+</blockquote>
+<p>Callback that modify the sampler to select a percentage of samples and/ or sequence steps with replacement from each training batch</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="BatchMasker" class="doc_header"><code>class</code> <code>BatchMasker</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/callback/core.py#L329" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BatchMasker</code>(<strong><code>r</code></strong>:<code>float</code>=<em><code>0.15</code></em>, <strong><code>lm</code></strong>:<code>int</code>=<em><code>3</code></em>, <strong><code>stateful</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>sync</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>subsequence_mask</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>variable_mask</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>future_mask</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>schedule_func</code></strong>:<code>Optional</code>[<code>callable</code>]=<em><code>None</code></em>) :: <code>Callback</code></p>
+</blockquote>
+<p>Callback that applies a random mask to each sample in a training batch</p>
+<h1 id="Args:">Args:<a class="anchor-link" href="#Args:"> </a></h1><p>r:                  probability of masking.
+subsequence_mask:   apply a mask to random subsequences.
+lm:                 average mask len when using stateful (geometric) masking.
+stateful:           geometric distribution is applied so that average mask length is lm.
+sync:               all variables have the same masking.
+variable_mask:      apply a mask to random variables. Only applicable to multivariate time series.
+future_mask:        used to train a forecasting model.
+schedule_func:      if a scheduler is passed, it will modify the probability of masking during training.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="SamplerWithReplacement" class="doc_header"><code>class</code> <code>SamplerWithReplacement</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/callback/core.py#L304" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SamplerWithReplacement</code>(<strong><code>after_create</code></strong>=<em><code>None</code></em>, <strong><code>before_fit</code></strong>=<em><code>None</code></em>, <strong><code>before_epoch</code></strong>=<em><code>None</code></em>, <strong><code>before_train</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_pred</code></strong>=<em><code>None</code></em>, <strong><code>after_loss</code></strong>=<em><code>None</code></em>, <strong><code>before_backward</code></strong>=<em><code>None</code></em>, <strong><code>before_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_step</code></strong>=<em><code>None</code></em>, <strong><code>after_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_train</code></strong>=<em><code>None</code></em>, <strong><code>after_train</code></strong>=<em><code>None</code></em>, <strong><code>before_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_fit</code></strong>=<em><code>None</code></em>, <strong><code>after_fit</code></strong>=<em><code>None</code></em>) :: <code>Callback</code></p>
+</blockquote>
+<p>Callback that modify the sampler to select a percentage of samples and/ or sequence steps with replacement from each training batch</p>
 
 </div>
 

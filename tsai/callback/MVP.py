@@ -18,6 +18,7 @@ from torch.distributions.geometric import Geometric
 from torch.distributions.binomial import Binomial
 
 def create_subsequence_mask(o, r=.15, lm=3, stateful=True, sync=False):
+    if r <= 0: return torch.zeros_like(o).bool()
     device = o.device
     if o.ndim == 2: o = o[None]
     n_masks, mask_dims, mask_len = o.shape
@@ -49,6 +50,7 @@ def create_subsequence_mask(o, r=.15, lm=3, stateful=True, sync=False):
     return mask
 
 def create_variable_mask(o, r=.15):
+    if r <= 0: return torch.zeros_like(o).bool()
     device = o.device
     n_masks, mask_dims, mask_len = o.shape
     _mask = torch.zeros((n_masks * mask_dims, mask_len), device=device)
@@ -61,6 +63,7 @@ def create_variable_mask(o, r=.15):
     return mask
 
 def create_future_mask(o, r=.15, sync=False):
+    if r <= 0: return torch.zeros_like(o).bool()
     if o.ndim == 2: o = o[None]
     n_masks, mask_dims, mask_len = o.shape
     if sync == 'random': sync = random.random() > .5
@@ -79,8 +82,7 @@ def natural_mask(o):
 
 # Cell
 def create_mask(o,  r=.15, lm=3, stateful=True, sync=False, subsequence_mask=True, variable_mask=False, future_mask=False):
-    if r <= 0 or r >=1:
-        return torch.ones_like(o)
+    if r <= 0 or r >=1: return torch.zeros_like(o).bool()
     if int(r * o.shape[1]) == 0:
         variable_mask = False
     if subsequence_mask and variable_mask:

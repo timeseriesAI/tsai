@@ -271,11 +271,14 @@ def test_le(a,b):
     test(a,b,le,'<=')
 
 # Cell
+
 def stack(o, axis=0, retain=True):
+    if hasattr(o, '__array__'): return o
     if isinstance(o[0], torch.Tensor):
         return retain_type(torch.stack(tuple(o), dim=axis),  o[0]) if retain else torch.stack(tuple(o), dim=axis)
     else:
         return retain_type(np.stack(o, axis), o[0]) if retain else np.stack(o, axis)
+
 
 def stack_pad(o, padding_value=np.nan):
     'Converts a an iterable into a numpy array using padding if necessary'
@@ -336,6 +339,7 @@ def get_sublist_idxs(aList, bList):
     return np.argsort(aList)[np.searchsorted(sorted_aList, bList)]
 
 # Cell
+
 def flatten_list(l):
     return [item for sublist in l for item in sublist]
 

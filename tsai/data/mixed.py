@@ -51,7 +51,8 @@ class MixedDataLoader():
         loaders = [dl.new(*args, **kwargs) for dl in self.loaders]
         return type(self)(*loaders, path=self.path, device=self.device)
 
-    def __len__(self): return len(self.loaders[0])
+#     def __len__(self): return len(self.loaders[0])
+    def __len__(self): return self.loaders[0].__len__()
 
     def _get_vals(self, x):
         "Checks for duplicates in batches"

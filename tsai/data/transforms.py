@@ -4,11 +4,12 @@ __all__ = ['TSIdentity', 'TSShuffle_HLs', 'TSShuffleSteps', 'TSMagAddNoise', 'TS
            'random_cum_curve_generator', 'random_cum_noise_generator', 'random_cum_linear_generator', 'TSTimeNoise',
            'TSMagWarp', 'TSTimeWarp', 'TSWindowWarp', 'TSMagScale', 'TSMagScalePerVar', 'TSMagScaleByVar',
            'TSRandomResizedCrop', 'TSRandomZoomIn', 'TSWindowSlicing', 'TSRandomZoomOut', 'TSRandomTimeScale',
-           'TSRandomTimeStep', 'TSResampleSteps', 'TSBlur', 'TSSmooth', 'maddest', 'TSFreqDenoise', 'TSRandomFreqNoise',
-           'TSRandomResizedLookBack', 'TSRandomLookBackOut', 'TSVarOut', 'TSCutOut', 'TSTimeStepOut', 'TSRandomCropPad',
-           'TSMaskOut', 'TSTranslateX', 'TSRandomShift', 'TSHorizontalFlip', 'TSRandomTrend', 'TSRandomRotate',
-           'TSVerticalFlip', 'TSResize', 'TSRandomSize', 'TSRandomLowRes', 'TSDownUpScale', 'TSRandomDownUpScale',
-           'TSRandomConv', 'all_TS_randaugs', 'RandAugment', 'TestTfm', 'get_tfm_name']
+           'TSRandomTimeStep', 'TSSubsampleSteps', 'TSBlur', 'TSSmooth', 'maddest', 'TSFreqDenoise',
+           'TSRandomFreqNoise', 'TSRandomResizedLookBack', 'TSRandomLookBackOut', 'TSVarOut', 'TSCutOut',
+           'TSTimeStepOut', 'TSRandomCropPad', 'TSMaskOut', 'TSInputDropout', 'TSTranslateX', 'TSRandomShift',
+           'TSHorizontalFlip', 'TSRandomTrend', 'TSRandomRotate', 'TSVerticalFlip', 'TSResize', 'TSRandomSize',
+           'TSRandomLowRes', 'TSDownUpScale', 'TSRandomDownUpScale', 'TSRandomConv', 'all_TS_randaugs', 'RandAugment',
+           'TestTfm', 'get_tfm_name']
 
 # Cell
 from fastai.vision.augment import RandTransform
@@ -340,8 +341,8 @@ class TSRandomTimeStep(RandTransform):
 
 # Cell
 
-class TSResampleSteps(RandTransform):
-    "Transform that randomly selects (and optionally sort) sequence steps without modifying the sequence length"
+class TSSubsampleSteps(RandTransform):
+    "Transform that randomly selects and sorts sequence steps (with replacement) maintaining the sequence length"
 
     order = 90
     def __init__(self, step_pct=1., same_seq_len=True, magnitude=None, **kwargs):
@@ -567,18 +568,41 @@ class TSRandomCropPad(RandTransform):
         return output
 
 # Cell
+
+from ..callback.MVP import create_mask
+
 class TSMaskOut(RandTransform):
-    "Set a random number of steps to zero"
+    """Applies a random mask"""
     order = 90
-    def __init__(self, magnitude=0.05, ex=None, **kwargs):
-        self.magnitude, self.ex = magnitude, ex
+    def __init__(self, magnitude=0.1, lm:int=3, stateful:bool=True, sync:bool=False, subsequence_mask:bool=True,
+                 variable_mask:bool=False, future_mask:bool=False, schedule_func:Optional[callable]=None, compensate:bool=False, ex=None, **kwargs):
+        store_attr()
         super().__init__(**kwargs)
     def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
-        seq_len = o.shape[-1]
-        mask = torch.rand_like(o) <= self.magnitude
-        output = o.clone()
-        output[mask] = 0
+        r = self.magnitude * self.schedule_func(self.pct_train) if self.schedule_func is not None else self.magnitude
+        mask = create_mask(o,  r=r, lm=self.lm, stateful=self.stateful, sync=self.sync,
+                           subsequence_mask=self.subsequence_mask, variable_mask=self.variable_mask, future_mask=self.future_mask)
+        if self.compensate: # per sample and feature
+            mean_per_seq = (torch.max(torch.ones(1, device=mask.device), torch.sum(mask, dim=-1).unsqueeze(-1)) / mask.shape[-1])
+            output = o.masked_fill(mask, 0) / (1 - mean_per_seq)
+        else:
+            output = o.masked_fill(mask, 0)
+        if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
+        return output
+
+# Cell
+
+class TSInputDropout(RandTransform):
+    """Applies input dropout with required_grad=False"""
+    order = 90
+    def __init__(self, magnitude=0., ex=None, **kwargs):
+        self.magnitude, self.ex = magnitude, ex
+        self.dropout = nn.Dropout(magnitude)
+        super().__init__(**kwargs)
+    def encodes(self, o: TSTensor):
+        if not self.magnitude or self.magnitude <= 0: return o
+        with torch.no_grad(): output = self.dropout(o)
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
@@ -772,6 +796,7 @@ all_TS_randaugs = [
     (TSRandomTimeStep, 0.05, 0.5),
     (partial(TSFreqDenoise, ex=0), 0.1, 1.),
     (TSRandomLowRes, 0.05, 0.5),
+    (TSInputDropout, 0.05, .5),
 
     # Magnitude
     (partial(TSMagWarp, ex=0), 0.02, 0.2),
