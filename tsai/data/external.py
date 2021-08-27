@@ -61,7 +61,7 @@ def download_data(url, fname=None, c_key='archive', force_download=False, timeou
     "Download `url` to `fname`."
     fname = Path(fname or URLs.path(url, c_key=c_key))
     fname.parent.mkdir(parents=True, exist_ok=True)
-    if not fname.exists() or force_download: download_url(url, fname, overwrite=force_download, timeout=timeout, show_progress=verbose)
+    if not fname.exists() or force_download: download_url(url, dest=fname, timeout=timeout, show_progress=verbose)
     return fname
 
 # Cell
@@ -1217,13 +1217,10 @@ def get_Monash_forecasting_data(dsid, path='./data/forecasting/', force_download
 
     path = Path(path)
     full_path = path/f'{dsid}.tsf'
-    pv("downloading data...", verbose)
-    if force_download:
-            try: os.remove(full_path)
-            except OSError: pass
-    untar_data(url, dest=path, force_download=force_download)
-    os.rename(path/dsid, full_path)
-    pv("...data downloaded", verbose)
+    if not full_path.exists() or force_download:
+        pv("downloading data...", verbose)
+        decompress_from_url(url, target_dir=path, verbose=verbose)
+        pv("...data downloaded", verbose)
     pv("converting dataframe to numpy array...", verbose)
     data, frequency, forecast_horizon, contain_missing_values, contain_equal_length = convert_tsf_to_dataframe(full_path)
     X = to3d(stack_pad(data['series_value']))
