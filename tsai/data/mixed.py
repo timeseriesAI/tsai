@@ -87,6 +87,7 @@ class MixedDataLoader():
                 b = to_device(b, self.device)
             for batch, dl in zip(b, self.loaders):
                 if hasattr(dl, 'idxs'): self.idxs = dl.idxs
+                if hasattr(dl, 'input_idxs'): self.input_idxs = dl.input_idxs
                 batch = dl.after_batch(batch)
                 inps += batch[:dl.n_inp]
                 outs += batch[dl.n_inp:]

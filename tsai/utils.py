@@ -6,17 +6,17 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'reverse_dict', 'is_tuple', 'itemify', 'isnone', 'exists', 'ifelse', 'is_not_close', 'test_not_close',
            'test_type', 'test_ok', 'test_not_ok', 'test_error', 'test_eq_nan', 'assert_fn', 'test_gt', 'test_ge',
            'test_lt', 'test_le', 'stack', 'stack_pad', 'match_seq_len', 'random_shuffle', 'cat2int', 'cycle_dl',
-           'cycle_dl_to_device', 'cache_memmap', 'memmap2cache', 'get_func_defaults', 'get_idx_from_df_col_vals',
-           'get_sublist_idxs', 'flatten_list', 'display_pd_df', 'ttest', 'tscore', 'ttest_tensor', 'pcc', 'scc', 'a',
-           'b', 'remove_fn', 'npsave', 'np_save', 'permute_2D', 'random_normal', 'random_half_normal',
-           'random_normal_tensor', 'random_half_normal_tensor', 'default_dpi', 'get_plot_fig', 'fig2buf',
-           'plot_scatter', 'get_idxs', 'apply_cmap', 'torch_tile', 'to_tsfresh_df', 'pcorr', 'scorr', 'torch_diff',
-           'get_outliers_IQR', 'clip_outliers', 'get_percentile', 'torch_clamp', 'torch_slice_by_dim', 'torch_nanmean',
-           'torch_nanstd', 'concat', 'reduce_memory_usage', 'cls_name', 'roll2d', 'roll3d', 'random_roll2d',
-           'random_roll3d', 'rotate_axis0', 'rotate_axis1', 'rotate_axis2', 'create_empty_array', 'np_save_compressed',
-           'np_load_compressed', 'np2memmap', 'torch_mean_groupby', 'torch_flip', 'torch_nan_to_num',
-           'torch_masked_to_num', 'mpl_trend', 'int2digits', 'array2digits', 'sincos_encoding', 'linear_encoding',
-           'encode_positions']
+           'cycle_dl_to_device', 'cache_data', 'memmap2cache', 'cache_memmap', 'get_func_defaults',
+           'get_idx_from_df_col_vals', 'get_sublist_idxs', 'flatten_list', 'display_pd_df', 'ttest', 'tscore',
+           'ttest_tensor', 'pcc', 'scc', 'a', 'b', 'remove_fn', 'npsave', 'np_save', 'permute_2D', 'random_normal',
+           'random_half_normal', 'random_normal_tensor', 'random_half_normal_tensor', 'default_dpi', 'get_plot_fig',
+           'fig2buf', 'plot_scatter', 'get_idxs', 'apply_cmap', 'torch_tile', 'to_tsfresh_df', 'pcorr', 'scorr',
+           'torch_diff', 'get_outliers_IQR', 'clip_outliers', 'get_percentile', 'torch_clamp', 'torch_slice_by_dim',
+           'torch_nanmean', 'torch_nanstd', 'concat', 'reduce_memory_usage', 'cls_name', 'roll2d', 'roll3d',
+           'random_roll2d', 'random_roll3d', 'rotate_axis0', 'rotate_axis1', 'rotate_axis2', 'create_empty_array',
+           'np_save_compressed', 'np_load_compressed', 'np2memmap', 'torch_mean_groupby', 'torch_flip',
+           'torch_nan_to_num', 'torch_masked_to_num', 'mpl_trend', 'int2digits', 'array2digits', 'sincos_encoding',
+           'linear_encoding', 'encode_positions']
 
 # Cell
 from .imports import *
@@ -312,15 +312,20 @@ def cycle_dl_to_device(dl):
     for bs in dl: [b.to(default_device()) for b in bs]
 
 # Cell
-def cache_memmap(o, slice_len=1000, verbose=False):
-    start = 0
-    slice_len = 1000
-    for i in range(len(o) // 1000 + 1):
-        o[start:start + slice_len]
-        start += slice_len
-        if verbose and i % 10 == 0: print(i)
 
-memmap2cache =  cache_memmap
+def cache_data(o, slice_len=10_000, verbose=False):
+    start = 0
+    n_loops = (len(o) - 1) // slice_len + 1
+    print(f'{n_loops} loops')
+    timer.start(False)
+    for i in range(n_loops):
+        o[slice(start,start + slice_len)]
+        if verbose and (i+1) % 10 == 0: print(f'{i+1:4} elapsed time: {timer.elapsed()}')
+        start += slice_len
+    if verbose: print(f'{i+1:4} total time  : {timer.stop()}\n')
+
+memmap2cache =  cache_data
+cache_memmap = cache_data
 
 # Cell
 def get_func_defaults(f):
@@ -883,7 +888,7 @@ def encode_positions(pos_arr, min_val=None, max_val=None, linear=False, lin_rang
         max_val = np.nanmax(pos_arr)
 
     if linear:
-        return (((a - min_val)/(max_val - min_val)) * (lin_range[1] - lin_range[0]) + lin_range[0])
+        return (((pos_arr - min_val)/(max_val - min_val)) * (lin_range[1] - lin_range[0]) + lin_range[0])
     else:
         sin = np.sin((pos_arr - min_val)/(max_val - min_val) * 2 * np.pi)
         cos = np.cos((pos_arr - min_val)/(max_val - min_val) * 2 * np.pi)

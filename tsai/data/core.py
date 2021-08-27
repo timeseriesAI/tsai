@@ -3,7 +3,7 @@
 __all__ = ['NumpyTensor', 'ToNumpyTensor', 'TSTensor', 'ToTSTensor', 'show_tuple', 'TSLabelTensor', 'TSMaskTensor',
            'ToFloat', 'ToInt', 'TSClassification', 'TSRegression', 'TSForecasting', 'TSMultiLabelClassification',
            'NumpyTensorBlock', 'TSTensorBlock', 'TorchDataset', 'NumpyDataset', 'TSDataset', 'NoTfmLists',
-           'TSTfmdLists', 'NumpyDatasets', 'TSDatasets', 'add_ds', 'NumpyDataLoader', 'TSDataLoader',
+           'TSTfmdLists', 'NumpyDatasets', 'tscoll_repr', 'TSDatasets', 'add_ds', 'NumpyDataLoader', 'TSDataLoader',
            'NumpyDataLoaders', 'TSDataLoaders', 'get_ts_dls', 'get_ts_dl', 'get_subset_dl', 'get_tsimage_dls']
 
 # Cell
@@ -88,6 +88,7 @@ def show_tuple(tup, **kwargs):
     tup[0].show(title=title, **kwargs)
 
 # Cell
+
 class TSLabelTensor(NumpyTensor):
     def __repr__(self):
         if self.ndim == 0: return f'{self}'
@@ -100,6 +101,7 @@ class TSMaskTensor(NumpyTensor):
         else: return f'TSMaskTensor(shape:{tuple(self.shape)})'
 
 # Cell
+
 class ToFloat(Transform):
     "Transforms an object dtype to float"
     loss_func=MSELossFlat()
@@ -123,23 +125,29 @@ class TSClassification(DisplayedTransform):
         if vocab is not None: vocab = CategoryMap(vocab, sort=sort, add_na=add_na)
         store_attr()
 
-    def setups(self, dsets):
-        if self.vocab is None and dsets is not None: self.vocab = CategoryMap(dsets, sort=self.sort, add_na=self.add_na)
+    def setups(self, dset):
+        dset = np.asarray(dset)
+        if self.vocab is None and dset is not None: self.vocab = CategoryMap(dset, sort=self.sort, add_na=self.add_na)
         self.c = len(self.vocab)
+        self.vocab_keys = np.array(list(self.vocab.o2i.keys()))[:, None]
 
     def encodes(self, o):
         try:
-            return TensorCategory((np.array(list(self.vocab.o2i.keys()))[:, None] == o).argmax(axis=0) if is_iter(o) else self.vocab.o2i[o])
+            return TensorCategory((self.vocab_keys == o).argmax(axis=0))
         except KeyError as e:
             raise KeyError(f"Label '{o}' was not included in the training dataset") from e
     def decodes(self, o):
         return stack([Category(self.vocab[oi]) for oi in o]) if is_iter(o) else Category(self.vocab[o])
 
-# TSClassification = Categorize
-TSRegression = ToFloat
+
+class TSRegression(ToFloat):
+    "Vectorized transforms an object dtype to float"
+    vectorized=True
+
 TSForecasting = ToFloat
 
 # Cell
+
 class TSMultiLabelClassification(Categorize):
     "Reversible combined transform of multi-category strings to one-hot encoded `vocab` id"
     loss_func,order=BCEWithLogitsLossFlat(),1
@@ -165,6 +173,7 @@ class TSMultiLabelClassification(Categorize):
     def decodes(self, o): return MultiCategory([self.vocab[o_] for o_ in one_hot_decode(o, None)])
 
 # Cell
+
 class NumpyTensorBlock():
     def __init__(self, type_tfms=None, item_tfms=None, batch_tfms=None, dl_type=None, dls_kwargs=None):
         self.type_tfms  =                 L(type_tfms)
@@ -180,6 +189,7 @@ class TSTensorBlock():
         self.dl_type,self.dls_kwargs = dl_type,({} if dls_kwargs is None else dls_kwargs)
 
 # Cell
+
 class TorchDataset():
     def __init__(self, X, y=None): self.X, self.y = X, y
     def __getitem__(self, idx): return (self.X[idx],) if self.y is None else (self.X[idx], self.y[idx])
@@ -221,8 +231,11 @@ class NoTfmLists(TfmdLists):
         self._splits = np.asarray(_flatten_list(self.splits))
         store_attr('items,types,split_idx')
         self.tfms = Pipeline(split_idx=split_idx)
+        self.zarr = 'zarr' in str(type(items))
     def subset(self, i, **kwargs): return type(self)(self.items, splits=self.splits[i], split_idx=i, do_setup=False, types=self.types, **kwargs)
-    def __getitem__(self, it): return self.items[self._splits[it]]
+    def __getitem__(self, it):
+        if self.zarr: return self.items.get_orthogonal_selection((self._splits[it]))
+        else: return self.items[self._splits[it]]
     def __len__(self): return len(self._splits)
     def __repr__(self): return f"{self.__class__.__name__}: {self.items.__class__.__name__}{(len(self), *self.items.shape[1:])}"
     def _new(self, items, split_idx=None, **kwargs):
@@ -271,7 +284,6 @@ class NumpyDatasets(Datasets):
             self.ptls = L([typ(stack(tl[:])) for i,(tl,typ) in enumerate(zip(self.tls,self.typs))]) if inplace and len(tls[0]) != 0 else tls
 
         self.n_inp = 1
-        self.zarr = sum(['zarr' in str(type(ptl)) for ptl in self.ptls])
         if 'splits' in kwargs:
             split_idxs = kwargs['splits']
             try: split_idxs = flatten_list(split_idxs)
@@ -282,9 +294,6 @@ class NumpyDatasets(Datasets):
     def __getitem__(self, it):
         if self.inplace:
             return tuple([ptl[it] for ptl in self.ptls])
-        elif self.zarr:
-            return tuple([typ(stack(ptl.get_orthogonal_selection(it))) if z else typ(stack(ptl[it])) \
-                          for i,(ptl,typ,z) in enumerate(zip(self.ptls,self.typs,self.zarr))])
         else:
             return tuple([typ(stack(ptl[it])) for i,(ptl,typ) in enumerate(zip(self.ptls,self.typs))])
 
@@ -301,6 +310,16 @@ class NumpyDatasets(Datasets):
     def show_at(self, idx, **kwargs):
         self.show(self[idx], **kwargs)
         plt.show()
+
+    def __repr__(self): return tscoll_repr(self)
+
+
+def tscoll_repr(c, max_n=10):
+    "String repr of up to `max_n` items of (possibly lazy) collection `c`"
+    _len = len(c)
+    if _len == 0: return coll_repr(c)
+    if c.split_idx is None: c = c.subset(0)
+    return f'(#{_len}) {L(c[i] for i in range(min(len(c), max_n)))} ...]'
 
 # Cell
 
@@ -336,7 +355,6 @@ class TSDatasets(NumpyDatasets):
                             for i,(tl,typ) in enumerate(zip(self.tls,self.typs))]) if inplace and len(tls[0]) != 0 else tls
 
         self.n_inp = 1
-        self.zarr = sum(['zarr' in str(type(ptl)) for ptl in self.ptls])
         if 'splits' in kwargs:
             split_idxs = kwargs['splits']
             try: split_idxs = flatten_list(split_idxs)
@@ -347,11 +365,6 @@ class TSDatasets(NumpyDatasets):
     def __getitem__(self, it):
         if self.inplace:
             return tuple([ptl[it] for ptl in self.ptls])
-        elif self.zarr:
-            return tuple([typ(stack(ptl.get_orthogonal_selection((it, dls.sel_vars, dls.sel_steps)))) if i==0 and z else \
-                          typ(stack(ptl[it]))[...,self.sel_vars, self.sel_steps] if i==0 else \
-                          typ(stack(ptl.get_orthogonal_selection(it))) if z else typ(stack(ptl[it])) \
-                          for i,(ptl,typ,z) in enumerate(zip(self.ptls,self.typs,self.zarr))])
         else:
             return tuple([typ(stack(ptl[it]))[...,self.sel_vars, self.sel_steps] if i==0 else typ(stack(ptl[it])) \
                           for i,(ptl,typ) in enumerate(zip(self.ptls,self.typs))])
@@ -446,7 +459,7 @@ class NumpyDataLoader(TfmdDL):
 
     def create_batch(self, b):
         it = b if self.shuffle else slice(b[0], b[0] + self.bs)
-        self.idxs = L(b)
+        self.idxs = L(it)
         if hasattr(self, "split_idxs"): self.input_idxs = self.split_idxs[it]
         else: self.input_idxs = self.idxs
         return self.dataset[it]

@@ -155,10 +155,10 @@ decodes: (object,object) -&gt; decodes
   <tbody>
     <tr>
       <td>0</td>
-      <td>1.497039</td>
-      <td>1.414877</td>
-      <td>0.133333</td>
-      <td>00:11</td>
+      <td>1.456630</td>
+      <td>1.366805</td>
+      <td>0.300000</td>
+      <td>00:16</td>
     </tr>
   </tbody>
 </table>
@@ -229,7 +229,7 @@ train_bn=True</li>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSRegressor" class="doc_header"><code>class</code> <code>TSRegressor</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/tslearner.py#L65" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRegressor</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>tfms</code></strong>=<em><code>[None, ToFloat:
+<h2 id="TSRegressor" class="doc_header"><code>class</code> <code>TSRegressor</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/tslearner.py#L65" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRegressor</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>tfms</code></strong>=<em><code>[None, TSRegression:
 encodes: (Tensor,object) -&gt; encodes
 (object,object) -&gt; encodes
 decodes: (object,object) -&gt; decodes
@@ -292,10 +292,10 @@ decodes: (object,object) -&gt; decodes
   <tbody>
     <tr>
       <td>0</td>
-      <td>213.525208</td>
-      <td>196.729050</td>
-      <td>13.599407</td>
-      <td>00:10</td>
+      <td>232.362183</td>
+      <td>209.593796</td>
+      <td>14.062984</td>
+      <td>00:17</td>
     </tr>
   </tbody>
 </table>
@@ -400,6 +400,40 @@ decodes: (object,object) -&gt; decodes
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">tsai.models.TSTPlus</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="n">ts</span> <span class="o">=</span> <span class="n">get_forecasting_time_series</span><span class="p">(</span><span class="s1">&#39;Sunspots&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Dataset: Sunspots
+downloading data...
+...data downloaded. Path = data/forecasting/Sunspots.csv
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">tsai.models.TSTPlus</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">get_forecasting_time_series</span><span class="p">(</span><span class="s1">&#39;Sunspots&#39;</span><span class="p">)</span>
 <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">SlidingWindowSplitter</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="n">horizon</span><span class="o">=</span><span class="mi">1</span><span class="p">)(</span><span class="n">ts</span><span class="p">)</span>
 <span class="n">splits</span> <span class="o">=</span> <span class="n">TSSplitter</span><span class="p">(</span><span class="mi">235</span><span class="p">)(</span><span class="n">y</span><span class="p">)</span>
 <span class="n">batch_tfms</span> <span class="o">=</span> <span class="p">[</span><span class="n">TSStandardize</span><span class="p">(</span><span class="n">by_var</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
@@ -453,10 +487,10 @@ downloading data...
   <tbody>
     <tr>
       <td>0</td>
-      <td>10559.798828</td>
-      <td>5880.510254</td>
-      <td>56.697689</td>
-      <td>01:04</td>
+      <td>10859.851562</td>
+      <td>6173.741699</td>
+      <td>58.384708</td>
+      <td>02:06</td>
     </tr>
   </tbody>
 </table>
