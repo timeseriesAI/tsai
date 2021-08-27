@@ -261,7 +261,6 @@ class NumpyDatasets(Datasets):
                 self.tfms, lts = [None] * len(items), [NoTfmLists] * len(items)
             else:
                 self.tfms = _remove_brackets(tfms)
-#                 lts = [NoTfmLists if t is None and not inplace else TfmdLists for t in self.tfms]
                 lts = [NoTfmLists if (t is None and not inplace) else TSTfmdLists if getattr(t, 'vectorized', None) else TfmdLists for t in self.tfms]
 
             self.tls = L(lt(item, t, **kwargs) for lt,item,t in zip(lts, items, self.tfms))
@@ -272,7 +271,7 @@ class NumpyDatasets(Datasets):
             self.ptls = L([typ(stack(tl[:])) for i,(tl,typ) in enumerate(zip(self.tls,self.typs))]) if inplace and len(tls[0]) != 0 else tls
 
         self.n_inp = 1
-        self.zarr = ['zarr' in str(type(ptl)) for ptl in self.ptls]
+        self.zarr = sum(['zarr' in str(type(ptl)) for ptl in self.ptls])
         if 'splits' in kwargs:
             split_idxs = kwargs['splits']
             try: split_idxs = flatten_list(split_idxs)
@@ -283,7 +282,7 @@ class NumpyDatasets(Datasets):
     def __getitem__(self, it):
         if self.inplace:
             return tuple([ptl[it] for ptl in self.ptls])
-        elif sum(self.zarr):
+        elif self.zarr:
             return tuple([typ(stack(ptl.get_orthogonal_selection(it))) if z else typ(stack(ptl[it])) \
                           for i,(ptl,typ,z) in enumerate(zip(self.ptls,self.typs,self.zarr))])
         else:
@@ -325,7 +324,6 @@ class TSDatasets(NumpyDatasets):
                 self.tfms, lts = [None] * len(items), [NoTfmLists] * len(items)
             else:
                 self.tfms = _remove_brackets(tfms)
-#                 lts = [NoTfmLists if t is None and not inplace else TfmdLists for t in self.tfms]
                 lts = [NoTfmLists if (t is None and not inplace) else TSTfmdLists if getattr(t, 'vectorized', None) else TfmdLists for t in self.tfms]
 
             self.tls = L(lt(item, t, **kwargs) for lt,item,t in zip(lts, items, self.tfms))
@@ -338,7 +336,7 @@ class TSDatasets(NumpyDatasets):
                             for i,(tl,typ) in enumerate(zip(self.tls,self.typs))]) if inplace and len(tls[0]) != 0 else tls
 
         self.n_inp = 1
-        self.zarr = ['zarr' in str(type(ptl)) for ptl in self.ptls]
+        self.zarr = sum(['zarr' in str(type(ptl)) for ptl in self.ptls])
         if 'splits' in kwargs:
             split_idxs = kwargs['splits']
             try: split_idxs = flatten_list(split_idxs)
@@ -349,7 +347,7 @@ class TSDatasets(NumpyDatasets):
     def __getitem__(self, it):
         if self.inplace:
             return tuple([ptl[it] for ptl in self.ptls])
-        elif sum(self.zarr):
+        elif self.zarr:
             return tuple([typ(stack(ptl.get_orthogonal_selection((it, dls.sel_vars, dls.sel_steps)))) if i==0 and z else \
                           typ(stack(ptl[it]))[...,self.sel_vars, self.sel_steps] if i==0 else \
                           typ(stack(ptl.get_orthogonal_selection(it))) if z else typ(stack(ptl[it])) \
