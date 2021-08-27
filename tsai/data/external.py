@@ -57,6 +57,7 @@ def decompress_from_url(url, target_dir=None, verbose=False):
             sys.stderr.write("Could not download url. Please, check url.\n")
 
 # Cell
+from fastdownload import download_url
 def download_data(url, fname=None, c_key='archive', force_download=False, timeout=4, verbose=False):
     "Download `url` to `fname`."
     fname = Path(fname or URLs.path(url, c_key=c_key))
