@@ -231,10 +231,9 @@ class NoTfmLists(TfmdLists):
         self._splits = np.asarray(_flatten_list(self.splits))
         store_attr('items,types,split_idx')
         self.tfms = Pipeline(split_idx=split_idx)
-        self.zarr = 'zarr' in str(type(items))
     def subset(self, i, **kwargs): return type(self)(self.items, splits=self.splits[i], split_idx=i, do_setup=False, types=self.types, **kwargs)
     def __getitem__(self, it):
-        if self.zarr: return self.items.get_orthogonal_selection((self._splits[it]))
+        if hasattr(self.items, 'oindex'): return self.items.oindex[self._splits[it]]
         else: return self.items[self._splits[it]]
     def __len__(self): return len(self._splits)
     def __repr__(self): return f"{self.__class__.__name__}: {self.items.__class__.__name__}{(len(self), *self.items.shape[1:])}"
@@ -247,8 +246,10 @@ class NoTfmLists(TfmdLists):
 NoTfmLists.train, NoTfmLists.valid = add_props(lambda i,x: x.subset(i))
 
 class TSTfmdLists(TfmdLists):
-    def __getitem__(self, idx):
-        res = self._get(idx)
+    def __getitem__(self, it):
+        # res = self._get(it)
+        if hasattr(self.items, 'oindex'): res = self.items.oindex[it]
+        else: res = self.items[it]
         if self._after_item is None: return res
         else: return self._after_item(res)
 
@@ -458,7 +459,10 @@ class NumpyDataLoader(TfmdDL):
         return new_dloader
 
     def create_batch(self, b):
-        it = b if self.shuffle else slice(b[0], b[0] + self.bs)
+        if self.shuffle:
+            it = b
+            if hasattr(it, 'sort'): it.sort()
+        else: it = slice(b[0], b[0] + self.bs)
         self.idxs = L(it)
         if hasattr(self, "split_idxs"): self.input_idxs = self.split_idxs[it]
         else: self.input_idxs = self.idxs

@@ -22,7 +22,7 @@ class MixedDataLoader():
         device = ifnone(device, default_device())
         self.device = device
         self.c = None
-        bs = ifnone(bs, min([dl.bs for dl in loaders]))
+        self.bs = ifnone(bs, min([dl.bs for dl in loaders]))
         for i, dl in enumerate(loaders):  # ensure all dls have the same bs
             if hasattr(dl, 'vars'):
                 self.vars = dl.vars
@@ -30,7 +30,7 @@ class MixedDataLoader():
                 self.len = dl.len
             if hasattr(dl, 'split_idxs'):
                 self.split_idxs = dl.split_idxs
-            dl.bs = bs
+            dl.bs = self.bs
             dl.shuffle_fn = self.shuffle_fn
             if self.c is None and hasattr(dl, "c"):
                 self.c = dl.c
@@ -108,6 +108,9 @@ class MixedDataLoader():
         "Generate the same idxs for all dls in each batch when shuffled"
         if self.count == 0:
             self.shuffled_idxs = np.random.permutation(idxs)
+        # sort each batch
+        for i in range(len(self.shuffled_idxs)//self.bs + 1):
+            self.shuffled_idxs[i*self.bs:(i+1)*self.bs] = np.sort(self.shuffled_idxs[i*self.bs:(i+1)*self.bs])
         self.count += 1
         if self.count == len(self.loaders):
             self.count = 0

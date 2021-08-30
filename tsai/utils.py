@@ -16,7 +16,7 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'random_roll2d', 'random_roll3d', 'rotate_axis0', 'rotate_axis1', 'rotate_axis2', 'create_empty_array',
            'np_save_compressed', 'np_load_compressed', 'np2memmap', 'torch_mean_groupby', 'torch_flip',
            'torch_nan_to_num', 'torch_masked_to_num', 'mpl_trend', 'int2digits', 'array2digits', 'sincos_encoding',
-           'linear_encoding', 'encode_positions']
+           'linear_encoding', 'encode_positions', 'sort_generator']
 
 # Cell
 from .imports import *
@@ -30,22 +30,25 @@ import sklearn
 def totensor(o):
     if isinstance(o, torch.Tensor): return o
     elif isinstance(o, np.ndarray):  return torch.from_numpy(o)
-    elif isinstance(o, (list, L)): return torch.tensor(o)
-    assert False, f"Can't convert {type(o)} to torch.Tensor"
+    else:
+        try: return torch.tensor(o)
+        except: warnings.warn(f"Can't convert {type(o)} to torch.Tensor", Warning)
 
 
 def toarray(o):
     if isinstance(o, np.ndarray): return o
     elif isinstance(o, torch.Tensor): return o.cpu().numpy()
-    elif isinstance(o, (list, L)): return np.array(o)
-    assert False, f"Can't convert {type(o)} to np.array"
+    else:
+        try: return np.asarray(o)
+        except: warnings.warn(f"Can't convert {type(o)} to np.array", Warning)
 
 
 def toL(o):
     if isinstance(o, L): return o
-    elif isinstance(o, list): return L(o)
     elif isinstance(o, (np.ndarray, torch.Tensor)): return L(o.tolist())
-    assert False, f'passed object needs to be of type L, list, np.ndarray or torch.Tensor but is {type(o)}'
+    else:
+        try: return L(o)
+        except: warnings.warn(f'passed object needs to be of type L, list, np.ndarray or torch.Tensor but is {type(o)}', Warning)
 
 
 def to3dtensor(o):
@@ -316,13 +319,13 @@ def cycle_dl_to_device(dl):
 def cache_data(o, slice_len=10_000, verbose=False):
     start = 0
     n_loops = (len(o) - 1) // slice_len + 1
-    print(f'{n_loops} loops')
+    pv(f'{n_loops} loops', verbose)
     timer.start(False)
     for i in range(n_loops):
         o[slice(start,start + slice_len)]
         if verbose and (i+1) % 10 == 0: print(f'{i+1:4} elapsed time: {timer.elapsed()}')
         start += slice_len
-    if verbose: print(f'{i+1:4} total time  : {timer.stop()}\n')
+    pv(f'{i+1:4} total time  : {timer.stop()}\n', verbose)
 
 memmap2cache =  cache_data
 cache_memmap = cache_data
@@ -893,3 +896,10 @@ def encode_positions(pos_arr, min_val=None, max_val=None, linear=False, lin_rang
         sin = np.sin((pos_arr - min_val)/(max_val - min_val) * 2 * np.pi)
         cos = np.cos((pos_arr - min_val)/(max_val - min_val) * 2 * np.pi)
         return sin, cos
+
+# Cell
+
+def sort_generator(generator, bs):
+    g = list(generator)
+    for i in range(len(g)//bs + 1): g[bs*i:bs*(i+1)] = np.sort(g[bs*i:bs*(i+1)])
+    return (i for i in g)
