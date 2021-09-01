@@ -126,7 +126,7 @@ def add_missing_timestamps(df, datetime_col, groupby=None, fill_value=np.nan, ra
     """Fills missing timestamps in a dataframe to a desired frequency
     Args:
         df:                      pandas DataFrame
-        datetime_col:            column tha contains the datetime data
+        datetime_col:            column tha contains the datetime data (without duplicates within groups)
         groupby:                 column used to identify unique_ids
         fill_value:              values that will be insert where missing dates exist. Default:np.nan
         range_by_group:          if True, dates will be filled between min and max dates for each group. Otherwise, between the min and max dates in the df.
@@ -146,7 +146,7 @@ def add_missing_timestamps(df, datetime_col, groupby=None, fill_value=np.nan, ra
             # Fills missing dates between min and max for each unique id
             min_dates = df.groupby(groupby)[datetime_col].min()
             max_dates = df.groupby(groupby)[datetime_col].max()
-            idx_tuples = flatten_list([[(d, key) for d in pd.date_range(min_date, max_date)] for min_date, max_date, key in zip(min_dates, max_dates, keys)])
+            idx_tuples = flatten_list([[(d, key) for d in pd.date_range(min_date, max_date, freq=freq)] for min_date, max_date, key in zip(min_dates, max_dates, keys)])
             multi_idx = pd.MultiIndex.from_tuples(idx_tuples, names=[datetime_col, groupby])
             df = df.set_index([datetime_col, groupby]).reindex(multi_idx, fill_value=np.nan).reset_index()
         else:
@@ -155,7 +155,7 @@ def add_missing_timestamps(df, datetime_col, groupby=None, fill_value=np.nan, ra
             df = df.set_index([datetime_col, groupby]).reindex(multi_idx, fill_value=np.nan)
             df = df.reset_index().sort_values(by=[groupby, datetime_col]).reset_index(drop=True)
     else:
-        index = pd.Index(pd.date_range(df[datetime_col].min(), df[datetime_col].max()), name=datetime_col)
+        index = pd.Index(dates, name=datetime_col)
         df = df.set_index([datetime_col]).reindex(index, fill_value=fill_value)
         df = df.reset_index().reset_index(drop=True)
     df = df[cols]
