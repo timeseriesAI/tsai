@@ -21,17 +21,9 @@ Making a pull request for the first time can be a bit overwhelming, so we've put
 
 - If you are unfamiliar with the fastai / tsai code style, be sure to read [this] (https://docs.fast.ai/dev/style.html) first. (Note that, like fastai, we do not follow PEP8, instead we follow a coding style designed specifically for numeric and interactive programming.)
 
-&nbsp;
-***
-&nbsp;
-
 ## One-time only setup:
 
-&nbsp;
-
 All steps in this section need to be done **<u>only the first time you set up the environment where you will develop tsai</u>**.
-
-&nbsp;
 
 **Steps:**
 1. **Set up gh**. If you don't have gh (GitHub CLI) yet, you can install it by following these [instructions](https://cli.github.com/manual/installation). To authenticate with your GitHub account run:
@@ -67,14 +59,8 @@ All steps in this section need to be done **<u>only the first time you set up th
    
    
 Great! You are now ready to start working on your first tsai PR. 
-   
-&nbsp;
-***
-&nbsp;
 
 ## Creating your PR:
-
-&nbsp;
 
 If you have already set up your environment, you can proceed with the following steps:
 
@@ -87,6 +73,8 @@ If you have already set up your environment, you can proceed with the following 
 2. Create a new git branch. This is where new feature/bug-fix should be made (replace my-branch-name by something that is descriptive of the change and will be easy for you to remember in the future if you need to update your PR):
 
    ```git checkout -b my-branch-name``` 
+   
+   (If you are working in a previously created branch, just run: ```git checkout my-branch-name``` )
    
    In order to be able to git pull or git push you'll have to set tracking information for this branch:
 
@@ -146,15 +134,24 @@ If you have already set up your environment, you can proceed with the following 
    
 9. Create a pull request using GitHub CLI. 
     
-   ```gh pr create -B main```
+   ```gh pr create -B main -t "enter title" -b "enter body of PR here"```
     
-   and fill in the PR title and the body when prompted. You can link an issue to the pull request by referencing the issue in the body of the pull request. If the body text mentions Fixes #123 or Closes #123, the referenced issue will automatically get closed when the pull request gets merged.
+   You can link an issue to the pull request by referencing the issue in the body of the pull request. If the body text mentions Fixes #123 or Closes #123, the referenced issue will automatically get closed when the pull request gets merged.
     
    This command will automatically create a fork for you if you’re in a repository that you don’t have permission to push to.
    
 And that's it! If you navigate to https://github.com/timeseriesAI/tsai/pulls you should see your PR there.
 
+10. Updating a PR:
 
+   If you need to change your code after a PR has been created you can do it by sending more commits to the same remote branch. For example:
+   
+   ```git checkout -b my-branch-name```
+   ```git commit -m "updated the feature"```
+   ```git push```
+
+   It will automatically show up in the PR on the github page.
+   If these are small changes they can be squashed together at the merge time and appear as a single commit in the repository.
 10. To return to the main branch use: 
     
    ```git checkout main```
@@ -163,14 +160,7 @@ And that's it! If you navigate to https://github.com/timeseriesAI/tsai/pulls you
    
    ```conda deactivate```
 
-
-&nbsp;
-***
-&nbsp;
-
 ## Post-PR steps:
-
-&nbsp;
 
 In the future, once your PR has been merged or rejected, you can delete your branch if you don't need it any more.
 
