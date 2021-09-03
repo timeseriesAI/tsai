@@ -134,7 +134,7 @@ If you have already set up your environment, you can proceed with the following 
    
 9. Create a pull request using GitHub CLI. 
     
-   ```gh pr create -B main -b "enter body of PR here" -t "enter title"```
+   ```gh pr create -B main  "-t "enter title" -b "enter body of PR here"```
     
    You can link an issue to the pull request by referencing the issue in the body of the pull request. If the body text mentions Fixes #123 or Closes #123, the referenced issue will automatically get closed when the pull request gets merged.
     
