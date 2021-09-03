@@ -5,7 +5,7 @@
 -----------------
 
 # tsai
-> State-of-the-art Deep Learning for Time Series and Sequence Modeling. `tsai` is currently under active development by timeseriesAI.
+> State-of-the-art Deep Learning library for Time Series and Sequences. `tsai` is currently under active development by timeseriesAI.
 
 
 ![CI](https://github.com/timeseriesai/tsai/workflows/CI/badge.svg) 
