@@ -150,8 +150,8 @@ And that's it! If you navigate to https://github.com/timeseriesAI/tsai/pulls you
    If you need to change your code after a PR has been created you can do it by sending more commits to the same remote branch. For example:
    
    ```
-   git checkout -b my-branch-name
-   git commit -m "updated the feature"
+   git checkout my-branch-name
+   git commit -am "updated the feature"
    git push
    ```
 
