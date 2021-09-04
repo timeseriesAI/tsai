@@ -196,8 +196,8 @@ In the future, once your PR has been merged or rejected, you can delete your bra
    ```
    The -d option only deletes the branch if it has already been merged. The -D option is a shortcut for --delete --force, which deletes the branch irrespective of its merged status.
    
-3. If you are not planning to contribute to tsai in the future and wand to delete or remove the environment, type the following in your terminal:
+3. If you no longer plan to contribute to tsai and want to delete / remove the environment, type the following in your terminal:
    ```
-   conda remove --name tsai_dev --all
+   conda env remove --name tsai_dev
    ```
-   The — all option helps remove all packages from the environment named.
+   
