@@ -5,7 +5,7 @@
 -----------------
 
 # tsai
-> State-of-the-art Deep Learning library for Time Series and Sequences. `tsai` is currently under active development by timeseriesAI.
+> State-of-the-art Deep Learning library for Time Series and Sequences. 
 
 
 ![CI](https://github.com/timeseriesai/tsai/workflows/CI/badge.svg) 
@@ -52,9 +52,9 @@ from tsai.all import *
 
 Here's the link to the [documentation](https://timeseriesai.github.io/tsai/).
 
-## How to get started
+## How to start using tsai?
 
-To get to know the `tsai` package, we'd suggest you start with this notebook in Google Colab: **[01_Intro_to_Time_Series_Classification](https://colab.research.google.com/github/timeseriesAI/tsai/blob/master/tutorial_nbs/01_Intro_to_Time_Series_Classification.ipynb)**
+To get to know the tsai package, we'd suggest you start with this notebook in Google Colab: **[01_Intro_to_Time_Series_Classification](https://colab.research.google.com/github/timeseriesAI/tsai/blob/master/tutorial_nbs/01_Intro_to_Time_Series_Classification.ipynb)**
 
 It provides an overview of a time series classification problem using fastai v2.
 
@@ -64,9 +64,15 @@ To use tsai in your own notebooks, the only thing you need to do after you have 
 
 `from tsai.all import *`
 
+## How to contribute to tsai?
+
+We welcome contributions of all kinds. Development of features, bug fixes, and other improvements. 
+
+We have created a guide to help you start contributing to tsai. You can read it [here](https://github.com/timeseriesAI/tsai/blob/main/CONTRIBUTING.md)
+
 ## Citing tsai
 
-If you use `tsai` in your research please use the following BibTeX entry:
+If you use tsai in your research please use the following BibTeX entry:
 
 ```text
 @Misc{tsai,

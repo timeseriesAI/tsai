@@ -66,22 +66,12 @@ If you have already set up your environment, you can proceed with the following 
    conda activate tsai_dev
    ```
 
-2. Create a new git branch. This is where new feature/bug-fix should be made. Replace my-branch-name by something that is descriptive of the change and will be easy for you to remember in the future if you need to update your PR. Before you create the branch you want to git pull to ensure you have an updated version of the code:
+2. Create a new git branch. This is where new feature/bug-fix should be made. Replace my-branch-name by something that is descriptive of the change and will be easy for you to remember in the future if you need to update your PR.
    
    ```
-   git pull
    git checkout -b my-branch-name
    ``` 
-    
-   You'll have to set tracking information for this branch:
-   ```
-   git branch -u origin/main
-   ```
-   This is only needed once per branch. You can test it works by running the command: 
-   ```
-   git pull
-   ```
-   To navigate to a previously created branch you only need to run: 
+   If you just need to navigate to a previously created branch just run: 
    ```
    git checkout my-branch-name
    ```
@@ -190,9 +180,7 @@ In the future, once your PR has been merged or rejected, you can delete your bra
    ```
    git branch -d my-branch-name
    ```
-
    or 
-    
    ```
    git branch -D my-branch-name
    ```
