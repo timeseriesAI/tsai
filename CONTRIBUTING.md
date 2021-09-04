@@ -26,84 +26,87 @@ Making a pull request for the first time can be a bit overwhelming, so we've put
 All steps in this section need to be done **<u>only the first time you set up the environment where you will develop tsai</u>**.
 
 **Steps:**
+
 1. **Set up gh**. If you don't have gh (GitHub CLI) yet, you can install it by following these [instructions](https://cli.github.com/manual/installation). To authenticate with your GitHub account run:
-
-   ```gh auth login```
-   
+   ```
+   gh auth login
+   ```
    and follow the instructions.
-
-   
 2. **Create and activate a new conda environment**. You will need to choose a name for the environment and a version of Python (I chose `tsai_dev` and Python 3.8, but you can change them). This won't take long. 
-
-   ```conda create -n tsai_dev python=3.8``` 
-   
-   ```conda activate tsai_dev```
-   
+   ```
+   conda create -n tsai_dev python=3.8
+   conda activate tsai_dev
+   ```
 3. **Set up tsai**. We'll use an editable install. 
-
    Navigate to the folder where you want to install the tsai repo in your local machine and:
-
-   ```gh repo clone https://github.com/timeseriesAI/tsai```
-
-   ```cd tsai```
-   
-   ```pip install -e ".[dev]"```  
-   
+   ```
+   gh repo clone https://github.com/timeseriesAI/tsai
+   cd tsai
+   pip install -e ".[dev]"
+   ```  
    The last step will take 4-5 minutes and will install all packages required to run tsai.
    
 4. **Set up git hooks**. This step is required by nbdev. Run:
-
-   ```nbdev_install_git_hooks``` 
-
+   ```
+   nbdev_install_git_hooks
+   ``` 
    inside the same tsai repo folder. Git hooks clean up the notebooks to remove the extraneous stuff stored in the notebooks. In this way you avoid unnecessary merge conflicts.
-   
    
 Great! You are now ready to start working on your first tsai PR. 
 
 ## Creating your PR:
 
-If you have already set up your environment, you can proceed with the following steps:
+If you have already set up your environment, you can proceed with the following steps.
+
+**Steps:**
 
 1. Activate your conda environment. We'll assume the name of the environment you created is tsai_env (if you used a different name just replace it by that name). Navigate to the tsai repo folder and run: 
 
-   ```conda activate tsai_dev```
-   
-   ```git pull```
-   
-2. Create a new git branch. This is where new feature/bug-fix should be made (replace my-branch-name by something that is descriptive of the change and will be easy for you to remember in the future if you need to update your PR):
+   ```
+   conda activate tsai_dev
+   ```
 
-   ```git checkout -b my-branch-name``` 
+2. Create a new git branch. This is where new feature/bug-fix should be made. Replace my-branch-name by something that is descriptive of the change and will be easy for you to remember in the future if you need to update your PR. Before you create the branch you want to git pull to ensure you have an updated version of the code:
    
-   (If you are working in a previously created branch, just run: ```git checkout my-branch-name``` )
-   
-   In order to be able to git pull or git push you'll have to set tracking information for this branch:
-
-   ```git branch --set-upstream-to=origin/main```
-   
+   ```
+   git pull
+   git checkout -b my-branch-name
+   ``` 
+    
+   You'll have to set tracking information for this branch:
+   ```
    git branch -u origin/main
-   
+   ```
    This is only needed once per branch. You can test it works by running the command: 
-   
-   ```git pull```
-   
+   ```
+   git pull
+   ```
+   To navigate to a previously created branch you only need to run: 
+   ```
+   git checkout my-branch-name
+   ```
 3. Navigate to the nbs folder and open the required Jupyter Notebook you wish to modify. If you are unsure which notebook it is, you can find it at the top of the script you wish to modify. Make whatever changes you want to make in the notebooks (ie., update feature, add new feature, add tests, add documentation, etc.). 
 
-    - Any new code you create needs to be in a cell with ```#export``` at the top. 
-    - You can write Markdown text as you would normally do to document any new functionality. 
-    - Remember that nbdev creates all scripts, tests and documentation from the notebooks. That's why it's important that you explain how the code works. You should also add tests. Tests will ensure that the new functionality keeps working in the future, when new changes are made.
-    - When finished, restart the kernel and re-run the whole notebook. Make sure everything runs smoothly until the end. This will also automatically save the notebook. If you see this at the bottom of the notebook "Correct conversion! 😃", it means everything went well and you can close the notebook. 
+   - Any new code you create needs to be in a cell with ```#export``` at the top. 
+   - You can write Markdown text as you would normally do to document any new functionality. 
+   - Remember that nbdev creates all scripts, tests and documentation from the notebooks. That's why it's important that you explain how the code works. You should also add tests. Tests will ensure that the new functionality keeps working in the future, when new changes are made.
+   - When finished, restart the kernel and re-run the whole notebook. Make sure everything runs smoothly until the end. This will also automatically save the notebook. If you see this at the bottom of the notebook "Correct conversion! 😃", it means everything went well and you can close the notebook. 
    
-   Note: create_scripts() at the bottom of all nbs will automatically save the notebook and run nbdev_build_lib which converts the notebooks to scripts. There's no need to do that manually in tsai. 
+   Note: the create_scripts() function at the bottom of all nbs will automatically save the notebook and run nbdev_build_lib which converts the notebooks to scripts. There's no need to do that manually in tsai. 
     
 4. Check that the local library and all notebooks match. The script:
 
-   ```nbdev_diff_nbs```
+   ```
+   nbdev_diff_nbs
+   ```
 
    can let you know if there is a difference between the local library and the notebooks. If everything's ok, you shouldn't get anything back when running the script.
     
 5. Run all library tests using
 
-   ```nbdev_test_nbs```
+   ```
+   nbdev_test_nbs
+   ```
  
    in your terminal. This will run all the tests in tsai and will take a few minutes. 
     
@@ -114,27 +117,37 @@ If you have already set up your environment, you can proceed with the following 
     
    You should then open that notebook and run it to learn where the issue is. You should fix it, re-run the notebook you have fixed, close it and re-run:
 
-   ```nbdev_test_nbs```
+   ```
+   nbdev_test_nbs
+   ```
     
    again until you get this message: All tests are passing!    
     
 6. Update the documentation by running: 
     
-   ```nbdev_build_docs```   
+   ```
+   nbdev_build_docs
+   ```   
    
 7. Review the files that have been changed. You can do that with:
 
-   ```git status```
+   ```
+   git status
+   ```
    
    Whenever you make a change in a notebook, you should see at least see changes in its .ipynb, .py and .html corresponding files.
 
 8. Commit changes with a brief message describing your changes. For example:
 
-   ```git commit -am "added training chart to index nb"```
+   ```
+   git commit -am "added training chart to index nb"
+   ```
    
 9. Create a pull request using GitHub CLI. 
     
-   ```gh pr create -B main -t "enter title" -b "enter body of PR here"```
+   ```
+   gh pr create -B main -t "enter title" -b "enter body of PR here"
+   ```
     
    You can link an issue to the pull request by referencing the issue in the body of the pull request. If the body text mentions Fixes #123 or Closes #123, the referenced issue will automatically get closed when the pull request gets merged.
     
@@ -177,3 +190,7 @@ In the future, once your PR has been merged or rejected, you can delete your bra
    ```git branch -D my-branch-name```
 
    The -d option only deletes the branch if it has already been merged. The -D option is a shortcut for --delete --force, which deletes the branch irrespective of its merged status.
+   
+3. If you are not planning to contribute to tsai in the future and wand to delete or remove the environment, type the following in your terminal:
+conda remove --name tsai_dev --all
+The — all option helps remove all packages from the environment named.
