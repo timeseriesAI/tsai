@@ -68,7 +68,7 @@ To use tsai in your own notebooks, the only thing you need to do after you have 
 
 We welcome contributions of all kinds. Development of features, bug fixes, and other improvements. 
 
-We have created a guide to help you start contributing to tsai. You can read it [here].(https://github.com/timeseriesAI/tsai/blob/main/CONTRIBUTING.md)
+We have created a guide to help you start contributing to tsai. You can read it [here](https://github.com/timeseriesAI/tsai/blob/main/CONTRIBUTING.md).
 
 ## Citing tsai
 
