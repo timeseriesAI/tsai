@@ -12,7 +12,7 @@
 [![PyPI](https://img.shields.io/pypi/v/tsai?color=blue&label=pypi%20version)](https://pypi.org/project/tsai/#description)
 [![Downloads](https://pepy.tech/badge/tsai)](https://pepy.tech/project/tsai)
 
-`tsai` is an open-source deep learning package built on top of Pytorch & fastai focused on state-of-the-art techniques for time series classification, regression and forecasting.
+`tsai` is an open-source deep learning package built on top of Pytorch & fastai focused on state-of-the-art techniques for time series classification, regression, forecasting and imputation.
 
 ## New in tsai:
 
@@ -68,7 +68,7 @@ To use tsai in your own notebooks, the only thing you need to do after you have 
 
 We welcome contributions of all kinds. Development of features, bug fixes, and other improvements. 
 
-We have created a guide to help you start contributing to tsai. You can read it [here](https://github.com/timeseriesAI/tsai/blob/main/CONTRIBUTING.md)
+We have created a guide to help you start contributing to tsai. You can read it [here].(https://github.com/timeseriesAI/tsai/blob/main/CONTRIBUTING.md)
 
 ## Citing tsai
 
