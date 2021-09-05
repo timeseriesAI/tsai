@@ -10,10 +10,9 @@ from .models.InceptionTime import *
 from .models.utils import *
 
 # Cell
-defaults.cat_tfms = [None, TSClassification()]
 
 class TSClassifier(Learner):
-    def __init__(self, X, y=None, splits=None, tfms=defaults.cat_tfms, inplace=True, sel_vars=None, sel_steps=None,
+    def __init__(self, X, y=None, splits=None, tfms=None, inplace=True, sel_vars=None, sel_steps=None,
                  bs=[64, 128], batch_size=None, batch_tfms=None, shuffle_train=True, drop_last=True, num_workers=0, do_setup=True, device=None,
                  arch=None, arch_config={}, pretrained=False, weights_path=None, exclude_head=True, cut=-1, init=None,
                  loss_func=None, opt_func=Adam, lr=0.001, metrics=accuracy, cbs=None, wd=None, wd_bn_bias=False,
@@ -21,6 +20,9 @@ class TSClassifier(Learner):
 
         #Splits
         if splits is None: splits = TSSplitter()(X)
+
+        # Item tfms
+        if tfms is None: tfms = [None, TSClassification()]
 
         # Batch size
         if batch_size is not None:
@@ -59,11 +61,10 @@ class TSClassifier(Learner):
                          model_dir=model_dir, wd=wd, wd_bn_bias=wd_bn_bias, train_bn=train_bn, moms=moms)
 
 # Cell
-#export
-defaults.reg_tfms = [None, TSRegression()]
+
 
 class TSRegressor(Learner):
-    def __init__(self, X, y=None, splits=None, tfms=defaults.reg_tfms, inplace=True, sel_vars=None, sel_steps=None,
+    def __init__(self, X, y=None, splits=None, tfms=None, inplace=True, sel_vars=None, sel_steps=None,
                  bs=[64, 128], batch_size=None, batch_tfms=None, shuffle_train=True, drop_last=True, num_workers=0, do_setup=True, device=None,
                  arch=None, arch_config={}, pretrained=False, weights_path=None, exclude_head=True, cut=-1, init=None,
                  loss_func=None, opt_func=Adam, lr=0.001, metrics=None, cbs=None, wd=None, wd_bn_bias=False,
@@ -71,6 +72,9 @@ class TSRegressor(Learner):
 
         #Splits
         if splits is None: splits = TSSplitter()(X)
+
+        # Item tfms
+        if tfms is None: tfms = [None, TSRegression()]
 
         # Batch size
         if batch_size is not None:
@@ -110,10 +114,9 @@ class TSRegressor(Learner):
                          model_dir=model_dir, wd=wd, wd_bn_bias=wd_bn_bias, train_bn=train_bn, moms=moms)
 
 # Cell
-defaults.fcst_tfms = [None, TSForecasting()]
 
 class TSForecaster(Learner):
-    def __init__(self, X, y=None, splits=None, tfms=defaults.fcst_tfms, inplace=True, sel_vars=None, sel_steps=None,
+    def __init__(self, X, y=None, splits=None, tfms=None, inplace=True, sel_vars=None, sel_steps=None,
                  bs=[64, 128], batch_size=None, batch_tfms=None, shuffle_train=True, drop_last=True, num_workers=0, do_setup=True, device=None,
                  arch=None, arch_config={}, pretrained=False, weights_path=None, exclude_head=True, cut=-1, init=None,
                  loss_func=None, opt_func=Adam, lr=0.001, metrics=None, cbs=None, wd=None, wd_bn_bias=False,
@@ -121,6 +124,9 @@ class TSForecaster(Learner):
 
         #Splits
         if splits is None: splits = TSSplitter()(X)
+
+        # Item tfms
+        if tfms is None: tfms = [None, TSForecasting()]
 
         # Batch size
         if batch_size is not None:
