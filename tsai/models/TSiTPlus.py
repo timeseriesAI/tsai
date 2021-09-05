@@ -45,7 +45,7 @@ class _TSiTBackbone(Module):
     def __init__(self, c_in:int, seq_len:int, n_layers:int=6, d_model:int=128, n_heads:int=16, d_head:Optional[int]=None, act:str='reglu',
                  d_ff:int=256, qkv_bias:bool=True, pos_dropout:float=0., attn_drop_rate:float=0, mlp_drop_rate:float=0, drop_path_rate:float=0.,
                  mlp_ratio:int=1, pre_norm:bool=False, use_token:bool=True, ks:Optional[int]=None, maxpool:bool=True,
-                 preprocessor:Optional[Callable]=None, device=None, verbose:bool=True):
+                 preprocessor:Optional[Callable]=None, device=None, verbose:bool=False):
 
         device = ifnone(device, default_device())
         self.preprocessor = nn.Identity()
@@ -143,7 +143,7 @@ class TSiTPlus(nn.Sequential):
     def __init__(self, c_in:int, c_out:int, seq_len:int, n_layers:int=6, d_model:int=128, n_heads:int=16, d_head:Optional[int]=None, act:str='reglu',
                  d_ff:int=256, pos_dropout:float=0., attn_drop_rate:float=0, mlp_drop_rate:float=0, drop_path_rate:float=0., mlp_ratio:int=1,
                  qkv_bias:bool=True, pre_norm:bool=False, use_token:bool=True, fc_dropout:float=0., bn:bool=True, y_range:Optional[tuple]=None,
-                 ks:Optional[int]=None, maxpool:bool=True, preprocessor:Optional[Callable]=None, custom_head:Optional[Callable]=None, verbose:bool=True):
+                 ks:Optional[int]=None, maxpool:bool=True, preprocessor:Optional[Callable]=None, custom_head:Optional[Callable]=None, verbose:bool=False):
 
         backbone = _TSiTBackbone(c_in, seq_len, n_layers=n_layers, d_model=d_model, n_heads=n_heads, d_head=d_head, act=act,
                                           d_ff=d_ff, pos_dropout=pos_dropout, attn_drop_rate=attn_drop_rate, mlp_drop_rate=mlp_drop_rate,

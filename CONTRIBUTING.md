@@ -4,7 +4,9 @@
 
 First, thank you very much for wanting to help!
 
-To contribute to tsai, you will need to make a pull request, also known as a PR. We'll get a notification when a pull request comes in, and after checking if the changes look good we'll "merge" it (meaning we click a button on GitHub that causes all of those changes to be automatically added to the repository).
+If you're planning to contribute code that is unrelated to an existing issue, it's a good idea to open a new issue describing your proposal before starting work on it. The project maintainers might give you feedback that will help to shape your work, which will ultimately increase the likelihood that your pull request will be accepted.
+
+To contribute to tsai, you will need to create a pull request, also known as a PR. We'll get a notification when a pull request comes in, and after checking if the changes look good we'll "merge" it (meaning we click a button on GitHub that causes all of those changes to be automatically added to the repository).
 
 Making a pull request for the first time can be a bit overwhelming, so we've put together this guide to help you get started.
 
@@ -32,7 +34,7 @@ All steps in this section need to be done **<u>only the first time you set up th
    gh auth login
    ```
    and follow the instructions.
-2. **Create and activate a new conda environment**. You will need to choose a name for the environment and a version of Python (I chose `tsai_dev` and Python 3.8, but you can change them). This won't take long. 
+2. **Create and activate a new conda environment**. You will need to choose a name for the environment and a version of Python (I chose `tsai_dev` and Python 3.8, but you can choose others). 
    ```
    conda create -n tsai_dev python=3.8
    conda activate tsai_dev
@@ -66,9 +68,10 @@ If you have already set up your environment, you can proceed with the following 
    conda activate tsai_dev
    ```
 
-2. Create a new git branch. This is where new feature/bug-fix should be made. Replace my-branch-name by something that is descriptive of the change and will be easy for you to remember in the future if you need to update your PR.
+2. Create a new git branch. This is where new feature/bug-fix should be made. Replace my-branch-name by something that is descriptive of the change and will be easy for you to remember in the future if you need to update your PR. Before you start making any changes to your local files, it's a good practice to first synchronize your local repository with the project repository. 
    
    ```
+   git pull
    git checkout -b my-branch-name
    ``` 
    If you just need to navigate to a previously created branch just run: 
@@ -146,23 +149,20 @@ If you have already set up your environment, you can proceed with the following 
 And that's it! If you navigate to https://github.com/timeseriesAI/tsai/pulls you should see your PR there.
 
 10. Updating a PR:
-
    If you need to change your code after a PR has been created you can do it by sending more commits to the same remote branch. For example:
-   
    ```
-   git checkout my-branch-name
-   git commit -am "updated the feature"
+   git checkout -b my-branch-name
+   ```
+   Repeat steps 3 through 7 
+   ```
+   git commit -m "add a relevant commit message"
    git push
    ```
-
-   It will automatically show up in the PR on the github page.
-   If these are small changes they can be squashed together at the merge time and appear as a single commit in the repository.
+   Your new commit will automatically show up in the PR on the github page. If these are small changes they can be squashed together at the merge time and appear as a single commit in the repository.
+   
 10. To return to the main branch use: 
-    
    ```git checkout main```
-   
    To return to the base environment use:
-   
    ```conda deactivate```
 
 ## Post-PR steps:
@@ -170,13 +170,11 @@ And that's it! If you navigate to https://github.com/timeseriesAI/tsai/pulls you
 In the future, once your PR has been merged or rejected, you can delete your branch if you don't need it any more.
 
 1. Make sure you are in the main branch: 
-
    ```
    git checkout main
    ```
    
 2. Delete the branch you no longer need by running either of these 2 commands:
-    
    ```
    git branch -d my-branch-name
    ```
@@ -189,5 +187,4 @@ In the future, once your PR has been merged or rejected, you can delete your bra
 3. If you no longer plan to contribute to tsai and want to delete / remove the environment, type the following in your terminal:
    ```
    conda env remove --name tsai_dev
-   ```
-   
+   ```  
