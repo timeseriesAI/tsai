@@ -16,7 +16,7 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'random_roll2d', 'random_roll3d', 'rotate_axis0', 'rotate_axis1', 'rotate_axis2', 'create_empty_array',
            'np_save_compressed', 'np_load_compressed', 'np2memmap', 'torch_mean_groupby', 'torch_flip',
            'torch_nan_to_num', 'torch_masked_to_num', 'mpl_trend', 'int2digits', 'array2digits', 'sincos_encoding',
-           'linear_encoding', 'encode_positions', 'sort_generator']
+           'linear_encoding', 'encode_positions', 'sort_generator', 'get_subset_dict']
 
 # Cell
 from .imports import *
@@ -903,3 +903,8 @@ def sort_generator(generator, bs):
     g = list(generator)
     for i in range(len(g)//bs + 1): g[bs*i:bs*(i+1)] = np.sort(g[bs*i:bs*(i+1)])
     return (i for i in g)
+
+# Cell
+
+def get_subset_dict(d, keys):
+    return dict((k,d[k]) for k in listify(keys) if k in d)
