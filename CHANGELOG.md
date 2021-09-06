@@ -5,6 +5,17 @@
 ## 0.2.19
 
 ### New Features
+
+- implemented src_key_padding_mask in TST & TSTPlus ([#79](https://github.com/timeseriesAI/tsai/issues/79))
+
+### Bugs Squashed
+
+- Problem with get_minirocket_features while using CUDA in training ([#153](https://github.com/timeseriesAI/tsai/issues/153))
+
+
+## 0.2.19
+
+### New Features
 * Models: 
     - implement src_key_padding_mask in TST & TSTPlus ([#79](https://github.com/timeseriesAI/tsai/issues/79))
 
