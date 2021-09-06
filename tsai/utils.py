@@ -27,23 +27,40 @@ from fastcore.test import *
 
 def computer_setup(*pkgs):
     try:
-        p = !python  -V
-        print(f'python         : {p[0].split(" ")[1]}')
-    except: pass
+        import platform
+        print(f'os             : {platform.system()}')
+        print(f'os version     : {platform.release()}')
+    except:
+        pass
+    try:
+        from platform import python_version
+        print(f'python         : {python_version()}')
+    except:
+        pass
     try:
         import tsai
         print(f'tsai           : {tsai.__version__}')
-    except: pass
-    print(f'fastai         : {fastai.__version__}')
-    print(f'fastcore       : {fastcore.__version__}')
-    print(f'torch          : {torch.__version__}')
+    except:
+        print(f'tsai           : N/A')
+    try:
+        print(f'fastai         : {fastai.__version__}')
+    except:
+        print(f'fastai         : N/A')
+    try:
+        print(f'fastcore       : {fastcore.__version__}')
+    except:
+        print(f'fastcore       : N/A')
+
     if pkgs is not None:
         for pkg in listify(pkgs):
             try: print(f'{pkg.__name__:15}: {pkg.__version__}')
             except: pass
-    iscuda = torch.cuda.is_available()
-    print(f'n_cpus         : {cpus}')
-    print(f'device         : {device} ({torch.cuda.get_device_name(0)})' if iscuda else f'device         : {device}')
+    try:
+        print(f'torch          : {torch.__version__}')
+        iscuda = torch.cuda.is_available()
+        print(f'n_cpus         : {cpus}')
+        print(f'device         : {device} ({torch.cuda.get_device_name(0)})' if iscuda else f'device         : {device}')
+    except: print(f'torch          : N/A')
 
 # Cell
 import inspect
