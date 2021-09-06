@@ -1,0 +1,55 @@
+package:
+  name: tsai
+  version: 0.2.19
+source:
+  sha256: 1042d4ecaf10ff70b41edb94975b43f55f2c847140e8db3960ba1c8b689ed450
+  url: https://files.pythonhosted.org/packages/ca/30/26069a65850441d92d45a410461d443198434574f8a7dfafa7f840918891/tsai-0.2.19.tar.gz
+about:
+  dev_url: https://timeseriesAI.github.io
+  doc_url: https://timeseriesAI.github.io
+  home: https://timeseriesAI.github.io
+  license: Apache Software
+  license_family: APACHE
+  summary: Practical Deep Learning for Time Series / Sequential Data library based
+    on fastai & Pytorch
+build:
+  noarch: python
+  number: '0'
+  script: '{{ PYTHON }} -m pip install . -vv'
+extra:
+  recipe-maintainers:
+  - timeseriesAI
+requirements:
+  host:
+  - pip
+  - python
+  - packaging
+  - fastai>=2.5.2
+  - scikit-learn>=0.24.2
+  - scipy>=1.5
+  - sktime>=0.7.0
+  - PyWavelets>=1.1.1
+  - numba>=0.53,<0.54
+  - pyts>=0.11.0
+  - imbalanced-learn>=0.8.0
+  - tsfresh>=0.18.0
+  - torch-optimizer>=0.1.0
+  - pytorch>=1.7.0,<1.10
+  run:
+  - pip
+  - python
+  - packaging
+  - fastai>=2.5.2
+  - scikit-learn>=0.24.2
+  - scipy>=1.5
+  - sktime>=0.7.0
+  - PyWavelets>=1.1.1
+  - numba>=0.53,<0.54
+  - pyts>=0.11.0
+  - imbalanced-learn>=0.8.0
+  - tsfresh>=0.18.0
+  - torch-optimizer>=0.1.0
+  - pytorch>=1.7.0,<1.10
+test:
+  imports:
+  - tsai
