@@ -139,11 +139,29 @@ nb_path: "nbs/110_models.mWDN.ipynb"
 <h2 id="mWDNPlus" class="doc_header"><code>class</code> <code>mWDNPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/mWDN.py#L91" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>mWDNPlus</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>levels</code></strong>=<em><code>3</code></em>, <strong><code>wavelet</code></strong>=<em><code>None</code></em>, <strong><code>base_model</code></strong>=<em><code>None</code></em>, <strong><code>base_arch</code></strong>=<em><code>InceptionTimePlus</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/models.TabFusionTransformer.html#Sequential"><code>Sequential</code></a></p>
 </blockquote>
 <p>A sequential container.
-Modules will be added to it in the order they are passed in the constructor.
-Alternatively, an ordered dict of modules can also be passed in.</p>
-<p>To make it easier to understand, here is a small example::</p>
+Modules will be added to it in the order they are passed in the
+constructor. Alternatively, an <code>OrderedDict</code> of modules can be
+passed in. The <code>forward()</code> method of <code>Sequential</code> accepts any
+input and forwards it to the first module it contains. It then
+"chains" outputs to inputs sequentially for each subsequent module,
+finally returning the output of the last module.</p>
+<p>The value a <code>Sequential</code> provides over manually calling a sequence
+of modules is that it allows treating the whole container as a
+single module, such that performing a transformation on the
+<code>Sequential</code> applies to each of the modules it stores (which are
+each a registered submodule of the <code>Sequential</code>).</p>
+<p>What's the difference between a <code>Sequential</code> and a
+:class:<code>torch.nn.ModuleList</code>? A <code>ModuleList</code> is exactly what it
+sounds like--a list for storing <code>Module</code> s! On the other hand,
+the layers in a <code>Sequential</code> are connected in a cascading way.</p>
+<p>Example::</p>
 
-<pre><code># Example of using Sequential
+<pre><code># Using Sequential to create a small model. When `model` is run,
+# input will first be passed to `Conv2d(1,20,5)`. The output of
+# `Conv2d(1,20,5)` will be used as the input to the first
+# `ReLU`; the output of the first `ReLU` will become the input
+# for `Conv2d(20,64,5)`. Finally, the output of
+# `Conv2d(20,64,5)` will be used as input to the second `ReLU`
 model = nn.Sequential(
           nn.Conv2d(1,20,5),
           nn.ReLU(),
@@ -151,7 +169,8 @@ model = nn.Sequential(
           nn.ReLU()
         )
 
-# Example of using Sequential with OrderedDict
+# Using Sequential with OrderedDict. This is functionally the
+# same as the above code
 model = nn.Sequential(OrderedDict([
           ('conv1', nn.Conv2d(1,20,5)),
           ('relu1', nn.ReLU()),

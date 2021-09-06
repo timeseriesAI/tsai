@@ -21,35 +21,34 @@ import tempfile
 try: from urllib import urlretrieve
 except ImportError: from urllib.request import urlretrieve
 import shutil
-from pyunpack import Archive
 from sktime.datasets import load_UCR_UEA_dataset
 from sktime.utils.validation.panel import check_X
 from sktime.utils.data_io import load_from_tsfile_to_dataframe as ts2df
 
 # Cell
+
 def decompress_from_url(url, target_dir=None, verbose=False):
     # Download
     try:
         pv("downloading data...", verbose)
         fname = os.path.basename(url)
         tmpdir = tempfile.mkdtemp()
-        local_comp_fname = os.path.join(tmpdir, fname)
-        urlretrieve(url, local_comp_fname)
+        tmpfile = os.path.join(tmpdir, fname)
+        urlretrieve(url, tmpfile)
         pv("...data downloaded", verbose)
 
         # Decompress
         try:
             pv("decompressing data...", verbose)
             if not os.path.exists(target_dir): os.makedirs(target_dir)
-            Archive(local_comp_fname).extractall(target_dir)
+            shutil.unpack_archive(tmpfile, target_dir)
             shutil.rmtree(tmpdir)
             pv("...data decompressed", verbose)
             return target_dir
+
         except:
             shutil.rmtree(tmpdir)
-            if verbose:
-                sys.stderr.write("Could not decompress file, aborting.\n")
-            return None
+            if verbose: sys.stderr.write("Could not decompress file, aborting.\n")
 
     except:
         shutil.rmtree(tmpdir)
@@ -1219,9 +1218,7 @@ def get_Monash_forecasting_data(dsid, path='./data/forecasting/', force_download
     path = Path(path)
     full_path = path/f'{dsid}.tsf'
     if not full_path.exists() or force_download:
-        pv("downloading data...", verbose)
         decompress_from_url(url, target_dir=path, verbose=verbose)
-        pv("...data downloaded", verbose)
     pv("converting dataframe to numpy array...", verbose)
     data, frequency, forecast_horizon, contain_missing_values, contain_equal_length = convert_tsf_to_dataframe(full_path)
     X = to3d(stack_pad(data['series_value']))
