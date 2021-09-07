@@ -132,3 +132,10 @@ class Timer:
         else: return total_elapsed
 
 timer = Timer()
+
+def import_file_as_module(path):
+    from importlib import import_module
+    if '.py' in path: path = path.rsplit('.', 1)[0]
+    if '/' in path: path, fname = path.rsplit('/', 1)
+    else: path, fname = None, path
+    return import_module(fname, path)
