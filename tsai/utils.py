@@ -43,10 +43,12 @@ def computer_setup(*pkgs):
     except:
         print(f'tsai           : N/A')
     try:
+        import fastai
         print(f'fastai         : {fastai.__version__}')
     except:
         print(f'fastai         : N/A')
     try:
+        import fastcore
         print(f'fastcore       : {fastcore.__version__}')
     except:
         print(f'fastcore       : N/A')
@@ -56,6 +58,7 @@ def computer_setup(*pkgs):
             try: print(f'{pkg.__name__:15}: {pkg.__version__}')
             except: pass
     try:
+        import torch
         print(f'torch          : {torch.__version__}')
         iscuda = torch.cuda.is_available()
         print(f'n_cpus         : {cpus}')
