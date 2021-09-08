@@ -16,7 +16,7 @@ __all__ = ['computer_setup', 'totensor', 'toarray', 'toL', 'to3dtensor', 'to2dte
            'random_roll2d', 'random_roll3d', 'rotate_axis0', 'rotate_axis1', 'rotate_axis2', 'create_empty_array',
            'np_save_compressed', 'np_load_compressed', 'np2memmap', 'torch_mean_groupby', 'torch_flip',
            'torch_nan_to_num', 'torch_masked_to_num', 'mpl_trend', 'int2digits', 'array2digits', 'sincos_encoding',
-           'linear_encoding', 'encode_positions', 'sort_generator', 'get_subset_dict']
+           'linear_encoding', 'encode_positions', 'sort_generator', 'get_subset_dict', 'chunks_calculator']
 
 # Cell
 
@@ -948,3 +948,19 @@ def sort_generator(generator, bs):
 
 def get_subset_dict(d, keys):
     return dict((k,d[k]) for k in listify(keys) if k in d)
+
+# Cell
+
+def chunks_calculator(shape, dtype='float32', n_bytes=1024**3):
+    """Function to calculate chunks for a given size of n_bytes (default = 1024**3 == 1GB).
+    It guarantees > 50% of the chunk will be filled"""
+
+    X  = np.random.rand(1, *shape[1:]).astype(dtype)
+    byts = get_size(X)
+    n = n_bytes // byts
+    if shape[0] / n <= 1: return False
+    remainder = shape[0] % n
+    if remainder / n < .5:
+        n_chunks = shape[0] // n
+        n += np.ceil(remainder / n_chunks).astype(int)
+    return (n, -1, -1)
