@@ -26,6 +26,8 @@ from fastcore.test import *
 # Cell
 
 def computer_setup(*pkgs):
+    import warnings
+    warnings.filterwarnings("ignore")
     try:
         import platform
         print(f'os             : {platform.system()}')
