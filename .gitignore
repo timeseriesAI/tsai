@@ -157,3 +157,13 @@ old/*
 */nbs/export/*
 */nbs/models/*
 token
+
+Untitled*.ipynb
+
+tmp/
+*~
+~*
+.vscode/
+.pypirc
+pythonenv*/
+*.tgz
