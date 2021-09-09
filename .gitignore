@@ -159,7 +159,7 @@ old/*
 token
 
 Untitled*.ipynb
-
+conda/
 tmp/
 *~
 ~*
