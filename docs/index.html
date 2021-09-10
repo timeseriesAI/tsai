@@ -1,13 +1,13 @@
 ---
 
-title: tsai
+title: Title
 
 
 keywords: fastai
 sidebar: home_sidebar
 
-summary: "State-of-the-art Deep Learning library for Time Series and Sequences. "
-description: "State-of-the-art Deep Learning library for Time Series and Sequences. "
+
+
 nb_path: "nbs/index.ipynb"
 ---
 <!--
@@ -31,16 +31,17 @@ nb_path: "nbs/index.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><img src="https://github.com/timeseriesai/tsai/workflows/CI/badge.svg" alt="CI"> 
-<a href="https://pypi.org/project/tsai/#description"><img src="https://img.shields.io/pypi/v/tsai?color=blue&amp;label=pypi%20version" alt="PyPI"></a>
-<a href="https://pepy.tech/project/tsai"><img src="https://pepy.tech/badge/tsai" alt="Downloads"></a></p>
+<p><img src="https://github.com/timeseriesai/tsai/workflows/CI/badge.svg" alt="CI"> <a href="https://pypi.org/project/tsai/#description"><img src="https://img.shields.io/pypi/v/tsai?color=blue&amp;label=pypi%20version" alt="PyPI"></a> <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs"></p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Description">Description<a class="anchor-link" href="#Description"> </a></h2><blockquote><p>State-of-the-art Deep Learning library for Time Series and Sequences.</p>
+</blockquote>
 <p><code>tsai</code> is an open-source deep learning package built on top of Pytorch &amp; fastai focused on state-of-the-art techniques for time series tasks like classification, regression, forecasting, imputation...</p>
+<p><code>tsai</code> is currently under active development by timeseriesAI.</p>
 
 </div>
 </div>
@@ -54,6 +55,7 @@ nb_path: "nbs/index.ipynb"
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <ul>
+<li><code>tsai</code> is now available in conda. </li>
 <li><p>🚀🚀 <strong>MINIROCKET</strong> a SOTA Time Series Classification model (now available in Pytorch):
 You can now check MiniRocket's performance in our new tutorial notebook <a href="https://github.com/timeseriesAI/tsai/blob/main/tutorial_nbs/10_Time_Series_Classification_and_Regression_with_MiniRocket.ipynb">10_Time_Series_Classification_and_Regression_with_MiniRocket.ipynb</a></p>
 <blockquote><p>"Using this method, it is possible to train and test a classifier on all of 109 datasets from the UCR archive to state-of-the-art accuracy in less than 10 minutes." A. Dempster et al. (Dec 2020)</p>
@@ -116,11 +118,98 @@ We've also added a new PredictionDynamics callback that will display the predict
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>To get to know the tsai package, we'd suggest you start with this notebook in Google Colab: <strong><a href="https://colab.research.google.com/github/timeseriesAI/tsai/blob/master/tutorial_nbs/01_Intro_to_Time_Series_Classification.ipynb">01_Intro_to_Time_Series_Classification</a></strong></p>
-<p>It provides an overview of a time series classification problem using fastai v2.</p>
-<p>If you want more details, you can get them in nbs 00 and 00a.</p>
-<p>To use tsai in your own notebooks, the only thing you need to do after you have installed the package is to add this:</p>
+<p>To get to know the tsai package, we'd suggest you start with this notebook in Google Colab: <strong><a href="https://colab.research.google.com/github/timeseriesAI/tsai/blob/master/tutorial_nbs/01_Intro_to_Time_Series_Classification.ipynb">01_Intro_to_Time_Series_Classification</a></strong>
+It provides an overview of a time series classification task.</p>
+<p>We have also develop many other <a href="https://github.com/timeseriesAI/tsai/tree/main/tutorial_nbs">tutorial notebooks</a>.</p>
+<p>To use tsai in your own notebooks, the only thing you need to do after you have installed the package is to run this:</p>
 <p><code>from tsai.all import *</code></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Examples">Examples<a class="anchor-link" href="#Examples"> </a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Binary,-univariate-classification">Binary, univariate classification<a class="anchor-link" href="#Binary,-univariate-classification"> </a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+
+<pre><code>from tsai.all import *
+X, y, splits = get_classification_data('ECG200', split_data=False)
+tfms = [None, TSClassification()]
+batch_tfms = TSStandardize()
+dls = get_ts_dls(X, y, splits=splits, tfms=tfms, batch_tfms=batch_tfms)
+learn = ts_learner(dls, InceptionTimePlus, metrics=accuracy, cbs=ShowGraph())
+learn.fit_one_cycle(100, 3e-4)</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Multi-class,-multivariate-classification">Multi-class, multivariate classification<a class="anchor-link" href="#Multi-class,-multivariate-classification"> </a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+
+<pre><code>from tsai.all import *
+X, y, splits = get_classification_data('LSST', split_data=False)
+tfms = [None, TSClassification()]
+batch_tfms = TSStandardize(by_sample=True)
+dls = get_ts_dls(X, y, splits=splits, tfms=tfms, batch_tfms=batch_tfms)
+learn = ts_learner(dls, InceptionTimePlus, metrics=accuracy, cbs=ShowGraph())
+learn.fit_one_cycle(10, 1e-2)</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Multivariate-Regression">Multivariate Regression<a class="anchor-link" href="#Multivariate-Regression"> </a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+
+<pre><code>from tsai.all import *
+from sklearn.metrics import mean_squared_error
+X_train, y_train, X_test, y_test = get_regression_data('AppliancesEnergy')
+rmse_scorer = make_scorer(mean_squared_error, greater_is_better=False)
+reg = MiniRocketRegressor(scoring=rmse_scorer)
+reg.fit(X_train, y_train)
+y_pred = reg.predict(X_test)
+mean_squared_error(y_test, y_pred, squared=False)</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Univariate-Forecasting">Univariate Forecasting<a class="anchor-link" href="#Univariate-Forecasting"> </a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+
+<pre><code>from tsai.all import *
+ts = get_forecasting_time_series("Sunspots").values
+X, y = SlidingWindow(60, horizon=1)(ts)
+splits = TimeSplitter(235)(y) 
+batch_tfms = TSStandardize()
+learn = TSForecaster(X, y, splits=splits, batch_tfms=batch_tfms, bs=512, arch=TST, metrics=mae, cbs=ShowGraph())
+learn.fit_one_cycle(50, 1e-3)</code></pre>
 
 </div>
 </div>

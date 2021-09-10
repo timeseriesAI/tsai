@@ -718,7 +718,7 @@ modules = ["utils.py",
            "models/MultiInputNet.py",
            "models/misc.py"]
 
-doc_url = "https://timeseriesAI.github.io/"
+doc_url = "https://timeseriesAI.github.io/tsai/"
 
 git_url = "https://github.com/timeseriesAI/tsai/tree/main/"
 
