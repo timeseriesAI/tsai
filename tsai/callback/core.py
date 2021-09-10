@@ -166,20 +166,15 @@ class WeightedPerSampleLoss(Callback):
         self.reduction = getattr(self.learn.loss_func, 'reduction', None)
         self.learn.loss_func = _PerInstanceLoss(crit=self.learn.loss_func)
         assert len(self.instance_weights) == len(self.learn.dls.train.dataset) + len(self.learn.dls.valid.dataset)
-        self.instance_weights = tensor(self.instance_weights).to(self.learn.dls.device)
+        self.instance_weights = torch.as_tensor(self.instance_weights, device=self.learn.dls.device)
 
     def before_batch(self):
-        if self.training:
-            original_idxs = tensor([self.learn.dls.train.split_idxs[self.learn.dls.train.idxs]], device=self.x.device)[0]
-            self.learn.loss_func.weights = self.instance_weights[original_idxs]
-        else:
-            original_idxs = tensor([self.learn.dls.valid.split_idxs[self.learn.dls.valid.idxs]], device=self.x.device)[0]
-            self.learn.loss_func.weights = self.instance_weights[original_idxs]
+        input_idxs = self.learn.dls.train.input_idxs if self.training else self.learn.dls.valid.input_idxs
+        self.learn.loss_func.weights = self.instance_weights[input_idxs]
 
     def after_fit(self):
         self.learn.loss_func = self.old_loss
-        if self.reduction is not None:
-            self.learn.loss_func.reduction = self.reduction
+        if self.reduction is not None: self.learn.loss_func.reduction = self.reduction
 
 
 class _PerInstanceLoss(Module):
