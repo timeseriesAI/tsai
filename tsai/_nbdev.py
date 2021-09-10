@@ -2,7 +2,8 @@
 
 __all__ = ["index", "modules", "custom_doc_links", "git_url"]
 
-index = {"computer_setup": "000_utils.ipynb",
+index = {"my_setup": "000_utils.ipynb",
+         "computer_setup": "000_utils.ipynb",
          "totensor": "000_utils.ipynb",
          "toarray": "000_utils.ipynb",
          "toL": "000_utils.ipynb",
