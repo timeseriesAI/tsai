@@ -1,6 +1,6 @@
 ---
 
-title: Title
+title: tsai
 
 
 keywords: fastai
@@ -54,17 +54,27 @@ nb_path: "nbs/index.ipynb"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<ul>
-<li><code>tsai</code> is now available in conda. </li>
-<li><p>🚀🚀 <strong>MINIROCKET</strong> a SOTA Time Series Classification model (now available in Pytorch):
-You can now check MiniRocket's performance in our new tutorial notebook <a href="https://github.com/timeseriesAI/tsai/blob/main/tutorial_nbs/10_Time_Series_Classification_and_Regression_with_MiniRocket.ipynb">10_Time_Series_Classification_and_Regression_with_MiniRocket.ipynb</a></p>
+<h4 id="September,-2021">September, 2021<a class="anchor-link" href="#September,-2021"> </a></h4><ul>
+<li><p>🚀🚀 New tutorial notebook on how to <strong>train your model with larger-than-memory datasets in less time achieving 100% GPU usage!!</strong> 🚀🚀   <a href="https://colab.research.google.com/github/timeseriesAI/tsai/blob/master/tutorial_nbs/11_How_to_train_big_arrays_fast_in_tsai.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a></p>
+</li>
+<li><p><strong><code>tsai</code> supports now more input formats</strong>: np.array, np.memmap, zarr, xarray, dask, list, L, ...</p>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Previously">Previously<a class="anchor-link" href="#Previously"> </a></h4><ul>
+<li><p><strong>MINIROCKET</strong> a SOTA Time Series Classification model (now available in Pytorch):
+You can now check MiniRocket's performance in our new tutorial notebook <a href="https://colab.research.google.com/github/timeseriesAI/tsai/blob/master/tutorial_nbs/10_Time_Series_Classification_and_Regression_with_MiniRocket.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a></p>
 <blockquote><p>"Using this method, it is possible to train and test a classifier on all of 109 datasets from the UCR archive to state-of-the-art accuracy in less than 10 minutes." A. Dempster et al. (Dec 2020)</p>
 </blockquote>
 </li>
-<li><p><strong>Multi-class and multi-label time series classification notebook:</strong> you can also check our new tutorial notebook: <a href="https://github.com/timeseriesAI/tsai/blob/main/tutorial_nbs/01a_MultiClass_MultiLabel_TSClassification.ipynb">01a_MultiClass_MultiLabel_TSClassification.ipynb</a></p>
+<li><p><strong>Multi-class and multi-label time series classification notebook:</strong> you can also check our new tutorial notebook: <a href="https://colab.research.google.com/github/timeseriesAI/tsai/blob/master/tutorial_nbs/01a_MultiClass_MultiLabel_TSClassification.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a></p>
 </li>
-<li><p><strong>Self-supervised learning:</strong>
-If you are interested in applying self-supervised learning to time series, you may check our new tutorial notebook: <a href="https://github.com/timeseriesAI/tsai/blob/master/tutorial_nbs/08_Self_Supervised_TSBERT.ipynb">08_Self_Supervised_MVP.ipynb</a></p>
+<li><p><strong>Self-supervised learning:</strong> Learn how to leverage your unlabeled datasets <a href="https://colab.research.google.com/github/timeseriesAI/tsai/blob/master/tutorial_nbs/08_Self_Supervised_TSBERT.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a></p>
 </li>
 <li><p><strong>New visualization:</strong>
 We've also added a new PredictionDynamics callback that will display the predictions during training. This is the type of output you would get in a classification task for example:</p>
@@ -112,6 +122,44 @@ We've also added a new PredictionDynamics callback that will display the predict
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Available-models:">Available models:<a class="anchor-link" href="#Available-models:"> </a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Here's a list with some of the state-of-the-art models available in <code>tsai</code>:</p>
+<ul>
+<li><a href="https://ieeexplore.ieee.org/abstract/document/6795963/">LSTM</a> (Hochreiter, 1997)</li>
+<li><a href="https://arxiv.org/abs/1412.3555">GRU</a> (Cho, 2014)</li>
+<li><a href="https://arxiv.org/abs/1611.06455">MLP</a> - Multilayer Perceptron (Wang, 2016)</li>
+<li><a href="https://arxiv.org/abs/1611.06455">FCN</a> - Fully Convolutional Network (Wang, 2016)</li>
+<li><a href="https://arxiv.org/abs/1611.06455">ResNet</a> - Residual Network (Wang, 2016)</li>
+<li><a href="https://arxiv.org/abs/1709.05206">LSTM-FCN</a> (Karim, 2017)</li>
+<li><a href="https://arxiv.org/abs/1812.07683">GRU-FCN</a> (Elsayed, 2018)</li>
+<li><a href="https://www.sciencedirect.com/science/article/abs/pii/S0893608019301200">MLSTM-FCN</a> - Multivariate LSTM-FCN (Karim, 2019)</li>
+<li><a href="https://arxiv.org/abs/1909.04939">InceptionTime</a> (Fawaz, 2019)</li>
+<li><a href="https://arxiv.org/abs/1910.13051">Rocket</a> (Dempster, 2019)</li>
+<li><a href="https://arxiv.org/abs/2002.10061">OmniScale</a> - Omni-Scale 1D-CNN (Tang, 2020)</li>
+<li><p><a href="https://arxiv.org/abs/2102.00457">MiniRocket</a> (Dempster, 2021)</p>
+</li>
+<li><p><a href="https://www.sciencedirect.com/science/article/abs/pii/S0925231220305944">ResCNN</a> - 1D-ResCNN (Sun , 2020)</p>
+</li>
+<li><a href="https://arxiv.org/abs/1803.01271">TCN</a> - Temporal Convolutional Network (Bai, 2018)</li>
+<li><a href="https://dl.acm.org/doi/abs/10.1145/3447548.3467401">TST</a> - Time Series Transformer (Zerveas, 2021)</li>
+<li><a href="https://docs.fast.ai/tabular.model.html#TabularModel">TabModel</a> - modified from fastai's TabularModel</li>
+<li><a href="https://arxiv.org/pdf/2012.06678">TabTransformer</a> (Huang, 2020)</li>
+<li><a href="https://arxiv.org/abs/2005.03645">XCM</a> - Explainable Convolutional Neural Network) (Fauvel, 2020)</li>
+<li><a href="https://arxiv.org/abs/1911.03803">XceptionTime</a> (Rahimian, 2019)</li>
+<li><a href="https://dl.acm.org/doi/abs/10.1145/3219819.3220060">mWDN</a> - Multilevel wavelet decomposition network (Wang, 2018)</li>
+</ul>
+<p>among others!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="How-to-start-using-tsai?">How to start using tsai?<a class="anchor-link" href="#How-to-start-using-tsai?"> </a></h2>
 </div>
 </div>
@@ -130,6 +178,13 @@ It provides an overview of a time series classification task.</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Examples">Examples<a class="anchor-link" href="#Examples"> </a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>These are just a few examples of how you can use <code>tsai</code>:</p>
+
 </div>
 </div>
 </div>
@@ -222,7 +277,7 @@ learn.fit_one_cycle(50, 1e-3)</code></pre>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We welcome contributions of all kinds. Development of features, bug fixes, and other improvements.</p>
+<p>We welcome contributions of all kinds. Development of enhancements, bug fixes, documentation, tutorial notebooks, ...</p>
 <p>We have created a guide to help you start contributing to tsai. You can read it <a href="https://github.com/timeseriesAI/tsai/blob/main/CONTRIBUTING.md">here</a>.</p>
 
 </div>

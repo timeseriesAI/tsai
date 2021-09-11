@@ -4,7 +4,7 @@
 
 -----------------
 
-# Title
+# tsai
 
 
 
@@ -19,14 +19,19 @@
 
 ## New in tsai:
 
-* `tsai` is now available in conda. 
-* 🚀🚀 **MINIROCKET** a SOTA Time Series Classification model (now available in Pytorch):
-You can now check MiniRocket's performance in our new tutorial notebook [10_Time_Series_Classification_and_Regression_with_MiniRocket.ipynb](https://github.com/timeseriesAI/tsai/blob/main/tutorial_nbs/10_Time_Series_Classification_and_Regression_with_MiniRocket.ipynb)
+#### September, 2021
+* 🚀🚀 New tutorial notebook on how to **train your model with larger-than-memory datasets in less time achieving 100% GPU usage!!** 🚀🚀   <a href="https://colab.research.google.com/github/timeseriesAI/tsai/blob/master/tutorial_nbs/11_How_to_train_big_arrays_fast_in_tsai.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
+
+* **`tsai` supports now more input formats**: np.array, np.memmap, zarr, xarray, dask, list, L, ...
+
+#### Previously
+
+* **MINIROCKET** a SOTA Time Series Classification model (now available in Pytorch):
+You can now check MiniRocket's performance in our new tutorial notebook <a href="https://colab.research.google.com/github/timeseriesAI/tsai/blob/master/tutorial_nbs/10_Time_Series_Classification_and_Regression_with_MiniRocket.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 > "Using this method, it is possible to train and test a classifier on all of 109 datasets from the UCR archive to state-of-the-art accuracy in less than 10 minutes." A. Dempster et al. (Dec 2020)
 
-* **Multi-class and multi-label time series classification notebook:** you can also check our new tutorial notebook: [01a_MultiClass_MultiLabel_TSClassification.ipynb](https://github.com/timeseriesAI/tsai/blob/main/tutorial_nbs/01a_MultiClass_MultiLabel_TSClassification.ipynb)
-* **Self-supervised learning:**
-If you are interested in applying self-supervised learning to time series, you may check our new tutorial notebook: [08_Self_Supervised_MVP.ipynb](https://github.com/timeseriesAI/tsai/blob/master/tutorial_nbs/08_Self_Supervised_TSBERT.ipynb)
+* **Multi-class and multi-label time series classification notebook:** you can also check our new tutorial notebook: <a href="https://colab.research.google.com/github/timeseriesAI/tsai/blob/master/tutorial_nbs/01a_MultiClass_MultiLabel_TSClassification.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
+* **Self-supervised learning:** Learn how to leverage your unlabeled datasets <a href="https://colab.research.google.com/github/timeseriesAI/tsai/blob/master/tutorial_nbs/08_Self_Supervised_TSBERT.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 
 * **New visualization:**
 We've also added a new PredictionDynamics callback that will display the predictions during training. This is the type of output you would get in a classification task for example:
@@ -56,6 +61,34 @@ from tsai.all import *
 
 Here's the link to the [documentation](https://timeseriesai.github.io/tsai/).
 
+## Available models:
+
+Here's a list with some of the state-of-the-art models available in `tsai`:
+
+- [LSTM](https://ieeexplore.ieee.org/abstract/document/6795963/) (Hochreiter, 1997)
+- [GRU](https://arxiv.org/abs/1412.3555) (Cho, 2014)
+- [MLP](https://arxiv.org/abs/1611.06455) - Multilayer Perceptron (Wang, 2016)
+- [FCN](https://arxiv.org/abs/1611.06455) - Fully Convolutional Network (Wang, 2016)
+- [ResNet](https://arxiv.org/abs/1611.06455) - Residual Network (Wang, 2016)
+- [LSTM-FCN](https://arxiv.org/abs/1709.05206) (Karim, 2017)
+- [GRU-FCN](https://arxiv.org/abs/1812.07683) (Elsayed, 2018)
+- [MLSTM-FCN](https://www.sciencedirect.com/science/article/abs/pii/S0893608019301200) - Multivariate LSTM-FCN (Karim, 2019)
+- [InceptionTime](https://arxiv.org/abs/1909.04939) (Fawaz, 2019)
+- [Rocket](https://arxiv.org/abs/1910.13051) (Dempster, 2019)
+- [OmniScale](https://arxiv.org/abs/2002.10061) - Omni-Scale 1D-CNN (Tang, 2020)
+- [MiniRocket](https://arxiv.org/abs/2102.00457) (Dempster, 2021)
+
+- [ResCNN](https://www.sciencedirect.com/science/article/abs/pii/S0925231220305944) - 1D-ResCNN (Sun , 2020)
+- [TCN](https://arxiv.org/abs/1803.01271) - Temporal Convolutional Network (Bai, 2018)
+- [TST](https://dl.acm.org/doi/abs/10.1145/3447548.3467401) - Time Series Transformer (Zerveas, 2021)
+- [TabModel](https://docs.fast.ai/tabular.model.html#TabularModel) - modified from fastai's TabularModel
+- [TabTransformer](https://arxiv.org/pdf/2012.06678) (Huang, 2020)
+- [XCM](https://arxiv.org/abs/2005.03645) - Explainable Convolutional Neural Network) (Fauvel, 2020)
+- [XceptionTime](https://arxiv.org/abs/1911.03803) (Rahimian, 2019)
+- [mWDN](https://dl.acm.org/doi/abs/10.1145/3219819.3220060) - Multilevel wavelet decomposition network (Wang, 2018)
+
+among others!
+
 ## How to start using tsai?
 
 To get to know the tsai package, we'd suggest you start with this notebook in Google Colab: **[01_Intro_to_Time_Series_Classification](https://colab.research.google.com/github/timeseriesAI/tsai/blob/master/tutorial_nbs/01_Intro_to_Time_Series_Classification.ipynb)**
@@ -68,6 +101,8 @@ To use tsai in your own notebooks, the only thing you need to do after you have 
 `from tsai.all import *`
 
 ## Examples
+
+These are just a few examples of how you can use `tsai`:
 
 ### Binary, univariate classification
 
@@ -120,7 +155,7 @@ learn.fit_one_cycle(50, 1e-3)
 
 ## How to contribute to tsai?
 
-We welcome contributions of all kinds. Development of features, bug fixes, and other improvements. 
+We welcome contributions of all kinds. Development of enhancements, bug fixes, documentation, tutorial notebooks, ... 
 
 We have created a guide to help you start contributing to tsai. You can read it [here](https://github.com/timeseriesAI/tsai/blob/main/CONTRIBUTING.md).
 

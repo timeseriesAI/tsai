@@ -16,7 +16,8 @@ __all__ = ['my_setup', 'computer_setup', 'totensor', 'toarray', 'toL', 'to3dtens
            'random_roll2d', 'random_roll3d', 'rotate_axis0', 'rotate_axis1', 'rotate_axis2', 'create_empty_array',
            'np_save_compressed', 'np_load_compressed', 'np2memmap', 'torch_mean_groupby', 'torch_flip',
            'torch_nan_to_num', 'torch_masked_to_num', 'mpl_trend', 'int2digits', 'array2digits', 'sincos_encoding',
-           'linear_encoding', 'encode_positions', 'sort_generator', 'get_subset_dict', 'chunks_calculator']
+           'linear_encoding', 'encode_positions', 'sort_generator', 'get_subset_dict', 'chunks_calculator',
+           'is_memory_shared']
 
 # Cell
 
@@ -971,3 +972,19 @@ def chunks_calculator(shape, dtype='float32', n_bytes=1024**3):
         n_chunks = shape[0] // n
         n += np.ceil(remainder / n_chunks).astype(int)
     return (n, -1, -1)
+
+# Cell
+
+def is_memory_shared(a, b):
+    r"""Test function to check if 2 array-like object share memory.
+    Be careful because it changes their values!!!)"""
+
+    try:
+        a[:] = 1
+    except:
+        try:
+            b[:] = 1
+        except:
+            print('unknown')
+            return
+    return torch.equal(tensor(a), tensor(b))

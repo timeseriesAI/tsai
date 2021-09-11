@@ -1,13 +1,13 @@
 name: tsai
 channels:
-- tsai
+- timeseriesai
 - fastai
 - pytorch
 - defaults
 dependencies:
 - fastai>=2.5.2
-- pywavelets>=1.1.1
-- numba>=0.53
+- conda-forge::pywavelets>=1.1.1
+- conda-forge::numba>=0.53
 - conda-forge::sktime>=0.7.0
 - conda-forge::pyts>=0.11.0
 - conda-forge::imbalanced-learn>=0.8.0
