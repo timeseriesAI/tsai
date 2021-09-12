@@ -20,6 +20,7 @@
     },
     "Training": {
         "Learner": "/learner.html",
+        "TSLearner": "/tslearner.html",
         "Optimizers": "/optimizer.html",
         "Metrics": "/metrics.html",
         "Callbacks": "/callback.core.html",
