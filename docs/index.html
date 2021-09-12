@@ -48,13 +48,14 @@ nb_path: "nbs/index.ipynb"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="New-in-tsai:">New in tsai:<a class="anchor-link" href="#New-in-tsai:"> </a></h2>
+<h2 id="What's-new:">What's new:<a class="anchor-link" href="#What's-new:"> </a></h2>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h4 id="September,-2021">September, 2021<a class="anchor-link" href="#September,-2021"> </a></h4><ul>
+<li><code>tsai</code> just got easier to use with the new sklearn-like APIs: <a href="/tslearner.html#TSClassifier"><code>TSClassifier</code></a>, <a href="/tslearner.html#TSRegressor"><code>TSRegressor</code></a>, and <a href="/tslearner.html#TSForecaster"><code>TSForecaster</code></a>!! See <a href="https://timeseriesai.github.io/tsai/learner.html">this</a> for more info.</li>
 <li><p>🚀🚀 New tutorial notebook on how to <strong>train your model with larger-than-memory datasets in less time achieving 100% GPU usage!!</strong> 🚀🚀   <a href="https://colab.research.google.com/github/timeseriesAI/tsai/blob/master/tutorial_nbs/11_How_to_train_big_arrays_fast_in_tsai.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a></p>
 </li>
 <li><p><strong><code>tsai</code> supports now more input formats</strong>: np.array, np.memmap, zarr, xarray, dask, list, L, ...</p>
@@ -130,28 +131,26 @@ We've also added a new PredictionDynamics callback that will display the predict
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Here's a list with some of the state-of-the-art models available in <code>tsai</code>:</p>
 <ul>
-<li><a href="https://ieeexplore.ieee.org/abstract/document/6795963/">LSTM</a> (Hochreiter, 1997)</li>
-<li><a href="https://arxiv.org/abs/1412.3555">GRU</a> (Cho, 2014)</li>
-<li><a href="https://arxiv.org/abs/1611.06455">MLP</a> - Multilayer Perceptron (Wang, 2016)</li>
-<li><a href="https://arxiv.org/abs/1611.06455">FCN</a> - Fully Convolutional Network (Wang, 2016)</li>
-<li><a href="https://arxiv.org/abs/1611.06455">ResNet</a> - Residual Network (Wang, 2016)</li>
-<li><a href="https://arxiv.org/abs/1709.05206">LSTM-FCN</a> (Karim, 2017)</li>
-<li><a href="https://arxiv.org/abs/1812.07683">GRU-FCN</a> (Elsayed, 2018)</li>
-<li><a href="https://www.sciencedirect.com/science/article/abs/pii/S0893608019301200">MLSTM-FCN</a> - Multivariate LSTM-FCN (Karim, 2019)</li>
-<li><a href="https://arxiv.org/abs/1909.04939">InceptionTime</a> (Fawaz, 2019)</li>
-<li><a href="https://arxiv.org/abs/1910.13051">Rocket</a> (Dempster, 2019)</li>
-<li><a href="https://arxiv.org/abs/2002.10061">OmniScale</a> - Omni-Scale 1D-CNN (Tang, 2020)</li>
-<li><p><a href="https://arxiv.org/abs/2102.00457">MiniRocket</a> (Dempster, 2021)</p>
-</li>
-<li><p><a href="https://www.sciencedirect.com/science/article/abs/pii/S0925231220305944">ResCNN</a> - 1D-ResCNN (Sun , 2020)</p>
-</li>
-<li><a href="https://arxiv.org/abs/1803.01271">TCN</a> - Temporal Convolutional Network (Bai, 2018)</li>
-<li><a href="https://dl.acm.org/doi/abs/10.1145/3447548.3467401">TST</a> - Time Series Transformer (Zerveas, 2021)</li>
-<li><a href="https://docs.fast.ai/tabular.model.html#TabularModel">TabModel</a> - modified from fastai's TabularModel</li>
-<li><a href="https://arxiv.org/pdf/2012.06678">TabTransformer</a> (Huang, 2020)</li>
-<li><a href="https://arxiv.org/abs/2005.03645">XCM</a> - Explainable Convolutional Neural Network) (Fauvel, 2020)</li>
-<li><a href="https://arxiv.org/abs/1911.03803">XceptionTime</a> (Rahimian, 2019)</li>
-<li><a href="https://dl.acm.org/doi/abs/10.1145/3219819.3220060">mWDN</a> - Multilevel wavelet decomposition network (Wang, 2018)</li>
+<li><a href="https://github.com/timeseriesAI/tsai/blob/main/tsai/models/RNN.py">LSTM</a> (Hochreiter, 1997) (<a href="https://ieeexplore.ieee.org/abstract/document/6795963/">paper</a>)</li>
+<li><a href="https://github.com/timeseriesAI/tsai/blob/main/tsai/models/RNN.py">GRU</a> (Cho, 2014) (<a href="https://arxiv.org/abs/1412.3555">paper</a>)</li>
+<li><a href="https://github.com/timeseriesAI/tsai/blob/main/tsai/models/MLP.py">MLP</a> - Multilayer Perceptron (Wang, 2016) (<a href="https://arxiv.org/abs/1611.06455">paper</a>)</li>
+<li><a href="https://github.com/timeseriesAI/tsai/blob/main/tsai/models/FCN.py">FCN</a> - Fully Convolutional Network (Wang, 2016) (<a href="https://arxiv.org/abs/1611.06455">paper</a>)</li>
+<li><a href="https://github.com/timeseriesAI/tsai/blob/main/tsai/models/ResNet.py">ResNet</a> - Residual Network (Wang, 2016) (<a href="https://arxiv.org/abs/1611.06455">paper</a>)</li>
+<li><a href="https://github.com/timeseriesAI/tsai/blob/main/tsai/models/RNN_FCN.py">LSTM-FCN</a> (Karim, 2017) (<a href="https://arxiv.org/abs/1709.05206">paper</a>)</li>
+<li><a href="https://github.com/timeseriesAI/tsai/blob/main/tsai/models/RNN_FCN.py">GRU-FCN</a> (Elsayed, 2018) (<a href="https://arxiv.org/abs/1812.07683">paper</a>)</li>
+<li><a href="https://github.com/timeseriesAI/tsai/blob/main/tsai/models/mWDN.py">mWDN</a> - Multilevel wavelet decomposition network (Wang, 2018) (<a href="https://dl.acm.org/doi/abs/10.1145/3219819.3220060">paper</a>)</li>
+<li><a href="https://github.com/timeseriesAI/tsai/blob/main/tsai/models/TCN.py">TCN</a> - Temporal Convolutional Network (Bai, 2018) (<a href="https://arxiv.org/abs/1803.01271">paper</a>)</li>
+<li><a href="https://github.com/timeseriesAI/tsai/blob/main/tsai/models/RNN_FCN.py">MLSTM-FCN</a> - Multivariate LSTM-FCN (Karim, 2019) (<a href="https://www.sciencedirect.com/science/article/abs/pii/S0893608019301200">paper</a>)</li>
+<li><a href="https://github.com/timeseriesAI/tsai/blob/main/tsai/models/InceptionTime.py">InceptionTime</a> (Fawaz, 2019) (<a href="https://arxiv.org/abs/1909.04939">paper</a>)</li>
+<li><a href="https://github.com/timeseriesAI/tsai/blob/main/tsai/models/ROCKET.py">Rocket</a> (Dempster, 2019) (<a href="https://arxiv.org/abs/1910.13051">paper</a>)</li>
+<li><a href="https://github.com/timeseriesAI/tsai/blob/main/tsai/models/XceptionTime.py">XceptionTime</a> (Rahimian, 2019) (<a href="https://arxiv.org/abs/1911.03803">paper</a>)</li>
+<li><a href="https://github.com/timeseriesAI/tsai/blob/main/tsai/models/TabModel.py">TabModel</a> - modified from fastai's <a href="https://docs.fast.ai/tabular.model.html#TabularModel">TabularModel</a></li>
+<li><a href="https://github.com/timeseriesAI/tsai/blob/main/tsai/models/OmniScaleCNN.py">OmniScale</a> - Omni-Scale 1D-CNN (Tang, 2020) (<a href="https://arxiv.org/abs/2002.10061">paper</a>)</li>
+<li><a href="https://github.com/timeseriesAI/tsai/blob/main/tsai/models/ResCNN.py">ResCNN</a> - 1D-ResCNN (Sun , 2020) (<a href="https://arxiv.org/abs/2010.02803">paper</a>)</li>
+<li><a href="https://github.com/timeseriesAI/tsai/blob/main/tsai/models/TST.py">TST</a> - Time Series Transformer (Zerveas, 2020) (<a href="https://dl.acm.org/doi/abs/10.1145/3447548.3467401">paper</a>)</li>
+<li><a href="https://github.com/timeseriesAI/tsai/blob/main/tsai/models/TabTransformer.py">TabTransformer</a> (Huang, 2020) (<a href="https://arxiv.org/pdf/2012.06678">paper</a>)</li>
+<li><a href="https://github.com/timeseriesAI/tsai/blob/main/tsai/models/XCM.py">XCM</a> - Explainable Convolutional Neural Network) (Fauvel, 2020) (<a href="https://arxiv.org/abs/2005.03645">paper</a>)</li>
+<li><a href="https://github.com/timeseriesAI/tsai/blob/main/tsai/models/MINIROCKET.py">MiniRocket</a> (Dempster, 2021) (<a href="https://arxiv.org/abs/2102.00457">paper</a>)</li>
 </ul>
 <p>among others!</p>
 
@@ -199,11 +198,9 @@ It provides an overview of a time series classification task.</p>
 
 <pre><code>from tsai.all import *
 X, y, splits = get_classification_data('ECG200', split_data=False)
-tfms = [None, TSClassification()]
 batch_tfms = TSStandardize()
-dls = get_ts_dls(X, y, splits=splits, tfms=tfms, batch_tfms=batch_tfms)
-learn = ts_learner(dls, InceptionTimePlus, metrics=accuracy, cbs=ShowGraph())
-learn.fit_one_cycle(100, 3e-4)</code></pre>
+clf = TSClassifier(X, y, splits=splits, arch=InceptionTimePlus, batch_tfms=batch_tfms, metrics=accuracy, cbs=ShowGraph(), verbose=True)
+clf.fit_one_cycle(100, 3e-4)</code></pre>
 
 </div>
 </div>
@@ -219,11 +216,9 @@ learn.fit_one_cycle(100, 3e-4)</code></pre>
 
 <pre><code>from tsai.all import *
 X, y, splits = get_classification_data('LSST', split_data=False)
-tfms = [None, TSClassification()]
 batch_tfms = TSStandardize(by_sample=True)
-dls = get_ts_dls(X, y, splits=splits, tfms=tfms, batch_tfms=batch_tfms)
-learn = ts_learner(dls, InceptionTimePlus, metrics=accuracy, cbs=ShowGraph())
-learn.fit_one_cycle(10, 1e-2)</code></pre>
+clf = TSClassifier(X, y, splits=splits, arch=InceptionTimePlus, batch_tfms=batch_tfms, metrics=accuracy, cbs=ShowGraph(), verbose=True)
+clf.fit_one_cycle(10, 1e-2)</code></pre>
 
 </div>
 </div>
