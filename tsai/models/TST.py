@@ -144,7 +144,7 @@ class TST(Module):
             d_ff: the dimension of the feedforward network model.
             res_dropout: amount of residual dropout applied in the encoder.
             act: the activation function of intermediate layer, relu or gelu.
-            num_layers: the number of sub-encoder-layers in the encoder.
+            n_layers: the number of sub-encoder-layers in the encoder.
             fc_dropout: dropout applied to the final fully connected layer.
             y_range: range of possible y values (used in regression tasks).
             kwargs: nn.Conv1d kwargs. If not {}, a nn.Conv1d with those kwargs will be applied to original time series.
