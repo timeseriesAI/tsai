@@ -67,7 +67,7 @@ nb_path: "nbs/108b_models.TST.ipynb"
 <li>d_ff: the dimension of the feedforward network model. Usual values: 256-4096. Default: 256.</li>
 <li>res_dropout: amount of residual dropout applied in the encoder. Usual values: 0.-0.3. Default: 0.1.</li>
 <li>activation: the activation function of intermediate layer, relu or gelu. Default: 'gelu'.</li>
-<li>num_layers: the number of sub-encoder-layers in the encoder. Usual values: 2-8. Default: 3.</li>
+<li>n_layers: the number of sub-encoder-layers in the encoder. Usual values: 2-8. Default: 3.</li>
 <li>fc_dropout: dropout applied to the final fully connected layer. Usual values: 0.-0.8. Default: 0.</li>
 <li>y_range: range of possible y values (used in regression tasks). Default: None</li>
 <li>kwargs: nn.Conv1d kwargs. If not {}, a nn.Conv1d with those kwargs will be applied to original time series.</li>
