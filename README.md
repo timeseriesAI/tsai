@@ -20,7 +20,7 @@
 ## What's new:
 
 #### September, 2021
-* `tsai` just got easier to use with the new sklearn-like APIs: `TSClassifier`, `TSRegressor`, and `TSForecaster`!! See [this](https://timeseriesai.github.io/tsai/learner.html) for more info.
+* `tsai` just got easier to use with the new sklearn-like APIs: `TSClassifier`, `TSRegressor`, and `TSForecaster`!! See [this](https://timeseriesai.github.io/tsai/tslearner.html) for more info.
 * 🚀🚀 New tutorial notebook on how to **train your model with larger-than-memory datasets in less time achieving 100% GPU usage!!** 🚀🚀   <a href="https://colab.research.google.com/github/timeseriesAI/tsai/blob/master/tutorial_nbs/11_How_to_train_big_arrays_fast_in_tsai.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 
 * **`tsai` supports now more input formats**: np.array, np.memmap, zarr, xarray, dask, list, L, ...
@@ -147,8 +147,8 @@ ts = get_forecasting_time_series("Sunspots").values
 X, y = SlidingWindow(60, horizon=1)(ts)
 splits = TimeSplitter(235)(y) 
 batch_tfms = TSStandardize()
-learn = TSForecaster(X, y, splits=splits, batch_tfms=batch_tfms, bs=512, arch=TST, metrics=mae, cbs=ShowGraph())
-learn.fit_one_cycle(50, 1e-3)
+fcst = TSForecaster(X, y, splits=splits, batch_tfms=batch_tfms, bs=512, arch=TST, metrics=mae, cbs=ShowGraph())
+fcst.fit_one_cycle(50, 1e-3)
 ```
 
 ## How to contribute to tsai?

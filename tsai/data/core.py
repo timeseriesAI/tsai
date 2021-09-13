@@ -265,8 +265,8 @@ class NumpyDatasets(Datasets):
 
         self.tfms, self.inplace = tfms, inplace
 
-        if X is not None and (inplace or not hasattr(X, '__array__')): X = np.asarray(X)
-        if y is not None and (inplace or not hasattr(y, '__array__')):  y = np.asarray(y)
+        if X is not None and not hasattr(X, '__array__'): X = np.asarray(X)
+        if y is not None and not hasattr(y, '__array__'):  y = np.asarray(y)
 
         if tls is None:
             items = tuple((X,)) if y is None else tuple((X, y))
@@ -278,7 +278,7 @@ class NumpyDatasets(Datasets):
                 lts = [NoTfmLists if (t is None and not inplace) else TSTfmdLists if getattr(t, 'vectorized', None) else TfmdLists for t in self.tfms]
 
             self.tls = L(lt(item, t, **kwargs) for lt,item,t in zip(lts, items, self.tfms))
-            if len(items) == 2 and torch.is_tensor(self.tls[1][0]): self.typs = (self.typs[0], type(self.tls[1][0]))
+            self.typs = [type(tl[0]) if isinstance(tl[0], torch.Tensor) else self.typs[i] for i,tl in enumerate(self.tls)]
             self.ptls = L([typ(stack(tl[:])) for i,(tl,typ) in enumerate(zip(self.tls,self.typs))]) if inplace else self.tls
         else:
             self.tls = tls
@@ -299,8 +299,12 @@ class NumpyDatasets(Datasets):
             return tuple([typ(stack(ptl[it])) for i,(ptl,typ) in enumerate(zip(self.ptls,self.typs))])
 
     def subset(self, i):
-        return type(self)(tls=L([tl.subset(i) for tl in self.tls]), inplace=self.inplace, tfms=self.tfms,
-                          splits=None if self.splits is None else self.splits[i], split_idx=i)
+        if is_indexer(i):
+            return type(self)(tls=L([tl.subset(i) for tl in self.tls]), inplace=self.inplace, tfms=self.tfms,
+                              splits=None if self.splits is None else self.splits[i], split_idx=i)
+        else:
+            splits = None if self.splits is None else L(np.arange(len(i)).tolist())
+            return type(self)(*self[i], inplace=True, tfms=None, splits=splits, split_idx=ifnone(self.split_idx, 1))
 
     def __len__(self): return len(self.tls[0])
 
@@ -334,8 +338,8 @@ class TSDatasets(NumpyDatasets):
 
         self.sel_vars, self.sel_steps, self.tfms, self.inplace = ifnone(sel_vars, slice(None)), ifnone(sel_steps,slice(None)), tfms, inplace
 
-        if X is not None and (inplace or not hasattr(X, '__array__')): X = np.asarray(X)
-        if y is not None and (inplace or not hasattr(y, '__array__')):  y = np.asarray(y)
+        if X is not None and not hasattr(X, '__array__'): X = np.asarray(X)
+        if y is not None and not hasattr(y, '__array__'):  y = np.asarray(y)
 
         if tls is None:
             items = tuple((X,)) if y is None else tuple((X, y))
@@ -347,7 +351,7 @@ class TSDatasets(NumpyDatasets):
                 lts = [NoTfmLists if (t is None and not inplace) else TSTfmdLists if getattr(t, 'vectorized', None) else TfmdLists for t in self.tfms]
 
             self.tls = L(lt(item, t, **kwargs) for lt,item,t in zip(lts, items, self.tfms))
-            if len(items) == 2 and torch.is_tensor(self.tls[1][0]): self.typs = (self.typs[0], type(self.tls[1][0]))
+            self.typs = [type(tl[0]) if isinstance(tl[0], torch.Tensor) else self.typs[i] for i,tl in enumerate(self.tls)]
             self.ptls = L([typ(stack(tl[:]))[...,self.sel_vars, self.sel_steps] if i==0 else typ(stack(tl[:])) \
                             for i,(tl,typ) in enumerate(zip(self.tls,self.typs))]) if inplace else self.tls
         else:
@@ -371,8 +375,13 @@ class TSDatasets(NumpyDatasets):
                           for i,(ptl,typ) in enumerate(zip(self.ptls,self.typs))])
 
     def subset(self, i):
-        return type(self)(tls=L([tl.subset(i) for tl in self.tls]), inplace=self.inplace, tfms=self.tfms,
-                          sel_vars=self.sel_vars, sel_steps=self.sel_steps, splits=None if self.splits is None else self.splits[i], split_idx=i)
+        if is_indexer(i):
+            return type(self)(tls=L([tl.subset(i) for tl in self.tls]), inplace=self.inplace, tfms=self.tfms,
+                              sel_vars=self.sel_vars, sel_steps=self.sel_steps, splits=None if self.splits is None else self.splits[i], split_idx=i)
+        else:
+            splits = None if self.splits is None else L(np.arange(len(i)).tolist())
+            return type(self)(*self[i], inplace=True, tfms=None,
+                              sel_vars=self.sel_vars, sel_steps=self.sel_steps, splits=splits, split_idx=ifnone(self.split_idx, 1))
 
 # Cell
 
@@ -728,4 +737,4 @@ def get_ts_dl(X, y=None, sel_vars=None, sel_steps=None, tfms=None, inplace=True,
 
 get_tsimage_dls = get_ts_dls
 
-def get_subset_dl(dl, idxs): return dl.new(dl.dataset[np.asarray(idxs)])
+def get_subset_dl(dl, idxs): return dl.new(dl.dataset.subset(idxs))

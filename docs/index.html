@@ -55,7 +55,7 @@ nb_path: "nbs/index.ipynb"
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h4 id="September,-2021">September, 2021<a class="anchor-link" href="#September,-2021"> </a></h4><ul>
-<li><code>tsai</code> just got easier to use with the new sklearn-like APIs: <a href="/tslearner.html#TSClassifier"><code>TSClassifier</code></a>, <a href="/tslearner.html#TSRegressor"><code>TSRegressor</code></a>, and <a href="/tslearner.html#TSForecaster"><code>TSForecaster</code></a>!! See <a href="https://timeseriesai.github.io/tsai/learner.html">this</a> for more info.</li>
+<li><code>tsai</code> just got easier to use with the new sklearn-like APIs: <a href="/tslearner.html#TSClassifier"><code>TSClassifier</code></a>, <a href="/tslearner.html#TSRegressor"><code>TSRegressor</code></a>, and <a href="/tslearner.html#TSForecaster"><code>TSForecaster</code></a>!! See <a href="https://timeseriesai.github.io/tsai/tslearner.html">this</a> for more info.</li>
 <li><p>🚀🚀 New tutorial notebook on how to <strong>train your model with larger-than-memory datasets in less time achieving 100% GPU usage!!</strong> 🚀🚀   <a href="https://colab.research.google.com/github/timeseriesAI/tsai/blob/master/tutorial_nbs/11_How_to_train_big_arrays_fast_in_tsai.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a></p>
 </li>
 <li><p><strong><code>tsai</code> supports now more input formats</strong>: np.array, np.memmap, zarr, xarray, dask, list, L, ...</p>
@@ -258,8 +258,8 @@ ts = get_forecasting_time_series("Sunspots").values
 X, y = SlidingWindow(60, horizon=1)(ts)
 splits = TimeSplitter(235)(y) 
 batch_tfms = TSStandardize()
-learn = TSForecaster(X, y, splits=splits, batch_tfms=batch_tfms, bs=512, arch=TST, metrics=mae, cbs=ShowGraph())
-learn.fit_one_cycle(50, 1e-3)</code></pre>
+fcst = TSForecaster(X, y, splits=splits, batch_tfms=batch_tfms, bs=512, arch=TST, metrics=mae, cbs=ShowGraph())
+fcst.fit_one_cycle(50, 1e-3)</code></pre>
 
 </div>
 </div>
