@@ -29,8 +29,8 @@ class NumpyTensor(TensorBase):
     def data(self): return cast(self, Tensor).data
 
     def __repr__(self):
-        if self.ndim > 0: return f'NumpyTensor(shape:{tuple(self.shape)})'
-        else: return f'{self}'
+        if self.ndim > 0: return f'NumpyTensor(shape:{tuple(self.shape)}, device={self.device})'
+        else: return f'NumpyTensor([{self}], device={self.device})'
 
 
     def show(self, ax=None, ctx=None, title=None, **kwargs):
@@ -66,12 +66,12 @@ class TSTensor(NumpyTensor):
 
     def __repr__(self):
         if self.ndim >= 3:
-            return f'TSTensor(samples:{self.shape[-3]}, vars:{self.shape[-2]}, len:{self.shape[-1]})'
+            return f'TSTensor(samples:{self.shape[-3]}, vars:{self.shape[-2]}, len:{self.shape[-1]}, device={self.device})'
         elif self.ndim == 2:
-            return f'TSTensor(vars:{self.shape[-2]}, len:{self.shape[-1]})'
+            return f'TSTensor(vars:{self.shape[-2]}, len:{self.shape[-1]}, device={self.device})'
         elif self.ndim == 1:
-            return f'TSTensor(len:{self.shape[-1]})'
-        else: return f'{self}'
+            return f'TSTensor(len:{self.shape[-1]}, device={self.device})'
+        else: return f'TSTensor([{self}], device={self.device})'
 
 
 class ToTSTensor(Transform):
