@@ -13,11 +13,11 @@ __all__ = ['my_setup', 'computer_setup', 'totensor', 'toarray', 'toL', 'to3dtens
            'fig2buf', 'plot_scatter', 'get_idxs', 'apply_cmap', 'torch_tile', 'to_tsfresh_df', 'pcorr', 'scorr',
            'torch_diff', 'get_outliers_IQR', 'clip_outliers', 'get_percentile', 'torch_clamp', 'torch_slice_by_dim',
            'torch_nanmean', 'torch_nanstd', 'concat', 'reduce_memory_usage', 'cls_name', 'roll2d', 'roll3d',
-           'random_roll2d', 'random_roll3d', 'rotate_axis0', 'rotate_axis1', 'rotate_axis2', 'create_empty_array',
-           'np_save_compressed', 'np_load_compressed', 'np2memmap', 'torch_mean_groupby', 'torch_flip',
-           'torch_nan_to_num', 'torch_masked_to_num', 'mpl_trend', 'int2digits', 'array2digits', 'sincos_encoding',
-           'linear_encoding', 'encode_positions', 'sort_generator', 'get_subset_dict', 'chunks_calculator',
-           'is_memory_shared']
+           'random_roll2d', 'random_roll3d', 'rotate_axis0', 'rotate_axis1', 'rotate_axis2', 'chunks_calculator',
+           'create_array', 'create_empty_array', 'np_save_compressed', 'np_load_compressed', 'np2memmap',
+           'torch_mean_groupby', 'torch_flip', 'torch_nan_to_num', 'torch_masked_to_num', 'mpl_trend', 'int2digits',
+           'array2digits', 'sincos_encoding', 'linear_encoding', 'encode_positions', 'sort_generator',
+           'get_subset_dict', 'is_memory_shared']
 
 # Cell
 
@@ -779,13 +779,32 @@ def rotate_axis2(o, steps=1):
     return o[:, :, np.arange(o.shape[2]) - steps]
 
 # Cell
-def create_empty_array(shape, fname=None, path='./data', on_disk=True, dtype='float32', mode='r+', **kwargs):
+
+def chunks_calculator(shape, dtype='float32', n_bytes=1024**3):
+    """Function to calculate chunks for a given size of n_bytes (default = 1024**3 == 1GB).
+    It guarantees > 50% of the chunk will be filled"""
+
+    X  = np.random.rand(1, *shape[1:]).astype(dtype)
+    byts = get_size(X)
+    n = n_bytes // byts
+    if shape[0] / n <= 1: return False
+    remainder = shape[0] % n
+    if remainder / n < .5:
+        n_chunks = shape[0] // n
+        n += np.ceil(remainder / n_chunks).astype(int)
+    return (n, -1, -1)
+
+# Cell
+
+def create_array(shape, fname=None, path='./data', on_disk=True, dtype='float32', mode='r+', fill_value='rand', chunksize='auto', verbose=True, **kwargs):
     """
     mode:
         ‘r’:  Open existing file for reading only.
         ‘r+’: Open existing file for reading and writing.
         ‘w+’: Create or overwrite existing file for reading and writing.
         ‘c’:  Copy-on-write: assignments affect data in memory, but changes are not saved to disk. The file on disk is read-only.
+    fill_value: 'rand' (for random numbers), int or float
+    chunksize = 'auto' to calculate chunks of 1GB, or any integer (for a given number of samples)
     """
     if on_disk:
         assert fname is not None, 'you must provide a fname (filename)'
@@ -805,7 +824,20 @@ def create_empty_array(shape, fname=None, path='./data', on_disk=True, dtype='fl
         arr = np.load(filename, mmap_mode=mode)
     else:
         arr = np.empty(shape, dtype=dtype, **kwargs)
+    if fill_value != 0:
+        if isinstance(fill_value, Integral):
+            arr[:] = fill_value
+        elif fill_value == "rand":
+            if chunksize == "auto":
+                chunksize = chunks_calculator(shape, dtype)
+                chunksize = len(arr) if not chunksize else  chunksize[0]
+            for i in progress_bar(range((len(arr) - 1) // chunksize + 1), display=verbose, leave=False):
+                start, end = i * chunksize, min(len(arr), (i + 1) * chunksize)
+                if start >= len(arr): break
+                arr[start:end] = np.random.rand(end - start, *shape[1:])
     return arr
+
+create_empty_array = partial(create_array, fill_value=0)
 
 # Cell
 import gzip
@@ -956,22 +988,6 @@ def sort_generator(generator, bs):
 
 def get_subset_dict(d, keys):
     return dict((k,d[k]) for k in listify(keys) if k in d)
-
-# Cell
-
-def chunks_calculator(shape, dtype='float32', n_bytes=1024**3):
-    """Function to calculate chunks for a given size of n_bytes (default = 1024**3 == 1GB).
-    It guarantees > 50% of the chunk will be filled"""
-
-    X  = np.random.rand(1, *shape[1:]).astype(dtype)
-    byts = get_size(X)
-    n = n_bytes // byts
-    if shape[0] / n <= 1: return False
-    remainder = shape[0] % n
-    if remainder / n < .5:
-        n_chunks = shape[0] // n
-        n += np.ceil(remainder / n_chunks).astype(int)
-    return (n, -1, -1)
 
 # Cell
 
