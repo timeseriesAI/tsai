@@ -14,10 +14,10 @@ __all__ = ['my_setup', 'computer_setup', 'totensor', 'toarray', 'toL', 'to3dtens
            'torch_diff', 'get_outliers_IQR', 'clip_outliers', 'get_percentile', 'torch_clamp', 'torch_slice_by_dim',
            'torch_nanmean', 'torch_nanstd', 'concat', 'reduce_memory_usage', 'cls_name', 'roll2d', 'roll3d',
            'random_roll2d', 'random_roll3d', 'rotate_axis0', 'rotate_axis1', 'rotate_axis2', 'chunks_calculator',
-           'create_array', 'create_empty_array', 'np_save_compressed', 'np_load_compressed', 'np2memmap',
-           'torch_mean_groupby', 'torch_flip', 'torch_nan_to_num', 'torch_masked_to_num', 'mpl_trend', 'int2digits',
-           'array2digits', 'sincos_encoding', 'linear_encoding', 'encode_positions', 'sort_generator',
-           'get_subset_dict', 'is_memory_shared']
+           'is_memory_shared', 'create_array', 'create_empty_array', 'np_save_compressed', 'np_load_compressed',
+           'np2memmap', 'torch_mean_groupby', 'torch_flip', 'torch_nan_to_num', 'torch_masked_to_num', 'mpl_trend',
+           'int2digits', 'array2digits', 'sincos_encoding', 'linear_encoding', 'encode_positions', 'sort_generator',
+           'get_subset_dict']
 
 # Cell
 
@@ -796,6 +796,22 @@ def chunks_calculator(shape, dtype='float32', n_bytes=1024**3):
 
 # Cell
 
+def is_memory_shared(a, b):
+    r"""Test function to check if 2 array-like object share memory.
+    Be careful because it changes their values!!!)"""
+
+    try:
+        a[:] = 1
+    except:
+        try:
+            b[:] = 1
+        except:
+            print('unknown')
+            return
+    return torch.equal(tensor(a), tensor(b))
+
+# Cell
+
 def create_array(shape, fname=None, path='./data', on_disk=True, dtype='float32', mode='r+', fill_value='rand', chunksize='auto', verbose=True, **kwargs):
     """
     mode:
@@ -825,16 +841,7 @@ def create_array(shape, fname=None, path='./data', on_disk=True, dtype='float32'
     else:
         arr = np.empty(shape, dtype=dtype, **kwargs)
     if fill_value != 0:
-        if isinstance(fill_value, Integral):
-            arr[:] = fill_value
-        elif fill_value == "rand":
-            if chunksize == "auto":
-                chunksize = chunks_calculator(shape, dtype)
-                chunksize = len(arr) if not chunksize else  chunksize[0]
-            for i in progress_bar(range((len(arr) - 1) // chunksize + 1), display=verbose, leave=False):
-                start, end = i * chunksize, min(len(arr), (i + 1) * chunksize)
-                if start >= len(arr): break
-                arr[start:end] = np.random.rand(end - start, *shape[1:])
+        arr = assign_in_chunks(arr, fill_value, chunksize=chunksize, verbose=verbose)
     return arr
 
 create_empty_array = partial(create_array, fill_value=0)
@@ -988,19 +995,3 @@ def sort_generator(generator, bs):
 
 def get_subset_dict(d, keys):
     return dict((k,d[k]) for k in listify(keys) if k in d)
-
-# Cell
-
-def is_memory_shared(a, b):
-    r"""Test function to check if 2 array-like object share memory.
-    Be careful because it changes their values!!!)"""
-
-    try:
-        a[:] = 1
-    except:
-        try:
-            b[:] = 1
-        except:
-            print('unknown')
-            return
-    return torch.equal(tensor(a), tensor(b))

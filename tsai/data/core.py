@@ -4,7 +4,8 @@ __all__ = ['NumpyTensor', 'ToNumpyTensor', 'TSTensor', 'ToTSTensor', 'show_tuple
            'ToFloat', 'ToInt', 'TSClassification', 'TSRegression', 'TSForecasting', 'TSMultiLabelClassification',
            'NumpyTensorBlock', 'TSTensorBlock', 'TorchDataset', 'NumpyDataset', 'TSDataset', 'NoTfmLists',
            'TSTfmdLists', 'NumpyDatasets', 'tscoll_repr', 'TSDatasets', 'add_ds', 'NumpyDataLoader', 'TSDataLoader',
-           'NumpyDataLoaders', 'TSDataLoaders', 'get_ts_dls', 'get_ts_dl', 'get_subset_dl', 'get_tsimage_dls']
+           'NumpyDataLoaders', 'TSDataLoaders', 'get_best_dl_params', 'get_best_dls_params', 'get_ts_dls', 'get_ts_dl',
+           'get_subset_dl', 'get_tsimage_dls']
 
 # Cell
 from ..imports import *
@@ -88,20 +89,17 @@ def show_tuple(tup, **kwargs):
     tup[0].show(title=title, **kwargs)
 
 # Cell
-
 class TSLabelTensor(NumpyTensor):
     def __repr__(self):
         if self.ndim == 0: return f'{self}'
         else: return f'TSLabelTensor(shape:{tuple(self.shape)})'
 
-# export
 class TSMaskTensor(NumpyTensor):
     def __repr__(self):
         if self.ndim == 0: return f'{self}'
         else: return f'TSMaskTensor(shape:{tuple(self.shape)})'
 
 # Cell
-
 class ToFloat(Transform):
     "Transforms an object dtype to float"
     loss_func=MSELossFlat()
@@ -147,7 +145,6 @@ class TSRegression(ToFloat):
 TSForecasting = ToFloat
 
 # Cell
-
 class TSMultiLabelClassification(Categorize):
     "Reversible combined transform of multi-category strings to one-hot encoded `vocab` id"
     loss_func,order=BCEWithLogitsLossFlat(),1
@@ -189,7 +186,6 @@ class TSTensorBlock():
         self.dl_type,self.dls_kwargs = dl_type,({} if dls_kwargs is None else dls_kwargs)
 
 # Cell
-
 class TorchDataset():
     def __init__(self, X, y=None): self.X, self.y = X, y
     def __getitem__(self, idx): return (self.X[idx],) if self.y is None else (self.X[idx], self.y[idx])
@@ -217,7 +213,6 @@ class TSDataset():
     def __len__(self): return len(self.X)
 
 # Cell
-
 def _flatten_list(l):
     if not is_listy(l) or len(l) == 0: return l
     return [item for sublist in l for item in listify(sublist)]
@@ -254,7 +249,6 @@ class TSTfmdLists(TfmdLists):
         else: return self._after_item(res)
 
 # Cell
-
 @delegates(Datasets.__init__)
 class NumpyDatasets(Datasets):
     "A dataset that creates tuples from X (and y) and applies `tfms` of type item_tfms"
@@ -327,7 +321,6 @@ def tscoll_repr(c, max_n=10):
     return f'(#{_len}) {L(c[i] for i in range(min(len(c), max_n)))} ...]'
 
 # Cell
-
 @delegates(NumpyDatasets.__init__)
 class TSDatasets(NumpyDatasets):
     """A dataset that creates tuples from X (and optionally y) and applies `item_tfms`"""
@@ -384,7 +377,6 @@ class TSDatasets(NumpyDatasets):
                               sel_vars=self.sel_vars, sel_steps=self.sel_steps, splits=splits, split_idx=ifnone(self.split_idx, 1))
 
 # Cell
-
 def add_ds(dsets, X, y=None, inplace=True):
     "Create test datasets from X (and y) using validation transforms of `dsets`"
     items = tuple((X,)) if y is None else tuple((X, y))
@@ -421,7 +413,6 @@ def _one_pass(self:TfmdDL):
     self._types = explode_types(its)
 
 # Cell
-
 _batch_tfms = ('after_item','before_batch','after_batch')
 
 @delegates(TfmdDL.__init__)
@@ -651,7 +642,6 @@ class TSDataLoader(NumpyDataLoader):
         else: return xb[0].shape[-1]
 
 # Cell
-
 _batch_tfms = ('after_item','before_batch','after_batch')
 
 class NumpyDataLoaders(DataLoaders):
@@ -716,7 +706,112 @@ class TSDataLoaders(NumpyDataLoaders):
     _dl_type = TSDataLoader
 
 # Cell
+def get_best_dl_params(dl, n_iters=10, num_workers=[0, 1, 2, 4, 8], pin_memory=False, prefetch_factor=[2, 4, 8], return_best=True, verbose=True):
 
+    if not torch.cuda.is_available():
+        num_workers = 0
+    n_iters = min(n_iters, len(dl))
+    if not return_best: verbose = True
+
+    nw = dl.fake_l.num_workers
+    pm = dl.fake_l.pin_memory
+    pf = dl.fake_l.prefetch_factor
+
+    try:
+        best_nw = nw
+        best_pm = pm
+        best_pf = pf
+
+        # num_workers
+        if not num_workers: best_nw = nw
+        elif isinstance(num_workers, Integral): best_nw = num_workers
+        else:
+            best_time = np.inf
+            for _nw in num_workers:
+                dl.fake_l.num_workers = _nw
+                timer.start(False)
+                for i, _ in enumerate(dl):
+                    if i == n_iters - 1:
+                        t = timer.stop().total_seconds() / (i + 1)
+                        pv(f'   num_workers: {_nw:2}  pin_memory: {pm!s:^5}  prefetch_factor: {pf:2}  -  time: {1_000 * t/n_iters:8.3f} ms/iter', verbose)
+                        if t < best_time:
+                            best_nw = _nw
+                            best_time = t
+                        break
+        dl.fake_l.num_workers = best_nw
+
+
+        # pin_memory
+        if not pin_memory: best_pm = pm
+        elif isinstance(pin_memory, bool): best_pm = pin_memory
+        else:
+            best_time = np.inf
+            if not pin_memory: pin_memory = [pm]
+            for _pm in pin_memory:
+                dl.fake_l.pin_memory = _pm
+                timer.start(False)
+                for i, _ in enumerate(dl):
+                    if i == n_iters - 1:
+                        t = timer.stop().total_seconds() / (i + 1)
+                        pv(f'   num_workers: {best_nw:2}  pin_memory: {_pm!s:^5}  prefetch_factor: {pf:2}  -  time: {1_000 * t/n_iters:8.3f} ms/iter',
+                           verbose)
+                        if t < best_time:
+                            best_pm = _pm
+                            best_time = t
+                        break
+        dl.fake_l.pin_memory = best_pm
+
+        # prefetch_factor
+        if not prefetch_factor: best_pf = pf
+        elif isinstance(prefetch_factor, Integral): best_pf = prefetch_factor
+        else:
+            best_time = np.inf
+            if not prefetch_factor: prefetch_factor = [pf]
+            for _pf in prefetch_factor:
+                dl.fake_l.prefetch_factor = _pf
+                timer.start(False)
+                for i, _ in enumerate(dl):
+                    if i == n_iters - 1:
+                        t = timer.stop().total_seconds() / (i + 1)
+                        pv(f'   num_workers: {best_nw:2}  pin_memory: {best_pm!s:^5}  prefetch_factor: {_pf:2}  -  time: {1_000 * t/n_iters:8.3f} ms/iter',
+                           verbose)
+                        if t < best_time:
+                            best_pf = _pf
+                            best_time = t
+                        break
+        dl.fake_l.prefetch_factor = best_pf
+
+    except KeyboardInterrupt:
+        dl.fake_l.num_workers = best_nw if return_best else nw
+        dl.fake_l.pin_memory = best_pm if return_best else pm
+        dl.fake_l.prefetch_factor = best_pf if return_best else pf
+
+    if not return_best:
+        dl.fake_l.num_workers = nw
+        dl.fake_l.pin_memory = pm
+        dl.fake_l.prefetch_factor = pf
+
+    if verbose:
+        print('\n   best dl params:')
+        print(f'       best num_workers    : {best_nw}')
+        print(f'       best pin_memory     : {best_pm}')
+        print(f'       best prefetch_factor: {best_pf}')
+        print(f'       return_best         : {return_best}')
+        print('\n')
+
+    return dl
+
+def get_best_dls_params(dls, n_iters=10, num_workers=[0, 1, 2, 4, 8], pin_memory=False, prefetch_factor=[2, 4, 8], return_best=True, verbose=True):
+
+    for i in range(len(dls.loaders)):
+        try:
+            print(f'\nDataloader {i}\n')
+            dls.loaders[i] = get_best_dl_params(dls.loaders[i], n_iters=n_iters, num_workers=num_workers, pin_memory=pin_memory,
+                                            prefetch_factor=prefetch_factor, return_best=return_best, verbose=verbose)
+        except KeyboardInterrupt: pass
+    return dls
+
+# Cell
 def get_ts_dls(X, y=None, splits=None, sel_vars=None, sel_steps=None, tfms=None, inplace=True,
             path='.', bs=64, batch_tfms=None, num_workers=0, device=None, shuffle_train=True, drop_last=True, weights=None, **kwargs):
     if splits is None: splits = (L(np.arange(len(X)).tolist()), L([]))

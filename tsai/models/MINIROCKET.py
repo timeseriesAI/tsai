@@ -10,10 +10,6 @@ from ..data.external import *
 from .layers import *
 
 # Cell
-from sktime.transformations.panel.rocket._minirocket import _fit as minirocket_fit
-from sktime.transformations.panel.rocket._minirocket import _transform as minirocket_transform
-from sktime.transformations.panel.rocket._minirocket_multivariate import _fit_multi as minirocket_fit_multi
-from sktime.transformations.panel.rocket._minirocket_multivariate import _transform_multi as minirocket_transform_multi
 from sktime.transformations.panel.rocket import MiniRocketMultivariate
 from sklearn.linear_model import RidgeCV, RidgeClassifierCV
 from sklearn.ensemble import VotingClassifier, VotingRegressor
