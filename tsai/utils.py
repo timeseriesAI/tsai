@@ -6,26 +6,24 @@ __all__ = ['my_setup', 'computer_setup', 'totensor', 'toarray', 'toL', 'to3dtens
            'delete_all_in_dir', 'reverse_dict', 'is_tuple', 'itemify', 'isnone', 'exists', 'ifelse', 'is_not_close',
            'test_not_close', 'test_type', 'test_ok', 'test_not_ok', 'test_error', 'test_eq_nan', 'assert_fn', 'test_gt',
            'test_ge', 'test_lt', 'test_le', 'stack', 'stack_pad', 'match_seq_len', 'random_shuffle', 'cat2int',
-           'cycle_dl', 'cycle_dl_to_device', 'cache_data', 'memmap2cache', 'cache_memmap', 'get_func_defaults',
-           'get_idx_from_df_col_vals', 'get_sublist_idxs', 'flatten_list', 'display_pd_df', 'ttest', 'tscore',
-           'ttest_tensor', 'pcc', 'scc', 'a', 'b', 'remove_fn', 'npsave', 'np_save', 'permute_2D', 'random_normal',
-           'random_half_normal', 'random_normal_tensor', 'random_half_normal_tensor', 'default_dpi', 'get_plot_fig',
-           'fig2buf', 'plot_scatter', 'get_idxs', 'apply_cmap', 'torch_tile', 'to_tsfresh_df', 'pcorr', 'scorr',
-           'torch_diff', 'get_outliers_IQR', 'clip_outliers', 'get_percentile', 'torch_clamp', 'torch_slice_by_dim',
-           'torch_nanmean', 'torch_nanstd', 'concat', 'reduce_memory_usage', 'cls_name', 'roll2d', 'roll3d',
-           'random_roll2d', 'random_roll3d', 'rotate_axis0', 'rotate_axis1', 'rotate_axis2', 'chunks_calculator',
-           'is_memory_shared', 'create_array', 'create_empty_array', 'np_save_compressed', 'np_load_compressed',
-           'np2memmap', 'torch_mean_groupby', 'torch_flip', 'torch_nan_to_num', 'torch_masked_to_num', 'mpl_trend',
-           'int2digits', 'array2digits', 'sincos_encoding', 'linear_encoding', 'encode_positions', 'sort_generator',
-           'get_subset_dict']
+           'cycle_dl', 'cycle_dl_to_device', 'cycle_dl_estimate', 'cache_data', 'memmap2cache', 'cache_memmap',
+           'get_func_defaults', 'get_idx_from_df_col_vals', 'get_sublist_idxs', 'flatten_list', 'display_pd_df',
+           'ttest', 'tscore', 'ttest_tensor', 'pcc', 'scc', 'a', 'b', 'remove_fn', 'npsave', 'np_save', 'permute_2D',
+           'random_normal', 'random_half_normal', 'random_normal_tensor', 'random_half_normal_tensor', 'default_dpi',
+           'get_plot_fig', 'fig2buf', 'plot_scatter', 'get_idxs', 'apply_cmap', 'torch_tile', 'to_tsfresh_df', 'pcorr',
+           'scorr', 'torch_diff', 'get_outliers_IQR', 'clip_outliers', 'get_percentile', 'torch_clamp',
+           'torch_slice_by_dim', 'torch_nanmean', 'torch_nanstd', 'concat', 'reduce_memory_usage', 'cls_name', 'roll2d',
+           'roll3d', 'random_roll2d', 'random_roll3d', 'rotate_axis0', 'rotate_axis1', 'rotate_axis2',
+           'chunks_calculator', 'is_memory_shared', 'assign_in_chunks', 'create_array', 'create_empty_array',
+           'np_save_compressed', 'np_load_compressed', 'np2memmap', 'torch_mean_groupby', 'torch_flip',
+           'torch_nan_to_num', 'torch_masked_to_num', 'mpl_trend', 'int2digits', 'array2digits', 'sincos_encoding',
+           'linear_encoding', 'encode_positions', 'sort_generator', 'get_subset_dict']
 
 # Cell
-
 from .imports import *
 from fastcore.test import *
 
 # Cell
-
 def my_setup(*pkgs):
     import warnings
     warnings.filterwarnings("ignore")
@@ -322,7 +320,6 @@ def test_le(a,b):
     test(a,b,le,'<=')
 
 # Cell
-
 def stack(o, axis=0, retain=True):
     if hasattr(o, '__array__'): return o
     if isinstance(o[0], torch.Tensor):
@@ -362,8 +359,15 @@ def cycle_dl(dl):
 def cycle_dl_to_device(dl):
     for bs in dl: [b.to(default_device()) for b in bs]
 
-# Cell
+def cycle_dl_estimate(dl, iters=10):
+    iters = min(iters, len(dl))
+    iterator = iter(dl)
+    timer.start(False)
+    for _ in range(iters): next(iterator)
+    t = timer.stop()
+    return (t/iters * len(dl)).total_seconds()
 
+# Cell
 def cache_data(o, slice_len=10_000, verbose=False):
     start = 0
     n_loops = (len(o) - 1) // slice_len + 1
@@ -395,7 +399,6 @@ def get_sublist_idxs(aList, bList):
     return np.argsort(aList)[np.searchsorted(sorted_aList, bList)]
 
 # Cell
-
 def flatten_list(l):
     return [item for sublist in l for item in sublist]
 
@@ -435,8 +438,6 @@ def ttest_tensor(a, b):
     return t_stat
 
 # Cell
-
-#export
 from scipy.stats import pearsonr, spearmanr
 
 def pcc(a, b):
@@ -704,7 +705,6 @@ def reduce_memory_usage(df):
 def cls_name(o): return o.__class__.__name__
 
 # Cell
-
 def roll2d(o, roll1: Union[None, list, int] = None, roll2: Union[None, list, int] = None):
     """Rolls a 2D object on the indicated axis
     This solution is based on https://stackoverflow.com/questions/20360675/roll-rows-of-a-matrix-independently
@@ -779,7 +779,6 @@ def rotate_axis2(o, steps=1):
     return o[:, :, np.arange(o.shape[2]) - steps]
 
 # Cell
-
 def chunks_calculator(shape, dtype='float32', n_bytes=1024**3):
     """Function to calculate chunks for a given size of n_bytes (default = 1024**3 == 1GB).
     It guarantees > 50% of the chunk will be filled"""
@@ -795,7 +794,6 @@ def chunks_calculator(shape, dtype='float32', n_bytes=1024**3):
     return (n, -1, -1)
 
 # Cell
-
 def is_memory_shared(a, b):
     r"""Test function to check if 2 array-like object share memory.
     Be careful because it changes their values!!!)"""
@@ -811,7 +809,33 @@ def is_memory_shared(a, b):
     return torch.equal(tensor(a), tensor(b))
 
 # Cell
+def assign_in_chunks(a, b, chunksize='auto', inplace=True, verbose=True):
+    """Assigns values in b to an array-like object a using chunks to avoid memory overload.
 
+    The resulting a retains it's dtype and share it's memory.
+    a: array-like object
+    b: may be an integer, float, str, 'rand' (for random data), or another array like object.
+    chunksize: is the size of chunks. If 'auto' chunks will have around 1GB each.
+    """
+
+    if b != 'rand' and not isinstance(b, (Iterable, Generator)):
+        a[:] = b
+    else:
+        shape = a.shape
+        dtype = a.dtype
+        if chunksize == "auto":
+            chunksize = chunks_calculator(shape, dtype)
+            chunksize = shape[0] if not chunksize else  chunksize[0]
+        for i in progress_bar(range((shape[0] - 1) // chunksize + 1), display=verbose, leave=False):
+            start, end = i * chunksize, min(shape[0], (i + 1) * chunksize)
+            if start >= shape[0]: break
+            if b == 'rand':
+                a[start:end] = np.random.rand(end - start, *shape[1:])
+            else:
+                a[start:end] = b[start:end]
+    if not inplace: return a
+
+# Cell
 def create_array(shape, fname=None, path='./data', on_disk=True, dtype='float32', mode='r+', fill_value='rand', chunksize='auto', verbose=True, **kwargs):
     """
     mode:
@@ -841,7 +865,7 @@ def create_array(shape, fname=None, path='./data', on_disk=True, dtype='float32'
     else:
         arr = np.empty(shape, dtype=dtype, **kwargs)
     if fill_value != 0:
-        arr = assign_in_chunks(arr, fill_value, chunksize=chunksize, verbose=verbose)
+        assign_in_chunks(arr, fill_value, chunksize=chunksize, inplace=True, verbose=verbose)
     return arr
 
 create_empty_array = partial(create_array, fill_value=0)
@@ -890,7 +914,6 @@ def np2memmap(arr, fname=None, path='./data', dtype='float32', mode='c', **kwarg
     return arr
 
 # Cell
-
 def torch_mean_groupby(o, idxs):
     """Computes torch mean along axis 0 grouped by the idxs.
     Need to ensure that idxs have the same order as o"""
@@ -908,7 +931,6 @@ def torch_flip(t, dims=-1):
     elif dims == 2: return t[:, :, np.arange(t.shape[dims])[::-1].copy()]
 
 # Cell
-
 def torch_nan_to_num(o, num=0, inplace=False):
     mask = torch.isnan(o)
     return torch_masked_to_num(o, mask, num=num, inplace=inplace)
@@ -920,12 +942,10 @@ def torch_masked_to_num(o, mask, num=0, inplace=False):
         return o.masked_fill(mask, num)
 
 # Cell
-
 def mpl_trend(x, y, deg=1):
     return np.poly1d(np.polyfit(x, y, deg))(x)
 
 # Cell
-
 def int2digits(o, n_digits=None, normalize=True):
     if n_digits is not None:
         iterable = '0' * (n_digits - len(str(abs(o)))) + str(abs(o))
@@ -945,7 +965,6 @@ def array2digits(o, n_digits=None, normalize=True):
     return output
 
 # Cell
-
 def sincos_encoding(seq_len, device=None, to_np=False):
     if to_np:
         sin = np.sin(np.arange(seq_len) / seq_len * 2 * np.pi)
@@ -957,7 +976,6 @@ def sincos_encoding(seq_len, device=None, to_np=False):
     return sin, cos
 
 # Cell
-
 def linear_encoding(seq_len, device=None, to_np=False, lin_range=(-1,1)):
     if to_np:
         enc =  np.linspace(lin_range[0], lin_range[1], seq_len)
@@ -967,7 +985,6 @@ def linear_encoding(seq_len, device=None, to_np=False, lin_range=(-1,1)):
     return enc
 
 # Cell
-
 def encode_positions(pos_arr, min_val=None, max_val=None, linear=False, lin_range=(-1,1)):
     """ Encodes an array with positions using a linear or sincos methods
     """
@@ -985,13 +1002,11 @@ def encode_positions(pos_arr, min_val=None, max_val=None, linear=False, lin_rang
         return sin, cos
 
 # Cell
-
 def sort_generator(generator, bs):
     g = list(generator)
     for i in range(len(g)//bs + 1): g[bs*i:bs*(i+1)] = np.sort(g[bs*i:bs*(i+1)])
     return (i for i in g)
 
 # Cell
-
 def get_subset_dict(d, keys):
     return dict((k,d[k]) for k in listify(keys) if k in d)
