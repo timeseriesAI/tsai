@@ -910,7 +910,7 @@ def np2memmap(arr, fname=None, path='./data', dtype='float32', mode='c', **kwarg
     # Save file
     np.save(filename, arr)
     # Open file in selected mode
-    arr = np.load(filename, mmap_mode=http://localhost:8888/notebooks/Documents/Machine_Learning/Jupyter_Notebooks/tsai/nbs/000_utils.ipynb#mode)
+    arr = np.load(filename, mmap_mode=mode)
     return arr
 
 # Cell
