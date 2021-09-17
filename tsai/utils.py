@@ -17,8 +17,8 @@ __all__ = ['my_setup', 'computer_setup', 'totensor', 'toarray', 'toL', 'to3dtens
            'chunks_calculator', 'is_memory_shared', 'assign_in_chunks', 'create_array', 'create_empty_array',
            'np_save_compressed', 'np_load_compressed', 'np2memmap', 'torch_mean_groupby', 'torch_flip',
            'torch_nan_to_num', 'torch_masked_to_num', 'mpl_trend', 'int2digits', 'array2digits', 'sincos_encoding',
-           'linear_encoding', 'encode_positions', 'sort_generator', 'get_subset_dict', 'create_directory',
-           'delete_directory']
+           'linear_encoding', 'encode_positions', 'sort_generator', 'get_subset_dict', 'create_dir', 'remove_dir',
+           'named_partial']
 
 # Cell
 from .imports import *
@@ -1013,7 +1013,7 @@ def get_subset_dict(d, keys):
     return dict((k,d[k]) for k in listify(keys) if k in d)
 
 # Cell
-def create_directory(directory, verbose=True):
+def create_dir(directory, verbose=True):
     if not is_listy(directory): directory = [directory]
     for d in directory:
         d = Path(d)
@@ -1025,7 +1025,7 @@ def create_directory(directory, verbose=True):
             if verbose: print(f"{d} directory created.")
 
 
-def delete_directory(directory, verbose=True):
+def remove_dir(directory, verbose=True):
     if not is_listy(directory): directory = [directory]
     for d in directory:
         d = Path(d)
@@ -1036,3 +1036,15 @@ def delete_directory(directory, verbose=True):
             shutil.rmtree(d)
             assert not d.exists(), f"a problem has occurred while deleting {d}"
             if verbose: print(f"{d} directory removed.")
+
+# Cell
+class named_partial(object):
+    """Create a partial function with a __name__"""
+
+    def __init__(self, name, func, *args, **kwargs):
+        self._func = partial(func, *args, **kwargs)
+        self.__name__ = name
+    def __call__(self, *args, **kwargs):
+        return self._func(*args, **kwargs)
+    def __repr__(self):
+        return self.__name__
