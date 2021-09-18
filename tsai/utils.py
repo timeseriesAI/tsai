@@ -18,7 +18,7 @@ __all__ = ['my_setup', 'computer_setup', 'totensor', 'toarray', 'toL', 'to3dtens
            'np_save_compressed', 'np_load_compressed', 'np2memmap', 'torch_mean_groupby', 'torch_flip',
            'torch_nan_to_num', 'torch_masked_to_num', 'mpl_trend', 'int2digits', 'array2digits', 'sincos_encoding',
            'linear_encoding', 'encode_positions', 'sort_generator', 'get_subset_dict', 'create_dir', 'remove_dir',
-           'named_partial']
+           'named_partial', 'yaml2dict']
 
 # Cell
 from .imports import *
@@ -1048,3 +1048,9 @@ class named_partial(object):
         return self._func(*args, **kwargs)
     def __repr__(self):
         return self.__name__
+
+# Cell
+def yaml2dict(fname):
+    with maybe_open(fname, 'r') as f:
+        dictionary = yaml.safe_load(f)
+    return dictionary

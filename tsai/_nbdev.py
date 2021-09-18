@@ -127,6 +127,7 @@ index = {"my_setup": "000_utils.ipynb",
          "create_dir": "000_utils.ipynb",
          "remove_dir": "000_utils.ipynb",
          "named_partial": "000_utils.ipynb",
+         "yaml2dict": "000_utils.ipynb",
          "check_overlap": "000b_data.validation.ipynb",
          "check_splits_overlap": "000b_data.validation.ipynb",
          "leakage_finder": "000b_data.validation.ipynb",
@@ -664,7 +665,8 @@ index = {"my_setup": "000_utils.ipynb",
          "MultiInputNet": "130_models.MultiInputNet.ipynb",
          "InputWrapper": "140_models.misc.ipynb",
          "ResidualWrapper": "140_models.misc.ipynb",
-         "RecursiveWrapper": "140_models.misc.ipynb"}
+         "RecursiveWrapper": "140_models.misc.ipynb",
+         "run_sweep": "200_wandb.ipynb"}
 
 modules = ["utils.py",
            "data/validation.py",
@@ -726,7 +728,8 @@ modules = ["utils.py",
            "models/TSPerceiver.py",
            "models/TSiTPlus.py",
            "models/MultiInputNet.py",
-           "models/misc.py"]
+           "models/misc.py",
+           "wandb.py"]
 
 doc_url = "https://timeseriesAI.github.io/tsai/"
 
