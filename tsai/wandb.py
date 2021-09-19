@@ -3,6 +3,7 @@
 __all__ = ['run_sweep']
 
 # Cell
+import os
 from fastcore.script import *
 from fastcore.xtras import *
 from .imports import *
@@ -59,8 +60,11 @@ def run_sweep(
     # Launch agent
     if launch: print('\nRun additional sweep agents with:\n')
     else: print('\nRun sweep agent with:\n')
-    print(f'from {file_path} import train')
-    print(f"wandb.agent('{sweep_id}', function=train, count=None)\n")
+    print('    From a notebook:')
+    print(f'        from {file_path} import train')
+    print(f"        wandb.agent('{sweep_id}', function=train, count=None)\n")
+    print('    From your terminal:')
+    print(f"        wandb agent {os.environ['WANDB_ENTITY']}/{os.environ['WANDB_PROJECT']}/{sweep_id}")
     if launch:
         print('Running agent...')
         wandb.agent(sweep_id, function=train_fn, count=count)
