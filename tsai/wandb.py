@@ -60,11 +60,12 @@ def run_sweep(
     # Launch agent
     if launch: print('\nRun additional sweep agents with:\n')
     else: print('\nRun sweep agent with:\n')
-    print('    From a notebook:')
+    print('    from a notebook:')
+    print('        import wandb')
     print(f'        from {file_path} import train')
     print(f"        wandb.agent('{sweep_id}', function=train, count=None)\n")
-    print('    From your terminal:')
-    print(f"        wandb agent {os.environ['WANDB_ENTITY']}/{os.environ['WANDB_PROJECT']}/{sweep_id}")
+    print('    from a terminal:')
+    print(f"        wandb agent {os.environ['WANDB_ENTITY']}/{os.environ['WANDB_PROJECT']}/{sweep_id}\n")
     if launch:
         print('Running agent...')
         wandb.agent(sweep_id, function=train_fn, count=count)
