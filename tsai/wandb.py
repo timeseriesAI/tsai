@@ -12,7 +12,7 @@ from .utils import *
 # Cell
 @call_parse
 def run_sweep(
-    sweep_config: Param("Dictionary or path to YAML file with the sweep config", Union[dict, str]),
+    sweep_config: Param("Path to YAML file or dictionary with the sweep config", str),
     program: Param("Path to Python training script", str),
     launch: Param("Launch wanbd agent.", store_false) = True,
     count: Param("Number of runs to execute", int) = None,
