@@ -60,7 +60,7 @@ def last_saved(max_elapsed=60):
         fp = str(fp)
         fn = fp.split('/')[-1]
         if not fn.endswith(".py") or fn.startswith("_") or fn.startswith(
-                ".") or fn in ['imports.py', 'all.py']: # add here files without a notebook
+                ".") or fn in ['imports.py', 'wandb.py', 'all.py']: # add here files without a notebook
             continue
         elapsed_time = current_time - os.path.getmtime(fp)
         if elapsed_time > max_elapsed:
