@@ -12,21 +12,20 @@ from .utils import *
 # Cell
 @call_parse
 def run_sweep(
-    sweep_config: Param("Path to YAML file or dictionary with the sweep config", str),
+    sweep: Param("Path to YAML file with the sweep config", str),
     program: Param("Path to Python training script", str),
     launch: Param("Launch wanbd agent.", store_false) = True,
     count: Param("Number of runs to execute", int) = None,
     entity: Param("username or team name where you're sending runs", str) = None,
     project: Param("The name of the project where you're sending the new run.", str) = None,
-    sweep_id: Param("Sweep ID. This option omits `sweep_config`", str) = None,
+    sweep_id: Param("Sweep ID. This option omits `sweep`", str) = None,
     relogin: Param("Relogin to wandb.", store_true) = False,
     login_key: Param("Login key for wandb", str) = None,
     tags: Param("Tag assigned to this run", str) = None,
 ):
 
-    print(os.getcwd())
-    print("sweep_config:", sweep_config, os.path.isfile(sweep_config))
-    print("program:", program, os.path.isfile(program))
+    assert os.path.isfile(sweep), f"can't find file {sweep}"
+    assert os.path.isfile(program), f"can't find file {program}"
 
     try:
         import wandb
@@ -44,20 +43,16 @@ def run_sweep(
     if not sweep_id:
 
         # Load the sweep config
-        if isinstance(sweep_config, str):
-            sweep = yaml2dict(sweep_config)
-        else:
-            sweep = sweep_config
+        if isinstance(sweep, str): sweep = yaml2dict(sweep)
 
         # Initialize the sweep
         print('Initializing sweep...')
         sweep_id = wandb.sweep(sweep=sweep, entity=entity, project=project)
-        print(f'...sweep initialized. sweep_id: {sweep_id}')
+        print('...sweep initialized')
 
     # Load your training script
     print('Loading training script...')
     train_script, file_path = import_file_as_module(program, True)
-    print(train_script, file_path)
     train_fn = getattr(train_script, "train")
     print('...training script loaded')
 
