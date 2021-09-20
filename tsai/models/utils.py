@@ -111,7 +111,7 @@ def transfer_weights(model, weights_path:Path, device:torch.device=None, exclude
 
 
 def build_ts_model(arch, c_in=None, c_out=None, seq_len=None, d=None, dls=None, device=None, verbose=False,
-                   pretrained=False, weights_path=None, exclude_head=True, cut=-1, init=None, **kwargs):
+                   pretrained=False, weights_path=None, exclude_head=True, cut=-1, init=None, arch_config={}, **kwargs):
 
     device = ifnone(device, default_device())
     if dls is not None:
@@ -127,20 +127,20 @@ def build_ts_model(arch, c_in=None, c_out=None, seq_len=None, d=None, dls=None, 
     if sum([1 for v in ['RNN_FCN', 'LSTM_FCN', 'RNNPlus', 'LSTMPlus', 'GRUPlus', 'InceptionTime', 'TSiT',
                         'GRU_FCN', 'OmniScaleCNN', 'mWDN', 'TST', 'XCM', 'MLP', 'MiniRocket', 'InceptionRocket']
             if v in arch.__name__]):
-        pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} seq_len={seq_len} device={device}, kwargs={kwargs})', verbose)
-        model = arch(c_in, c_out, seq_len=seq_len, **kwargs).to(device=device)
+        pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} seq_len={seq_len} device={device}, arch_config={arch_config}, kwargs={kwargs})', verbose)
+        model = arch(c_in, c_out, seq_len=seq_len, **arch_config, **kwargs).to(device=device)
     elif 'xresnet' in arch.__name__ and not '1d' in arch.__name__:
-        pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} device={device}, kwargs={kwargs})', verbose)
-        model = (arch(c_in=c_in, n_out=c_out, **kwargs)).to(device=device)
+        pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} device={device}, arch_config={arch_config}, kwargs={kwargs})', verbose)
+        model = (arch(c_in=c_in, n_out=c_out, **arch_config, **kwargs)).to(device=device)
     elif 'minirockethead' in arch.__name__.lower():
-        pv(f'arch: {arch.__name__}(c_in={c_in} seq_len={seq_len} device={device}, kwargs={kwargs})', verbose)
-        model = (arch(c_in, c_out, seq_len=1, **kwargs)).to(device=device)
+        pv(f'arch: {arch.__name__}(c_in={c_in} seq_len={seq_len} device={device}, arch_config={arch_config}, kwargs={kwargs})', verbose)
+        model = (arch(c_in, c_out, seq_len=1, **arch_config, **kwargs)).to(device=device)
     elif 'rocket' in arch.__name__.lower():
-        pv(f'arch: {arch.__name__}(c_in={c_in} seq_len={seq_len} device={device}, kwargs={kwargs})', verbose)
-        model = (arch(c_in=c_in, seq_len=seq_len, **kwargs)).to(device=device)
+        pv(f'arch: {arch.__name__}(c_in={c_in} seq_len={seq_len} device={device}, arch_config={arch_config}, kwargs={kwargs})', verbose)
+        model = (arch(c_in=c_in, seq_len=seq_len, **arch_config, **kwargs)).to(device=device)
     else:
-        pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} device={device}, kwargs={kwargs})', verbose)
-        model = arch(c_in, c_out, **kwargs).to(device=device)
+        pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} device={device}, arch_config={arch_config}, kwargs={kwargs})', verbose)
+        model = arch(c_in, c_out, **arch_config, **kwargs).to(device=device)
 
     try:
         model[0], model[1]
@@ -174,14 +174,14 @@ create_model = build_ts_model
 
 
 @delegates(TabularModel.__init__)
-def build_tabular_model(arch, dls, layers=None, emb_szs=None, n_out=None, y_range=None, device=None, **kwargs):
+def build_tabular_model(arch, dls, layers=None, emb_szs=None, n_out=None, y_range=None, device=None, arch_config={}, **kwargs):
     if device is None: device = default_device()
     if layers is None: layers = [200,100]
     emb_szs = get_emb_sz(dls.train_ds, {} if emb_szs is None else emb_szs)
     if n_out is None: n_out = get_c(dls)
     assert n_out, "`n_out` is not defined, and could not be inferred from data, set `dls.c` or pass `n_out`"
     if y_range is None and 'y_range' in kwargs: y_range = kwargs.pop('y_range')
-    model = arch(emb_szs, len(dls.cont_names), n_out, layers, y_range=y_range, **kwargs).to(device=device)
+    model = arch(emb_szs, len(dls.cont_names), n_out, layers, y_range=y_range, **arch_config, **kwargs).to(device=device)
 
     if hasattr(model, "head_nf"):  head_nf = model.head_nf
     else: head_nf = get_nf(model)
@@ -193,13 +193,13 @@ create_tabular_model = build_tabular_model
 
 
 @delegates(XResNet.__init__)
-def build_tsimage_model(arch, c_in=None, c_out=None, dls=None, pretrained=False, device=None, verbose=False, init=None, **kwargs):
+def build_tsimage_model(arch, c_in=None, c_out=None, dls=None, pretrained=False, device=None, verbose=False, init=None, arch_config={}, **kwargs):
     device = ifnone(device, default_device())
     if dls is not None:
         c_in = ifnone(c_in, dls.vars)
         c_out = ifnone(c_out, dls.c)
 
-    model = arch(pretrained=pretrained, c_in=c_in, n_out=c_out, **kwargs).to(device=device)
+    model = arch(pretrained=pretrained, c_in=c_in, n_out=c_out, **arch_config, **kwargs).to(device=device)
     setattr(model, "__name__", arch.__name__)
     if init is not None:
         apply_init(model[1] if pretrained else model, init)

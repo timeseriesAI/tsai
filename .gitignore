@@ -156,3 +156,14 @@ old/*
 *.zip
 */nbs/export/*
 */nbs/models/*
+token
+
+Untitled*.ipynb
+conda/
+tmp/
+*~
+~*
+.vscode/
+.pypirc
+pythonenv*/
+*.tgz

@@ -274,7 +274,7 @@ def get_X_preds(self: Learner, X, y=None, bs=64, with_input=False, with_decoded=
     if with_loss and y is None:
         print('cannot find loss as y=None')
         with_loss = False
-    dl = self.dls.new_dl(X, y=y)
+    dl = self.dls.valid.new_dl(X, y=y)
     dl.bs = ifnone(bs, self.dls.bs)
     output = list(self.get_preds(dl=dl, with_input=with_input, with_decoded=with_decoded, with_loss=with_loss, reorder=False))
     if with_decoded and hasattr(self.dls, 'vocab'):

@@ -21,35 +21,34 @@ import tempfile
 try: from urllib import urlretrieve
 except ImportError: from urllib.request import urlretrieve
 import shutil
-from pyunpack import Archive
 from sktime.datasets import load_UCR_UEA_dataset
 from sktime.utils.validation.panel import check_X
 from sktime.utils.data_io import load_from_tsfile_to_dataframe as ts2df
 
 # Cell
+
 def decompress_from_url(url, target_dir=None, verbose=False):
     # Download
     try:
         pv("downloading data...", verbose)
         fname = os.path.basename(url)
         tmpdir = tempfile.mkdtemp()
-        local_comp_fname = os.path.join(tmpdir, fname)
-        urlretrieve(url, local_comp_fname)
+        tmpfile = os.path.join(tmpdir, fname)
+        urlretrieve(url, tmpfile)
         pv("...data downloaded", verbose)
 
         # Decompress
         try:
             pv("decompressing data...", verbose)
             if not os.path.exists(target_dir): os.makedirs(target_dir)
-            Archive(local_comp_fname).extractall(target_dir)
+            shutil.unpack_archive(tmpfile, target_dir)
             shutil.rmtree(tmpdir)
             pv("...data decompressed", verbose)
             return target_dir
+
         except:
             shutil.rmtree(tmpdir)
-            if verbose:
-                sys.stderr.write("Could not decompress file, aborting.\n")
-            return None
+            if verbose: sys.stderr.write("Could not decompress file, aborting.\n")
 
     except:
         shutil.rmtree(tmpdir)
@@ -57,11 +56,12 @@ def decompress_from_url(url, target_dir=None, verbose=False):
             sys.stderr.write("Could not download url. Please, check url.\n")
 
 # Cell
+from fastdownload import download_url
 def download_data(url, fname=None, c_key='archive', force_download=False, timeout=4, verbose=False):
     "Download `url` to `fname`."
     fname = Path(fname or URLs.path(url, c_key=c_key))
     fname.parent.mkdir(parents=True, exist_ok=True)
-    if not fname.exists() or force_download: download_url(url, fname, overwrite=force_download, timeout=timeout, show_progress=verbose)
+    if not fname.exists() or force_download: download_url(url, dest=fname, timeout=timeout, show_progress=verbose)
     return fname
 
 # Cell
@@ -1217,13 +1217,8 @@ def get_Monash_forecasting_data(dsid, path='./data/forecasting/', force_download
 
     path = Path(path)
     full_path = path/f'{dsid}.tsf'
-    pv("downloading data...", verbose)
-    if force_download:
-            try: os.remove(full_path)
-            except OSError: pass
-    untar_data(url, dest=path, force_download=force_download)
-    os.rename(path/dsid, full_path)
-    pv("...data downloaded", verbose)
+    if not full_path.exists() or force_download:
+        decompress_from_url(url, target_dir=path, verbose=verbose)
     pv("converting dataframe to numpy array...", verbose)
     data, frequency, forecast_horizon, contain_missing_values, contain_equal_length = convert_tsf_to_dataframe(full_path)
     X = to3d(stack_pad(data['series_value']))

@@ -260,7 +260,7 @@ class TSTPlus(nn.Sequential):
             res_attention: if True Residual MultiheadAttention is applied.
             pre_norm: if True normalization will be applied as the first step in the sublayers. Defaults to False
             store_attn: can be used to visualize attention weights. Default: False.
-            num_layers: number of layers (or blocks) in the encoder. Default: 3 (range(1-4))
+            n_layers: number of layers (or blocks) in the encoder. Default: 3 (range(1-4))
             pe: type of positional encoder.
                 Available types (for experimenting): None, 'exp1d', 'lin1d', 'exp2d', 'lin2d', 'sincos', 'gauss' or 'normal',
                 'uniform', 'zero', 'zeros' (default, as in the paper).

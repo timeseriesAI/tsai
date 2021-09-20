@@ -60,7 +60,7 @@ def last_saved(max_elapsed=60):
         fp = str(fp)
         fn = fp.split('/')[-1]
         if not fn.endswith(".py") or fn.startswith("_") or fn.startswith(
-                ".") or fn in ['imports.py', 'all.py']:
+                ".") or fn in ['imports.py', 'all.py']: # add here files without a notebook
             continue
         elapsed_time = current_time - os.path.getmtime(fp)
         if elapsed_time > max_elapsed:
@@ -132,3 +132,16 @@ class Timer:
         else: return total_elapsed
 
 timer = Timer()
+
+def import_file_as_module(file_path, return_path=False):
+    from importlib import import_module
+    if '.py' in file_path: file_path = file_path.rsplit('.', 1)[0]
+    module_path = file_path.replace('/', '.')
+    try: 
+        module = import_module(module_path)
+    except: 
+        if '.' in module_path: file_path, fname = module_path.rsplit('.', 1)
+        else: file_path, fname = None, module_path
+        module = import_module(fname, file_path)
+    if return_path: return module, module_path
+    else: return module

@@ -122,11 +122,12 @@ def add_missing_value_cols(df, cols=None, dtype=float):
     return df
 
 # Cell
+
 def add_missing_timestamps(df, datetime_col, groupby=None, fill_value=np.nan, range_by_group=True, freq=None):
     """Fills missing timestamps in a dataframe to a desired frequency
     Args:
         df:                      pandas DataFrame
-        datetime_col:            column tha contains the datetime data
+        datetime_col:            column that contains the datetime data (without duplicates within groups)
         groupby:                 column used to identify unique_ids
         fill_value:              values that will be insert where missing dates exist. Default:np.nan
         range_by_group:          if True, dates will be filled between min and max dates for each group. Otherwise, between the min and max dates in the df.
@@ -136,7 +137,6 @@ def add_missing_timestamps(df, datetime_col, groupby=None, fill_value=np.nan, ra
         assert len(datetime_col) == 1, 'you can only pass a single datetime_col'
         datetime_col = datetime_col[0]
     dates = pd.date_range(df[datetime_col].min(), df[datetime_col].max(), freq=freq)
-    cols = df.columns
     if groupby is not None:
         if is_listy(groupby):
             assert len(groupby) == 1, 'you can only pass a single groupby'
@@ -146,7 +146,8 @@ def add_missing_timestamps(df, datetime_col, groupby=None, fill_value=np.nan, ra
             # Fills missing dates between min and max for each unique id
             min_dates = df.groupby(groupby)[datetime_col].min()
             max_dates = df.groupby(groupby)[datetime_col].max()
-            idx_tuples = flatten_list([[(d, key) for d in pd.date_range(min_date, max_date)] for min_date, max_date, key in zip(min_dates, max_dates, keys)])
+            idx_tuples = flatten_list([[(d, key) for d in pd.date_range(min_date, max_date, freq=freq)] for min_date, max_date, key in \
+                                       zip(min_dates, max_dates, keys)])
             multi_idx = pd.MultiIndex.from_tuples(idx_tuples, names=[datetime_col, groupby])
             df = df.set_index([datetime_col, groupby]).reindex(multi_idx, fill_value=np.nan).reset_index()
         else:
@@ -155,10 +156,9 @@ def add_missing_timestamps(df, datetime_col, groupby=None, fill_value=np.nan, ra
             df = df.set_index([datetime_col, groupby]).reindex(multi_idx, fill_value=np.nan)
             df = df.reset_index().sort_values(by=[groupby, datetime_col]).reset_index(drop=True)
     else:
-        index = pd.Index(pd.date_range(df[datetime_col].min(), df[datetime_col].max()), name=datetime_col)
+        index = pd.Index(dates, name=datetime_col)
         df = df.set_index([datetime_col]).reindex(index, fill_value=fill_value)
         df = df.reset_index().reset_index(drop=True)
-    df = df[cols]
     return df
 
 # Cell
@@ -279,7 +279,7 @@ def add_delta_timestamp_cols(df, cols=None, groupby=None, forward=True, backward
     elif not is_listy(cols): cols = [cols]
     if forward or nearest:
         if groupby:
-            forward_time_gaps = df[cols].groupby(df['user_id']).apply(lambda x: forward_gaps(x.values.transpose(1,0)[None], nan_to_num=np.nan, normalize=normalize))
+            forward_time_gaps = df[cols].groupby(df[groupby]).apply(lambda x: forward_gaps(x.values.transpose(1,0)[None], nan_to_num=np.nan, normalize=normalize))
             forward_time_gaps = np.concatenate(forward_time_gaps, -1)[0].transpose(1,0)
         else:
             forward_time_gaps = forward_gaps(df[cols].values.transpose(1,0)[None], nan_to_num=np.nan, normalize=normalize)[0].transpose(1,0)
@@ -288,7 +288,7 @@ def add_delta_timestamp_cols(df, cols=None, groupby=None, forward=True, backward
             df[[f'{col}_dt_fwd' for col in cols]] = df[[f'{col}_dt_fwd' for col in cols]].fillna(nan_to_num)
     if backward or nearest:
         if groupby:
-            backward_time_gaps = df[cols].groupby(df['user_id']).apply(lambda x: backward_gaps(x.values.transpose(1,0)[None], nan_to_num=np.nan, normalize=normalize))
+            backward_time_gaps = df[cols].groupby(df[groupby]).apply(lambda x: backward_gaps(x.values.transpose(1,0)[None], nan_to_num=np.nan, normalize=normalize))
             backward_time_gaps = np.concatenate(backward_time_gaps, -1)[0].transpose(1,0)
         else:
             backward_time_gaps = backward_gaps(df[cols].values.transpose(1,0)[None], nan_to_num=np.nan, normalize=normalize)[0].transpose(1,0)

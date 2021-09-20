@@ -51,6 +51,24 @@ nb_path: "nbs/102b_models.InceptionTimePlus.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="InceptionModulePlus" class="doc_header"><code>class</code> <code>InceptionModulePlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/InceptionTimePlus.py#L22" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>InceptionModulePlus</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>ks</code></strong>=<em><code>40</code></em>, <strong><code>bottleneck</code></strong>=<em><code>True</code></em>, <strong><code>padding</code></strong>=<em><code>'same'</code></em>, <strong><code>coord</code></strong>=<em><code>False</code></em>, <strong><code>separable</code></strong>=<em><code>False</code></em>, <strong><code>dilation</code></strong>=<em><code>1</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>conv_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>sa</code></strong>=<em><code>False</code></em>, <strong><code>se</code></strong>=<em><code>None</code></em>, <strong><code>norm</code></strong>=<em><code>'Batch'</code></em>, <strong><code>zero_norm</code></strong>=<em><code>False</code></em>, <strong><code>bn_1st</code></strong>=<em><code>True</code></em>, <strong><code>act</code></strong>=<em><code>ReLU</code></em>, <strong><code>act_kwargs</code></strong>=<em><code>{}</code></em>) :: <code>Module</code></p>
+</blockquote>
+<p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -65,14 +83,64 @@ nb_path: "nbs/102b_models.InceptionTimePlus.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="InceptionTimePlus" class="doc_header"><code>class</code> <code>InceptionTimePlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/InceptionTimePlus.py#L92" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>InceptionTimePlus</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>None</code></em>, <strong><code>nf</code></strong>=<em><code>32</code></em>, <strong><code>nb_filters</code></strong>=<em><code>None</code></em>, <strong><code>depth</code></strong>=<em><code>6</code></em>, <strong><code>stoch_depth</code></strong>=<em><code>1.0</code></em>, <strong><code>flatten</code></strong>=<em><code>False</code></em>, <strong><code>concat_pool</code></strong>=<em><code>False</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>ks</code></strong>=<em><code>40</code></em>, <strong><code>bottleneck</code></strong>=<em><code>True</code></em>, <strong><code>padding</code></strong>=<em><code>'same'</code></em>, <strong><code>coord</code></strong>=<em><code>False</code></em>, <strong><code>separable</code></strong>=<em><code>False</code></em>, <strong><code>dilation</code></strong>=<em><code>1</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>conv_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>sa</code></strong>=<em><code>False</code></em>, <strong><code>se</code></strong>=<em><code>None</code></em>, <strong><code>norm</code></strong>=<em><code>'Batch'</code></em>, <strong><code>zero_norm</code></strong>=<em><code>False</code></em>, <strong><code>bn_1st</code></strong>=<em><code>True</code></em>, <strong><code>act</code></strong>=<em><code>ReLU</code></em>, <strong><code>act_kwargs</code></strong>=<em><code>{}</code></em>) :: <a href="/models.TabFusionTransformer.html#Sequential"><code>Sequential</code></a></p>
+<h2 id="InceptionBlockPlus" class="doc_header"><code>class</code> <code>InceptionBlockPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/InceptionTimePlus.py#L63" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>InceptionBlockPlus</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>residual</code></strong>=<em><code>True</code></em>, <strong><code>depth</code></strong>=<em><code>6</code></em>, <strong><code>coord</code></strong>=<em><code>False</code></em>, <strong><code>norm</code></strong>=<em><code>'Batch'</code></em>, <strong><code>zero_norm</code></strong>=<em><code>False</code></em>, <strong><code>act</code></strong>=<em><code>ReLU</code></em>, <strong><code>act_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>sa</code></strong>=<em><code>False</code></em>, <strong><code>se</code></strong>=<em><code>None</code></em>, <strong><code>stoch_depth</code></strong>=<em><code>1.0</code></em>, <strong><code>ks</code></strong>=<em><code>40</code></em>, <strong><code>bottleneck</code></strong>=<em><code>True</code></em>, <strong><code>padding</code></strong>=<em><code>'same'</code></em>, <strong><code>separable</code></strong>=<em><code>False</code></em>, <strong><code>dilation</code></strong>=<em><code>1</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>conv_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>bn_1st</code></strong>=<em><code>True</code></em>) :: <code>Module</code></p>
+</blockquote>
+<p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="InceptionTimePlus" class="doc_header"><code>class</code> <code>InceptionTimePlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/InceptionTimePlus.py#L95" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>InceptionTimePlus</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>None</code></em>, <strong><code>nf</code></strong>=<em><code>32</code></em>, <strong><code>nb_filters</code></strong>=<em><code>None</code></em>, <strong><code>flatten</code></strong>=<em><code>False</code></em>, <strong><code>concat_pool</code></strong>=<em><code>False</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>ks</code></strong>=<em><code>40</code></em>, <strong><code>bottleneck</code></strong>=<em><code>True</code></em>, <strong><code>padding</code></strong>=<em><code>'same'</code></em>, <strong><code>coord</code></strong>=<em><code>False</code></em>, <strong><code>separable</code></strong>=<em><code>False</code></em>, <strong><code>dilation</code></strong>=<em><code>1</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>conv_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>sa</code></strong>=<em><code>False</code></em>, <strong><code>se</code></strong>=<em><code>None</code></em>, <strong><code>norm</code></strong>=<em><code>'Batch'</code></em>, <strong><code>zero_norm</code></strong>=<em><code>False</code></em>, <strong><code>bn_1st</code></strong>=<em><code>True</code></em>, <strong><code>act</code></strong>=<em><code>ReLU</code></em>, <strong><code>act_kwargs</code></strong>=<em><code>{}</code></em>) :: <a href="/models.TabFusionTransformer.html#Sequential"><code>Sequential</code></a></p>
 </blockquote>
 <p>A sequential container.
-Modules will be added to it in the order they are passed in the constructor.
-Alternatively, an ordered dict of modules can also be passed in.</p>
-<p>To make it easier to understand, here is a small example::</p>
+Modules will be added to it in the order they are passed in the
+constructor. Alternatively, an <code>OrderedDict</code> of modules can be
+passed in. The <code>forward()</code> method of <code>Sequential</code> accepts any
+input and forwards it to the first module it contains. It then
+"chains" outputs to inputs sequentially for each subsequent module,
+finally returning the output of the last module.</p>
+<p>The value a <code>Sequential</code> provides over manually calling a sequence
+of modules is that it allows treating the whole container as a
+single module, such that performing a transformation on the
+<code>Sequential</code> applies to each of the modules it stores (which are
+each a registered submodule of the <code>Sequential</code>).</p>
+<p>What's the difference between a <code>Sequential</code> and a
+:class:<code>torch.nn.ModuleList</code>? A <code>ModuleList</code> is exactly what it
+sounds like--a list for storing <code>Module</code> s! On the other hand,
+the layers in a <code>Sequential</code> are connected in a cascading way.</p>
+<p>Example::</p>
 
-<pre><code># Example of using Sequential
+<pre><code># Using Sequential to create a small model. When `model` is run,
+# input will first be passed to `Conv2d(1,20,5)`. The output of
+# `Conv2d(1,20,5)` will be used as the input to the first
+# `ReLU`; the output of the first `ReLU` will become the input
+# for `Conv2d(20,64,5)`. Finally, the output of
+# `Conv2d(20,64,5)` will be used as input to the second `ReLU`
 model = nn.Sequential(
           nn.Conv2d(1,20,5),
           nn.ReLU(),
@@ -80,7 +148,8 @@ model = nn.Sequential(
           nn.ReLU()
         )
 
-# Example of using Sequential with OrderedDict
+# Using Sequential with OrderedDict. This is functionally the
+# same as the above code
 model = nn.Sequential(OrderedDict([
           ('conv1', nn.Conv2d(1,20,5)),
           ('relu1', nn.ReLU()),
@@ -116,14 +185,32 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="InCoordTime" class="doc_header"><code>class</code> <code>InCoordTime</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/InceptionTimePlus.py#L126" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>InCoordTime</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>None</code></em>, <strong><code>nf</code></strong>=<em><code>32</code></em>, <strong><code>nb_filters</code></strong>=<em><code>None</code></em>, <strong><code>depth</code></strong>=<em><code>6</code></em>, <strong><code>stoch_depth</code></strong>=<em><code>1.0</code></em>, <strong><code>flatten</code></strong>=<em><code>False</code></em>, <strong><code>concat_pool</code></strong>=<em><code>False</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>ks</code></strong>=<em><code>40</code></em>, <strong><code>bottleneck</code></strong>=<em><code>True</code></em>, <strong><code>padding</code></strong>=<em><code>'same'</code></em>, <strong><code>coord</code></strong>=<em><code>False</code></em>, <strong><code>separable</code></strong>=<em><code>False</code></em>, <strong><code>dilation</code></strong>=<em><code>1</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>conv_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>sa</code></strong>=<em><code>False</code></em>, <strong><code>se</code></strong>=<em><code>None</code></em>, <strong><code>norm</code></strong>=<em><code>'Batch'</code></em>, <strong><code>zero_norm</code></strong>=<em><code>False</code></em>, <strong><code>bn_1st</code></strong>=<em><code>True</code></em>, <strong><code>act</code></strong>=<em><code>ReLU</code></em>, <strong><code>act_kwargs</code></strong>=<em><code>{}</code></em>) :: <a href="/models.InceptionTimePlus.html#InceptionTimePlus"><code>InceptionTimePlus</code></a></p>
+<h2 id="InCoordTime" class="doc_header"><code>class</code> <code>InCoordTime</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/InceptionTimePlus.py#L126" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>InCoordTime</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>None</code></em>, <strong><code>nf</code></strong>=<em><code>32</code></em>, <strong><code>nb_filters</code></strong>=<em><code>None</code></em>, <strong><code>flatten</code></strong>=<em><code>False</code></em>, <strong><code>concat_pool</code></strong>=<em><code>False</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>ks</code></strong>=<em><code>40</code></em>, <strong><code>bottleneck</code></strong>=<em><code>True</code></em>, <strong><code>padding</code></strong>=<em><code>'same'</code></em>, <strong><code>coord</code></strong>=<em><code>False</code></em>, <strong><code>separable</code></strong>=<em><code>False</code></em>, <strong><code>dilation</code></strong>=<em><code>1</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>conv_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>sa</code></strong>=<em><code>False</code></em>, <strong><code>se</code></strong>=<em><code>None</code></em>, <strong><code>norm</code></strong>=<em><code>'Batch'</code></em>, <strong><code>zero_norm</code></strong>=<em><code>False</code></em>, <strong><code>bn_1st</code></strong>=<em><code>True</code></em>, <strong><code>act</code></strong>=<em><code>ReLU</code></em>, <strong><code>act_kwargs</code></strong>=<em><code>{}</code></em>) :: <a href="/models.InceptionTimePlus.html#InceptionTimePlus"><code>InceptionTimePlus</code></a></p>
 </blockquote>
 <p>A sequential container.
-Modules will be added to it in the order they are passed in the constructor.
-Alternatively, an ordered dict of modules can also be passed in.</p>
-<p>To make it easier to understand, here is a small example::</p>
+Modules will be added to it in the order they are passed in the
+constructor. Alternatively, an <code>OrderedDict</code> of modules can be
+passed in. The <code>forward()</code> method of <code>Sequential</code> accepts any
+input and forwards it to the first module it contains. It then
+"chains" outputs to inputs sequentially for each subsequent module,
+finally returning the output of the last module.</p>
+<p>The value a <code>Sequential</code> provides over manually calling a sequence
+of modules is that it allows treating the whole container as a
+single module, such that performing a transformation on the
+<code>Sequential</code> applies to each of the modules it stores (which are
+each a registered submodule of the <code>Sequential</code>).</p>
+<p>What's the difference between a <code>Sequential</code> and a
+:class:<code>torch.nn.ModuleList</code>? A <code>ModuleList</code> is exactly what it
+sounds like--a list for storing <code>Module</code> s! On the other hand,
+the layers in a <code>Sequential</code> are connected in a cascading way.</p>
+<p>Example::</p>
 
-<pre><code># Example of using Sequential
+<pre><code># Using Sequential to create a small model. When `model` is run,
+# input will first be passed to `Conv2d(1,20,5)`. The output of
+# `Conv2d(1,20,5)` will be used as the input to the first
+# `ReLU`; the output of the first `ReLU` will become the input
+# for `Conv2d(20,64,5)`. Finally, the output of
+# `Conv2d(20,64,5)` will be used as input to the second `ReLU`
 model = nn.Sequential(
           nn.Conv2d(1,20,5),
           nn.ReLU(),
@@ -131,7 +218,8 @@ model = nn.Sequential(
           nn.ReLU()
         )
 
-# Example of using Sequential with OrderedDict
+# Using Sequential with OrderedDict. This is functionally the
+# same as the above code
 model = nn.Sequential(OrderedDict([
           ('conv1', nn.Conv2d(1,20,5)),
           ('relu1', nn.ReLU()),
@@ -160,14 +248,32 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="XCoordTime" class="doc_header"><code>class</code> <code>XCoordTime</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/InceptionTimePlus.py#L131" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>XCoordTime</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>None</code></em>, <strong><code>nf</code></strong>=<em><code>32</code></em>, <strong><code>nb_filters</code></strong>=<em><code>None</code></em>, <strong><code>depth</code></strong>=<em><code>6</code></em>, <strong><code>stoch_depth</code></strong>=<em><code>1.0</code></em>, <strong><code>flatten</code></strong>=<em><code>False</code></em>, <strong><code>concat_pool</code></strong>=<em><code>False</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>ks</code></strong>=<em><code>40</code></em>, <strong><code>bottleneck</code></strong>=<em><code>True</code></em>, <strong><code>padding</code></strong>=<em><code>'same'</code></em>, <strong><code>coord</code></strong>=<em><code>False</code></em>, <strong><code>separable</code></strong>=<em><code>False</code></em>, <strong><code>dilation</code></strong>=<em><code>1</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>conv_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>sa</code></strong>=<em><code>False</code></em>, <strong><code>se</code></strong>=<em><code>None</code></em>, <strong><code>norm</code></strong>=<em><code>'Batch'</code></em>, <strong><code>zero_norm</code></strong>=<em><code>False</code></em>, <strong><code>bn_1st</code></strong>=<em><code>True</code></em>, <strong><code>act</code></strong>=<em><code>ReLU</code></em>, <strong><code>act_kwargs</code></strong>=<em><code>{}</code></em>) :: <a href="/models.InceptionTimePlus.html#InceptionTimePlus"><code>InceptionTimePlus</code></a></p>
+<h2 id="XCoordTime" class="doc_header"><code>class</code> <code>XCoordTime</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/InceptionTimePlus.py#L131" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>XCoordTime</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>None</code></em>, <strong><code>nf</code></strong>=<em><code>32</code></em>, <strong><code>nb_filters</code></strong>=<em><code>None</code></em>, <strong><code>flatten</code></strong>=<em><code>False</code></em>, <strong><code>concat_pool</code></strong>=<em><code>False</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>ks</code></strong>=<em><code>40</code></em>, <strong><code>bottleneck</code></strong>=<em><code>True</code></em>, <strong><code>padding</code></strong>=<em><code>'same'</code></em>, <strong><code>coord</code></strong>=<em><code>False</code></em>, <strong><code>separable</code></strong>=<em><code>False</code></em>, <strong><code>dilation</code></strong>=<em><code>1</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>conv_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>sa</code></strong>=<em><code>False</code></em>, <strong><code>se</code></strong>=<em><code>None</code></em>, <strong><code>norm</code></strong>=<em><code>'Batch'</code></em>, <strong><code>zero_norm</code></strong>=<em><code>False</code></em>, <strong><code>bn_1st</code></strong>=<em><code>True</code></em>, <strong><code>act</code></strong>=<em><code>ReLU</code></em>, <strong><code>act_kwargs</code></strong>=<em><code>{}</code></em>) :: <a href="/models.InceptionTimePlus.html#InceptionTimePlus"><code>InceptionTimePlus</code></a></p>
 </blockquote>
 <p>A sequential container.
-Modules will be added to it in the order they are passed in the constructor.
-Alternatively, an ordered dict of modules can also be passed in.</p>
-<p>To make it easier to understand, here is a small example::</p>
+Modules will be added to it in the order they are passed in the
+constructor. Alternatively, an <code>OrderedDict</code> of modules can be
+passed in. The <code>forward()</code> method of <code>Sequential</code> accepts any
+input and forwards it to the first module it contains. It then
+"chains" outputs to inputs sequentially for each subsequent module,
+finally returning the output of the last module.</p>
+<p>The value a <code>Sequential</code> provides over manually calling a sequence
+of modules is that it allows treating the whole container as a
+single module, such that performing a transformation on the
+<code>Sequential</code> applies to each of the modules it stores (which are
+each a registered submodule of the <code>Sequential</code>).</p>
+<p>What's the difference between a <code>Sequential</code> and a
+:class:<code>torch.nn.ModuleList</code>? A <code>ModuleList</code> is exactly what it
+sounds like--a list for storing <code>Module</code> s! On the other hand,
+the layers in a <code>Sequential</code> are connected in a cascading way.</p>
+<p>Example::</p>
 
-<pre><code># Example of using Sequential
+<pre><code># Using Sequential to create a small model. When `model` is run,
+# input will first be passed to `Conv2d(1,20,5)`. The output of
+# `Conv2d(1,20,5)` will be used as the input to the first
+# `ReLU`; the output of the first `ReLU` will become the input
+# for `Conv2d(20,64,5)`. Finally, the output of
+# `Conv2d(20,64,5)` will be used as input to the second `ReLU`
 model = nn.Sequential(
           nn.Conv2d(1,20,5),
           nn.ReLU(),
@@ -175,7 +281,8 @@ model = nn.Sequential(
           nn.ReLU()
         )
 
-# Example of using Sequential with OrderedDict
+# Using Sequential with OrderedDict. This is functionally the
+# same as the above code
 model = nn.Sequential(OrderedDict([
           ('conv1', nn.Conv2d(1,20,5)),
           ('relu1', nn.ReLU()),
@@ -326,9 +433,9 @@ model = nn.Sequential(OrderedDict([
 <div class="output_text output_subarea output_execute_result">
 <pre>InceptionTimePlus(
   (backbone): Sequential(
-    (0): _InceptionBlockPlus(
+    (0): InceptionBlockPlus(
       (inception): ModuleList(
-        (0): _InceptionModulePlus(
+        (0): InceptionModulePlus(
           (bottleneck): ConvBlock(
             (0): AddCoords1d()
             (1): Conv1d(3, 32, kernel_size=(1,), stride=(1,), bias=False)
@@ -367,7 +474,7 @@ model = nn.Sequential(OrderedDict([
           (norm): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
           (act): ReLU()
         )
-        (1): _InceptionModulePlus(
+        (1): InceptionModulePlus(
           (bottleneck): ConvBlock(
             (0): AddCoords1d()
             (1): Conv1d(129, 32, kernel_size=(1,), stride=(1,), bias=False)
@@ -406,7 +513,7 @@ model = nn.Sequential(OrderedDict([
           (norm): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
           (act): ReLU()
         )
-        (2): _InceptionModulePlus(
+        (2): InceptionModulePlus(
           (bottleneck): ConvBlock(
             (0): AddCoords1d()
             (1): Conv1d(129, 32, kernel_size=(1,), stride=(1,), bias=False)
@@ -444,46 +551,7 @@ model = nn.Sequential(OrderedDict([
           (concat): Concat(dim=1)
           (norm): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
         )
-        (3): _InceptionModulePlus(
-          (bottleneck): ConvBlock(
-            (0): AddCoords1d()
-            (1): Conv1d(129, 32, kernel_size=(1,), stride=(1,), bias=False)
-          )
-          (convs): ModuleList(
-            (0): ConvBlock(
-              (0): AddCoords1d()
-              (1): SeparableConv1d(
-                (depthwise_conv): Conv1d(33, 33, kernel_size=(39,), stride=(1,), padding=(19,), groups=33, bias=False)
-                (pointwise_conv): Conv1d(33, 32, kernel_size=(1,), stride=(1,), bias=False)
-              )
-            )
-            (1): ConvBlock(
-              (0): AddCoords1d()
-              (1): SeparableConv1d(
-                (depthwise_conv): Conv1d(33, 33, kernel_size=(19,), stride=(1,), padding=(9,), groups=33, bias=False)
-                (pointwise_conv): Conv1d(33, 32, kernel_size=(1,), stride=(1,), bias=False)
-              )
-            )
-            (2): ConvBlock(
-              (0): AddCoords1d()
-              (1): SeparableConv1d(
-                (depthwise_conv): Conv1d(33, 33, kernel_size=(9,), stride=(1,), padding=(4,), groups=33, bias=False)
-                (pointwise_conv): Conv1d(33, 32, kernel_size=(1,), stride=(1,), bias=False)
-              )
-            )
-          )
-          (mp_conv): Sequential(
-            (0): MaxPool1d(kernel_size=3, stride=1, padding=1, dilation=1, ceil_mode=False)
-            (1): ConvBlock(
-              (0): AddCoords1d()
-              (1): Conv1d(129, 32, kernel_size=(1,), stride=(1,), bias=False)
-            )
-          )
-          (concat): Concat(dim=1)
-          (norm): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-          (act): ReLU()
-        )
-        (4): _InceptionModulePlus(
+        (3): InceptionModulePlus(
           (bottleneck): ConvBlock(
             (0): AddCoords1d()
             (1): Conv1d(129, 32, kernel_size=(1,), stride=(1,), bias=False)
@@ -522,7 +590,46 @@ model = nn.Sequential(OrderedDict([
           (norm): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
           (act): ReLU()
         )
-        (5): _InceptionModulePlus(
+        (4): InceptionModulePlus(
+          (bottleneck): ConvBlock(
+            (0): AddCoords1d()
+            (1): Conv1d(129, 32, kernel_size=(1,), stride=(1,), bias=False)
+          )
+          (convs): ModuleList(
+            (0): ConvBlock(
+              (0): AddCoords1d()
+              (1): SeparableConv1d(
+                (depthwise_conv): Conv1d(33, 33, kernel_size=(39,), stride=(1,), padding=(19,), groups=33, bias=False)
+                (pointwise_conv): Conv1d(33, 32, kernel_size=(1,), stride=(1,), bias=False)
+              )
+            )
+            (1): ConvBlock(
+              (0): AddCoords1d()
+              (1): SeparableConv1d(
+                (depthwise_conv): Conv1d(33, 33, kernel_size=(19,), stride=(1,), padding=(9,), groups=33, bias=False)
+                (pointwise_conv): Conv1d(33, 32, kernel_size=(1,), stride=(1,), bias=False)
+              )
+            )
+            (2): ConvBlock(
+              (0): AddCoords1d()
+              (1): SeparableConv1d(
+                (depthwise_conv): Conv1d(33, 33, kernel_size=(9,), stride=(1,), padding=(4,), groups=33, bias=False)
+                (pointwise_conv): Conv1d(33, 32, kernel_size=(1,), stride=(1,), bias=False)
+              )
+            )
+          )
+          (mp_conv): Sequential(
+            (0): MaxPool1d(kernel_size=3, stride=1, padding=1, dilation=1, ceil_mode=False)
+            (1): ConvBlock(
+              (0): AddCoords1d()
+              (1): Conv1d(129, 32, kernel_size=(1,), stride=(1,), bias=False)
+            )
+          )
+          (concat): Concat(dim=1)
+          (norm): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (act): ReLU()
+        )
+        (5): InceptionModulePlus(
           (bottleneck): ConvBlock(
             (0): AddCoords1d()
             (1): Conv1d(129, 32, kernel_size=(1,), stride=(1,), bias=False)

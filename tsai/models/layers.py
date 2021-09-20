@@ -394,11 +394,11 @@ class DropPath(nn.Module):
     """Drop paths (Stochastic Depth) per sample (when applied in main path of residual blocks).
 
     It's similar to Dropout but it drops individual connections instead of nodes.
-    Modified from https://github.com/rwightman/pytorch-image-models (timm library)
+    Original code in https://github.com/rwightman/pytorch-image-models (timm library)
     """
 
     def __init__(self, p=None):
-        super(DropPath, self).__init__()
+        super().__init__()
         self.p = p
 
     def forward(self, x):
@@ -406,8 +406,9 @@ class DropPath(nn.Module):
         keep_prob = 1 - self.p
         shape = (x.shape[0],) + (1,) * (x.ndim - 1)
         random_tensor = keep_prob + torch.rand(shape, dtype=x.dtype, device=x.device)
-        random_tensor.floor_()  # binarize
-        output = x.div(random_tensor.mean()) * random_tensor # divide by the actual mean to mantain the input mean
+        random_tensor.floor_()
+        output = x.div(keep_prob) * random_tensor
+#         output = x.div(random_tensor.mean()) * random_tensor # divide by the actual mean to mantain the input mean?
         return output
 
 # Cell
@@ -1072,7 +1073,9 @@ class MultiheadAttention(Module):
 # Cell
 
 class MultiConcatConv1d(Module):
-    def __init__(self, ni, nf, kss=None, kernel_sizes=None, maxpool=True, stride=1):
+    """Module that applies one or multiple kernels (and optionally maxpool)"""
+
+    def __init__(self, ni, nf, kss=[3,5,7], kernel_sizes=None, maxpool=True, stride=1):
         kss = ifnone(kss, kernel_sizes)
         assert kss is not None, "you need to pass a kss argument"
         if not is_listy(kss): kss = [kss]

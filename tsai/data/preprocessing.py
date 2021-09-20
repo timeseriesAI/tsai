@@ -65,6 +65,7 @@ class Nan2Value(Transform):
         return o
 
 # Cell
+
 class TSStandardize(Transform):
     """Standardizes batch of type `TSTensor`
 
@@ -109,29 +110,32 @@ class TSStandardize(Transform):
     def from_stats(cls, mean, std): return cls(mean, std)
 
     def setups(self, dl: DataLoader):
-        if (self.mean is None or self.std is None):
-            if self.use_single_batch or not hasattr(dl, 'ptls'):
-                o, *_ = dl.one_batch()
-            else:
-                o = dl.ptls[0]
-            if self.by_var and is_listy(self.by_var):
-                shape = torch.mean(o, dim=self.axes, keepdim=self.axes!=()).shape
-                mean = torch.zeros(*shape, device=o.device)
-                std = torch.ones(*shape, device=o.device)
-                for v in self.by_var:
-                    if not is_listy(v): v = [v]
-                    mean[:, v] = torch_nanmean(o[:, v], dim=self.axes if len(v) == 1 else self.list_axes, keepdim=True)
-                    std[:, v] = torch.clamp_min(torch_nanstd(o[:, v], dim=self.axes if len(v) == 1 else self.list_axes, keepdim=True), self.eps)
-            else:
-                mean = torch_nanmean(o, dim=self.axes, keepdim=self.axes!=())
-                std = torch.clamp_min(torch_nanstd(o, dim=self.axes, keepdim=self.axes!=()), self.eps)
-            self.mean, self.std = mean, std
-            if len(self.mean.shape) == 0:
-                pv(f'{self.__class__.__name__} mean={self.mean}, std={self.std}, by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step}\n',
-                   self.verbose)
-            else:
-                pv(f'{self.__class__.__name__} mean shape={self.mean.shape}, std shape={self.std.shape}, by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step}\n',
-                   self.verbose)
+        if self.mean is None or self.std is None:
+            if not self.by_sample:
+                if not self.use_single_batch:
+                    o = dl.dataset.__getitem__([slice(None)])[0]
+                else:
+                    o, *_ = dl.one_batch()
+                if self.by_var and is_listy(self.by_var):
+                    shape = torch.mean(o, dim=self.axes, keepdim=self.axes!=()).shape
+                    mean = torch.zeros(*shape, device=o.device)
+                    std = torch.ones(*shape, device=o.device)
+                    for v in self.by_var:
+                        if not is_listy(v): v = [v]
+                        mean[:, v] = torch_nanmean(o[:, v], dim=self.axes if len(v) == 1 else self.list_axes, keepdim=True)
+                        std[:, v] = torch.clamp_min(torch_nanstd(o[:, v], dim=self.axes if len(v) == 1 else self.list_axes, keepdim=True), self.eps)
+                else:
+                    mean = torch_nanmean(o, dim=self.axes, keepdim=self.axes!=())
+                    std = torch.clamp_min(torch_nanstd(o, dim=self.axes, keepdim=self.axes!=()), self.eps)
+                self.mean, self.std = mean, std
+                if len(self.mean.shape) == 0:
+                    pv(f'{self.__class__.__name__} mean={self.mean}, std={self.std}, by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step}\n',
+                       self.verbose)
+                else:
+                    pv(f'{self.__class__.__name__} mean shape={self.mean.shape}, std shape={self.std.shape}, by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step}\n',
+                       self.verbose)
+
+            else: self.mean, self.std = torch.zeros(1), torch.ones(1)
 
     def encodes(self, o:TSTensor):
         if self.by_sample:
@@ -156,6 +160,7 @@ class TSStandardize(Transform):
     def __repr__(self): return f'{self.__class__.__name__}(by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step})'
 
 # Cell
+
 @patch
 def mul_min(x:(torch.Tensor, TSTensor, NumpyTensor), axes=(), keepdim=False):
     if axes == (): return retain_type(x.min(), x)
@@ -202,14 +207,14 @@ class TSNormalize(Transform):
 
     def setups(self, dl: DataLoader):
         if self.min is None or self.max is None:
-            if self.use_single_batch or not hasattr(dl, 'ptls'):
-                o, *_ = dl.one_batch()
+            if not self.use_single_batch:
+                o = dl.dataset.__getitem__([slice(None)])[0]
             else:
-                o = dl.ptls[0]
+                o, *_ = dl.one_batch()
             if self.by_var and is_listy(self.by_var):
                 shape = torch.mean(o, dim=self.axes, keepdim=self.axes!=()).shape
                 _min = torch.zeros(*shape, device=o.device) + self.range_min
-                _max = torch.ones(*shape, device=o.device) + self.range_max
+                _max = torch.zeros(*shape, device=o.device) + self.range_max
                 for v in self.by_var:
                     if not is_listy(v): v = [v]
                     _min[:, v] = o[:, v].mul_min(self.axes if len(v) == 1 else self.list_axes, keepdim=self.axes!=())
@@ -240,8 +245,9 @@ class TSNormalize(Transform):
         output = ((o - self.min) / (self.max - self.min)) * (self.range_max - self.range_min) + self.range_min
         if self.clip_values:
             if self.by_var and is_listy(self.by_var):
-                if not is_listy(v): v = [v]
-                output[:, v] = torch.clamp(output[:, v], self.range_min, self.range_max)
+                for v in self.by_var:
+                    if not is_listy(v): v = [v]
+                    output[:, v] = torch.clamp(output[:, v], self.range_min, self.range_max)
             else:
                 output = torch.clamp(output, self.range_min, self.range_max)
         return output
