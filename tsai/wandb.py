@@ -22,7 +22,6 @@ def run_sweep(
     relogin: Param("Relogin to wandb.", store_true) = False,
     login_key: Param("Login key for wandb", str) = None,
     tags: Param("Tag assigned to this run", str) = None,
-    path: Param("Path to a directory where metadata will be stored.", str) = "./wandb",
 ):
 
     print(os.getcwd())
@@ -58,6 +57,7 @@ def run_sweep(
     # Load your training script
     print('Loading training script...')
     train_script, file_path = import_file_as_module(program, True)
+    print(train_script, file_path)
     train_fn = getattr(train_script, "train")
     print('...training script loaded')
 
