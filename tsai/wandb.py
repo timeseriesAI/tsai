@@ -25,8 +25,9 @@ def run_sweep(
     path: Param("Path to a directory where metadata will be stored.", str) = "./wandb",
 ):
 
-    print(type(sweep_config), sweep_config)
-    print(type(program), program)
+    print(os.getcwd())
+    print("sweep_config:", sweep_config, os.path.isfile(sweep_config))
+    print("program:", program, os.path.isfile(program))
 
     try:
         import wandb
