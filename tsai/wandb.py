@@ -24,6 +24,10 @@ def run_sweep(
     tags: Param("Tag assigned to this run", str) = None,
     path: Param("Path to a directory where metadata will be stored.", str) = "./wandb",
 ):
+
+    print(type(sweep_config), sweep_config)
+    print(type(program), program)
+
     try:
         import wandb
     except ImportError:
