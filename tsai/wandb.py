@@ -23,46 +23,43 @@ from fastcore.script import *
 from fastcore.xtras import *
 import argparse
 
-def run_sweep():
-    # Parse command line arguments.
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--sweep', type=str)
-    parser.add_argument('--program', type=str)
-    parser.add_argument('--launch', action='store_false')
-    parser.add_argument('--count', type=int)
-    parser.add_argument('--entity', type=str)
-    parser.add_argument('--project', type=str)
-    parser.add_argument('--sweep_id', type=str)
-    parser.add_argument('--relogin', action='store_true')
-    parser.add_argument('--login_key', type=str)
-    args = parser.parse_args() 
+@call_parse
+def run_sweep(
+    sweep: Param("Path to YAML file with the sweep config", str) = None,
+    program: Param("Path to Python training script", str) = None,
+    launch: Param("Launch wanbd agent.", store_false) = True,
+    count: Param("Number of runs to execute", int) = None,
+    entity: Param("username or team name where you're sending runs", str) = None,
+    project: Param("The name of the project where you're sending the new run.", str) = None,
+    sweep_id: Param("Sweep ID. This option omits `sweep`", str) = None,
+    relogin: Param("Relogin to wandb.", store_true) = False,
+    login_key: Param("Login key for wandb", str) = None,
+):
 
+    # import wandb
     try:
         import wandb
     except ImportError:
         raise ImportError('You need to install wandb to run sweeps!')
 
     # Login to W&B
-    if args.relogin:
+    if relogin:
         wandb.login(relogin=True)
-    elif args.login_key:
-        wandb.login(key=args.login_key)
+    elif login_key:
+        wandb.login(key=login_key)
 
     # Sweep id
-    if not args.sweep_id:
+    if not sweep_id:
         # Load the sweep config
-        assert os.path.isfile(args.sweep), f"can't find file {args.sweep}"
-        if isinstance(args.sweep, str):
-            sweep = yaml2dict(args.sweep)
-        else: 
-            sweep = args.sweep
-        program = sweep["program"] if args.program is None else args.progam
+        assert os.path.isfile(sweep), f"can't find file {sweep}"
+        if isinstance(sweep, str):
+            sweep = yaml2dict(sweep)
+        if program is None:
+            program = sweep["program"]
         # Initialize the sweep
         print('Initializing sweep...')
-        sweep_id = wandb.sweep(sweep=sweep, entity=args.entity, project=args.project)
+        sweep_id = wandb.sweep(sweep=sweep, entity=entity, project=project)
         print('...sweep initialized')
-    else: 
-        sweep_id = args.sweep_id
 
     # Load your training script
     print('Loading training script...')
@@ -74,7 +71,7 @@ def run_sweep():
     print('...training script loaded')
 
     # Launch agent
-    if args.launch:
+    if launch:
         print('\nRun additional sweep agents with:\n')
     else:
         print('\nRun sweep agent with:\n')
@@ -85,9 +82,9 @@ def run_sweep():
     print('    from a terminal:')
     print(
         f"        wandb agent {os.environ['WANDB_ENTITY']}/{os.environ['WANDB_PROJECT']}/{sweep_id}\n")
-    if args.launch:
+    if launch:
         print('Running agent...')
-        wandb.agent(sweep_id, function=train_fn, count=args.count)
-        
+        wandb.agent(sweep_id, function=train_fn, count=count)
+
 if __name__ == '__main__':
     run_sweep()
