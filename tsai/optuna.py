@@ -34,7 +34,7 @@ def optuna_study(
     except ImportError: raise ImportError('You need to install optuna to run sweeps!')
 
     import sys
-    sys.path.append("")
+    sys.path.append(".")
     print(sys.executable)
     # Are there any discrepancies in sys.path?
     print(sys.path)
