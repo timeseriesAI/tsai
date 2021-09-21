@@ -33,6 +33,15 @@ def optuna_study(
     try: import optuna
     except ImportError: raise ImportError('You need to install optuna to run sweeps!')
 
+    import sys
+    print(sys.executable)
+    # Are there any discrepancies in sys.path?
+    print(sys.path)
+
+    # Is it the same working directory?
+    import os
+    print(os.getcwd())
+
     m = import_file_as_module(config)
     assert hasattr(m, 'objective'), f"there's no objective function in {config}"
     objective = getattr(m, "objective")
