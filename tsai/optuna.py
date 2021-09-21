@@ -37,8 +37,8 @@ def optuna_study(
     while True:
         if config[0] in "/ .": config = config.split(config[0], 1)[1]
         else: break
-    if '/' in config and config.rsplit('/', 1)[0] not in sys.path: sys.path.append(config.rsplit('/', 1)[0])
-    else: sys.path.append("./")
+#     if '/' in config and config.rsplit('/', 1)[0] not in sys.path: sys.path.append(config.rsplit('/', 1)[0])
+    if sys.path[0] != '': sys.path = [''] + sys.path
     if verbose: print(sys.path)
     m = import_file_as_module(config)
     if  verbose: print(m)
