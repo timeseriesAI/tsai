@@ -34,7 +34,7 @@ def optuna_study(
     except ImportError: raise ImportError('You need to install optuna to run sweeps!')
 
     import sys
-    sys.path.insert(config.rsplit('/', 1)[0])
+    sys.path.append(config.rsplit('/', 1)[0])
     print("sys.path.insert(config.rsplit('/', 1)[0])")
     print(sys.path)
 
