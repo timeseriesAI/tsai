@@ -8,18 +8,17 @@ from .imports import *
 from .utils import *
 from fastcore.script import *
 from fastcore.xtras import *
-import argparse
 
 @call_parse
 def run_sweep(
-    sweep: Param("Path to YAML file with the sweep config", str) = None,
-    program: Param("Path to Python training script", str) = None,
-    launch: Param("Launch wanbd agent.", store_false) = True,
-    count: Param("Number of runs to execute", int) = None,
-    entity: Param("username or team name where you're sending runs", str) = None,
-    project: Param("The name of the project where you're sending the new run.", str) = None,
-    sweep_id: Param("Sweep ID. This option omits `sweep`", str) = None,
-    relogin: Param("Relogin to wandb.", store_true) = False,
+    sweep:     Param("Path to YAML file with the sweep config", str) = None,
+    program:   Param("Path to Python training script", str) = None,
+    launch:    Param("Launch wanbd agent.", store_false) = True,
+    count:     Param("Number of runs to execute", int) = None,
+    entity:    Param("username or team name where you're sending runs", str) = None,
+    project:   Param("The name of the project where you're sending the new run.", str) = None,
+    sweep_id:  Param("Sweep ID. This option omits `sweep`", str) = None,
+    relogin:   Param("Relogin to wandb.", store_true) = False,
     login_key: Param("Login key for wandb", str) = None,
 ):
 
