@@ -31,11 +31,9 @@ def optuna_study(
     ):
 
     try: import optuna
-    except ImportError: raise ImportError('You need to install optuna to run sweeps!')
+    except ImportError: raise ImportError('You need to install optuna!')
 
-    if '../' not in sys.path: sys.path.append('../')
-    sys.path.append(config.rsplit('/', 1)[0])
-    print(sys.path)
+    if '/' in config and config.rsplit('/', 1)[0] not in sys.path: sys.path.append(config.rsplit('/', 1)[0])
 
     m = import_file_as_module(config)
     assert hasattr(m, 'objective'), f"there's no objective function in {config}"
