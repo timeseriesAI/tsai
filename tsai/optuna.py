@@ -13,7 +13,7 @@ warnings.filterwarnings("ignore")
 
 @call_parse
 def optuna_study(
-    config:             Param('Path to the study config file', str)=None,
+    config:             Param('Path to the study config file', str),
     study_type:         Param('Type of study', str)=None,
     multivariate:       Param('Flag to show progress bars or not.', store_false)=True,
     study_name:         Param("Study's name. If this argument is set to None, a unique name is generated automatically.", str)=None,
@@ -33,9 +33,8 @@ def optuna_study(
     try: import optuna
     except ImportError: raise ImportError('You need to install optuna to run sweeps!')
 
-    import sys
+    if '../' not in sys.path: sys.path.apppend('../')
     sys.path.append(config.rsplit('/', 1)[0])
-    print("sys.path.insert(config.rsplit('/', 1)[0])")
     print(sys.path)
 
     m = import_file_as_module(config)
