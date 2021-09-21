@@ -666,7 +666,8 @@ index = {"my_setup": "000_utils.ipynb",
          "InputWrapper": "140_models.misc.ipynb",
          "ResidualWrapper": "140_models.misc.ipynb",
          "RecursiveWrapper": "140_models.misc.ipynb",
-         "run_sweep": "200_wandb.ipynb"}
+         "optuna_study": "200_optuna.ipynb",
+         "run_sweep": "201_wandb.ipynb"}
 
 modules = ["utils.py",
            "data/validation.py",
@@ -729,6 +730,7 @@ modules = ["utils.py",
            "models/TSiTPlus.py",
            "models/MultiInputNet.py",
            "models/misc.py",
+           "optuna.py",
            "wandb.py"]
 
 doc_url = "https://timeseriesAI.github.io/tsai/"
