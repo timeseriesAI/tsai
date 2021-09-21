@@ -7,6 +7,7 @@ from pathlib import Path
 from fastcore.script import *
 import joblib
 from .imports import *
+from importlib import import_module
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -34,15 +35,15 @@ def optuna_study(
     except ImportError: raise ImportError('You need to install optuna!')
 
     while True:
-        if config[0] in ["/", "."]: config = config.split(config[0], 1)[1]
+        if config[0] in "/ .": config = config.split(config[0], 1)[1]
         else: break
     if '/' in config and config.rsplit('/', 1)[0] not in sys.path: sys.path.append(config.rsplit('/', 1)[0])
     print(1)
-    m = import_file_as_module(config)
+    m = import_module(config)
     print(2, m)
-    print('success!!!!!!')
     assert hasattr(m, 'objective'), f"there's no objective function in {config}"
     objective = getattr(m, "objective")
+    print('success!!!!!!')
 
     if study_type is None or study_type.lower() == "bayesian": sampler = optuna.samplers.TPESampler(seed=seed, multivariate=multivariate)
     elif study_type.lower() in ["gridsearch", "gridsampler"]:
