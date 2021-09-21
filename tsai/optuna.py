@@ -38,12 +38,10 @@ def optuna_study(
         if config[0] in "/ .": config = config.split(config[0], 1)[1]
         else: break
     if '/' in config and config.rsplit('/', 1)[0] not in sys.path: sys.path.append(config.rsplit('/', 1)[0])
-    print(1, config)
+    else: sys.path.append("..")
     m = import_file_as_module(config)
-    print(2, m)
     assert hasattr(m, 'objective'), f"there's no objective function in {config}"
     objective = getattr(m, "objective")
-    print('success!!!!!!')
 
     if study_type is None or study_type.lower() == "bayesian": sampler = optuna.samplers.TPESampler(seed=seed, multivariate=multivariate)
     elif study_type.lower() in ["gridsearch", "gridsampler"]:
