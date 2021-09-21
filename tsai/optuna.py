@@ -28,7 +28,6 @@ def optuna_study(
     show_plots:         Param('Flag to show plots or not.', store_false)=True,
     save:               Param('Flag to save study to disk or not.', store_false)=True,
     path:               Param('Path where the study will be saved', str)='optuna',
-    verbose:            Param('Verbose.', store_true)=False,
     ):
 
     try: import optuna
@@ -38,7 +37,6 @@ def optuna_study(
         if config[0] in "/ .": config = config.split(config[0], 1)[1]
         else: break
     if '/' in config and config.rsplit('/', 1)[0] not in sys.path: sys.path.append(config.rsplit('/', 1)[0])
-    if sys.path[0] != './': sys.path = ['./'] + sys.path
     m = import_file_as_module(config)
     assert hasattr(m, 'objective'), f"there's no objective function in {config}"
     objective = getattr(m, "objective")

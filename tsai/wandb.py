@@ -50,6 +50,10 @@ def run_sweep(
     # Load your training script
     print('Loading training script...')
     assert program is not None, "you need to pass either a sweep or program path"
+    while True:
+        if program[0] in "/ .": program = program.split(program[0], 1)[1]
+        else: break
+    if '/' in program and program.rsplit('/', 1)[0] not in sys.path: sys.path.append(program.rsplit('/', 1)[0])
 #     assert os.path.isfile(program), f"can't find file program = {program}"
     train_script, file_path = import_file_as_module(program, True)
     assert hasattr(train_script, "train")
