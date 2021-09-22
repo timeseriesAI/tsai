@@ -6,7 +6,7 @@ __all__ = ['TSClassifier', 'TSRegressor', 'TSForecaster']
 from .imports import *
 from .learner import *
 from .data.all import *
-from .models.InceptionTime import *
+from .models.InceptionTimePlus import *
 from .models.utils import *
 
 # Cell
