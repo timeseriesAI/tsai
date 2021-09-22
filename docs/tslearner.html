@@ -47,7 +47,7 @@ nb_path: "nbs/052b_tslearner.ipynb"
 <li><strong>tfms:</strong> item transforms that will be applied to each sample individually. Default:<code>[None, TSClassification()]</code> which is commonly used in most single label datasets. </li>
 <li><strong>batch_tfms:</strong> transforms applied to each batch. Default=None. </li>
 <li><strong>bs:</strong> batch size (if batch_size is provided then batch_size will override bs). An int or a list of ints can be passed. Default=<code>[64, 128]</code>. If a list of ints, the first one will be used for training, and the second for the valid (batch size can be larger as it doesn't require backpropagation which consumes more memory). </li>
-<li><strong>arch:</strong> indicates which architecture will be used. Default: InceptionTime.</li>
+<li><strong>arch:</strong> indicates which architecture will be used. Default: InceptionTimePlus.</li>
 <li><strong>arch_config:</strong> keyword arguments passed to the selected architecture. Default={}.</li>
 <li><strong>pretrained:</strong> indicates if pretrained model weights will be used. Default=False.</li>
 <li><strong>weights_path:</strong> indicates the path to the pretrained weights in case they are used.</li>
@@ -154,10 +154,10 @@ train_bn=True</li>
   <tbody>
     <tr>
       <td>0</td>
-      <td>1.414029</td>
-      <td>1.395084</td>
-      <td>0.133333</td>
-      <td>00:19</td>
+      <td>1.397710</td>
+      <td>1.367821</td>
+      <td>0.400000</td>
+      <td>00:09</td>
     </tr>
   </tbody>
 </table>
@@ -191,7 +191,7 @@ train_bn=True</li>
 <li><strong>tfms:</strong> item transforms that will be applied to each sample individually. Default=<code>[None, TSRegression()]</code> which is commonly used in most single label datasets. </li>
 <li><strong>batch_tfms:</strong> transforms applied to each batch. Default=None. </li>
 <li><strong>bs:</strong> batch size (if batch_size is provided then batch_size will override bs). An int or a list of ints can be passed. Default=<code>[64, 128]</code>. If a list of ints, the first one will be used for training, and the second for the valid (batch size can be larger as it doesn't require backpropagation which consumes more memory). </li>
-<li><strong>arch:</strong> indicates which architecture will be used. Default: InceptionTime.</li>
+<li><strong>arch:</strong> indicates which architecture will be used. Default: InceptionTimePlus.</li>
 <li><strong>arch_config:</strong> keyword arguments passed to the selected architecture. Default={}.</li>
 <li><strong>pretrained:</strong> indicates if pretrained model weights will be used. Default=False.</li>
 <li><strong>weights_path:</strong> indicates the path to the pretrained weights in case they are used.</li>
@@ -239,7 +239,7 @@ train_bn=True</li>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSRegressor" class="doc_header"><code>class</code> <code>TSRegressor</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/tslearner.py#L67" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRegressor</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>tfms</code></strong>=<em><code>None</code></em>, <strong><code>inplace</code></strong>=<em><code>True</code></em>, <strong><code>sel_vars</code></strong>=<em><code>None</code></em>, <strong><code>sel_steps</code></strong>=<em><code>None</code></em>, <strong><code>weights</code></strong>=<em><code>None</code></em>, <strong><code>partial_n</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>[64, 128]</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>True</code></em>, <strong><code>drop_last</code></strong>=<em><code>True</code></em>, <strong><code>num_workers</code></strong>=<em><code>0</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>arch</code></strong>=<em><code>None</code></em>, <strong><code>arch_config</code></strong>=<em><code>{}</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong><code>weights_path</code></strong>=<em><code>None</code></em>, <strong><code>exclude_head</code></strong>=<em><code>True</code></em>, <strong><code>cut</code></strong>=<em><code>-1</code></em>, <strong><code>init</code></strong>=<em><code>None</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>Adam</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong><code>moms</code></strong>=<em><code>(0.95, 0.85, 0.95)</code></em>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>splitter</code></strong>=<em><code>trainable_params</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>) :: <code>Learner</code></p>
+<h2 id="TSRegressor" class="doc_header"><code>class</code> <code>TSRegressor</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/tslearner.py#L68" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRegressor</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>tfms</code></strong>=<em><code>None</code></em>, <strong><code>inplace</code></strong>=<em><code>True</code></em>, <strong><code>sel_vars</code></strong>=<em><code>None</code></em>, <strong><code>sel_steps</code></strong>=<em><code>None</code></em>, <strong><code>weights</code></strong>=<em><code>None</code></em>, <strong><code>partial_n</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>[64, 128]</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>True</code></em>, <strong><code>drop_last</code></strong>=<em><code>True</code></em>, <strong><code>num_workers</code></strong>=<em><code>0</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>arch</code></strong>=<em><code>None</code></em>, <strong><code>arch_config</code></strong>=<em><code>{}</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong><code>weights_path</code></strong>=<em><code>None</code></em>, <strong><code>exclude_head</code></strong>=<em><code>True</code></em>, <strong><code>cut</code></strong>=<em><code>-1</code></em>, <strong><code>init</code></strong>=<em><code>None</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>Adam</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong><code>moms</code></strong>=<em><code>(0.95, 0.85, 0.95)</code></em>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>splitter</code></strong>=<em><code>trainable_params</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>) :: <code>Learner</code></p>
 </blockquote>
 <p>Group together a <code>model</code>, some <code>dls</code> and a <code>loss_func</code> to handle training</p>
 
@@ -298,10 +298,10 @@ train_bn=True</li>
   <tbody>
     <tr>
       <td>0</td>
-      <td>220.632156</td>
-      <td>203.714539</td>
-      <td>13.852869</td>
-      <td>00:15</td>
+      <td>217.123535</td>
+      <td>199.025177</td>
+      <td>13.682029</td>
+      <td>00:11</td>
     </tr>
   </tbody>
 </table>
@@ -326,7 +326,7 @@ train_bn=True</li>
 <li><strong>tfms:</strong> item transforms that will be applied to each sample individually. Default=<code>[None, TSForecasting()]</code> which is commonly used in most single label datasets. </li>
 <li><strong>batch_tfms:</strong> transforms applied to each batch. Default=None. </li>
 <li><strong>bs:</strong> batch size (if batch_size is provided then batch_size will override bs). An int or a list of ints can be passed. Default=<code>[64, 128]</code>. If a list of ints, the first one will be used for training, and the second for the valid (batch size can be larger as it doesn't require backpropagation which consumes more memory). </li>
-<li><strong>arch:</strong> indicates which architecture will be used. Default: InceptionTime.</li>
+<li><strong>arch:</strong> indicates which architecture will be used. Default: InceptionTimePlus.</li>
 <li><strong>arch_config:</strong> keyword arguments passed to the selected architecture. Default={}.</li>
 <li><strong>pretrained:</strong> indicates if pretrained model weights will be used. Default=False.</li>
 <li><strong>weights_path:</strong> indicates the path to the pretrained weights in case they are used.</li>
@@ -374,7 +374,7 @@ train_bn=True</li>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSForecaster" class="doc_header"><code>class</code> <code>TSForecaster</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/tslearner.py#L119" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSForecaster</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>tfms</code></strong>=<em><code>None</code></em>, <strong><code>inplace</code></strong>=<em><code>True</code></em>, <strong><code>sel_vars</code></strong>=<em><code>None</code></em>, <strong><code>sel_steps</code></strong>=<em><code>None</code></em>, <strong><code>weights</code></strong>=<em><code>None</code></em>, <strong><code>partial_n</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>[64, 128]</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>True</code></em>, <strong><code>drop_last</code></strong>=<em><code>True</code></em>, <strong><code>num_workers</code></strong>=<em><code>0</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>arch</code></strong>=<em><code>None</code></em>, <strong><code>arch_config</code></strong>=<em><code>{}</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong><code>weights_path</code></strong>=<em><code>None</code></em>, <strong><code>exclude_head</code></strong>=<em><code>True</code></em>, <strong><code>cut</code></strong>=<em><code>-1</code></em>, <strong><code>init</code></strong>=<em><code>None</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>Adam</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong><code>moms</code></strong>=<em><code>(0.95, 0.85, 0.95)</code></em>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>splitter</code></strong>=<em><code>trainable_params</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>) :: <code>Learner</code></p>
+<h2 id="TSForecaster" class="doc_header"><code>class</code> <code>TSForecaster</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/tslearner.py#L121" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSForecaster</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>tfms</code></strong>=<em><code>None</code></em>, <strong><code>inplace</code></strong>=<em><code>True</code></em>, <strong><code>sel_vars</code></strong>=<em><code>None</code></em>, <strong><code>sel_steps</code></strong>=<em><code>None</code></em>, <strong><code>weights</code></strong>=<em><code>None</code></em>, <strong><code>partial_n</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>[64, 128]</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>True</code></em>, <strong><code>drop_last</code></strong>=<em><code>True</code></em>, <strong><code>num_workers</code></strong>=<em><code>0</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>arch</code></strong>=<em><code>None</code></em>, <strong><code>arch_config</code></strong>=<em><code>{}</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong><code>weights_path</code></strong>=<em><code>None</code></em>, <strong><code>exclude_head</code></strong>=<em><code>True</code></em>, <strong><code>cut</code></strong>=<em><code>-1</code></em>, <strong><code>init</code></strong>=<em><code>None</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>Adam</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong><code>moms</code></strong>=<em><code>(0.95, 0.85, 0.95)</code></em>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>splitter</code></strong>=<em><code>trainable_params</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>) :: <code>Learner</code></p>
 </blockquote>
 <p>Group together a <code>model</code>, some <code>dls</code> and a <code>loss_func</code> to handle training</p>
 
@@ -458,10 +458,10 @@ downloading data...
   <tbody>
     <tr>
       <td>0</td>
-      <td>13200.081055</td>
-      <td>642.152588</td>
-      <td>21.371193</td>
-      <td>00:08</td>
+      <td>12002.387695</td>
+      <td>8266.375000</td>
+      <td>88.514038</td>
+      <td>00:06</td>
     </tr>
   </tbody>
 </table>

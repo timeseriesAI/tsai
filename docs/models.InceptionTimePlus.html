@@ -340,6 +340,21 @@ model = nn.Sequential(OrderedDict([
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/Users/nacho/anaconda3/envs/py36/lib/python3.6/site-packages/torch/nn/functional.py:652: UserWarning: Named tensors and all their associated APIs are an experimental feature and subject to change. Please do not use them for anything important until they are released as stable. (Triggered internally at  ../c10/core/TensorImpl.h:1156.)
+  return torch.max_pool1d(input, kernel_size, stride, padding, dilation, ceil_mode)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -716,7 +731,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MultiInceptionTimePlus" class="doc_header"><code>class</code> <code>MultiInceptionTimePlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/InceptionTimePlus.py#L147" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MultiInceptionTimePlus</code>(<strong><code>feat_list</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>None</code></em>, <strong><code>nf</code></strong>=<em><code>32</code></em>, <strong><code>nb_filters</code></strong>=<em><code>None</code></em>, <strong><code>depth</code></strong>=<em><code>6</code></em>, <strong><code>stoch_depth</code></strong>=<em><code>1.0</code></em>, <strong><code>flatten</code></strong>=<em><code>False</code></em>, <strong><code>concat_pool</code></strong>=<em><code>False</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>) :: <a href="/models.TabFusionTransformer.html#Sequential"><code>Sequential</code></a></p>
+<h2 id="MultiInceptionTimePlus" class="doc_header"><code>class</code> <code>MultiInceptionTimePlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/InceptionTimePlus.py#L144" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MultiInceptionTimePlus</code>(<strong><code>feat_list</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>None</code></em>, <strong><code>nf</code></strong>=<em><code>32</code></em>, <strong><code>nb_filters</code></strong>=<em><code>None</code></em>, <strong><code>depth</code></strong>=<em><code>6</code></em>, <strong><code>stoch_depth</code></strong>=<em><code>1.0</code></em>, <strong><code>flatten</code></strong>=<em><code>False</code></em>, <strong><code>concat_pool</code></strong>=<em><code>False</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>) :: <a href="/models.TabFusionTransformer.html#Sequential"><code>Sequential</code></a></p>
 </blockquote>
 <p>Class that allows you to create a model with multiple branches of InceptionTimePlus.</p>
 

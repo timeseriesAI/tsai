@@ -133,15 +133,21 @@ class Timer:
 
 timer = Timer()
 
-def import_file_as_module(file_path, return_path=False):
-    from importlib import import_module
-    if '.py' in file_path: file_path = file_path.rsplit('.', 1)[0]
-    module_path = file_path.replace('/', '.')
+def import_file_as_module(filepath, return_path=False):
+    from pathlib import Path
+    import sys
+    import importlib
+    filepath = Path(filepath)
+    if str(filepath.parent) != ".": 
+        sys.path.append(str(filepath.parent))
+        mod_path = ".".join([str(filepath.parent).replace("/", "."), filepath.stem])
+        package, name = mod_path.rsplit(".", 1)
+    else: 
+        mod_path = filepath.stem
+        name, package = mod_path, None
     try: 
-        module = import_module(module_path)
+        module = importlib.import_module(mod_path)
     except: 
-        if '.' in module_path: file_path, fname = module_path.rsplit('.', 1)
-        else: file_path, fname = None, module_path
-        module = import_module(fname, file_path)
+        module = importlib.import_module(name, package)
     if return_path: return module, module_path
     else: return module
