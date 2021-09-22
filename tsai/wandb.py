@@ -74,4 +74,7 @@ def run_sweep(
         f"        wandb agent {os.environ['WANDB_ENTITY']}/{os.environ['WANDB_PROJECT']}/{sweep_id}\n")
     if launch:
         print('Running agent...')
-        wandb.agent(sweep_id, function=train_fn, count=count)
+        try:
+            wandb.agent(sweep_id, function=train_fn, count=count)
+        except KeyboardInterrupt:
+            pass
