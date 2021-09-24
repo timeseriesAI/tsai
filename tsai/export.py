@@ -92,16 +92,20 @@ def nb2py(target='.', fname=None, verbose=True):
     _save_nb()
 
     # get py full script name
+    if fname is not None:
+        if '.' in fname and fname.rsplit('.', 1)[1] == 'py': fname = Path(fname)
+        else: fname = Path('.'.join([fname, 'py']))
     nb_path = get_nb_name()
     if nb_path is None or not os.path.isfile(nb_path):
-        print("nb2py couldn't get the nb name; please pass it as an argument")
-        return
+        if fname is None:
+            print("nb2py couldn't get the nb name as a default name; please pass an fname as an argument")
+            return
+        else:
+            nb_path = Path(os.getcwd())/fname
     nb_path = Path(nb_path)
     nb_name = nb_path.name
     if fname is None: pyname = Path('.'.join([nb_path.stem, 'py']))
-    else:
-        if fname.rsplit('.', 1)[1] == 'py': pyname = Path(fname)
-        else: py_pynamename = Path('.'.join([fname, 'py']))
+    else: pyname = fname
     pyname = Path(target)/pyname
 
     # delete file if exists and create target folder if doesn't exist
