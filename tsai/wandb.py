@@ -17,16 +17,18 @@ def run_sweep(path:     Param('Path to file with the sweep script file', str) = 
               login_key:Param('Login key for wandb', str) = None,
               ):
 
-    import wandb
+    try: import wandb
+    except ImportError: raise ImportError('You need to install wandb to run sweeps!')
+
+    # Login to W&B
+    if relogin: wandb.login(relogin=True)
+    elif login_key: wandb.login(key=login_key)
+
+    # Sweep id
     mod = import_file_as_module(path)
-    sweep, train_fn = mod.sweep, mod.train
     if not sweep_id:
-        sweep_id = wandb.sweep(sweep, entity=entity, project=project)
-    print(f"wandb agent {os.environ['WANDB_ENTITY']}/{os.environ['WANDB_PROJECT']}/{sweep_id}\n")
-    if launch:
-        print("launch additional agents with: ")
-        print(f"   wandb agent {os.environ['WANDB_ENTITY']}/{os.environ['WANDB_PROJECT']}/{sweep_id}\n")
-        wandb.agent(sweep_id, function=train_fn, count=count)
-    else:
-        print("launch an agent with: ")
-        print(f"   wandb agent {os.environ['WANDB_ENTITY']}/{os.environ['WANDB_PROJECT']}/{sweep_id}\n")
+        sweep_id = wandb.sweep(mod.sweep, entity=entity, project=project)
+
+    # Agent
+    print(f"\nwandb agent {os.environ['WANDB_ENTITY']}/{os.environ['WANDB_PROJECT']}/{sweep_id}\n")
+    if launch: wandb.agent(sweep_id, function=mod.train, count=count)

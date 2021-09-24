@@ -42,11 +42,14 @@ if IS_COLAB:
     from numba import config
     config.THREADING_LAYER = 'omp'
 
-def save_nb(verbose=False):
+def save_nb(wait=2):
+    """
+    Save and checkpoints current jupyter notebook.
+    """
+    from IPython.core.display import Javascript, display
+    import time
     display(Javascript('IPython.notebook.save_checkpoint();'))
-    time.sleep(3)
-    pv('\nCurrent notebook saved.\n', verbose)
-
+    time.sleep(wait)
 
 def last_saved(max_elapsed=60):
     print('\n')
@@ -138,6 +141,7 @@ def import_file_as_module(filepath, return_path=False):
     import sys
     import importlib
     filepath = Path(filepath)
+    sys.path.append("..")
     if str(filepath.parent) != ".": 
         sys.path.append(str(filepath.parent))
         mod_path = ".".join([str(filepath.parent).replace("/", "."), filepath.stem])
