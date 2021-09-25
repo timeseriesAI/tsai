@@ -46,7 +46,7 @@ All steps in this section need to be done **<u>only the first time you set up th
    cd tsai
    pip install -e ".[dev]"
    ```  
-   The last step will take 4-5 minutes and will install all packages required to run tsai.
+   The last step will install all packages required to run tsai.
    
 4. **Set up git hooks**. This step is required by nbdev. Run:
    ```
@@ -56,7 +56,7 @@ All steps in this section need to be done **<u>only the first time you set up th
    
 Great! You are now ready to start working on your first tsai PR. 
 
-## Creating your PR:
+## Creating a PR:
 
 If you have already set up your environment, you can proceed with the following steps.
 

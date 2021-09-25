@@ -42,13 +42,32 @@ if IS_COLAB:
     from numba import config
     config.THREADING_LAYER = 'omp'
 
-def save_nb(wait=2):
+def is_lab():
+    import re
+    import psutil
+    return any(re.search('jupyter-lab', x) for x in psutil.Process().parent().cmdline())
+
+def is_colab():
+    from IPython.core import getipython
+    return 'google.colab' in str(getipython.get_ipython())
+
+def save_nb(wait=2, verbose=True):
     """
     Save and checkpoints current jupyter notebook.
     """
-    from IPython.core.display import Javascript, display
+    from IPython.core.display import Javascript, display, HTML
     import time
-    display(Javascript('IPython.notebook.save_checkpoint();'))
+    if is_colab(): 
+        if verbose: print('cannot automatically save the notebook. Save it manually if needed.')
+    elif is_lab():
+        script = """
+        this.nextElementSibling.focus();
+        this.dispatchEvent(new KeyboardEvent('keydown', {key:'s', keyCode: 83, metaKey: true}));
+        """
+        display(HTML(('<img src onerror="{}" style="display:none">' 
+                      '<input style="width:0;height:0;border:0">').format(script)))
+    else:
+        display(Javascript('IPython.notebook.save_checkpoint();'))
     time.sleep(wait)
 
 def last_saved(max_elapsed=60):
@@ -155,3 +174,46 @@ def import_file_as_module(filepath, return_path=False):
         module = importlib.import_module(name, package)
     if return_path: return module, module_path
     else: return module
+
+def my_setup(*pkgs):
+    import warnings
+    warnings.filterwarnings("ignore")
+    try: 
+        import platform
+        print(f'os             : {platform.platform()}')
+    except: 
+        pass
+    try: 
+        from platform import python_version
+        print(f'python         : {python_version()}')
+    except: 
+        pass
+    try: 
+        import tsai
+        print(f'tsai           : {tsai.__version__}')
+    except: 
+        print(f'tsai           : N/A')
+    try: 
+        import fastai
+        print(f'fastai         : {fastai.__version__}')
+    except: 
+        print(f'fastai         : N/A')
+    try: 
+        import fastcore
+        print(f'fastcore       : {fastcore.__version__}')
+    except: 
+        print(f'fastcore       : N/A')
+    
+    if pkgs is not None: 
+        for pkg in listify(pkgs):
+            try: print(f'{pkg.__name__:15}: {pkg.__version__}')
+            except: pass 
+    try: 
+        import torch
+        print(f'torch          : {torch.__version__}')
+        iscuda = torch.cuda.is_available()
+        print(f'n_cpus         : {cpus}')
+        print(f'device         : {device} ({torch.cuda.get_device_name(0)})' if iscuda else f'device         : {device}')
+    except: print(f'torch          : N/A')
+        
+computer_setup = my_setup

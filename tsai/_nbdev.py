@@ -2,9 +2,7 @@
 
 __all__ = ["index", "modules", "custom_doc_links", "git_url"]
 
-index = {"my_setup": "000_utils.ipynb",
-         "computer_setup": "000_utils.ipynb",
-         "totensor": "000_utils.ipynb",
+index = {"totensor": "000_utils.ipynb",
          "toarray": "000_utils.ipynb",
          "toL": "000_utils.ipynb",
          "to3dtensor": "000_utils.ipynb",
@@ -327,6 +325,11 @@ index = {"my_setup": "000_utils.ipynb",
          "MixedDataLoaders": "006_data.mixed.ipynb",
          "get_mixed_dls": "006_data.mixed.ipynb",
          "get_nb_name": "007_export.ipynb",
+         "get_nb_path": "007_export.ipynb",
+         "FILE_ERROR": "007_export.ipynb",
+         "CONN_ERROR": "007_export.ipynb",
+         "is_lab": "007_export.ipynb",
+         "is_colab": "007_export.ipynb",
          "nb2py": "007_export.ipynb",
          "HuberLoss": "050_losses.ipynb",
          "LogCoshLoss": "050_losses.ipynb",
