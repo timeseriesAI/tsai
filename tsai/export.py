@@ -204,6 +204,11 @@ def nb2py(nb_name=None, target='.', script_name=None, verbose=True):
         verbose     :   prints out details of the export if True.
     """
 
+    # check
+    if is_colab():
+        print("nb2py doesn't work in Google Colab.")
+        return
+
     import os
     from pathlib import Path
     try: import nbformat
