@@ -21,12 +21,11 @@ import tempfile
 try: from urllib import urlretrieve
 except ImportError: from urllib.request import urlretrieve
 import shutil
-from sktime.datasets import load_UCR_UEA_dataset
-from sktime.utils.validation.panel import check_X
-from sktime.utils.data_io import load_from_tsfile_to_dataframe as ts2df
+# from sktime.utils.validation.panel import check_X
+# from sktime.datasets._data_io import load_UCR_UEA_dataset
+# from sktime.utils.data_io import load_from_tsfile_to_dataframe as ts2df
 
 # Cell
-
 def decompress_from_url(url, target_dir=None, verbose=False):
     # Download
     try:

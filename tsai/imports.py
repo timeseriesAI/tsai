@@ -1,3 +1,6 @@
+from sktime.utils.validation.panel import check_X
+from sktime.datasets._data_io import load_UCR_UEA_dataset
+from sktime.utils.data_io import load_from_tsfile_to_dataframe as ts2df
 import fastai
 from fastai.imports import *
 from fastai.data.all import *
