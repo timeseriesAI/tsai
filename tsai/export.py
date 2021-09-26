@@ -193,16 +193,15 @@ def _save_nb(wait=2, verbose=True):
     time.sleep(wait)
 
 # Cell
-def nb2py(nb_name=None, target='.', script_name=None, verbose=True):
-    """Converts the notebook where the function is run to a python script.
+from fastcore.script import *
 
-    Args:
-        nb_name     :   name of the notebook where the nb2py function is run. If None it will try to read automatically.
-        target      :   target directory where the script will be created. Defaults to current directory.
-        script_name :   name of the script that will be created. Defaults to notebook name.
-                        If None it will be the same as the notebook, just replacing .ipynb by .py.
-        verbose     :   prints out details of the export if True.
-    """
+@call_parse
+def nb2py(nb_path:     Param("absolute or relative full path to the notebook you want to convert to a python script", str)=None,
+          script_dir:  Param("absolute or relative path to the script you want to create. Defaults to current nb's directory", str)=".",
+          script_name: Param("name of the script you want to create. Defaults to current nb name .ipynb by .py", str)=None,
+          verbose:     Param("controls verbosity", store_false)=True,
+         ):
+    "Converts a notebook to a python script in a predefined folder."
 
     # check
     if is_colab():
@@ -217,28 +216,29 @@ def nb2py(nb_name=None, target='.', script_name=None, verbose=True):
     # save nb
     _save_nb(verbose=verbose)
 
-    # get py full script name
-    nb_path = get_nb_path()
-    if nb_path is None:
-        if nb_name is not None:
-            nb_name = Path(nb_name)
-            nb_name = Path('.'.join([nb_name.stem, 'ipynb']))
-            nb_path = Path(os.getcwd())/nb_name
-        else:
+    # nb path & name
+    if nb_path is not None:
+        nb_path = Path(nb_path)
+        nb_path = nb_path.parent/f"{nb_path.stem}.ipynb"
+    else:
+        try:
+            nb_path = get_nb_path()
+            if nb_path is None:
+                print("nb2py couldn't get the nb_name. Pass it as an argument and re-run nb2py.")
+                return
+        except:
             print("nb2py couldn't get the nb_name. Pass it as an argument and re-run nb2py.")
             return
-    else:
-        nb_name = Path(nb_path.name)
+    nb_name = nb_path.name
 
-    if script_name is None:
-        script_name = nb_name
-    else:
-        script_name = Path(Path(script_name).name)
-    script_name = '.'.join([str(script_name).rstrip(''.join(script_name.suffixes)), 'py'])
-    target = Path(target)
-    script_path = target/script_name
+    # script path & name
+    if script_dir is not None: script_dir = Path(script_dir)
+    else: script_dir = nb_path.parent
+    if script_name is not None: f"{script_name.stem}.ipynb"
+    else:  script_name = f"{nb_path.stem}.py"
+    script_path = script_dir/script_name
 
-    # delete file if exists and create target folder if doesn't exist
+    # delete file if exists and create script_path folder if doesn't exist
     if os.path.exists(script_path): os.remove(script_path)
     script_path.parent.mkdir(parents=True, exist_ok=True)
 
