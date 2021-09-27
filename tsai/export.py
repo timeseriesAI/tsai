@@ -179,7 +179,7 @@ def get_nb_path() -> Path:
             return
 
 def get_script_path(nb_name=None):
-    if nb_name is None: nb_name = get_nb()
+    if nb_name is None: nb_name = get_nb_path()
     return str(nb_name).replace(".ipynb", ".py")
 
 # Cell
