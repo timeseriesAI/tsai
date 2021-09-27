@@ -2,23 +2,23 @@
 
 __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor', 'to3darray', 'to2darray',
            'to1darray', 'to3d', 'to2d', 'to1d', 'to2dPlus', 'to3dPlus', 'to2dPlusTensor', 'to2dPlusArray',
-           'to3dPlusTensor', 'to3dPlusArray', 'todtype', 'bytes2size', 'bytes2GB', 'get_size', 'delete_all_in_dir',
-           'reverse_dict', 'is_tuple', 'itemify', 'isnone', 'exists', 'ifelse', 'is_not_close', 'test_not_close',
-           'test_type', 'test_ok', 'test_not_ok', 'test_error', 'test_eq_nan', 'assert_fn', 'test_gt', 'test_ge',
-           'test_lt', 'test_le', 'stack', 'stack_pad', 'match_seq_len', 'random_shuffle', 'cat2int', 'cycle_dl',
-           'cycle_dl_to_device', 'cycle_dl_estimate', 'cache_data', 'memmap2cache', 'cache_memmap', 'get_func_defaults',
-           'get_idx_from_df_col_vals', 'get_sublist_idxs', 'flatten_list', 'display_pd_df', 'ttest', 'tscore',
-           'ttest_tensor', 'pcc', 'scc', 'a', 'b', 'remove_fn', 'npsave', 'np_save', 'permute_2D', 'random_normal',
-           'random_half_normal', 'random_normal_tensor', 'random_half_normal_tensor', 'default_dpi', 'get_plot_fig',
-           'fig2buf', 'plot_scatter', 'get_idxs', 'apply_cmap', 'torch_tile', 'to_tsfresh_df', 'pcorr', 'scorr',
-           'torch_diff', 'get_outliers_IQR', 'clip_outliers', 'get_percentile', 'torch_clamp', 'torch_slice_by_dim',
-           'torch_nanmean', 'torch_nanstd', 'concat', 'reduce_memory_usage', 'cls_name', 'roll2d', 'roll3d',
-           'random_roll2d', 'random_roll3d', 'rotate_axis0', 'rotate_axis1', 'rotate_axis2', 'chunks_calculator',
-           'is_memory_shared', 'assign_in_chunks', 'create_array', 'create_empty_array', 'np_save_compressed',
-           'np_load_compressed', 'np2memmap', 'torch_mean_groupby', 'torch_flip', 'torch_nan_to_num',
-           'torch_masked_to_num', 'mpl_trend', 'int2digits', 'array2digits', 'sincos_encoding', 'linear_encoding',
-           'encode_positions', 'sort_generator', 'get_subset_dict', 'create_dir', 'remove_dir', 'named_partial',
-           'yaml2dict']
+           'to3dPlusTensor', 'to3dPlusArray', 'todtype', 'bytes2size', 'bytes2GB', 'get_size', 'is_file',
+           'delete_all_in_dir', 'reverse_dict', 'is_tuple', 'itemify', 'isnone', 'exists', 'ifelse', 'is_not_close',
+           'test_not_close', 'test_type', 'test_ok', 'test_not_ok', 'test_error', 'test_eq_nan', 'assert_fn', 'test_gt',
+           'test_ge', 'test_lt', 'test_le', 'stack', 'stack_pad', 'match_seq_len', 'random_shuffle', 'cat2int',
+           'cycle_dl', 'cycle_dl_to_device', 'cycle_dl_estimate', 'cache_data', 'memmap2cache', 'cache_memmap',
+           'get_func_defaults', 'get_idx_from_df_col_vals', 'get_sublist_idxs', 'flatten_list', 'display_pd_df',
+           'ttest', 'tscore', 'ttest_tensor', 'pcc', 'scc', 'a', 'b', 'remove_fn', 'npsave', 'np_save', 'permute_2D',
+           'random_normal', 'random_half_normal', 'random_normal_tensor', 'random_half_normal_tensor', 'default_dpi',
+           'get_plot_fig', 'fig2buf', 'plot_scatter', 'get_idxs', 'apply_cmap', 'torch_tile', 'to_tsfresh_df', 'pcorr',
+           'scorr', 'torch_diff', 'get_outliers_IQR', 'clip_outliers', 'get_percentile', 'torch_clamp',
+           'torch_slice_by_dim', 'torch_nanmean', 'torch_nanstd', 'concat', 'reduce_memory_usage', 'cls_name', 'roll2d',
+           'roll3d', 'random_roll2d', 'random_roll3d', 'rotate_axis0', 'rotate_axis1', 'rotate_axis2',
+           'chunks_calculator', 'is_memory_shared', 'assign_in_chunks', 'create_array', 'create_empty_array',
+           'np_save_compressed', 'np_load_compressed', 'np2memmap', 'torch_mean_groupby', 'torch_flip',
+           'torch_nan_to_num', 'torch_masked_to_num', 'mpl_trend', 'int2digits', 'array2digits', 'sincos_encoding',
+           'linear_encoding', 'encode_positions', 'sort_generator', 'get_subset_dict', 'create_dir', 'remove_dir',
+           'named_partial', 'yaml2dict']
 
 # Cell
 from .imports import *
@@ -169,6 +169,10 @@ def get_size(o, return_str=False):
     s = sys.getsizeof(o)
     if return_str: return bytes2size(s)
     else: return s
+
+# Cell
+def is_file(file_path):
+    return os.path.isfile(file_path)
 
 # Cell
 def delete_all_in_dir(tgt_dir, exception=None):

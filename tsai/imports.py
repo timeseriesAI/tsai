@@ -61,7 +61,8 @@ def save_nb(wait=2, verbose=True):
     from IPython.core.display import Javascript, display, HTML
     import time
     if is_colab(): 
-        if verbose: print('cannot automatically save the notebook. Save it manually if needed.')
+        if verbose: print('cannot save the notebook in Google Colab. Confir the notebook is saved or save it manually.')
+        time.sleep(wait)
     elif is_lab():
         script = """
         this.nextElementSibling.focus();
