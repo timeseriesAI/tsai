@@ -240,11 +240,6 @@ def nb2py(nb:      Param("absolute or relative full path to the notebook you wan
          ):
     "Converts a notebook to a python script in a predefined folder."
 
-    # check
-    if is_colab():
-        print("nb2py doesn't work in Google Colab.")
-        return
-
     import os
     from pathlib import Path
     try: import nbformat
