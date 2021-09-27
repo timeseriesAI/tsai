@@ -244,12 +244,14 @@ from fastcore.script import *
 def nb2py(nb:      Param("absolute or relative full path to the notebook you want to convert to a python script", str)=None,
           folder:  Param("absolute or relative path to folder of the script you will create. Defaults to current nb's directory", str)=None,
           name:    Param("name of the script you want to create. Defaults to current nb name .ipynb by .py", str)=None,
+          run:     Param("import and run the script", store_true)=False,
           verbose: Param("controls verbosity", store_false)=True,
          ):
     "Converts a notebook to a python script in a predefined folder."
 
     import os
     from pathlib import Path
+    from .imports import import_file_from_module
     try: import nbformat
     except ImportError: raise ImportError("You need to install nbformat to use nb2py!")
 
@@ -325,4 +327,5 @@ def nb2py(nb:      Param("absolute or relative full path to the notebook you wan
     assert os.path.isfile(script_path), f"an error occurred during the export and {script_path} doesn't exist"
     if verbose:
         print(f"{nb_name} converted to {script_path}")
-    return str(script_path)
+    if run: import_file_from_module(script_path)
+    else: return str(script_path)
