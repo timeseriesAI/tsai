@@ -147,10 +147,13 @@ def get_nb_name() -> str:
     """ Returns the short name of the notebook w/o the .ipynb extension,
         or raises a FileNotFoundError exception if it cannot be determined.
     """
-    _, path = _find_nb()
-    if path:
-        return path.name
-    else:
+    try:
+        _, path = _find_nb()
+        if path:
+            return path.name
+        else:
+            return
+    except:
         return
 
 def get_colab_nb_name():
@@ -165,14 +168,17 @@ def get_nb_path() -> Path:
     """ Returns the absolute path of the notebook,
         or raises a FileNotFoundError exception if it cannot be determined.
     """
-    if is_colab(): return get_colab_nb_name()
-    else:
-        srv, path = _find_nb()
-        if srv and path:
-            root_dir = Path(srv.get('root_dir') or srv['notebook_dir'])
-            return root_dir / path
+    try:
+        if is_colab(): return get_colab_nb_name()
         else:
-            return
+            srv, path = _find_nb()
+            if srv and path:
+                root_dir = Path(srv.get('root_dir') or srv['notebook_dir'])
+                return root_dir / path
+            else:
+                return
+    except:
+        return
 
 def nb_name_to_py(nb_name):
     return str(nb_name).replace(".ipynb", ".py")
@@ -219,8 +225,7 @@ def nb2py(nb:      Param("absolute or relative full path to the notebook you wan
 
     # save nb: only those that are run from the notebook itself
     if save and not is_colab() and nb is None:
-        save_nb(nb_name, attempts=5, wait=1, verbose=True)
-        time.sleep(0.1)
+        save_nb(nb_name)
 
     # script path & name
     if folder is not None: folder = Path(folder)
@@ -244,7 +249,12 @@ def nb2py(nb:      Param("absolute or relative full path to the notebook you wan
         f.write(f'"""')
 
     # identify convertible cells (excluding empty and those with hide flags)
-    nb = _read_nb(nb_path)
+    for i in range(10):
+        try:
+            nb = _read_nb(nb_path)
+            break
+        except:
+            time.sleep(.5)
     idxs = _get_unhidden_cells(nb['cells'])
     pnb = nbformat.from_dict(nb)
     pnb['cells'] = [pnb['cells'][i] for i in idxs]

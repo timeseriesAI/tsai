@@ -82,9 +82,9 @@ def _save_nb():
     else:
         display(Javascript('IPython.notebook.save_checkpoint();'))
         
-def save_nb(nb_name=None, attempts=5, wait=1, verbose=True):
+def save_nb(nb_name=None, attempts=1, verbose=True, wait=2):
     """
-    Save and checkpoints current jupyter notebook. 1 attempt per second approx.
+    Save and checkpoints current jupyter notebook. 1 attempt per second.
     """
     from IPython.core.display import Javascript, display, HTML
     import time
@@ -95,6 +95,7 @@ def save_nb(nb_name=None, attempts=5, wait=1, verbose=True):
                 print('cannot save the notebook in Google Colab. Save it manually.')
         else:
             _save_nb()
+        time.sleep(wait)
     else:
         saved = False
         current_time = time.time()
@@ -104,8 +105,8 @@ def save_nb(nb_name=None, attempts=5, wait=1, verbose=True):
             for i in range(attempts):
                 _save_nb() 
                 # confirm it's saved. This takes come variable time.
-                for j in range(10):
-                    time.sleep(wait/10)
+                for j in range(20):
+                    time.sleep(.5)
                     saved_time = os.path.getmtime(nb_name)
                     if  saved_time >= current_time: break
                 if saved_time >= current_time: 
@@ -114,7 +115,6 @@ def save_nb(nb_name=None, attempts=5, wait=1, verbose=True):
         assert saved, f"{nb_name} couldn't be saved."
         if verbose:
             print(f'{nb_name} saved at {to_local_time(saved_time)}.')
-    time.sleep(wait)
 
 def maybe_mount_drive():
     from pathlib import Path
@@ -154,8 +154,7 @@ def py_last_saved(nb_name, max_elapsed=1):
     print('\n')
     lib_path = Path(os.getcwd()).parent
     folder = Path(lib_path / 'tsai')
-    script_name = str(folder/nb_name.split("_")[1:][0].replace(".ipynb", ".py"))
-    elapsed = 0
+    script_name = str(folder/str(nb_name).split("_")[1:][0].replace(".ipynb", ".py"))
     elapsed_time = time.time() - os.path.getmtime(script_name)
     if elapsed_time < max_elapsed:
         print('Correct conversion! 😃')
@@ -164,7 +163,7 @@ def py_last_saved(nb_name, max_elapsed=1):
         print(f"{script_name:30} saved {elapsed_time:10.0f} s ago ***")
         print('Incorrect conversion! 😔')
         output = 0
-    print(f'Total time elapsed {elapsed:.3f} s')
+    print(f'Total time elapsed {elapsed_time:.3f} s')
     print(strftime("%A %d/%m/%y %T %Z"))
     return output
 
@@ -176,15 +175,17 @@ def beep(inp=1, duration=.1, n=1):
         display(Audio(wave, rate=10000, autoplay=True))
         time.sleep(duration / .1)
 
-def create_scripts(nb_name=None, max_elapsed=60, wait=1):
+def create_scripts(nb_name=None, max_elapsed=60, wait=2):
     from nbdev.export import notebook2script
-    save_nb(nb_name, wait=wait)
+    if nb_name is not None: wait = 0
+    try: save_nb(nb_name)
+    except: save_nb(wait=wait)
+    time.sleep(0.5)
     notebook2script(nb_name)
-    if nb_name is None: 
-        output = all_last_saved(max_elapsed=max_elapsed)
-    else: 
-        output = py_last_saved(nb_name, max_elapsed=1)
-    return beep(output)
+    if nb_name is None: output = all_last_saved(max_elapsed=max_elapsed)
+    else: output = py_last_saved(nb_name=nb_name, max_elapsed=max_elapsed)
+    beep(output)
+    return output
 
 class Timer:
     def start(self, verbose=True): 
