@@ -7,14 +7,14 @@ from fastcore.script import *
 from .imports import *
 
 @call_parse
-def run_sweep(path:     Param('Path to file with the sweep script file', str) = None,
-              entity:   Param("username or team name where you're sending runs", str) = None,
-              project:  Param("The name of the project where you're sending the new run.", str) = None,
-              count:    Param('Number of runs to execute', int) = None,
-              sweep_id: Param('Sweep ID. This option omits `sweep`', str) = None,
-              launch:   Param("Launch wanbd agent.", store_false) = True,
-              relogin:  Param('Relogin to wandb.', store_true) = False,
-              login_key:Param('Login key for wandb', str) = None,
+def run_sweep(path:      Param('Path to file with the sweep script file', str) = None,
+              entity:    Param("username or team name where you're sending runs", str) = None,
+              project:   Param("The name of the project where you're sending the new run.", str) = None,
+              count:     Param('Number of runs to execute', int) = None,
+              sweep_id:  Param('Sweep ID. This option omits `sweep`', str) = None,
+              launch:    Param("Launch wanbd agent.", store_false) = True,
+              relogin:   Param('Relogin to wandb.', store_true) = False,
+              login_key: Param('Login key for wandb', str) = None,
               ):
 
     try: import wandb
