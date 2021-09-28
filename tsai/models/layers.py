@@ -2,14 +2,13 @@
 
 __all__ = ['noop', 'init_lin_zero', 'lin_zero_init', 'SwishBeta', 'same_padding1d', 'Pad1d', 'Conv1dSame',
            'same_padding2d', 'Pad2d', 'Conv2dSame', 'Conv2d', 'Chomp1d', 'Conv1dCausal', 'Conv1d', 'SeparableConv1d',
-           'AddCoords1d', 'ConvBlock', 'Conv', 'ConvBN', 'ConvIN', 'CoordConv', 'CoordConvBN', 'SepConv', 'SepConvBN',
-           'SepConvIN', 'SepCoordConv', 'SepCoordConvBN', 'ResBlock1dPlus', 'SEModule1d', 'Norm', 'BN1d', 'IN1d',
-           'LinLnDrop', 'LambdaPlus', 'Squeeze', 'Unsqueeze', 'Add', 'Concat', 'Permute', 'Transpose', 'View',
-           'Reshape', 'Max', 'LastStep', 'SoftMax', 'Clamp', 'Clip', 'Noop', 'DropPath', 'Sharpen', 'Sequential',
-           'TimeDistributed', 'Temp_Scale', 'Vector_Scale', 'Matrix_Scale', 'get_calibrator', 'LogitAdjustmentLayer',
-           'LogitAdjLayer', 'PPV', 'PPAuc', 'MaxPPVPool1d', 'AdaptiveWeightedAvgPool1d', 'GAP1d', 'GACP1d', 'GAWP1d',
-           'GlobalWeightedAveragePool1d', 'gwa_pool_head', 'GWAP1d', 'AttentionalPool1d', 'GAttP1d',
-           'attentional_pool_head', 'create_pool_head', 'pool_head', 'average_pool_head', 'concat_pool_head',
+           'AddCoords1d', 'ConvBlock', 'Conv', 'ConvBN', 'CoordConv', 'SepConv', 'ResBlock1dPlus', 'SEModule1d', 'Norm',
+           'BN1d', 'IN1d', 'LinLnDrop', 'LambdaPlus', 'Squeeze', 'Unsqueeze', 'Add', 'Concat', 'Permute', 'Transpose',
+           'View', 'Reshape', 'Max', 'LastStep', 'SoftMax', 'Clamp', 'Clip', 'Noop', 'DropPath', 'Sharpen',
+           'Sequential', 'TimeDistributed', 'Temp_Scale', 'Vector_Scale', 'Matrix_Scale', 'get_calibrator',
+           'LogitAdjustmentLayer', 'LogitAdjLayer', 'PPV', 'PPAuc', 'MaxPPVPool1d', 'AdaptiveWeightedAvgPool1d',
+           'GAP1d', 'GACP1d', 'GAWP1d', 'GlobalWeightedAveragePool1d', 'gwa_pool_head', 'GWAP1d', 'AttentionalPool1d',
+           'GAttP1d', 'attentional_pool_head', 'create_pool_head', 'pool_head', 'average_pool_head', 'concat_pool_head',
            'max_pool_head', 'create_pool_plus_head', 'pool_plus_head', 'create_conv_head', 'conv_head',
            'create_mlp_head', 'mlp_head', 'create_fc_head', 'fc_head', 'create_rnn_head', 'rnn_head', 'imputation_head',
            'create_conv_lin_3d_head', 'conv_lin_3d_head', 'create_lin_3d_head', 'lin_3d_head', 'create_conv_3d_head',
@@ -216,16 +215,10 @@ class ConvBlock(nn.Sequential):
         if xtra: layers.append(xtra)
         super().__init__(*layers)
 
-Conv = partial(ConvBlock, norm=None, act=None)
-ConvBN = partial(ConvBlock, norm='Batch', act=None)
-ConvIN = partial(ConvBlock, norm='Instance', act=None)
-CoordConv = partial(ConvBlock, norm=None, act=None, coord=True)
-CoordConvBN = partial(ConvBlock, norm='Batch', act=None, coord=True)
-SepConv = partial(ConvBlock, norm=None, act=None, separable=True)
-SepConvBN = partial(ConvBlock, norm='Batch', act=None, separable=True)
-SepConvIN = partial(ConvBlock, norm='Instance', act=None, separable=True)
-SepCoordConv = partial(ConvBlock, norm=None, act=None, coord=True, separable=True)
-SepCoordConvBN = partial(ConvBlock, norm='Batch', act=None, coord=True, separable=True)
+Conv = named_partial('Conv', ConvBlock, norm=None, act=None)
+ConvBN = named_partial('ConvBN', ConvBlock, norm='Batch', act=None)
+CoordConv = named_partial('CoordConv', ConvBlock, norm=None, act=None, coord=True)
+SepConv = named_partial('SepConv', ConvBlock, norm=None, act=None, separable=True)
 
 # Cell
 class ResBlock1dPlus(Module):

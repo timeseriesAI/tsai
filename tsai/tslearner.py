@@ -6,13 +6,13 @@ __all__ = ['TSClassifier', 'TSRegressor', 'TSForecaster']
 from .imports import *
 from .learner import *
 from .data.all import *
-from .models.InceptionTime import *
+from .models.InceptionTimePlus import *
 from .models.utils import *
 
 # Cell
 
 class TSClassifier(Learner):
-    def __init__(self, X, y=None, splits=None, tfms=None, inplace=True, sel_vars=None, sel_steps=None,
+    def __init__(self, X, y=None, splits=None, tfms=None, inplace=True, sel_vars=None, sel_steps=None, weights=None, partial_n=None,
                  bs=[64, 128], batch_size=None, batch_tfms=None, shuffle_train=True, drop_last=True, num_workers=0, do_setup=True, device=None,
                  arch=None, arch_config={}, pretrained=False, weights_path=None, exclude_head=True, cut=-1, init=None,
                  loss_func=None, opt_func=Adam, lr=0.001, metrics=accuracy, cbs=None, wd=None, wd_bn_bias=False,
@@ -29,8 +29,9 @@ class TSClassifier(Learner):
             bs = batch_size
 
         # DataLoaders
-        dls = get_ts_dls(X, y=y, splits=splits, sel_vars=sel_vars, sel_steps=sel_steps, tfms=tfms, inplace=inplace, path=path, bs=bs,
-                         batch_tfms=batch_tfms, num_workers=num_workers, device=device, shuffle_train=shuffle_train, drop_last=drop_last)
+        dls = get_ts_dls(X, y=y, splits=splits, sel_vars=sel_vars, sel_steps=sel_steps, tfms=tfms, inplace=inplace,
+                         path=path, bs=bs, batch_tfms=batch_tfms, num_workers=num_workers, weights=weights, partial_n=partial_n,
+                         device=device, shuffle_train=shuffle_train, drop_last=drop_last)
 
         if loss_func is None:
             if hasattr(dls, 'loss_func'): loss_func = dls.loss_func
@@ -42,7 +43,8 @@ class TSClassifier(Learner):
         if init is True:
             init = nn.init.kaiming_normal_
         if arch is None:
-            arch = InceptionTime
+            arch = InceptionTimePlus
+        elif isinstance(arch, str): arch = get_arch(arch)
         if 'xresnet' in arch.__name__.lower() and not '1d' in arch.__name__.lower():
             model = build_tsimage_model(arch, dls=dls, pretrained=pretrained, init=init, device=device, verbose=verbose, arch_config=arch_config)
         elif 'tabularmodel' in arch.__name__.lower():
@@ -64,7 +66,7 @@ class TSClassifier(Learner):
 
 
 class TSRegressor(Learner):
-    def __init__(self, X, y=None, splits=None, tfms=None, inplace=True, sel_vars=None, sel_steps=None,
+    def __init__(self, X, y=None, splits=None, tfms=None, inplace=True, sel_vars=None, sel_steps=None, weights=None, partial_n=None,
                  bs=[64, 128], batch_size=None, batch_tfms=None, shuffle_train=True, drop_last=True, num_workers=0, do_setup=True, device=None,
                  arch=None, arch_config={}, pretrained=False, weights_path=None, exclude_head=True, cut=-1, init=None,
                  loss_func=None, opt_func=Adam, lr=0.001, metrics=None, cbs=None, wd=None, wd_bn_bias=False,
@@ -81,9 +83,9 @@ class TSRegressor(Learner):
             bs = batch_size
 
         # DataLoaders
-        dls = get_ts_dls(X, y=y, splits=splits, sel_vars=sel_vars, sel_steps=sel_steps, tfms=tfms, inplace=inplace, path=path, bs=bs,
-                         batch_tfms=batch_tfms, num_workers=num_workers, device=device,
-                         shuffle_train=shuffle_train, drop_last=drop_last)
+        dls = get_ts_dls(X, y=y, splits=splits, sel_vars=sel_vars, sel_steps=sel_steps, tfms=tfms, inplace=inplace,
+                         path=path, bs=bs, batch_tfms=batch_tfms, num_workers=num_workers, weights=weights, partial_n=partial_n,
+                         device=device, shuffle_train=shuffle_train, drop_last=drop_last)
 
         if loss_func is None:
             if hasattr(dls, 'loss_func'): loss_func = dls.loss_func
@@ -95,7 +97,8 @@ class TSRegressor(Learner):
         if init is True:
             init = nn.init.kaiming_normal_
         if arch is None:
-            arch = InceptionTime
+            arch = InceptionTimePlus
+        elif isinstance(arch, str): arch = get_arch(arch)
         if 'xresnet' in arch.__name__.lower() and not '1d' in arch.__name__.lower():
             model = build_tsimage_model(arch, dls=dls, pretrained=pretrained, init=init, device=device, verbose=verbose, arch_config=arch_config)
         elif 'tabularmodel' in arch.__name__.lower():
@@ -116,7 +119,7 @@ class TSRegressor(Learner):
 # Cell
 
 class TSForecaster(Learner):
-    def __init__(self, X, y=None, splits=None, tfms=None, inplace=True, sel_vars=None, sel_steps=None,
+    def __init__(self, X, y=None, splits=None, tfms=None, inplace=True, sel_vars=None, sel_steps=None, weights=None, partial_n=None,
                  bs=[64, 128], batch_size=None, batch_tfms=None, shuffle_train=True, drop_last=True, num_workers=0, do_setup=True, device=None,
                  arch=None, arch_config={}, pretrained=False, weights_path=None, exclude_head=True, cut=-1, init=None,
                  loss_func=None, opt_func=Adam, lr=0.001, metrics=None, cbs=None, wd=None, wd_bn_bias=False,
@@ -133,9 +136,9 @@ class TSForecaster(Learner):
             bs = batch_size
 
         # DataLoaders
-        dls = get_ts_dls(X, y=y, splits=splits, sel_vars=sel_vars, sel_steps=sel_steps, tfms=tfms, inplace=inplace, path=path, bs=bs,
-                         batch_tfms=batch_tfms, num_workers=num_workers, device=device,
-                         shuffle_train=shuffle_train, drop_last=drop_last)
+        dls = get_ts_dls(X, y=y, splits=splits, sel_vars=sel_vars, sel_steps=sel_steps, tfms=tfms, inplace=inplace,
+                         path=path, bs=bs, batch_tfms=batch_tfms, num_workers=num_workers, weights=weights, partial_n=partial_n,
+                         device=device, shuffle_train=shuffle_train, drop_last=drop_last)
 
         if loss_func is None:
             if hasattr(dls, 'loss_func'): loss_func = dls.loss_func
@@ -147,7 +150,8 @@ class TSForecaster(Learner):
         if init is True:
             init = nn.init.kaiming_normal_
         if arch is None:
-            arch = InceptionTime
+            arch = InceptionTimePlus
+        elif isinstance(arch, str): arch = get_arch(arch)
         if 'xresnet' in arch.__name__.lower() and not '1d' in arch.__name__.lower():
             model = build_tsimage_model(arch, dls=dls, pretrained=pretrained, init=init, device=device, verbose=verbose, arch_config=arch_config)
         elif 'tabularmodel' in arch.__name__.lower():

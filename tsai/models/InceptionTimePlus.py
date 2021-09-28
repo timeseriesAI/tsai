@@ -132,15 +132,12 @@ class XCoordTime(InceptionTimePlus):
     def __init__(self, *args, coord=True, separable=True, zero_norm=True, **kwargs):
         super().__init__(*args, coord=coord, separable=separable, zero_norm=zero_norm, **kwargs)
 
-InceptionTimePlus17x17 = partial(InceptionTimePlus, nf=17, depth=3)
-setattr(InceptionTimePlus17x17, '__name__', 'InceptionTimePlus17x17')
-InceptionTimePlus32x32 = InceptionTimePlus
-InceptionTimePlus47x47 = partial(InceptionTimePlus, nf=47, depth=9)
-setattr(InceptionTimePlus47x47, '__name__', 'InceptionTimePlus47x47')
-InceptionTimePlus62x62 = partial(InceptionTimePlus, nf=62, depth=9)
-setattr(InceptionTimePlus62x62, '__name__', 'InceptionTimePlus62x62')
-InceptionTimeXLPlus = partial(InceptionTimePlus, nf=64, depth=12)
-setattr(InceptionTimeXLPlus, '__name__', 'InceptionTimeXLPlus')
+InceptionTimePlus17x17 = named_partial('InceptionTimePlus17x17', InceptionTimePlus, nf=17, depth=3)
+InceptionTimePlus32x32 = named_partial('InceptionTimePlus32x32', InceptionTimePlus)
+InceptionTimePlus47x47 = named_partial('InceptionTimePlus47x47', InceptionTimePlus, nf=47, depth=9)
+InceptionTimePlus62x62 = named_partial('InceptionTimePlus62x62', InceptionTimePlus, nf=62, depth=9)
+InceptionTimeXLPlus = named_partial('InceptionTimeXLPlus', InceptionTimePlus, nf=64, depth=12)
+
 
 # Cell
 @delegates(InceptionTimePlus.__init__)

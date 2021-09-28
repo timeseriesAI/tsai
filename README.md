@@ -20,6 +20,8 @@
 ## What's new:
 
 #### September, 2021
+* See our new tutorial notebook on how to **track your experiments with Weights & Biases**
+<a href="https://colab.research.google.com/github/timeseriesAI/tsai/blob/master/tutorial_nbs/12_Experiment_tracking_with_W%26B.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 * `tsai` just got easier to use with the new sklearn-like APIs: `TSClassifier`, `TSRegressor`, and `TSForecaster`!! See [this](https://timeseriesai.github.io/tsai/tslearner.html) for more info.
 * 🚀🚀 New tutorial notebook on how to **train your model with larger-than-memory datasets in less time achieving up to 100% GPU usage!!** 🚀🚀   <a href="https://colab.research.google.com/github/timeseriesAI/tsai/blob/master/tutorial_nbs/11_How_to_train_big_arrays_faster_with_tsai.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 
@@ -43,18 +45,19 @@ We've also added a new PredictionDynamics callback that will display the predict
 ## Installation
 
 You can install the **latest stable** version from pip using:
-```
+
+```bash
 pip install tsai
 ```
 
 Or you can install the cutting edge version of this library from github by doing:
-```
+```bash
 pip install -Uqq git+https://github.com/timeseriesAI/tsai.git
 ```
 
 Once the install is complete, you should restart your runtime and then run: 
 
-```
+```bash
 from tsai.all import *
 ```
 
@@ -100,7 +103,9 @@ We have also develop many other [tutorial notebooks](https://github.com/timeseri
 
 To use tsai in your own notebooks, the only thing you need to do after you have installed the package is to run this:
 
-`from tsai.all import *`
+```bash
+from tsai.all import *
+```
 
 ## Examples
 
@@ -108,7 +113,7 @@ These are just a few examples of how you can use `tsai`:
 
 ### Binary, univariate classification
 
-```
+```bash
 from tsai.all import *
 X, y, splits = get_classification_data('ECG200', split_data=False)
 batch_tfms = TSStandardize()
@@ -118,7 +123,7 @@ clf.fit_one_cycle(100, 3e-4)
 
 ### Multi-class, multivariate classification
 
-```
+```bash
 from tsai.all import *
 X, y, splits = get_classification_data('LSST', split_data=False)
 batch_tfms = TSStandardize(by_sample=True)
@@ -128,7 +133,7 @@ clf.fit_one_cycle(10, 1e-2)
 
 ### Multivariate Regression
 
-```
+```bash
 from tsai.all import *
 from sklearn.metrics import mean_squared_error
 X_train, y_train, X_test, y_test = get_regression_data('AppliancesEnergy')
@@ -141,7 +146,7 @@ mean_squared_error(y_test, y_pred, squared=False)
 
 ### Univariate Forecasting
 
-```
+```bash
 from tsai.all import *
 ts = get_forecasting_time_series("Sunspots").values
 X, y = SlidingWindow(60, horizon=1)(ts)
@@ -161,7 +166,7 @@ We have created a guide to help you start contributing to tsai. You can read it 
 
 If you use tsai in your research please use the following BibTeX entry:
 
-```text
+```bash
 @Misc{tsai,
     author =       {Ignacio Oguiza},
     title =        {tsai - A state-of-the-art deep learning library for time series and sequential data},

@@ -4,6 +4,7 @@ __all__ = ['TSiTPlus', 'TSiT', 'InceptionTSiTPlus', 'InceptionTSiT']
 
 # Cell
 from ..imports import *
+from ..utils import *
 from .layers import *
 from .InceptionTimePlus import InceptionBlockPlus
 from typing import Callable
@@ -160,14 +161,9 @@ class TSiTPlus(nn.Sequential):
             layers += [LinBnDrop(d_model, c_out, bn=bn, p=fc_dropout)]
             if y_range: layers += [SigmoidRange(*y_range)]
             head = nn.Sequential(*layers)
-
         super().__init__(OrderedDict([('backbone', backbone), ('head', head)]))
 
 
-TSiT = TSiTPlus
-
-InceptionTSiTPlus = partial(TSiTPlus, preprocessor=partial(InceptionBlockPlus, ks=[3,5,7]))
-setattr(InceptionTSiTPlus, "__name__", "InceptionTSiTPlus")
-
-InceptionTSiT = InceptionTSiTPlus
-setattr(InceptionTSiT, "__name__", "InceptionTSiT")
+TSiT = named_partial('TSiT', TSiTPlus)
+InceptionTSiTPlus = named_partial("InceptionTSiTPlus", TSiTPlus, preprocessor=partial(InceptionBlockPlus, ks=[3,5,7]))
+InceptionTSiT = named_partial("InceptionTSiT", TSiTPlus, preprocessor=partial(InceptionBlockPlus, ks=[3,5,7]))

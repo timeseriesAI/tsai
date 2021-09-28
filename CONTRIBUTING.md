@@ -29,12 +29,12 @@ All steps in this section need to be done **<u>only the first time you set up th
 
 **Steps:**
 
-1. **Set up gh**. If you don't have gh (GitHub CLI) yet, you can install it by following these [instructions](https://cli.github.com/manual/installation). To authenticate with your GitHub account run:
+1. **Set up gh**. This step is optional, but recommended. If you don't have gh (GitHub CLI) yet, you can install it by following these [instructions](https://cli.github.com/manual/installation). To authenticate with your GitHub account run:
    ```
    gh auth login
    ```
    and follow the instructions.
-2. **Create and activate a new conda environment**. You will need to choose a name for the environment and a version of Python (I chose `tsai_dev` and Python 3.8, but you can choose others). 
+2. **Create and activate a new conda environment**. This step is optional, but recommended. You will need to choose a name for the environment and a version of Python (I chose `tsai_dev` and Python 3.8, but you can choose others). 
    ```
    conda create -n tsai_dev python=3.8
    conda activate tsai_dev
@@ -46,7 +46,7 @@ All steps in this section need to be done **<u>only the first time you set up th
    cd tsai
    pip install -e ".[dev]"
    ```  
-   The last step will take 4-5 minutes and will install all packages required to run tsai.
+   The last step will install all packages required to run tsai.
    
 4. **Set up git hooks**. This step is required by nbdev. Run:
    ```
@@ -56,7 +56,7 @@ All steps in this section need to be done **<u>only the first time you set up th
    
 Great! You are now ready to start working on your first tsai PR. 
 
-## Creating your PR:
+## Creating a PR:
 
 If you have already set up your environment, you can proceed with the following steps.
 
