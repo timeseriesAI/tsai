@@ -8,21 +8,18 @@ from .imports import *
 from .export import *
 
 # Cell
-def get_wandb_agent(sweep, entity=None, project=None, count=None):
+def get_wandb_agent(script_path, sweep, entity=None, project=None, count=None):
     try: import wandb
     except ImportError: raise ImportError('You need to install wandb to run sweeps!')
-    script_path = nb2py() # saves nb and converts it to script
     if 'program' not in sweep.keys(): sweep["program"] = script_path
     sweep_id = wandb.sweep(sweep, entity=entity, project=project)
     entity = ifnone(entity, os.environ['WANDB_ENTITY'])
     project = ifnone(project, os.environ['WANDB_PROJECT'])
     print(f"\nwandb agent {entity}/{project}/{sweep_id}\n")
 
-
-def run_wandb_agent(sweep, entity=None, project=None, count=None):
+def run_wandb_agent(script_path, sweep, entity=None, project=None, count=None):
     try: import wandb
     except ImportError: raise ImportError('You need to install wandb to run sweeps!')
-    script_path = nb2py() # saves nb and converts it to script
     if 'program' not in sweep.keys(): sweep["program"] = script_path
     sweep_id = wandb.sweep(sweep, entity=entity, project=project)
     entity = ifnone(entity, os.environ['WANDB_ENTITY'])
