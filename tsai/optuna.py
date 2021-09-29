@@ -19,8 +19,8 @@ def retrieve_value(var):
 def get_current_config(multi_value_dict):
     keys = list(multi_value_dict.keys())
     values = []
-    for i in range(len(keys)): _values.append(retrieve_value(keys[i])[0])
-    return AttrDict({k:v for k,v in zip(keys, _values)})
+    for i in range(len(keys)): values.append(retrieve_value(keys[i])[0])
+    return AttrDict({k:v for k,v in zip(keys, values)})
 
 # Cell
 from pathlib import Path

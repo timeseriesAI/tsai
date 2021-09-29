@@ -2,12 +2,12 @@
 
 __all__ = ["index", "modules", "custom_doc_links", "git_url"]
 
-index = {"get_nb_name": "000_export.ipynb",
+index = {"maybe_mount_drive": "000_export.ipynb",
+         "get_nb_name": "000_export.ipynb",
          "get_colab_nb_name": "000_export.ipynb",
          "get_nb_path": "000_export.ipynb",
          "nb_name_to_py": "000_export.ipynb",
          "get_script_path": "000_export.ipynb",
-         "maybe_mount_drive": "000_export.ipynb",
          "nb2py": "000_export.ipynb",
          "totensor": "001_utils.ipynb",
          "toarray": "001_utils.ipynb",
@@ -672,9 +672,9 @@ index = {"get_nb_name": "000_export.ipynb",
          "retrieve_value": "200_optuna.ipynb",
          "get_current_config": "200_optuna.ipynb",
          "run_optuna_study": "200_optuna.ipynb",
+         "wandb_agent": "201_wandb.ipynb",
          "get_wandb_agent": "201_wandb.ipynb",
-         "run_wandb_agent": "201_wandb.ipynb",
-         "wandb_agent": "201_wandb.ipynb"}
+         "run_wandb_agent": "201_wandb.ipynb"}
 
 modules = ["export.py",
            "utils.py",
