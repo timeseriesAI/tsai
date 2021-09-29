@@ -49,9 +49,15 @@ def Coord1dPosEncoding(q_len, exponential=False, normalize=True, device=default_
     return cpe.to(device=device)
 
 # Internal Cell
+def get_activation_fn(activation):
+    if callable(activation): return activation()
+    elif activation.lower() == "relu": return nn.ReLU()
+    elif activation.lower() == "gelu": return nn.GELU()
+    raise ValueError(f'{activation} is not available. You can use "relu", "gelu", or a callable')
+
 class _TSTEncoderLayer(Module):
     def __init__(self, q_len:int, d_model:int, n_heads:int, d_k:Optional[int]=None, d_v:Optional[int]=None, d_ff:int=256, store_attn:bool=False,
-                 res_dropout:float=0., bias:bool=True, activation:str="gelu", res_attention:bool=False, pre_norm:bool=False):
+                 norm:str='BatchNorm', dropout:float=0., bias:bool=True, activation:str="gelu", res_attention:bool=False, pre_norm:bool=False):
 
         assert not d_model%n_heads, f"d_model ({d_model}) must be divisible by n_heads ({n_heads})"
         d_k = ifnone(d_k, d_model // n_heads)
@@ -62,15 +68,24 @@ class _TSTEncoderLayer(Module):
         self.self_attn = MultiheadAttention(d_model, n_heads, d_k, d_v, res_attention=res_attention)
 
         # Add & Norm
-        self.dropout_attn = nn.Dropout(res_dropout)
-        self.batchnorm_attn = nn.BatchNorm1d(q_len)
+        self.dropout_attn = nn.Dropout(dropout)
+        if "batch" in norm.lower():
+            self.norm_attn = nn.Sequential(Transpose(1,2), nn.BatchNorm1d(d_model), Transpose(1,2))
+        else:
+            self.norm_attn = nn.LayerNorm(d_model)
 
         # Position-wise Feed-Forward
-        self.ff = nn.Sequential(nn.Linear(d_model, d_ff, bias=bias), self._get_activation_fn(activation), nn.Linear(d_ff, d_model, bias=bias))
+        self.ff = nn.Sequential(nn.Linear(d_model, d_ff, bias=bias),
+                                get_activation_fn(activation),
+                                nn.Dropout(dropout),
+                                nn.Linear(d_ff, d_model, bias=bias))
 
         # Add & Norm
-        self.dropout_ffn = nn.Dropout(res_dropout)
-        self.batchnorm_ffn = nn.BatchNorm1d(q_len)
+        self.dropout_ffn = nn.Dropout(dropout)
+        if "batch" in norm.lower():
+            self.norm_ffn = nn.Sequential(Transpose(1,2), nn.BatchNorm1d(d_model), Transpose(1,2))
+        else:
+            self.norm_ffn = nn.LayerNorm(d_model)
 
         self.pre_norm = pre_norm
         self.store_attn = store_attn
@@ -79,7 +94,7 @@ class _TSTEncoderLayer(Module):
 
         # Multi-Head attention sublayer
         if self.pre_norm:
-            src = self.batchnorm_attn(src) # Norm: batchnorm
+            src = self.norm_attn(src)
         ## Multi-Head attention
         if self.res_attention:
             src2, attn, scores = self.self_attn(src, src, src, prev, key_padding_mask=key_padding_mask, attn_mask=attn_mask)
@@ -90,34 +105,28 @@ class _TSTEncoderLayer(Module):
         ## Add & Norm
         src = src + self.dropout_attn(src2) # Add: residual connection with residual dropout
         if not self.pre_norm:
-            src = self.batchnorm_attn(src) # Norm: batchnorm
+            src = self.norm_attn(src)
 
         # Feed-forward sublayer
         if self.pre_norm:
-            src = self.batchnorm_ffn(src) # Norm: batchnorm
+            src = self.norm_ffn(src)
         ## Position-wise Feed-Forward
         src2 = self.ff(src)
         ## Add & Norm
         src = src + self.dropout_ffn(src2) # Add: residual connection with residual dropout
         if not self.pre_norm:
-            src = self.batchnorm_ffn(src) # Norm: batchnorm
+            src = self.norm_ffn(src)
 
         if self.res_attention:
             return src, scores
         else:
             return src
 
-    def _get_activation_fn(self, activation):
-        if callable(activation): return activation()
-        elif activation.lower() == "relu": return nn.ReLU()
-        elif activation.lower() == "gelu": return nn.GELU()
-        raise ValueError(f'{activation} is not available. You can use "relu", "gelu", or a callable')
-
 # Internal Cell
 class _TSTEncoder(Module):
-    def __init__(self, q_len, d_model, n_heads, d_k=None, d_v=None, d_ff=None, res_dropout=0., activation='gelu', res_attention=False, n_layers=1,
-                 pre_norm:bool=False, store_attn:bool=False):
-        self.layers = nn.ModuleList([_TSTEncoderLayer(q_len, d_model, n_heads=n_heads, d_k=d_k, d_v=d_v, d_ff=d_ff, res_dropout=res_dropout,
+    def __init__(self, q_len, d_model, n_heads, d_k=None, d_v=None, d_ff=None, norm='BatchNorm', dropout=0., activation='gelu',
+                 res_attention=False, n_layers=1, pre_norm:bool=False, store_attn:bool=False):
+        self.layers = nn.ModuleList([_TSTEncoderLayer(q_len, d_model, n_heads=n_heads, d_k=d_k, d_v=d_v, d_ff=d_ff, norm=norm, dropout=dropout,
                                                       activation=activation, res_attention=res_attention,
                                                       pre_norm=pre_norm, store_attn=store_attn) for i in range(n_layers)])
         self.res_attention = res_attention
@@ -136,8 +145,8 @@ class _TSTEncoder(Module):
 class _TSTBackbone(Module):
     def __init__(self, c_in:int, seq_len:int, max_seq_len:Optional[int]=512,
                  n_layers:int=3, d_model:int=128, n_heads:int=16, d_k:Optional[int]=None, d_v:Optional[int]=None,
-                 d_ff:int=256, res_dropout:float=0., act:str="gelu", store_attn:bool=False,
-                 key_padding_mask:bool=True, padding_var:Optional[int]=None,
+                 d_ff:int=256, norm:str='BatchNorm', dropout:float=0.1, act:str="gelu", store_attn:bool=False,
+                 key_padding_mask:bool='auto', padding_var:Optional[int]=None,
                  attn_mask:Optional[Tensor]=None, res_attention:bool=True, pre_norm:bool=False,
                  pe:str='zeros', learn_pe:bool=True, verbose:bool=False, **kwargs):
 
@@ -166,42 +175,50 @@ class _TSTBackbone(Module):
         self.W_pos = self._positional_encoding(pe, learn_pe, q_len, d_model)
 
         # Residual dropout
-        self.res_dropout = nn.Dropout(res_dropout)
+        self.dropout = nn.Dropout(dropout)
 
         # Encoder
-        self.encoder = _TSTEncoder(q_len, d_model, n_heads, d_k=d_k, d_v=d_v, d_ff=d_ff, res_dropout=res_dropout, pre_norm=pre_norm,
+        self.encoder = _TSTEncoder(q_len, d_model, n_heads, d_k=d_k, d_v=d_v, d_ff=d_ff, norm=norm, dropout=dropout, pre_norm=pre_norm,
                                    activation=act, res_attention=res_attention, n_layers=n_layers, store_attn=store_attn)
         self.transpose = Transpose(-1, -2, contiguous=True)
         self.key_padding_mask, self.padding_var, self.attn_mask = key_padding_mask, padding_var, attn_mask
 
-    def forward(self, x:Tensor) -> Tensor:  # x: [bs x nvars x q_len]
+    def forward(self, x) -> Tensor:
+        # x: [bs x nvars x q_len] or tuple (if includes key_padding_mask - shape [bs x q_len])
+        # key_padding_mask: non-zero positions will be ignored while the zero positions will be unchanged.
 
         # Padding mask
-        if self.key_padding_mask:
-            x, key_padding_mask = self._key_padding_mask(x)
-        else:
-            key_padding_mask = None
+        if isinstance(x, tuple): x, key_padding_mask = x
+        elif self.key_padding_mask == 'auto': x, key_padding_mask = self._key_padding_mask(x) # automatically identify padding mask
+        elif self.key_padding_mask == -1: x, key_padding_mask = x[:, :-1], x[:, -1]         # padding mask is the last channel
+        else: key_padding_mask = None
 
         # Input encoding
         if self.new_q_len: u = self.W_P(x).transpose(2,1) # Eq 2        # u: [bs x d_model x q_len] transposed to [bs x q_len x d_model]
         else: u = self.W_P(x.transpose(2,1))              # Eq 1        # u: [bs x q_len x nvars] converted to [bs x q_len x d_model]
 
         # Positional encoding
-        u = self.res_dropout(u + self.W_pos)
+        u = self.dropout(u + self.W_pos)
 
         # Encoder
         z = self.encoder(u, key_padding_mask=key_padding_mask, attn_mask=self.attn_mask)    # z: [bs x q_len x d_model]
         z = self.transpose(z)                                                               # z: [bs x d_model x q_len]
-
+        if key_padding_mask is not None:
+            z = z * torch.logical_not(key_padding_mask.unsqueeze(1))  # zero-out padding embeddings
         return z
 
     def _positional_encoding(self, pe, learn_pe, q_len, d_model):
         # Positional encoding
         if pe == None:
-            W_pos = torch.zeros((q_len, d_model), device=default_device()) # pe = None and learn_pe = False can be used to measure impact of pe
+            W_pos = torch.empty((q_len, d_model), device=default_device()) # pe = None and learn_pe = False can be used to measure impact of pe
+            nn.init.uniform_(W_pos, -0.02, 0.02)
             learn_pe = False
-        elif pe == 'zero': W_pos = torch.zeros((q_len, 1), device=default_device())
-        elif pe == 'zeros': W_pos = torch.zeros((q_len, d_model), device=default_device())
+        elif pe == 'zero':
+            W_pos = torch.empty((q_len, 1), device=default_device())
+            nn.init.uniform_(W_pos, -0.02, 0.02)
+        elif pe == 'zeros':
+            W_pos = torch.empty((q_len, d_model), device=default_device())
+            nn.init.uniform_(W_pos, -0.02, 0.02)
         elif pe == 'normal' or pe == 'gauss':
             W_pos = torch.zeros((q_len, 1), device=default_device())
             torch.nn.init.normal_(W_pos, mean=0.0, std=0.1)
@@ -231,12 +248,11 @@ class _TSTBackbone(Module):
                 return x, None
 
 # Cell
-
 class TSTPlus(nn.Sequential):
     """TST (Time Series Transformer) is a Transformer that takes continuous time series as inputs"""
     def __init__(self, c_in:int, c_out:int, seq_len:int, max_seq_len:Optional[int]=512,
                  n_layers:int=3, d_model:int=128, n_heads:int=16, d_k:Optional[int]=None, d_v:Optional[int]=None,
-                 d_ff:int=256, res_dropout:float=0., act:str="gelu", key_padding_mask:bool=True, padding_var:Optional[int]=None,
+                 d_ff:int=256, norm:str='BatchNorm', dropout:float=0., act:str="gelu", key_padding_mask:bool='auto', padding_var:Optional[int]=None,
                  attn_mask:Optional[Tensor]=None, res_attention:bool=True, pre_norm:bool=False, store_attn:bool=False,
                  pe:str='zeros', learn_pe:bool=True, flatten:bool=True, fc_dropout:float=0.,
                  concat_pool:bool=False, bn:bool=False, custom_head:Optional=None,
@@ -252,9 +268,11 @@ class TSTPlus(nn.Sequential):
             d_k: size of the learned linear projection of queries and keys in the MHA. Usual values: 16-512. Default: None -> (d_model/n_heads) = 32.
             d_v: size of the learned linear projection of values in the MHA. Usual values: 16-512. Default: None -> (d_model/n_heads) = 32.
             d_ff: the dimension of the feedforward network model. Default: 512 (range(256-512))
-            res_dropout: amount of residual dropout applied in the encoder.
+            norm: flag to indicate whether BatchNorm (default) or LayerNorm is used in the encoder layers.
+            dropout: amount of residual dropout applied in the encoder.
             act: the activation function of intermediate layer, relu or gelu.
-            key_padding_mask: a boolean padding mask will be applied to attention if True to those steps in a sample where all features are nan.
+            key_padding_mask:   a boolean padding mask will be applied to attention if 'auto' a mask to those steps in a sample where all features are nan.
+                                Other options include: True -->tuple (x, key_padding_mask), -1 --> key_padding_mask is the last channel, False: no mask.
             padding_var: (optional) an int indicating the variable that contains the padded steps (0: non-padded, 1: padded).
             attn_mask: a boolean mask will be applied to attention if a tensor of shape [min(seq_len, max_seq_len) x min(seq_len, max_seq_len)] if provided.
             res_attention: if True Residual MultiheadAttention is applied.
@@ -280,7 +298,7 @@ class TSTPlus(nn.Sequential):
         # Backbone
         backbone = _TSTBackbone(c_in, seq_len=seq_len, max_seq_len=max_seq_len,
                                 n_layers=n_layers, d_model=d_model, n_heads=n_heads, d_k=d_k, d_v=d_v,
-                                d_ff=d_ff, res_dropout=res_dropout, act=act, key_padding_mask=key_padding_mask, padding_var=padding_var,
+                                d_ff=d_ff, dropout=dropout, act=act, key_padding_mask=key_padding_mask, padding_var=padding_var,
                                 attn_mask=attn_mask, res_attention=res_attention, pre_norm=pre_norm, store_attn=store_attn,
                                 pe=pe, learn_pe=learn_pe, verbose=verbose, **kwargs)
 
@@ -289,15 +307,16 @@ class TSTPlus(nn.Sequential):
         self.c_out = c_out
         self.seq_len = backbone.seq_len
         if custom_head: head = custom_head(self.head_nf, c_out, self.seq_len) # custom head passed as a partial func with all its kwargs
-        else: head = self.create_head(self.head_nf, c_out, self.seq_len, flatten=flatten, concat_pool=concat_pool,
+        else: head = self.create_head(self.head_nf, c_out, self.seq_len, act=act, flatten=flatten, concat_pool=concat_pool,
                                            fc_dropout=fc_dropout, bn=bn, y_range=y_range)
         super().__init__(OrderedDict([('backbone', backbone), ('head', head)]))
 
 
-    def create_head(self, nf, c_out, seq_len, flatten=True, concat_pool=False, fc_dropout=0., bn=False, y_range=None):
+    def create_head(self, nf, c_out, seq_len, flatten=True, concat_pool=False, act="gelu", fc_dropout=0., bn=False, y_range=None):
+        layers = [get_activation_fn(act)]
         if flatten:
             nf *= seq_len
-            layers = [Flatten()]
+            layers += [Flatten()]
         else:
             if concat_pool: nf *= 2
             layers = [GACP1d(1) if concat_pool else GAP1d(1)]

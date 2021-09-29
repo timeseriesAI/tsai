@@ -7,10 +7,10 @@ __all__ = ['get_layers', 'is_layer', 'is_linear', 'is_bn', 'is_conv_linear', 'is
            'change_model_head', 'naive_forecaster', 'true_forecaster']
 
 # Cell
-from fastai.tabular.model import *
-from fastai.vision.models.all import *
 from ..imports import *
 from .layers import *
+from fastai.tabular.model import *
+from fastai.vision.models.all import *
 
 # Cell
 def get_layers(model, cond=noop, full=True):

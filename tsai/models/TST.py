@@ -65,8 +65,14 @@ class _MultiHeadAttention(Module):
         return output, attn
 
 # Internal Cell
+def get_activation_fn(activation):
+    if activation == "relu": return nn.ReLU()
+    elif activation == "gelu": return nn.GELU()
+    else: return activation()
+#         raise ValueError(f'{activation} is not available. You can use "relu" or "gelu"')
+
 class _TSTEncoderLayer(Module):
-    def __init__(self, q_len:int, d_model:int, n_heads:int, d_k:Optional[int]=None, d_v:Optional[int]=None, d_ff:int=256, res_dropout:float=0.1,
+    def __init__(self, q_len:int, d_model:int, n_heads:int, d_k:Optional[int]=None, d_v:Optional[int]=None, d_ff:int=256, dropout:float=0.1,
                  activation:str="gelu"):
 
         assert d_model // n_heads, f"d_model ({d_model}) must be divisible by n_heads ({n_heads})"
@@ -77,15 +83,18 @@ class _TSTEncoderLayer(Module):
         self.self_attn = _MultiHeadAttention(d_model, n_heads, d_k, d_v)
 
         # Add & Norm
-        self.dropout_attn = nn.Dropout(res_dropout)
-        self.batchnorm_attn = nn.BatchNorm1d(q_len)
+        self.dropout_attn = nn.Dropout(dropout)
+        self.batchnorm_attn = nn.Sequential(Transpose(1,2), nn.BatchNorm1d(d_model), Transpose(1,2))
 
         # Position-wise Feed-Forward
-        self.ff = nn.Sequential(nn.Linear(d_model, d_ff), self._get_activation_fn(activation), nn.Linear(d_ff, d_model))
+        self.ff = nn.Sequential(nn.Linear(d_model, d_ff),
+                                get_activation_fn(activation),
+                                nn.Dropout(dropout),
+                                nn.Linear(d_ff, d_model))
 
         # Add & Norm
-        self.dropout_ffn = nn.Dropout(res_dropout)
-        self.batchnorm_ffn = nn.BatchNorm1d(q_len)
+        self.dropout_ffn = nn.Dropout(dropout)
+        self.batchnorm_ffn = nn.Sequential(Transpose(1,2), nn.BatchNorm1d(d_model), Transpose(1,2))
 
     def forward(self, src:Tensor, mask:Optional[Tensor]=None) -> Tensor:
 
@@ -105,17 +114,11 @@ class _TSTEncoderLayer(Module):
 
         return src
 
-    def _get_activation_fn(self, activation):
-        if activation == "relu": return nn.ReLU()
-        elif activation == "gelu": return nn.GELU()
-        else: return activation()
-#         raise ValueError(f'{activation} is not available. You can use "relu" or "gelu"')
-
 # Internal Cell
 class _TSTEncoder(Module):
-    def __init__(self, q_len, d_model, n_heads, d_k=None, d_v=None, d_ff=None, res_dropout=0.1, activation='gelu', n_layers=1):
+    def __init__(self, q_len, d_model, n_heads, d_k=None, d_v=None, d_ff=None, dropout=0.1, activation='gelu', n_layers=1):
 
-        self.layers = nn.ModuleList([_TSTEncoderLayer(q_len, d_model, n_heads=n_heads, d_k=d_k, d_v=d_v, d_ff=d_ff, res_dropout=res_dropout,
+        self.layers = nn.ModuleList([_TSTEncoderLayer(q_len, d_model, n_heads=n_heads, d_k=d_k, d_v=d_v, d_ff=d_ff, dropout=dropout,
                                                             activation=activation) for i in range(n_layers)])
 
     def forward(self, src):
@@ -128,7 +131,7 @@ class _TSTEncoder(Module):
 class TST(Module):
     def __init__(self, c_in:int, c_out:int, seq_len:int, max_seq_len:Optional[int]=None,
                  n_layers:int=3, d_model:int=128, n_heads:int=16, d_k:Optional[int]=None, d_v:Optional[int]=None,
-                 d_ff:int=256, res_dropout:float=0.1, act:str="gelu", fc_dropout:float=0.,
+                 d_ff:int=256, dropout:float=0.1, act:str="gelu", fc_dropout:float=0.,
                  y_range:Optional[tuple]=None, verbose:bool=False, **kwargs):
         r"""TST (Time Series Transformer) is a Transformer that takes continuous time series as inputs.
         As mentioned in the paper, the input must be standardized by_var based on the entire training set.
@@ -142,7 +145,7 @@ class TST(Module):
             d_k: size of the learned linear projection of queries and keys in the MHA. Usual values: 16-512. Default: None -> (d_model/n_heads) = 32.
             d_v: size of the learned linear projection of values in the MHA. Usual values: 16-512. Default: None -> (d_model/n_heads) = 32.
             d_ff: the dimension of the feedforward network model.
-            res_dropout: amount of residual dropout applied in the encoder.
+            dropout: amount of residual dropout applied in the encoder.
             act: the activation function of intermediate layer, relu or gelu.
             n_layers: the number of sub-encoder-layers in the encoder.
             fc_dropout: dropout applied to the final fully connected layer.
@@ -175,22 +178,24 @@ class TST(Module):
             self.W_P = nn.Linear(c_in, d_model) # Eq 1: projection of feature vectors onto a d-dim vector space
 
         # Positional encoding
-        W_pos = torch.zeros((q_len, d_model), device=default_device())
+        W_pos = torch.empty((q_len, d_model), device=default_device())
+        nn.init.uniform_(W_pos, -0.02, 0.02)
         self.W_pos = nn.Parameter(W_pos, requires_grad=True)
 
         # Residual dropout
-        self.res_dropout = nn.Dropout(res_dropout)
+        self.dropout = nn.Dropout(dropout)
 
         # Encoder
-        self.encoder = _TSTEncoder(q_len, d_model, n_heads, d_k=d_k, d_v=d_v, d_ff=d_ff, res_dropout=res_dropout, activation=act, n_layers=n_layers)
+        self.encoder = _TSTEncoder(q_len, d_model, n_heads, d_k=d_k, d_v=d_v, d_ff=d_ff, dropout=dropout, activation=act, n_layers=n_layers)
         self.flatten = Flatten()
 
         # Head
         self.head_nf = q_len * d_model
-        self.head = self.create_head(self.head_nf, c_out, fc_dropout=fc_dropout, y_range=y_range)
+        self.head = self.create_head(self.head_nf, c_out, act=act, fc_dropout=fc_dropout, y_range=y_range)
 
-    def create_head(self, nf, c_out, fc_dropout=0., y_range=None, **kwargs):
-        layers = [nn.Dropout(fc_dropout)] if fc_dropout else []
+    def create_head(self, nf, c_out, act="gelu", fc_dropout=0., y_range=None, **kwargs):
+        layers = [get_activation_fn(act), Flatten()]
+        if fc_dropout: layers += [nn.Dropout(fc_dropout)]
         layers += [nn.Linear(nf, c_out)]
         if y_range: layers += [SigmoidRange(*y_range)]
         return nn.Sequential(*layers)
@@ -203,12 +208,11 @@ class TST(Module):
         else: u = self.W_P(x.transpose(2,1)) # Eq 1                     # u: [bs x q_len x nvars] converted to [bs x q_len x d_model]
 
         # Positional encoding
-        u = self.res_dropout(u + self.W_pos)
+        u = self.dropout(u + self.W_pos)
 
         # Encoder
         z = self.encoder(u)                                             # z: [bs x q_len x d_model]
-        if self.flatten is not None: z = self.flatten(z)                # z: [bs x q_len * d_model]
-        else: z = z.transpose(2,1).contiguous()                         # z: [bs x d_model x q_len]
+        z = z.transpose(2,1).contiguous()                               # z: [bs x d_model x q_len]
 
         # Classification/ Regression head
         return self.head(z)                                             # output: [bs x c_out]
