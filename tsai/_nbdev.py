@@ -673,7 +673,8 @@ index = {"get_nb_name": "000_export.ipynb",
          "get_current_config": "200_optuna.ipynb",
          "run_optuna_study": "200_optuna.ipynb",
          "get_wandb_agent": "201_wandb.ipynb",
-         "run_wandb_agent": "201_wandb.ipynb"}
+         "run_wandb_agent": "201_wandb.ipynb",
+         "wandb_agent": "201_wandb.ipynb"}
 
 modules = ["export.py",
            "utils.py",

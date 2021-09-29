@@ -1010,4 +1010,4 @@ class named_partial(object):
 def yaml2dict(fname):
     with maybe_open(fname, 'r') as f:
         dictionary = yaml.safe_load(f)
-    return dictionary
+    return AttrDict(dictionary)

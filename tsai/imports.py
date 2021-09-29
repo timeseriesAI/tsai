@@ -32,6 +32,7 @@ import pytz # timezone
 import sklearn
 from sklearn.linear_model import LogisticRegression, RidgeClassifierCV # needed by rocket!
 from IPython.display import Audio, display, HTML, Javascript, clear_output
+from IPython.core.display import Javascript, display, HTML    
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
@@ -70,8 +71,6 @@ def _save_nb():
     """
     Save and checkpoints current jupyter notebook.
     """
-    from IPython.core.display import Javascript, display, HTML
-    import time
     if is_lab():
         script = """
         this.nextElementSibling.focus();
@@ -86,8 +85,6 @@ def save_nb(nb_name=None, attempts=1, verbose=True, wait=2):
     """
     Save and checkpoints current jupyter notebook. 1 attempt per second.
     """
-    from IPython.core.display import Javascript, display, HTML
-    import time
     
     if nb_name is None:
         if is_colab(): 
