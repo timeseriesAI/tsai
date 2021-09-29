@@ -669,7 +669,9 @@ index = {"get_nb_name": "000_export.ipynb",
          "InputWrapper": "140_models.misc.ipynb",
          "ResidualWrapper": "140_models.misc.ipynb",
          "RecursiveWrapper": "140_models.misc.ipynb",
-         "optuna_study": "200_optuna.ipynb",
+         "retrieve_value": "200_optuna.ipynb",
+         "get_current_config": "200_optuna.ipynb",
+         "run_optuna_study": "200_optuna.ipynb",
          "get_wandb_agent": "201_wandb.ipynb",
          "run_wandb_agent": "201_wandb.ipynb"}
 
