@@ -154,7 +154,7 @@ def py_last_saved(nb_name, max_elapsed=1):
     print('\n')
     lib_path = Path(os.getcwd()).parent
     folder = Path(lib_path / 'tsai')
-    script_name = str(folder/str(nb_name).split("_")[1:][0].replace(".ipynb", ".py"))
+    script_name = str(folder/".".join([str(nb_name).split("_")[1:][0].replace(".ipynb", "").replace(".", "/"), "py"]))
     elapsed_time = time.time() - os.path.getmtime(script_name)
     if elapsed_time < max_elapsed:
         print('Correct conversion! 😃')
