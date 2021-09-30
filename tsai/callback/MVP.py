@@ -4,8 +4,8 @@ __all__ = ['create_subsequence_mask', 'create_variable_mask', 'create_future_mas
            'MVP', 'TSBERT']
 
 # Cell
-from fastai.callback.all import *
 from ..imports import *
+from fastai.callback.all import *
 from ..utils import *
 from ..models.utils import *
 from ..models.layers import *

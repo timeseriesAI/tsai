@@ -183,15 +183,22 @@ class _TSTBackbone(Module):
         self.transpose = Transpose(-1, -2, contiguous=True)
         self.key_padding_mask, self.padding_var, self.attn_mask = key_padding_mask, padding_var, attn_mask
 
-    def forward(self, x) -> Tensor:
-        # x: [bs x nvars x q_len] or tuple (if includes key_padding_mask - shape [bs x q_len])
-        # key_padding_mask: non-zero positions will be ignored while the zero positions will be unchanged.
+    def forward(self, inp) -> Tensor:
+        r"""Pass the input through the TST backbone.
+        Args:
+            inp: input (optionally with padding mask. 1s (meaning padded) in padding mask will be ignored while 0s (non-padded) will be unchanged.)
+        Shape:
+            There are 3 options:
+            1. inp: Tensor containing just time series data [bs x nvars x q_len]
+            2. inp: Tensor containing time series data plus a padding feature in the last channel [bs x (nvars + 1) x q_len]
+            3. inp: tuple containing a tensor with time series data plus a padding mask per batch ([bs x nvars x q_len] , [bs x q_len] )
+        """
 
-        # Padding mask
-        if isinstance(x, tuple): x, key_padding_mask = x
-        elif self.key_padding_mask == 'auto': x, key_padding_mask = self._key_padding_mask(x) # automatically identify padding mask
-        elif self.key_padding_mask == -1: x, key_padding_mask = x[:, :-1], x[:, -1]         # padding mask is the last channel
-        else: key_padding_mask = None
+        # x and padding mask
+        if isinstance(inp, tuple): x, key_padding_mask = inp
+        elif self.key_padding_mask == 'auto': x, key_padding_mask = self._key_padding_mask(inp) # automatically identify padding mask
+        elif self.key_padding_mask == -1: x, key_padding_mask = inp[:, :-1], inp[:, -1]         # padding mask is the last channel
+        else: x, key_padding_mask = inp, None
 
         # Input encoding
         if self.new_q_len: u = self.W_P(x).transpose(2,1) # Eq 2        # u: [bs x d_model x q_len] transposed to [bs x q_len x d_model]

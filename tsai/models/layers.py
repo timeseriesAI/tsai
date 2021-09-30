@@ -994,7 +994,7 @@ class ScaledDotProductAttention(Module):
                 attn_scores += attn_mask
 
         # Key padding mask (optional)
-        if key_padding_mask is not None:                              # mask with shape [q_len x q_len] (only when max_w_len == q_len)
+        if key_padding_mask is not None:                              # mask with shape [bs x q_len] (only when max_w_len == q_len)
             attn_scores.masked_fill_(key_padding_mask.unsqueeze(1).unsqueeze(2), -np.inf)
 
         # normalize the attention weights
