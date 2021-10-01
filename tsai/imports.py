@@ -1,17 +1,20 @@
-from sktime.utils.validation.panel import check_X
-from sktime.datasets._data_io import load_UCR_UEA_dataset
-from sktime.utils.data_io import load_from_tsfile_to_dataframe as ts2df
 import fastai
 from fastai.imports import *
 from fastai.data.all import *
 from fastai.torch_core import *
+
+# temporary fix for fastai issue #3485
+import pandas as pd
+from importlib import reload
+reload(pd.core.frame)
+pd.DataFrame.__init__ = pd.core.frame.DataFrame.__init__
+
 from fastai.learner import *
 from fastai.metrics import *
 from fastai.callback.all import *
 from fastai.vision.data import *
 from fastai.interpret import *
 from fastai.optimizer import *
-from fastai.torch_core import Module
 from fastai.data.transforms import get_files
 from fastai.tabular.all import *
 import fastcore
@@ -92,7 +95,6 @@ def save_nb(nb_name=None, attempts=1, verbose=True, wait=2):
                 print('cannot save the notebook in Google Colab. Save it manually.')
         else:
             _save_nb()
-        time.sleep(wait)
     else:
         saved = False
         current_time = time.time()
@@ -112,6 +114,7 @@ def save_nb(nb_name=None, attempts=1, verbose=True, wait=2):
         assert saved, f"{nb_name} couldn't be saved."
         if verbose:
             print(f'{nb_name} saved at {to_local_time(saved_time)}.')
+    time.sleep(wait)
 
 def maybe_mount_drive():
     from pathlib import Path

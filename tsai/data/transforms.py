@@ -4,7 +4,7 @@ __all__ = ['TSIdentity', 'TSShuffle_HLs', 'TSShuffleSteps', 'TSMagAddNoise', 'TS
            'random_cum_curve_generator', 'random_cum_noise_generator', 'random_cum_linear_generator', 'TSTimeNoise',
            'TSMagWarp', 'TSTimeWarp', 'TSWindowWarp', 'TSMagScale', 'TSMagScalePerVar', 'TSMagScaleByVar',
            'TSRandomResizedCrop', 'TSRandomZoomIn', 'TSWindowSlicing', 'TSRandomZoomOut', 'TSRandomTimeScale',
-           'TSRandomTimeStep', 'TSSubsampleSteps', 'TSBlur', 'TSSmooth', 'maddest', 'TSFreqDenoise',
+           'TSRandomTimeStep', 'TSResampleSteps', 'TSSubsampleSteps', 'TSBlur', 'TSSmooth', 'maddest', 'TSFreqDenoise',
            'TSRandomFreqNoise', 'TSRandomResizedLookBack', 'TSRandomLookBackOut', 'TSVarOut', 'TSCutOut',
            'TSTimeStepOut', 'TSRandomCropPad', 'TSMaskOut', 'TSInputDropout', 'TSTranslateX', 'TSRandomShift',
            'TSHorizontalFlip', 'TSRandomTrend', 'TSRandomRotate', 'TSVerticalFlip', 'TSResize', 'TSRandomSize',
@@ -12,8 +12,8 @@ __all__ = ['TSIdentity', 'TSShuffle_HLs', 'TSShuffleSteps', 'TSMagAddNoise', 'TS
            'TestTfm', 'get_tfm_name']
 
 # Cell
-from fastai.vision.augment import RandTransform
 from ..imports import *
+from fastai.vision.augment import RandTransform
 from ..utils import *
 from .external import *
 from .core import *
@@ -341,7 +341,7 @@ class TSRandomTimeStep(RandTransform):
 
 # Cell
 
-class TSSubsampleSteps(RandTransform):
+class TSResampleSteps(RandTransform):
     "Transform that randomly selects and sorts sequence steps (with replacement) maintaining the sequence length"
 
     order = 90
@@ -361,6 +361,8 @@ class TSSubsampleSteps(RandTransform):
         else:
             idxs = np.sort(np.random.choice(S, round(S * step_pct), True))
         return o[..., idxs]
+
+TSSubsampleSteps = TSResampleSteps
 
 # Cell
 class TSBlur(RandTransform):

@@ -21,9 +21,6 @@ import tempfile
 try: from urllib import urlretrieve
 except ImportError: from urllib.request import urlretrieve
 import shutil
-# from sktime.utils.validation.panel import check_X
-# from sktime.datasets._data_io import load_UCR_UEA_dataset
-# from sktime.utils.data_io import load_from_tsfile_to_dataframe as ts2df
 
 # Cell
 def decompress_from_url(url, target_dir=None, verbose=False):
@@ -145,7 +142,10 @@ def get_UCR_data(dsid, path='.', parent_dir='data/UCR', on_disk=True, mode='c', 
 #     if not os.path.exists(full_tgt_dir): os.makedirs(full_tgt_dir)
     full_tgt_dir.parent.mkdir(parents=True, exist_ok=True)
     if force_download or not all([os.path.isfile(f'{full_tgt_dir}/{fn}.npy') for fn in ['X_train', 'X_valid', 'y_train', 'y_valid', 'X', 'y']]):
-
+        from importlib import reload
+        import pandas as pd
+        reload(pd)
+        from sktime.utils.data_io import load_from_tsfile_to_dataframe as ts2df
         # Option A
         src_website = 'http://www.timeseriesclassification.com/Downloads'
         decompress_from_url(f'{src_website}/{dsid}.zip', target_dir=full_tgt_dir, verbose=verbose)
@@ -173,12 +173,6 @@ def get_UCR_data(dsid, path='.', parent_dir='data/UCR', on_disk=True, mode='c', 
         X_train = np.transpose(np.stack(X_train_, axis=-1), (0, 2, 1))
         X_valid = np.transpose(np.stack(X_valid_, axis=-1), (0, 2, 1))
         X_train, X_valid = match_seq_len(X_train, X_valid)
-
-        ## Option B
-#         X_train, y_train = load_UCR_UEA_dataset(dsid, split='train', return_X_y=True)
-#         X_train = check_X(X_train, coerce_to_numpy=True).astype(dtype)
-#         X_valid, y_valid = load_UCR_UEA_dataset(dsid, split='test', return_X_y=True)
-#         X_valid = check_X(X_valid, coerce_to_numpy=True).astype(dtype)
 
         np.save(f'{full_tgt_dir}/X_train.npy', X_train)
         np.save(f'{full_tgt_dir}/y_train.npy', y_train)
@@ -790,6 +784,7 @@ len(Monash_regression_list)
 # Cell
 def get_Monash_regression_data(dsid, path='./data/Monash', on_disk=True, mode='c', Xdtype='float32', ydtype=None, split_data=True, force_download=False,
                                verbose=False):
+
     dsid_list = [rd for rd in Monash_regression_list if rd.lower() == dsid.lower()]
     assert len(dsid_list) > 0, f'{dsid} is not a Monash dataset'
     dsid = dsid_list[0]
@@ -797,7 +792,7 @@ def get_Monash_regression_data(dsid, path='./data/Monash', on_disk=True, mode='c
     pv(f'Dataset: {dsid}', verbose)
 
     if force_download or not all([os.path.isfile(f'{path}/{dsid}/{fn}.npy') for fn in ['X_train', 'X_valid', 'y_train', 'y_valid', 'X', 'y']]):
-
+        from sktime.utils.validation.panel import check_X
         if dsid == 'AppliancesEnergy': id = 3902637
         elif dsid == 'HouseholdPowerConsumption1': id = 3902704
         elif dsid == 'HouseholdPowerConsumption2': id = 3902706

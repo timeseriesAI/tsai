@@ -12,7 +12,7 @@ from typing import Callable
 # Cell
 
 class _TSiTEncoder(nn.Module):
-    def __init__(self, d_model, n_heads, n_layers:int=6, attn_drop_rate:float=0, mlp_drop_rate:float=0, drop_path_rate:float=0.,
+    def __init__(self, d_model, n_heads, n_layers:int=6, attn_dropout:float=0, dropout:float=0, drop_path_rate:float=0.,
                  mlp_ratio:int=1, qkv_bias:bool=True, act:str='reglu', pre_norm:bool=False):
         super().__init__()
 
@@ -20,8 +20,8 @@ class _TSiTEncoder(nn.Module):
         self.layers = nn.ModuleList([])
         for i in range(n_layers):
             self.layers.append(nn.ModuleList([
-                MultiheadAttention(d_model, n_heads, dropout=attn_drop_rate, qkv_bias=qkv_bias), nn.LayerNorm(d_model),
-                PositionwiseFeedForward(d_model, dropout=mlp_drop_rate, act=act, mlp_ratio=mlp_ratio), nn.LayerNorm(d_model),
+                MultiheadAttention(d_model, n_heads, dropout=attn_dropout, qkv_bias=qkv_bias), nn.LayerNorm(d_model),
+                PositionwiseFeedForward(d_model, dropout=dropout, act=act, mlp_ratio=mlp_ratio), nn.LayerNorm(d_model),
                 # NOTE: drop path for stochastic depth, we shall see if this is better than dropout here
                 DropPath(dpr[i]) if dpr[i] != 0 else nn.Identity(),
                 # nn.Dropout(drop_path_rate) if drop_path_rate != 0 else nn.Identity()
@@ -44,7 +44,7 @@ class _TSiTEncoder(nn.Module):
 
 class _TSiTBackbone(Module):
     def __init__(self, c_in:int, seq_len:int, n_layers:int=6, d_model:int=128, n_heads:int=16, d_head:Optional[int]=None, act:str='reglu',
-                 d_ff:int=256, qkv_bias:bool=True, pos_dropout:float=0., attn_drop_rate:float=0, mlp_drop_rate:float=0, drop_path_rate:float=0.,
+                 d_ff:int=256, qkv_bias:bool=True, dropout:float=0., attn_dropout:float=0,drop_path_rate:float=0.,
                  mlp_ratio:int=1, pre_norm:bool=False, use_token:bool=True, ks:Optional[int]=None, maxpool:bool=True,
                  preprocessor:Optional[Callable]=None, device=None, verbose:bool=False):
 
@@ -72,9 +72,9 @@ class _TSiTBackbone(Module):
         self.pos_embedding = nn.Parameter(torch.zeros(1, seq_len + use_token, d_model))
         self.cls_token = nn.Parameter(torch.zeros(1, 1, d_model))
         self.use_token = use_token
-        self.pos_dropout = nn.Dropout(pos_dropout)
+        self.pos_dropout = nn.Dropout(dropout)
 
-        self.encoder = _TSiTEncoder(d_model, n_heads, n_layers=n_layers, qkv_bias=qkv_bias, attn_drop_rate=attn_drop_rate, mlp_drop_rate=mlp_drop_rate,
+        self.encoder = _TSiTEncoder(d_model, n_heads, n_layers=n_layers, qkv_bias=qkv_bias, attn_dropout=attn_dropout, dropout=dropout,
                                     mlp_ratio=mlp_ratio, drop_path_rate=drop_path_rate, act=act, pre_norm=pre_norm)
 
     def forward(self, x):
@@ -102,49 +102,51 @@ class TSiTPlus(nn.Sequential):
 
     This implementation is a modified version of Vision Transformer that is part of the grat timm library
     (https://github.com/rwightman/pytorch-image-models/blob/72b227dcf57c0c62291673b96bdc06576bb90457/timm/models/vision_transformer.py)
-
-    Args:
-    =====
-
-    c_in:                   the number of features (aka variables, dimensions, channels) in the time series dataset.
-    c_out:                  the number of target classes.
-    seq_len:                number of time steps in the time series.
-    n_layers:               number of layers (or blocks) in the encoder. Default: 3 (range(1-4))
-    d_model:                total dimension of the model (number of features created by the model). Default: 128 (range(64-512))
-    n_heads:                parallel attention heads. Default:16 (range(8-16)).
-    d_head:                 size of the learned linear projection of queries, keys and values in the MHA. Usual values: 16-512.
-                            Default: None -> (d_model/n_heads) = 32.
-    act:                    the activation function of intermediate layer, relu, gelu, geglu, reglu.
-    d_ff:                   the dimension of the feedforward network model. Default: 512 (range(256-512))
-    pos_dropout:            dropout applied to to the embedded sequence steps after position embeddings have been added.
-    attn_drop_rate (float): dropout rate applied to the attention layer
-    mlp_drop_rate (float):  dropout rate applied to the mlp layer
-    drop_path_rate:         dropout applied to the output of MultheadAttention and PositionwiseFeedForward layers.
-    mlp_ratio:              ratio of mlp hidden dim to embedding dim.
-    qkv_bias:               determines whether bias is applied to the Linear projections of queries, keys and values in the MultiheadAttention
-    pre_norm:               if True normalization will be applied as the first step in the sublayers. Defaults to False.
-    use_token:              if True, the output will come from the transformed token. Otherwise a pooling layer will be applied.
-    fc_dropout:             dropout applied to the final fully connected layer.
-    bn:                     flag that indicates if batchnorm will be applied to the head.
-    y_range:                range of possible y values (used in regression tasks).
-    ks:                     (Optional) kernel sizes that will be applied to a hybrid embedding.
-    maxpool:                If true and kernel sizes are passed, maxpool will also be added to the hybrid embedding.
-    preprocessor:           an optional callable (nn.Conv1d with dilation > 1 or stride > 1 for example) that will be used to preprocess the time series before
-                            the embedding step. It is useful to extract features or resample the time series.
-    custom_head:            custom head that will be applied to the network. It must contain all kwargs (pass a partial function)
-
-    Input shape:
-        x: bs (batch size) x nvars (aka features, variables, dimensions, channels) x seq_len (aka time steps)
     """
 
 
     def __init__(self, c_in:int, c_out:int, seq_len:int, n_layers:int=6, d_model:int=128, n_heads:int=16, d_head:Optional[int]=None, act:str='reglu',
-                 d_ff:int=256, pos_dropout:float=0., attn_drop_rate:float=0, mlp_drop_rate:float=0, drop_path_rate:float=0., mlp_ratio:int=1,
+                 d_ff:int=256, dropout:float=0., attn_dropout:float=0, drop_path_rate:float=0., mlp_ratio:int=1,
                  qkv_bias:bool=True, pre_norm:bool=False, use_token:bool=True, fc_dropout:float=0., bn:bool=False, y_range:Optional[tuple]=None,
                  ks:Optional[int]=None, maxpool:bool=True, preprocessor:Optional[Callable]=None, custom_head:Optional[Callable]=None, verbose:bool=False):
 
+        """
+        Args:
+        =====
+
+        c_in:                   the number of features (aka variables, dimensions, channels) in the time series dataset.
+        c_out:                  the number of target classes.
+        seq_len:                number of time steps in the time series.
+        n_layers:               number of layers (or blocks) in the encoder. Default: 3 (range(1-4))
+        d_model:                total dimension of the model (number of features created by the model). Default: 128 (range(64-512))
+        n_heads:                parallel attention heads. Default:16 (range(8-16)).
+        d_head:                 size of the learned linear projection of queries, keys and values in the MHA. Usual values: 16-512.
+                                Default: None -> (d_model/n_heads) = 32.
+        act:                    the activation function of intermediate layer, relu, gelu, geglu, reglu.
+        d_ff:                   the dimension of the feedforward network model. Default: 512 (range(256-512))
+        dropout:                dropout applied to to the embedded sequence steps after position embeddings have been added and
+                                to the mlp sublayer in the encoder.
+        attn_dropout:         dropout rate applied to the attention sublayer.
+        drop_path_rate:         stochastic depth rate.
+        mlp_ratio:              ratio of mlp hidden dim to embedding dim.
+        qkv_bias:               determines whether bias is applied to the Linear projections of queries, keys and values in the MultiheadAttention
+        pre_norm:               if True normalization will be applied as the first step in the sublayers. Defaults to False.
+        use_token:              if True, the output will come from the transformed token. Otherwise a pooling layer will be applied.
+        fc_dropout:             dropout applied to the final fully connected layer.
+        bn:                     flag that indicates if batchnorm will be applied to the head.
+        y_range:                range of possible y values (used in regression tasks).
+        ks:                     (Optional) kernel sizes that will be applied to a hybrid embedding.
+        maxpool:                If true and kernel sizes are passed, maxpool will also be added to the hybrid embedding.
+        preprocessor:           an optional callable (nn.Conv1d with dilation > 1 or stride > 1 for example) that will be used to preprocess the time series before
+                                the embedding step. It is useful to extract features or resample the time series.
+        custom_head:            custom head that will be applied to the network. It must contain all kwargs (pass a partial function)
+
+        Input shape:
+            x: bs (batch size) x nvars (aka features, variables, dimensions, channels) x seq_len (aka time steps)
+        """
+
         backbone = _TSiTBackbone(c_in, seq_len, n_layers=n_layers, d_model=d_model, n_heads=n_heads, d_head=d_head, act=act,
-                                  d_ff=d_ff, pos_dropout=pos_dropout, attn_drop_rate=attn_drop_rate, mlp_drop_rate=mlp_drop_rate,
+                                  d_ff=d_ff, dropout=dropout, attn_dropout=attn_dropout,
                                   drop_path_rate=drop_path_rate, pre_norm=pre_norm, mlp_ratio=mlp_ratio, use_token=use_token,
                                   ks=ks, maxpool=maxpool, preprocessor=preprocessor, verbose=verbose)
 
