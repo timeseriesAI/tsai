@@ -7,7 +7,4 @@ from .imports import *
 from fastai.optimizer import *
 
 # Cell
-import torch_optimizer as optim
-
-# Cell
 def wrap_optimizer(opt, **kwargs): return partial(OptimWrapper, opt=opt, **kwargs)
