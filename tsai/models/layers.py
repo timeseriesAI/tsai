@@ -18,12 +18,12 @@ __all__ = ['noop', 'init_lin_zero', 'lin_zero_init', 'SwishBeta', 'same_padding1
            'MultiheadAttention', 'MultiConcatConv1d']
 
 # Cell
+from ..imports import *
+from ..utils import *
 from torch.nn.init import normal_
 from fastai.torch_core import Module
 from fastai.layers import *
 from torch.nn.utils import weight_norm, spectral_norm
-from ..imports import *
-from ..utils import *
 
 # Cell
 def noop(x): return x

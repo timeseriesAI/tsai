@@ -3,14 +3,14 @@
 __all__ = ['load_all', 'load_learner_all', 'get_arch', 'all_archs', 'all_archs_names', 'ts_learner', 'tsimage_learner']
 
 # Cell
-from fastai.learner import *
-from fastai.vision.models.all import *
-from fastai.data.transforms import *
 from .imports import *
 from .data.core import *
 from .data.validation import *
 from .models.all import *
 from .models.InceptionTimePlus import *
+from fastai.learner import *
+from fastai.vision.models.all import *
+from fastai.data.transforms import *
 
 # Cell
 @patch

@@ -9,6 +9,7 @@ __all__ = ['df2Xy', 'split_Xy', 'df2xy', 'split_xy', 'df2np3d', 'add_missing_val
 from ..imports import *
 from ..utils import *
 from .validation import *
+from io import StringIO
 
 # Cell
 def df2Xy(df, sample_col=None, feat_col=None, data_cols=None, target_col=None, to3d=True, splits=None, sort_by=None, ascending=True, y_func=None):
@@ -357,13 +358,21 @@ def SlidingWindow(window_len:int, stride:Union[None, int]=1, start:int=0, pad_re
         if not seq_first: o = o.T
         if isinstance(o, pd.DataFrame):
             if sort_by is not None: o.sort_values(by=sort_by, axis=0, ascending=ascending, inplace=True, ignore_index=True)
-            X = o.loc[:, _get_x].values if get_x is None or not isinstance(_get_x[0], Integral) else o.iloc[:, _get_x].values
-            if get_y != []: y = o.loc[:, _get_y].values if get_y is None or not isinstance(_get_y[0], Integral) else o.iloc[:, _get_y].values
+            if get_x is None: X = o.values
+            elif isinstance(o.columns[0], str): X = o.loc[:, _get_x].values
+            else: X = o.iloc[:, _get_x].values
+            if get_y == []: y = None
+            elif get_y is None: y = o.values
+            elif isinstance(o.columns[0], str): y = o.loc[:, _get_y].values
+            else: y = o.iloc[:, _get_y].values
         else:
             if isinstance(o, torch.Tensor): o = o.numpy()
             if o.ndim < 2: o = o[:, None]
-            X = o[:, _get_x]
-            if get_y != []: y = o[:, _get_y]
+            if get_x is None: X = o
+            else: X = o[:, _get_x]
+            if get_y == []: y = None
+            elif get_y is None: y = o
+            else: y = o[:, _get_y]
         seq_len = len(X)
         if get_y != []:
             X_max_time = seq_len - start - window_len - max_horizon - pad_remainder

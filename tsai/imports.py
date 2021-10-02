@@ -1,14 +1,10 @@
+import pandas as pd
+pd_df__init__ = pd.DataFrame.__init__ # temporary fix for fastai issue #3485
+
 import fastai
 from fastai.imports import *
 from fastai.data.all import *
 from fastai.torch_core import *
-
-# temporary fix for fastai issue #3485
-import pandas as pd
-from importlib import reload
-reload(pd.core.frame)
-pd.DataFrame.__init__ = pd.core.frame.DataFrame.__init__
-
 from fastai.learner import *
 from fastai.metrics import *
 from fastai.callback.all import *
@@ -20,6 +16,8 @@ from fastai.tabular.all import *
 import fastcore
 from fastcore.test import *
 from fastcore.utils import *
+pd.DataFrame.__init__ = pd_df__init__ # temporary fix for fastai issue #3485
+
 import torch
 import torch.nn as nn
 import scipy as sp

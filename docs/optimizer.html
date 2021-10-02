@@ -80,20 +80,19 @@ nb_path: "nbs/053_optimizer.ipynb"
 <p>In addition, you will be able to use any of the optimizers from:</p>
 <ul>
 <li>Pytorch</li>
-<li>torch_optimizer (<a href="https://github.com/jettify/pytorch-optimizer">https://github.com/jettify/pytorch-optimizer</a>)</li>
+<li>torch_optimizer (<a href="https://github.com/jettify/pytorch-optimizer">https://github.com/jettify/pytorch-optimizer</a>). In this case, you will need to install <code>torch-optimizer</code> first)</li>
 </ul>
+<p>Examples of use:</p>
+<div class="highlight"><pre><span></span><span class="nv">adamw</span> <span class="o">=</span> wrap_optimizer<span class="o">(</span>torch.optim.AdamW<span class="o">)</span>
+</pre></div>
+<div class="highlight"><pre><span></span>import torch_optimizer as optim
+<span class="nv">adabelief</span> <span class="o">=</span> wrap_optimizer<span class="o">(</span>optim.AdaBelief<span class="o">)</span>
+</pre></div>
 <p>If you want to use any these last 2, you can use the wrap_optimizer function. Here are a few examples:</p>
 
 </div>
 </div>
 </div>
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
 </div>
  
 

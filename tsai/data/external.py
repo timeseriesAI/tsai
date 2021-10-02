@@ -21,6 +21,14 @@ import tempfile
 try: from urllib import urlretrieve
 except ImportError: from urllib.request import urlretrieve
 import shutil
+from numpy import distutils
+import distutils
+
+# Cell
+pd.DataFrame.__init__ = pd_df__init__
+from sktime.utils.data_io import load_from_tsfile_to_dataframe as ts2df
+from sktime.utils.validation.panel import check_X
+from sktime.utils.data_io import TsFileParseException
 
 # Cell
 def decompress_from_url(url, target_dir=None, verbose=False):
@@ -142,10 +150,6 @@ def get_UCR_data(dsid, path='.', parent_dir='data/UCR', on_disk=True, mode='c', 
 #     if not os.path.exists(full_tgt_dir): os.makedirs(full_tgt_dir)
     full_tgt_dir.parent.mkdir(parents=True, exist_ok=True)
     if force_download or not all([os.path.isfile(f'{full_tgt_dir}/{fn}.npy') for fn in ['X_train', 'X_valid', 'y_train', 'y_valid', 'X', 'y']]):
-        from importlib import reload
-        import pandas as pd
-        reload(pd)
-        from sktime.utils.data_io import load_from_tsfile_to_dataframe as ts2df
         # Option A
         src_website = 'http://www.timeseriesclassification.com/Downloads'
         decompress_from_url(f'{src_website}/{dsid}.zip', target_dir=full_tgt_dir, verbose=verbose)
@@ -792,7 +796,6 @@ def get_Monash_regression_data(dsid, path='./data/Monash', on_disk=True, mode='c
     pv(f'Dataset: {dsid}', verbose)
 
     if force_download or not all([os.path.isfile(f'{path}/{dsid}/{fn}.npy') for fn in ['X_train', 'X_valid', 'y_train', 'y_valid', 'X', 'y']]):
-        from sktime.utils.validation.panel import check_X
         if dsid == 'AppliancesEnergy': id = 3902637
         elif dsid == 'HouseholdPowerConsumption1': id = 3902704
         elif dsid == 'HouseholdPowerConsumption2': id = 3902706
@@ -1024,11 +1027,6 @@ forecasting_list = Monash_forecasting_list
 # year="2021"
 # }
 
-from sktime.utils.data_io import TsFileParseException
-# from datetime import datetime
-from numpy import distutils
-import distutils
-# import pandas as pd
 
 # Converts the contents in a .tsf file into a dataframe and returns it along with other meta-data of the dataset: frequency, horizon, whether the dataset contains missing values and whether the series have equal lengths
 #

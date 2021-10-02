@@ -54,41 +54,13 @@ nb_path: "nbs/124_models.TSiTPlus.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSiTPlus" class="doc_header"><code>class</code> <code>TSiTPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/TSiTPlus.py#L97" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSiTPlus</code>(<strong><code>c_in</code></strong>:<code>int</code>, <strong><code>c_out</code></strong>:<code>int</code>, <strong><code>seq_len</code></strong>:<code>int</code>, <strong><code>n_layers</code></strong>:<code>int</code>=<em><code>6</code></em>, <strong><code>d_model</code></strong>:<code>int</code>=<em><code>128</code></em>, <strong><code>n_heads</code></strong>:<code>int</code>=<em><code>16</code></em>, <strong><code>d_head</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>act</code></strong>:<code>str</code>=<em><code>'reglu'</code></em>, <strong><code>d_ff</code></strong>:<code>int</code>=<em><code>256</code></em>, <strong><code>pos_dropout</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>attn_drop_rate</code></strong>:<code>float</code>=<em><code>0</code></em>, <strong><code>mlp_drop_rate</code></strong>:<code>float</code>=<em><code>0</code></em>, <strong><code>drop_path_rate</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>mlp_ratio</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>qkv_bias</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>pre_norm</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>use_token</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>fc_dropout</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>bn</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>y_range</code></strong>:<code>Optional</code>[<code>tuple</code>]=<em><code>None</code></em>, <strong><code>ks</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>maxpool</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>preprocessor</code></strong>:<code>Optional</code>[<code>Callable</code>]=<em><code>None</code></em>, <strong><code>custom_head</code></strong>:<code>Optional</code>[<code>Callable</code>]=<em><code>None</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <a href="/models.TabFusionTransformer.html#Sequential"><code>Sequential</code></a></p>
+<h2 id="TSiTPlus" class="doc_header"><code>class</code> <code>TSiTPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/TSiTPlus.py#L97" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSiTPlus</code>(<strong><code>c_in</code></strong>:<code>int</code>, <strong><code>c_out</code></strong>:<code>int</code>, <strong><code>seq_len</code></strong>:<code>int</code>, <strong><code>n_layers</code></strong>:<code>int</code>=<em><code>6</code></em>, <strong><code>d_model</code></strong>:<code>int</code>=<em><code>128</code></em>, <strong><code>n_heads</code></strong>:<code>int</code>=<em><code>16</code></em>, <strong><code>d_head</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>act</code></strong>:<code>str</code>=<em><code>'reglu'</code></em>, <strong><code>d_ff</code></strong>:<code>int</code>=<em><code>256</code></em>, <strong><code>dropout</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>attn_dropout</code></strong>:<code>float</code>=<em><code>0</code></em>, <strong><code>drop_path_rate</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>mlp_ratio</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>qkv_bias</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>pre_norm</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>use_token</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>fc_dropout</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>bn</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>y_range</code></strong>:<code>Optional</code>[<code>tuple</code>]=<em><code>None</code></em>, <strong><code>ks</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>maxpool</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>preprocessor</code></strong>:<code>Optional</code>[<code>Callable</code>]=<em><code>None</code></em>, <strong><code>custom_head</code></strong>:<code>Optional</code>[<code>Callable</code>]=<em><code>None</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <a href="/models.TabFusionTransformer.html#Sequential"><code>Sequential</code></a></p>
 </blockquote>
 <p>Time series transformer model based on ViT (Vision Transformer):</p>
 <p>Dosovitskiy, A., Beyer, L., Kolesnikov, A., Weissenborn, D., Zhai, X., Unterthiner, T., ... &amp; Houlsby, N. (2020).
 An image is worth 16x16 words: Transformers for image recognition at scale. arXiv preprint arXiv:2010.11929.</p>
 <p>This implementation is a modified version of Vision Transformer that is part of the grat timm library
 (<a href="https://github.com/rwightman/pytorch-image-models/blob/72b227dcf57c0c62291673b96bdc06576bb90457/timm/models/vision_transformer.py">https://github.com/rwightman/pytorch-image-models/blob/72b227dcf57c0c62291673b96bdc06576bb90457/timm/models/vision_transformer.py</a>)</p>
-<h1 id="Args:">Args:<a class="anchor-link" href="#Args:"> </a></h1><p>c_in:                   the number of features (aka variables, dimensions, channels) in the time series dataset.
-c_out:                  the number of target classes.
-seq_len:                number of time steps in the time series.
-n_layers:               number of layers (or blocks) in the encoder. Default: 3 (range(1-4))
-d_model:                total dimension of the model (number of features created by the model). Default: 128 (range(64-512))
-n_heads:                parallel attention heads. Default:16 (range(8-16)).
-d_head:                 size of the learned linear projection of queries, keys and values in the MHA. Usual values: 16-512.
-                        Default: None -&gt; (d_model/n_heads) = 32.
-act:                    the activation function of intermediate layer, relu, gelu, geglu, reglu.
-d_ff:                   the dimension of the feedforward network model. Default: 512 (range(256-512))
-pos_dropout:            dropout applied to to the embedded sequence steps after position embeddings have been added.
-attn_drop_rate (float): dropout rate applied to the attention layer
-mlp_drop_rate (float):  dropout rate applied to the mlp layer
-drop_path_rate:         dropout applied to the output of MultheadAttention and PositionwiseFeedForward layers.
-mlp_ratio:              ratio of mlp hidden dim to embedding dim.
-qkv_bias:               determines whether bias is applied to the Linear projections of queries, keys and values in the MultiheadAttention
-pre_norm:               if True normalization will be applied as the first step in the sublayers. Defaults to False.
-use_token:              if True, the output will come from the transformed token. Otherwise a pooling layer will be applied.
-fc_dropout:             dropout applied to the final fully connected layer.
-bn:                     flag that indicates if batchnorm will be applied to the head.
-y_range:                range of possible y values (used in regression tasks).
-ks:                     (Optional) kernel sizes that will be applied to a hybrid embedding.
-maxpool:                If true and kernel sizes are passed, maxpool will also be added to the hybrid embedding.
-preprocessor:           an optional callable (nn.Conv1d with dilation &gt; 1 or stride &gt; 1 for example) that will be used to preprocess the time series before
-                        the embedding step. It is useful to extract features or resample the time series.
-custom_head:            custom head that will be applied to the network. It must contain all kwargs (pass a partial function)</p>
-<p>Input shape:
-    x: bs (batch size) x nvars (aka features, variables, dimensions, channels) x seq_len (aka time steps)</p>
 
 </div>
 
@@ -115,49 +87,51 @@ custom_head:            custom head that will be applied to the network. It must
 
 <span class="sd">    This implementation is a modified version of Vision Transformer that is part of the grat timm library</span>
 <span class="sd">    (https://github.com/rwightman/pytorch-image-models/blob/72b227dcf57c0c62291673b96bdc06576bb90457/timm/models/vision_transformer.py)</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">    =====</span>
-
-<span class="sd">    c_in:                   the number of features (aka variables, dimensions, channels) in the time series dataset.</span>
-<span class="sd">    c_out:                  the number of target classes.</span>
-<span class="sd">    seq_len:                number of time steps in the time series.</span>
-<span class="sd">    n_layers:               number of layers (or blocks) in the encoder. Default: 3 (range(1-4))</span>
-<span class="sd">    d_model:                total dimension of the model (number of features created by the model). Default: 128 (range(64-512))</span>
-<span class="sd">    n_heads:                parallel attention heads. Default:16 (range(8-16)).</span>
-<span class="sd">    d_head:                 size of the learned linear projection of queries, keys and values in the MHA. Usual values: 16-512. </span>
-<span class="sd">                            Default: None -&gt; (d_model/n_heads) = 32.</span>
-<span class="sd">    act:                    the activation function of intermediate layer, relu, gelu, geglu, reglu.</span>
-<span class="sd">    d_ff:                   the dimension of the feedforward network model. Default: 512 (range(256-512))</span>
-<span class="sd">    pos_dropout:            dropout applied to to the embedded sequence steps after position embeddings have been added.</span>
-<span class="sd">    attn_drop_rate (float): dropout rate applied to the attention layer</span>
-<span class="sd">    mlp_drop_rate (float):  dropout rate applied to the mlp layer</span>
-<span class="sd">    drop_path_rate:         dropout applied to the output of MultheadAttention and PositionwiseFeedForward layers.</span>
-<span class="sd">    mlp_ratio:              ratio of mlp hidden dim to embedding dim.</span>
-<span class="sd">    qkv_bias:               determines whether bias is applied to the Linear projections of queries, keys and values in the MultiheadAttention</span>
-<span class="sd">    pre_norm:               if True normalization will be applied as the first step in the sublayers. Defaults to False.</span>
-<span class="sd">    use_token:              if True, the output will come from the transformed token. Otherwise a pooling layer will be applied.</span>
-<span class="sd">    fc_dropout:             dropout applied to the final fully connected layer.</span>
-<span class="sd">    bn:                     flag that indicates if batchnorm will be applied to the head.</span>
-<span class="sd">    y_range:                range of possible y values (used in regression tasks).</span>
-<span class="sd">    ks:                     (Optional) kernel sizes that will be applied to a hybrid embedding.</span>
-<span class="sd">    maxpool:                If true and kernel sizes are passed, maxpool will also be added to the hybrid embedding.</span>
-<span class="sd">    preprocessor:           an optional callable (nn.Conv1d with dilation &gt; 1 or stride &gt; 1 for example) that will be used to preprocess the time series before </span>
-<span class="sd">                            the embedding step. It is useful to extract features or resample the time series.</span>
-<span class="sd">    custom_head:            custom head that will be applied to the network. It must contain all kwargs (pass a partial function)</span>
-
-<span class="sd">    Input shape:</span>
-<span class="sd">        x: bs (batch size) x nvars (aka features, variables, dimensions, channels) x seq_len (aka time steps)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c_in</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">c_out</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">n_layers</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">d_model</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">n_heads</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">d_head</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">act</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="s1">&#39;reglu&#39;</span><span class="p">,</span>
-                 <span class="n">d_ff</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">pos_dropout</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">attn_drop_rate</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">mlp_drop_rate</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">drop_path_rate</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">mlp_ratio</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                 <span class="n">d_ff</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">dropout</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">attn_dropout</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">drop_path_rate</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">mlp_ratio</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                  <span class="n">qkv_bias</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">pre_norm</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">use_token</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fc_dropout</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">bn</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">y_range</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
                  <span class="n">ks</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maxpool</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">preprocessor</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">custom_head</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">        =====</span>
+
+<span class="sd">        c_in:                   the number of features (aka variables, dimensions, channels) in the time series dataset.</span>
+<span class="sd">        c_out:                  the number of target classes.</span>
+<span class="sd">        seq_len:                number of time steps in the time series.</span>
+<span class="sd">        n_layers:               number of layers (or blocks) in the encoder. Default: 3 (range(1-4))</span>
+<span class="sd">        d_model:                total dimension of the model (number of features created by the model). Default: 128 (range(64-512))</span>
+<span class="sd">        n_heads:                parallel attention heads. Default:16 (range(8-16)).</span>
+<span class="sd">        d_head:                 size of the learned linear projection of queries, keys and values in the MHA. Usual values: 16-512. </span>
+<span class="sd">                                Default: None -&gt; (d_model/n_heads) = 32.</span>
+<span class="sd">        act:                    the activation function of intermediate layer, relu, gelu, geglu, reglu.</span>
+<span class="sd">        d_ff:                   the dimension of the feedforward network model. Default: 512 (range(256-512))</span>
+<span class="sd">        dropout:                dropout applied to to the embedded sequence steps after position embeddings have been added and </span>
+<span class="sd">                                to the mlp sublayer in the encoder.</span>
+<span class="sd">        attn_dropout:         dropout rate applied to the attention sublayer.</span>
+<span class="sd">        drop_path_rate:         stochastic depth rate.</span>
+<span class="sd">        mlp_ratio:              ratio of mlp hidden dim to embedding dim.</span>
+<span class="sd">        qkv_bias:               determines whether bias is applied to the Linear projections of queries, keys and values in the MultiheadAttention</span>
+<span class="sd">        pre_norm:               if True normalization will be applied as the first step in the sublayers. Defaults to False.</span>
+<span class="sd">        use_token:              if True, the output will come from the transformed token. Otherwise a pooling layer will be applied.</span>
+<span class="sd">        fc_dropout:             dropout applied to the final fully connected layer.</span>
+<span class="sd">        bn:                     flag that indicates if batchnorm will be applied to the head.</span>
+<span class="sd">        y_range:                range of possible y values (used in regression tasks).</span>
+<span class="sd">        ks:                     (Optional) kernel sizes that will be applied to a hybrid embedding.</span>
+<span class="sd">        maxpool:                If true and kernel sizes are passed, maxpool will also be added to the hybrid embedding.</span>
+<span class="sd">        preprocessor:           an optional callable (nn.Conv1d with dilation &gt; 1 or stride &gt; 1 for example) that will be used to preprocess the time series before </span>
+<span class="sd">                                the embedding step. It is useful to extract features or resample the time series.</span>
+<span class="sd">        custom_head:            custom head that will be applied to the network. It must contain all kwargs (pass a partial function)</span>
+
+<span class="sd">        Input shape:</span>
+<span class="sd">            x: bs (batch size) x nvars (aka features, variables, dimensions, channels) x seq_len (aka time steps)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
         <span class="n">backbone</span> <span class="o">=</span> <span class="n">_TSiTBackbone</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="n">n_layers</span><span class="p">,</span> <span class="n">d_model</span><span class="o">=</span><span class="n">d_model</span><span class="p">,</span> <span class="n">n_heads</span><span class="o">=</span><span class="n">n_heads</span><span class="p">,</span> <span class="n">d_head</span><span class="o">=</span><span class="n">d_head</span><span class="p">,</span> <span class="n">act</span><span class="o">=</span><span class="n">act</span><span class="p">,</span>
-                                  <span class="n">d_ff</span><span class="o">=</span><span class="n">d_ff</span><span class="p">,</span> <span class="n">pos_dropout</span><span class="o">=</span><span class="n">pos_dropout</span><span class="p">,</span> <span class="n">attn_drop_rate</span><span class="o">=</span><span class="n">attn_drop_rate</span><span class="p">,</span> <span class="n">mlp_drop_rate</span><span class="o">=</span><span class="n">mlp_drop_rate</span><span class="p">,</span> 
+                                  <span class="n">d_ff</span><span class="o">=</span><span class="n">d_ff</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="n">dropout</span><span class="p">,</span> <span class="n">attn_dropout</span><span class="o">=</span><span class="n">attn_dropout</span><span class="p">,</span> 
                                   <span class="n">drop_path_rate</span><span class="o">=</span><span class="n">drop_path_rate</span><span class="p">,</span> <span class="n">pre_norm</span><span class="o">=</span><span class="n">pre_norm</span><span class="p">,</span> <span class="n">mlp_ratio</span><span class="o">=</span><span class="n">mlp_ratio</span><span class="p">,</span> <span class="n">use_token</span><span class="o">=</span><span class="n">use_token</span><span class="p">,</span> 
                                   <span class="n">ks</span><span class="o">=</span><span class="n">ks</span><span class="p">,</span> <span class="n">maxpool</span><span class="o">=</span><span class="n">maxpool</span><span class="p">,</span> <span class="n">preprocessor</span><span class="o">=</span><span class="n">preprocessor</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
 
@@ -242,9 +216,9 @@ custom_head:            custom head that will be applied to the network. It must
           (2): PositionwiseFeedForward(
             (0): Linear(in_features=128, out_features=256, bias=True)
             (1): ReGLU()
-            (2): Dropout(p=0, inplace=False)
+            (2): Dropout(p=0.0, inplace=False)
             (3): Linear(in_features=128, out_features=128, bias=True)
-            (4): Dropout(p=0, inplace=False)
+            (4): Dropout(p=0.0, inplace=False)
           )
           (3): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
           (4): Identity()
@@ -264,9 +238,9 @@ custom_head:            custom head that will be applied to the network. It must
           (2): PositionwiseFeedForward(
             (0): Linear(in_features=128, out_features=256, bias=True)
             (1): ReGLU()
-            (2): Dropout(p=0, inplace=False)
+            (2): Dropout(p=0.0, inplace=False)
             (3): Linear(in_features=128, out_features=128, bias=True)
-            (4): Dropout(p=0, inplace=False)
+            (4): Dropout(p=0.0, inplace=False)
           )
           (3): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
           (4): Identity()
@@ -286,9 +260,9 @@ custom_head:            custom head that will be applied to the network. It must
           (2): PositionwiseFeedForward(
             (0): Linear(in_features=128, out_features=256, bias=True)
             (1): ReGLU()
-            (2): Dropout(p=0, inplace=False)
+            (2): Dropout(p=0.0, inplace=False)
             (3): Linear(in_features=128, out_features=128, bias=True)
-            (4): Dropout(p=0, inplace=False)
+            (4): Dropout(p=0.0, inplace=False)
           )
           (3): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
           (4): Identity()
@@ -308,9 +282,9 @@ custom_head:            custom head that will be applied to the network. It must
           (2): PositionwiseFeedForward(
             (0): Linear(in_features=128, out_features=256, bias=True)
             (1): ReGLU()
-            (2): Dropout(p=0, inplace=False)
+            (2): Dropout(p=0.0, inplace=False)
             (3): Linear(in_features=128, out_features=128, bias=True)
-            (4): Dropout(p=0, inplace=False)
+            (4): Dropout(p=0.0, inplace=False)
           )
           (3): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
           (4): Identity()
@@ -330,9 +304,9 @@ custom_head:            custom head that will be applied to the network. It must
           (2): PositionwiseFeedForward(
             (0): Linear(in_features=128, out_features=256, bias=True)
             (1): ReGLU()
-            (2): Dropout(p=0, inplace=False)
+            (2): Dropout(p=0.0, inplace=False)
             (3): Linear(in_features=128, out_features=128, bias=True)
-            (4): Dropout(p=0, inplace=False)
+            (4): Dropout(p=0.0, inplace=False)
           )
           (3): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
           (4): Identity()
@@ -352,9 +326,9 @@ custom_head:            custom head that will be applied to the network. It must
           (2): PositionwiseFeedForward(
             (0): Linear(in_features=128, out_features=256, bias=True)
             (1): ReGLU()
-            (2): Dropout(p=0, inplace=False)
+            (2): Dropout(p=0.0, inplace=False)
             (3): Linear(in_features=128, out_features=128, bias=True)
-            (4): Dropout(p=0, inplace=False)
+            (4): Dropout(p=0.0, inplace=False)
           )
           (3): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
           (4): Identity()
@@ -453,7 +427,7 @@ custom_head:            custom head that will be applied to the network. It must
 
 
 <div class="output_png output_subarea ">
-<img src="data:image/png;base64,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
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABAYAAABKCAYAAAAoj1bdAAAAOXRFWHRTb2Z0d2FyZQBNYXRwbG90bGliIHZlcnNpb24zLjQuMywgaHR0cHM6Ly9tYXRwbG90bGliLm9yZy/MnkTPAAAACXBIWXMAAAsTAAALEwEAmpwYAAAO6ElEQVR4nO3dfXBVdX7H8c8nCfJQFI1EEKKNBReDWQJGQV0XEHeouj4UXXwAfNgua8fZ7lp1FNtu1SI7dTo7HXfqdkZFhBks1QJadWzVrgg+TKnCmhUFhLW4oImEDYiILLnk2z/uSSfNJiEJNzkk9/2aYbz3nN/9/j4Hz2juN+d3jiNCAAAAAAAgPxWkHQAAAAAAAKSHxgAAAAAAAHmMxgAAAAAAAHmMxgAAAAAAAHmMxgAAAAAAAHmMxgAAAAAAAHmMxgAAoNey/Zrtucnr2bZfPoJaZbbDdlHy/t9t35SjnN+0vbnZ+222v5WL2km9921PzVU9AACQX2gMAABSZfsC22/Z/tx2ve03bZ/T2ToR8WRETG9WN2yP7mquiLgkIpYcblxH5omI1yNiTFeztJhvse0FLeqfGRGv5aI+AADIP0VpBwAA5C/bx0l6QdKtkp6WdIykb0r6XZq5csl2UURk0s4BAADQFq4YAACk6WuSFBHLIuJQRHwVES9HxK8kyfbNyRUEDydXFGyyfVFrhZKxbySv1ySbq23vs31tK+MLbf/U9i7bH0n6dov9zZcpjLa9Osmwy/ZTbc1je6rtHbbn2a6V9ETTthYRzrH9ge3dtp+wPaDlcTTLEkmGWyTNlnR3Mt/zyf7/W5pgu7/th2x/mvx5yHb/ZF9Ttjtt77RdY/u7h/23BAAA+jQaAwCANH0o6ZDtJbYvsX1CK2MmSfq1pKGS7pO00nZxe0UjYnLysjIiBkfEU60M+76kyyRNkHS2pO+0U/IBSS9LOkFSqaR/PMw8wyUVS/pDSbe0UXO2pD+WNErZBsmP2zumZL5HJT0p6e+T+S5vZdhfSzpX0nhJlZImtqg9XNIQSSMlfU/Sz9v4ewcAAHmCxgAAIDURsVfSBZJC0mOS6mw/Z3tYs2E7JT0UEQ3JF+/NavHb/S66Jqm7PSLqJf1dO2MblP2SPyIiDkTEG+2MlaRGSfdFxO8i4qs2xjzcbO6fSLq+swfQhtmS5kfEzoiok/S3km5otr8h2d8QES9K2icpJ/c/AAAAvRONAQBAqiJiY0TcHBGlkiokjZD0ULMhn0RENHv/cTLmSI2QtL1F3bbcLcmS/jt5AsCfHqZ2XUQcOMyYlnPn4piU1Gl+LC1r/7bFPQ/2Sxqco7kBAEAvRGMAAHDUiIhNkhYr2yBoMtK2m70/VdKnOZiuRtIpLeq2las2Ir4fESMk/ZmkfzrMkwiinX1NWs7ddExfShrUtMP28E7W/lTZqxtaqw0AAPB7aAwAAFJj+4zkRnilyftTlL2k/r+aDTtJ0o9s97M9U1K5pBc7UP4zSX/Uzv6nk7qlyRr7e9rJObMpo6Tdyn45b+zgPG35QTJ3sbL3BWi6P0G1pDNtj09uSHh/i88dbr5lkn5su8T2UEn3SlrahXwAACBP0BgAAKTpC2VvLrjW9pfKNgQ2SLqz2Zi1kk6XtEvZtfjfiYjfdqD2/ZKW2N5j+5pW9j8m6SVlv4ivl7SynVrnJBn3SXpO0m0R8VEH52nLPyt7Q8OPlL254gJJiogPJc2X9J+StkhqeT+DxyWNTeZ7tpW6CyS9I+lXkt5Ljm1BJ3IBAIA84/+/bBMAgKOH7ZslzY2IC9LOAgAA0FdxxQAAAAAAAHmMxgAAAAAAAHmMpQQAAAAAAOQxrhgAAAAAACCP0RgAAAAAACCPFXVHUXtoSGXdURoAAOShQeUb044A5MT+jeVpRwByYN2uiChJOwVyp1saA9mmwDvdUxoAAOSdM5ZWpR0ByIn1VfyMjL7AH6edALnFUgIAAAAAAPIYjQEAAAAAAPIYjQEAAAAAAPJYN91jAAAAAACAo9e6detOKioqWiipQn37l+aNkjZkMpm5VVVVO1sbQGMAAAAAAJB3ioqKFg4fPry8pKRkd0FBQaSdp7s0Nja6rq5ubG1t7UJJV7Q2pi93RQAAAAAAaEtFSUnJ3r7cFJCkgoKCKCkp+VzZKyNaH9ODeQAAAAAAOFoU9PWmQJPkONv8/s9SAgAAAAAAelhtbW3h1KlTx0jSrl27+hUUFERxcXFGkt59992NAwYMaLNpsWbNmkGLFi06cfHixdtzkeWwjQHbiyRdJmlnRLR56QEAAAAAAL2Vrapc1ovQuvb2Dx8+/NCmTZs+kKQ77rhjxODBgw/Nnz//s6b9DQ0N6tevX6ufnTx58v7Jkyfvz1XWjiwlWCzp4lxNCAAAAAAAft/VV19dNmvWrFPHjRt3xq233lq6atWqQePHjz+jvLx87IQJE86orq7uL0kvvPDCsRdeeOFoKdtUmDlzZtnEiRPHlJaWfn3BggUndXbew14xEBFrbJd1+ogAAAAAAECn1NTUHLN+/fpNRUVFqq+vL3j77bc39evXT88+++yxd999d+lLL73065af2bp164C33npr8549ewrLy8sr7rrrrrr+/ft3+P4JObvHgO1bJN2SfXdqrsoCAAAAAJA3rrrqqt1FRdmv6vX19YXXXnvtadu2bRtgOxoaGtzaZ6ZPn75n4MCBMXDgwExxcXHDjh07ikaNGtXQ0Tlz9lSCiHg0Is6OiLOlklyVBQAAAAAgbwwePLix6fW8efNGTpky5YstW7a8//zzz289ePBgq9/hm18dUFhYqEwm02oDoS08rhAAAAAAgKPQ3r17C0tLSw9K0iOPPDK0u+ahMQAAAAAAwFFo3rx5tffff39peXn52Ewm023zOKL9+xHYXiZpqqShkj6TdF9EPN7+Z84O6Z1cZQQAAHnurHU5fYIUkJr1Ve0+vQzoJbwuu4S8d6uurt5WWVm5K+0cPaW6unpoZWVlWWv7OvJUgutznggAAAAAABwVWEoAAAAAAEAeozEAAAAAAEAeozEAAAAAAEAeozEAAAAAAEAeozEAAAAAAEAeozEAAAAAAEAPmzRp0tdWrFhxXPNt8+fPP2n27NmntjZ+4sSJY9asWTNIkqZMmTJ6165dhS3H3HHHHSPuvffeYZ3NctjHFQIAAAAA0NdVra+qymW9dWetW9fe/pkzZ9YvW7as+Oqrr97btG3FihXFDz744I7D1V69evXWXGRswhUDAAAAAAD0sBtuuGH3q6++OuTAgQOWpM2bNx+zc+fOfkuXLi2uqKgoHz169Jm33377iNY+O3LkyK/X1NQUSdK8efOGl5WVVVRVVY3ZsmVL/65k6aYrBtbtk7y5e2oDPWaopF1phwBygHMZvd76Ks5j9BXmXEZfMCbtAH3BsGHDDlVWVn65fPnyIXPmzNmzZMmS4ssvv3z3Aw88UDNs2LBDmUxG559//pi1a9cOnDRp0let1Xj99dcHPfPMM8XvvffeBw0NDRo/fvzYCRMm7O9slu5aSrA5Is7uptpAj7D9Ducx+gLOZfQFnMfoKziX0RfYfiftDH3FNddcU//UU0+dMGfOnD0rV64sfuyxx7YtWbKkePHixUMzmYzr6ur6VVdXD2irMbBq1arBl1566Z5jjz22UZKmT5++pys5WEoAAAAAAEAKZs2atefNN9887o033hh04MCBgpKSkszDDz88bPXq1R9++OGHH0ybNu3zAwcOdPv3dhoDAAAAAACkYMiQIY3nnXfeF3Pnzi2bMWNG/e7duwsHDhzYWFxcfGj79u1Fr7322pD2Pj9t2rR9L7744vH79u3z7t27C1555ZXju5Kju5YSPNpNdYGexHmMvoJzGX0B5zH6Cs5l9AWcxzl03XXX1d94442jli1b9tGECRMOVFRU7B81alTFySeffLCqqmpfe5+94IIL9s+YMaO+oqLizBNPPLFh3LhxX3YlgyOia+kBAAAAAOilqqurt1VWVubNzUCrq6uHVlZWlrW2j6UEAAAAAADksZw2BmxfbHuz7a2278llbaCn2D7F9irbH9h+3/ZtaWcCusp2oe1f2n4h7SxAV9k+3vZy25tsb7R9XtqZgM6yfXvyc8UG28tsD0g7E9ARthfZ3ml7Q7NtxbZfsb0l+ecJaWbEkctZY8B2oaSfS7pE0lhJ19sem6v6QA/KSLozIsZKOlfSDziX0YvdJmlj2iGAI/QzSf8REWdIqhTnNHoZ2yMl/UjS2RFRIalQ0nXppgI6bLGki1tsu0fSLyLidEm/SN6jF8vlFQMTJW2NiI8i4qCkf5F0ZQ7rAz0iImoiYn3y+gtlfwAdmW4qoPNsl0r6tqSFaWcBusr2EEmTJT0uSRFxMCL2pBoK6JoiSQNtF0kaJOnTlPMAHRIRayTVt9h8paQlyeslkv6kJzPlUGNjY6PTDtETkuNsbGt/LhsDIyVtb/Z+h/gyhV7OdpmkCZLWphwF6IqHJN2tdv4nAPQCp0mqk/REsixmoe0/SDsU0BkR8Ymkn0r6jaQaSZ9HxMvppgKOyLCIqEle10oalmaYI7Chrq5uSF9vDjQ2Nrqurm6IpA1tjemuxxUCvZ7twZJWSPqLiNibdh6gM2xfJmlnRKyzPTXlOMCRKJJ0lqQfRsRa2z9T9pLVv0k3FtBxyfrrK5VtdO2R9K+250TE0lSDATkQEWG7Vz7qLpPJzK2trV1YW1tbob59Y/5GSRsymczctgbksjHwiaRTmr0vTbYBvY7tfso2BZ6MiJVp5wG64BuSrrB9qaQBko6zvTQi5qScC+isHZJ2RETTlVvLxVpW9D7fkvQ/EVEnSbZXSjpfEo0B9Faf2T45ImpsnyxpZ9qBuqKqqmqnpCvSznE0yGVX5G1Jp9s+zfYxyt5Q5bkc1gd6hG0ru5Z1Y0T8Q9p5gK6IiL+MiNKIKFP2v8ev0hRAbxQRtZK22x6TbLpI0gcpRgK64jeSzrU9KPk54yJxE030bs9Juil5fZOkf0sxC3IgZ1cMRETG9p9LeknZO60uioj3c1Uf6EHfkHSDpPdsv5ts+6uIeDG9SACQ134o6cnkFw8fSfpuynmATkmWwSyXtF7Zpx/9UtKj6aYCOsb2MklTJQ21vUPSfZIelPS07e9J+ljSNeklRC44olcuBwEAAAAAADnQl2+wAAAAAAAADoPGAAAAAAAAeYzGAAAAAAAAeYzGAAAAAAAAeYzGAAAAAAAAeYzGAAAAAAAAeYzGAAAAAAAAeYzGAAAAAAAAeex/ARB2U+Boy7EZAAAAAElFTkSuQmCC
 "
 >
 </div>
