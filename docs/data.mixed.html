@@ -71,7 +71,7 @@ nb_path: "nbs/022_data.mixed.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MixedDataLoaders" class="doc_header"><code>class</code> <code>MixedDataLoaders</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/mixed.py#L145" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MixedDataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>) :: <code>DataLoaders</code></p>
+<h2 id="MixedDataLoaders" class="doc_header"><code>class</code> <code>MixedDataLoaders</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/mixed.py#L147" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MixedDataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>) :: <code>DataLoaders</code></p>
 </blockquote>
 <p>Basic wrapper around several <code>DataLoader</code>s.</p>
 
@@ -103,7 +103,7 @@ nb_path: "nbs/022_data.mixed.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_mixed_dls" class="doc_header"><code>get_mixed_dls</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/mixed.py#L150" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_mixed_dls</code>(<strong>*<code>dls</code></strong>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_valid</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="get_mixed_dls" class="doc_header"><code>get_mixed_dls</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/mixed.py#L152" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_mixed_dls</code>(<strong>*<code>dls</code></strong>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_valid</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -160,6 +160,32 @@ nb_path: "nbs/022_data.mixed.ipynb"
 
 
 <div class="output_html rendered_html output_subarea ">
+
+    <div>
+        <style>
+            /* Turns off some styling */
+            progress {
+                /* gets rid of default border in Firefox and Opera. */
+                border: none;
+                /* Needs to be in here for Safari polyfill so background images work as expected. */
+                background-size: auto;
+            }
+            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+                background: #F44336;
+            }
+        </style>
+      <progress value='974848' class='' max='968212' style='width:300px; height:20px; vertical-align: middle;'></progress>
+      100.69% [974848/968212 00:00<00:00]
+    </div>
+    
+</div>
+
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -176,91 +202,91 @@ nb_path: "nbs/022_data.mixed.ipynb"
     <tr>
       <th>0</th>
       <td>Private</td>
-      <td>Some-college</td>
+      <td>HS-grad</td>
       <td>Never-married</td>
-      <td>20.999999</td>
-      <td>111675.997931</td>
+      <td>20.000000</td>
+      <td>333505.003512</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>Private</td>
-      <td>11th</td>
-      <td>Never-married</td>
-      <td>22.000000</td>
-      <td>271274.002826</td>
+      <td>Local-gov</td>
+      <td>Masters</td>
+      <td>Divorced</td>
+      <td>45.000000</td>
+      <td>93535.002309</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>2</th>
       <td>Private</td>
-      <td>Bachelors</td>
-      <td>Never-married</td>
-      <td>30.000000</td>
-      <td>347166.005432</td>
-      <td>&gt;=50k</td>
+      <td>10th</td>
+      <td>Married-civ-spouse</td>
+      <td>57.999999</td>
+      <td>234481.000650</td>
+      <td>&lt;50k</td>
     </tr>
     <tr>
       <th>3</th>
       <td>Private</td>
-      <td>HS-grad</td>
+      <td>Masters</td>
       <td>Married-civ-spouse</td>
       <td>49.000000</td>
-      <td>128132.000308</td>
+      <td>123680.997085</td>
       <td>&gt;=50k</td>
     </tr>
     <tr>
       <th>4</th>
       <td>Private</td>
-      <td>Some-college</td>
-      <td>Never-married</td>
-      <td>20.000001</td>
-      <td>231286.000799</td>
-      <td>&lt;50k</td>
+      <td>Bachelors</td>
+      <td>Married-civ-spouse</td>
+      <td>36.000000</td>
+      <td>68272.995723</td>
+      <td>&gt;=50k</td>
     </tr>
     <tr>
       <th>5</th>
       <td>Private</td>
-      <td>HS-grad</td>
-      <td>Separated</td>
-      <td>52.000000</td>
-      <td>363404.997839</td>
+      <td>Doctorate</td>
+      <td>Married-spouse-absent</td>
+      <td>31.000000</td>
+      <td>196025.000211</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>6</th>
-      <td>Self-emp-not-inc</td>
+      <td>Private</td>
       <td>Some-college</td>
-      <td>Married-civ-spouse</td>
-      <td>57.000000</td>
-      <td>225912.999023</td>
-      <td>&gt;=50k</td>
+      <td>Divorced</td>
+      <td>30.000000</td>
+      <td>161815.001537</td>
+      <td>&lt;50k</td>
     </tr>
     <tr>
       <th>7</th>
-      <td>Private</td>
+      <td>Self-emp-inc</td>
       <td>HS-grad</td>
       <td>Married-civ-spouse</td>
-      <td>42.000000</td>
-      <td>39060.005863</td>
+      <td>45.000000</td>
+      <td>117605.001136</td>
       <td>&gt;=50k</td>
     </tr>
     <tr>
       <th>8</th>
-      <td>Private</td>
+      <td>Federal-gov</td>
       <td>Some-college</td>
       <td>Married-civ-spouse</td>
-      <td>54.000001</td>
-      <td>257336.997400</td>
+      <td>53.999999</td>
+      <td>114673.998909</td>
       <td>&gt;=50k</td>
     </tr>
     <tr>
       <th>9</th>
-      <td>Self-emp-not-inc</td>
+      <td>Private</td>
       <td>Some-college</td>
-      <td>Married-civ-spouse</td>
-      <td>44.000000</td>
-      <td>219590.999900</td>
+      <td>Never-married</td>
+      <td>20.000000</td>
+      <td>215232.000557</td>
       <td>&lt;50k</td>
     </tr>
   </tbody>
@@ -292,55 +318,55 @@ nb_path: "nbs/022_data.mixed.ipynb"
     <tr>
       <th>1</th>
       <td>False</td>
-      <td>9.0</td>
+      <td>6.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>2</th>
       <td>False</td>
-      <td>6.0</td>
+      <td>9.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>3</th>
       <td>False</td>
-      <td>11.0</td>
+      <td>13.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>4</th>
       <td>False</td>
-      <td>15.0</td>
-      <td>&lt;50k</td>
+      <td>13.0</td>
+      <td>&gt;=50k</td>
     </tr>
     <tr>
       <th>5</th>
-      <td>False</td>
-      <td>13.0</td>
+      <td>True</td>
+      <td>10.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>6</th>
       <td>False</td>
-      <td>9.0</td>
+      <td>10.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>7</th>
       <td>False</td>
-      <td>10.0</td>
+      <td>4.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>8</th>
       <td>False</td>
-      <td>9.0</td>
+      <td>10.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>9</th>
       <td>False</td>
-      <td>10.0</td>
+      <td>9.0</td>
       <td>&lt;50k</td>
     </tr>
   </tbody>
@@ -397,75 +423,75 @@ nb_path: "nbs/022_data.mixed.ipynb"
   <tbody>
     <tr>
       <th>0</th>
-      <td>?</td>
-      <td>Bachelors</td>
+      <td>Private</td>
+      <td>Some-college</td>
       <td>Never-married</td>
       <td>23.000000</td>
-      <td>123983.002295</td>
+      <td>67958.004646</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>1</th>
       <td>Private</td>
-      <td>7th-8th</td>
-      <td>Never-married</td>
-      <td>19.000000</td>
-      <td>104829.997271</td>
+      <td>Assoc-voc</td>
+      <td>Divorced</td>
+      <td>42.000000</td>
+      <td>168515.000677</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>State-gov</td>
+      <td>Private</td>
       <td>HS-grad</td>
-      <td>Widowed</td>
-      <td>65.999999</td>
-      <td>102639.999497</td>
+      <td>Never-married</td>
+      <td>19.000001</td>
+      <td>365639.998782</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>3</th>
       <td>Private</td>
-      <td>Some-college</td>
+      <td>Assoc-acdm</td>
       <td>Never-married</td>
-      <td>22.000000</td>
-      <td>359758.994678</td>
+      <td>25.000000</td>
+      <td>91709.002441</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>4</th>
       <td>Private</td>
-      <td>Bachelors</td>
-      <td>Never-married</td>
-      <td>28.000000</td>
-      <td>161538.001120</td>
+      <td>5th-6th</td>
+      <td>Married-civ-spouse</td>
+      <td>33.000000</td>
+      <td>283602.001704</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>5</th>
       <td>Private</td>
-      <td>HS-grad</td>
+      <td>7th-8th</td>
       <td>Married-civ-spouse</td>
-      <td>40.000000</td>
-      <td>309311.005654</td>
+      <td>83.999999</td>
+      <td>388384.003536</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>6</th>
       <td>Private</td>
-      <td>Bachelors</td>
-      <td>Married-civ-spouse</td>
-      <td>28.000000</td>
-      <td>130066.997430</td>
-      <td>&gt;=50k</td>
+      <td>Some-college</td>
+      <td>Never-married</td>
+      <td>46.000000</td>
+      <td>180694.999707</td>
+      <td>&lt;50k</td>
     </tr>
     <tr>
       <th>7</th>
-      <td>Self-emp-inc</td>
-      <td>Bachelors</td>
-      <td>Married-civ-spouse</td>
-      <td>38.000000</td>
-      <td>299035.999132</td>
-      <td>&gt;=50k</td>
+      <td>Private</td>
+      <td>Masters</td>
+      <td>Never-married</td>
+      <td>30.000000</td>
+      <td>55480.999910</td>
+      <td>&lt;50k</td>
     </tr>
   </tbody>
 </table>
@@ -489,14 +515,14 @@ nb_path: "nbs/022_data.mixed.ipynb"
   <tbody>
     <tr>
       <th>0</th>
-      <td>False</td>
-      <td>13.0</td>
+      <td>True</td>
+      <td>10.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>1</th>
       <td>False</td>
-      <td>4.0</td>
+      <td>11.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
@@ -508,32 +534,32 @@ nb_path: "nbs/022_data.mixed.ipynb"
     <tr>
       <th>3</th>
       <td>False</td>
-      <td>10.0</td>
+      <td>12.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>4</th>
       <td>False</td>
-      <td>13.0</td>
+      <td>3.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>5</th>
       <td>False</td>
-      <td>9.0</td>
+      <td>4.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>6</th>
       <td>False</td>
-      <td>13.0</td>
-      <td>&gt;=50k</td>
+      <td>10.0</td>
+      <td>&lt;50k</td>
     </tr>
     <tr>
       <th>7</th>
       <td>False</td>
-      <td>13.0</td>
-      <td>&gt;=50k</td>
+      <td>14.0</td>
+      <td>&lt;50k</td>
     </tr>
   </tbody>
 </table>
@@ -570,38 +596,38 @@ nb_path: "nbs/022_data.mixed.ipynb"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>((tensor([[ 1, 10,  5],
-          [ 5,  6,  5],
-          [ 8, 12,  7],
+<pre>((tensor([[ 5, 16,  5],
+          [ 5,  9,  1],
+          [ 5, 12,  5],
+          [ 5,  8,  5],
+          [ 5,  5,  3],
+          [ 5,  6,  3],
           [ 5, 16,  5],
-          [ 5, 10,  5],
-          [ 5, 12,  3],
-          [ 5, 10,  3],
-          [ 6, 10,  3]]),
-  tensor([[-1.1356, -0.6232],
-          [-1.4290, -0.8034],
-          [ 2.0185, -0.8240],
-          [-1.2089,  1.5952],
-          [-0.7688, -0.2698],
-          [ 0.1114,  1.1205],
-          [-0.7688, -0.5659],
-          [-0.0353,  1.0239]])),
- (tensor([[1],
+          [ 5, 13,  5]], device=&#39;cuda:0&#39;),
+  tensor([[-1.1389, -1.1568],
+          [ 0.2512, -0.1987],
+          [-1.4316,  1.6795],
+          [-0.9926, -0.9305],
+          [-0.4073,  0.8978],
+          [ 3.3240,  1.8962],
+          [ 0.5438, -0.0827],
+          [-0.6268, -1.2757]], device=&#39;cuda:0&#39;)),
+ (tensor([[2],
           [1],
           [1],
           [1],
           [1],
           [1],
           [1],
-          [1]]),
-  tensor([[ 1.1516],
-          [-2.3784],
-          [-0.4173],
-          [-0.0251],
-          [ 1.1516],
-          [-0.4173],
-          [ 1.1516],
-          [ 1.1516]])))</pre>
+          [1]], device=&#39;cuda:0&#39;),
+  tensor([[-0.0268],
+          [ 0.3635],
+          [-0.4171],
+          [ 0.7538],
+          [-2.7587],
+          [-2.3685],
+          [-0.0268],
+          [ 1.5343]], device=&#39;cuda:0&#39;)))</pre>
 </div>
 
 </div>
@@ -663,7 +689,7 @@ nb_path: "nbs/022_data.mixed.ipynb"
 <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span><span class="p">)]</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span>
 <span class="n">alphabet</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">ascii_lowercase</span><span class="p">))</span>
 <span class="c1"># y = alphabet[y]</span>
-<span class="n">splits</span> <span class="o">=</span> <span class="n">TimeSplitter</span><span class="p">(</span><span class="mf">.5</span><span class="p">,</span> <span class="n">show_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">range_of</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
+<span class="n">splits</span> <span class="o">=</span> <span class="n">TimeSplitter</span><span class="p">(</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span> <span class="n">show_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">range_of</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
 <span class="n">tfms</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">TSRegression</span><span class="p">()]</span>
 <span class="n">dls1</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">)</span>
 <span class="n">dls1</span><span class="o">.</span><span class="n">one_batch</span><span class="p">()</span>
@@ -681,7 +707,8 @@ nb_path: "nbs/022_data.mixed.ipynb"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(TSTensor(samples:8, vars:2, len:5), tensor([0., 1., 2., 3., 4., 5., 6., 7.]))</pre>
+<pre>(TSTensor(samples:8, vars:2, len:5, device=cuda:0),
+ tensor([0., 1., 2., 3., 4., 5., 6., 7.], device=&#39;cuda:0&#39;))</pre>
 </div>
 
 </div>
@@ -724,29 +751,29 @@ nb_path: "nbs/022_data.mixed.ipynb"
 
 <div class="output_text output_subarea output_execute_result">
 <pre>(tensor([[1, 1],
-         [7, 7],
+         [2, 2],
          [5, 5],
-         [3, 3],
-         [6, 6],
-         [8, 8],
          [4, 4],
-         [2, 2]]),
+         [6, 6],
+         [3, 3],
+         [8, 8],
+         [7, 7]], device=&#39;cuda:0&#39;),
  tensor([[  0.],
-         [600.],
+         [100.],
          [400.],
-         [200.],
-         [500.],
-         [700.],
          [300.],
-         [100.]]),
+         [500.],
+         [200.],
+         [700.],
+         [600.]], device=&#39;cuda:0&#39;),
  tensor([[0],
-         [6],
+         [1],
          [4],
-         [2],
-         [5],
-         [7],
          [3],
-         [1]], dtype=torch.int8))</pre>
+         [5],
+         [2],
+         [7],
+         [6]], device=&#39;cuda:0&#39;, dtype=torch.int8))</pre>
 </div>
 
 </div>
@@ -780,7 +807,7 @@ nb_path: "nbs/022_data.mixed.ipynb"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>((TSTensor(samples:8, vars:2, len:5), tensor([0., 1., 2., 3., 4., 5., 6., 7.])),)
+<pre>((TSTensor(samples:8, vars:2, len:5, device=cpu), tensor([0., 1., 2., 3., 4., 5., 6., 7.])),)
 </pre>
 </div>
 </div>
@@ -809,10 +836,10 @@ nb_path: "nbs/022_data.mixed.ipynb"
 <span class="n">test_eq</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xb</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]),</span> <span class="n">bs</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">xb</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">long</span><span class="p">(),</span> <span class="n">xb</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="c1"># categorical data and ts are in synch</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">xb</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="n">xb</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span> <span class="c1"># continuous data and ts are in synch</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">tensor</span><span class="p">(</span><span class="n">dl</span><span class="o">.</span><span class="n">input_idxs</span><span class="p">),</span> <span class="n">yb</span><span class="o">.</span><span class="n">long</span><span class="p">())</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">tensor</span><span class="p">(</span><span class="n">dl</span><span class="o">.</span><span class="n">input_idxs</span><span class="p">),</span> <span class="n">yb</span><span class="o">.</span><span class="n">long</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">())</span>
 <span class="n">dl</span> <span class="o">=</span> <span class="n">dls</span><span class="o">.</span><span class="n">valid</span>
 <span class="n">xb</span><span class="p">,</span> <span class="n">yb</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">one_batch</span><span class="p">()</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">tensor</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">dl</span><span class="o">.</span><span class="n">input_idxs</span><span class="p">]),</span> <span class="n">yb</span><span class="o">.</span><span class="n">long</span><span class="p">())</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">tensor</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">dl</span><span class="o">.</span><span class="n">input_idxs</span><span class="p">]),</span> <span class="n">yb</span><span class="o">.</span><span class="n">long</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">())</span>
 </pre></div>
 
     </div>

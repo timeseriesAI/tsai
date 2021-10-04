@@ -93,8 +93,10 @@ class MixedDataLoader():
                 outs += batch[dl.n_inp:]
             inps = tuple([tuple(L(inps)[idx]) if isinstance(idx, list) else inps[idx]
                           for idx in self.x_idxs]) if len(self.x_idxs) > 1 else tuple(L(outs)[self.x_idxs][0])
-            outs = tuple(L(outs)[self.y_idxs]) if len(self.y_idxs) > 1 else L(outs)[self.y_idxs][0]
-            yield inps, outs
+            try:
+                outs = tuple(L(outs)[self.y_idxs]) if len(self.y_idxs) > 1 else L(outs)[self.y_idxs][0]
+                yield inps, outs
+            except IndexError: yield inps
 
     def one_batch(self):
         "Grab one batch of data"
