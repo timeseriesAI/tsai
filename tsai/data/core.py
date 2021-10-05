@@ -4,8 +4,8 @@ __all__ = ['NumpyTensor', 'ToNumpyTensor', 'TSTensor', 'ToTSTensor', 'show_tuple
            'ToFloat', 'ToInt', 'TSClassification', 'TSRegression', 'TSForecasting', 'TSMultiLabelClassification',
            'NumpyTensorBlock', 'TSTensorBlock', 'TorchDataset', 'NumpyDataset', 'TSDataset', 'NoTfmLists',
            'TSTfmdLists', 'NumpyDatasets', 'tscoll_repr', 'TSDatasets', 'add_ds', 'NumpyDataLoader', 'TSDataLoader',
-           'NumpyDataLoaders', 'TSDataLoaders', 'get_best_dl_params', 'get_best_dls_params', 'get_ts_dls',
-           'get_ts_dls2', 'get_ts_dl', 'get_subset_dl', 'get_tsimage_dls']
+           'NumpyDataLoaders', 'TSDataLoaders', 'get_best_dl_params', 'get_best_dls_params', 'get_ts_dls', 'get_ts_dl',
+           'get_subset_dl', 'get_tsimage_dls']
 
 # Cell
 from ..imports import *
@@ -825,18 +825,7 @@ def get_best_dls_params(dls, n_iters=10, num_workers=[0, 1, 2, 4, 8], pin_memory
     return dls
 
 # Cell
-def get_ts_dls(X, y=None, splits=None, sel_vars=None, sel_steps=None, tfms=None, inplace=True,
-            path='.', bs=64, batch_tfms=None, num_workers=0, device=None, shuffle_train=True, drop_last=True, weights=None, partial_n=None, **kwargs):
-    if splits is None: splits = (L(np.arange(len(X)).tolist()), L([]))
-    dsets = TSDatasets(X, y, splits=splits, sel_vars=sel_vars, sel_steps=sel_steps, tfms=tfms, inplace=inplace)
-    if weights is not None:
-        assert len(X) == len(weights)
-        if splits is not None: weights = [weights[split] if i == 0 else None for i,split in enumerate(splits)] # weights only applied to train set
-    dls   = TSDataLoaders.from_dsets(dsets.train, dsets.valid, path=path, bs=bs, batch_tfms=batch_tfms, num_workers=num_workers,
-                                     device=device, shuffle_train=shuffle_train, drop_last=drop_last, weights=weights, partial_n=partial_n, **kwargs)
-    return dls
-
-def get_ts_dls2(X=None, y=None, cat=None, cont=None, df=None, splits=None, sel_vars=None, sel_steps=None, tfms=None, procs=[Categorify, FillMissing, Normalize],
+def get_ts_dls(X=None, y=None, cat=None, cont=None, df=None, splits=None, sel_vars=None, sel_steps=None, tfms=None, procs=[Categorify, FillMissing, Normalize],
                inplace=True, path='.', bs=64, batch_tfms=None, num_workers=0, device=None, shuffle_train=True, drop_last=True, weights=None, partial_n=None,
                 **kwargs):
     if isinstance(X, (str, pd.core.indexes.base.Index)) or (isinstance(X, list) and (isinstance(X[0], str) or is_indexer(X[0]))):
