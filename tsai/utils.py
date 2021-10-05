@@ -30,6 +30,7 @@ import sklearn
 def totensor(o):
     if isinstance(o, torch.Tensor): return o
     elif isinstance(o, np.ndarray):  return torch.from_numpy(o)
+    elif isinstance(o, pd.DataFrame): return torch.from_numpy(o.values)
     else:
         try: return torch.tensor(o)
         except: warnings.warn(f"Can't convert {type(o)} to torch.Tensor", Warning)
@@ -38,6 +39,7 @@ def totensor(o):
 def toarray(o):
     if isinstance(o, np.ndarray): return o
     elif isinstance(o, torch.Tensor): return o.cpu().numpy()
+    elif isinstance(o, pd.DataFrame): return o.values
     else:
         try: return np.asarray(o)
         except: warnings.warn(f"Can't convert {type(o)} to np.array", Warning)
@@ -101,7 +103,7 @@ def to1darray(o):
 
 def to3d(o):
     if o.ndim == 3: return o
-    if isinstance(o, np.ndarray): return to3darray(o)
+    if isinstance(o, (np.ndarray, pd.DataFrame)): return to3darray(o)
     if isinstance(o, torch.Tensor): return to3dtensor(o)
 
 

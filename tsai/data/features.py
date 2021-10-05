@@ -15,7 +15,6 @@ from tsfresh import extract_features
 from tsfresh.feature_extraction.settings import ComprehensiveFCParameters, MinimalFCParameters, EfficientFCParameters
 
 # Cell
-@delegates(extract_features.__init__)
 def get_ts_features(X:Union[np.ndarray, torch.Tensor], y:Union[None, np.ndarray, torch.Tensor]=None, features:Union[str, dict]='min',
                     n_jobs:Optional[int]=None, **kwargs):
     """

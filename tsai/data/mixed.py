@@ -22,6 +22,7 @@ class MixedDataLoader():
         device = ifnone(device, default_device())
         self.device = device
         self.c = None
+        self.d = None
         self.bs = ifnone(bs, min([dl.bs for dl in loaders]))
         for i, dl in enumerate(loaders):  # ensure all dls have the same bs
             if hasattr(dl, 'vars'):
@@ -34,6 +35,8 @@ class MixedDataLoader():
             dl.shuffle_fn = self.shuffle_fn
             if self.c is None and hasattr(dl, "c"):
                 self.c = dl.c
+            if self.d is None and hasattr(dl, "d"):
+                self.d = dl.d
             if i == 0:
                 self.dataset = dl.dataset
             dl.to(device=device)

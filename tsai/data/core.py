@@ -259,8 +259,12 @@ class NumpyDatasets(Datasets):
 
         self.tfms, self.inplace = tfms, inplace
 
-        if X is not None and not hasattr(X, '__array__'): X = np.asarray(X)
-        if y is not None and not hasattr(y, '__array__'):  y = np.asarray(y)
+        if X is not None:
+            if not hasattr(X, '__array__'): X = np.asarray(X)
+            elif hasattr(X, "iloc"): X = to3d(X)
+        if y is not None:
+            if not hasattr(y, '__array__'):  y = np.asarray(y)
+            elif hasattr(y, "iloc"): y = toarray(y)
 
         if tls is None:
             items = tuple((X,)) if y is None else tuple((X, y))
@@ -331,8 +335,12 @@ class TSDatasets(NumpyDatasets):
 
         self.sel_vars, self.sel_steps, self.tfms, self.inplace = ifnone(sel_vars, slice(None)), ifnone(sel_steps,slice(None)), tfms, inplace
 
-        if X is not None and not hasattr(X, '__array__'): X = np.asarray(X)
-        if y is not None and not hasattr(y, '__array__'):  y = np.asarray(y)
+        if X is not None:
+            if not hasattr(X, '__array__'): X = np.asarray(X)
+            elif hasattr(X, "iloc"): X = to3d(X)
+        if y is not None:
+            if not hasattr(y, '__array__'):  y = np.asarray(y)
+            elif hasattr(y, "iloc"): y = toarray(y)
 
         if tls is None:
             items = tuple((X,)) if y is None else tuple((X, y))
@@ -579,6 +587,7 @@ class NumpyDataLoader(TfmdDL):
 
     @property
     def c(self):
+        if len(self.dataset) == 0: return 0
         if hasattr(self, "vocab"):
             return len(self.vocab)
         else:
@@ -586,6 +595,7 @@ class NumpyDataLoader(TfmdDL):
 
     @property
     def d(self):
+        if len(self.dataset) == 0: return 0
         b = self.one_batch()
         if len(b) == 1: return 0
         i = getattr(self, 'n_inp', 1 if len(b)==1 else len(b)-1)
@@ -623,6 +633,7 @@ class NumpyDataLoader(TfmdDL):
 class TSDataLoader(NumpyDataLoader):
     @property
     def vars(self):
+        if len(self.dataset) == 0: return 0
         b = self.one_batch()
         i = getattr(self, 'n_inp', 1 if len(b)==1 else len(b)-1)
         xb = b[:i]
@@ -631,6 +642,7 @@ class TSDataLoader(NumpyDataLoader):
         else: return xb[0].shape[-2]
     @property
     def len(self):
+        if len(self.dataset) == 0: return 0
         b = self.one_batch()
         i = getattr(self, 'n_inp', 1 if len(b)==1 else len(b)-1)
         xb = b[:i]
