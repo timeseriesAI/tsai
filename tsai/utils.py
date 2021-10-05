@@ -18,7 +18,7 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'np_save_compressed', 'np_load_compressed', 'np2memmap', 'torch_mean_groupby', 'torch_flip',
            'torch_nan_to_num', 'torch_masked_to_num', 'mpl_trend', 'int2digits', 'array2digits', 'sincos_encoding',
            'linear_encoding', 'encode_positions', 'sort_generator', 'get_subset_dict', 'create_dir', 'remove_dir',
-           'named_partial', 'yaml2dict']
+           'named_partial', 'yaml2dict', 'str2list', 'str2index', 'get_cont_cols', 'get_cat_cols']
 
 # Cell
 from .imports import *
@@ -700,7 +700,7 @@ def roll3d(o, roll1: Union[None, list, int] = None, roll2: Union[None, list, int
     return o[axis1, axis2, axis3]
 
 
-def random_roll2d(o, axis=()):
+def random_roll2d(o, axis=(), replace=False):
     """Rolls a 2D object on the indicated axis
     This solution is based on https://stackoverflow.com/questions/20360675/roll-rows-of-a-matrix-independently
     """
@@ -1013,3 +1013,25 @@ def yaml2dict(fname):
     with maybe_open(fname, 'r') as f:
         dictionary = yaml.safe_load(f)
     return AttrDict(dictionary)
+
+# Cell
+def str2list(o):
+    if o is None: return []
+    elif o is not None and not isinstance(o, (list, L)):
+        if isinstance(o, pd.core.indexes.base.Index): o = o.tolist()
+        else: o = [o]
+    return o
+
+def str2index(o):
+    if o is None: return o
+    o = str2list(o)
+    if len(o) == 1: return o[0]
+    return o
+
+def get_cont_cols(df):
+    return df._get_numeric_data().columns.tolist()
+
+def get_cat_cols(df):
+    cols = df.columns.tolist()
+    cont_cols = df._get_numeric_data().columns.tolist()
+    return [col for col in cols if col not in cont_cols]

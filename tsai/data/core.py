@@ -4,14 +4,16 @@ __all__ = ['NumpyTensor', 'ToNumpyTensor', 'TSTensor', 'ToTSTensor', 'show_tuple
            'ToFloat', 'ToInt', 'TSClassification', 'TSRegression', 'TSForecasting', 'TSMultiLabelClassification',
            'NumpyTensorBlock', 'TSTensorBlock', 'TorchDataset', 'NumpyDataset', 'TSDataset', 'NoTfmLists',
            'TSTfmdLists', 'NumpyDatasets', 'tscoll_repr', 'TSDatasets', 'add_ds', 'NumpyDataLoader', 'TSDataLoader',
-           'NumpyDataLoaders', 'TSDataLoaders', 'get_best_dl_params', 'get_best_dls_params', 'get_ts_dls', 'get_ts_dl',
-           'get_subset_dl', 'get_tsimage_dls']
+           'NumpyDataLoaders', 'TSDataLoaders', 'get_best_dl_params', 'get_best_dls_params', 'get_ts_dls',
+           'get_ts_dls2', 'get_ts_dl', 'get_subset_dl', 'get_tsimage_dls']
 
 # Cell
 from ..imports import *
 from ..utils import *
 from .validation import *
 from .external import *
+from .tabular import *
+from .mixed import *
 
 # Cell
 from matplotlib.ticker import PercentFormatter
@@ -833,6 +835,45 @@ def get_ts_dls(X, y=None, splits=None, sel_vars=None, sel_steps=None, tfms=None,
     dls   = TSDataLoaders.from_dsets(dsets.train, dsets.valid, path=path, bs=bs, batch_tfms=batch_tfms, num_workers=num_workers,
                                      device=device, shuffle_train=shuffle_train, drop_last=drop_last, weights=weights, partial_n=partial_n, **kwargs)
     return dls
+
+def get_ts_dls2(X=None, y=None, cat=None, cont=None, df=None, splits=None, sel_vars=None, sel_steps=None, tfms=None, procs=[Categorify, FillMissing, Normalize],
+               inplace=True, path='.', bs=64, batch_tfms=None, num_workers=0, device=None, shuffle_train=True, drop_last=True, weights=None, partial_n=None,
+                **kwargs):
+    if isinstance(X, (str, pd.core.indexes.base.Index)) or (isinstance(X, list) and (isinstance(X[0], str) or is_indexer(X[0]))):
+        X = to3darray(df[str2index(X)])
+    if isinstance(y, (str, pd.core.indexes.base.Index)) or (isinstance(y, list) and (isinstance(y[0], str) or is_indexer(y[0]))):
+        y_names = str2list(y)
+        y = df[str2index(y)].values
+    else: y_names = None
+
+    if splits is None: splits = (L(np.arange(len(X)).tolist()), L([]))
+
+    # ts_dls
+    dsets = TSDatasets(X, y, splits=splits, sel_vars=sel_vars, sel_steps=sel_steps, tfms=tfms, inplace=inplace)
+    if weights is not None:
+        assert len(X) == len(weights)
+        if splits is not None: weights = [weights[split] if i == 0 else None for i,split in enumerate(splits)] # weights only applied to train set
+    dls   = TSDataLoaders.from_dsets(dsets.train, dsets.valid, path=path, bs=bs, batch_tfms=batch_tfms, num_workers=num_workers,
+                                     device=device, shuffle_train=shuffle_train, drop_last=drop_last, weights=weights, partial_n=partial_n)
+    if cat is None and cont is None: return dls
+
+    # tab dls
+    c, d = dls.c, dls.d
+    cat, cont = str2index(cat),str2index(cont)
+    cols = []
+    for _cols in [cat, cont, y_names]:
+        if _cols is not None: cols.extend(_cols)
+    cols = list(set(cols))
+    if is_listy(bs): bs = min(bs)
+    if splits is not None: bs = min(len(splits[0]), bs)
+    else: bs = min(len(df), bs)
+    tab_dls = get_tabular_dls(df[cols], procs=procs, cat_names=cat, cont_names=cont, y_names=y_names, splits=splits, bs=bs, device=device, **kwargs)
+    mixed_dls = combine_dls(dls, tab_dls, path=path)
+    if cat is not None: cat = len(cat)
+    if cont is not None: cont = len(cont)
+    for n,v in zip(["c", "d", "cat", "cont", "classes"], [dls.c, dls.d, cat, cont, tab_dls.classes]):
+        setattr(mixed_dls, n, v)
+    return mixed_dls
 
 def get_ts_dl(X, y=None, sel_vars=None, sel_steps=None, tfms=None, inplace=True,
             path='.', bs=64, batch_tfms=None, num_workers=0, device=None, shuffle_train=True, drop_last=True, weights=None, partial_n=None, **kwargs):
