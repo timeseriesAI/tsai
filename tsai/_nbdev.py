@@ -680,7 +680,8 @@ index = {"maybe_mount_drive": "000_export.ipynb",
          "run_optuna_study": "200_optuna.ipynb",
          "wandb_agent": "201_wandb.ipynb",
          "get_wandb_agent": "201_wandb.ipynb",
-         "run_wandb_agent": "201_wandb.ipynb"}
+         "run_wandb_agent": "201_wandb.ipynb",
+         "get_tabular_ds": "012b_data.tabular.ipynb"}
 
 modules = ["export.py",
            "utils.py",

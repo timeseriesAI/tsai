@@ -65,6 +65,21 @@ class MixedDataLoader():
         loaders = [dl.new(*args, **kwargs) for dl in self.loaders]
         return type(self)(*loaders, path=self.path, device=self.device)
 
+    def new_dl(self, X, y=None, cat=None, cont=None, df=None, procs=[Categorify, FillMissing, Normalize], bs=64, **kwargs):
+
+        # time series
+        assert X.ndim == 3, "You must pass an X with 3 dimensions [batch_size x n_vars x seq_len]"
+        if y is not None and not is_array(y) and not is_listy(y): y = [y]
+        ds = self.dataset.add_dataset(X, y=y)
+        loader1 = self.loaders[0].new(ds, bs=bs)
+
+        # static covariates
+        ds = get_tabular_ds(df, procs=procs, cat_names=cat, cont_names=cont, **kwargs)
+        loader2 = self.loaders[1].new(ds, bs=bs)
+
+        # new MixedDataLoader
+        return type(self)(loader1, loader2, path=self.path, shuffle=self.shuffle, device=self.device, bs=bs)
+
     def __len__(self): return self.loaders[0].__len__()
 
     def _get_vals(self, x):
