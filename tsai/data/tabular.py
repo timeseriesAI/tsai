@@ -34,7 +34,7 @@ def get_tabular_ds(df, procs=[Categorify, FillMissing, Normalize], cat_names=Non
 def get_tabular_dls(df, procs=[Categorify, FillMissing, Normalize], cat_names=None, cont_names=None, y_names=None, bs=64,
                     y_block=None, splits=None, do_setup=True, inplace=False, reduce_memory=True, device=None, **kwargs):
     to = get_tabular_ds(df, procs=procs, cat_names=cat_names, cont_names=cont_names, y_names=y_names,
-                   y_block=y_block, splits=splits, do_setup=do_setup, inplace=inplace, reduce_memory=reduce_memory, device=device, **kwargs)
+                        y_block=y_block, splits=splits, do_setup=do_setup, inplace=inplace, reduce_memory=reduce_memory, device=device, **kwargs)
     if splits is not None: bs = min(len(splits[0]), bs)
     else: bs = min(len(df), bs)
     return to.dataloaders(device=device, bs=bs, **kwargs)

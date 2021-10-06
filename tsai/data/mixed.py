@@ -4,6 +4,7 @@ __all__ = ['MixedDataLoader', 'MixedDataLoaders', 'get_mixed_dls', 'combine_dls'
 
 # Cell
 from ..imports import *
+from .tabular import *
 
 # Cell
 # This implementation of a mixed dataloader is based on a great implementation created by Zach Mueller in this fastai thread:
