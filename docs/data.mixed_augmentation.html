@@ -173,8 +173,8 @@ nb_path: "nbs/018_data.mixed_augmentation.ipynb"
   <tbody>
     <tr>
       <td>0</td>
-      <td>1.814203</td>
-      <td>1.782917</td>
+      <td>1.874871</td>
+      <td>1.762203</td>
       <td>00:03</td>
     </tr>
   </tbody>
@@ -261,8 +261,8 @@ nb_path: "nbs/018_data.mixed_augmentation.ipynb"
   <tbody>
     <tr>
       <td>0</td>
-      <td>1.795043</td>
-      <td>1.738316</td>
+      <td>1.794683</td>
+      <td>1.767164</td>
       <td>00:03</td>
     </tr>
   </tbody>
@@ -271,59 +271,14 @@ nb_path: "nbs/018_data.mixed_augmentation.ipynb"
 
 </div>
 
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;NATOPS&#39;</span>
-<span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">return_split</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">batch_tfms</span> <span class="o">=</span> <span class="n">TSStandardize</span><span class="p">()</span>
-<span class="n">dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="n">batch_tfms</span><span class="p">)</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">build_model</span><span class="p">(</span><span class="n">ResNet</span><span class="p">,</span> <span class="n">dls</span><span class="o">=</span><span class="n">dls</span><span class="p">)</span>
-<span class="n">learn</span> <span class="o">=</span> <span class="n">Learner</span><span class="p">(</span><span class="n">dls</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">loss_func</span><span class="o">=</span><span class="n">MSELossFlat</span><span class="p">(),</span> <span class="n">cbs</span><span class="o">=</span><span class="n">CutMix1D</span><span class="p">(</span><span class="mf">1.</span><span class="p">))</span>
-<span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
 <div class="output_area">
 
-
-<div class="output_html rendered_html output_subarea ">
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: left;">
-      <th>epoch</th>
-      <th>train_loss</th>
-      <th>valid_loss</th>
-      <th>time</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>0</td>
-      <td>nan</td>
-      <td>None</td>
-      <td>00:01</td>
-    </tr>
-  </tbody>
-</table>
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/Users/nacho/opt/anaconda3/envs/py37/lib/python3.7/site-packages/torch/_tensor.py:575: UserWarning: floor_divide is deprecated, and will be removed in a future version of pytorch. It currently rounds toward 0 (like the &#39;trunc&#39; function NOT &#39;floor&#39;). This results in incorrect rounding for negative values.
+To keep the current behavior, use torch.div(a, b, rounding_mode=&#39;trunc&#39;), or for actual floor division, use torch.div(a, b, rounding_mode=&#39;floor&#39;). (Triggered internally at  ../aten/src/ATen/native/BinaryOps.cpp:467.)
+  return torch.floor_divide(self, other)
+</pre>
 </div>
-
 </div>
 
 </div>
