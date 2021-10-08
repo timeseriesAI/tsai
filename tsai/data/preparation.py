@@ -12,13 +12,15 @@ from .validation import *
 from io import StringIO
 
 # Cell
-def df2Xy(df, sample_col=None, feat_col=None, data_cols=None, target_col=None, to3d=True, splits=None, sort_by=None, ascending=True, y_func=None):
+def df2Xy(df, sample_col=None, feat_col=None, data_cols=None, target_col=None, steps_in_rows=False, to3d=True, splits=None,
+          sort_by=None, ascending=True, y_func=None):
     r"""
     This function allows you to transform a pandas dataframe into X and y numpy arrays that can be used to craete a TSDataset.
     sample_col: column that uniquely identifies each sample.
     feat_col: used for multivariate datasets. It indicates which is the column that indicates the feature by row.
     data_col: indicates ths column/s where the data is located. If None, it means all columns (except the sample_col, feat_col, and target_col)
     target_col: indicates the column/s where the target is.
+    steps_in_rows: flag to indicate if each step is in a different row or in a different column (default).
     to3d: turns X to 3d (including univariate time series)
     sort_by: used to indicate how to sort the dataframe.
     y_func: function used to calculate y for each sample (and target_col)
@@ -34,12 +36,12 @@ def df2Xy(df, sample_col=None, feat_col=None, data_cols=None, target_col=None, t
     if sample_col is not None:
         if isinstance(sample_col, pd.core.indexes.base.Index): sample_col = sample_col.tolist()
         sample_col = listify(sample_col)
-        sort_cols += listify(sample_col)
+        if sample_col[0] not in sort_cols: sort_cols += listify(sample_col)
         passed_cols += sample_col
     if feat_col is not None:
         if isinstance(feat_col, pd.core.indexes.base.Index): feat_col = feat_col.tolist()
         feat_col = listify(feat_col)
-        sort_cols += listify(feat_col)
+        if feat_col[0] not in sort_cols: sort_cols += listify(feat_col)
         passed_cols += feat_col
     if data_cols is not None:
         if isinstance(data_cols, pd.core.indexes.base.Index): data_cols = data_cols.tolist()
@@ -64,11 +66,14 @@ def df2Xy(df, sample_col=None, feat_col=None, data_cols=None, target_col=None, t
     else:
         unique_ids = np.arange(len(df)).tolist()
         n_samples = len(df)
-    if feat_col is not None:
-        n_feats = df[feat_col[0]].nunique()
-        X = X.reshape(n_samples, n_feats, -1)
-    elif to3d:
-        X = X.reshape(n_samples, 1, -1)
+    if to3d:
+        if feat_col is not None:
+            n_feats = df[feat_col[0]].nunique()
+            X = X.reshape(n_samples, n_feats, -1)
+        elif steps_in_rows:
+            X = X.reshape(n_samples, -1, len(data_cols)).swapaxes(1,2)
+        else:
+            X = X.reshape(n_samples, 1, -1)
 
     # y
     if target_col is not None:
