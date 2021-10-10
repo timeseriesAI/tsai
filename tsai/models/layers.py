@@ -14,8 +14,8 @@ __all__ = ['noop', 'init_lin_zero', 'lin_zero_init', 'SwishBeta', 'same_padding1
            'create_conv_lin_3d_head', 'conv_lin_3d_head', 'create_lin_3d_head', 'lin_3d_head', 'create_conv_3d_head',
            'conv_3d_head', 'universal_pool_head', 'heads', 'SqueezeExciteBlock', 'GaussianNoise', 'gambler_loss',
            'CrossEntropyLossOneHot', 'ttest_bin_loss', 'ttest_reg_loss', 'CenterLoss', 'CenterPlusLoss', 'FocalLoss',
-           'TweedieLoss', 'GEGLU', 'ReGLU', 'PositionwiseFeedForward', 'TokenLayer', 'ScaledDotProductAttention',
-           'MultiheadAttention', 'MultiConcatConv1d']
+           'TweedieLoss', 'GEGLU', 'ReGLU', 'PositionwiseFeedForward', 'TokenLayer', 'get_act_fn', 'pytorch_acts',
+           'pytorch_act_names', 'ScaledDotProductAttention', 'MultiheadAttention', 'MultiConcatConv1d', 'LSTMOutput']
 
 # Cell
 from ..imports import *
@@ -931,12 +931,10 @@ class GEGLU(Module):
         x, gates = x.chunk(2, dim=-1)
         return x * F.gelu(gates)
 
-
 class ReGLU(Module):
     def forward(self, x):
         x, gates = x.chunk(2, dim=-1)
         return x * F.relu(gates)
-
 
 class PositionwiseFeedForward(nn.Sequential):
     def __init__(self, dim, dropout=0., act='reglu', mlp_ratio=1):
@@ -957,6 +955,19 @@ class TokenLayer(Module):
     def __init__(self, token=True): self.token = token
     def forward(self, x): return x[..., 0] if self.token is not None else x.mean(-1)
     def __repr__(self): return f"{self.__class__.__name__}()"
+
+# Cell
+pytorch_acts = [nn.ELU, nn.LeakyReLU, nn.PReLU, nn.ReLU, nn.ReLU6, nn.SELU, nn.CELU, nn.GELU, nn.Sigmoid, nn.Mish, nn.Softplus,
+nn.Tanh, nn.Softmax, GEGLU, ReGLU]
+pytorch_act_names = [a.__name__.lower() for a in pytorch_acts]
+
+def get_act_fn(act_name, **act_kwargs):
+    if act_name is None: return
+    idx = pytorch_act_names.index(act_name.lower())
+    return pytorch_acts[idx](**act_kwargs)
+
+test_eq(get_act_fn('reglu').__repr__(), "ReGLU()")
+test_eq(get_act_fn('leakyrelu', negative_slope=0.05).__repr__(), "LeakyReLU(negative_slope=0.05)")
 
 # Cell
 class ScaledDotProductAttention(Module):
@@ -1084,3 +1095,8 @@ class MultiConcatConv1d(Module):
         for i,l in enumerate(self.layers):
             out = l(x) if i == 0 else torch.cat((out, l(x)), 1)
         return self.to_output(out)
+
+# Cell
+class LSTMOutput(Module):
+    def forward(self, x): return x[0]
+    def __repr__(self): return f'{self.__class__.__name__}()'
