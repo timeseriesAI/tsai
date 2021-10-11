@@ -963,9 +963,12 @@ pytorch_act_names = [a.__name__.lower() for a in pytorch_acts]
 
 def get_act_fn(act_name, **act_kwargs):
     if act_name is None: return
+    if callable(act_name): return act_name(**act_kwargs)
     idx = pytorch_act_names.index(act_name.lower())
     return pytorch_acts[idx](**act_kwargs)
 
+test_eq(get_act_fn(nn.ReLU).__repr__(), "ReLU()")
+test_eq(get_act_fn(nn.LeakyReLU, negative_slope=0.05).__repr__(), "LeakyReLU(negative_slope=0.05)")
 test_eq(get_act_fn('reglu').__repr__(), "ReGLU()")
 test_eq(get_act_fn('leakyrelu', negative_slope=0.05).__repr__(), "LeakyReLU(negative_slope=0.05)")
 

@@ -36,7 +36,7 @@ All steps in this section need to be done **<u>only the first time you set up th
    and follow the instructions.
 2. **Create and activate a new conda environment**. This step is optional, but recommended. You will need to choose a name for the environment and a version of Python (I chose `tsai_dev` and Python 3.8, but you can choose others). 
    ```
-   conda create -n tsai_dev python=3.8
+   conda create -n tsai_dev python=3.6  # python=3.6 will be used in testing, so it's better if you use it in your dev env as well to avoid issues when submitting PRs.
    conda activate tsai_dev
    ```
 3. **Set up tsai**. We'll use an editable install. 
