@@ -957,7 +957,7 @@ class TokenLayer(Module):
     def __repr__(self): return f"{self.__class__.__name__}()"
 
 # Cell
-pytorch_acts = [nn.ELU, nn.LeakyReLU, nn.PReLU, nn.ReLU, nn.ReLU6, nn.SELU, nn.CELU, nn.GELU, nn.Sigmoid, nn.Mish, nn.Softplus,
+pytorch_acts = [nn.ELU, nn.LeakyReLU, nn.PReLU, nn.ReLU, nn.ReLU6, nn.SELU, nn.CELU, nn.GELU, nn.Sigmoid, Mish, nn.Softplus,
 nn.Tanh, nn.Softmax, GEGLU, ReGLU]
 pytorch_act_names = [a.__name__.lower() for a in pytorch_acts]
 
