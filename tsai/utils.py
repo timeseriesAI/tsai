@@ -18,7 +18,8 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'np_save_compressed', 'np_load_compressed', 'np2memmap', 'torch_mean_groupby', 'torch_flip',
            'torch_nan_to_num', 'torch_masked_to_num', 'mpl_trend', 'int2digits', 'array2digits', 'sincos_encoding',
            'linear_encoding', 'encode_positions', 'sort_generator', 'get_subset_dict', 'create_dir', 'remove_dir',
-           'named_partial', 'yaml2dict']
+           'named_partial', 'yaml2dict', 'str2list', 'str2index', 'get_cont_cols', 'get_cat_cols',
+           'maybe_load_kaggle_json']
 
 # Cell
 from .imports import *
@@ -1013,3 +1014,36 @@ def yaml2dict(fname):
     with maybe_open(fname, 'r') as f:
         dictionary = yaml.safe_load(f)
     return AttrDict(dictionary)
+
+# Cell
+def str2list(o):
+    if o is None: return []
+    elif o is not None and not isinstance(o, (list, L)):
+        if isinstance(o, pd.core.indexes.base.Index): o = o.tolist()
+        else: o = [o]
+    return o
+
+def str2index(o):
+    if o is None: return o
+    o = str2list(o)
+    if len(o) == 1: return o[0]
+    return o
+
+def get_cont_cols(df):
+    return df._get_numeric_data().columns.tolist()
+
+def get_cat_cols(df):
+    cols = df.columns.tolist()
+    cont_cols = df._get_numeric_data().columns.tolist()
+    return [col for col in cols if col not in cont_cols]
+
+# Cell
+def maybe_load_kaggle_json():
+    # Select kaggle.json from Downloads in Mac
+    if not os.path.isfile("../root/.kaggle/kaggle.json"):
+        from google.colab import files
+        uploaded = files.upload()
+        for fn in uploaded.keys():
+            print('User uploaded file "{name}" with length {length} bytes'.format(name=fn, length=len(uploaded[fn])))
+        !mkdir -p ~/.kaggle/ && mv kaggle.json ~/.kaggle/ && chmod 600 ~/.kaggle/kaggle.json
+    print(f"~/.kaggle/kaggle.json exists: {os.path.isfile('../root/.kaggle/kaggle.json')}")

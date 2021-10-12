@@ -520,9 +520,9 @@ class NumpyDataLoader(TfmdDL):
         self.get_idxs = old_get_idxs
         return b
 
-
     @delegates(plt.subplots)
-    def show_batch(self, b=None, ctxs=None, max_n=9, nrows=3, ncols=3, figsize=None, unique=False, sharex=True, sharey=False, decode=False, **kwargs):
+    def show_batch(self, b=None, ctxs=None, max_n=9, nrows=3, ncols=3, figsize=None, unique=False, sharex=True, sharey=False, decode=False,
+                   show_title=True, **kwargs):
         if unique:
             b = self.unique_batch(max_n=max_n)
             sharex, sharey = True, True
@@ -539,7 +539,13 @@ class NumpyDataLoader(TfmdDL):
         max_n = min(max_n, len(db), nrows*ncols)
         if figsize is None: figsize = (ncols*6, math.ceil(max_n/ncols)*4)
         if ctxs is None: ctxs = get_grid(max_n, nrows=nrows, ncols=ncols, figsize=figsize, sharex=sharex, sharey=sharey, **kwargs)
-        for i,ctx in enumerate(ctxs): show_tuple(db[i], ctx=ctx)
+        if show_title:
+            for i,ctx in enumerate(ctxs):
+                show_tuple(db[i], ctx=ctx)
+        else:
+            db = [x for x,_ in db]
+            for i,ctx in enumerate(ctxs):
+                db[i].show(ctx=ctx)
 
     @delegates(plt.subplots)
     def show_results(self, b, preds, ctxs=None, max_n=9, nrows=3, ncols=3, figsize=None, **kwargs):

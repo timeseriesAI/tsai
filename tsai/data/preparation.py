@@ -13,7 +13,7 @@ from io import StringIO
 
 # Cell
 def df2Xy(df, sample_col=None, feat_col=None, data_cols=None, target_col=None, steps_in_rows=False, to3d=True, splits=None,
-          sort_by=None, ascending=True, y_func=None):
+          sort_by=None, ascending=True, y_func=None, return_names=False):
     r"""
     This function allows you to transform a pandas dataframe into X and y numpy arrays that can be used to craete a TSDataset.
     sample_col: column that uniquely identifies each sample.
@@ -24,6 +24,7 @@ def df2Xy(df, sample_col=None, feat_col=None, data_cols=None, target_col=None, s
     to3d: turns X to 3d (including univariate time series)
     sort_by: used to indicate how to sort the dataframe.
     y_func: function used to calculate y for each sample (and target_col)
+    return_names: flag to return the names of the columns from where X was generated
     """
     if feat_col is not None:
         assert sample_col is not None, 'You must pass a sample_col when you pass a feat_col'
@@ -50,10 +51,11 @@ def df2Xy(df, sample_col=None, feat_col=None, data_cols=None, target_col=None, s
         if isinstance(target_col, pd.core.indexes.base.Index): target_col = target_col.tolist()
         target_col = listify(target_col)
         passed_cols += target_col
-
     if data_cols is None:
         data_cols = [col for col in df.columns if col not in passed_cols]
-    if sort_cols:
+    if target_col is not None:
+        if any([t for t in target_col if t in data_cols]): print(f"Are you sure you want to include {target_col} in X?")
+    if sort_by and sort_cols:
         df.sort_values(sort_cols, ascending=ascending, inplace=True)
 
     # X
@@ -91,10 +93,14 @@ def df2Xy(df, sample_col=None, feat_col=None, data_cols=None, target_col=None, s
         y = None
 
     # Output
-    if splits is None: return X, y
-    else: return split_xy(X, y, splits)
+    if splits is None:
+        if return_names: return X, y, data_cols
+        else: return X, y
+    else:
+        if return_names: return split_xy(X, y, splits), data_cols
+        return split_xy(X, y, splits)
 
-
+# Cell
 def split_Xy(X, y=None, splits=None):
     if splits is None:
         if y is not None: return X, y
