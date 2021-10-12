@@ -20,12 +20,20 @@ class _RNN_Backbone(Module):
             if act is not None: layers.append(get_act_fn(act, **act_kwargs))
         self.rnn = nn.Sequential(*layers)
         self.transpose = Transpose(-1, -2, contiguous=True)
+        self.apply(self._weights_init)
 
     def forward(self, x):
         x = x.transpose(2,1)                     # [batch_size x n_vars x seq_len] --> [batch_size x seq_len x n_vars]
         x = self.rnn(x)                          # [batch_size x seq_len x hidden_size * (1 + bidirectional)]
         x = self.transpose(x)                    # [batch_size x hidden_size * (1 + bidirectional) x seq_len]
         return x
+
+    def _weights_init(self, m):
+        if isinstance(m, (nn.LSTM, nn.GRU)): # same init as keras
+            nn.init.xavier_uniform_(m.weight_ih_l0)
+            nn.init.orthogonal_(m.weight_hh_l0)
+            if hasattr(m, "weight_ih_l0_reverse"): nn.init.xavier_uniform_(m.weight_ih_l0_reverse)
+            if hasattr(m, "weight_hh_l0_reverse"): nn.init.orthogonal_(m.weight_hh_l0_reverse)
 
 # Cell
 class _RNNPlus_Base(nn.Sequential):
