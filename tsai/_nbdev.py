@@ -138,6 +138,7 @@ index = {"maybe_mount_drive": "000_export.ipynb",
          "str2index": "001_utils.ipynb",
          "get_cont_cols": "001_utils.ipynb",
          "get_cat_cols": "001_utils.ipynb",
+         "maybe_load_kaggle_json": "001_utils.ipynb",
          "check_overlap": "010_data.validation.ipynb",
          "check_splits_overlap": "010_data.validation.ipynb",
          "leakage_finder": "010_data.validation.ipynb",
@@ -685,8 +686,7 @@ index = {"maybe_mount_drive": "000_export.ipynb",
          "run_optuna_study": "200_optuna.ipynb",
          "wandb_agent": "201_wandb.ipynb",
          "get_wandb_agent": "201_wandb.ipynb",
-         "run_wandb_agent": "201_wandb.ipynb",
-         "maybe_load_kaggle_json": "001_utils.ipynb"}
+         "run_wandb_agent": "201_wandb.ipynb"}
 
 modules = ["export.py",
            "utils.py",
