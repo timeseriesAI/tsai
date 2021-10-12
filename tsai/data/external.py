@@ -14,6 +14,11 @@ from ..utils import *
 from .validation import *
 
 # Cell
+from sktime.utils.data_io import load_from_tsfile_to_dataframe as ts2df
+from sktime.utils.validation.panel import check_X
+from sktime.utils.data_io import TsFileParseException
+
+# Cell
 from fastai.data.external import *
 from tqdm import tqdm
 import zipfile
@@ -23,12 +28,6 @@ except ImportError: from urllib.request import urlretrieve
 import shutil
 from numpy import distutils
 import distutils
-
-# Cell
-pd.DataFrame.__init__ = pd_df__init__
-from sktime.utils.data_io import load_from_tsfile_to_dataframe as ts2df
-from sktime.utils.validation.panel import check_X
-from sktime.utils.data_io import TsFileParseException
 
 # Cell
 def decompress_from_url(url, target_dir=None, verbose=False):

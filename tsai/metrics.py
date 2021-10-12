@@ -5,9 +5,8 @@ __all__ = ['MatthewsCorrCoefBinary', 'get_task_metrics', 'accuracy_multi', 'metr
            'mean_per_class_accuracy']
 
 # Cell
-from fastai.metrics import *
 from .imports import *
-pd.DataFrame.__init__ = pd_df__init__ # temporary fix for fastai issue #3485
+from fastai.metrics import *
 
 # Cell
 mk_class('ActivationType', **{o:o.lower() for o in ['No', 'Sigmoid', 'Softmax', 'BinarySoftmax']},
