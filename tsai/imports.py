@@ -37,7 +37,6 @@ from IPython.core.display import Javascript, display, HTML
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
-PATH = Path(os.getcwd())
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 cpus = defaults.cpus
 

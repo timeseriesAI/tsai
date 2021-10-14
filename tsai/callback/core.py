@@ -266,7 +266,6 @@ class BatchSubsampler(Callback):
             self.learn.xb = tuple(xbi[...,idxs] for xbi in self.learn.xb)
 
 # Cell
-
 class BatchLossFilter(Callback):
     """ Callback that selects the hardest samples in every batch representing a percentage of the total loss"""
 
@@ -280,16 +279,18 @@ class BatchLossFilter(Callback):
         if hasattr(self.crit, 'reduction'): self.red = self.crit.reduction
 
     def before_batch(self):
-        if not self.training or self.loss_perc == 1.: return
+        if not self.training: return
+        if self.schedule_func is None: loss_perc = self.loss_perc
+        else: loss_perc = self.loss_perc * self.schedule_func(self.pct_train)
+        if loss_perc == 1.: return
         with torch.no_grad():
             if hasattr(self.crit, 'reduction'):  setattr(self.crit, 'reduction', 'none')
-            self.losses = self.crit(self.learn.model(self.x), self.y)
+            losses = self.crit(self.learn.model(self.x), self.y)
+            if losses.ndim == 2: losses = losses.mean(-1)
             if hasattr(self.crit, 'reduction'):  setattr(self.crit, 'reduction', self.red)
-            self.losses /= self.losses.sum()
-            idxs = torch.argsort(self.losses, descending=True)
-            if self.schedule_func is not None: loss_perc = self.loss_perc * self.schedule_func(self.pct_train)
-            else: loss_perc = self.loss_perc
-            cut_idx = torch.argmax((self.losses[idxs].cumsum(0) > loss_perc).float())
+            losses /= losses.sum()
+            idxs = torch.argsort(losses, descending=True)
+            cut_idx = max(1, torch.argmax((losses[idxs].cumsum(0) > loss_perc).float()))
             idxs = idxs[:cut_idx]
             self.learn.xb = tuple(xbi[idxs] for xbi in self.learn.xb)
             self.learn.yb = tuple(ybi[idxs] for ybi in self.learn.yb)

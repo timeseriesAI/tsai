@@ -18,7 +18,8 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'np_save_compressed', 'np_load_compressed', 'np2memmap', 'torch_mean_groupby', 'torch_flip',
            'torch_nan_to_num', 'torch_masked_to_num', 'mpl_trend', 'int2digits', 'array2digits', 'sincos_encoding',
            'linear_encoding', 'encode_positions', 'sort_generator', 'get_subset_dict', 'create_dir', 'remove_dir',
-           'named_partial', 'yaml2dict', 'str2list', 'str2index', 'get_cont_cols', 'get_cat_cols']
+           'named_partial', 'yaml2dict', 'str2list', 'str2index', 'get_cont_cols', 'get_cat_cols', 'alphabet',
+           'ALPHABET', 'get_mapping', 'map_array']
 
 # Cell
 from .imports import *
@@ -1035,3 +1036,20 @@ def get_cat_cols(df):
     cols = df.columns.tolist()
     cont_cols = df._get_numeric_data().columns.tolist()
     return [col for col in cols if col not in cont_cols]
+
+# Cell
+alphabet = L(list(string.ascii_lowercase))
+ALPHABET = L(list(string.ascii_uppercase))
+
+# Cell
+def get_mapping(arr, dim=1, return_counts=False):
+    maps = [L(np.unique(np.take(arr, i, dim)).tolist()) for i in range(arr.shape[dim])]
+    if return_counts:
+        counts = [len(m) for m in maps]
+        return maps, counts
+    return maps
+
+def map_array(arr, dim=1):
+    out = stack([np.unique(np.take(arr, i, dim), return_inverse=True)[1] for i in range(arr.shape[dim])])
+    if dim == 1: out = out.T
+    return out

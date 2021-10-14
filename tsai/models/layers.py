@@ -15,7 +15,8 @@ __all__ = ['noop', 'init_lin_zero', 'lin_zero_init', 'SwishBeta', 'same_padding1
            'conv_3d_head', 'universal_pool_head', 'heads', 'SqueezeExciteBlock', 'GaussianNoise', 'gambler_loss',
            'CrossEntropyLossOneHot', 'ttest_bin_loss', 'ttest_reg_loss', 'CenterLoss', 'CenterPlusLoss', 'FocalLoss',
            'TweedieLoss', 'GEGLU', 'ReGLU', 'PositionwiseFeedForward', 'TokenLayer', 'get_act_fn', 'pytorch_acts',
-           'pytorch_act_names', 'ScaledDotProductAttention', 'MultiheadAttention', 'MultiConcatConv1d', 'LSTMOutput']
+           'pytorch_act_names', 'ScaledDotProductAttention', 'MultiheadAttention', 'MultiConcatConv1d', 'LSTMOutput',
+           'trunc_normal_', 'Embedding', 'MultiEmbeddding']
 
 # Cell
 from ..imports import *
@@ -1103,3 +1104,39 @@ class MultiConcatConv1d(Module):
 class LSTMOutput(Module):
     def forward(self, x): return x[0]
     def __repr__(self): return f'{self.__class__.__name__}()'
+
+# Cell
+def trunc_normal_(x, mean=0., std=1.):
+    "Truncated normal initialization (approximation)"
+    # From fastai.layers
+    # From https://discuss.pytorch.org/t/implementing-truncated-normal-initializer/4778/12
+    return x.normal_().fmod_(2).mul_(std).add_(mean)
+
+class Embedding(nn.Embedding):
+    "Embedding layer with truncated normal initialization"
+    # From fastai.layers
+    def __init__(self, ni, nf, std=0.01):
+        super(Embedding, self).__init__(ni, nf)
+        trunc_normal_(self.weight.data, std=std)
+
+class MultiEmbeddding(Module):
+    def __init__(self, n_embeds, embed_dims=None, static=True):
+        if embed_dims is None:
+            assert not static, "you need to pass an embed_dims as a single int"
+            self.embed_dims = [emb_sz_rule(s) for s in n_embeds]
+        else:
+            embed_dims = listify(embed_dims)
+            if len(embed_dims) == 1: self.embed_dims = embed_dims * len(n_embeds)
+            assert len(self.embed_dims) == len(n_embeds)
+        self.cat_embed = nn.ModuleList([Embedding(n,d) for n,d in zip(n_embeds, self.embed_dims)])
+        self.static = static
+
+    def forward(self, x):
+        if x.ndim == 3:
+            if self.static:
+                return torch.cat([e(x[:, i, 0].to(dtype=int))[:, None] for i,e in enumerate(self.cat_embed)],1).transpose(1,2)
+            else:
+                return torch.cat([e(x[:,i].to(dtype=int)).transpose(1,2) for i,e in enumerate(self.cat_embed)],1)
+        elif x.ndim == 2:
+            assert len(list(set(self.embed_dims))) == 1, "you need to pass embed_dims of type int when using a 2d input"
+            return torch.cat([e(x[:,i].to(dtype=int))[:, None] for i,e in enumerate(self.cat_embed)],1).transpose(1,2)
