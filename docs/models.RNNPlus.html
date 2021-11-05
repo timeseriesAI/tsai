@@ -54,7 +54,7 @@ nb_path: "nbs/105_models.RNNPlus.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RNNPlus" class="doc_header"><code>class</code> <code>RNNPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/RNNPlus.py#L71" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RNNPlus</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>None</code></em>, <strong><code>hidden_size</code></strong>=<em><code>[100]</code></em>, <strong><code>n_layers</code></strong>=<em><code>1</code></em>, <strong><code>act</code></strong>=<em><code>None</code></em>, <strong><code>act_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>bias</code></strong>=<em><code>True</code></em>, <strong><code>rnn_dropout</code></strong>=<em><code>0</code></em>, <strong><code>bidirectional</code></strong>=<em><code>False</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>last_step</code></strong>=<em><code>True</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>_RNNPlus_Base</code></p>
+<h2 id="RNNPlus" class="doc_header"><code>class</code> <code>RNNPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/RNNPlus.py#L94" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RNNPlus</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>None</code></em>, <strong><code>hidden_size</code></strong>=<em><code>[100]</code></em>, <strong><code>n_layers</code></strong>=<em><code>1</code></em>, <strong><code>bias</code></strong>=<em><code>True</code></em>, <strong><code>rnn_dropout</code></strong>=<em><code>0</code></em>, <strong><code>bidirectional</code></strong>=<em><code>False</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>last_step</code></strong>=<em><code>True</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>kss</code></strong>=<em><code>None</code></em>, <strong><code>include_original</code></strong>=<em><code>True</code></em>, <strong><code>init_weights</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>_RNNPlus_Base</code></p>
 </blockquote>
 <p>A sequential container.
 Modules will be added to it in the order they are passed in the
@@ -117,7 +117,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LSTMPlus" class="doc_header"><code>class</code> <code>LSTMPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/RNNPlus.py#L74" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTMPlus</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>None</code></em>, <strong><code>hidden_size</code></strong>=<em><code>[100]</code></em>, <strong><code>n_layers</code></strong>=<em><code>1</code></em>, <strong><code>act</code></strong>=<em><code>None</code></em>, <strong><code>act_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>bias</code></strong>=<em><code>True</code></em>, <strong><code>rnn_dropout</code></strong>=<em><code>0</code></em>, <strong><code>bidirectional</code></strong>=<em><code>False</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>last_step</code></strong>=<em><code>True</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>_RNNPlus_Base</code></p>
+<h2 id="LSTMPlus" class="doc_header"><code>class</code> <code>LSTMPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/RNNPlus.py#L97" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTMPlus</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>None</code></em>, <strong><code>hidden_size</code></strong>=<em><code>[100]</code></em>, <strong><code>n_layers</code></strong>=<em><code>1</code></em>, <strong><code>bias</code></strong>=<em><code>True</code></em>, <strong><code>rnn_dropout</code></strong>=<em><code>0</code></em>, <strong><code>bidirectional</code></strong>=<em><code>False</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>last_step</code></strong>=<em><code>True</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>kss</code></strong>=<em><code>None</code></em>, <strong><code>include_original</code></strong>=<em><code>True</code></em>, <strong><code>init_weights</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>_RNNPlus_Base</code></p>
 </blockquote>
 <p>A sequential container.
 Modules will be added to it in the order they are passed in the
@@ -180,7 +180,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="GRUPlus" class="doc_header"><code>class</code> <code>GRUPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/RNNPlus.py#L77" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GRUPlus</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>None</code></em>, <strong><code>hidden_size</code></strong>=<em><code>[100]</code></em>, <strong><code>n_layers</code></strong>=<em><code>1</code></em>, <strong><code>act</code></strong>=<em><code>None</code></em>, <strong><code>act_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>bias</code></strong>=<em><code>True</code></em>, <strong><code>rnn_dropout</code></strong>=<em><code>0</code></em>, <strong><code>bidirectional</code></strong>=<em><code>False</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>last_step</code></strong>=<em><code>True</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>_RNNPlus_Base</code></p>
+<h2 id="GRUPlus" class="doc_header"><code>class</code> <code>GRUPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/RNNPlus.py#L100" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GRUPlus</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>None</code></em>, <strong><code>hidden_size</code></strong>=<em><code>[100]</code></em>, <strong><code>n_layers</code></strong>=<em><code>1</code></em>, <strong><code>bias</code></strong>=<em><code>True</code></em>, <strong><code>rnn_dropout</code></strong>=<em><code>0</code></em>, <strong><code>bidirectional</code></strong>=<em><code>False</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>last_step</code></strong>=<em><code>True</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>kss</code></strong>=<em><code>None</code></em>, <strong><code>include_original</code></strong>=<em><code>True</code></em>, <strong><code>init_weights</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>_RNNPlus_Base</code></p>
 </blockquote>
 <p>A sequential container.
 Modules will be added to it in the order they are passed in the
@@ -253,8 +253,8 @@ model = nn.Sequential(OrderedDict([
 <span class="n">xb</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_in</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">RNNPlus</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">)(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">])</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">RNNPlus</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rnn_dropout</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fc_dropout</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">])</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">RNNPlus</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">],</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rnn_dropout</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fc_dropout</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">])</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">RNNPlus</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">],</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">act</span><span class="o">=</span><span class="s2">&quot;selu&quot;</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rnn_dropout</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fc_dropout</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> 
+<span class="n">test_eq</span><span class="p">(</span><span class="n">RNNPlus</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="n">bias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rnn_dropout</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fc_dropout</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">])</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">RNNPlus</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">],</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rnn_dropout</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fc_dropout</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> 
         <span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">])</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">LSTMPlus</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rnn_dropout</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fc_dropout</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">])</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">GRUPlus</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rnn_dropout</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fc_dropout</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">])</span>
@@ -264,6 +264,9 @@ model = nn.Sequential(OrderedDict([
         <span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">])</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">LSTMPlus</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">flatten</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">])</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">GRUPlus</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">last_step</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">flatten</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">])</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">LSTMPlus</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">kss</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">],</span> <span class="n">include_original</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">])</span>
+<span class="n">custom_head</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="n">Transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span> <span class="n">nn</span><span class="o">.</span><span class="n">SELU</span><span class="p">(),</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">Squeeze</span><span class="p">())</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">LSTMPlus</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="p">[</span><span class="mi">32</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">kss</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">custom_head</span><span class="o">=</span><span class="n">custom_head</span><span class="p">)(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">])</span>
 </pre></div>
 
     </div>
@@ -293,7 +296,7 @@ model = nn.Sequential(OrderedDict([
 <span class="n">test_eq</span><span class="p">(</span><span class="n">LSTMPlus</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">last_step</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">flatten</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">custom_head</span><span class="o">=</span><span class="n">custom_head</span><span class="p">)(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">])</span>
 <span class="n">custom_head</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">create_conv_head</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">LSTMPlus</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">last_step</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">flatten</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">custom_head</span><span class="o">=</span><span class="n">custom_head</span><span class="p">)(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">])</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">LSTMPlus</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">],</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">act</span><span class="o">=</span><span class="s2">&quot;selu&quot;</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rnn_dropout</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">])</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">LSTMPlus</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">],</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rnn_dropout</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">])</span>
 </pre></div>
 
     </div>
@@ -310,7 +313,7 @@ model = nn.Sequential(OrderedDict([
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">LSTMPlus</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">],</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">act</span><span class="o">=</span><span class="s2">&quot;selu&quot;</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rnn_dropout</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">LSTMPlus</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">],</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">kss</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">],</span> <span class="n">bias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rnn_dropout</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -327,21 +330,25 @@ model = nn.Sequential(OrderedDict([
 <div class="output_text output_subarea output_execute_result">
 <pre>LSTMPlus(
   (backbone): _RNN_Backbone(
+    (conv): MultiConcatConv1d(
+      (layers): ModuleList(
+        (0): Conv1d(3, 3, kernel_size=(3,), stride=(1,), padding=(1,))
+        (1): Conv1d(3, 3, kernel_size=(5,), stride=(1,), padding=(2,))
+        (2): Conv1d(3, 3, kernel_size=(7,), stride=(1,), padding=(3,))
+      )
+    )
     (rnn): Sequential(
-      (0): LSTM(3, 100, batch_first=True, dropout=0.2, bidirectional=True)
+      (0): LSTM(12, 100, batch_first=True, bidirectional=True)
       (1): LSTMOutput()
-      (2): SELU()
-      (3): LSTM(200, 50, batch_first=True, dropout=0.2, bidirectional=True)
+      (2): Dropout(p=0.2, inplace=False)
+      (3): LSTM(200, 50, batch_first=True, bidirectional=True)
       (4): LSTMOutput()
-      (5): SELU()
     )
     (transpose): Transpose(dims=-1, -2).contiguous()
   )
   (head): Sequential(
     (0): LastStep()
-    (1): LinBnDrop(
-      (0): Linear(in_features=100, out_features=2, bias=True)
-    )
+    (1): Linear(in_features=100, out_features=2, bias=True)
   )
 )</pre>
 </div>
@@ -427,9 +434,9 @@ model = nn.Sequential(OrderedDict([
   <tbody>
     <tr>
       <td>0</td>
-      <td>1.813442</td>
-      <td>1.785484</td>
-      <td>0.183333</td>
+      <td>1.701101</td>
+      <td>1.528301</td>
+      <td>0.427778</td>
       <td>00:01</td>
     </tr>
   </tbody>
@@ -480,9 +487,9 @@ model = nn.Sequential(OrderedDict([
   <tbody>
     <tr>
       <td>0</td>
-      <td>1.375609</td>
-      <td>1.022590</td>
-      <td>0.505556</td>
+      <td>1.118912</td>
+      <td>0.611625</td>
+      <td>0.711111</td>
       <td>00:01</td>
     </tr>
   </tbody>
@@ -534,10 +541,10 @@ model = nn.Sequential(OrderedDict([
   <tbody>
     <tr>
       <td>0</td>
-      <td>1.722142</td>
-      <td>1.614055</td>
-      <td>0.344444</td>
-      <td>00:02</td>
+      <td>1.675968</td>
+      <td>1.493234</td>
+      <td>0.605556</td>
+      <td>00:01</td>
     </tr>
   </tbody>
 </table>
@@ -588,10 +595,10 @@ model = nn.Sequential(OrderedDict([
   <tbody>
     <tr>
       <td>0</td>
-      <td>0.990877</td>
-      <td>1.546784</td>
+      <td>0.871653</td>
+      <td>1.438532</td>
       <td>0.494444</td>
-      <td>00:02</td>
+      <td>00:01</td>
     </tr>
   </tbody>
 </table>
@@ -630,11 +637,10 @@ model = nn.Sequential(OrderedDict([
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>RNNPlus(
   (backbone): _RNN_Backbone(
+    (conv): Identity()
     (rnn): Sequential(
-      (0): RNN(3, 100, batch_first=True, dropout=0.5, bidirectional=True)
+      (0): RNN(3, 100, num_layers=2, batch_first=True, dropout=0.5, bidirectional=True)
       (1): LSTMOutput()
-      (2): RNN(200, 100, batch_first=True, dropout=0.5, bidirectional=True)
-      (3): LSTMOutput()
     )
     (transpose): Transpose(dims=-1, -2).contiguous()
   )
@@ -647,15 +653,6 @@ model = nn.Sequential(OrderedDict([
   )
 )
 (81802, True)
-</pre>
-</div>
-</div>
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/Users/nacho/opt/anaconda3/envs/py36/lib/python3.6/site-packages/torch/nn/modules/rnn.py:65: UserWarning: dropout option adds dropout after all but last recurrent layer, so non-zero dropout expects num_layers greater than 1, but got dropout=0.5 and num_layers=1
-  &#34;num_layers={}&#34;.format(dropout, num_layers))
 </pre>
 </div>
 </div>
@@ -701,11 +698,10 @@ model = nn.Sequential(OrderedDict([
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>LSTMPlus(
   (backbone): _RNN_Backbone(
+    (conv): Identity()
     (rnn): Sequential(
-      (0): LSTM(3, 100, batch_first=True, dropout=0.5, bidirectional=True)
+      (0): LSTM(3, 100, num_layers=2, batch_first=True, dropout=0.5, bidirectional=True)
       (1): LSTMOutput()
-      (2): LSTM(200, 100, batch_first=True, dropout=0.5, bidirectional=True)
-      (3): LSTMOutput()
     )
     (transpose): Transpose(dims=-1, -2).contiguous()
   )
@@ -763,11 +759,10 @@ model = nn.Sequential(OrderedDict([
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>GRUPlus(
   (backbone): _RNN_Backbone(
+    (conv): Identity()
     (rnn): Sequential(
-      (0): GRU(3, 100, batch_first=True, dropout=0.5, bidirectional=True)
+      (0): GRU(3, 100, num_layers=2, batch_first=True, dropout=0.5, bidirectional=True)
       (1): LSTMOutput()
-      (2): GRU(200, 100, batch_first=True, dropout=0.5, bidirectional=True)
-      (3): LSTMOutput()
     )
     (transpose): Transpose(dims=-1, -2).contiguous()
   )

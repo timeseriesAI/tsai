@@ -279,9 +279,13 @@ def my_setup(*pkgs):
     try: 
         import torch
         print(f'torch          : {torch.__version__}')
-        iscuda = torch.cuda.is_available()
-        print(f'n_cpus         : {cpus}')
-        print(f'device         : {device} ({torch.cuda.get_device_name(0)})' if iscuda else f'device         : {device}')
+        try:
+            import torch_xla
+            print(f'device         : TPU')
+        except:
+            iscuda = torch.cuda.is_available()
+            print(f'n_cpus         : {cpus}')
+            print(f'device         : {device} ({torch.cuda.get_device_name(0)})' if iscuda else f'device         : {device}')
     except: print(f'torch          : N/A')
         
 computer_setup = my_setup

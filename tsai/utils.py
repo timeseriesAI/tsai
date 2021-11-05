@@ -19,7 +19,7 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'torch_nan_to_num', 'torch_masked_to_num', 'mpl_trend', 'int2digits', 'array2digits', 'sincos_encoding',
            'linear_encoding', 'encode_positions', 'sort_generator', 'get_subset_dict', 'create_dir', 'remove_dir',
            'named_partial', 'yaml2dict', 'str2list', 'str2index', 'get_cont_cols', 'get_cat_cols', 'alphabet',
-           'ALPHABET', 'get_mapping', 'map_array']
+           'ALPHABET', 'get_mapping', 'map_array', 'log_tfm', 'to_sincos_time']
 
 # Cell
 from .imports import *
@@ -1053,3 +1053,29 @@ def map_array(arr, dim=1):
     out = stack([np.unique(np.take(arr, i, dim), return_inverse=True)[1] for i in range(arr.shape[dim])])
     if dim == 1: out = out.T
     return out
+
+# Cell
+def log_tfm(o, inplace=False):
+    "Log transforms an array-like object with positive and/or negative values"
+    if isinstance(o, torch.Tensor):
+        pos_o = torch.log1p(o[o > 0])
+        neg_o = -torch.log1p(np.abs(o[o < 0]))
+    else:
+        pos_o = np.log1p(o[o > 0])
+        neg_o = -np.log1p(np.abs(o[o < 0]))
+    if inplace:
+        o[o > 0] = pos_o
+        o[o < 0] = neg_o
+        return o
+    else:
+        if hasattr(o, "clone"): output = o.clone()
+        elif hasattr(o, "copy"): output = o.copy()
+        output[output > 0] = pos_o
+        output[output < 0] = neg_o
+        return output
+
+# Cell
+def to_sincos_time(arr, max_value):
+    sin = np.sin(arr / max_value * 2 * np.pi)
+    cos = np.cos(arr / max_value * 2 * np.pi)
+    return sin, cos

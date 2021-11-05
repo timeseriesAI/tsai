@@ -80,7 +80,8 @@ class ShowGraph(Callback):
         if not self.nb_batches: return
         rec = self.learn.recorder
         iters = range_of(rec.losses)
-        val_losses = [v[1] for v in rec.values]
+        val_pos = rec.metric_names.index('valid_loss') - 1
+        val_losses = [v[val_pos] for v in rec.values]
         x_bounds = (0, (self.n_epoch - len(self.nb_batches)) * self.nb_batches[0] + len(rec.losses))
         y_min = min((min(rec.losses), min(val_losses)))
         y_max = max((max(rec.losses), max(val_losses)))
@@ -105,7 +106,6 @@ class ShowGraph(Callback):
         if y_bounds is not None: self.graph_ax.set_ylim(*y_bounds)
         self.graph_ax.set_title(f'Losses\nepoch: {self.epoch +1}/{self.n_epoch}')
         self.graph_out.update(self.graph_ax.figure)
-
 ShowGraphCallback2 = ShowGraph
 
 # Cell
@@ -230,10 +230,10 @@ class BatchSubsampler(Callback):
                     as the input batch. If used with models that don't use a pooling layer, this must be set to 1 to keep the same dimensions.
                     With CNNs, this value may be different.
     same_seq_len:   If True, it ensures that the output has the same shape as the input, even if the step_pct chosen is < 1. Defaults to True.
-
+    update_y:       used with step_pct. If True, it applies the same random indices to y. It can only be used with sequential targets.
     """
 
-    def __init__(self, sample_pct:Optional[float]=None, step_pct:Optional[float]=None, same_seq_len:bool=True):
+    def __init__(self, sample_pct:Optional[float]=None, step_pct:Optional[float]=None, same_seq_len:bool=True, update_y:bool=False):
         store_attr()
 
     def before_fit(self):
@@ -264,6 +264,8 @@ class BatchSubsampler(Callback):
             else:
                 idxs = np.sort(np.random.choice(S, round(S * step_pct), True))
             self.learn.xb = tuple(xbi[...,idxs] for xbi in self.learn.xb)
+            if self.update_y:
+                self.learn.yb = tuple(ybi[...,idxs] for ybi in self.learn.yb)
 
 # Cell
 class BatchLossFilter(Callback):

@@ -356,21 +356,28 @@ class TSDiff(Transform):
 
 # Cell
 class TSLog(Transform):
-    "Log transforms batch of type `TSTensor`. For positive values only"
+    "Log transforms batch of type `TSTensor`."
     order = 90
-    def encodes(self, o:TSTensor): return torch.log(o)
-    def decodes(self, o:TSTensor): return torch.exp(o)
+    def __init__(self, ex=None, add=0, **kwargs):
+        self.ex, self.add = ex, add
+        super().__init__(**kwargs)
+    def encodes(self, o:TSTensor):
+        output = torch.log(o + self.add)
+        if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
+        return output
+    def decodes(self, o:TSTensor):
+        output = torch.exp(o) - self.add
+        if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
+        return output
     def __repr__(self): return f'{self.__class__.__name__}()'
 
 # Cell
-
 class TSCyclicalPosition(Transform):
     """Concatenates the position along the sequence as 2 additional variables (sine and cosine)
 
         Args:
             magnitude: added for compatibility. It's not used.
     """
-
     order = 90
     def __init__(self, magnitude=None, **kwargs):
         super().__init__(**kwargs)

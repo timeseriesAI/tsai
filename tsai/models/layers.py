@@ -8,15 +8,15 @@ __all__ = ['noop', 'init_lin_zero', 'lin_zero_init', 'SwishBeta', 'same_padding1
            'Sequential', 'TimeDistributed', 'Temp_Scale', 'Vector_Scale', 'Matrix_Scale', 'get_calibrator',
            'LogitAdjustmentLayer', 'LogitAdjLayer', 'PPV', 'PPAuc', 'MaxPPVPool1d', 'AdaptiveWeightedAvgPool1d',
            'GAP1d', 'GACP1d', 'GAWP1d', 'GlobalWeightedAveragePool1d', 'gwa_pool_head', 'GWAP1d', 'AttentionalPool1d',
-           'GAttP1d', 'attentional_pool_head', 'create_pool_head', 'pool_head', 'average_pool_head', 'concat_pool_head',
-           'max_pool_head', 'create_pool_plus_head', 'pool_plus_head', 'create_conv_head', 'conv_head',
-           'create_mlp_head', 'mlp_head', 'create_fc_head', 'fc_head', 'create_rnn_head', 'rnn_head', 'imputation_head',
-           'create_conv_lin_3d_head', 'conv_lin_3d_head', 'create_lin_3d_head', 'lin_3d_head', 'create_conv_3d_head',
-           'conv_3d_head', 'universal_pool_head', 'heads', 'SqueezeExciteBlock', 'GaussianNoise', 'gambler_loss',
+           'GAttP1d', 'attentional_pool_head', 'GEGLU', 'ReGLU', 'get_act_fn', 'pytorch_acts', 'pytorch_act_names',
+           'create_pool_head', 'pool_head', 'average_pool_head', 'concat_pool_head', 'max_pool_head',
+           'create_pool_plus_head', 'pool_plus_head', 'create_conv_head', 'conv_head', 'create_mlp_head', 'mlp_head',
+           'create_fc_head', 'fc_head', 'create_rnn_head', 'rnn_head', 'imputation_head', 'create_conv_lin_3d_head',
+           'conv_lin_3d_head', 'create_lin_3d_head', 'lin_3d_head', 'create_conv_3d_head', 'conv_3d_head',
+           'universal_pool_head', 'heads', 'SqueezeExciteBlock', 'GaussianNoise', 'gambler_loss',
            'CrossEntropyLossOneHot', 'ttest_bin_loss', 'ttest_reg_loss', 'CenterLoss', 'CenterPlusLoss', 'FocalLoss',
-           'TweedieLoss', 'GEGLU', 'ReGLU', 'PositionwiseFeedForward', 'TokenLayer', 'get_act_fn', 'pytorch_acts',
-           'pytorch_act_names', 'ScaledDotProductAttention', 'MultiheadAttention', 'MultiConcatConv1d', 'LSTMOutput',
-           'trunc_normal_', 'Embedding', 'MultiEmbeddding']
+           'TweedieLoss', 'PositionwiseFeedForward', 'TokenLayer', 'ScaledDotProductAttention', 'MultiheadAttention',
+           'MultiConv1d', 'MultiConcatConv1d', 'LSTMOutput', 'trunc_normal_', 'Embedding', 'MultiEmbeddding']
 
 # Cell
 from ..imports import *
@@ -625,6 +625,29 @@ def attentional_pool_head(n_in, c_out, seq_len=None, bn=True, **kwargs):
     return nn.Sequential(AttentionalPool1d(n_in, c_out, bn=bn, **kwargs), Flatten())
 
 # Cell
+class GEGLU(Module):
+    def forward(self, x):
+        x, gates = x.chunk(2, dim=-1)
+        return x * F.gelu(gates)
+
+class ReGLU(Module):
+    def forward(self, x):
+        x, gates = x.chunk(2, dim=-1)
+        return x * F.relu(gates)
+
+# Cell
+pytorch_acts = [nn.ELU, nn.LeakyReLU, nn.PReLU, nn.ReLU, nn.ReLU6, nn.SELU, nn.CELU, nn.GELU, nn.Sigmoid, Mish, nn.Softplus,
+nn.Tanh, nn.Softmax, GEGLU, ReGLU]
+pytorch_act_names = [a.__name__.lower() for a in pytorch_acts]
+
+def get_act_fn(act, **act_kwargs):
+    if act is None: return
+    elif isinstance(act, nn.Module): return act
+    elif callable(act): return act(**act_kwargs)
+    idx = pytorch_act_names.index(act.lower())
+    return pytorch_acts[idx](**act_kwargs)
+
+# Cell
 def create_pool_head(n_in, c_out, seq_len=None, concat_pool=False, fc_dropout=0., bn=False, y_range=None, **kwargs):
     if kwargs: print(f'{kwargs}  not being used')
     if concat_pool: n_in*=2
@@ -685,10 +708,10 @@ def create_conv_head(*args, adaptive_size=None, y_range=None):
 conv_head = create_conv_head
 
 # Cell
-def create_mlp_head(nf, c_out, seq_len=None, flatten=True, fc_dropout=0., bn=False, y_range=None):
+def create_mlp_head(nf, c_out, seq_len=None, flatten=True, fc_dropout=0., bn=False, lin_first=False, y_range=None):
     if flatten: nf *= seq_len
     layers = [Flatten()] if flatten else []
-    layers += [LinBnDrop(nf, c_out, bn=bn, p=fc_dropout)]
+    layers += [LinBnDrop(nf, c_out, bn=bn, p=fc_dropout, lin_first=lin_first)]
     if y_range: layers += [SigmoidRange(*y_range)]
     return nn.Sequential(*layers)
 
@@ -926,17 +949,6 @@ class TweedieLoss(Module):
         return loss.mean()
 
 # Cell
-
-class GEGLU(Module):
-    def forward(self, x):
-        x, gates = x.chunk(2, dim=-1)
-        return x * F.gelu(gates)
-
-class ReGLU(Module):
-    def forward(self, x):
-        x, gates = x.chunk(2, dim=-1)
-        return x * F.relu(gates)
-
 class PositionwiseFeedForward(nn.Sequential):
     def __init__(self, dim, dropout=0., act='reglu', mlp_ratio=1):
         act = act.lower()
@@ -956,22 +968,6 @@ class TokenLayer(Module):
     def __init__(self, token=True): self.token = token
     def forward(self, x): return x[..., 0] if self.token is not None else x.mean(-1)
     def __repr__(self): return f"{self.__class__.__name__}()"
-
-# Cell
-pytorch_acts = [nn.ELU, nn.LeakyReLU, nn.PReLU, nn.ReLU, nn.ReLU6, nn.SELU, nn.CELU, nn.GELU, nn.Sigmoid, Mish, nn.Softplus,
-nn.Tanh, nn.Softmax, GEGLU, ReGLU]
-pytorch_act_names = [a.__name__.lower() for a in pytorch_acts]
-
-def get_act_fn(act_name, **act_kwargs):
-    if act_name is None: return
-    if callable(act_name): return act_name(**act_kwargs)
-    idx = pytorch_act_names.index(act_name.lower())
-    return pytorch_acts[idx](**act_kwargs)
-
-test_eq(get_act_fn(nn.ReLU).__repr__(), "ReLU()")
-test_eq(get_act_fn(nn.LeakyReLU, negative_slope=0.05).__repr__(), "LeakyReLU(negative_slope=0.05)")
-test_eq(get_act_fn('reglu').__repr__(), "ReGLU()")
-test_eq(get_act_fn('leakyrelu', negative_slope=0.05).__repr__(), "LeakyReLU(negative_slope=0.05)")
 
 # Cell
 class ScaledDotProductAttention(Module):
@@ -1079,26 +1075,50 @@ class MultiheadAttention(Module):
         else: return output, attn_weights
 
 # Cell
+class MultiConv1d(Module):
+    """Module that applies one or multiple kernels (and optionally maxpool) with padding="same" """
 
-class MultiConcatConv1d(Module):
-    """Module that applies one or multiple kernels (and optionally maxpool)"""
-
-    def __init__(self, ni, nf, kss=[3,5,7], kernel_sizes=None, maxpool=True, stride=1):
-        kss = ifnone(kss, kernel_sizes)
-        assert kss is not None, "you need to pass a kss argument"
-        if not is_listy(kss): kss = [kss]
-        _nf = nf // (len(kss) + maxpool)
-        _total_nf = _nf * (len(kss) + maxpool)
+    def __init__(self, ni, nf, kss, maxpool=False, stride=1, padding='same', **kwargs):
+        kss = listify(kss)
+        for i,ks in enumerate(kss):
+            if not ks%2:
+                kss[i] = kss[i] + 1
+        n_layers = len(kss) * (1 + maxpool)
+        nfs = [nf // n_layers] * n_layers
+        while np.sum(nfs) < nf:
+            for i in range(len(nfs)):
+                nfs[i] += 1
+                if np.sum(nfs) == nf: break
         self.layers = nn.ModuleList()
-        for k in kss:
-            self.layers.append(Conv1d(ni, _nf, k, stride=stride))
-        if maxpool: self.layers.append(nn.Sequential(nn.MaxPool1d(3, stride=stride, padding=1), Conv1d(ni, _nf, 1)))
-        self.to_output = Conv1d(_total_nf, nf, 1) if _total_nf != nf else nn.Identity()
+        for i in range(len(kss)):
+            self.layers.append(Conv1d(ni, nfs[i], kss[i], padding=kss[i]//2, stride=stride, **kwargs))
+        if maxpool:
+            for i in range(len(kss)):
+                self.layers.append(nn.Sequential(nn.MaxPool1d(kss[i], stride=stride, padding=kss[i]//2), Conv1d(ni, nfs[i+len(kss)], 1)))
 
     def forward(self, x):
-        for i,l in enumerate(self.layers):
-            out = l(x) if i == 0 else torch.cat((out, l(x)), 1)
-        return self.to_output(out)
+        output = []
+        for l in self.layers:
+            output.append(l(x))
+        return torch.cat(output, 1)
+
+# Cell
+class MultiConcatConv1d(Module):
+    """Module that applies multiple convolutions"""
+
+    def __init__(self, ni, nf, kss, include_original=True, dim=1, **kwargs):
+        kss = listify(kss)
+        self.layers = nn.ModuleList()
+        for i in range(len(kss)):
+            self.layers.append(Conv1d(ni, nf, kss[i], **kwargs))
+        self.include_original = include_original
+        self.dim = dim
+
+    def forward(self, x):
+        output = [x] if self.include_original else []
+        for l in self.layers:
+            output.append(l(x))
+        return torch.cat(output, dim=self.dim)
 
 # Cell
 class LSTMOutput(Module):
@@ -1120,16 +1140,16 @@ class Embedding(nn.Embedding):
         trunc_normal_(self.weight.data, std=std)
 
 class MultiEmbeddding(Module):
-    def __init__(self, n_embeds, embed_dims=None, static=True):
+    def __init__(self, n_embeds, embed_dims=None, static=False):
         if embed_dims is None:
             assert not static, "you need to pass an embed_dims as a single int"
-            self.embed_dims = [emb_sz_rule(s) for s in n_embeds]
+            embed_dims = [emb_sz_rule(s) for s in n_embeds]
         else:
             embed_dims = listify(embed_dims)
-            if len(embed_dims) == 1: self.embed_dims = embed_dims * len(n_embeds)
-            assert len(self.embed_dims) == len(n_embeds)
-        self.cat_embed = nn.ModuleList([Embedding(n,d) for n,d in zip(n_embeds, self.embed_dims)])
-        self.static = static
+            if len(embed_dims) == 1: embed_dims = embed_dims * len(n_embeds)
+            assert len(embed_dims) == len(n_embeds)
+        self.cat_embed = nn.ModuleList([Embedding(n,d) for n,d in zip(n_embeds, embed_dims)])
+        self.static, self.embed_dims = static, embed_dims
 
     def forward(self, x):
         if x.ndim == 3:

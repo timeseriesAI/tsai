@@ -16,7 +16,7 @@ class MLP(Module):
         self.flatten = Reshape(-1)
         nf = [c_in * seq_len] + layers
         self.mlp = nn.ModuleList()
-        for i in range(len(layers)): self.mlp.append(LinBnDrop(nf[i], nf[i+1], bn=use_bn, p=ps[i], act=act, lin_first=lin_first))
+        for i in range(len(layers)): self.mlp.append(LinBnDrop(nf[i], nf[i+1], bn=use_bn, p=ps[i], act=get_act_fn(act), lin_first=lin_first))
         _head = [LinBnDrop(nf[-1], c_out, bn=bn_final, p=fc_dropout)]
         if y_range is not None: _head.append(SigmoidRange(*y_range))
         self.head = nn.Sequential(*_head)
