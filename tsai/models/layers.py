@@ -16,7 +16,7 @@ __all__ = ['noop', 'init_lin_zero', 'lin_zero_init', 'SwishBeta', 'same_padding1
            'universal_pool_head', 'heads', 'SqueezeExciteBlock', 'GaussianNoise', 'gambler_loss',
            'CrossEntropyLossOneHot', 'ttest_bin_loss', 'ttest_reg_loss', 'CenterLoss', 'CenterPlusLoss', 'FocalLoss',
            'TweedieLoss', 'PositionwiseFeedForward', 'TokenLayer', 'ScaledDotProductAttention', 'MultiheadAttention',
-           'MultiConv1d', 'MultiConcatConv1d', 'LSTMOutput', 'trunc_normal_', 'Embedding', 'MultiEmbeddding']
+           'MultiConv1d', 'LSTMOutput', 'trunc_normal_', 'Embedding', 'MultiEmbeddding']
 
 # Cell
 from ..imports import *
@@ -1076,49 +1076,28 @@ class MultiheadAttention(Module):
 
 # Cell
 class MultiConv1d(Module):
-    """Module that applies one or multiple kernels (and optionally maxpool) with padding="same" """
+    """Module that applies multiple convolutions with different kernel sizes"""
 
-    def __init__(self, ni, nf, kss, maxpool=False, stride=1, padding='same', **kwargs):
+    def __init__(self, ni, nf=None, kss=[1,3,5,7], keep_original=False, dim=1, **kwargs):
         kss = listify(kss)
-        for i,ks in enumerate(kss):
-            if not ks%2:
-                kss[i] = kss[i] + 1
-        n_layers = len(kss) * (1 + maxpool)
-        nfs = [nf // n_layers] * n_layers
+        n_layers = len(kss)
+        if nf is None: nf = ni * (keep_original + n_layers)
+        nfs = [(nf - ni*keep_original) // n_layers] * n_layers
         while np.sum(nfs) < nf:
             for i in range(len(nfs)):
                 nfs[i] += 1
                 if np.sum(nfs) == nf: break
         self.layers = nn.ModuleList()
-        for i in range(len(kss)):
-            self.layers.append(Conv1d(ni, nfs[i], kss[i], padding=kss[i]//2, stride=stride, **kwargs))
-        if maxpool:
-            for i in range(len(kss)):
-                self.layers.append(nn.Sequential(nn.MaxPool1d(kss[i], stride=stride, padding=kss[i]//2), Conv1d(ni, nfs[i+len(kss)], 1)))
+        for nfi,ksi in zip(nfs, kss):
+            self.layers.append(Conv1d(ni, nfi, ksi, **kwargs))
+        self.keep_original, self.dim = keep_original, dim
 
     def forward(self, x):
-        output = []
+        output = [x] if self.keep_original else []
         for l in self.layers:
             output.append(l(x))
-        return torch.cat(output, 1)
-
-# Cell
-class MultiConcatConv1d(Module):
-    """Module that applies multiple convolutions"""
-
-    def __init__(self, ni, nf, kss, include_original=True, dim=1, **kwargs):
-        kss = listify(kss)
-        self.layers = nn.ModuleList()
-        for i in range(len(kss)):
-            self.layers.append(Conv1d(ni, nf, kss[i], **kwargs))
-        self.include_original = include_original
-        self.dim = dim
-
-    def forward(self, x):
-        output = [x] if self.include_original else []
-        for l in self.layers:
-            output.append(l(x))
-        return torch.cat(output, dim=self.dim)
+        x = torch.cat(output, dim=self.dim)
+        return x
 
 # Cell
 class LSTMOutput(Module):
@@ -1140,23 +1119,21 @@ class Embedding(nn.Embedding):
         trunc_normal_(self.weight.data, std=std)
 
 class MultiEmbeddding(Module):
-    def __init__(self, n_embeds, embed_dims=None, static=False):
+    def __init__(self, c_in, n_embeds, embed_dims=None, cat_pos=None):
         if embed_dims is None:
-            assert not static, "you need to pass an embed_dims as a single int"
             embed_dims = [emb_sz_rule(s) for s in n_embeds]
         else:
             embed_dims = listify(embed_dims)
             if len(embed_dims) == 1: embed_dims = embed_dims * len(n_embeds)
             assert len(embed_dims) == len(n_embeds)
+        if cat_pos: self.cat_pos = cat_pos
+        else:
+            if cont_pos is None: self.cat_pos = np.arange(len(n_embeds))
+            else: self.cat_pos = [p for p in np.arange(c_in) if p not in self.cont_pos]
+        self.cont_pos = [p for p in np.arange(c_in) if p not in self.cat_pos]
         self.cat_embed = nn.ModuleList([Embedding(n,d) for n,d in zip(n_embeds, embed_dims)])
-        self.static, self.embed_dims = static, embed_dims
 
     def forward(self, x):
-        if x.ndim == 3:
-            if self.static:
-                return torch.cat([e(x[:, i, 0].to(dtype=int))[:, None] for i,e in enumerate(self.cat_embed)],1).transpose(1,2)
-            else:
-                return torch.cat([e(x[:,i].to(dtype=int)).transpose(1,2) for i,e in enumerate(self.cat_embed)],1)
-        elif x.ndim == 2:
-            assert len(list(set(self.embed_dims))) == 1, "you need to pass embed_dims of type int when using a 2d input"
-            return torch.cat([e(x[:,i].to(dtype=int))[:, None] for i,e in enumerate(self.cat_embed)],1).transpose(1,2)
+        x_cat, x_cont = x[:, self.cat_pos], x[:, self.cont_pos]
+        x_cat = torch.cat([e(x_cat[:,i].long()).transpose(1,2) for i,e in enumerate(self.cat_embed)],1)
+        return torch.cat([x_cat, x_cont], 1)

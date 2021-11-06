@@ -11,13 +11,26 @@ from .layers import *
 # Cell
 class _RNN_Backbone(Module):
     def __init__(self, cell, c_in, c_out, seq_len=None, hidden_size=100, n_layers=1, bias=True, rnn_dropout=0, bidirectional=False,
-                 kss=None, include_original=True, init_weights=True):
+                 n_embeds=None, embed_dims=None, cat_pos=None, feature_extractor=None, init_weights=True):
 
-        if kss:
-            self.conv = MultiConcatConv1d(c_in, c_in, kss, include_original=include_original, dim=1)
-            c_in = c_in * (len(kss) + include_original)
+        # Categorical embeddings
+        if n_embeds is not None:
+            self.to_cat_embed = MultiEmbeddding(c_in, n_embeds, embed_dims=embed_dims, cat_pos=cat_pos)
+            if embed_dims is None:
+                embed_dims = [emb_sz_rule(s) for s in n_embeds]
+            c_in = c_in + sum(embed_dims) - len(n_embeds)
         else:
-            self.conv = nn.Identity()
+            self.to_cat_embed = nn.Identity()
+
+        # Feature extractor
+        if feature_extractor:
+            assert isinstance(feature_extractor, nn.Module), "feature extractor must be an nn.Module"
+            self.feature_extractor = feature_extractor
+            c_in, seq_len = self._calculate_output_size(self.feature_extractor, c_in, seq_len)
+        else:
+            self.feature_extractor = nn.Identity()
+
+        # RNN layers
         rnn_layers = []
         if len(set(hidden_size)) == 1:
             hidden_size = hidden_size[0]
@@ -36,14 +49,17 @@ class _RNN_Backbone(Module):
         if init_weights: self.apply(self._weights_init)
 
     def forward(self, x):
-        x = self.conv(x)                         # [batch_size x n_vars x seq_len] --> [batch_size x n_vars*len(kss) x seq_len]
+        x = self.to_cat_embed(x)
+        x = self.feature_extractor(x)
         x = self.transpose(x)                    # [batch_size x n_vars x seq_len] --> [batch_size x seq_len x n_vars]
         x = self.rnn(x)                          # [batch_size x seq_len x hidden_size * (1 + bidirectional)]
         x = self.transpose(x)                    # [batch_size x hidden_size * (1 + bidirectional) x seq_len]
-        print(x.shape)
         return x
 
-    def _weights_init(self, m): # same init as keras
+    def _weights_init(self, m):
+        # same initialization as keras. Adapted from the initialization developed
+        # by JUN KODA (https://www.kaggle.com/junkoda) in this notebook
+        # https://www.kaggle.com/junkoda/pytorch-lstm-with-tensorflow-like-initialization
         for name, params in m.named_parameters():
             if "weight_ih" in name:
                 nn.init.xavier_normal_(params)
@@ -57,24 +73,31 @@ class _RNN_Backbone(Module):
             elif 'bias_hh' in name:
                 params.data.fill_(0)
 
+    @torch.no_grad()
+    def _calculate_output_size(self, m, c_in, seq_len):
+        xb = torch.randn(1, c_in, seq_len)
+        c_in, seq_len = m(xb).shape[1:]
+        return c_in, seq_len
+
 # Cell
 class _RNNPlus_Base(nn.Sequential):
     def __init__(self, c_in, c_out, seq_len=None, hidden_size=[100], n_layers=1, bias=True, rnn_dropout=0, bidirectional=False,
-                 fc_dropout=0., last_step=True, bn=False, custom_head=None, y_range=None, kss=None, include_original=True, init_weights=True, **kwargs):
+                 n_embeds=None, embed_dims=None, cat_pos=None, feature_extractor=None, fc_dropout=0., last_step=True, bn=False,
+                 custom_head=None, y_range=None, init_weights=True):
 
         if not last_step: assert seq_len, 'you need to enter a seq_len to use flatten=True'
 
         # Backbone
         hidden_size = listify(hidden_size)
         backbone = _RNN_Backbone(self._cell, c_in, c_out, seq_len=seq_len, hidden_size=hidden_size, n_layers=n_layers,
-                                 bias=bias, rnn_dropout=rnn_dropout,  bidirectional=bidirectional, kss=kss, include_original=include_original,
-                                 init_weights=init_weights)
+                                 n_embeds=n_embeds, embed_dims=embed_dims, cat_pos=cat_pos, feature_extractor=feature_extractor,
+                                 bias=bias, rnn_dropout=rnn_dropout,  bidirectional=bidirectional, init_weights=init_weights)
 
         # Head
         self.head_nf = hidden_size * (1 + bidirectional) if isinstance(hidden_size, Integral) else hidden_size[-1] * (1 + bidirectional)
         if custom_head:
             if isinstance(custom_head, nn.Module): head = custom_head
-            else: head = custom_head(self.head_nf, c_out, seq_len) # custom head must have all required kwargs
+            else: head = custom_head(self.head_nf, c_out, seq_len)
         else: head = self.create_head(self.head_nf, c_out, seq_len, last_step=last_step, fc_dropout=fc_dropout, bn=bn, y_range=y_range)
         super().__init__(OrderedDict([('backbone', backbone), ('head', head)]))
 

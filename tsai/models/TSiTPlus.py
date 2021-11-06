@@ -10,7 +10,6 @@ from .InceptionTimePlus import InceptionBlockPlus
 from typing import Callable
 
 # Cell
-
 class _TSiTEncoder(nn.Module):
     def __init__(self, d_model, n_heads, n_layers:int=6, attn_dropout:float=0, dropout:float=0, drop_path_rate:float=0.,
                  mlp_ratio:int=1, qkv_bias:bool=True, act:str='reglu', pre_norm:bool=False):
@@ -46,24 +45,23 @@ class _TSiTBackbone(Module):
     def __init__(self, c_in:int, seq_len:int, n_layers:int=6, d_model:int=128, n_heads:int=16, d_head:Optional[int]=None, act:str='reglu',
                  d_ff:int=256, qkv_bias:bool=True, dropout:float=0., attn_dropout:float=0,drop_path_rate:float=0.,
                  mlp_ratio:int=1, pre_norm:bool=False, use_token:bool=True, ks:Optional[int]=None, maxpool:bool=True,
-                 preprocessor:Optional[Callable]=None, device=None, verbose:bool=False):
+                 feature_extractor:Optional[Callable]=None, verbose:bool=False):
 
-        device = ifnone(device, default_device())
-        self.preprocessor = nn.Identity()
-        if preprocessor is not None:
-            xb = torch.randn(1, c_in, seq_len).to(device)
+        self.feature_extractor = nn.Identity()
+        if feature_extractor is not None:
+            xb = torch.randn(1, c_in, seq_len)
             ori_c_in, ori_seq_len = c_in, seq_len
-            if not isinstance(preprocessor, nn.Module): preprocessor = preprocessor(c_in, d_model).to(device)
-            else: preprocessor = preprocessor.to(device)
+            if not isinstance(feature_extractor, nn.Module): feature_extractor = feature_extractor(c_in, d_model)
+            else: feature_extractor = feature_extractor
             with torch.no_grad():
                 # NOTE Most reliable way of determining output dims is to run forward pass
-                training = preprocessor.training
+                training = feature_extractor.training
                 if training:
-                    preprocessor.eval()
-                c_in, seq_len = preprocessor(xb).shape[1:]
-                preprocessor.train(training)
-            pv(f'preprocessor: (?, {ori_c_in}, {ori_seq_len}) --> (?, {c_in}, {seq_len})', verbose=verbose)
-            self.preprocessor = preprocessor
+                    feature_extractor.eval()
+                c_in, seq_len = feature_extractor(xb).shape[1:]
+                feature_extractor.train(training)
+            pv(f'feature_extractor: (?, {ori_c_in}, {ori_seq_len}) --> (?, {c_in}, {seq_len})', verbose=verbose)
+            self.feature_extractor = feature_extractor
 
         if ks is not None:
             self.to_embedding = nn.Sequential(MultiConcatConv1d(c_in, d_model, kss=ks, maxpool=maxpool),Transpose(1,2))
@@ -79,8 +77,8 @@ class _TSiTBackbone(Module):
 
     def forward(self, x):
 
-        # apply preprocessor module if exists
-        x = self.preprocessor(x)
+        # apply feature_extractor module if exists
+        x = self.feature_extractor(x)
 
         # embedding
         x = self.to_embedding(x)
@@ -108,7 +106,7 @@ class TSiTPlus(nn.Sequential):
     def __init__(self, c_in:int, c_out:int, seq_len:int, n_layers:int=6, d_model:int=128, n_heads:int=16, d_head:Optional[int]=None, act:str='reglu',
                  d_ff:int=256, dropout:float=0., attn_dropout:float=0, drop_path_rate:float=0., mlp_ratio:int=1,
                  qkv_bias:bool=True, pre_norm:bool=False, use_token:bool=True, fc_dropout:float=0., bn:bool=False, y_range:Optional[tuple]=None,
-                 ks:Optional[int]=None, maxpool:bool=True, preprocessor:Optional[Callable]=None, custom_head:Optional[Callable]=None, verbose:bool=False):
+                 ks:Optional[int]=None, maxpool:bool=True, feature_extractor:Optional[Callable]=None, custom_head:Optional[Callable]=None, verbose:bool=False):
 
         """
         Args:
@@ -137,7 +135,7 @@ class TSiTPlus(nn.Sequential):
         y_range:                range of possible y values (used in regression tasks).
         ks:                     (Optional) kernel sizes that will be applied to a hybrid embedding.
         maxpool:                If true and kernel sizes are passed, maxpool will also be added to the hybrid embedding.
-        preprocessor:           an optional callable (nn.Conv1d with dilation > 1 or stride > 1 for example) that will be used to preprocess the time series before
+        feature_extractor:           an optional callable (nn.Conv1d with dilation > 1 or stride > 1 for example) that will be used to preprocess the time series before
                                 the embedding step. It is useful to extract features or resample the time series.
         custom_head:            custom head that will be applied to the network. It must contain all kwargs (pass a partial function)
 
@@ -148,7 +146,7 @@ class TSiTPlus(nn.Sequential):
         backbone = _TSiTBackbone(c_in, seq_len, n_layers=n_layers, d_model=d_model, n_heads=n_heads, d_head=d_head, act=act,
                                   d_ff=d_ff, dropout=dropout, attn_dropout=attn_dropout,
                                   drop_path_rate=drop_path_rate, pre_norm=pre_norm, mlp_ratio=mlp_ratio, use_token=use_token,
-                                  ks=ks, maxpool=maxpool, preprocessor=preprocessor, verbose=verbose)
+                                  ks=ks, maxpool=maxpool, feature_extractor=feature_extractor, verbose=verbose)
 
         self.head_nf = d_model
         self.c_out = c_out
@@ -164,7 +162,7 @@ class TSiTPlus(nn.Sequential):
 
 
 TSiT = TSiTPlus
-InceptionTSiTPlus = named_partial("InceptionTSiTPlus", TSiTPlus, preprocessor=partial(InceptionBlockPlus, ks=[3,5,7]))
-InceptionTSiT = named_partial("InceptionTSiT", TSiTPlus, preprocessor=partial(InceptionBlockPlus, ks=[3,5,7]))
+InceptionTSiTPlus = named_partial("InceptionTSiTPlus", TSiTPlus, feature_extractor=partial(InceptionBlockPlus, ks=[3,5,7]))
+InceptionTSiT = named_partial("InceptionTSiT", TSiTPlus, feature_extractor=partial(InceptionBlockPlus, ks=[3,5,7]))
 ConvTSiT = named_partial("ConvTSiT", TSiTPlus, ks=[1,3,5,7])
 ConvTSiTPlus = named_partial("ConvTSiTPlus", TSiTPlus, ks=[1,3,5,7])

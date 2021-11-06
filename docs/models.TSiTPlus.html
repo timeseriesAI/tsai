@@ -54,7 +54,7 @@ nb_path: "nbs/124_models.TSiTPlus.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSiTPlus" class="doc_header"><code>class</code> <code>TSiTPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/TSiTPlus.py#L97" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSiTPlus</code>(<strong><code>c_in</code></strong>:<code>int</code>, <strong><code>c_out</code></strong>:<code>int</code>, <strong><code>seq_len</code></strong>:<code>int</code>, <strong><code>n_layers</code></strong>:<code>int</code>=<em><code>6</code></em>, <strong><code>d_model</code></strong>:<code>int</code>=<em><code>128</code></em>, <strong><code>n_heads</code></strong>:<code>int</code>=<em><code>16</code></em>, <strong><code>d_head</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>act</code></strong>:<code>str</code>=<em><code>'reglu'</code></em>, <strong><code>d_ff</code></strong>:<code>int</code>=<em><code>256</code></em>, <strong><code>dropout</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>attn_dropout</code></strong>:<code>float</code>=<em><code>0</code></em>, <strong><code>drop_path_rate</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>mlp_ratio</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>qkv_bias</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>pre_norm</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>use_token</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>fc_dropout</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>bn</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>y_range</code></strong>:<code>Optional</code>[<code>tuple</code>]=<em><code>None</code></em>, <strong><code>ks</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>maxpool</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>preprocessor</code></strong>:<code>Optional</code>[<code>Callable</code>]=<em><code>None</code></em>, <strong><code>custom_head</code></strong>:<code>Optional</code>[<code>Callable</code>]=<em><code>None</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <a href="/models.TabFusionTransformer.html#Sequential"><code>Sequential</code></a></p>
+<h2 id="TSiTPlus" class="doc_header"><code>class</code> <code>TSiTPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/TSiTPlus.py#L95" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSiTPlus</code>(<strong><code>c_in</code></strong>:<code>int</code>, <strong><code>c_out</code></strong>:<code>int</code>, <strong><code>seq_len</code></strong>:<code>int</code>, <strong><code>n_layers</code></strong>:<code>int</code>=<em><code>6</code></em>, <strong><code>d_model</code></strong>:<code>int</code>=<em><code>128</code></em>, <strong><code>n_heads</code></strong>:<code>int</code>=<em><code>16</code></em>, <strong><code>d_head</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>act</code></strong>:<code>str</code>=<em><code>'reglu'</code></em>, <strong><code>d_ff</code></strong>:<code>int</code>=<em><code>256</code></em>, <strong><code>dropout</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>attn_dropout</code></strong>:<code>float</code>=<em><code>0</code></em>, <strong><code>drop_path_rate</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>mlp_ratio</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>qkv_bias</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>pre_norm</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>use_token</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>fc_dropout</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>bn</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>y_range</code></strong>:<code>Optional</code>[<code>tuple</code>]=<em><code>None</code></em>, <strong><code>ks</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>maxpool</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>feature_extractor</code></strong>:<code>Optional</code>[<code>Callable</code>]=<em><code>None</code></em>, <strong><code>custom_head</code></strong>:<code>Optional</code>[<code>Callable</code>]=<em><code>None</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <a href="/models.TabFusionTransformer.html#Sequential"><code>Sequential</code></a></p>
 </blockquote>
 <p>Time series transformer model based on ViT (Vision Transformer):</p>
 <p>Dosovitskiy, A., Beyer, L., Kolesnikov, A., Weissenborn, D., Zhai, X., Unterthiner, T., ... &amp; Houlsby, N. (2020).
@@ -93,7 +93,7 @@ An image is worth 16x16 words: Transformers for image recognition at scale. arXi
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c_in</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">c_out</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">n_layers</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">d_model</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">n_heads</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">d_head</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">act</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="s1">&#39;reglu&#39;</span><span class="p">,</span>
                  <span class="n">d_ff</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">dropout</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">attn_dropout</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">drop_path_rate</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">mlp_ratio</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                  <span class="n">qkv_bias</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">pre_norm</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">use_token</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fc_dropout</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">bn</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">y_range</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
-                 <span class="n">ks</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maxpool</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">preprocessor</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">custom_head</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+                 <span class="n">ks</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maxpool</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">feature_extractor</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">custom_head</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
@@ -122,7 +122,7 @@ An image is worth 16x16 words: Transformers for image recognition at scale. arXi
 <span class="sd">        y_range:                range of possible y values (used in regression tasks).</span>
 <span class="sd">        ks:                     (Optional) kernel sizes that will be applied to a hybrid embedding.</span>
 <span class="sd">        maxpool:                If true and kernel sizes are passed, maxpool will also be added to the hybrid embedding.</span>
-<span class="sd">        preprocessor:           an optional callable (nn.Conv1d with dilation &gt; 1 or stride &gt; 1 for example) that will be used to preprocess the time series before </span>
+<span class="sd">        feature_extractor:           an optional callable (nn.Conv1d with dilation &gt; 1 or stride &gt; 1 for example) that will be used to preprocess the time series before </span>
 <span class="sd">                                the embedding step. It is useful to extract features or resample the time series.</span>
 <span class="sd">        custom_head:            custom head that will be applied to the network. It must contain all kwargs (pass a partial function)</span>
 
@@ -133,7 +133,7 @@ An image is worth 16x16 words: Transformers for image recognition at scale. arXi
         <span class="n">backbone</span> <span class="o">=</span> <span class="n">_TSiTBackbone</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="n">n_layers</span><span class="p">,</span> <span class="n">d_model</span><span class="o">=</span><span class="n">d_model</span><span class="p">,</span> <span class="n">n_heads</span><span class="o">=</span><span class="n">n_heads</span><span class="p">,</span> <span class="n">d_head</span><span class="o">=</span><span class="n">d_head</span><span class="p">,</span> <span class="n">act</span><span class="o">=</span><span class="n">act</span><span class="p">,</span>
                                   <span class="n">d_ff</span><span class="o">=</span><span class="n">d_ff</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="n">dropout</span><span class="p">,</span> <span class="n">attn_dropout</span><span class="o">=</span><span class="n">attn_dropout</span><span class="p">,</span> 
                                   <span class="n">drop_path_rate</span><span class="o">=</span><span class="n">drop_path_rate</span><span class="p">,</span> <span class="n">pre_norm</span><span class="o">=</span><span class="n">pre_norm</span><span class="p">,</span> <span class="n">mlp_ratio</span><span class="o">=</span><span class="n">mlp_ratio</span><span class="p">,</span> <span class="n">use_token</span><span class="o">=</span><span class="n">use_token</span><span class="p">,</span> 
-                                  <span class="n">ks</span><span class="o">=</span><span class="n">ks</span><span class="p">,</span> <span class="n">maxpool</span><span class="o">=</span><span class="n">maxpool</span><span class="p">,</span> <span class="n">preprocessor</span><span class="o">=</span><span class="n">preprocessor</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+                                  <span class="n">ks</span><span class="o">=</span><span class="n">ks</span><span class="p">,</span> <span class="n">maxpool</span><span class="o">=</span><span class="n">maxpool</span><span class="p">,</span> <span class="n">feature_extractor</span><span class="o">=</span><span class="n">feature_extractor</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">head_nf</span> <span class="o">=</span> <span class="n">d_model</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">c_out</span> <span class="o">=</span> <span class="n">c_out</span>
@@ -149,8 +149,8 @@ An image is worth 16x16 words: Transformers for image recognition at scale. arXi
 
         
 <span class="n">TSiT</span> <span class="o">=</span> <span class="n">TSiTPlus</span>
-<span class="n">InceptionTSiTPlus</span> <span class="o">=</span> <span class="n">named_partial</span><span class="p">(</span><span class="s2">&quot;InceptionTSiTPlus&quot;</span><span class="p">,</span> <span class="n">TSiTPlus</span><span class="p">,</span> <span class="n">preprocessor</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">InceptionBlockPlus</span><span class="p">,</span> <span class="n">ks</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">]))</span>
-<span class="n">InceptionTSiT</span> <span class="o">=</span> <span class="n">named_partial</span><span class="p">(</span><span class="s2">&quot;InceptionTSiT&quot;</span><span class="p">,</span> <span class="n">TSiTPlus</span><span class="p">,</span> <span class="n">preprocessor</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">InceptionBlockPlus</span><span class="p">,</span> <span class="n">ks</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">]))</span>
+<span class="n">InceptionTSiTPlus</span> <span class="o">=</span> <span class="n">named_partial</span><span class="p">(</span><span class="s2">&quot;InceptionTSiTPlus&quot;</span><span class="p">,</span> <span class="n">TSiTPlus</span><span class="p">,</span> <span class="n">feature_extractor</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">InceptionBlockPlus</span><span class="p">,</span> <span class="n">ks</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">]))</span>
+<span class="n">InceptionTSiT</span> <span class="o">=</span> <span class="n">named_partial</span><span class="p">(</span><span class="s2">&quot;InceptionTSiT&quot;</span><span class="p">,</span> <span class="n">TSiTPlus</span><span class="p">,</span> <span class="n">feature_extractor</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">InceptionBlockPlus</span><span class="p">,</span> <span class="n">ks</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">]))</span>
 <span class="n">ConvTSiT</span> <span class="o">=</span> <span class="n">named_partial</span><span class="p">(</span><span class="s2">&quot;ConvTSiT&quot;</span><span class="p">,</span> <span class="n">TSiTPlus</span><span class="p">,</span> <span class="n">ks</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">])</span>
 <span class="n">ConvTSiTPlus</span> <span class="o">=</span> <span class="n">named_partial</span><span class="p">(</span><span class="s2">&quot;ConvTSiTPlus&quot;</span><span class="p">,</span> <span class="n">TSiTPlus</span><span class="p">,</span> <span class="n">ks</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">])</span>
 </pre></div>
@@ -193,7 +193,7 @@ An image is worth 16x16 words: Transformers for image recognition at scale. arXi
 <div class="output_text output_subarea output_execute_result">
 <pre>TSiTPlus(
   (backbone): _TSiTBackbone(
-    (preprocessor): Identity()
+    (feature_extractor): Identity()
     (to_embedding): Sequential(
       (0): Conv1d(4, 128, kernel_size=(1,), stride=(1,))
       (1): Transpose(1, 2)
@@ -374,20 +374,6 @@ An image is worth 16x16 words: Transformers for image recognition at scale. arXi
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>[W NNPACK.cpp:79] Could not initialize NNPACK! Reason: Unsupported hardware.
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
     {% endraw %}
 
@@ -427,7 +413,7 @@ An image is worth 16x16 words: Transformers for image recognition at scale. arXi
 
 
 <div class="output_png output_subarea ">
-<img src="data:image/png;base64,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
+<img src="data:image/png;base64,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
 "
 >
 </div>
@@ -465,8 +451,76 @@ An image is worth 16x16 words: Transformers for image recognition at scale. arXi
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">preprocessor</span> <span class="o">=</span> <span class="n">Conv1d</span><span class="p">(</span><span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">ks</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">default_device</span><span class="p">())</span>
-<span class="n">preprocessor</span><span class="p">(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">feature_extractor</span> <span class="o">=</span> <span class="n">Conv1d</span><span class="p">(</span><span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">ks</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">default_device</span><span class="p">())</span>
+<span class="n">feature_extractor</span><span class="p">(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>torch.Size([8, 3, 99])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">feature_extractor</span> <span class="o">=</span> <span class="n">Conv1d</span><span class="p">(</span><span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">2</span><span class="p">,</span> <span class="n">ks</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">default_device</span><span class="p">())</span>
+<span class="n">feature_extractor</span><span class="p">(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>torch.Size([8, 2, 99])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">feature_extractor</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="n">Pad1d</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span> <span class="mi">0</span><span class="p">),</span> <span class="n">nn</span><span class="o">.</span><span class="n">MaxPool1d</span><span class="p">(</span><span class="n">kernel_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">50</span><span class="p">))</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">default_device</span><span class="p">())</span>
+<span class="n">feature_extractor</span><span class="p">(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
 </pre></div>
 
     </div>
@@ -499,76 +553,8 @@ An image is worth 16x16 words: Transformers for image recognition at scale. arXi
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">preprocessor</span> <span class="o">=</span> <span class="n">Conv1d</span><span class="p">(</span><span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">2</span><span class="p">,</span> <span class="n">ks</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">default_device</span><span class="p">())</span>
-<span class="n">preprocessor</span><span class="p">(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>torch.Size([8, 2, 100])</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">preprocessor</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="n">Pad1d</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span> <span class="mi">0</span><span class="p">),</span> <span class="n">nn</span><span class="o">.</span><span class="n">MaxPool1d</span><span class="p">(</span><span class="n">kernel_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">50</span><span class="p">))</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">default_device</span><span class="p">())</span>
-<span class="n">preprocessor</span><span class="p">(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>torch.Size([8, 3, 100])</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">preprocessor</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="n">Pad1d</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span> <span class="mi">0</span><span class="p">),</span> <span class="n">nn</span><span class="o">.</span><span class="n">AvgPool1d</span><span class="p">(</span><span class="n">kernel_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">50</span><span class="p">))</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">default_device</span><span class="p">())</span>
-<span class="n">preprocessor</span><span class="p">(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">feature_extractor</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="n">Pad1d</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span> <span class="mi">0</span><span class="p">),</span> <span class="n">nn</span><span class="o">.</span><span class="n">AvgPool1d</span><span class="p">(</span><span class="n">kernel_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">50</span><span class="p">))</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">default_device</span><span class="p">())</span>
+<span class="n">feature_extractor</span><span class="p">(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
 </pre></div>
 
     </div>
@@ -596,7 +582,7 @@ An image is worth 16x16 words: Transformers for image recognition at scale. arXi
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Once you decide what type of transform you want to apply, you just need to pass the layer as the preprocessor attribute:</p>
+<p>Once you decide what type of transform you want to apply, you just need to pass the layer as the feature_extractor attribute:</p>
 
 </div>
 </div>
@@ -615,8 +601,8 @@ An image is worth 16x16 words: Transformers for image recognition at scale. arXi
 <span class="n">d_model</span> <span class="o">=</span> <span class="mi">128</span>
 
 <span class="n">xb</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">nvars</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">)</span>
-<span class="n">preprocessor</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">Conv1d</span><span class="p">,</span> <span class="n">ks</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">TSiTPlus</span><span class="p">(</span><span class="n">nvars</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">d_model</span><span class="o">=</span><span class="n">d_model</span><span class="p">,</span> <span class="n">preprocessor</span><span class="o">=</span><span class="n">preprocessor</span><span class="p">)</span>
+<span class="n">feature_extractor</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">Conv1d</span><span class="p">,</span> <span class="n">ks</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">TSiTPlus</span><span class="p">(</span><span class="n">nvars</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">d_model</span><span class="o">=</span><span class="n">d_model</span><span class="p">,</span> <span class="n">feature_extractor</span><span class="o">=</span><span class="n">feature_extractor</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">model</span><span class="p">(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">))</span>
 </pre></div>
 

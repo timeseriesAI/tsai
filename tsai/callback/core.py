@@ -79,12 +79,18 @@ class ShowGraph(Callback):
         "Plot validation loss in the pbar graph"
         if not self.nb_batches: return
         rec = self.learn.recorder
+        if self.epoch == 0:
+            self.rec_start = len(rec.losses)
         iters = range_of(rec.losses)
         val_pos = rec.metric_names.index('valid_loss') - 1
         val_losses = [v[val_pos] for v in rec.values]
         x_bounds = (0, (self.n_epoch - len(self.nb_batches)) * self.nb_batches[0] + len(rec.losses))
-        y_min = min((min(rec.losses), min(val_losses)))
-        y_max = max((max(rec.losses), max(val_losses)))
+        if self.epoch == 0:
+            y_min = min((min(rec.losses), min(val_losses)))
+            y_max = max((max(rec.losses), max(val_losses)))
+        else:
+            y_min = min((min(rec.losses[self.rec_start-1:]), min(val_losses)))
+            y_max = max((max(rec.losses[self.rec_start-1:]), max(val_losses)))
         margin = (y_max - y_min) * .05
         y_bounds = (y_min - margin, y_max + margin)
         self.update_graph([(iters, rec.losses), (self.nb_batches, val_losses)], x_bounds, y_bounds)

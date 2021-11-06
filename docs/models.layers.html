@@ -254,48 +254,6 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">init_linear</span><span class="p">(</span><span class="n">Conv1dSame</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="kc">None</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">bias_std</span><span class="o">=</span><span class="mf">.01</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">bs</span> <span class="o">=</span> <span class="mi">2</span>
-<span class="n">c_in</span> <span class="o">=</span> <span class="mi">3</span>
-<span class="n">c_out</span> <span class="o">=</span> <span class="mi">5</span>
-<span class="n">seq_len</span> <span class="o">=</span> <span class="mi">6</span>
-<span class="n">t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_in</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">Conv1dSame</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">ks</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dilation</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">))</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">Conv1dSame</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">ks</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dilation</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">))</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">Conv1dSame</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">ks</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">dilation</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="o">//</span><span class="mi">2</span><span class="p">))</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">Conv1dSame</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">ks</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">dilation</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="o">//</span><span class="mi">2</span><span class="p">))</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
 <div class="output">
@@ -555,48 +513,6 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">init_linear</span><span class="p">(</span><span class="n">Conv1dCausal</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="kc">None</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">bias_std</span><span class="o">=</span><span class="mf">.01</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">bs</span> <span class="o">=</span> <span class="mi">2</span>
-<span class="n">c_in</span> <span class="o">=</span> <span class="mi">3</span>
-<span class="n">c_out</span> <span class="o">=</span> <span class="mi">5</span>
-<span class="n">seq_len</span> <span class="o">=</span> <span class="mi">512</span>
-<span class="n">t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_in</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">)</span>
-<span class="n">dilation</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">Conv1dCausal</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">ks</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dilation</span><span class="o">=</span><span class="n">dilation</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">Conv1dSame</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">ks</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dilation</span><span class="o">=</span><span class="n">dilation</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="n">dilation</span> <span class="o">=</span> <span class="mi">2</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">Conv1dCausal</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">ks</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dilation</span><span class="o">=</span><span class="n">dilation</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">Conv1dSame</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">ks</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dilation</span><span class="o">=</span><span class="n">dilation</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
 <div class="output">
@@ -622,6 +538,31 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">bs</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">c_in</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">c_out</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">seq_len</span> <span class="o">=</span> <span class="mi">512</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_in</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">)</span>
+<span class="n">dilation</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">Conv1dCausal</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">ks</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dilation</span><span class="o">=</span><span class="n">dilation</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">Conv1d</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">ks</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;same&quot;</span><span class="p">,</span> <span class="n">dilation</span><span class="o">=</span><span class="n">dilation</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">dilation</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">Conv1dCausal</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">ks</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dilation</span><span class="o">=</span><span class="n">dilation</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">Conv1d</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">ks</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;same&quot;</span><span class="p">,</span> <span class="n">dilation</span><span class="o">=</span><span class="n">dilation</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
 
 </div>
     {% endraw %}
@@ -1074,8 +1015,6 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">ConvBlock</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">ks</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">sl</span><span class="p">))</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">ConvBlock</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">ks</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s1">&#39;causal&#39;</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">sl</span><span class="p">))</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">ConvBlock</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">ks</span><span class="p">,</span> <span class="n">coord</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">sl</span><span class="p">))</span>
-<span class="n">ConvBlock</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">ks</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">ConvBlock</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">ks</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">sl</span><span class="o">//</span><span class="mi">2</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -1743,7 +1682,7 @@ Original code in <a href="https://github.com/rwightman/pytorch-image-models">htt
 
 
 <div class="output_png output_subarea ">
-<img src="data:image/png;base64,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
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAXQAAAD4CAYAAAD8Zh1EAAAAOXRFWHRTb2Z0d2FyZQBNYXRwbG90bGliIHZlcnNpb24zLjMuNCwgaHR0cHM6Ly9tYXRwbG90bGliLm9yZy8QVMy6AAAACXBIWXMAAAsTAAALEwEAmpwYAAAmQklEQVR4nO3dd5gV5dnH8e+9SxEVQQQVKQJKVGyoK/paUaJgiYqSCGqwvSIW9LVFNLERk4iFWECKgt0QCygJIKhgLAFlFaSKriDSFJCqSH/eP+6zsKy77NndOXva73N5rpkzMztzj2e5z7PPPMVCCIiISPrLSXYAIiISDSV0EZEMoYQuIpIhlNBFRDKEErqISIaolqwL169fPzRr1ixZlxcRSUuffvrpshBCg5L2JS2hN2vWjPz8/GRdXkQkLZnZvNL2qcpFRCRDKKGLiGQIJXQRkQyhhC4ikiGU0EVEMkSZCd3MhpjZEjObXsp+M7PHzazAzKaa2ZHRhykiImWJp4T+LNBhB/vPAFrGXt2A/pUPS0REyqvMdughhPfNrNkODjkXeD74OLwTzayumTUMISyOKkgRkcrasgV+/BFWroQVK3y5ciWsWwebN/try5btl2VtK1wvSQj4AatW+evnn/21bh2/ubw+R19yQOT3GEXHokbA/CLvF8S2/SKhm1k3vBRP06ZNI7i0iGS7FStg5kyYNQu+/hqWLNmWrIsm71WrSk++iWIYUDf22mafBu+nbEKPWwhhEDAIIC8vTzNriEhcQoDp02HSJPjmG/j2W1iwAGbP9mWhatVgzz1h992hbl1o2BAOOmjb+6Kv3XeHOnVg550hJwdyc7ctS1zPCeR8t4jcmdPInTGVnOlTyZ06mZyvZntJvNABB8B++8Hee3sA++0HLVrAHntAvXp+4VptE/L/KYqEvhBoUuR949g2EZFKmT8fBg6E117z5A2eXBs1gsaN4eST4fDD4eCDPXHvu6/vj8zq1fDPf8Lrr/u3yfLl2/Y1awaHHQadzvflr34FzZvDbrtFGED5RJHQRwDXm9lQ4BhglerPRaQyZs2Cp56CJ5+EjRvhlFPguuugQwfPo9WrJ/DiGzfCq6/C88/D2297Pc0BB0CnTv7tcdhhcOihXrxPMWUmdDP7B9AWqG9mC4B7gOoAIYQBwCjgTKAAWAtcnqhgRSSzhQC33w4PPQQ1akC7dr5+8MFVcPGlSz2JP/igV8TvtRfcdhucfTYcfzyYVUEQlRNPK5cuZewPwHWRRSQiWenrr6FbNxg3Djp2hP79Pacm3KxZcP/9Xq+zYYPX4zzzjP85EGn9TeIlbfhcERHwGo2BA+HOO339oYfglluqoED8xRdw663w1ltQqxZ07+7fKFXy50BiKKGLSNKEANde6wk9Lw9eeAEOPDDBF505E/r1g0GDPJH/4Q9w881Qv36CL5x4SugikhQrVsDvfw8jR3pVde/eCS6VL1jgyXvoUK+g79LFL9qwYQIvWrXSq4JIRNJeCN4KsFUrT+Z/+Qs88EACk3kIMGCAt0x59VW48UaYN88fgGZQMgeV0EWkCi1fDuedBx984Pn1zTehTZsEX3T4cLjmGjjmGHjuOW+CmKGU0EWkSnzxBfzud77s2xeuvtp7dibU1Kn+tLVJE/jwwyq4YHKpykVEEm7UKDjiCCgogH/9yzsJJTS3rl8Pf/oTHHWU/1kweHDGJ3NQQheRBAoB7rkHzjrLe8Z/+SW0b5/gi/73v3DCCV45f9FF3s78tNMSfNHUoIQuIgnTty/06gWXXgoTJ/r4KwmzcKF3zz/+eF9/5RWvM99jjwReNLVk/t8gIlLlQoDHH4f/+z8vkT/zTIJbsbz0EvTo4T09e/XyduW77JKgC6YuJXQRiVQI3qhk4EA480zvLJSwZL5lC3Tt6gn9uONgyJCMbsVSFlW5iEik7r7bk/ktt8CIET4EeELMnQsXXODJ/LbbfBCYLE7moIQuIhEaN87HuerY0cdkyc1N0IXuvdcnjhg1ykdH7N0batZM0MXSh6pcRCQS8+bBb3/rk0y89FKCqllCgPvu89eFF/q3x/77J+BC6UkJXUQicffd3uT7P//xMa8iV3Sw9A4d4MUXs6JteXmoykVEKm3uXH/4ecUVcMghCbhACPDww57Mu3f3ynkl81/Q/xERqbS+fX15990JusCDD0LPnl4y79cv7SaeqCr6vyIilfLVV55jL7rI688j9847cMcdcP758O9/K5nvgP7PiEiFzZnjvepr1vTakMjNn++9Pxs18iFwE9ZsJjOoykVEKmTdOu84NH++D7gV+dDiy5fDqaf6hT78EBo0iPgCmUcJXUQq5J57YPZsePppT+yRu+8+H57xzTcT9KQ186jKRUTKbe1aePJJaNsWrrwyARd46SUfDOaQQ3yoRomLErqIlNujj8KPP3ohOnJr1/pgMMcdBx9/rHrzclBCF5Fy+eILH9DwvPPgpJMScIHnnoM1a7xOZ+edE3CBzKWELiLl8re/webN8NhjCTh5QQFce60/DG3XLgEXyGxK6CJSLh9+CK1bQ9OmCTj5nXf68sknVdVSAUroIhK3L77wtudduybg5GPHwquvelVLlg+DW1FK6CISt9de82XHjhGfeMMGuOEGHznxjjsiPnn2UDt0EYnbK694dUvkc4M+9pg3ah85UuOaV4JK6CISl3HjYNo06Nw54hNPmeJ152edlaAeStlDCV1EyhQC/PnPvh5p/fm4cXDiiVC/vnckkkqJK6GbWQczm21mBWbWs4T9Tc1svJlNNrOpZqavWZEMMnIkvPeeD48b2Zgt06dD+/Y+rvmECdCiRUQnzl5lJnQzywX6AWcArYAuZtaq2GF/Al4JIRwBdAaejDpQEUme/v19bKw//SmiE4YAV10Fu+/uVS7NmkV04uwWTwm9DVAQQpgTQtgADAXOLXZMAHaLrdcBFkUXoogk07RpMHq098avXj2ikw4bBhMn+mTPCRlEPTvFk9AbAfOLvF8Q21bUvcAlZrYAGAX0KOlEZtbNzPLNLH/p0qUVCFdEqtpVV0HdutCtW0Qn/PRTn026YUO49NKITioQ3UPRLsCzIYTGwJnAC2b2i3OHEAaFEPJCCHkNNLaxSMp7/HEfH+svf/E5JiotBLjxRthtN/jgA9hllwhOKoXiaYe+EGhS5H3j2LairgQ6AIQQJpjZTkB9YEkUQYpI1Vuxwvv4/PrXEZbO33sPPvoI/v532G+/iE4qheIpoU8CWppZczOrgT/0HFHsmG+BdgBmdhCwE6A6FZE09uabPpLt/fdHNKzKxo3Qo4eXyrt0ieCEUlyZJfQQwiYzux4YA+QCQ0IIM8ysF5AfQhgB3AI8ZWY34Q9ILwshhEQGLiKJEwI88YQ/r2zTJqKTPvcczJgBTz0Fe+0V0UmlqLi6/ocQRuEPO4tuu7vI+kzg+GhDE5Fkeecd+OwzT+pmEZzwrru8Iv7EE+HyyyM4oZREPUVFZDshwC23+HPL3/8+ghP27u31Nl26wL//rWFxE0iDc4nIdl580dueP/kk1KlTyZMtW+ZjBpx4ole5VFPKSSSV0EVkO0OGeAOU7t0jONmjj/qT1QEDlMyrgBK6iGy1cKG3LLz00gjqzidNgkcegQsugFbFRwuRRFBCF5Gt+vXzZadOlTzRf/8Lbdv6WC29e1c2LImTErqIbDV8OHToAAcdVImTfPUVnH66dy395BONoliFlNBFBIAffvA5Q086qZIn6t0b1q+HMWMSMLWR7IgSuogA8I9/+PKEEypxktGj/anqOedA8+aRxCXxU0IXETZt8pFsjzgCjq9oF8HPP4dLLvGJnvv2jTI8iZMSuogwc6ZXuVx/PeRUJCt89RW0awc77QRDh0Y4rZGUhxqGiggzZ/ry0EMreIIbbvDBtyZMgJYtI4tLykcldBGhb19/fnn44RX44alT4a23fJxzJfOkUkIXyXJffulDlPfoATVqlPOHFy+Gq6/29auuijw2KR8ldJEs99FHvuzYsQI/3L27zw362mvQpEnZx0tCKaGLZLmPPvJhVpo1K+cPzpoFI0b4N8EFFyQiNCknJXSRLPbDD97+vEsXqF69nD/8179CzZrQp09CYpPyU0IXyWIjR/pgiNdeW84fXLQIhg2Diy+uQNFeEkUJXSSLLV7sy3I1V9y0yWcdWrcO/vCHhMQlFaN26CJZbOFCqF3b522Oy6ZN0LUrjB3rVS0HHJDQ+KR8lNBFstj06eUYWXHTJjjrLE/mvXrBTTclNDYpP1W5iGSxgoJyFLKHD/dk/te/+qTPknKU0EWy2LJlsOeecRz4ySc+8FaLFnDzzQmPSypGCV0kSy1bBj//DA0axHHw9dfD5s0wfrw3VZSUpIQukqUKe4iWOfzK5Mk+P+hNN0HTpgmPSypOCV0kS82e7ct27co4sE8fyM2FO+5IeExSOUroIllqzhyoXx/q1NnBQRMnwosvetf+evWqLDapGCV0kSy1eHEZ81CsXOmDb+29NwweXFVhSSWoHbpIliooKGPazzvv9GnlBg+GXXetsrik4lRCF8lCq1b5LEXHHlvKAYsW+VRynTrBFVdUaWxScUroIlnogQd8edxxJezcvBnOPddH7brvviqNSyonroRuZh3MbLaZFZhZz1KO+Z2ZzTSzGWb2crRhikhUNm6Ep56CM8+EU04p4YCxYyE/37v3t2pV5fFJxZVZh25muUA/4DRgATDJzEaEEGYWOaYlcAdwfAhhhZnF0/dMRJJg+HAfB/2qq8Cs2M4VK3xw9H32gcsuS0Z4UgnxlNDbAAUhhDkhhA3AUODcYsdcBfQLIawACCEsiTZMEYnKSy/BzjuX0v78xRe9gn348DjHBJBUEk9CbwTML/J+QWxbUb8CfmVmH5nZRDPrUNKJzKybmeWbWf7SpUsrFrGIVMrMmT5oYu3axXasXg0PPwxt2sDRRyclNqmcqB6KVgNaAm2BLsBTZla3+EEhhEEhhLwQQl6DuAaQEJEobdwIc+eW0t3/L3+Bb7+Fe+4poS5G0kE8CX0hUHQ678axbUUtAEaEEDaGEOYCX+IJXkRSyJdfeiOWEhP62LFw/PH+tFTSUjwJfRLQ0syam1kNoDMwotgxb+Clc8ysPl4FMye6MEUkCu+848vjjy+2Y/58mDIFjjiiqkOSCJWZ0EMIm4DrgTHALOCVEMIMM+tlZufEDhsD/GBmM4HxwG0hhB8SFbSIVMy330KtWrD//sV29OoFOTmahSjNWQghKRfOy8sL+fn5Sbm2SLY64QSf23m7f3pbtvgIXccfD2+9lbTYJD5m9mkIIa+kfeopKpIlli2DCRPg7LOL7Zg8GX78ETp2TEpcEh0ldJEsMXiwF8a3S+hr1sC11/r6SSclJS6JjhK6SJYYMMCfeR51VGzDhg3Qs6fPFzp4MBx0UFLjk8rT8LkiWWDLFn8g2rlzrIl5CHDRRfD66/C//6sRFTOESugiWWDNGk/qW/vzvfGGJ/OePX2kLskISugiWWDRIl/WrRvb0K8fNGkC99+frJAkAZTQRbLAG2/4sk0bYOpUePddr2rJzU1mWBIxJXSRLDB2LBx+OBxyCPBybLqCa65JakwSPSV0kQw3Ywa8/z6cfjre5vzBB6F16yIV6pIplNBFMtzLL/sD0dtuA957z1u4vKxJxTKRErpIhnvnHdhvP2hQ60d46CHYYw848MBkhyUJoIQuksE2bvR+Q61aAc89B4sXewsXjXeekZTQRTLYzNjMvx3P3giPPgqHHgoXXpjUmCRx1FNUJIO9/74vT13zJhQUwOjRyQ1IEkoldJEM9sEHULt2oOmQe2GffWJNXSRTqYQukqEWLIBXX4WL2y7E3pvhdeg5KsNlMn26Ihlq4kRf9tjpadh1V+jSJbkBScIpoYtkqGnTwCzQ+q2/QdeuUL16skOSBFNCF8lQixbBnrv8RE02wJ13JjscqQJK6CIZ6oMPAvuFAh/EpVGjZIcjVUAJXSQDrV0Ls2cb7X8aFuvzL9lACV0kAxXOWdGq7mKfmUiygpotimSgpwduohWz+U2Hjermn0VUQhfJMCHAN19v4TTepmaPbskOR6qQErpIhln2yRx+3FCDpvV+gmOPTXY4UoWU0EUyybx5PNX+VQBOHniReoZmGX3aIpli4UI49VRe/7E9xx68hqM6NU92RFLFlNBFMsXNN7Ny8c98trk1J5xRO9nRSBIooYtkgiVLYPhwXjziEQDOOy+54UhyKKGLZIJnn4WNG/lwl/Y0bgzHHZfsgCQZlNBFMsG4cYSm+zJuSj1OOEFNz7NVXAndzDqY2WwzKzCznjs47gIzC2aWF12IIrJDY8bAmDF8dtZdLF0KbdsmOyBJljITupnlAv2AM4BWQBcza1XCcbWBG4GPow5SRHbg2Wdhzz0ZXucyANq3T2o0kkTxlNDbAAUhhDkhhA3AUODcEo77M9AbWBdhfCKyIytWwPDhcP75vP9RLq1bQ7NmyQ5KkiWehN4ImF/k/YLYtq3M7EigSQhh5I5OZGbdzCzfzPKXLl1a7mBFpJh334X16/npgq58/jkcc0yyA5JkqvRDUTPLAfoAt5R1bAhhUAghL4SQ16BBg8peWiS7bdkCTzwB9evT95M2rF7tExNJ9opntMWFQJMi7xvHthWqDRwCvGf+aH1vYISZnRNCyI8qUBEpZsIEeP99Nj3al0cfyKVNGzVXzHbxJPRJQEsza44n8s7A1gGWQwirgPqF783sPeBWJXORBFq+HLp1gxo1uHPO//Ldd/D448kOSpKtzCqXEMIm4HpgDDALeCWEMMPMepnZOYkOUERK0L8/zJxJeHowA56pyZlnwm9/m+ygJNnimuAihDAKGFVs292lHNu28mGJSKk2bYInn4TjjmNB20tYswbOPjvZQUkqUE9RkXQzYAAsWgTdu5Mfq9g8+ODkhiSpQQldJJ0MGwY33QQnnQSXXMK33/pmJXQBJXSR9BECXH897LuvdyYyY8UK31W3blIjkxShSaJF0sWwYbB4sXf1r1cP8JqX3XaD3NzkhiapQSV0kXRQUACXXw6HHQYXX7x184cfQps2SYxLUooSukiqW7Zs2xCKL7wA1fwP682bYe5cOPzw5IUmqUVVLiKpLAS44gpYuhTefttL6DHTp8O6dXDooUmMT1KKErpIKuvfH/71L3j0UW/ZUsT06b486qiqD0tSk6pcRFLVtGlwyy1wxhlwww2/2P39975s3LiK45KUpYQukqpuvRV23RWeeabEOeW++w5q1oQ6dZIQm6QkJXSRVDRuHIwfD507w157lXjId9/B3ntr/lDZRgldJNX8/DNcdhnsvz/cXeKQSYQAn3wC++1XtaFJatNDUZFUM3AgzJ8PY8dCKRPBTJoEs2fDbbdVcWyS0lRCF0kln30Gt98Op54K7dqVetj48b48t6TZfSVrKaGLpIpFi+A3v/GBWV54AXJK/+f5wQfQsiXUr1/qIZKFlNBFUsXjj3tSHzMG9tmn1MNWrPA+Rr/+dRXGJmlBCV0kFQwcCA8+CJ06QevWOzz0s89gwwa44IKqCU3ShxK6SLI9/TR07+715s8/X+bhixb5smnTBMclaUetXESSacIEuO46rz8ZPXrrwFs78sYbULs2NGmS+PAkvaiELpIskyd7S5b69eHFF+NK5l9/7XNbXHMN7LRTFcQoaUUJXSQZVq+GCy+EXXaB//631N6gxQ0a5Murr05gbJK2VOUiUtU2boTf/x7mzIF33vEp5eKwYYMX5Nu1gxYtEhyjpCUldJGq1qcPjBjhzRQLJ66Iw8sv+wPRgQMTF5qkNwshJOXCeXl5IT8/PynXFkmaSZP8Aeihh/r8ceVw9NHw008wY4YG5MpmZvZpCCGvpH2qQxepKnPnQvv23kRlwIBy/einn0J+Plx5pZK5lE5VLiJVYc0aOOccX//Pf8o9TOLgwd4Ipsj80CK/oIQukmhr13omnjUL3nqr3Ml89Wp47jm49FIf/1ykNEroIok0YwacdRbMmwePPVahAVj69PHvhO7dExCfZBQldJFEWbsWLrrIi9jjxsEpp1ToFA8/7OO25JX4GExkGyV0kUR54gmYOhVeeqlCyRy8UP/TTyXOES3yC3G1cjGzDmY228wKzKxnCftvNrOZZjbVzN41s/h6SohkqieegJ49fQaKLl0qdIp16zyht20LJ50UbXiSmcpM6GaWC/QDzgBaAV3MrFWxwyYDeSGEw4DXgAejDlQkbRQU+Nxwp5ziTzMr2M7w3nvh++/hj3+MNjzJXPGU0NsABSGEOSGEDcBQYLuJr0II40MIa2NvJwKNow1TJE2MGAGnnQY1ang//Tp1KnSauXPh0Ud9hABNZCHxiiehNwLmF3m/ILatNFcCo0vaYWbdzCzfzPKXLl0af5Qi6eD227dN8jl06A5nHSrLXXd5wf5vf4soNskKkfYUNbNLgDzgoZL2hxAGhRDyQgh5DUqZzVwkLQ0d6jMOXXKJtzc/88wKn2rYMH+O2rUrNNpR0UmkmHgS+kKg6FD6jWPbtmNmvwb+CJwTQlgfTXgiaaBfP0/kRx/t49tWYqDyn3+GHj2geXN/ripSHvE0W5wEtDSz5ngi7wxcVPQAMzsCGAh0CCEsiTxKkVS0ZAlcfjmMGuVj2r7+OtSqValTDhvmIyoOH+7V8CLlUWYJPYSwCbgeGAPMAl4JIcwws15mFhucgoeAXYFXzWyKmY1IWMQiqeDNN33ExHff9eYoo0dX+AFooUWL4MYb4eCDvXOpSHnF1bEohDAKGFVs291F1vUcXrLH1KleMt9rL/j3v72qJQJ//7t3Kv3wQ6hePZJTSpZRT1GR8pgzx3v57Lqrz9Z8wAGRnHbJEnj2WTj9dDjwwEhOKVlICV0kXhs3wrXXel/8yZP9yWVEunf30/75z5GdUrKQJrgQicfcuXDqqTBmjHfpjzCZb9niVfGXXQZHHBHZaSULqYQuUpahQ+GqqyA3F555xjNvhGbM8Lrzo46K9LSShZTQRXZk6FAfXOuYY7y3TzknpyhLCHDHHV4lX4m+SCKAqlxESvfEEz6YyuGHwzvvRJ7MAe68E0aO9FEDGjaM/PSSZZTQRUpy110+CHn79j45xa67Rn6Jzz+HBx7wwbd6/mJQapHyU5WLSFFr13rvnqef9tmGBg+uVFf+0mzaBB07QoMGfqlq+pcoEdCvkUihadM8y379NVx5JfTvn7AePk884Q1n/vEP2FfTwUhEVOUiAjBkCLRp443BR4/2YnMCknkI0KsX3Hyzz39x/vmRX0KymBK6yMCBXiI/+miYMgU6dEjYpQYNgnvu8RYtI0dqAC6JlqpcJHstX+6J/I03vEfP229DzZoJu9yAAXDddT5ywBtvaLwWiZ5K6JJ9QvCp4o45xoe+vftur2ZJYDJ/6y245ho44QS/tJK5JIJK6JJdNm2Ciy+GV17x0RLffdezbIL17g21a/vgjLVrJ/xykqVUQpfsMXkynHeeJ/PLLvPWLFWQzPv0gffe885DSuaSSEroktlC8I5BxxwDRx7pPT779PExWXbZJeGX79sXbrkFTjvNlyKJpCoXyUzz5sGTT8Krr3qD73328cbfF18Mu++e8Mtv3uxtzG+4AVq2hNdeS0j/JJHtKKFL5gjBhy586CF44QXIyfGu+3fe6QNsVUGJHGD9ejjnHBg71kdQHD9eVS1SNZTQJTNMnepNEPPzvXF3jx5ex9G0aZWHctddnswfftjDUFtzqSpK6JLeZs6EW2/1doG1a8Njj0GnTl7FkgSDB3siv+IK1ZlL1VNCl/Tzww/wz396tcrEiT4S4j33QLduSRuDNgRP5LffDv/zP/69IlLVlNAlPaxf752Ann/e+8xv3AiHHAIPPgiXXJK0RL5pk0/uPGQITJjgs9S98kpCRtsVKZMSuqS2KVN8AJShQ2HFCu8M1KPHtoknzJIW2sqVPibLhAnQuLGX0G+8UUPhSvLoV09Sz6pV8OabPuXb2LFQq5Z3COra1WeDSHLGXL3aW0A+8oivP/KIJ/Lc3KSGJaKELili+XLv9DN8OIwZ46Xxvff2CTf/8AeoWzfZEfLtt3D//fDii/Dzz/Cb38C993p/JZFUoIQuybF6NXz8sdeHv/eeNzsMAfbcE846y5uJnHyytyVPAYMHe03P5s3+h0L37t7GXCSVKKFL4oUACxd6Av/Pf3xArFmzfHutWnDccT7rw8kn+3qK1F1s2OB/LPTv74Mxnnaadz7df/9kRyZSMiV0iV4IsGSJJ/A33oB//QuWLfN9tWr5gOBdukDr1tCunW9LEevW+dAvI0Z4y8iVK33ezzvu8O8cPfCUVKZfT6m41ath9myvXP72W/jiC+/oM2OG14GDj5ty+umexFu3hry8lOw6+eWXPiz68OFeMt95Z2+CeM01/hw2BUMW+QUldNmxjRth/nwf4GruXJgzxxP25Mm+vah69eDgg+F3v4ODDoJWraBt25SczWH9eu+TNHKk/wHxxRc+eNbVV3tTxLZtNZiWpB8l9GwWAqxdC0uXerKeN89fixbBd995wp461Z8EFqpWzSuRTzzRO/YceCC0aOENsevVS2q78NL8+CMsWADTpsGnn8Jnn8H773tSr1bNk/e11/qEzY0aJTtakYqLK6GbWQfgMSAXeDqE8ECx/TWB54GjgB+AC0MI30QbqmwVglf2/vTTttfatb98v2yZVwKvWuXLH37w1/Ll/n7lSi+BF9eggTcZbNgQbrvNx39t3txfjRunTEXypk3+XbRwoSfshQv9u+j777dtW7DAb7NQ9er+PXT11XDKKV6tsttuSbsFkUiV+S/TzHKBfsBpwAJgkpmNCCHMLHLYlcCKEML+ZtYZ6A1cmIiAq0QIsGWLJ7tNm/xVdL34+8oct3GjN2ouKzkXfx9CfPeSk+MZq04d2GMPfzVr5nXbdev6a489vJTdtKm/KllhHIIX6oveYuGycH39eq+rXrfOb7/466efvBp+xQpPyIXLoutr1/7y2rm53vKxUSP/Q6JtW/8OatzYv5dat1Z9uGSueIpabYCCEMIcADMbCpwLFE3o5wL3xtZfA/qamYUQb9aJ35DL3+fhl30kve3OHmC7t8G27QACFlsNvl7qz21/vaLHbr9eA6hR5nHl2mc5XmVhOYTY0t9b7H1sfedt2zHzc5SwvvU9Bj9CWAN8U8p9hpLXy9q3ZYu/Nm/etozqUzfb9p1T+P1z4IG+rFPHv6caNPCBFZs08SS+554p03RdpMrFk9AbAUWffi0AjintmBDCJjNbBewBLCt6kJl1A7oBNK3gONX1G+3EIXstBazwv231tla46u9t6z9sK2OfYRZ8PcewnBzIiSXUHMO2W9+2z3K3bScnp4TjSjq22M9ZDla92tYsVLQKunh1dNT7ojpHbq6HX7jMyfGqjWrVSl/WrOkl5Z128laLxV877+xJW8lZJH5VWhkaQhgEDALIy8urUDnunPvbcM79kYYlIpIR4in/LASaFHnfOLatxGPMrBpQB384KiIiVSSehD4JaGlmzc2sBtAZGFHsmBHApbH1TsC4RNSfi4hI6cqsconViV8PjMGbLQ4JIcwws15AfghhBDAYeMHMCoDleNIXEZEqFFcdeghhFDCq2La7i6yvA34bbWgiIlIeakMgIpIhlNBFRDKEErqISIZQQhcRyRCWrNaFZrYUmFfBH69PsV6oaUz3kpoy5V4y5T5A91Jo3xBCg5J2JC2hV4aZ5YcQ8pIdRxR0L6kpU+4lU+4DdC/xUJWLiEiGUEIXEckQ6ZrQByU7gAjpXlJTptxLptwH6F7KlJZ16CIi8kvpWkIXEZFilNBFRDJE2iV0M+tgZrPNrMDMeiY7nrKY2TdmNs3MpphZfmxbPTN728y+ii13j203M3s8dm9TzezIJMc+xMyWmNn0ItvKHbuZXRo7/iszu7SkayXpXu41s4Wxz2aKmZ1ZZN8dsXuZbWbti2xP6u+fmTUxs/FmNtPMZpjZjbHtafe57OBe0vFz2cnMPjGzz2P3cl9se3Mz+zgW1z9jQ5BjZjVj7wti+5uVdY9xCSGkzQsfvvdroAU+oefnQKtkx1VGzN8A9YttexDoGVvvCfSOrZ8JjMbnyTsW+DjJsZ8EHAlMr2jsQD1gTmy5e2x99xS5l3uBW0s4tlXsd6sm0Dz2O5ebCr9/QEPgyNh6beDLWLxp97ns4F7S8XMxYNfYenXg49j/71eAzrHtA4BrYuvXAgNi652Bf+7oHuONI91K6FsnrA4hbAAKJ6xON+cCz8XWnwPOK7L9+eAmAnXNrGES4gMghPA+Pr59UeWNvT3wdghheQhhBfA20CHhwRdTyr2U5lxgaAhhfQhhLlCA/+4l/fcvhLA4hPBZbH0NMAuf0zftPpcd3EtpUvlzCSGEH2Nvq8deATgVeC22vfjnUvh5vQa0MzOj9HuMS7ol9JImrN7RL0AqCMBYM/vUfJJsgL1CCItj698Be8XW0+H+yht7qt/T9bGqiCGF1RSkyb3E/kw/Ai8NpvXnUuxeIA0/FzPLNbMpwBL8C/JrYGUIYVMJcW2NObZ/FbAHlbyXdEvo6eiEEMKRwBnAdWZ2UtGdwf/OSsu2o+kce0x/YD+gNbAYeCSp0ZSDme0KvA78XwhhddF96fa5lHAvafm5hBA2hxBa4/MutwEOrOoY0i2hxzNhdUoJISyMLZcAw/EP+vvCqpTYckns8HS4v/LGnrL3FEL4PvaPcAvwFNv+tE3pezGz6ngCfCmEMCy2OS0/l5LuJV0/l0IhhJXAeOB/8Cquwpnhisa1NebY/jrAD1TyXtItocczYXXKMLNdzKx24TpwOjCd7SfVvhR4M7Y+Augaa5lwLLCqyJ/RqaK8sY8BTjez3WN/Op8e25Z0xZ5PdMQ/G/B76RxridAcaAl8Qgr8/sXqWQcDs0IIfYrsSrvPpbR7SdPPpYGZ1Y2t1wJOw58JjAc6xQ4r/rkUfl6dgHGxv6xKu8f4VOWT4Che+FP7L/H6qT8mO54yYm2BP7H+HJhRGC9eV/Yu8BXwDlAvbHtS3i92b9OAvCTH/w/8T96NeF3elRWJHbgCf7hTAFyeQvfyQizWqbF/SA2LHP/H2L3MBs5Ild8/4AS8OmUqMCX2OjMdP5cd3Es6fi6HAZNjMU8H7o5tb4En5ALgVaBmbPtOsfcFsf0tyrrHeF7q+i8ikiHSrcpFRERKoYQuIpIhlNBFRDKEErqISIZQQhcRyRBK6CIiGUIJXUQkQ/w/0DG/R55+luYAAAAASUVORK5CYII=
 "
 >
 </div>
@@ -3796,7 +3735,7 @@ gwa_pool_head
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor(0.6598)</pre>
+<pre>tensor(0.6889)</pre>
 </div>
 
 </div>
@@ -3862,7 +3801,7 @@ gwa_pool_head
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor(0.7252)</pre>
+<pre>tensor(0.7391)</pre>
 </div>
 
 </div>
@@ -3899,7 +3838,7 @@ gwa_pool_head
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor(0.6852, grad_fn=&lt;NllLossBackward&gt;)</pre>
+<pre>tensor(0.6025, grad_fn=&lt;NllLossBackward&gt;)</pre>
 </div>
 
 </div>
@@ -4106,8 +4045,8 @@ Based on paper: Wen et al. A Discriminative Feature Learning Approach for Deep F
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(tensor(12.7003, grad_fn=&lt;DivBackward0&gt;),
- TensorBase(2.3710, grad_fn=&lt;AliasBackward&gt;))</pre>
+<pre>(tensor(7.5422, grad_fn=&lt;DivBackward0&gt;),
+ TensorBase(2.3582, grad_fn=&lt;AliasBackward&gt;))</pre>
 </div>
 
 </div>
@@ -4209,7 +4148,7 @@ Based on paper: Wen et al. A Discriminative Feature Learning Approach for Deep F
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>TensorBase(0.7466)</pre>
+<pre>TensorBase(0.7470)</pre>
 </div>
 
 </div>
@@ -4277,7 +4216,7 @@ Based on paper: Wen et al. A Discriminative Feature Learning Approach for Deep F
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor(3.1879)</pre>
+<pre>tensor(3.3744)</pre>
 </div>
 
 </div>
@@ -4476,8 +4415,8 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(tensor(-2.5518e-10, grad_fn=&lt;MeanBackward0&gt;),
- tensor(0.5045, grad_fn=&lt;StdBackward&gt;))</pre>
+<pre>(tensor(2.1110e-11, grad_fn=&lt;MeanBackward0&gt;),
+ tensor(0.5457, grad_fn=&lt;StdBackward&gt;))</pre>
 </div>
 
 </div>
@@ -4672,9 +4611,9 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MultiConv1d" class="doc_header"><code>class</code> <code>MultiConv1d</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L1078" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MultiConv1d</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>kss</code></strong>, <strong><code>maxpool</code></strong>=<em><code>False</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>'same'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Module</code></p>
+<h2 id="MultiConv1d" class="doc_header"><code>class</code> <code>MultiConv1d</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L1078" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MultiConv1d</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>=<em><code>None</code></em>, <strong><code>kss</code></strong>=<em><code>[1, 3, 5, 7]</code></em>, <strong><code>keep_original</code></strong>=<em><code>False</code></em>, <strong><code>dim</code></strong>=<em><code>1</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Module</code></p>
 </blockquote>
-<p>Module that applies one or multiple kernels (and optionally maxpool) with padding="same"</p>
+<p>Module that applies multiple convolutions with different kernel sizes</p>
 
 </div>
 
@@ -4701,10 +4640,10 @@ model = nn.Sequential(OrderedDict([
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">37</span><span class="p">)</span>
-<span class="n">nf</span> <span class="o">=</span> <span class="mi">128</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">MultiConv1d</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">nf</span><span class="p">,</span> <span class="n">kss</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">],</span> <span class="n">maxpool</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">nf</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">MultiConv1d</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">nf</span><span class="p">,</span> <span class="n">kss</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">nf</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">MultiConv1d</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">nf</span><span class="p">,</span> <span class="n">kss</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">],</span> <span class="n">maxpool</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">nf</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">)))</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">MultiConv1d</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">kss</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">])(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">37</span><span class="p">])</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">MultiConv1d</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">36</span><span class="p">,</span> <span class="n">kss</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span> <span class="n">keep_original</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">36</span><span class="p">,</span> <span class="mi">37</span><span class="p">])</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">MultiConv1d</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">kss</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">37</span><span class="o">*</span><span class="mi">3</span><span class="p">])</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">MultiConv1d</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="n">kss</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">])(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">37</span><span class="p">])</span>
 </pre></div>
 
     </div>
@@ -4725,59 +4664,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MultiConcatConv1d" class="doc_header"><code>class</code> <code>MultiConcatConv1d</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L1106" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MultiConcatConv1d</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>kss</code></strong>, <strong><code>include_original</code></strong>=<em><code>True</code></em>, <strong><code>dim</code></strong>=<em><code>1</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Module</code></p>
-</blockquote>
-<p>Module that applies multiple convolutions</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">37</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">MultiConcatConv1d</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">6</span><span class="o">*</span><span class="mi">4</span><span class="p">,</span> <span class="mi">37</span><span class="p">])</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">MultiConcatConv1d</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">include_original</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">6</span><span class="o">*</span><span class="mi">3</span><span class="p">,</span> <span class="mi">37</span><span class="p">])</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">MultiConcatConv1d</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">37</span><span class="o">*</span><span class="mi">4</span><span class="p">])</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="LSTMOutput" class="doc_header"><code>class</code> <code>LSTMOutput</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L1124" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTMOutput</code>() :: <code>Module</code></p>
+<h2 id="LSTMOutput" class="doc_header"><code>class</code> <code>LSTMOutput</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L1103" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTMOutput</code>() :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -4877,7 +4764,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MultiEmbeddding" class="doc_header"><code>class</code> <code>MultiEmbeddding</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L1142" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MultiEmbeddding</code>(<strong><code>n_embeds</code></strong>, <strong><code>embed_dims</code></strong>=<em><code>None</code></em>, <strong><code>static</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
+<h2 id="MultiEmbeddding" class="doc_header"><code>class</code> <code>MultiEmbeddding</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L1121" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MultiEmbeddding</code>(<strong><code>c_in</code></strong>, <strong><code>n_embeds</code></strong>, <strong><code>embed_dims</code></strong>=<em><code>None</code></em>, <strong><code>cat_pos</code></strong>=<em><code>None</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -4907,16 +4794,17 @@ model = nn.Sequential(OrderedDict([
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">alphabet</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">40</span><span class="p">)]</span>
 <span class="n">b</span> <span class="o">=</span> <span class="n">ALPHABET</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">40</span><span class="p">)]</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
 <span class="n">map_a</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span><span class="p">,</span><span class="n">k</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">a</span><span class="p">))}</span>
 <span class="n">map_b</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span><span class="p">,</span><span class="n">k</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">b</span><span class="p">))}</span>
 <span class="n">n_embeds</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="p">[</span><span class="n">map_a</span><span class="p">,</span> <span class="n">map_b</span><span class="p">]]</span>
 <span class="n">szs</span> <span class="o">=</span> <span class="p">[</span><span class="n">emb_sz_rule</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">n_embeds</span><span class="p">]</span>
 <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">map_a</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
 <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">map_b</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
-<span class="n">out</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">),</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
-<span class="n">embeddings</span> <span class="o">=</span> <span class="n">MultiEmbeddding</span><span class="p">(</span><span class="n">n_embeds</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">out</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">n_embeds</span><span class="p">,</span> <span class="n">out</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">out</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="nb">sum</span><span class="p">(</span><span class="n">szs</span><span class="p">),</span><span class="n">out</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+<span class="n">inp</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">c</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">),</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+<span class="n">embeddings</span> <span class="o">=</span> <span class="n">MultiEmbeddding</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">n_embeds</span><span class="p">,</span> <span class="n">cat_pos</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])(</span><span class="n">inp</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">n_embeds</span><span class="p">,</span> <span class="n">szs</span><span class="p">,</span> <span class="n">inp</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">inp</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="nb">sum</span><span class="p">(</span><span class="n">szs</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">inp</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
 </pre></div>
 
     </div>
@@ -4929,87 +4817,7 @@ model = nn.Sequential(OrderedDict([
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[3, 4] torch.Size([4, 2, 10]) torch.Size([4, 6, 10])
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">alphabet</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">40</span><span class="p">)]</span>
-<span class="n">b</span> <span class="o">=</span> <span class="n">ALPHABET</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">40</span><span class="p">)]</span>
-<span class="n">map_a</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span><span class="p">,</span><span class="n">k</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">a</span><span class="p">))}</span>
-<span class="n">map_b</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span><span class="p">,</span><span class="n">k</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">b</span><span class="p">))}</span>
-<span class="n">n_embeds</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="p">[</span><span class="n">map_a</span><span class="p">,</span> <span class="n">map_b</span><span class="p">]]</span>
-<span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">map_a</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
-<span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">map_b</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
-<span class="n">out</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">),</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
-<span class="n">embeddings</span> <span class="o">=</span> <span class="n">MultiEmbeddding</span><span class="p">(</span><span class="n">n_embeds</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">out</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">n_embeds</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>[3, 4] torch.Size([64, 10]) torch.Size([4, 128, 2])
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">alphabet</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">15</span><span class="p">,</span><span class="mi">30</span><span class="p">)])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
-<span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">ALPHABET</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">30</span><span class="p">)])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">concat</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">n_embeds</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">x</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span>
-<span class="n">out</span> <span class="o">=</span> <span class="n">stack</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">x</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span> <span class="n">return_inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])])</span><span class="o">.</span><span class="n">T</span>
-<span class="n">out</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
-<span class="n">embeddings</span> <span class="o">=</span> <span class="n">MultiEmbeddding</span><span class="p">(</span><span class="n">n_embeds</span><span class="p">,</span> <span class="mi">64</span><span class="p">)(</span><span class="n">out</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">n_embeds</span><span class="p">,</span> <span class="n">out</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>[8, 7, 8, 4, 4, 4] torch.Size([10, 6]) torch.Size([10, 64, 6])
+<pre>[3, 4] [3, 3] torch.Size([4, 3, 10]) torch.Size([4, 7, 10])
 </pre>
 </div>
 </div>

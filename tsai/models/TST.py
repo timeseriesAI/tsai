@@ -166,7 +166,7 @@ class TST(Module):
             tr_factor = math.ceil(seq_len / q_len)
             total_padding = (tr_factor * q_len - seq_len)
             padding = (total_padding // 2, total_padding - total_padding // 2)
-            self.W_P = nn.Sequential(Pad1d(padding), Conv1d(c_in, d_model, kernel_size=tr_factor, stride=tr_factor))
+            self.W_P = nn.Sequential(Pad1d(padding), Conv1d(c_in, d_model, kernel_size=tr_factor, padding=0, stride=tr_factor))
             pv(f'temporal resolution modified: {seq_len} --> {q_len} time steps: kernel_size={tr_factor}, stride={tr_factor}, padding={padding}.\n', verbose)
         elif kwargs:
             self.new_q_len = True
