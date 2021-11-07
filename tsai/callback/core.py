@@ -84,7 +84,8 @@ class ShowGraph(Callback):
         iters = range_of(rec.losses)
         val_pos = rec.metric_names.index('valid_loss') - 1
         val_losses = [v[val_pos] for v in rec.values]
-        x_bounds = (0, (self.n_epoch - len(self.nb_batches)) * self.nb_batches[0] + len(rec.losses))
+#         x_bounds = (0, (self.n_epoch - len(self.nb_batches)) * self.nb_batches[0] + len(rec.losses))
+        x_bounds = (0, len(rec.losses))
         if self.epoch == 0:
             y_min = min((min(rec.losses), min(val_losses)))
             y_max = max((max(rec.losses), max(val_losses)))

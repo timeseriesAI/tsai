@@ -1083,10 +1083,10 @@ class MultiConv1d(Module):
         n_layers = len(kss)
         if nf is None: nf = ni * (keep_original + n_layers)
         nfs = [(nf - ni*keep_original) // n_layers] * n_layers
-        while np.sum(nfs) < nf:
+        while np.sum(nfs) + ni * keep_original < nf:
             for i in range(len(nfs)):
                 nfs[i] += 1
-                if np.sum(nfs) == nf: break
+                if np.sum(nfs) + ni * keep_original == nf: break
         self.layers = nn.ModuleList()
         for nfi,ksi in zip(nfs, kss):
             self.layers.append(Conv1d(ni, nfi, ksi, **kwargs))

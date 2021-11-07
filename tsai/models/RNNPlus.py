@@ -24,8 +24,8 @@ class _RNN_Backbone(Module):
 
         # Feature extractor
         if feature_extractor:
-            assert isinstance(feature_extractor, nn.Module), "feature extractor must be an nn.Module"
-            self.feature_extractor = feature_extractor
+            if isinstance(feature_extractor, nn.Module):  self.feature_extractor = feature_extractor
+            else: self.feature_extractor = feature_extractor(c_in, seq_len)
             c_in, seq_len = self._calculate_output_size(self.feature_extractor, c_in, seq_len)
         else:
             self.feature_extractor = nn.Identity()
@@ -85,7 +85,7 @@ class _RNNPlus_Base(nn.Sequential):
                  n_embeds=None, embed_dims=None, cat_pos=None, feature_extractor=None, fc_dropout=0., last_step=True, bn=False,
                  custom_head=None, y_range=None, init_weights=True):
 
-        if not last_step: assert seq_len, 'you need to enter a seq_len to use flatten=True'
+        if not last_step: assert seq_len, 'you need to pass a seq_len value'
 
         # Backbone
         hidden_size = listify(hidden_size)
