@@ -108,28 +108,31 @@ class MVP(Callback):
     order = 60
 
     def __init__(self, r: float = .15, subsequence_mask: bool = True, lm: float = 3., stateful: bool = True, sync: bool = False, variable_mask: bool = False,
-                 future_mask: bool = False, custom_mask: Optional = None, nan_to_num : int = 0, dropout: float = .1, crit: callable = None,
-                 weights_path:Optional[str]=None, target_dir: str = './data/MVP', fname: str = 'model', save_best: bool = True, verbose: bool = False):
+                 future_mask: bool = False, custom_mask: Optional = None, nan_to_num: int = 0, window_size: Optional[tuple] = None, dropout: float = .1,
+                 crit: callable = None, weights_path: Optional[str] = None, target_dir: str = './data/MVP', fname: str = 'model', save_best: bool = True,
+                 verbose: bool = False):
         r"""
         Callback used to perform the pretext task of reconstruct the original data after a binary mask has been applied.
 
         Args:
-            r: proba of masking.
+            r:                proba of masking.
             subsequence_mask: apply a mask to random subsequences.
-            lm: average mask len when using stateful (geometric) masking.
-            stateful: geometric distribution is applied so that average mask length is lm.
-            sync: all variables have the same masking.
-            variable_mask: apply a mask to random variables. Only applicable to multivariate time series.
-            future_mask: used to train a forecasting model.
-            custom_mask: allows to pass any type of mask with input tensor and output tensor. Values to mask should be set to True.
-            nan_to_num: integer used to fill masked values
-            dropout: dropout applied to the head of the model during pretraining.
-            crit: loss function that will be used. If None MSELossFlat().
-            weights_path: indicates the path to pretrained weights. This is useful when you want to continue training from a checkpoint. It will load the
-                          pretrained weights to the model with the MVP head.
-            target_dir : directory where trained model will be stored.
-            fname : file name that will be used to save the pretrained model.
-            save_best: saves best model weights
+            lm:               average mask len when using stateful (geometric) masking.
+            stateful:         geometric distribution is applied so that average mask length is lm.
+            sync:             all variables have the same masking.
+            variable_mask:    apply a mask to random variables. Only applicable to multivariate time series.
+            future_mask:      used to train a forecasting model.
+            custom_mask:      allows to pass any type of mask with input tensor and output tensor. Values to mask should be set to True.
+            nan_to_num:       integer used to fill masked values
+            window_size:      allows you to pass a fixed window size or tuple of window sizes to train MVP with on sequences of different length.
+                              You may pass int(s) or float(s).
+            dropout:          dropout applied to the head of the model during pretraining.
+            crit:             loss function that will be used. If None MSELossFlat().
+            weights_path:     indicates the path to pretrained weights. This is useful when you want to continue training from a checkpoint. It will load the
+                              pretrained weights to the model with the MVP head.
+            target_dir :      directory where trained model will be stored.
+            fname :           file name that will be used to save the pretrained model.
+            save_best:        saves best model weights
     """
         assert subsequence_mask or variable_mask or future_mask or custom_mask, \
             'you must set (subsequence_mask and/or variable_mask) or future_mask to True or use a custom_mask'
@@ -142,6 +145,7 @@ class MVP(Callback):
         if not os.path.exists(self.PATH.parent):
             os.makedirs(self.PATH.parent)
         self.path_text = f"pretrained weights_path='{self.PATH}.pth'"
+        self.window_size = window_size
 
     def before_fit(self):
         self.run = not hasattr(self, "gather_preds")
@@ -175,6 +179,15 @@ class MVP(Callback):
             xb = torch.randn(2, self.learn.dls.vars, self.learn.dls.len).to(self.learn.dls.device)
             assert xb.shape == self.learn.model(xb).shape, 'the model cannot reproduce the input shape'
 
+        if self.window_size:
+            if isinstance(self.window_size, float) or self.window_size == 1:
+                self.window_size = int(round(self.window_size * self.learn.dls.len))
+            elif is_listy(self.window_size):
+                self.window_size = list(self.window_size)
+                for i in range(len(self.window_size)):
+                    if isinstance(self.window_size[i], float) or self.window_size[i] == 1:
+                        self.window_size[i] = int(round(self.window_size[i] * self.learn.dls.len))
+
     def before_batch(self):
         original_mask = torch.isnan(self.x)
         if self.custom_mask is not None:
@@ -188,6 +201,13 @@ class MVP(Callback):
             self.mask = new_mask
         self.learn.yb = (torch.nan_to_num(self.x, self.nan_to_num),)
         self.learn.xb = (self.yb[0].masked_fill(self.mask, self.nan_to_num), )
+        if self.window_size:
+            if is_listy(self.window_size): ws = np.random.randint(*self.window_size)
+            else: ws = self.window_size
+            w_start = np.random.randint(0, self.x.shape[-1] - ws)
+            self.learn.xb = (self.learn.xb[0][..., w_start:w_start+ws], )
+            self.learn.yb = (self.learn.yb[0][..., w_start:w_start+ws], )
+            self.mask = self.mask[..., w_start:w_start+ws]
 
     def after_epoch(self):
         val = self.learn.recorder.values[-1][-1]
