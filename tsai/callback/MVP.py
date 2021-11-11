@@ -229,9 +229,9 @@ class MVP(Callback):
     def show_preds(self, max_n=9, nrows=3, ncols=3, figsize=None, sharex=True, **kwargs):
         b = self.learn.dls.valid.one_batch()
         self.learn._split(b)
+        self.learn('before_batch')
         xb = self.xb[0].detach().cpu().numpy()
         bs, nvars, seq_len = xb.shape
-        self.learn('before_batch')
         masked_pred = torch.where(self.mask, self.learn.model(*self.learn.xb), tensor([np.nan], device=self.learn.x.device)).detach().cpu().numpy()
         ncols = min(ncols, math.ceil(bs / ncols))
         nrows = min(nrows, math.ceil(bs / ncols))
