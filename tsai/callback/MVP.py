@@ -232,7 +232,8 @@ class MVP(Callback):
         self.learn('before_batch')
         xb = self.xb[0].detach().cpu().numpy()
         bs, nvars, seq_len = xb.shape
-        masked_pred = torch.where(self.mask, self.learn.model(*self.learn.xb), tensor([np.nan], device=self.learn.x.device)).detach().cpu().numpy()
+        masked_pred = torch.where(self.mask, self.learn.model(*self.learn.xb), tensor([np.nan], device=self.learn.x.device))
+        masked_pred = masked_pred.detach().cpu().numpy()
         ncols = min(ncols, math.ceil(bs / ncols))
         nrows = min(nrows, math.ceil(bs / ncols))
         max_n = min(max_n, bs, nrows*ncols)
