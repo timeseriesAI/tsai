@@ -370,11 +370,11 @@ def SlidingWindow(window_len:int, stride:Union[None, int]=1, start:int=0, pad_re
         if isinstance(o, pd.DataFrame):
             if sort_by is not None: o.sort_values(by=sort_by, axis=0, ascending=ascending, inplace=True, ignore_index=True)
             if get_x is None: X = o.values
-            elif isinstance(o.columns[0], str): X = o.loc[:, _get_x].values
+            elif isinstance(_get_x, str) or (is_listy(_get_x) and isinstance(_get_x[0], str)): X = o.loc[:, _get_x].values
             else: X = o.iloc[:, _get_x].values
             if get_y == []: y = None
             elif get_y is None: y = o.values
-            elif isinstance(o.columns[0], str): y = o.loc[:, _get_y].values
+            elif isinstance(_get_y, str) or (is_listy(_get_y) and isinstance(_get_y[0], str)): y = o.loc[:, _get_y].values
             else: y = o.iloc[:, _get_y].values
         else:
             if isinstance(o, torch.Tensor): o = o.numpy()
