@@ -81,14 +81,13 @@ Here's a list with some of the state-of-the-art models available in `tsai`:
 - [InceptionTime](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/InceptionTime.py) (Fawaz, 2019) ([paper](https://arxiv.org/abs/1909.04939))
 - [Rocket](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/ROCKET.py) (Dempster, 2019) ([paper](https://arxiv.org/abs/1910.13051))
 - [XceptionTime](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/XceptionTime.py) (Rahimian, 2019) ([paper](https://arxiv.org/abs/1911.03803))
+- [ResCNN](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/ResCNN.py) - 1D-ResCNN (Zou , 2019) ([paper](https://www.sciencedirect.com/science/article/pii/S0925231219311506))
 - [TabModel](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/TabModel.py) - modified from fastai's [TabularModel](https://docs.fast.ai/tabular.model.html#TabularModel)
 - [OmniScale](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/OmniScaleCNN.py) - Omni-Scale 1D-CNN (Tang, 2020) ([paper](https://arxiv.org/abs/2002.10061))
-- [ResCNN](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/ResCNN.py) - 1D-ResCNN (Sun , 2020) ([paper](https://arxiv.org/abs/2010.02803))
 - [TST](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/TST.py) - Time Series Transformer (Zerveas, 2020) ([paper](https://dl.acm.org/doi/abs/10.1145/3447548.3467401))
 - [TabTransformer](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/TabTransformer.py) (Huang, 2020) ([paper](https://arxiv.org/pdf/2012.06678))
 - [XCM](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/XCM.py) - Explainable Convolutional Neural Network) (Fauvel, 2020) ([paper](https://arxiv.org/abs/2005.03645))
 - [MiniRocket](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/MINIROCKET.py) (Dempster, 2021) ([paper](https://arxiv.org/abs/2102.00457))
-
 
 
 among others!
