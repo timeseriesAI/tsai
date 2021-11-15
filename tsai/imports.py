@@ -1,6 +1,3 @@
-import pandas as pd
-pd_df__init__ = pd.DataFrame.__init__ # temporary fix for fastai issue #3485
-
 import fastai
 from fastai.imports import *
 from fastai.data.all import *
@@ -16,7 +13,6 @@ from fastai.tabular.all import *
 import fastcore
 from fastcore.test import *
 from fastcore.utils import *
-pd.DataFrame.__init__ = pd_df__init__ # temporary fix for fastai issue #3485
 
 import torch
 import torch.nn as nn
