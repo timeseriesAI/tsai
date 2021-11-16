@@ -13,13 +13,22 @@ from sklearn.model_selection import train_test_split, KFold, StratifiedKFold
 from imblearn.over_sampling import RandomOverSampler
 
 # Cell
-def check_overlap(a, b):
+def check_overlap(a, b, c=None):
     a = toarray(a)
     b = toarray(b)
-    overlap = np.isin(a, b)
-    if isinstance(overlap[0], (list, L, np.ndarray, torch.Tensor)):  overlap = overlap[0]
-    if not any(overlap): return False
-    else: return a[overlap].tolist()
+    overlap_ab = np.isin(a, b)
+    if c is None:
+        if isinstance(overlap_ab[0], (list, L, np.ndarray, torch.Tensor)):  overlap_ab = overlap_ab[0]
+        if not any(overlap_ab): return False
+        else: return a[overlap_ab].tolist()
+    else:
+        c = toarray(c)
+        overlap_ac = np.isin(a, c)
+        if isinstance(overlap_ac[0], (list, L, np.ndarray, torch.Tensor)):  overlap_ac = overlap_ac[0]
+        overlap_bc = np.isin(b, c)
+        if isinstance(overlap_bc[0], (list, L, np.ndarray, torch.Tensor)):  overlap_bc = overlap_bc[0]
+        if not any(overlap_ab) and not any(overlap_ac) and not any(overlap_bc): return False
+        else: return a[overlap_ab].tolist(), a[overlap_ac].tolist(), b[overlap_bc].tolist()
 
 def check_splits_overlap(splits):
     return [check_overlap(*_splits) for _splits in splits] if is_listy(splits[0][0]) else [check_overlap(*splits)]

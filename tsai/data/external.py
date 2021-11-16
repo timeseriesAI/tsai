@@ -14,6 +14,15 @@ from ..utils import *
 from .validation import *
 
 # Cell
+# Fix to fastai issue #3485 (not deployed to pip yet)
+if not hasattr(pd.DataFrame,'_old_init'): pd.DataFrame._old_init = pd.DataFrame.__init__
+
+@patch
+def __init__(self:pd.DataFrame, data=None, index=None, columns=None, dtype=None, copy=None):
+    if data is not None and isinstance(data, Tensor): data = to_np(data)
+    self._old_init(data, index=index, columns=columns, dtype=dtype, copy=copy)
+
+# Cell
 from sktime.utils.data_io import load_from_tsfile_to_dataframe as ts2df
 from sktime.utils.validation.panel import check_X
 from sktime.utils.data_io import TsFileParseException
