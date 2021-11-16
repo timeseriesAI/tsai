@@ -31,7 +31,7 @@ def check_overlap(a, b, c=None):
         else: return a[overlap_ab].tolist(), a[overlap_ac].tolist(), b[overlap_bc].tolist()
 
 def check_splits_overlap(splits):
-    return [check_overlap(*_splits) for _splits in splits] if is_listy(splits[0][0]) else [check_overlap(*splits)]
+    return [check_overlap(*_splits) for _splits in splits] if is_listy(splits[0][0]) else check_overlap(*splits)
 
 def leakage_finder(*splits, verbose=True):
     '''You can pass splits as a tuple, or train, valid, ...'''
