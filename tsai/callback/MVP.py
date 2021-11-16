@@ -199,7 +199,8 @@ class MVP(Callback):
             self.mask = torch.logical_and(new_mask, ~original_mask)
         else:
             self.mask = new_mask
-        self.learn.yb = (torch.nan_to_num(self.x, self.nan_to_num),)
+#         self.learn.yb = (torch.nan_to_num(self.x, self.nan_to_num),) # Only available in Pytorch 1.8
+        self.learn.yb = (torch_nan_to_num(self.x, self.nan_to_num),)
         self.learn.xb = (self.yb[0].masked_fill(self.mask, self.nan_to_num), )
         if self.window_size:
             if is_listy(self.window_size): ws = np.random.randint(*self.window_size)

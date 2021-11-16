@@ -60,8 +60,10 @@ class Nan2Value(Transform):
                     median = torch.nanmedian(o, dim=2, keepdim=True)[0].repeat(1, 1, o.shape[-1])
                     o[mask] = median[mask]
                 else:
-                    o = torch.nan_to_num(o, torch.nanmedian(o))
-            o = torch.nan_to_num(o, self.value)
+#                     o = torch.nan_to_num(o, torch.nanmedian(o)) # Only available in Pytorch 1.8
+                    o = torch_nan_to_num(o, torch.nanmedian(o))
+#             o = torch.nan_to_num(o, self.value) # Only available in Pytorch 1.8
+        o = torch_nan_to_num(o, self.value)
         return o
 
 # Cell
