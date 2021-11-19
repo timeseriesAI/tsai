@@ -7,6 +7,7 @@ from ..imports import *
 from ..utils import *
 from ..data.core import *
 from .layers import *
+from .utils import *
 
 # Cell
 class _RNN_Backbone(Module):
@@ -15,9 +16,9 @@ class _RNN_Backbone(Module):
 
         # Categorical embeddings
         if n_embeds is not None:
-            self.to_cat_embed = MultiEmbeddding(c_in, n_embeds, embed_dims=embed_dims, cat_pos=cat_pos)
             if embed_dims is None:
                 embed_dims = [emb_sz_rule(s) for s in n_embeds]
+            self.to_cat_embed = MultiEmbedding(c_in, n_embeds, embed_dims=embed_dims, cat_pos=cat_pos)
             c_in = c_in + sum(embed_dims) - len(n_embeds)
         else:
             self.to_cat_embed = nn.Identity()
@@ -26,7 +27,7 @@ class _RNN_Backbone(Module):
         if feature_extractor:
             if isinstance(feature_extractor, nn.Module):  self.feature_extractor = feature_extractor
             else: self.feature_extractor = feature_extractor(c_in, seq_len)
-            c_in, seq_len = self._calculate_output_size(self.feature_extractor, c_in, seq_len)
+            c_in, seq_len = output_size_calculator(self.feature_extractor, c_in, seq_len)
         else:
             self.feature_extractor = nn.Identity()
 
@@ -72,12 +73,6 @@ class _RNN_Backbone(Module):
                 params.data[(n // 4):(n // 2)].fill_(1)
             elif 'bias_hh' in name:
                 params.data.fill_(0)
-
-    @torch.no_grad()
-    def _calculate_output_size(self, m, c_in, seq_len):
-        xb = torch.randn(1, c_in, seq_len)
-        c_in, seq_len = m(xb).shape[1:]
-        return c_in, seq_len
 
 # Cell
 class _RNNPlus_Base(nn.Sequential):
