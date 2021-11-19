@@ -4,7 +4,7 @@ __all__ = ['noop', 'init_lin_zero', 'lin_zero_init', 'SwishBeta', 'Chomp1d', 'sa
            'same_padding2d', 'Pad2d', 'Conv2dSame', 'Conv2d', 'CausalConv1d', 'Conv1d', 'SeparableConv1d',
            'AddCoords1d', 'ConvBlock', 'Conv', 'ConvBN', 'CoordConv', 'SepConv', 'ResBlock1dPlus', 'SEModule1d', 'Norm',
            'BN1d', 'IN1d', 'LinLnDrop', 'LambdaPlus', 'Squeeze', 'Unsqueeze', 'Add', 'Concat', 'Permute', 'Transpose',
-           'View', 'Reshape', 'Max', 'LastStep', 'SoftMax', 'Clamp', 'Clip', 'Noop', 'DropPath', 'Sharpen',
+           'View', 'Reshape', 'Max', 'LastStep', 'SoftMax', 'Clamp', 'Clip', 'ReZero', 'Noop', 'DropPath', 'Sharpen',
            'Sequential', 'TimeDistributed', 'Temp_Scale', 'Vector_Scale', 'Matrix_Scale', 'get_calibrator',
            'LogitAdjustmentLayer', 'LogitAdjLayer', 'PPV', 'PPAuc', 'MaxPPVPool1d', 'AdaptiveWeightedAvgPool1d',
            'GAP1d', 'GACP1d', 'GAWP1d', 'GlobalWeightedAveragePool1d', 'gwa_pool_head', 'GWAP1d', 'AttentionalPool1d',
@@ -16,7 +16,7 @@ __all__ = ['noop', 'init_lin_zero', 'lin_zero_init', 'SwishBeta', 'Chomp1d', 'sa
            'universal_pool_head', 'heads', 'SqueezeExciteBlock', 'GaussianNoise', 'gambler_loss',
            'CrossEntropyLossOneHot', 'ttest_bin_loss', 'ttest_reg_loss', 'CenterLoss', 'CenterPlusLoss', 'FocalLoss',
            'TweedieLoss', 'PositionwiseFeedForward', 'TokenLayer', 'ScaledDotProductAttention', 'MultiheadAttention',
-           'MultiConv1d', 'LSTMOutput', 'trunc_normal_', 'Embedding', 'MultiEmbeddding']
+           'MultiConv1d', 'LSTMOutput', 'trunc_normal_', 'Embedding', 'MultiEmbedding']
 
 # Cell
 from ..imports import *
@@ -373,6 +373,15 @@ class Clip(Module):
             x = torch.minimum(x, self.max)
         return x
     def __repr__(self): return f'{self.__class__.__name__}()'
+
+
+class ReZero(Module):
+    def __init__(self, module):
+        self.module = module
+        self.alpha = nn.Parameter(torch.zeros(1))
+    def forward(self, x):
+        return x + self.alpha * self.module(x)
+
 
 Noop = nn.Sequential()
 
@@ -1072,7 +1081,7 @@ class MultiheadAttention(Module):
 class MultiConv1d(Module):
     """Module that applies multiple convolutions with different kernel sizes"""
 
-    def __init__(self, ni, nf=None, kss=[1,3,5,7], keep_original=False, dim=1, **kwargs):
+    def __init__(self, ni, nf=None, kss=[1,3,5,7], keep_original=True, dim=1, **kwargs):
         kss = listify(kss)
         n_layers = len(kss)
         if nf is None: nf = ni * (keep_original + n_layers)
@@ -1112,7 +1121,7 @@ class Embedding(nn.Embedding):
         super(Embedding, self).__init__(ni, nf)
         trunc_normal_(self.weight.data, std=std)
 
-class MultiEmbeddding(Module):
+class MultiEmbedding(Module):
     def __init__(self, c_in, n_embeds, embed_dims=None, cat_pos=None):
         if embed_dims is None:
             embed_dims = [emb_sz_rule(s) for s in n_embeds]

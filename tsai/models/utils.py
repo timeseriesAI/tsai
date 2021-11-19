@@ -3,7 +3,7 @@
 __all__ = ['get_layers', 'is_layer', 'is_linear', 'is_bn', 'is_conv_linear', 'is_affine_layer', 'is_conv', 'has_bias',
            'has_weight', 'has_weight_or_bias', 'check_bias', 'check_weight', 'get_nf', 'ts_splitter',
            'transfer_weights', 'build_ts_model', 'build_tabular_model', 'build_tsimage_model', 'count_parameters',
-           'build_model', 'create_model', 'create_tabular_model', 'get_clones', 'split_model', 'seq_len_calculator',
+           'build_model', 'create_model', 'create_tabular_model', 'get_clones', 'split_model', 'output_size_calculator',
            'change_model_head', 'naive_forecaster', 'true_forecaster']
 
 # Cell
@@ -218,9 +218,11 @@ def get_clones(module, N):
 def split_model(m): return m.backbone, m.head
 
 # Cell
-def seq_len_calculator(seq_len, **kwargs):
-    t = torch.rand(1, 1, seq_len)
-    return nn.Conv1d(1, 1, **kwargs)(t).shape[-1]
+@torch.no_grad()
+def output_size_calculator(m, c_in, seq_len):
+    xb = torch.randn(1, c_in, seq_len)
+    c_in, seq_len = m(xb).shape[1:]
+    return c_in, seq_len
 
 # Cell
 def change_model_head(model, custom_head, **kwargs):
