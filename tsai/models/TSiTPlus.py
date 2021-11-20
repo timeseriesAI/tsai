@@ -19,7 +19,7 @@ class _TSiTEncoder(nn.Module):
         self.layers = nn.ModuleList([])
         for i in range(n_layers):
             self.layers.append(nn.ModuleList([
-                MultiheadAttention(d_model, n_heads, dropout=attn_dropout, qkv_bias=qkv_bias), nn.LayerNorm(d_model),
+                MultiheadAttention(d_model, n_heads, attn_dropout=attn_dropout, proj_dropout=dropout, qkv_bias=qkv_bias), nn.LayerNorm(d_model),
                 PositionwiseFeedForward(d_model, dropout=dropout, act=act, mlp_ratio=mlp_ratio), nn.LayerNorm(d_model),
                 # NOTE: drop path for stochastic depth, we shall see if this is better than dropout here
                 DropPath(dpr[i]) if dpr[i] != 0 else nn.Identity(),
@@ -104,7 +104,7 @@ class TSiTPlus(nn.Sequential):
 
 
     def __init__(self, c_in:int, c_out:int, seq_len:int, n_layers:int=6, d_model:int=128, n_heads:int=16, d_head:Optional[int]=None, act:str='reglu',
-                 d_ff:int=256, dropout:float=0., attn_dropout:float=0, drop_path_rate:float=0., mlp_ratio:int=1,
+                 d_ff:int=256, attn_dropout:float=0, dropout:float=0., drop_path_rate:float=0., mlp_ratio:int=1,
                  qkv_bias:bool=True, pre_norm:bool=False, use_token:bool=True, fc_dropout:float=0., bn:bool=False, y_range:Optional[tuple]=None,
                  ks:Optional[int]=None, maxpool:bool=True, feature_extractor:Optional[Callable]=None, custom_head:Optional[Callable]=None, verbose:bool=False):
 
@@ -143,10 +143,9 @@ class TSiTPlus(nn.Sequential):
             x: bs (batch size) x nvars (aka features, variables, dimensions, channels) x seq_len (aka time steps)
         """
 
-        backbone = _TSiTBackbone(c_in, seq_len, n_layers=n_layers, d_model=d_model, n_heads=n_heads, d_head=d_head, act=act,
-                                  d_ff=d_ff, dropout=dropout, attn_dropout=attn_dropout,
-                                  drop_path_rate=drop_path_rate, pre_norm=pre_norm, mlp_ratio=mlp_ratio, use_token=use_token,
-                                  ks=ks, maxpool=maxpool, feature_extractor=feature_extractor, verbose=verbose)
+        backbone = _TSiTBackbone(c_in, seq_len, n_layers=n_layers, d_model=d_model, n_heads=n_heads, d_head=d_head, act=act, d_ff=d_ff,
+                                 attn_dropout=attn_dropout, dropout=dropout, drop_path_rate=drop_path_rate, pre_norm=pre_norm, mlp_ratio=mlp_ratio,
+                                 use_token=use_token, ks=ks, maxpool=maxpool, feature_extractor=feature_extractor, verbose=verbose)
 
         self.head_nf = d_model
         self.c_out = c_out

@@ -549,7 +549,7 @@ Taken from the great self-supervised repository created by Kerem Turgutlu.
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>Feature Extraction: 100%|████████████████████| 40/40 [00:07&lt;00:00,  5.58it/s]
+<pre>Feature Extraction: 100%|████████████████████████████████| 40/40 [00:05&lt;00:00,  7.24it/s]
 </pre>
 </div>
 </div>
@@ -728,7 +728,7 @@ Taken from the great self-supervised repository created by Kerem Turgutlu.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="seq_len_calculator" class="doc_header"><code>seq_len_calculator</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/utils.py#L221" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>seq_len_calculator</code>(<strong><code>seq_len</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="output_size_calculator" class="doc_header"><code>output_size_calculator</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/utils.py#L221" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>output_size_calculator</code>(<strong><code>m</code></strong>, <strong><code>c_in</code></strong>, <strong><code>seq_len</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -755,9 +755,11 @@ Taken from the great self-supervised repository created by Kerem Turgutlu.
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">seq_len</span> <span class="o">=</span> <span class="mi">345</span>
-<span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">kernel_size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-<span class="n">seq_len_calculator</span><span class="p">(</span><span class="n">seq_len</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">c_in</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">seq_len</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Conv1d</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">new_c_in</span><span class="p">,</span> <span class="n">new_seq_len</span> <span class="o">=</span> <span class="n">output_size_calculator</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">c_in</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">((</span><span class="n">new_c_in</span><span class="p">,</span> <span class="n">new_seq_len</span><span class="p">),</span> <span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">14</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -773,16 +775,6 @@ Taken from the great self-supervised repository created by Kerem Turgutlu.
 <pre>[W NNPACK.cpp:79] Could not initialize NNPACK! Reason: Unsupported hardware.
 </pre>
 </div>
-</div>
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>69</pre>
-</div>
-
 </div>
 
 </div>
@@ -802,7 +794,7 @@ Taken from the great self-supervised repository created by Kerem Turgutlu.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="change_model_head" class="doc_header"><code>change_model_head</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/utils.py#L226" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>change_model_head</code>(<strong><code>model</code></strong>, <strong><code>custom_head</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="change_model_head" class="doc_header"><code>change_model_head</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/utils.py#L228" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>change_model_head</code>(<strong><code>model</code></strong>, <strong><code>custom_head</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Replaces a model's head by a custom head as long as the model has a head, head_nf, c_out and seq_len attributes</p>
 
@@ -834,7 +826,7 @@ Taken from the great self-supervised repository created by Kerem Turgutlu.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="naive_forecaster" class="doc_header"><code>naive_forecaster</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/utils.py#L232" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>naive_forecaster</code>(<strong><code>o</code></strong>, <strong><code>split</code></strong>, <strong><code>horizon</code></strong>=<em><code>1</code></em>)</p>
+<h4 id="naive_forecaster" class="doc_header"><code>naive_forecaster</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/utils.py#L234" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>naive_forecaster</code>(<strong><code>o</code></strong>, <strong><code>split</code></strong>, <strong><code>horizon</code></strong>=<em><code>1</code></em>)</p>
 </blockquote>
 
 </div>
@@ -858,7 +850,7 @@ Taken from the great self-supervised repository created by Kerem Turgutlu.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="true_forecaster" class="doc_header"><code>true_forecaster</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/utils.py#L240" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>true_forecaster</code>(<strong><code>o</code></strong>, <strong><code>split</code></strong>, <strong><code>horizon</code></strong>=<em><code>1</code></em>)</p>
+<h4 id="true_forecaster" class="doc_header"><code>true_forecaster</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/utils.py#L242" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>true_forecaster</code>(<strong><code>o</code></strong>, <strong><code>split</code></strong>, <strong><code>horizon</code></strong>=<em><code>1</code></em>)</p>
 </blockquote>
 
 </div>
@@ -902,14 +894,14 @@ Taken from the great self-supervised repository created by Kerem Turgutlu.
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(array([ 0.61637983,  0.71185679,  1.47391917,  1.52721803,  1.76317466,
-         1.87897511,  2.65525045,  3.63258622,  3.70638024,  4.59239387,
-         5.43285897,  5.79431804,  6.01508345,  6.63109939,  7.25974664,
-         7.64466672,  8.42191947,  9.32249868,  9.52273   , 10.20898732]),
- array([4.59239387, 5.43285897, 5.79431804, 6.01508345, 6.63109939,
-        7.25974664, 7.64466672, 8.42191947, 9.32249868, 9.52273   ]),
- array([ 5.43285897,  5.79431804,  6.01508345,  6.63109939,  7.25974664,
-         7.64466672,  8.42191947,  9.32249868,  9.52273   , 10.20898732]))</pre>
+<pre>(array([0.61045463, 1.44629539, 2.3553599 , 2.43215923, 2.6113485 ,
+        2.94368701, 3.61893882, 4.23326879, 5.01821982, 5.36714011,
+        6.31016956, 6.94792666, 7.71462965, 8.05169498, 8.06891121,
+        8.22993887, 8.77722497, 9.21519505, 9.37910994, 9.43297956]),
+ array([5.36714011, 6.31016956, 6.94792666, 7.71462965, 8.05169498,
+        8.06891121, 8.22993887, 8.77722497, 9.21519505, 9.37910994]),
+ array([6.31016956, 6.94792666, 7.71462965, 8.05169498, 8.06891121,
+        8.22993887, 8.77722497, 9.21519505, 9.37910994, 9.43297956]))</pre>
 </div>
 
 </div>

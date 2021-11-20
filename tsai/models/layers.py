@@ -954,18 +954,12 @@ class TweedieLoss(Module):
 # Cell
 class PositionwiseFeedForward(nn.Sequential):
     def __init__(self, dim, dropout=0., act='reglu', mlp_ratio=1):
-        act = act.lower()
-        act_mult = 2 if act in ['geglu', 'reglu'] else 1
-        if act == 'relu': act_fn = nn.ReLU()
-        elif act == 'gelu': act_fn = nn.GELU()
-        elif act == 'geglu': act_fn = GEGLU()
-        else: act_fn = ReGLU()
-        super().__init__(nn.Linear(dim, dim * act_mult * mlp_ratio),
-                         act_fn,
+        act_mult = 2 if act.lower() in ["geglu", "reglu"] else 1
+        super().__init__(nn.Linear(dim, dim * mlp_ratio * act_mult),
+                         get_act_fn(act),
                          nn.Dropout(dropout),
                          nn.Linear(dim * mlp_ratio, dim),
                          nn.Dropout(dropout))
-
 
 class TokenLayer(Module):
     def __init__(self, token=True): self.token = token
@@ -976,7 +970,9 @@ class TokenLayer(Module):
 class ScaledDotProductAttention(Module):
     """Scaled Dot-Product Attention module (Vaswani et al., 2017) with optional residual attention from previous layer (He et al, 2020)"""
 
-    def __init__(self, res_attention:bool=False):  self.res_attention = res_attention
+    def __init__(self, attn_dropout=0., res_attention=False):
+        self.attn_dropout = nn.Dropout(attn_dropout)
+        self.res_attention = res_attention
 
     def forward(self, q:Tensor, k:Tensor, v:Tensor, prev:Optional[Tensor]=None, key_padding_mask:Optional[Tensor]=None, attn_mask:Optional[Tensor]=None):
         '''
@@ -1013,6 +1009,7 @@ class ScaledDotProductAttention(Module):
 
         # normalize the attention weights
         attn_weights = F.softmax(attn_scores, dim=-1)                 # attn_weights   : [bs x n_heads x max_q_len x q_len]
+        attn_weights = self.attn_dropout(attn_weights)
 
         # compute the new values given the attention weights
         output = torch.matmul(attn_weights, v)                        # output: [bs x n_heads x max_q_len x d_v]
@@ -1021,10 +1018,8 @@ class ScaledDotProductAttention(Module):
         else: return output, attn_weights
 
 # Cell
-
 class MultiheadAttention(Module):
-    def __init__(self, d_model:int, n_heads:int, d_k:Optional[int]=None, d_v:Optional[int]=None, res_attention:bool=False,
-                 dropout:float=0., qkv_bias:bool=True):
+    def __init__(self, d_model, n_heads, d_k=None, d_v=None, res_attention=False, attn_dropout=0., proj_dropout=0., qkv_bias=True):
         """Multi Head Attention Layer
 
         Input shape:
@@ -1044,11 +1039,10 @@ class MultiheadAttention(Module):
 
         # Scaled Dot-Product Attention (multiple heads)
         self.res_attention = res_attention
-        self.sdp_attn = ScaledDotProductAttention(res_attention=self.res_attention)
+        self.sdp_attn = ScaledDotProductAttention(attn_dropout=attn_dropout, res_attention=self.res_attention)
 
         # Poject output
-        project_out = not (n_heads == 1 and d_model == d_k)
-        self.to_out = nn.Sequential(nn.Linear(n_heads * d_v, d_model), nn.Dropout(dropout)) if project_out else nn.Identity()
+        self.to_out = nn.Sequential(nn.Linear(n_heads * d_v, d_model), nn.Dropout(proj_dropout))
 
 
     def forward(self, Q:Tensor, K:Optional[Tensor]=None, V:Optional[Tensor]=None, prev:Optional[Tensor]=None,
