@@ -16,7 +16,7 @@ __all__ = ['noop', 'init_lin_zero', 'lin_zero_init', 'SwishBeta', 'Chomp1d', 'sa
            'universal_pool_head', 'heads', 'SqueezeExciteBlock', 'GaussianNoise', 'gambler_loss',
            'CrossEntropyLossOneHot', 'ttest_bin_loss', 'ttest_reg_loss', 'CenterLoss', 'CenterPlusLoss', 'FocalLoss',
            'TweedieLoss', 'PositionwiseFeedForward', 'TokenLayer', 'ScaledDotProductAttention', 'MultiheadAttention',
-           'MultiConv1d', 'LSTMOutput', 'trunc_normal_', 'Embedding', 'MultiEmbedding']
+           'MultiConv1d', 'LSTMOutput', 'MultiEmbedding']
 
 # Cell
 from ..imports import *
@@ -1102,21 +1102,8 @@ class LSTMOutput(Module):
     def __repr__(self): return f'{self.__class__.__name__}()'
 
 # Cell
-def trunc_normal_(x, mean=0., std=1.):
-    "Truncated normal initialization (approximation)"
-    # From fastai.layers
-    # From https://discuss.pytorch.org/t/implementing-truncated-normal-initializer/4778/12
-    return x.normal_().fmod_(2).mul_(std).add_(mean)
-
-class Embedding(nn.Embedding):
-    "Embedding layer with truncated normal initialization"
-    # From fastai.layers
-    def __init__(self, ni, nf, std=0.01):
-        super(Embedding, self).__init__(ni, nf)
-        trunc_normal_(self.weight.data, std=std)
-
 class MultiEmbedding(Module):
-    def __init__(self, c_in, n_embeds, embed_dims=None, cat_pos=None):
+    def __init__(self, c_in, n_embeds, embed_dims=None, cat_pos=None, std=0.01):
         if embed_dims is None:
             embed_dims = [emb_sz_rule(s) for s in n_embeds]
         else:
@@ -1128,7 +1115,7 @@ class MultiEmbedding(Module):
             if cont_pos is None: self.cat_pos = np.arange(len(n_embeds))
             else: self.cat_pos = [p for p in np.arange(c_in) if p not in self.cont_pos]
         self.cont_pos = [p for p in np.arange(c_in) if p not in self.cat_pos]
-        self.cat_embed = nn.ModuleList([Embedding(n,d) for n,d in zip(n_embeds, embed_dims)])
+        self.cat_embed = nn.ModuleList([Embedding(n,d,std=std) for n,d in zip(n_embeds, embed_dims)])
 
     def forward(self, x):
         x_cat, x_cont = x[:, self.cat_pos], x[:, self.cont_pos]
