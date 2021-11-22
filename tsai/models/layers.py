@@ -1111,13 +1111,12 @@ class MultiEmbedding(Module):
             if len(embed_dims) == 1: embed_dims = embed_dims * len(n_embeds)
             assert len(embed_dims) == len(n_embeds)
         if cat_pos: self.cat_pos = cat_pos
-        else:
-            if cont_pos is None: self.cat_pos = np.arange(len(n_embeds))
-            else: self.cat_pos = [p for p in np.arange(c_in) if p not in self.cont_pos]
+        else: self.cat_pos = np.arange(len(n_embeds))
         self.cont_pos = [p for p in np.arange(c_in) if p not in self.cat_pos]
-        self.cat_embed = nn.ModuleList([Embedding(n,d,std=std) for n,d in zip(n_embeds, embed_dims)])
+        self.cat_embed = nn.ModuleList([Embedding(n, d, std=std) for n,d in zip(n_embeds, embed_dims)])
 
     def forward(self, x):
-        x_cat, x_cont = x[:, self.cat_pos], x[:, self.cont_pos]
+        if isinstance(x, tuple): x_cat, x_cont = x
+        else: x_cat, x_cont = x[:, self.cat_pos], x[:, self.cont_pos]
         x_cat = torch.cat([e(x_cat[:,i].long()).transpose(1,2) for i,e in enumerate(self.cat_embed)],1)
         return torch.cat([x_cat, x_cont], 1)

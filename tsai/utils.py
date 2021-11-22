@@ -19,7 +19,7 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'torch_nan_to_num', 'torch_masked_to_num', 'mpl_trend', 'int2digits', 'array2digits', 'sincos_encoding',
            'linear_encoding', 'encode_positions', 'sort_generator', 'get_subset_dict', 'create_dir', 'remove_dir',
            'named_partial', 'yaml2dict', 'str2list', 'str2index', 'get_cont_cols', 'get_cat_cols', 'alphabet',
-           'ALPHABET', 'get_mapping', 'map_array', 'log_tfm', 'to_sincos_time']
+           'ALPHABET', 'get_mapping', 'map_array', 'log_tfm', 'to_sincos_time', 'plot_feature_dist']
 
 # Cell
 from .imports import *
@@ -1079,3 +1079,15 @@ def to_sincos_time(arr, max_value):
     sin = np.sin(arr / max_value * 2 * np.pi)
     cos = np.cos(arr / max_value * 2 * np.pi)
     return sin, cos
+
+# Cell
+def plot_feature_dist(X, percentiles=[0,0.1,0.5,1,5,10,25,50,75,90,95,99,99.5,99.9,100]):
+    for i in range(X.shape[1]):
+        ys = []
+        for p in percentiles:
+            ys.append(np.percentile(X[:, i].flatten(), p))
+        plt.plot(percentiles, ys)
+        plt.xticks(percentiles, rotation='vertical')
+        plt.grid(color='gainsboro', linewidth=.5)
+        plt.title(f"var_{i}")
+        plt.show()

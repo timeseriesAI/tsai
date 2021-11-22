@@ -18,7 +18,6 @@ def show_batch(self:Learner, **kwargs):
     self.dls.show_batch(**kwargs)
 
 # Cell
-
 @patch
 def remove_all_cbs(self:Learner, max_iters=10):
     i = 0
@@ -291,7 +290,6 @@ def tsimage_learner(dls, arch=None, pretrained=False,
 def decoder(self:Learner, o): return L([self.dls.decodes(oi) for oi in o])
 
 # Cell
-
 @patch
 @delegates(GatherPredsCallback.__init__)
 def get_X_preds(self: Learner, X, y=None, bs=64, with_input=False, with_decoded=True, with_loss=False, **kwargs):
