@@ -363,17 +363,21 @@ class TSDiff(Transform):
 
 # Cell
 class TSLog(Transform):
-    "Log transforms batch of type `TSTensor`."
+    "Log transforms batch of type `TSTensor` + 1. Accepts positive and negative numbers"
     order = 90
-    def __init__(self, ex=None, add=0, **kwargs):
-        self.ex, self.add = ex, add
+    def __init__(self, ex=None, **kwargs):
+        self.ex = ex
         super().__init__(**kwargs)
     def encodes(self, o:TSTensor):
-        output = torch.log(o + self.add)
+        output = torch.zeros_like(o)
+        output[o > 0] = torch.log1p(o[o > 0])
+        output[o < 0] = -torch.log1p(torch.abs(o[o < 0]))
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
     def decodes(self, o:TSTensor):
-        output = torch.exp(o) - self.add
+        output = torch.zeros_like(o)
+        output[o > 0] = torch.exp(o[o > 0]) - 1
+        output[o < 0] = -torch.exp(torch.abs(o[o < 0])) + 1
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
     def __repr__(self): return f'{self.__class__.__name__}()'

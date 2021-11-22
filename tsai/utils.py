@@ -1059,7 +1059,7 @@ def log_tfm(o, inplace=False):
     "Log transforms an array-like object with positive and/or negative values"
     if isinstance(o, torch.Tensor):
         pos_o = torch.log1p(o[o > 0])
-        neg_o = -torch.log1p(np.abs(o[o < 0]))
+        neg_o = -torch.log1p(torch.abs(o[o < 0]))
     else:
         pos_o = np.log1p(o[o > 0])
         neg_o = -np.log1p(np.abs(o[o < 0]))
