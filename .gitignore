@@ -155,7 +155,7 @@ old/*
 *.jpg
 *.zip
 */nbs/export/*
-*/nbs/models/*
+#*/nbs/models/*
 token
 
 Untitled*.ipynb
