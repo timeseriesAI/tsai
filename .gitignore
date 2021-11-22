@@ -157,6 +157,7 @@ old/*
 */export/*
 #*/nbs/models/*
 token
+*/gblend/*
 
 Untitled*.ipynb
 conda/
