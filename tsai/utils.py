@@ -549,15 +549,15 @@ def torch_diff(t, lag=1, pad=True):
     else: return diff
 
 # Cell
-def get_outliers_IQR(o, axis=None):
+def get_outliers_IQR(o, axis=None, quantile_range=(25.0, 75.0)):
     tt = False
     if isinstance(o, torch.Tensor):
         tt = True
         device = o.device
         tdtype = o.dtype
         o = o.detach().cpu().numpy()
-    Q1 = np.nanpercentile(o, 25, axis=axis, keepdims=axis is not None)
-    Q3 = np.nanpercentile(o, 75, axis=axis, keepdims=axis is not None)
+    Q1 = np.nanpercentile(o, quantile_range[0], axis=axis, keepdims=axis is not None)
+    Q3 = np.nanpercentile(o, quantile_range[1], axis=axis, keepdims=axis is not None)
     IQR = Q3 - Q1
     if tt:
         Q1 = torch.tensor(Q1, dtype=tdtype, device=device)

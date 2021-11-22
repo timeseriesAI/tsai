@@ -309,8 +309,8 @@ class TSClip(Transform):
 class TSRobustScale(Transform):
     r"""This Scaler removes the median and scales the data according to the quantile range (defaults to IQR: Interquartile Range)"""
     parameters, order = L('median', 'min', 'max'), 90
-    def __init__(self, median=None, min=None, max=None, by_sample=False, by_var=False, verbose=False):
-        self.su = (median is None or min is None or max is None) and not by_sample
+    def __init__(self, median=None, min=None, max=None, by_sample=False, by_var=False, quantile_range=(25.0, 75.0), use_single_batch=True, verbose=False):
+        self._setup = (median is None or min is None or max is None) and not by_sample
         self.median = tensor(median) if median is not None else tensor(0)
         self.min = tensor(min) if min is not None else tensor(-np.inf)
         self.max = tensor(max) if max is not None else tensor(np.inf)
@@ -319,26 +319,31 @@ class TSRobustScale(Transform):
         elif by_sample: self.axis = (1, 2)
         elif by_var: self.axis = (0, 2)
         else: self.axis = None
+        self.use_single_batch = use_single_batch
         self.verbose = verbose
+        self.quantile_range = quantile_range
         if median is not None or min is not None or max is not None:
             pv(f'{self.__class__.__name__} median={median} min={min}, max={max}\n', self.verbose)
 
     def setups(self, dl: DataLoader):
-        if self.su:
-            o, *_ = dl.one_batch()
+        if self._setup:
+            if not self.use_single_batch:
+                o = dl.dataset.__getitem__([slice(None)])[0]
+            else:
+                o, *_ = dl.one_batch()
             median = get_percentile(o, 50, self.axis)
-            min, max = get_outliers_IQR(o, self.axis)
+            min, max = get_outliers_IQR(o, self.axis, quantile_range=self.quantile_range)
             self.median, self.min, self.max = tensor(median), tensor(min), tensor(max)
             if self.axis is None: pv(f'{self.__class__.__name__} median={self.median} min={self.min}, max={self.max}, by_sample={self.by_sample}, by_var={self.by_var}\n',
                                      self.verbose)
             else: pv(f'{self.__class__.__name__} median={self.median.shape} min={self.min.shape}, max={self.max.shape}, by_sample={self.by_sample}, by_var={self.by_var}\n',
                      self.verbose)
-            self.su = False
+            self._setup = False
 
     def encodes(self, o:TSTensor):
         if self.by_sample:
             median = get_percentile(o, 50, self.axis)
-            min, max = get_outliers_IQR(o, axis=self.axis)
+            min, max = get_outliers_IQR(o, axis=self.axis, quantile_range=self.quantile_range)
             self.median, self.min, self.max = o.new(median), o.new(min), o.new(max)
         return (o - self.median) / (self.max - self.min)
 
