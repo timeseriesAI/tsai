@@ -8,6 +8,8 @@ from ..imports import *
 from ..utils import *
 from ..data.external import *
 from .layers import *
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # Cell
 from sktime.transformations.panel.rocket import MiniRocketMultivariate
