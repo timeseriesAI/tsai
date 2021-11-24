@@ -549,7 +549,7 @@ Taken from the great self-supervised repository created by Kerem Turgutlu.
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>Feature Extraction: 100%|██████████| 40/40 [00:06&lt;00:00,  5.86it/s]
+<pre>Feature Extraction: 100%|██████████| 40/40 [00:04&lt;00:00,  8.83it/s]
 </pre>
 </div>
 </div>
@@ -728,7 +728,7 @@ Taken from the great self-supervised repository created by Kerem Turgutlu.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="output_size_calculator" class="doc_header"><code>output_size_calculator</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/utils.py#L221" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>output_size_calculator</code>(<strong><code>m</code></strong>, <strong><code>c_in</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="output_size_calculator" class="doc_header"><code>output_size_calculator</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/utils.py#L221" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>output_size_calculator</code>(<strong><code>m</code></strong>, <strong><code>c_in</code></strong>, <strong><code>seq_len</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -780,7 +780,7 @@ Taken from the great self-supervised repository created by Kerem Turgutlu.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="change_model_head" class="doc_header"><code>change_model_head</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/utils.py#L229" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>change_model_head</code>(<strong><code>model</code></strong>, <strong><code>custom_head</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="change_model_head" class="doc_header"><code>change_model_head</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/utils.py#L230" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>change_model_head</code>(<strong><code>model</code></strong>, <strong><code>custom_head</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Replaces a model's head by a custom head as long as the model has a head, head_nf, c_out and seq_len attributes</p>
 
@@ -812,7 +812,7 @@ Taken from the great self-supervised repository created by Kerem Turgutlu.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="naive_forecaster" class="doc_header"><code>naive_forecaster</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/utils.py#L235" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>naive_forecaster</code>(<strong><code>o</code></strong>, <strong><code>split</code></strong>, <strong><code>horizon</code></strong>=<em><code>1</code></em>)</p>
+<h4 id="naive_forecaster" class="doc_header"><code>naive_forecaster</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/utils.py#L236" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>naive_forecaster</code>(<strong><code>o</code></strong>, <strong><code>split</code></strong>, <strong><code>horizon</code></strong>=<em><code>1</code></em>)</p>
 </blockquote>
 
 </div>
@@ -836,7 +836,7 @@ Taken from the great self-supervised repository created by Kerem Turgutlu.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="true_forecaster" class="doc_header"><code>true_forecaster</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/utils.py#L243" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>true_forecaster</code>(<strong><code>o</code></strong>, <strong><code>split</code></strong>, <strong><code>horizon</code></strong>=<em><code>1</code></em>)</p>
+<h4 id="true_forecaster" class="doc_header"><code>true_forecaster</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/utils.py#L244" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>true_forecaster</code>(<strong><code>o</code></strong>, <strong><code>split</code></strong>, <strong><code>horizon</code></strong>=<em><code>1</code></em>)</p>
 </blockquote>
 
 </div>
@@ -880,14 +880,14 @@ Taken from the great self-supervised repository created by Kerem Turgutlu.
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(array([0.44509115, 0.84043499, 1.10272156, 2.09031458, 2.47033197,
-        2.74588916, 3.41977622, 4.15862511, 4.39728172, 4.51414259,
-        4.63984066, 4.98229517, 5.65093427, 6.60284129, 7.13579215,
-        7.15525138, 7.9761242 , 8.90723383, 9.77105565, 9.95909615]),
- array([4.51414259, 4.63984066, 4.98229517, 5.65093427, 6.60284129,
-        7.13579215, 7.15525138, 7.9761242 , 8.90723383, 9.77105565]),
- array([4.63984066, 4.98229517, 5.65093427, 6.60284129, 7.13579215,
-        7.15525138, 7.9761242 , 8.90723383, 9.77105565, 9.95909615]))</pre>
+<pre>(array([0.59869925, 0.74718208, 1.08105135, 1.4689609 , 1.6832443 ,
+        2.06999004, 2.59478098, 3.45776211, 4.42666347, 4.54807169,
+        4.95395324, 5.42060075, 6.28736975, 6.40664888, 6.69426184,
+        7.63565696, 7.73916016, 8.2447472 , 9.06291453, 9.28543749]),
+ array([4.54807169, 4.95395324, 5.42060075, 6.28736975, 6.40664888,
+        6.69426184, 7.63565696, 7.73916016, 8.2447472 , 9.06291453]),
+ array([4.95395324, 5.42060075, 6.28736975, 6.40664888, 6.69426184,
+        7.63565696, 7.73916016, 8.2447472 , 9.06291453, 9.28543749]))</pre>
 </div>
 
 </div>
