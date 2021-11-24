@@ -931,7 +931,7 @@ def sincos_encoding(seq_len, device=None, to_np=False):
         sin = np.sin(np.arange(seq_len) / seq_len * 2 * np.pi)
         cos = np.cos(np.arange(seq_len) / seq_len * 2 * np.pi)
     else:
-        device = default_device()
+        if device is None: device = default_device()
         sin = torch.sin(torch.arange(seq_len, device=device) / seq_len * 2 * np.pi)
         cos = torch.cos(torch.arange(seq_len, device=device) / seq_len * 2 * np.pi)
     return sin, cos
@@ -941,7 +941,7 @@ def linear_encoding(seq_len, device=None, to_np=False, lin_range=(-1,1)):
     if to_np:
         enc =  np.linspace(lin_range[0], lin_range[1], seq_len)
     else:
-        device = default_device()
+        if device is None: device = default_device()
         enc = torch.linspace(lin_range[0], lin_range[1], seq_len, device=device)
     return enc
 

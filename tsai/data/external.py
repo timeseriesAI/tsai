@@ -795,7 +795,7 @@ len(Monash_regression_list)
 
 # Cell
 def get_Monash_regression_data(dsid, path='./data/Monash', on_disk=True, mode='c', Xdtype='float32', ydtype=None, split_data=True, force_download=False,
-                               verbose=False):
+                               verbose=False, timeout=4):
 
     dsid_list = [rd for rd in Monash_regression_list if rd.lower() == dsid.lower()]
     assert len(dsid_list) > 0, f'{dsid} is not a Monash dataset'
@@ -804,43 +804,50 @@ def get_Monash_regression_data(dsid, path='./data/Monash', on_disk=True, mode='c
     pv(f'Dataset: {dsid}', verbose)
 
     if force_download or not all([os.path.isfile(f'{path}/{dsid}/{fn}.npy') for fn in ['X_train', 'X_valid', 'y_train', 'y_valid', 'X', 'y']]):
-        if dsid == 'AppliancesEnergy': id = 3902637
-        elif dsid == 'HouseholdPowerConsumption1': id = 3902704
-        elif dsid == 'HouseholdPowerConsumption2': id = 3902706
-        elif dsid == 'BenzeneConcentration': id = 3902673
-        elif dsid == 'BeijingPM25Quality': id = 3902671
-        elif dsid == 'BeijingPM10Quality': id = 3902667
-        elif dsid == 'LiveFuelMoistureContent': id = 3902716
-        elif dsid == 'FloodModeling1': id = 3902694
-        elif dsid == 'FloodModeling2': id = 3902696
-        elif dsid == 'FloodModeling3': id = 3902698
-        elif dsid == 'AustraliaRainfall': id = 3902654
-        elif dsid == 'PPGDalia': id = 3902728
-        elif dsid == 'IEEEPPG': id = 3902710
-        elif dsid == 'BIDMCRR' or dsid == 'BIDM32CRR': id = 3902685
-        elif dsid == 'BIDMCHR' or dsid == 'BIDM32CHR': id = 3902676
-        elif dsid == 'BIDMCSpO2' or dsid == 'BIDM32CSpO2': id = 3902688
-        elif dsid == 'NewsHeadlineSentiment': id = 3902718
-        elif dsid == 'NewsTitleSentiment': id = 3902726
-        elif dsid == 'Covid3Month': id = 3902690
+        if dsid == 'AppliancesEnergy': dset_id = 3902637
+        elif dsid == 'HouseholdPowerConsumption1': dset_id = 3902704
+        elif dsid == 'HouseholdPowerConsumption2': dset_id = 3902706
+        elif dsid == 'BenzeneConcentration': dset_id = 3902673
+        elif dsid == 'BeijingPM25Quality': dset_id = 3902671
+        elif dsid == 'BeijingPM10Quality': dset_id = 3902667
+        elif dsid == 'LiveFuelMoistureContent': dset_id = 3902716
+        elif dsid == 'FloodModeling1': dset_id = 3902694
+        elif dsid == 'FloodModeling2': dset_id = 3902696
+        elif dsid == 'FloodModeling3': dset_id = 3902698
+        elif dsid == 'AustraliaRainfall': dset_id = 3902654
+        elif dsid == 'PPGDalia': dset_id = 3902728
+        elif dsid == 'IEEEPPG': dset_id = 3902710
+        elif dsid == 'BIDMCRR' or dsid == 'BIDM32CRR': dset_id = 3902685
+        elif dsid == 'BIDMCHR' or dsid == 'BIDM32CHR': dset_id = 3902676
+        elif dsid == 'BIDMCSpO2' or dsid == 'BIDM32CSpO2': dset_id = 3902688
+        elif dsid == 'NewsHeadlineSentiment': dset_id = 3902718
+        elif dsid == 'NewsTitleSentiment': dset_id= 3902726
+        elif dsid == 'Covid3Month': dset_id = 3902690
 
         for split in ['TRAIN', 'TEST']:
-            url = f"https://zenodo.org/record/{id}/files/{dsid}_{split}.ts"
+            url = f"https://zenodo.org/record/{dset_id}/files/{dsid}_{split}.ts"
             fname = Path(path)/f'{dsid}/{dsid}_{split}.ts'
             pv('downloading data...', verbose)
             try:
-                download_data(url, fname, c_key='archive', force_download=force_download, timeout=4)
-            except:
+                download_data(url, fname, c_key='archive', force_download=force_download, timeout=timeout)
+            except Exception as inst:
+                print(inst)
                 warnings.warn(f'Cannot download {dsid} dataset')
                 if split_data: return None, None, None, None
                 else: return None, None, None
             pv('...download complete', verbose)
-            if split == 'TRAIN':
-                X_train, y_train = _load_from_tsfile_to_dataframe2(fname)
-                X_train = check_X(X_train, coerce_to_numpy=True)
-            else:
-                X_valid, y_valid = _load_from_tsfile_to_dataframe2(fname)
-                X_valid = check_X(X_valid, coerce_to_numpy=True)
+            try:
+                if split == 'TRAIN':
+                    X_train, y_train = _load_from_tsfile_to_dataframe2(fname)
+                    X_train = check_X(X_train, coerce_to_numpy=True)
+                else:
+                    X_valid, y_valid = _load_from_tsfile_to_dataframe2(fname)
+                    X_valid = check_X(X_valid, coerce_to_numpy=True)
+            except Exception as inst:
+                print(inst)
+                warnings.warn(f'Cannot create numpy arrays for {dsid} dataset')
+                if split_data: return None, None, None, None
+                else: return None, None, None
         np.save(f'{full_tgt_dir}/X_train.npy', X_train)
         np.save(f'{full_tgt_dir}/y_train.npy', y_train)
         np.save(f'{full_tgt_dir}/X_valid.npy', X_valid)
@@ -957,12 +964,12 @@ def get_forecasting_time_series(dsid, path='./data/forecasting/', force_download
             return df
         else:
             return full_tgt_dir
-    except:
+    except Exception as inst:
+        print(inst)
         warnings.warn(f"Cannot download {dsid} dataset")
         return
 
 # Cell
-
 Monash_forecasting_list = ['m1_yearly_dataset',
                            'm1_quarterly_dataset',
                            'm1_monthly_dataset',
@@ -1218,7 +1225,10 @@ def get_Monash_forecasting_data(dsid, path='./data/forecasting/', force_download
     path = Path(path)
     full_path = path/f'{dsid}.tsf'
     if not full_path.exists() or force_download:
-        decompress_from_url(url, target_dir=path, verbose=verbose)
+        try:
+            decompress_from_url(url, target_dir=path, verbose=verbose)
+        except Exception as inst:
+            print(inst)
     pv("converting dataframe to numpy array...", verbose)
     data, frequency, forecast_horizon, contain_missing_values, contain_equal_length = convert_tsf_to_dataframe(full_path)
     X = to3d(stack_pad(data['series_value']))

@@ -42,7 +42,7 @@ lin_zero_init = init_lin_zero
 class SwishBeta(Module):
     def __init__(self, beta=1.):
         self.sigmoid = torch.sigmoid
-        self.beta = nn.Parameter(torch.Tensor(1).fill_(beta).to(default_device()))
+        self.beta = nn.Parameter(torch.Tensor(1).fill_(beta))
     def forward(self, x): return x.mul(self.sigmoid(x*self.beta))
 
 # Cell
@@ -176,7 +176,7 @@ class AddCoords1d(Module):
     """Add coordinates to ease position identification without modifying mean and std"""
     def forward(self, x):
         bs, _, seq_len = x.shape
-        cc = torch.linspace(-1,1,x.shape[-1]).repeat(bs, 1, 1).to(x.device)
+        cc = torch.linspace(-1,1,x.shape[-1], device=x.device).repeat(bs, 1, 1)
         cc = (cc - cc.mean()) / cc.std()
         x = torch.cat([x, cc], dim=1)
         return x
@@ -844,7 +844,7 @@ class GaussianNoise(Module):
     def forward(self, x):
         if self.training and self.sigma not in [0, None]:
             scale = self.sigma * (x.detach() if self.is_relative_detach else x)
-            sampled_noise = torch.empty(x.size()).normal_().to(device) * scale
+            sampled_noise = torch.empty(x.size(), device=x.device).normal_() * scale
             x = x + sampled_noise
         return x
 
@@ -885,8 +885,8 @@ class CenterLoss(Module):
     def __init__(self, c_out, logits_dim=None):
         logits_dim = ifnone(logits_dim, c_out)
         self.c_out, self.logits_dim = c_out, logits_dim
-        self.centers = nn.Parameter(torch.randn(c_out, logits_dim).to(device=default_device()))
-        self.classes = torch.arange(c_out).long().to(device=default_device())
+        self.centers = nn.Parameter(torch.randn(c_out, logits_dim))
+        self.classes = nn.Parameter(torch.arange(c_out).long(), requires_grad=False)
 
     def forward(self, x, labels):
         """

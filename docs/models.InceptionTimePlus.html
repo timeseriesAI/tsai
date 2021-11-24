@@ -340,21 +340,6 @@ model = nn.Sequential(OrderedDict([
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/Users/nacho/anaconda3/envs/py36/lib/python3.6/site-packages/torch/nn/functional.py:652: UserWarning: Named tensors and all their associated APIs are an experimental feature and subject to change. Please do not use them for anything important until they are released as stable. (Triggered internally at  ../c10/core/TensorImpl.h:1156.)
-  return torch.max_pool1d(input, kernel_size, stride, padding, dilation, ceil_mode)
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
     {% endraw %}
 
@@ -731,7 +716,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MultiInceptionTimePlus" class="doc_header"><code>class</code> <code>MultiInceptionTimePlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/InceptionTimePlus.py#L144" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MultiInceptionTimePlus</code>(<strong><code>feat_list</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>None</code></em>, <strong><code>nf</code></strong>=<em><code>32</code></em>, <strong><code>nb_filters</code></strong>=<em><code>None</code></em>, <strong><code>depth</code></strong>=<em><code>6</code></em>, <strong><code>stoch_depth</code></strong>=<em><code>1.0</code></em>, <strong><code>flatten</code></strong>=<em><code>False</code></em>, <strong><code>concat_pool</code></strong>=<em><code>False</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>) :: <a href="/models.TabFusionTransformer.html#Sequential"><code>Sequential</code></a></p>
+<h2 id="MultiInceptionTimePlus" class="doc_header"><code>class</code> <code>MultiInceptionTimePlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/InceptionTimePlus.py#L144" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MultiInceptionTimePlus</code>(<strong><code>feat_list</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>None</code></em>, <strong><code>nf</code></strong>=<em><code>32</code></em>, <strong><code>nb_filters</code></strong>=<em><code>None</code></em>, <strong><code>depth</code></strong>=<em><code>6</code></em>, <strong><code>stoch_depth</code></strong>=<em><code>1.0</code></em>, <strong><code>flatten</code></strong>=<em><code>False</code></em>, <strong><code>concat_pool</code></strong>=<em><code>False</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>) :: <a href="/models.TabFusionTransformer.html#Sequential"><code>Sequential</code></a></p>
 </blockquote>
 <p>Class that allows you to create a model with multiple branches of InceptionTimePlus.</p>
 
@@ -899,103 +884,12 @@ model = nn.Sequential(OrderedDict([
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">net</span> <span class="o">=</span> <span class="n">build_ts_model</span><span class="p">(</span><span class="n">MultiInceptionTimePlus</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">)</span>
-<span class="n">xb</span><span class="o">.</span><span class="n">shape</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>torch.Size([16, 6, 12])</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">bs</span> <span class="o">=</span> <span class="mi">16</span>
-<span class="n">n_vars</span> <span class="o">=</span> <span class="mi">3</span>
-<span class="n">seq_len</span> <span class="o">=</span> <span class="mi">12</span>
-<span class="n">c_out</span> <span class="o">=</span> <span class="mi">2</span>
-<span class="n">xb</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">n_vars</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">)</span>
-<span class="n">net</span> <span class="o">=</span> <span class="n">MultiInceptionTimePlus</span><span class="p">(</span><span class="n">n_vars</span><span class="p">,</span> <span class="n">c_out</span><span class="p">)</span>
-<span class="n">change_model_head</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">create_pool_plus_head</span><span class="p">,</span> <span class="n">concat_pool</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">net</span><span class="p">(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="n">net</span><span class="o">.</span><span class="n">head</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>torch.Size([16, 2])
-</pre>
-</div>
-</div>
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>Sequential(
-  (0): AdaptiveAvgPool1d(output_size=1)
-  (1): Flatten(full=False)
-  (2): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-  (3): Linear(in_features=128, out_features=512, bias=False)
-  (4): ReLU(inplace=True)
-  (5): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-  (6): Linear(in_features=512, out_features=2, bias=False)
-)</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">bs</span> <span class="o">=</span> <span class="mi">8</span>
 <span class="n">c_in</span> <span class="o">=</span> <span class="mi">7</span>  <span class="c1"># aka channels, features, variables, dimensions</span>
 <span class="n">c_out</span> <span class="o">=</span> <span class="mi">2</span>
 <span class="n">seq_len</span> <span class="o">=</span> <span class="mi">10</span>
 <span class="n">xb2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_in</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">)</span>
-<span class="n">model1</span> <span class="o">=</span> <span class="n">MultiInceptionTimePlus</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="p">)</span>
+<span class="n">model1</span> <span class="o">=</span> <span class="n">MultiInceptionTimePlus</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">)</span>
 <span class="n">model2</span> <span class="o">=</span> <span class="n">MultiInceptionTimePlus</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">]],</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">model1</span><span class="p">(</span><span class="n">xb2</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">))</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">model1</span><span class="p">(</span><span class="n">xb2</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">model2</span><span class="p">(</span><span class="n">xb2</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
@@ -1024,7 +918,7 @@ model = nn.Sequential(OrderedDict([
 <span class="n">ts_dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="n">batch_tfms</span><span class="p">)</span>
 <span class="n">learn</span> <span class="o">=</span> <span class="n">ts_learner</span><span class="p">(</span><span class="n">ts_dls</span><span class="p">,</span> <span class="n">InceptionTimePlus</span><span class="p">)</span>
 <span class="n">xb</span><span class="p">,</span><span class="n">yb</span><span class="o">=</span><span class="n">first</span><span class="p">(</span><span class="n">learn</span><span class="o">.</span><span class="n">dls</span><span class="o">.</span><span class="n">train</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">learn</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">ts_dls</span><span class="o">.</span><span class="n">bs</span><span class="p">,</span> <span class="n">ts_dls</span><span class="o">.</span><span class="n">c</span><span class="p">))</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">learn</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">xb</span><span class="o">.</span><span class="n">device</span><span class="p">)(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">ts_dls</span><span class="o">.</span><span class="n">bs</span><span class="p">,</span> <span class="n">ts_dls</span><span class="o">.</span><span class="n">c</span><span class="p">))</span>
 <span class="n">p1</span> <span class="o">=</span> <span class="n">count_parameters</span><span class="p">(</span><span class="n">learn</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
 <span class="n">learn</span><span class="o">.</span><span class="n">freeze</span><span class="p">()</span>
 <span class="n">p2</span> <span class="o">=</span> <span class="n">count_parameters</span><span class="p">(</span><span class="n">learn</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
@@ -1071,7 +965,7 @@ model = nn.Sequential(OrderedDict([
 <span class="n">ts_dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="n">batch_tfms</span><span class="p">)</span>
 <span class="n">learn</span> <span class="o">=</span> <span class="n">ts_learner</span><span class="p">(</span><span class="n">ts_dls</span><span class="p">,</span> <span class="n">MultiInceptionTimePlus</span><span class="p">,</span> <span class="n">c_in</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
 <span class="n">xb</span><span class="p">,</span><span class="n">yb</span><span class="o">=</span><span class="n">first</span><span class="p">(</span><span class="n">learn</span><span class="o">.</span><span class="n">dls</span><span class="o">.</span><span class="n">train</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">learn</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">ts_dls</span><span class="o">.</span><span class="n">bs</span><span class="p">,</span> <span class="n">ts_dls</span><span class="o">.</span><span class="n">c</span><span class="p">))</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">learn</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">xb</span><span class="o">.</span><span class="n">device</span><span class="p">)(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">ts_dls</span><span class="o">.</span><span class="n">bs</span><span class="p">,</span> <span class="n">ts_dls</span><span class="o">.</span><span class="n">c</span><span class="p">))</span>
 <span class="n">p1</span> <span class="o">=</span> <span class="n">count_parameters</span><span class="p">(</span><span class="n">learn</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
 <span class="n">learn</span><span class="o">.</span><span class="n">freeze</span><span class="p">()</span>
 <span class="n">p2</span> <span class="o">=</span> <span class="n">count_parameters</span><span class="p">(</span><span class="n">learn</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>

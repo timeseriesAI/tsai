@@ -379,7 +379,7 @@ dl        : single TSDataLoader (for example dls.train or dls.valid)</p>
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>0.9333333333333333
+<pre>0.9
 </pre>
 </div>
 </div>
@@ -418,7 +418,7 @@ dl        : single TSDataLoader (for example dls.train or dls.valid)</p>
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>0.8666666666666667
+<pre>0.8888888888888888
 </pre>
 </div>
 </div>
@@ -440,15 +440,15 @@ dl        : single TSDataLoader (for example dls.train or dls.valid)</p>
 <span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;Covid3Month&#39;</span>
 <span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;RocketRegressor&#39;</span>
 <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">get_Monash_regression_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">Xdtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
-<span class="n">rmse_scorer</span> <span class="o">=</span> <span class="n">make_scorer</span><span class="p">(</span><span class="n">mean_squared_error</span><span class="p">,</span> <span class="n">greater_is_better</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">reg</span> <span class="o">=</span> <span class="n">RocketRegressor</span><span class="p">(</span><span class="n">scoring</span><span class="o">=</span><span class="n">rmse_scorer</span><span class="p">)</span>
-<span class="n">reg</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
-<span class="n">reg</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
-<span class="k">del</span> <span class="n">reg</span>
-<span class="n">reg</span> <span class="o">=</span> <span class="n">load_rocket</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
-<span class="n">y_pred</span> <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
-<span class="n">rmse</span> <span class="o">=</span> <span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">squared</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">rmse</span>
+<span class="k">if</span> <span class="n">X_train</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> 
+    <span class="n">rmse_scorer</span> <span class="o">=</span> <span class="n">make_scorer</span><span class="p">(</span><span class="n">mean_squared_error</span><span class="p">,</span> <span class="n">greater_is_better</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">reg</span> <span class="o">=</span> <span class="n">RocketRegressor</span><span class="p">(</span><span class="n">scoring</span><span class="o">=</span><span class="n">rmse_scorer</span><span class="p">)</span>
+    <span class="n">reg</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">reg</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+    <span class="k">del</span> <span class="n">reg</span>
+    <span class="n">reg</span> <span class="o">=</span> <span class="n">load_rocket</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+    <span class="n">y_pred</span> <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">squared</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -460,12 +460,10 @@ dl        : single TSDataLoader (for example dls.train or dls.valid)</p>
 
 <div class="output_area">
 
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>0.04250407259376664</pre>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>0.042516063160167095
+</pre>
 </div>
-
 </div>
 
 </div>
@@ -485,15 +483,15 @@ dl        : single TSDataLoader (for example dls.train or dls.valid)</p>
 <span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;AppliancesEnergy&#39;</span>
 <span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;RocketRegressor&#39;</span>
 <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">get_Monash_regression_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">Xdtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
-<span class="n">rmse_scorer</span> <span class="o">=</span> <span class="n">make_scorer</span><span class="p">(</span><span class="n">mean_squared_error</span><span class="p">,</span> <span class="n">greater_is_better</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">reg</span> <span class="o">=</span> <span class="n">RocketRegressor</span><span class="p">(</span><span class="n">scoring</span><span class="o">=</span><span class="n">rmse_scorer</span><span class="p">)</span>
-<span class="n">reg</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
-<span class="n">reg</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
-<span class="k">del</span> <span class="n">reg</span>
-<span class="n">reg</span> <span class="o">=</span> <span class="n">load_rocket</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
-<span class="n">y_pred</span> <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
-<span class="n">rmse</span> <span class="o">=</span> <span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">squared</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">rmse</span>
+<span class="k">if</span> <span class="n">X_train</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> 
+    <span class="n">rmse_scorer</span> <span class="o">=</span> <span class="n">make_scorer</span><span class="p">(</span><span class="n">mean_squared_error</span><span class="p">,</span> <span class="n">greater_is_better</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">reg</span> <span class="o">=</span> <span class="n">RocketRegressor</span><span class="p">(</span><span class="n">scoring</span><span class="o">=</span><span class="n">rmse_scorer</span><span class="p">)</span>
+    <span class="n">reg</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">reg</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+    <span class="k">del</span> <span class="n">reg</span>
+    <span class="n">reg</span> <span class="o">=</span> <span class="n">load_rocket</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+    <span class="n">y_pred</span> <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">squared</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -505,12 +503,10 @@ dl        : single TSDataLoader (for example dls.train or dls.valid)</p>
 
 <div class="output_area">
 
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>2.326732215679903</pre>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>2.361209794063753
+</pre>
 </div>
-
 </div>
 
 </div>

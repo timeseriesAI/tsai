@@ -219,9 +219,10 @@ def split_model(m): return m.backbone, m.head
 
 # Cell
 @torch.no_grad()
-def output_size_calculator(m, c_in, seq_len):
-    xb = torch.randn(1, c_in, seq_len)
-    c_in, seq_len = m(xb).shape[1:]
+def output_size_calculator(m, c_in, seq_len, device=None):
+    if device is None: device = default_device()
+    xb = torch.randn(1, c_in, seq_len, device=device)
+    c_in, seq_len = m.to(device)(xb).shape[1:]
     return c_in, seq_len
 
 # Cell

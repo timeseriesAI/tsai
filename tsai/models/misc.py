@@ -20,7 +20,6 @@ class InputWrapper(Module):
                 lin = nn.Linear(c_in, new_c_in)
                 nn.init.constant_(lin.weight, 0)
                 layers += [Transpose(1,2), lin, Transpose(1,2)]
-            if seq_len != new_seq_len:
                 lin2 = nn.Linear(seq_len, new_seq_len)
                 nn.init.constant_(lin2.weight, 0)
                 layers += [lin2]

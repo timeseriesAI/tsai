@@ -61,11 +61,13 @@ class NoisyStudent(Callback):
                 bt.setup(self.dls.train)
 
         if self.bs is None: self.bs = self.dls.train.bs
+        self.dl2.to(self.dls.device)
         self.dl2.bs = min(len(self.dl2.dataset), int(self.bs / (1 + self.l2pl_ratio)))
         self.dls.train.bs = self.bs - self.dl2.bs
         pv(f'labels / pseudolabels per training batch              : {self.dls.train.bs} / {self.dl2.bs}', self.verbose)
         rel_weight = (self.dls.train.bs/self.dl2.bs) * (len(self.dl2.dataset)/len(self.dls.train.dataset))
         pv(f'relative labeled/ pseudolabel sample weight in dataset: {rel_weight:.1f}', self.verbose)
+
         self.dl2iter = iter(self.dl2)
 
         self.old_loss_func = self.learn.loss_func
@@ -78,7 +80,7 @@ class NoisyStudent(Callback):
             except StopIteration:
                 self.dl2iter = iter(self.dl2)
                 X2, y2 = next(self.dl2iter)
-            if y.ndim == 1 and y2.ndim == 2: y = torch.eye(self.learn.dls.c)[y].to(device) # ensure both
+            if y.ndim == 1 and y2.ndim == 2: y = torch.eye(self.learn.dls.c, device=y.device)[y]
 
             X_comb, y_comb = concat(X, X2), concat(y, y2)
 

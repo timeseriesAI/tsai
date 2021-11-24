@@ -332,7 +332,7 @@ model = nn.Sequential(OrderedDict([
 <span class="n">mrf</span> <span class="o">=</span> <span class="n">MiniRocketFeaturesPlus</span><span class="p">(</span><span class="n">c_in</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">seq_len</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">default_device</span><span class="p">())</span>
 <span class="n">X_train</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>  <span class="c1"># X_train may either be a np.ndarray or a torch.Tensor</span>
 <span class="n">mrf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
-<span class="n">X_tfm</span> <span class="o">=</span> <span class="n">get_minirocket_features</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">mrf</span><span class="p">)</span>
+<span class="n">X_tfm</span> <span class="o">=</span> <span class="n">get_minirocket_features</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">mrf</span><span class="p">)</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
 <span class="n">tfms</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">TSClassification</span><span class="p">()]</span>
 <span class="n">batch_tfms</span> <span class="o">=</span> <span class="n">TSStandardize</span><span class="p">(</span><span class="n">by_var</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X_tfm</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="n">batch_tfms</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
@@ -365,8 +365,8 @@ model = nn.Sequential(OrderedDict([
     <tr>
       <td>0</td>
       <td>0.693147</td>
-      <td>0.531562</td>
-      <td>0.752613</td>
+      <td>0.531260</td>
+      <td>0.751452</td>
       <td>00:00</td>
     </tr>
   </tbody>
@@ -425,9 +425,9 @@ model = nn.Sequential(OrderedDict([
     <tr>
       <td>0</td>
       <td>0.693147</td>
-      <td>0.665175</td>
+      <td>0.664867</td>
       <td>0.502904</td>
-      <td>00:08</td>
+      <td>00:05</td>
     </tr>
   </tbody>
 </table>
@@ -454,9 +454,9 @@ model = nn.Sequential(OrderedDict([
 <span class="n">c_out</span> <span class="o">=</span> <span class="mi">2</span>
 <span class="n">xb</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_in</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">)</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">build_ts_model</span><span class="p">(</span><span class="n">MiniRocketPlus</span><span class="p">,</span> <span class="n">c_in</span><span class="o">=</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="o">=</span><span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="o">=</span><span class="n">seq_len</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">model</span><span class="p">(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">))</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">xb</span><span class="o">.</span><span class="n">device</span><span class="p">)(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">))</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">build_ts_model</span><span class="p">(</span><span class="n">MiniRocketPlus</span><span class="p">,</span> <span class="n">c_in</span><span class="o">=</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="o">=</span><span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="o">=</span><span class="n">seq_len</span><span class="p">,</span> <span class="n">add_lsaz</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">model</span><span class="p">(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">))</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">xb</span><span class="o">.</span><span class="n">device</span><span class="p">)(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -604,9 +604,9 @@ model = nn.Sequential(OrderedDict([
 <span class="n">c_out</span> <span class="o">=</span> <span class="mi">2</span>
 <span class="n">xb</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_in</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">)</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">build_ts_model</span><span class="p">(</span><span class="n">InceptionRocketPlus</span><span class="p">,</span> <span class="n">c_in</span><span class="o">=</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="o">=</span><span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="o">=</span><span class="n">seq_len</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">model</span><span class="p">(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">))</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">xb</span><span class="o">.</span><span class="n">device</span><span class="p">)(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">))</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">build_ts_model</span><span class="p">(</span><span class="n">InceptionRocketPlus</span><span class="p">,</span> <span class="n">c_in</span><span class="o">=</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="o">=</span><span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="o">=</span><span class="n">seq_len</span><span class="p">,</span> <span class="n">add_lsaz</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">model</span><span class="p">(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">))</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">xb</span><span class="o">.</span><span class="n">device</span><span class="p">)(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">))</span>
 </pre></div>
 
     </div>
