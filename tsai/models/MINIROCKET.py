@@ -8,13 +8,13 @@ from ..imports import *
 from ..utils import *
 from ..data.external import *
 from .layers import *
-import warnings
-warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # Cell
 from sktime.transformations.panel.rocket import MiniRocketMultivariate
 from sklearn.linear_model import RidgeCV, RidgeClassifierCV
 from sklearn.ensemble import VotingClassifier, VotingRegressor
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # Cell
 class MiniRocketClassifier(sklearn.pipeline.Pipeline):
