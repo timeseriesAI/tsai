@@ -193,7 +193,8 @@ def show_probas(self:Learner, figsize=(6,6), ds_idx=1, dl=None, one_batch=False,
     plt.vlines(.5, min(vals) - 1, max(vals), color='black', linewidth=.5)
     cm = plt.get_cmap('gist_rainbow')
     color = [cm(1.* c/nclasses) for c in range(1, nclasses + 1)][::-1]
-    class_probas = np.array([probas[i,t] for i,t in enumerate(targets)])
+    # class_probas = np.array([probas[i,t] for i,t in enumerate(targets)])
+    class_probas = np.array([probas[i][t] for i,t in enumerate(targets)])
     for i, c in enumerate(classes):
         plt.scatter(class_probas[targets == c] if nclasses > 2 or i > 0 else 1 - class_probas[targets == c],
                     targets[targets == c] + .5 * (np.random.rand((targets == c).sum()) - .5), color=color[i], edgecolor='black', alpha=.2, s=100)
