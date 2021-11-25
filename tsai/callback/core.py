@@ -238,7 +238,7 @@ def prepare_weights(labels, n_bins=None, label_range=None, reweight='inv', lds_k
     if show_plot:
         plt.bar(bin_edges[:-1], num_per_label / num_per_label.sum(), color='lime', edgecolor='black', label='original')
         plt.plot(bin_edges[:-1], smoothed_value / smoothed_value.sum(), color='red', label='smoothed')
-        plt.title(f"Relative sample weight by label bin (reweight={reweight})")
+        plt.title(f"Label distribution by bin (reweight={reweight})")
         plt.legend(loc='best')
         plt.show()
     num_per_label = smoothed_value[new_labels.flatten() - 1].reshape(*labels_shape)
