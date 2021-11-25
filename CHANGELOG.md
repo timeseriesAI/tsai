@@ -2,6 +2,52 @@
 
 <!-- do not remove -->
 
+## 0.2.23
+### Breaking Changes
+
+- removed torch-optimizer dependency ([#228](https://github.com/timeseriesAI/tsai/issues/228))
+
+### New Features
+
+- added option to train MVP on random sequence lengths ([#252](https://github.com/timeseriesAI/tsai/issues/252))
+
+- added ability to pass an arch name (str) to learner instead of class ([#217](https://github.com/timeseriesAI/tsai/issues/217))
+
+- created convenience fns create_directory and delete_directory in utils ([#213](https://github.com/timeseriesAI/tsai/issues/213))
+
+- added option to create random array of given shapes and dtypes ([#212](https://github.com/timeseriesAI/tsai/issues/212))
+
+- my_setup() print your main system and package versions ([#202](https://github.com/timeseriesAI/tsai/issues/202))
+
+- added a new tutorial on how to train large datasets using tsai ([#199](https://github.com/timeseriesAI/tsai/issues/199))
+
+- added a new function to load any file as a module ([#196](https://github.com/timeseriesAI/tsai/issues/196))
+
+### Bugs Squashed
+
+- Loading code just for inference takes too long ([#273](https://github.com/timeseriesAI/tsai/issues/273))
+
+- Fixed out-of-memory issue with large datasets on disk ([#126](https://github.com/timeseriesAI/tsai/issues/126))
+
+- AttributeError: module 'torch' has no attribute 'nan_to_num' ([#262](https://github.com/timeseriesAI/tsai/issues/262))
+
+- Fixed TypeError: unhashable type: 'numpy.ndarray' ([#250](https://github.com/timeseriesAI/tsai/issues/250))
+
+- Wrong link in paper references ([#249](https://github.com/timeseriesAI/tsai/issues/249))
+
+- remove default PATH which overwrites custom PATH ([#238](https://github.com/timeseriesAI/tsai/issues/238))
+
+- Predictions where not properly decoded when using with_decoded. ([#237](https://github.com/timeseriesAI/tsai/issues/237))
+
+- SettingWithCopyWarning: A value is trying to be set on a copy of a slice from a DataFrame ([#221](https://github.com/timeseriesAI/tsai/issues/221))
+
+- InceptionTimePlus wasn't imported by TSLearners ([#218](https://github.com/timeseriesAI/tsai/issues/218))
+
+- get_subset_dl fn is not properly creating a subset dataloader ([#211](https://github.com/timeseriesAI/tsai/issues/211))
+
+- Bug in WeightedPersSampleLoss ([#203](https://github.com/timeseriesAI/tsai/issues/203))
+
+
 ## 0.2.19
 
 ### New Features
