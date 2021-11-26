@@ -4,7 +4,6 @@ __all__ = ['TSiTPlus', 'TSiT']
 
 # Cell
 from ..imports import *
-# from tsai.utils import *
 from .utils import *
 from .layers import *
 from typing import Callable
