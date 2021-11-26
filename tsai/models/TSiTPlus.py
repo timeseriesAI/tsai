@@ -4,157 +4,176 @@ __all__ = ['TSiTPlus', 'TSiT']
 
 # Cell
 from ..imports import *
-from ..utils import *
+# from tsai.utils import *
+from .utils import *
 from .layers import *
-from .InceptionTimePlus import InceptionBlockPlus
 from typing import Callable
 
 # Cell
-class _TSiTEncoder(nn.Module):
-    def __init__(self, d_model, n_heads, n_layers:int=6, attn_dropout:float=0, dropout:float=0, drop_path_rate:float=0.,
+class _TSiTEncoderLayer(nn.Module):
+    def __init__(self, d_model:int, n_heads:int, attn_dropout:float=0., dropout:float=0, drop_path_rate:float=0.,
                  mlp_ratio:int=1, qkv_bias:bool=True, act:str='reglu', pre_norm:bool=False):
         super().__init__()
-
-        dpr = [x.item() for x in torch.linspace(0, drop_path_rate, n_layers)]
-        self.layers = nn.ModuleList([])
-        for i in range(n_layers):
-            self.layers.append(nn.ModuleList([
-                MultiheadAttention(d_model, n_heads, attn_dropout=attn_dropout, proj_dropout=dropout, qkv_bias=qkv_bias), nn.LayerNorm(d_model),
-                PositionwiseFeedForward(d_model, dropout=dropout, act=act, mlp_ratio=mlp_ratio), nn.LayerNorm(d_model),
-                # NOTE: drop path for stochastic depth, we shall see if this is better than dropout here
-                DropPath(dpr[i]) if dpr[i] != 0 else nn.Identity(),
-                # nn.Dropout(drop_path_rate) if drop_path_rate != 0 else nn.Identity()
-            ]))
+        self.mha =  MultiheadAttention(d_model, n_heads, attn_dropout=attn_dropout, proj_dropout=dropout, qkv_bias=qkv_bias)
+        self.attn_norm = nn.LayerNorm(d_model)
+        self.pwff =  PositionwiseFeedForward(d_model, dropout=dropout, act=act, mlp_ratio=mlp_ratio)
+        self.ff_norm = nn.LayerNorm(d_model)
+        self.drop_path = DropPath(drop_path_rate) if drop_path_rate != 0 else nn.Identity()
         self.pre_norm = pre_norm
-        self.norm = nn.LayerNorm(d_model) if self.pre_norm else nn.Identity()
 
     def forward(self, x):
-        for i, (mha, attn_norm, pwff, ff_norm, drop_path) in enumerate(self.layers):
-            if self.pre_norm:
-                x = drop_path(mha(attn_norm(x))[0]) + x
-                x = drop_path(pwff(ff_norm(x))) + x
-            else:
-                x = attn_norm(drop_path(mha(x)[0]) + x)
-                x = ff_norm(drop_path(pwff(x)) + x)
+        if self.pre_norm:
+            x = self.drop_path(self.mha(self.attn_norm(x))[0]) + x
+            x = self.drop_path(self.pwff(self.ff_norm(x))) + x
+        else:
+            x = self.attn_norm(self.drop_path(self.mha(x)[0]) + x)
+            x = self.ff_norm(self.drop_path(self.pwff(x)) + x)
+        return x
 
+# Cell
+class _TSiTEncoder(nn.Module):
+    def __init__(self, d_model, n_heads, depth:int=6, attn_dropout:float=0., dropout:float=0, drop_path_rate:float=0.,
+                 mlp_ratio:int=1, qkv_bias:bool=True, act:str='reglu', pre_norm:bool=False):
+        super().__init__()
+        dpr = [x.item() for x in torch.linspace(0, drop_path_rate, depth)]
+        layers = []
+        for i in range(depth):
+            layer = _TSiTEncoderLayer(d_model, n_heads, attn_dropout=attn_dropout, dropout=dropout, drop_path_rate=dpr[i],
+                                      mlp_ratio=mlp_ratio, qkv_bias=qkv_bias, act=act, pre_norm=pre_norm)
+            layers.append(layer)
+        self.encoder = nn.Sequential(*layers)
+        self.norm = nn.LayerNorm(d_model) if pre_norm else nn.Identity()
+
+    def forward(self, x):
+        x = self.encoder(x)
         x = self.norm(x)
         return x
 
-
+# Cell
 class _TSiTBackbone(Module):
-    def __init__(self, c_in:int, seq_len:int, n_layers:int=6, d_model:int=128, n_heads:int=16, d_head:Optional[int]=None, act:str='reglu',
-                 d_ff:int=256, qkv_bias:bool=True, dropout:float=0., attn_dropout:float=0,drop_path_rate:float=0.,
-                 mlp_ratio:int=1, pre_norm:bool=False, use_token:bool=True, ks:Optional[int]=None, maxpool:bool=True,
-                 feature_extractor:Optional[Callable]=None, verbose:bool=False):
+    def __init__(self, c_in:int, seq_len:int, depth:int=6, d_model:int=128, n_heads:int=16, d_head:Optional[int]=None, act:str='reglu', d_ff:int=256,
+                 qkv_bias:bool=True, attn_dropout:float=0., dropout:float=0., drop_path_rate:float=0., mlp_ratio:int=1,
+                 pre_norm:bool=False, use_token:bool=True,  use_pe:bool=True, n_embeds:Optional[list]=None, embed_dims:Optional[list]=None,
+                 cat_pos:Optional[list]=None, feature_extractor:Optional[Callable]=None):
 
-        self.feature_extractor = nn.Identity()
-        if feature_extractor is not None:
-            xb = torch.randn(1, c_in, seq_len)
-            ori_c_in, ori_seq_len = c_in, seq_len
-            if not isinstance(feature_extractor, nn.Module): feature_extractor = feature_extractor(c_in, d_model)
-            else: feature_extractor = feature_extractor
-            with torch.no_grad():
-                # NOTE Most reliable way of determining output dims is to run forward pass
-                training = feature_extractor.training
-                if training:
-                    feature_extractor.eval()
-                c_in, seq_len = feature_extractor(xb).shape[1:]
-                feature_extractor.train(training)
-            pv(f'feature_extractor: (?, {ori_c_in}, {ori_seq_len}) --> (?, {c_in}, {seq_len})', verbose=verbose)
-            self.feature_extractor = feature_extractor
-
-        if ks is not None:
-            self.to_embedding = nn.Sequential(MultiConcatConv1d(c_in, d_model, kss=ks, maxpool=maxpool),Transpose(1,2))
+        # Categorical embeddings
+        if n_embeds is not None:
+            if embed_dims is None:
+                embed_dims = [emb_sz_rule(s) for s in n_embeds]
+            self.to_cat_embed = MultiEmbedding(c_in, n_embeds, embed_dims=embed_dims, cat_pos=cat_pos)
+            c_in = c_in + sum(embed_dims) - len(n_embeds)
         else:
-            self.to_embedding = nn.Sequential(Conv1d(c_in, d_model, 1),Transpose(1,2))
-        self.pos_embedding = nn.Parameter(torch.zeros(1, seq_len + use_token, d_model))
+            self.to_cat_embed = nn.Identity()
+
+        # Feature extractor
+        if feature_extractor:
+            if isinstance(feature_extractor, nn.Module):  self.feature_extractor = feature_extractor
+            else: self.feature_extractor = feature_extractor(c_in, d_model)
+            c_in, seq_len = output_size_calculator(self.feature_extractor, c_in, seq_len)
+        else:
+            self.feature_extractor = nn.Conv1d(c_in, d_model, 1)
+        self.transpose = Transpose(1,2)
+
+        # Position embedding & token
+        if use_pe:
+            self.pos_embed = nn.Parameter(torch.zeros(1, seq_len + use_token, d_model))
+        self.use_pe = use_pe
         self.cls_token = nn.Parameter(torch.zeros(1, 1, d_model))
         self.use_token = use_token
-        self.pos_dropout = nn.Dropout(dropout)
+        self.emb_dropout = nn.Dropout(dropout)
 
-        self.encoder = _TSiTEncoder(d_model, n_heads, n_layers=n_layers, qkv_bias=qkv_bias, attn_dropout=attn_dropout, dropout=dropout,
+        # Encoder
+        self.encoder = _TSiTEncoder(d_model, n_heads, depth=depth, qkv_bias=qkv_bias, dropout=dropout,
                                     mlp_ratio=mlp_ratio, drop_path_rate=drop_path_rate, act=act, pre_norm=pre_norm)
 
     def forward(self, x):
 
-        # apply feature_extractor module if exists
+        # Categorical embeddings
+        x = self.to_cat_embed(x)
+
+        # Feature extractor
         x = self.feature_extractor(x)
 
-        # embedding
-        x = self.to_embedding(x)
+        # Position embedding & token
+        x = self.transpose(x)
         if self.use_token:
             x = torch.cat((self.cls_token.expand(x.shape[0], -1, -1), x), dim=1)
-        x = self.pos_dropout(x + self.pos_embedding)
+        if self.use_pe:
+            x = x + self.pos_embed
+        x = self.emb_dropout(x)
 
+        # Encoder
         x = self.encoder(x)
-
         x = x.transpose(1,2)
+        if self.use_token:
+            x = x[..., 0]
         return x
 
 # Cell
 class TSiTPlus(nn.Sequential):
-    """Time series transformer model based on ViT (Vision Transformer):
+    r"""Time series transformer model based on ViT (Vision Transformer):
 
     Dosovitskiy, A., Beyer, L., Kolesnikov, A., Weissenborn, D., Zhai, X., Unterthiner, T., ... & Houlsby, N. (2020).
     An image is worth 16x16 words: Transformers for image recognition at scale. arXiv preprint arXiv:2010.11929.
 
     This implementation is a modified version of Vision Transformer that is part of the grat timm library
     (https://github.com/rwightman/pytorch-image-models/blob/72b227dcf57c0c62291673b96bdc06576bb90457/timm/models/vision_transformer.py)
+
+    Args:
+        c_in:              the number of features (aka variables, dimensions, channels) in the time series dataset.
+        c_out:             the number of target classes.
+        seq_len:           number of time steps in the time series.
+        depth:             number of blocks in the encoder.
+        d_model:           total dimension of the model (number of features created by the model).
+        n_heads:           parallel attention heads. Default:16 (range(8-16)).
+        d_head:            size of the learned linear projection of queries, keys and values in the MHA.
+                           Default: None -> (d_model/n_heads) = 32.
+        act:               the activation function of positionwise feedforward layer.
+        d_ff:              the dimension of the feedforward network model.
+        attn_dropout:      dropout rate applied to the attention sublayer.
+        dropout:           dropout applied to to the embedded sequence steps after position embeddings have been added and
+                           to the mlp sublayer in the encoder.
+        drop_path_rate:    stochastic depth rate.
+        mlp_ratio:         ratio of mlp hidden dim to embedding dim.
+        qkv_bias:          determines whether bias is applied to the Linear projections of queries, keys and values in the MultiheadAttention
+        pre_norm:          if True normalization will be applied as the first step in the sublayers. Defaults to False.
+        use_token:         if True, the output will come from the transformed token. Otherwise a pooling layer will be applied.
+        use_pe:            flag to indicate if positional embedding is used.
+        fc_dropout:        dropout applied to the final fully connected layer.
+        use_bn:            flag that indicates if batchnorm will be applied to the head.
+        y_range:           range of possible y values (used in regression tasks).
+        n_embeds:          list with the sizes of the dictionaries of embeddings (int)
+        embed_dims:        list with the sizes of each embedding vector (int)
+        cat_pos:           list with the position of the categorical variables in the input
+        feature_extractor: an nn.Module or optional callable that will be used to preprocess the time series before
+                           the embedding step. It is useful to extract features or resample the time series.
+        custom_head:       custom head that will be applied to the network. It must contain all kwargs (pass a partial function)
+
+    Input:
+        x: bs (batch size) x nvars (aka features, variables, dimensions, channels) x seq_len (aka time steps)
     """
 
+    def __init__(self, c_in:int, c_out:int, seq_len:int, d_model:int=128, depth:int=6, n_heads:int=16, d_head:Optional[int]=None, act:str='reglu',
+                 d_ff:int=256, attn_dropout:float=0., dropout:float=0., drop_path_rate:float=0., mlp_ratio:int=1, qkv_bias:bool=True, pre_norm:bool=False,
+                 use_token:bool=True, use_pe:bool=True, fc_dropout:float=0., use_bn:bool=False, y_range:Optional[tuple]=None,
+                 n_embeds:Optional[list]=None, embed_dims:Optional[list]=None, cat_pos:Optional[list]=None,
+                 feature_extractor:Optional[Callable]=None, custom_head:Optional[Callable]=None):
 
-    def __init__(self, c_in:int, c_out:int, seq_len:int, n_layers:int=6, d_model:int=128, n_heads:int=16, d_head:Optional[int]=None, act:str='reglu',
-                 d_ff:int=256, attn_dropout:float=0, dropout:float=0., drop_path_rate:float=0., mlp_ratio:int=1,
-                 qkv_bias:bool=True, pre_norm:bool=False, use_token:bool=True, fc_dropout:float=0., bn:bool=False, y_range:Optional[tuple]=None,
-                 ks:Optional[int]=None, maxpool:bool=True, feature_extractor:Optional[Callable]=None, custom_head:Optional[Callable]=None, verbose:bool=False):
-
-        """
-        Args:
-        =====
-
-        c_in:                   the number of features (aka variables, dimensions, channels) in the time series dataset.
-        c_out:                  the number of target classes.
-        seq_len:                number of time steps in the time series.
-        n_layers:               number of layers (or blocks) in the encoder. Default: 3 (range(1-4))
-        d_model:                total dimension of the model (number of features created by the model). Default: 128 (range(64-512))
-        n_heads:                parallel attention heads. Default:16 (range(8-16)).
-        d_head:                 size of the learned linear projection of queries, keys and values in the MHA. Usual values: 16-512.
-                                Default: None -> (d_model/n_heads) = 32.
-        act:                    the activation function of intermediate layer, relu, gelu, geglu, reglu.
-        d_ff:                   the dimension of the feedforward network model. Default: 512 (range(256-512))
-        dropout:                dropout applied to to the embedded sequence steps after position embeddings have been added and
-                                to the mlp sublayer in the encoder.
-        attn_dropout:         dropout rate applied to the attention sublayer.
-        drop_path_rate:         stochastic depth rate.
-        mlp_ratio:              ratio of mlp hidden dim to embedding dim.
-        qkv_bias:               determines whether bias is applied to the Linear projections of queries, keys and values in the MultiheadAttention
-        pre_norm:               if True normalization will be applied as the first step in the sublayers. Defaults to False.
-        use_token:              if True, the output will come from the transformed token. Otherwise a pooling layer will be applied.
-        fc_dropout:             dropout applied to the final fully connected layer.
-        bn:                     flag that indicates if batchnorm will be applied to the head.
-        y_range:                range of possible y values (used in regression tasks).
-        ks:                     (Optional) kernel sizes that will be applied to a hybrid embedding.
-        maxpool:                If true and kernel sizes are passed, maxpool will also be added to the hybrid embedding.
-        feature_extractor:           an optional callable (nn.Conv1d with dilation > 1 or stride > 1 for example) that will be used to preprocess the time series before
-                                the embedding step. It is useful to extract features or resample the time series.
-        custom_head:            custom head that will be applied to the network. It must contain all kwargs (pass a partial function)
-
-        Input shape:
-            x: bs (batch size) x nvars (aka features, variables, dimensions, channels) x seq_len (aka time steps)
-        """
-
-        backbone = _TSiTBackbone(c_in, seq_len, n_layers=n_layers, d_model=d_model, n_heads=n_heads, d_head=d_head, act=act, d_ff=d_ff,
-                                 attn_dropout=attn_dropout, dropout=dropout, drop_path_rate=drop_path_rate, pre_norm=pre_norm, mlp_ratio=mlp_ratio,
-                                 use_token=use_token, ks=ks, maxpool=maxpool, feature_extractor=feature_extractor, verbose=verbose)
+        backbone = _TSiTBackbone(c_in, seq_len, depth=depth, d_model=d_model, n_heads=n_heads, d_head=d_head, act=act,
+                                 d_ff=d_ff, attn_dropout=attn_dropout, dropout=dropout, drop_path_rate=drop_path_rate,
+                                 pre_norm=pre_norm, mlp_ratio=mlp_ratio, use_pe=use_pe, use_token=use_token,
+                                 n_embeds=n_embeds, embed_dims=embed_dims, cat_pos=cat_pos, feature_extractor=feature_extractor)
 
         self.head_nf = d_model
         self.c_out = c_out
         self.seq_len = seq_len
+
+        # Head
         if custom_head:
-            head = custom_head(self.head_nf, c_out, self.seq_len) # custom head passed as a partial func with all its kwargs
+            if isinstance(custom_head, nn.Module): head = custom_head
+            else: head = custom_head(self.head_nf, c_out, seq_len)
         else:
-            layers = [TokenLayer(token=use_token)]
-            layers += [LinBnDrop(d_model, c_out, bn=bn, p=fc_dropout)]
+            layers = [LinBnDrop(d_model, c_out, bn=use_bn, p=fc_dropout)]
             if y_range: layers += [SigmoidRange(*y_range)]
             head = nn.Sequential(*layers)
         super().__init__(OrderedDict([('backbone', backbone), ('head', head)]))
