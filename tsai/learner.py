@@ -218,7 +218,7 @@ all_archs = [FCN, FCNPlus, InceptionTime, InceptionTimePlus, InCoordTime, XCoord
            MiniRocketVotingClassifier, MiniRocketVotingRegressor, MiniRocketFeaturesPlus, MiniRocketPlus, MiniRocketHead,
            InceptionRocketFeaturesPlus, InceptionRocketPlus, MLP, MultiInputNet, OmniScaleCNN, RNN, LSTM, GRU, RNNPlus, LSTMPlus, GRUPlus,
            RNN_FCN, LSTM_FCN, GRU_FCN, MRNN_FCN, MLSTM_FCN, MGRU_FCN, ROCKET, RocketClassifier, RocketRegressor, ResCNNBlock, ResCNN,
-           ResNet, ResNetPlus, TCN, TSPerceiver, TST, TSTPlus, MultiTSTPlus, TSiTPlus, TSiT, InceptionTSiTPlus, InceptionTSiT,
+           ResNet, ResNetPlus, TCN, TSPerceiver, TST, TSTPlus, MultiTSTPlus, TSiTPlus, TSiT,
            TabFusionTransformer, TSTabFusionTransformer, TabModel, TabTransformer, TransformerModel, XCM, XCMPlus,
            xresnet1d18, xresnet1d34, xresnet1d50, xresnet1d101, xresnet1d152, xresnet1d18_deep,
            xresnet1d34_deep, xresnet1d50_deep, xresnet1d18_deeper, xresnet1d34_deeper, xresnet1d50_deeper,
