@@ -75,7 +75,7 @@ class _TSiTBackbone(Module):
 
         # Position embedding & token
         if use_pe:
-            self.pos_embed = nn.Parameter(torch.zeros(1, seq_len + use_token, d_model))
+            self.pos_embed = nn.Parameter(torch.zeros(1, seq_len, d_model))
         self.use_pe = use_pe
         self.cls_token = nn.Parameter(torch.zeros(1, 1, d_model))
         self.use_token = use_token
@@ -95,10 +95,10 @@ class _TSiTBackbone(Module):
 
         # Position embedding & token
         x = self.transpose(x)
-        if self.use_token:
-            x = torch.cat((self.cls_token.expand(x.shape[0], -1, -1), x), dim=1)
         if self.use_pe:
             x = x + self.pos_embed
+        if self.use_token: # token is concatenated after position embedding so that embedding can be learned using self.supervised learning
+            x = torch.cat((self.cls_token.expand(x.shape[0], -1, -1), x), dim=1)
         x = self.emb_dropout(x)
 
         # Encoder
