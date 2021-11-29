@@ -91,9 +91,11 @@ class TSStandardize(Transform):
     """
 
     parameters, order = L('mean', 'std'), 90
+    _setup = True # indicates it requires set up
     def __init__(self, mean=None, std=None, by_sample=False, by_var=False, by_step=False, eps=1e-8, use_single_batch=True, verbose=False):
         self.mean = tensor(mean) if mean is not None else None
         self.std = tensor(std) if std is not None else None
+        self._setup = (mean is None or std is None) and not by_sample
         self.eps = eps
         self.by_sample, self.by_var, self.by_step = by_sample, by_var, by_step
         drop_axes = []
@@ -112,32 +114,31 @@ class TSStandardize(Transform):
     def from_stats(cls, mean, std): return cls(mean, std)
 
     def setups(self, dl: DataLoader):
-        if self.mean is None or self.std is None:
-            if not self.by_sample:
-                if not self.use_single_batch:
-                    o = dl.dataset.__getitem__([slice(None)])[0]
-                else:
-                    o, *_ = dl.one_batch()
-                if self.by_var and is_listy(self.by_var):
-                    shape = torch.mean(o, dim=self.axes, keepdim=self.axes!=()).shape
-                    mean = torch.zeros(*shape, device=o.device)
-                    std = torch.ones(*shape, device=o.device)
-                    for v in self.by_var:
-                        if not is_listy(v): v = [v]
-                        mean[:, v] = torch_nanmean(o[:, v], dim=self.axes if len(v) == 1 else self.list_axes, keepdim=True)
-                        std[:, v] = torch.clamp_min(torch_nanstd(o[:, v], dim=self.axes if len(v) == 1 else self.list_axes, keepdim=True), self.eps)
-                else:
-                    mean = torch_nanmean(o, dim=self.axes, keepdim=self.axes!=())
-                    std = torch.clamp_min(torch_nanstd(o, dim=self.axes, keepdim=self.axes!=()), self.eps)
-                self.mean, self.std = mean, std
-                if len(self.mean.shape) == 0:
-                    pv(f'{self.__class__.__name__} mean={self.mean}, std={self.std}, by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step}\n',
-                       self.verbose)
-                else:
-                    pv(f'{self.__class__.__name__} mean shape={self.mean.shape}, std shape={self.std.shape}, by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step}\n',
-                       self.verbose)
-
-            else: self.mean, self.std = torch.zeros(1), torch.ones(1)
+        if self._setup:
+            if not self.use_single_batch:
+                o = dl.dataset.__getitem__([slice(None)])[0]
+            else:
+                o, *_ = dl.one_batch()
+            if self.by_var and is_listy(self.by_var):
+                shape = torch.mean(o, dim=self.axes, keepdim=self.axes!=()).shape
+                mean = torch.zeros(*shape, device=o.device)
+                std = torch.ones(*shape, device=o.device)
+                for v in self.by_var:
+                    if not is_listy(v): v = [v]
+                    mean[:, v] = torch_nanmean(o[:, v], dim=self.axes if len(v) == 1 else self.list_axes, keepdim=True)
+                    std[:, v] = torch.clamp_min(torch_nanstd(o[:, v], dim=self.axes if len(v) == 1 else self.list_axes, keepdim=True), self.eps)
+            else:
+                mean = torch_nanmean(o, dim=self.axes, keepdim=self.axes!=())
+                std = torch.clamp_min(torch_nanstd(o, dim=self.axes, keepdim=self.axes!=()), self.eps)
+            self.mean, self.std = mean, std
+            if len(self.mean.shape) == 0:
+                pv(f'{self.__class__.__name__} mean={self.mean}, std={self.std}, by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step}\n',
+                   self.verbose)
+            else:
+                pv(f'{self.__class__.__name__} mean shape={self.mean.shape}, std shape={self.std.shape}, by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step}\n',
+                   self.verbose)
+            self._setup = False
+        elif self.by_sample: self.mean, self.std = torch.zeros(1), torch.ones(1)
 
     def encodes(self, o:TSTensor):
         if self.by_sample:
@@ -184,11 +185,12 @@ def mul_max(x:(torch.Tensor, TSTensor, NumpyTensor), axes=(), keepdim=False):
 class TSNormalize(Transform):
     "Normalizes batch of type `TSTensor`"
     parameters, order = L('min', 'max'), 90
-
+    _setup = True # indicates it requires set up
     def __init__(self, min=None, max=None, range=(-1, 1), by_sample=False, by_var=False, by_step=False, clip_values=True,
                  use_single_batch=True, verbose=False):
         self.min = tensor(min) if min is not None else None
         self.max = tensor(max) if max is not None else None
+        self._setup = (self.min is None and self.max is None) and not by_sample
         self.range_min, self.range_max = range
         self.by_sample, self.by_var, self.by_step = by_sample, by_var, by_step
         drop_axes = []
@@ -208,7 +210,7 @@ class TSNormalize(Transform):
     def from_stats(cls, min, max, range_min=0, range_max=1): return cls(min, max, self.range_min, self.range_max)
 
     def setups(self, dl: DataLoader):
-        if self.min is None or self.max is None:
+        if self._setup:
             if not self.use_single_batch:
                 o = dl.dataset.__getitem__([slice(None)])[0]
             else:
@@ -230,6 +232,8 @@ class TSNormalize(Transform):
             else:
                 pv(f'{self.__class__.__name__} min shape={self.min.shape}, max shape={self.max.shape}, by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step}\n',
                    self.verbose)
+            self._setup = False
+        elif self.by_sample: self.min, self.max = -torch.ones(1), torch.ones(1)
 
     def encodes(self, o:TSTensor):
         if self.by_sample:
@@ -260,29 +264,35 @@ class TSNormalize(Transform):
 class TSClipOutliers(Transform):
     "Clip outliers batch of type `TSTensor` based on the IQR"
     parameters, order = L('min', 'max'), 90
-    def __init__(self, min=None, max=None, by_sample=False, by_var=False, verbose=False):
-        self.su = (min is None or max is None) and not by_sample
+    _setup = True # indicates it requires set up
+    def __init__(self, min=None, max=None, by_sample=False, by_var=False, use_single_batch=False, verbose=False):
+
         self.min = tensor(min) if min is not None else tensor(-np.inf)
         self.max = tensor(max) if max is not None else tensor(np.inf)
         self.by_sample, self.by_var = by_sample, by_var
+        self._setup = (min is None or max is None) and not by_sample
         if by_sample and by_var: self.axis = (2)
         elif by_sample: self.axis = (1, 2)
         elif by_var: self.axis = (0, 2)
         else: self.axis = None
+        self.use_single_batch = use_single_batch
         self.verbose = verbose
         if min is not None or max is not None:
             pv(f'{self.__class__.__name__} min={min}, max={max}\n', self.verbose)
 
     def setups(self, dl: DataLoader):
-        if self.su:
-            o, *_ = dl.one_batch()
+        if self._setup:
+            if not self.use_single_batch:
+                o = dl.dataset.__getitem__([slice(None)])[0]
+            else:
+                o, *_ = dl.one_batch()
             min, max = get_outliers_IQR(o, self.axis)
             self.min, self.max = tensor(min), tensor(max)
             if self.axis is None: pv(f'{self.__class__.__name__} min={self.min}, max={self.max}, by_sample={self.by_sample}, by_var={self.by_var}\n',
                                      self.verbose)
             else: pv(f'{self.__class__.__name__} min={self.min.shape}, max={self.max.shape}, by_sample={self.by_sample}, by_var={self.by_var}\n',
                      self.verbose)
-            self.su = False
+            self._setup = False
 
     def encodes(self, o:TSTensor):
         if self.axis is None: return torch.clamp(o, self.min, self.max)
@@ -309,11 +319,12 @@ class TSClip(Transform):
 class TSRobustScale(Transform):
     r"""This Scaler removes the median and scales the data according to the quantile range (defaults to IQR: Interquartile Range)"""
     parameters, order = L('median', 'min', 'max'), 90
+    _setup = True # indicates it requires set up
     def __init__(self, median=None, min=None, max=None, by_sample=False, by_var=False, quantile_range=(25.0, 75.0), use_single_batch=True, verbose=False):
-        self._setup = (median is None or min is None or max is None) and not by_sample
         self.median = tensor(median) if median is not None else tensor(0)
         self.min = tensor(min) if min is not None else tensor(-np.inf)
         self.max = tensor(max) if max is not None else tensor(np.inf)
+        self._setup = (median is None or min is None or max is None) and not by_sample
         self.by_sample, self.by_var = by_sample, by_var
         if by_sample and by_var: self.axis = (2)
         elif by_sample: self.axis = (1, 2)
