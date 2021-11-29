@@ -4,10 +4,11 @@ __all__ = ['load_all', 'load_learner_all', 'get_arch', 'all_archs', 'all_archs_n
 
 # Cell
 from .imports import *
+from .utils import random_shuffle
 from .data.core import *
 from .data.validation import *
 from .models.all import *
-from .models.InceptionTimePlus import *
+from .inference import *
 from fastai.learner import *
 from fastai.vision.models.all import *
 from fastai.data.transforms import *
@@ -292,14 +293,76 @@ def decoder(self:Learner, o): return L([self.dls.decodes(oi) for oi in o])
 
 # Cell
 @patch
-@delegates(GatherPredsCallback.__init__)
-def get_X_preds(self: Learner, X, y=None, bs=64, with_input=False, with_decoded=True, with_loss=False, **kwargs):
-    if with_loss and y is None:
-        print('cannot find loss as y=None')
-        with_loss = False
-    dl = self.dls.valid.new_dl(X, y=y)
-    dl.bs = ifnone(bs, self.dls.bs)
-    output = list(self.get_preds(dl=dl, with_input=with_input, with_decoded=with_decoded, with_loss=with_loss, reorder=False))
-    if with_decoded and hasattr(self.dls, 'vocab'):
-        output[2 + with_input] = L([self.dls.vocab[p] for p in output[2 + with_input]])
-    return tuple(output)
+def feature_importance(self:Learner, feature_names=None, key_metric_idx=0, show_chart=True, save_df_path=False, random_state=23):
+    r"""Calculates feature importance defined to be the change in a model validation loss or metric when a single feature value is randomly shuffled
+
+    This procedure breaks the relationship between the feature and the target, thus the change in the model validation loss or metric is indicative of
+    how much the model depends on the feature.
+
+    Args:
+        feature_names (Optional[list(str)]): list of feature names that will be displayed if available. Otherwise they will be var_0, var_1, etc.
+        key_metric_idx (Optional[int]): integer to select the metric used in the calculation. If None or no metric is available,
+                                        the change is calculated using the validation loss.
+        show_chart (bool): flag to indicate if a chart showing permutation feature importance will be plotted.
+        save_df_path (str): path to saved dataframe containing the permutation feature importance results.
+        random_state (int): controls the shuffling applied to the data. Pass an int for reproducible output across multiple function calls.
+    """
+
+    X_valid = self.dls.valid.dataset.tls[0].items
+    y_valid = self.dls.valid.dataset.tls[1].items
+
+    metrics = [mn for mn in self.recorder.metric_names if mn not in ['epoch', 'train_loss', 'valid_loss', 'time']]
+    if len(metrics) == 0 or key_metric_idx is None:
+        metric_name = self.loss_func.__class__.__name__
+        key_metric_idx = None
+    else:
+        metric_name = metrics[key_metric_idx]
+        metric = self.recorder.metrics[key_metric_idx].func
+    print(f'Selected metric: {metric_name}')
+
+    # Adapted from https://www.kaggle.com/cdeotte/lstm-feature-importance by Chris Deotte (Kaggle GrandMaster)
+    if feature_names is None:
+        feature_names = [f"var_{i}" for i in range(X.shape[1])]
+
+    results = []
+    print('Computing feature importance...')
+
+    COLS = ['BASELINE'] + list(feature_names)
+    try:
+        for k in progress_bar(range(len(COLS))):
+            if k>0:
+                save_feat = X_valid[:, k-1].copy()
+                X_valid[:, k-1] = random_shuffle(X_valid[:, k-1].flatten(), random_state=random_state).reshape(X_valid[:, k-1].shape)
+            if key_metric_idx is None:
+                value = self.get_X_preds(X_valid, y_valid, with_loss=True)[-1].mean().item()
+            else:
+                output = self.get_X_preds(X_valid, y_valid)
+                value = metric(output[0], output[1]).item()
+            print(f"{k:3} feature: {COLS[k]:20} {metric_name}: {value:8.6f}")
+            results.append([COLS[k], value])
+            if k>0:
+                X_valid[:, k-1] = save_feat
+                del save_feat; gc.collect()
+
+    except KeyboardInterrupt:
+        if k>0:
+            X_valid[:, k-1] = save_feat
+            del save_feat; gc.collect()
+
+    # Display feature importance
+    if show_chart:
+        print()
+        df = pd.DataFrame(results, columns=["Feature", metric_name])
+        df = df.sort_values(metric_name, ascending=key_metric_idx is None)
+        plt.figure(figsize=(10, .5*len(results)))
+        plt.barh(np.arange(len(results)), df[metric_name], color="darkblue")
+        plt.yticks(np.arange(len(results)), df["Feature"].values)
+        plt.title('Permutation Feature Importance', size=16)
+        plt.xlabel(f"{metric_name}")
+        plt.ylim((-1,len(results)))
+        plt.show()
+
+    # Save feature importance
+    if save_df_path:
+        df = df.sort_values(metric_name,ascending=False)
+        df.to_csv(f'{save_df_path}.csv', index=False)
