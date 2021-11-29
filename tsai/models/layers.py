@@ -1075,7 +1075,7 @@ class MultiheadAttention(Module):
 class MultiConv1d(Module):
     """Module that applies multiple convolutions with different kernel sizes"""
 
-    def __init__(self, ni, nf=None, kss=[1,3,5,7], keep_original=True, dim=1, **kwargs):
+    def __init__(self, ni, nf=None, kss=[1,3,5,7], keep_original=False, separable=False, dim=1, **kwargs):
         kss = listify(kss)
         n_layers = len(kss)
         if ni == nf: keep_original = False
@@ -1086,9 +1086,10 @@ class MultiConv1d(Module):
                 nfs[i] += 1
                 if np.sum(nfs) + ni * keep_original == nf: break
 
+        _conv = SeparableConv1d if separable else Conv1d
         self.layers = nn.ModuleList()
         for nfi,ksi in zip(nfs, kss):
-            self.layers.append(Conv1d(ni, nfi, ksi, **kwargs))
+            self.layers.append(_conv(ni, nfi, ksi, **kwargs))
         self.keep_original, self.dim = keep_original, dim
 
     def forward(self, x):
