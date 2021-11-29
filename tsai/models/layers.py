@@ -1078,12 +1078,14 @@ class MultiConv1d(Module):
     def __init__(self, ni, nf=None, kss=[1,3,5,7], keep_original=True, dim=1, **kwargs):
         kss = listify(kss)
         n_layers = len(kss)
+        if ni == nf: keep_original = False
         if nf is None: nf = ni * (keep_original + n_layers)
         nfs = [(nf - ni*keep_original) // n_layers] * n_layers
         while np.sum(nfs) + ni * keep_original < nf:
             for i in range(len(nfs)):
                 nfs[i] += 1
                 if np.sum(nfs) + ni * keep_original == nf: break
+
         self.layers = nn.ModuleList()
         for nfi,ksi in zip(nfs, kss):
             self.layers.append(Conv1d(ni, nfi, ksi, **kwargs))

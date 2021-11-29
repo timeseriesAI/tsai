@@ -103,9 +103,9 @@ class _TSiTBackbone(Module):
 
         # Encoder
         x = self.encoder(x)
+
+        # Output
         x = x.transpose(1,2)
-        if self.use_token:
-            x = x[..., 0]
         return x
 
 # Cell
@@ -172,7 +172,13 @@ class TSiTPlus(nn.Sequential):
             if isinstance(custom_head, nn.Module): head = custom_head
             else: head = custom_head(self.head_nf, c_out, seq_len)
         else:
-            layers = [LinBnDrop(d_model, c_out, bn=use_bn, p=fc_dropout)]
+            layers = []
+            if use_token:
+                layers += [TokenLayer()]
+                layers += [LinBnDrop(d_model, c_out, bn=use_bn, p=fc_dropout)]
+            else:
+                layers += [Reshape(-1)]
+                layers += [LinBnDrop(d_model * seq_len, c_out, bn=use_bn, p=fc_dropout)]
             if y_range: layers += [SigmoidRange(*y_range)]
             head = nn.Sequential(*layers)
         super().__init__(OrderedDict([('backbone', backbone), ('head', head)]))
