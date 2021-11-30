@@ -54,11 +54,31 @@ nb_path: "nbs/index.ipynb"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="November,-2021">November, 2021<a class="anchor-link" href="#November,-2021"> </a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>✅ Implemented some of the learnings from reviewing Kaggle's latest time series competition (see Medium <a href="https://towardsdatascience.com/key-takeaways-from-kaggles-most-recent-time-series-competition-ventilator-pressure-prediction-7a1d2e4e0131?source=user_profile---------0-------------------------------">blog post</a> for more details) like:<ul>
+<li>improved RNN initialization (based on a kernel shared by <a href="https://www.kaggle.com/junkoda">https://www.kaggle.com/junkoda</a>)</li>
+<li>added the option to pass a feature extractor to RNNPlus &amp; TSiT (Transformer) models.  </li>
+<li>created a MultiConv layer that allows the concatenation of original features with the output of one or multiple convolution layers in parallel.</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <h4 id="September,-2021">September, 2021<a class="anchor-link" href="#September,-2021"> </a></h4><ul>
 <li>See our new tutorial notebook on how to <strong>track your experiments with Weights &amp; Biases</strong>
 <a href="https://colab.research.google.com/github/timeseriesAI/tsai/blob/master/tutorial_nbs/12_Experiment_tracking_with_W%26B.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a></li>
 <li><code>tsai</code> just got easier to use with the new sklearn-like APIs: <a href="/tslearner.html#TSClassifier"><code>TSClassifier</code></a>, <a href="/tslearner.html#TSRegressor"><code>TSRegressor</code></a>, and <a href="/tslearner.html#TSForecaster"><code>TSForecaster</code></a>!! See <a href="https://timeseriesai.github.io/tsai/tslearner.html">this</a> for more info.</li>
-<li><p>🚀🚀 New tutorial notebook on how to <strong>train your model with larger-than-memory datasets in less time achieving up to 100% GPU usage!!</strong> 🚀🚀   <a href="https://colab.research.google.com/github/timeseriesAI/tsai/blob/master/tutorial_nbs/11_How_to_train_big_arrays_faster_with_tsai.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a></p>
+<li><p>New tutorial notebook on how to <strong>train your model with larger-than-memory datasets in less time achieving up to 100% GPU usage!!</strong>   <a href="https://colab.research.google.com/github/timeseriesAI/tsai/blob/master/tutorial_nbs/11_How_to_train_big_arrays_faster_with_tsai.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a></p>
 </li>
 <li><p><strong><code>tsai</code> supports now more input formats</strong>: np.array, np.memmap, zarr, xarray, dask, list, L, ...</p>
 </li>

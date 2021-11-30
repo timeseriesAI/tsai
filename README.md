@@ -19,11 +19,18 @@
 
 ## What's new:
 
+#### November, 2021
+
+- ✅ Implemented some of the learnings from reviewing Kaggle's latest time series competition (see Medium [blog post](https://towardsdatascience.com/key-takeaways-from-kaggles-most-recent-time-series-competition-ventilator-pressure-prediction-7a1d2e4e0131?source=user_profile---------0-------------------------------) for more details) like:
+    - improved RNN initialization (based on a kernel shared by https://www.kaggle.com/junkoda)
+    - added the option to pass a feature extractor to RNNPlus & TSiT (Transformer) models.  
+    - created a MultiConv layer that allows the concatenation of original features with the output of one or multiple convolution layers in parallel.
+
 #### September, 2021
 * See our new tutorial notebook on how to **track your experiments with Weights & Biases**
 <a href="https://colab.research.google.com/github/timeseriesAI/tsai/blob/master/tutorial_nbs/12_Experiment_tracking_with_W%26B.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 * `tsai` just got easier to use with the new sklearn-like APIs: `TSClassifier`, `TSRegressor`, and `TSForecaster`!! See [this](https://timeseriesai.github.io/tsai/tslearner.html) for more info.
-* 🚀🚀 New tutorial notebook on how to **train your model with larger-than-memory datasets in less time achieving up to 100% GPU usage!!** 🚀🚀   <a href="https://colab.research.google.com/github/timeseriesAI/tsai/blob/master/tutorial_nbs/11_How_to_train_big_arrays_faster_with_tsai.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
+* New tutorial notebook on how to **train your model with larger-than-memory datasets in less time achieving up to 100% GPU usage!!**   <a href="https://colab.research.google.com/github/timeseriesAI/tsai/blob/master/tutorial_nbs/11_How_to_train_big_arrays_faster_with_tsai.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 
 * **`tsai` supports now more input formats**: np.array, np.memmap, zarr, xarray, dask, list, L, ...
 
