@@ -322,7 +322,7 @@ def feature_importance(self:Learner, feature_names=None, key_metric_idx=0, show_
 
     # Adapted from https://www.kaggle.com/cdeotte/lstm-feature-importance by Chris Deotte (Kaggle GrandMaster)
     if feature_names is None:
-        feature_names = [f"var_{i}" for i in range(X.shape[1])]
+        feature_names = [f"var_{i}" for i in range(X_valid.shape[1])]
 
     results = []
     print('Computing feature importance...')
