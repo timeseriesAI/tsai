@@ -71,7 +71,7 @@ def create_future_mask(o, r=.15, sync=False):
     probs = torch.tensor(r, device=o.device)
     mask = Binomial(1, probs).sample((n_masks, dims, mask_len))
     if sync: mask = mask.repeat(1, mask_dims, 1)
-    mask = torch.sort(mask,dim=-1, descending=True)[0].bool()
+    mask = torch.sort(mask,dim=-1, descending=False)[0].bool()
     return mask
 
 def natural_mask(o):
