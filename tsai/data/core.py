@@ -832,6 +832,7 @@ def get_best_dls_params(dls, n_iters=10, num_workers=[0, 1, 2, 4, 8], pin_memory
 def get_ts_dls(X, y=None, splits=None, sel_vars=None, sel_steps=None, tfms=None, inplace=True,
             path='.', bs=64, batch_tfms=None, num_workers=0, device=None, shuffle_train=True, drop_last=True, weights=None, partial_n=None, **kwargs):
     if splits is None: splits = (L(np.arange(len(X)).tolist()), L([]))
+    create_dir(path, verbose=False)
     dsets = TSDatasets(X, y, splits=splits, sel_vars=sel_vars, sel_steps=sel_steps, tfms=tfms, inplace=inplace)
     if weights is not None:
         assert len(X) == len(weights)
@@ -843,6 +844,7 @@ def get_ts_dls(X, y=None, splits=None, sel_vars=None, sel_steps=None, tfms=None,
 def get_ts_dl(X, y=None, sel_vars=None, sel_steps=None, tfms=None, inplace=True,
             path='.', bs=64, batch_tfms=None, num_workers=0, device=None, shuffle_train=True, drop_last=True, weights=None, partial_n=None, **kwargs):
     splits = (L(np.arange(len(X)).tolist()), L([]))
+    create_dir(path, verbose=False)
     dsets = TSDatasets(X, y, splits=splits, sel_vars=sel_vars, sel_steps=sel_steps, tfms=tfms, inplace=inplace, **kwargs)
     if not is_listy(partial_n): partial_n = [partial_n]
     dls   = TSDataLoaders.from_dsets(dsets.train, path=path, bs=bs, batch_tfms=batch_tfms, num_workers=num_workers,

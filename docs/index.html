@@ -217,12 +217,19 @@ It provides an overview of a time series classification task.</p>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-
-<pre><code>from tsai.all import *
-X, y, splits = get_classification_data('ECG200', split_data=False)
-batch_tfms = TSStandardize()
-clf = TSClassifier(X, y, splits=splits, arch=InceptionTimePlus, batch_tfms=batch_tfms, metrics=accuracy, cbs=ShowGraph(), verbose=True)
-clf.fit_one_cycle(100, 3e-4)</code></pre>
+<p><strong>Training:</strong></p>
+<div class="highlight"><pre><span></span>from tsai.all import *
+X, y, <span class="nv">splits</span> <span class="o">=</span> get_classification_data<span class="o">(</span><span class="s1">&#39;ECG200&#39;</span>, <span class="nv">split_data</span><span class="o">=</span>False<span class="o">)</span>
+<span class="nv">batch_tfms</span> <span class="o">=</span> TSStandardize<span class="o">()</span>
+<span class="nv">clf</span> <span class="o">=</span> TSClassifier<span class="o">(</span>X, y, <span class="nv">splits</span><span class="o">=</span>splits, <span class="nv">arch</span><span class="o">=</span>InceptionTimePlus, <span class="nv">batch_tfms</span><span class="o">=</span>batch_tfms, <span class="nv">metrics</span><span class="o">=</span>accuracy, <span class="nv">cbs</span><span class="o">=</span>ShowGraph<span class="o">())</span>
+clf.fit_one_cycle<span class="o">(</span><span class="m">100</span>, 3e-4<span class="o">)</span>
+clf.export<span class="o">(</span><span class="s2">&quot;models/clf.pkl&quot;</span><span class="o">)</span> <span class="c1"># make sure you set the path to a folder that already exists</span>
+</pre></div>
+<p><strong>Inference:</strong></p>
+<div class="highlight"><pre><span></span>from tsai.inference import load_learner
+<span class="nv">clf</span> <span class="o">=</span> load_learner<span class="o">(</span><span class="s2">&quot;models/clf.pkl&quot;</span><span class="o">)</span>
+probas, target, <span class="nv">preds</span> <span class="o">=</span> clf.get_X_preds<span class="o">(</span>X<span class="o">[</span>splits<span class="o">[</span><span class="m">0</span><span class="o">]]</span>, y<span class="o">[</span>splits<span class="o">[</span><span class="m">0</span><span class="o">]])</span>
+</pre></div>
 
 </div>
 </div>
@@ -235,12 +242,19 @@ clf.fit_one_cycle(100, 3e-4)</code></pre>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-
-<pre><code>from tsai.all import *
-X, y, splits = get_classification_data('LSST', split_data=False)
-batch_tfms = TSStandardize(by_sample=True)
-clf = TSClassifier(X, y, splits=splits, arch=InceptionTimePlus, batch_tfms=batch_tfms, metrics=accuracy, cbs=ShowGraph(), verbose=True)
-clf.fit_one_cycle(10, 1e-2)</code></pre>
+<p><strong>Training:</strong></p>
+<div class="highlight"><pre><span></span>from tsai.all import *
+X, y, <span class="nv">splits</span> <span class="o">=</span> get_classification_data<span class="o">(</span><span class="s1">&#39;LSST&#39;</span>, <span class="nv">split_data</span><span class="o">=</span>False<span class="o">)</span>
+<span class="nv">batch_tfms</span> <span class="o">=</span> TSStandardize<span class="o">(</span><span class="nv">by_sample</span><span class="o">=</span>True<span class="o">)</span>
+<span class="nv">mv_clf</span> <span class="o">=</span> TSClassifier<span class="o">(</span>X, y, <span class="nv">splits</span><span class="o">=</span>splits, <span class="nv">arch</span><span class="o">=</span>InceptionTimePlus, <span class="nv">batch_tfms</span><span class="o">=</span>batch_tfms, <span class="nv">metrics</span><span class="o">=</span>accuracy, <span class="nv">cbs</span><span class="o">=</span>ShowGraph<span class="o">())</span>
+mv_clf.fit_one_cycle<span class="o">(</span><span class="m">10</span>, 1e-2<span class="o">)</span>
+mv_clf.export<span class="o">(</span><span class="s2">&quot;models/mv_clf.pkl&quot;</span><span class="o">)</span> <span class="c1"># make sure you set the path to a folder that already exists</span>
+</pre></div>
+<p><strong>Inference:</strong></p>
+<div class="highlight"><pre><span></span>from tsai.inference import load_learner
+<span class="nv">mv_clf</span> <span class="o">=</span> load_learner<span class="o">(</span><span class="s2">&quot;models/mv_clf.pkl&quot;</span><span class="o">)</span>
+probas, target, <span class="nv">preds</span> <span class="o">=</span> mv_clf.get_X_preds<span class="o">(</span>X<span class="o">[</span>splits<span class="o">[</span><span class="m">0</span><span class="o">]]</span>, y<span class="o">[</span>splits<span class="o">[</span><span class="m">0</span><span class="o">]])</span>
+</pre></div>
 
 </div>
 </div>
@@ -253,15 +267,46 @@ clf.fit_one_cycle(10, 1e-2)</code></pre>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Training:</strong></p>
+<div class="highlight"><pre><span></span>from tsai.all import *
+X, y, <span class="nv">splits</span> <span class="o">=</span> get_regression_data<span class="o">(</span><span class="s1">&#39;AppliancesEnergy&#39;</span>, <span class="nv">split_data</span><span class="o">=</span>False<span class="o">)</span>
+<span class="nv">batch_tfms</span> <span class="o">=</span> TSStandardize<span class="o">(</span><span class="nv">by_sample</span><span class="o">=</span>True<span class="o">)</span>
+<span class="nv">reg</span> <span class="o">=</span> TSRegressor<span class="o">(</span>X, y, <span class="nv">splits</span><span class="o">=</span>splits, <span class="nv">arch</span><span class="o">=</span>TSTPlus, <span class="nv">batch_tfms</span><span class="o">=</span>batch_tfms, <span class="nv">metrics</span><span class="o">=</span>rmse, <span class="nv">cbs</span><span class="o">=</span>ShowGraph<span class="o">()</span>, <span class="nv">verbose</span><span class="o">=</span>True<span class="o">)</span>
+reg.fit_one_cycle<span class="o">(</span><span class="m">100</span>, 3e-4<span class="o">)</span>
+reg.export<span class="o">(</span><span class="s2">&quot;models/reg.pkl&quot;</span><span class="o">)</span> <span class="c1"># make sure you set the path to a folder that already exists</span>
+</pre></div>
+<p><strong>Inference:</strong></p>
+<div class="highlight"><pre><span></span>from tsai.inference import load_learner
+<span class="nv">reg</span> <span class="o">=</span> load_learner<span class="o">(</span><span class="s2">&quot;models/reg.pkl&quot;</span><span class="o">)</span>
+raw_preds, target, <span class="nv">preds</span> <span class="o">=</span> reg.get_X_preds<span class="o">(</span>X<span class="o">[</span>splits<span class="o">[</span><span class="m">0</span><span class="o">]]</span>, y<span class="o">[</span>splits<span class="o">[</span><span class="m">0</span><span class="o">]])</span>
+</pre></div>
 
-<pre><code>from tsai.all import *
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>RocketClassifier, MiniRocketClassifier, RocketRegressor and MiniRocketRegressor are somewhat different (not properly deep learning models) and are used in a slightly different way:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Training:</strong></p>
+<div class="highlight"><pre><span></span>from tsai.all import *
 from sklearn.metrics import mean_squared_error
-X_train, y_train, X_test, y_test = get_regression_data('AppliancesEnergy')
-rmse_scorer = make_scorer(mean_squared_error, greater_is_better=False)
-reg = MiniRocketRegressor(scoring=rmse_scorer)
-reg.fit(X_train, y_train)
-y_pred = reg.predict(X_test)
-mean_squared_error(y_test, y_pred, squared=False)</code></pre>
+X_train, y_train, X_test, <span class="nv">y_test</span> <span class="o">=</span> get_regression_data<span class="o">(</span><span class="s1">&#39;AppliancesEnergy&#39;</span><span class="o">)</span>
+<span class="nv">rmse_scorer</span> <span class="o">=</span> make_scorer<span class="o">(</span>mean_squared_error, <span class="nv">greater_is_better</span><span class="o">=</span>False<span class="o">)</span>
+<span class="nv">mr_reg</span> <span class="o">=</span> MiniRocketRegressor<span class="o">(</span><span class="nv">scoring</span><span class="o">=</span>rmse_scorer<span class="o">)</span>
+mr_reg.fit<span class="o">(</span>X_train, y_train<span class="o">)</span>
+mr_reg.save<span class="o">(</span><span class="s2">&quot;minirocket_regressor&quot;</span><span class="o">)</span>
+</pre></div>
+<p><strong>Inference:</strong></p>
+<div class="highlight"><pre><span></span><span class="nv">mr_reg</span> <span class="o">=</span> load_rocket<span class="o">(</span><span class="s2">&quot;minirocket_regressor&quot;</span><span class="o">)</span>
+<span class="nv">y_pred</span> <span class="o">=</span> mr_reg.predict<span class="o">(</span>X_test<span class="o">)</span>
+mean_squared_error<span class="o">(</span>y_test, y_pred, <span class="nv">squared</span><span class="o">=</span>False<span class="o">)</span>
+</pre></div>
 
 </div>
 </div>
@@ -274,14 +319,21 @@ mean_squared_error(y_test, y_pred, squared=False)</code></pre>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-
-<pre><code>from tsai.all import *
-ts = get_forecasting_time_series("Sunspots").values
-X, y = SlidingWindow(60, horizon=1)(ts)
-splits = TimeSplitter(235)(y) 
-batch_tfms = TSStandardize()
-fcst = TSForecaster(X, y, splits=splits, batch_tfms=batch_tfms, bs=512, arch=TST, metrics=mae, cbs=ShowGraph())
-fcst.fit_one_cycle(50, 1e-3)</code></pre>
+<p><strong>Training:</strong></p>
+<div class="highlight"><pre><span></span>from tsai.all import *
+<span class="nv">ts</span> <span class="o">=</span> get_forecasting_time_series<span class="o">(</span><span class="s2">&quot;Sunspots&quot;</span><span class="o">)</span>.values
+X, <span class="nv">y</span> <span class="o">=</span> SlidingWindow<span class="o">(</span><span class="m">60</span>, <span class="nv">horizon</span><span class="o">=</span><span class="m">1</span><span class="o">)(</span>ts<span class="o">)</span>
+<span class="nv">splits</span> <span class="o">=</span> TimeSplitter<span class="o">(</span><span class="m">235</span><span class="o">)(</span>y<span class="o">)</span> 
+<span class="nv">batch_tfms</span> <span class="o">=</span> TSStandardize<span class="o">()</span>
+<span class="nv">fcst</span> <span class="o">=</span> TSForecaster<span class="o">(</span>X, y, <span class="nv">splits</span><span class="o">=</span>splits, <span class="nv">batch_tfms</span><span class="o">=</span>batch_tfms, <span class="nv">bs</span><span class="o">=</span><span class="m">512</span>, <span class="nv">arch</span><span class="o">=</span>TST, <span class="nv">metrics</span><span class="o">=</span>mae, <span class="nv">cbs</span><span class="o">=</span>ShowGraph<span class="o">())</span>
+fcst.fit_one_cycle<span class="o">(</span><span class="m">50</span>, 1e-3<span class="o">)</span>
+fcst.export<span class="o">(</span><span class="s2">&quot;models/fcst.pkl&quot;</span><span class="o">)</span> <span class="c1"># make sure you set the path to a folder that already exists</span>
+</pre></div>
+<p><strong>Inference:</strong></p>
+<div class="highlight"><pre><span></span>from tsai.inference import load_learner
+<span class="nv">fcst</span> <span class="o">=</span> load_learner<span class="o">(</span><span class="s2">&quot;models/fcst.pkl&quot;</span><span class="o">)</span>
+raw_preds, target, <span class="nv">preds</span> <span class="o">=</span> fcst.get_X_preds<span class="o">(</span>X<span class="o">[</span>splits<span class="o">[</span><span class="m">0</span><span class="o">]]</span>, y<span class="o">[</span>splits<span class="o">[</span><span class="m">0</span><span class="o">]])</span>
+</pre></div>
 
 </div>
 </div>

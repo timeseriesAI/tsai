@@ -32,6 +32,9 @@
             }
         }
     },
+    "Inference": {
+        "Inference": "/inference.html"
+    },
     "Models": {
         "Layers": "/models.layers.html",
         "Utilities": "/models.utils.html",

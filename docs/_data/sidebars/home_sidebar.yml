@@ -89,6 +89,12 @@ entries:
     title: Training
   - folderitems:
     - output: web,pdf
+      title: Inference
+      url: /inference.html
+    output: web
+    title: Inference
+  - folderitems:
+    - output: web,pdf
       title: Layers
       url: /models.layers.html
     - output: web,pdf
