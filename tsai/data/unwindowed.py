@@ -11,30 +11,34 @@ from .core import *
 # Cell
 class TSUnwindowedDataset():
     _types = TSTensor, TSLabelTensor
-    def __init__(self, X, y=None, y_func=None, window_size=1, stride=1, drop_start=0, drop_end=0, seq_first=True, **kwargs):
+    def __init__(self, X=None, y=None, y_func=None, window_size=1, stride=1, drop_start=0, drop_end=0, seq_first=True, **kwargs):
         store_attr()
-        if X.ndim == 1: X = np.expand_dims(X, 1)
-        shape = X.shape
-        assert len(shape) == 2
-        if seq_first:
-            seq_len = shape[0]
-        else:
-            seq_len = shape[-1]
-        max_time = seq_len - window_size + 1 - drop_end
-        assert max_time > 0, 'you need to modify either window_size or drop_end as they are larger than seq_len'
-        self.all_idxs = np.expand_dims(np.arange(drop_start, max_time, step=stride), 0).T
-        self.window_idxs = np.expand_dims(np.arange(window_size), 0)
-        if 'split' in kwargs: self.split = kwargs['split']
-        else: self.split = None
-        self.n_inp = 1
-        if y is None: self.loss_func = MSELossFlat()
-        else:
-            _,yb=self[:2]
-            if (is_listy(yb[0]) and isinstance(yb[0][0], Integral)) or isinstance(yb[0], Integral): self.loss_func = CrossEntropyLossFlat()
-            else: self.loss_func = MSELossFlat()
+        if X is not None:
+            if X.ndim == 1: X = np.expand_dims(X, 1)
+            shape = X.shape
+            assert len(shape) == 2
+            if seq_first:
+                seq_len = shape[0]
+            else:
+                seq_len = shape[-1]
+            max_time = seq_len - window_size + 1 - drop_end
+            assert max_time > 0, 'you need to modify either window_size or drop_end as they are larger than seq_len'
+            self.all_idxs = np.expand_dims(np.arange(drop_start, max_time, step=stride), 0).T
+            self.window_idxs = np.expand_dims(np.arange(window_size), 0)
+            if 'split' in kwargs: self.split = kwargs['split']
+            else: self.split = None
+            self.n_inp = 1
+            if y is None:
+                self.loss_func = MSELossFlat()
+            else:
+                if (is_listy(y[0]) and isinstance(y[0][0], Integral)) or isinstance(y[0], Integral):
+                    self.loss_func = CrossEntropyLossFlat()
+                else:
+                    self.loss_func = MSELossFlat()
 
     def __len__(self):
-        if self.split is not None:
+        if not hasattr(self, "split"): return 0
+        elif self.split is not None:
             return len(self.split)
         else:
             return len(self.all_idxs)
@@ -56,6 +60,10 @@ class TSUnwindowedDataset():
             if self.y_func is not None:
                 yb = self.y_func(yb)
             return (self._types[0](xb), self._types[1](yb))
+
+    def new_empty(self):
+        return type(self)(X=None, y=None)
+
     @property
     def vars(self):
         s = self[0][0] if not isinstance(self[0][0], tuple) else self[0][0][0]
