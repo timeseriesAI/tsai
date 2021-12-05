@@ -124,18 +124,27 @@ class TSClassification(DisplayedTransform):
         store_attr()
 
     def setups(self, dset):
-        dset = np.asarray(dset)
-        if self.vocab is None and dset is not None: self.vocab = CategoryMap(dset, sort=self.sort, add_na=self.add_na)
+        dset = np.asarray(dset).flatten()
+        if self.vocab is None and dset is not None:
+            self.vocab = CategoryMap(dset, sort=self.sort, add_na=self.add_na)
         self.c = len(self.vocab)
         self.vocab_keys = np.array(list(self.vocab.o2i.keys()))[:, None]
 
     def encodes(self, o):
         try:
-            return TensorCategory((self.vocab_keys == o).argmax(axis=0))
+            if o.ndim <= 1:
+                return TensorCategory((self.vocab_keys == o).argmax(axis=0))
+            else:
+                return TensorCategory((self.vocab_keys == o.flatten()).argmax(axis=0).reshape(*o.shape))
         except KeyError as e:
             raise KeyError(f"Label '{o}' was not included in the training dataset") from e
     def decodes(self, o):
-        return stack([Category(self.vocab[oi]) for oi in o]) if is_iter(o) else Category(self.vocab[o])
+        if not is_iter(o):
+            return Category(self.vocab[o])
+        elif o.ndim <= 1:
+            return stack([Category(self.vocab[oi]) for oi in o])
+        else:
+            return stack([MultiCategory(self.vocab[oi]) for oi in o])
 
 
 class TSRegression(ToFloat):
