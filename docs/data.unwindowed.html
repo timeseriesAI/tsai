@@ -56,7 +56,7 @@ nb_path: "nbs/014_data.unwindowed.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSUnwindowedDataset" class="doc_header"><code>class</code> <code>TSUnwindowedDataset</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/unwindowed.py#L12" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSUnwindowedDataset</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>y_func</code></strong>=<em><code>None</code></em>, <strong><code>window_size</code></strong>=<em><code>1</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>drop_start</code></strong>=<em><code>0</code></em>, <strong><code>drop_end</code></strong>=<em><code>0</code></em>, <strong><code>seq_first</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h2 id="TSUnwindowedDataset" class="doc_header"><code>class</code> <code>TSUnwindowedDataset</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/unwindowed.py#L12" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSUnwindowedDataset</code>(<strong><code>X</code></strong>=<em><code>None</code></em>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>y_func</code></strong>=<em><code>None</code></em>, <strong><code>window_size</code></strong>=<em><code>1</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>drop_start</code></strong>=<em><code>0</code></em>, <strong><code>drop_end</code></strong>=<em><code>0</code></em>, <strong><code>seq_first</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -80,7 +80,7 @@ nb_path: "nbs/014_data.unwindowed.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSUnwindowedDatasets" class="doc_header"><code>class</code> <code>TSUnwindowedDatasets</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/unwindowed.py#L69" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSUnwindowedDatasets</code>(<strong><code>dataset</code></strong>, <strong><code>splits</code></strong>) :: <code>FilteredBase</code></p>
+<h2 id="TSUnwindowedDatasets" class="doc_header"><code>class</code> <code>TSUnwindowedDatasets</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/unwindowed.py#L77" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSUnwindowedDatasets</code>(<strong><code>dataset</code></strong>, <strong><code>splits</code></strong>) :: <code>FilteredBase</code></p>
 </blockquote>
 <p>Base class for lists with subsets</p>
 
@@ -136,8 +136,8 @@ nb_path: "nbs/014_data.unwindowed.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
-<span class="n">X1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+<span class="n">X1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
 <span class="n">X0</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">X0</span><span class="p">,</span> <span class="n">X1</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">X1</span>
 </pre></div>
 
@@ -154,11 +154,11 @@ nb_path: "nbs/014_data.unwindowed.ipynb"
 
 <div class="output_text output_subarea output_execute_result">
 <pre>((20,),
- array([ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16,
-        17, 18, 19]),
+ array([ 0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.,  8.,  9., 10., 11., 12.,
+        13., 14., 15., 16., 17., 18., 19.]),
  (1, 20),
- array([[ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15,
-         16, 17, 18, 19]]))</pre>
+ array([[ 0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.,  8.,  9., 10., 11., 12.,
+         13., 14., 15., 16., 17., 18., 19.]]))</pre>
 </div>
 
 </div>
@@ -176,8 +176,8 @@ nb_path: "nbs/014_data.unwindowed.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">X3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+<span class="n">X3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
 <span class="n">X2</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">X3</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">X2</span><span class="p">,</span> <span class="n">X3</span>
 </pre></div>
 
@@ -195,32 +195,35 @@ nb_path: "nbs/014_data.unwindowed.ipynb"
 <div class="output_text output_subarea output_execute_result">
 <pre>((20, 3),
  (3, 20),
- array([[   0,    0,    0],
-        [   1,   10,  100],
-        [   2,   20,  200],
-        [   3,   30,  300],
-        [   4,   40,  400],
-        [   5,   50,  500],
-        [   6,   60,  600],
-        [   7,   70,  700],
-        [   8,   80,  800],
-        [   9,   90,  900],
-        [  10,  100, 1000],
-        [  11,  110, 1100],
-        [  12,  120, 1200],
-        [  13,  130, 1300],
-        [  14,  140, 1400],
-        [  15,  150, 1500],
-        [  16,  160, 1600],
-        [  17,  170, 1700],
-        [  18,  180, 1800],
-        [  19,  190, 1900]]),
- array([[   0,    1,    2,    3,    4,    5,    6,    7,    8,    9,   10,
-           11,   12,   13,   14,   15,   16,   17,   18,   19],
-        [   0,   10,   20,   30,   40,   50,   60,   70,   80,   90,  100,
-          110,  120,  130,  140,  150,  160,  170,  180,  190],
-        [   0,  100,  200,  300,  400,  500,  600,  700,  800,  900, 1000,
-         1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900]]))</pre>
+ array([[0.0e+00, 0.0e+00, 0.0e+00],
+        [1.0e+00, 1.0e+01, 1.0e+02],
+        [2.0e+00, 2.0e+01, 2.0e+02],
+        [3.0e+00, 3.0e+01, 3.0e+02],
+        [4.0e+00, 4.0e+01, 4.0e+02],
+        [5.0e+00, 5.0e+01, 5.0e+02],
+        [6.0e+00, 6.0e+01, 6.0e+02],
+        [7.0e+00, 7.0e+01, 7.0e+02],
+        [8.0e+00, 8.0e+01, 8.0e+02],
+        [9.0e+00, 9.0e+01, 9.0e+02],
+        [1.0e+01, 1.0e+02, 1.0e+03],
+        [1.1e+01, 1.1e+02, 1.1e+03],
+        [1.2e+01, 1.2e+02, 1.2e+03],
+        [1.3e+01, 1.3e+02, 1.3e+03],
+        [1.4e+01, 1.4e+02, 1.4e+03],
+        [1.5e+01, 1.5e+02, 1.5e+03],
+        [1.6e+01, 1.6e+02, 1.6e+03],
+        [1.7e+01, 1.7e+02, 1.7e+03],
+        [1.8e+01, 1.8e+02, 1.8e+03],
+        [1.9e+01, 1.9e+02, 1.9e+03]]),
+ array([[0.0e+00, 1.0e+00, 2.0e+00, 3.0e+00, 4.0e+00, 5.0e+00, 6.0e+00,
+         7.0e+00, 8.0e+00, 9.0e+00, 1.0e+01, 1.1e+01, 1.2e+01, 1.3e+01,
+         1.4e+01, 1.5e+01, 1.6e+01, 1.7e+01, 1.8e+01, 1.9e+01],
+        [0.0e+00, 1.0e+01, 2.0e+01, 3.0e+01, 4.0e+01, 5.0e+01, 6.0e+01,
+         7.0e+01, 8.0e+01, 9.0e+01, 1.0e+02, 1.1e+02, 1.2e+02, 1.3e+02,
+         1.4e+02, 1.5e+02, 1.6e+02, 1.7e+02, 1.8e+02, 1.9e+02],
+        [0.0e+00, 1.0e+02, 2.0e+02, 3.0e+02, 4.0e+02, 5.0e+02, 6.0e+02,
+         7.0e+02, 8.0e+02, 9.0e+02, 1.0e+03, 1.1e+03, 1.2e+03, 1.3e+03,
+         1.4e+03, 1.5e+03, 1.6e+03, 1.7e+03, 1.8e+03, 1.9e+03]]))</pre>
 </div>
 
 </div>
@@ -263,38 +266,38 @@ nb_path: "nbs/014_data.unwindowed.ipynb"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(TSTensor(samples:8, vars:1, len:5),
- tensor([[[ 0,  1,  2,  3,  4]],
+<pre>(TSTensor(samples:8, vars:1, len:5, device=cpu),
+ tensor([[[ 0.,  1.,  2.,  3.,  4.]],
  
-         [[ 2,  3,  4,  5,  6]],
+         [[ 2.,  3.,  4.,  5.,  6.]],
  
-         [[ 4,  5,  6,  7,  8]],
+         [[ 4.,  5.,  6.,  7.,  8.]],
  
-         [[ 6,  7,  8,  9, 10]],
+         [[ 6.,  7.,  8.,  9., 10.]],
  
-         [[ 8,  9, 10, 11, 12]],
+         [[ 8.,  9., 10., 11., 12.]],
  
-         [[10, 11, 12, 13, 14]],
+         [[10., 11., 12., 13., 14.]],
  
-         [[12, 13, 14, 15, 16]],
+         [[12., 13., 14., 15., 16.]],
  
-         [[14, 15, 16, 17, 18]]]),
- TSTensor(samples:8, vars:1, len:5),
- tensor([[[ 0,  1,  2,  3,  4]],
+         [[14., 15., 16., 17., 18.]]]),
+ TSTensor(samples:8, vars:1, len:5, device=cpu),
+ tensor([[[ 0.,  1.,  2.,  3.,  4.]],
  
-         [[ 2,  3,  4,  5,  6]],
+         [[ 2.,  3.,  4.,  5.,  6.]],
  
-         [[ 4,  5,  6,  7,  8]],
+         [[ 4.,  5.,  6.,  7.,  8.]],
  
-         [[ 6,  7,  8,  9, 10]],
+         [[ 6.,  7.,  8.,  9., 10.]],
  
-         [[ 8,  9, 10, 11, 12]],
+         [[ 8.,  9., 10., 11., 12.]],
  
-         [[10, 11, 12, 13, 14]],
+         [[10., 11., 12., 13., 14.]],
  
-         [[12, 13, 14, 15, 16]],
+         [[12., 13., 14., 15., 16.]],
  
-         [[14, 15, 16, 17, 18]]]))</pre>
+         [[14., 15., 16., 17., 18.]]]))</pre>
 </div>
 
 </div>
@@ -330,70 +333,70 @@ nb_path: "nbs/014_data.unwindowed.ipynb"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(TSTensor(samples:8, vars:3, len:5),
- TSTensor(samples:8, vars:3, len:5),
- tensor([[[   0,    1,    2,    3,    4],
-          [   0,   10,   20,   30,   40],
-          [   0,  100,  200,  300,  400]],
+<pre>(TSTensor(samples:8, vars:3, len:5, device=cpu),
+ TSTensor(samples:8, vars:3, len:5, device=cpu),
+ tensor([[[0.0000e+00, 1.0000e+00, 2.0000e+00, 3.0000e+00, 4.0000e+00],
+          [0.0000e+00, 1.0000e+01, 2.0000e+01, 3.0000e+01, 4.0000e+01],
+          [0.0000e+00, 1.0000e+02, 2.0000e+02, 3.0000e+02, 4.0000e+02]],
  
-         [[   2,    3,    4,    5,    6],
-          [  20,   30,   40,   50,   60],
-          [ 200,  300,  400,  500,  600]],
+         [[2.0000e+00, 3.0000e+00, 4.0000e+00, 5.0000e+00, 6.0000e+00],
+          [2.0000e+01, 3.0000e+01, 4.0000e+01, 5.0000e+01, 6.0000e+01],
+          [2.0000e+02, 3.0000e+02, 4.0000e+02, 5.0000e+02, 6.0000e+02]],
  
-         [[   4,    5,    6,    7,    8],
-          [  40,   50,   60,   70,   80],
-          [ 400,  500,  600,  700,  800]],
+         [[4.0000e+00, 5.0000e+00, 6.0000e+00, 7.0000e+00, 8.0000e+00],
+          [4.0000e+01, 5.0000e+01, 6.0000e+01, 7.0000e+01, 8.0000e+01],
+          [4.0000e+02, 5.0000e+02, 6.0000e+02, 7.0000e+02, 8.0000e+02]],
  
-         [[   6,    7,    8,    9,   10],
-          [  60,   70,   80,   90,  100],
-          [ 600,  700,  800,  900, 1000]],
+         [[6.0000e+00, 7.0000e+00, 8.0000e+00, 9.0000e+00, 1.0000e+01],
+          [6.0000e+01, 7.0000e+01, 8.0000e+01, 9.0000e+01, 1.0000e+02],
+          [6.0000e+02, 7.0000e+02, 8.0000e+02, 9.0000e+02, 1.0000e+03]],
  
-         [[   8,    9,   10,   11,   12],
-          [  80,   90,  100,  110,  120],
-          [ 800,  900, 1000, 1100, 1200]],
+         [[8.0000e+00, 9.0000e+00, 1.0000e+01, 1.1000e+01, 1.2000e+01],
+          [8.0000e+01, 9.0000e+01, 1.0000e+02, 1.1000e+02, 1.2000e+02],
+          [8.0000e+02, 9.0000e+02, 1.0000e+03, 1.1000e+03, 1.2000e+03]],
  
-         [[  10,   11,   12,   13,   14],
-          [ 100,  110,  120,  130,  140],
-          [1000, 1100, 1200, 1300, 1400]],
+         [[1.0000e+01, 1.1000e+01, 1.2000e+01, 1.3000e+01, 1.4000e+01],
+          [1.0000e+02, 1.1000e+02, 1.2000e+02, 1.3000e+02, 1.4000e+02],
+          [1.0000e+03, 1.1000e+03, 1.2000e+03, 1.3000e+03, 1.4000e+03]],
  
-         [[  12,   13,   14,   15,   16],
-          [ 120,  130,  140,  150,  160],
-          [1200, 1300, 1400, 1500, 1600]],
+         [[1.2000e+01, 1.3000e+01, 1.4000e+01, 1.5000e+01, 1.6000e+01],
+          [1.2000e+02, 1.3000e+02, 1.4000e+02, 1.5000e+02, 1.6000e+02],
+          [1.2000e+03, 1.3000e+03, 1.4000e+03, 1.5000e+03, 1.6000e+03]],
  
-         [[  14,   15,   16,   17,   18],
-          [ 140,  150,  160,  170,  180],
-          [1400, 1500, 1600, 1700, 1800]]]),
- tensor([[[   0,    1,    2,    3,    4],
-          [   0,   10,   20,   30,   40],
-          [   0,  100,  200,  300,  400]],
+         [[1.4000e+01, 1.5000e+01, 1.6000e+01, 1.7000e+01, 1.8000e+01],
+          [1.4000e+02, 1.5000e+02, 1.6000e+02, 1.7000e+02, 1.8000e+02],
+          [1.4000e+03, 1.5000e+03, 1.6000e+03, 1.7000e+03, 1.8000e+03]]]),
+ tensor([[[0.0000e+00, 1.0000e+00, 2.0000e+00, 3.0000e+00, 4.0000e+00],
+          [0.0000e+00, 1.0000e+01, 2.0000e+01, 3.0000e+01, 4.0000e+01],
+          [0.0000e+00, 1.0000e+02, 2.0000e+02, 3.0000e+02, 4.0000e+02]],
  
-         [[   2,    3,    4,    5,    6],
-          [  20,   30,   40,   50,   60],
-          [ 200,  300,  400,  500,  600]],
+         [[2.0000e+00, 3.0000e+00, 4.0000e+00, 5.0000e+00, 6.0000e+00],
+          [2.0000e+01, 3.0000e+01, 4.0000e+01, 5.0000e+01, 6.0000e+01],
+          [2.0000e+02, 3.0000e+02, 4.0000e+02, 5.0000e+02, 6.0000e+02]],
  
-         [[   4,    5,    6,    7,    8],
-          [  40,   50,   60,   70,   80],
-          [ 400,  500,  600,  700,  800]],
+         [[4.0000e+00, 5.0000e+00, 6.0000e+00, 7.0000e+00, 8.0000e+00],
+          [4.0000e+01, 5.0000e+01, 6.0000e+01, 7.0000e+01, 8.0000e+01],
+          [4.0000e+02, 5.0000e+02, 6.0000e+02, 7.0000e+02, 8.0000e+02]],
  
-         [[   6,    7,    8,    9,   10],
-          [  60,   70,   80,   90,  100],
-          [ 600,  700,  800,  900, 1000]],
+         [[6.0000e+00, 7.0000e+00, 8.0000e+00, 9.0000e+00, 1.0000e+01],
+          [6.0000e+01, 7.0000e+01, 8.0000e+01, 9.0000e+01, 1.0000e+02],
+          [6.0000e+02, 7.0000e+02, 8.0000e+02, 9.0000e+02, 1.0000e+03]],
  
-         [[   8,    9,   10,   11,   12],
-          [  80,   90,  100,  110,  120],
-          [ 800,  900, 1000, 1100, 1200]],
+         [[8.0000e+00, 9.0000e+00, 1.0000e+01, 1.1000e+01, 1.2000e+01],
+          [8.0000e+01, 9.0000e+01, 1.0000e+02, 1.1000e+02, 1.2000e+02],
+          [8.0000e+02, 9.0000e+02, 1.0000e+03, 1.1000e+03, 1.2000e+03]],
  
-         [[  10,   11,   12,   13,   14],
-          [ 100,  110,  120,  130,  140],
-          [1000, 1100, 1200, 1300, 1400]],
+         [[1.0000e+01, 1.1000e+01, 1.2000e+01, 1.3000e+01, 1.4000e+01],
+          [1.0000e+02, 1.1000e+02, 1.2000e+02, 1.3000e+02, 1.4000e+02],
+          [1.0000e+03, 1.1000e+03, 1.2000e+03, 1.3000e+03, 1.4000e+03]],
  
-         [[  12,   13,   14,   15,   16],
-          [ 120,  130,  140,  150,  160],
-          [1200, 1300, 1400, 1500, 1600]],
+         [[1.2000e+01, 1.3000e+01, 1.4000e+01, 1.5000e+01, 1.6000e+01],
+          [1.2000e+02, 1.3000e+02, 1.4000e+02, 1.5000e+02, 1.6000e+02],
+          [1.2000e+03, 1.3000e+03, 1.4000e+03, 1.5000e+03, 1.6000e+03]],
  
-         [[  14,   15,   16,   17,   18],
-          [ 140,  150,  160,  170,  180],
-          [1400, 1500, 1600, 1700, 1800]]]))</pre>
+         [[1.4000e+01, 1.5000e+01, 1.6000e+01, 1.7000e+01, 1.8000e+01],
+          [1.4000e+02, 1.5000e+02, 1.6000e+02, 1.7000e+02, 1.8000e+02],
+          [1.4000e+03, 1.5000e+03, 1.6000e+03, 1.7000e+03, 1.8000e+03]]]))</pre>
 </div>
 
 </div>

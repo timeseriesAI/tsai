@@ -276,10 +276,13 @@ class NumpyDatasets(Datasets):
                 lts = [NoTfmLists if (t is None and not inplace) else TSTfmdLists if getattr(t, 'vectorized', None) else TfmdLists for t in self.tfms]
 
             self.tls = L(lt(item, t, **kwargs) for lt,item,t in zip(lts, items, self.tfms))
-            self.typs = [type(tl[0]) if isinstance(tl[0], torch.Tensor) else self.typs[i] for i,tl in enumerate(self.tls)]
+            if len(self.tls) > 0 and len(self.tls[0]) > 0:
+                self.typs = [type(tl[0]) if isinstance(tl[0], torch.Tensor) else self.typs[i] for i,tl in enumerate(self.tls)]
             self.ptls = L([typ(stack(tl[:])) for i,(tl,typ) in enumerate(zip(self.tls,self.typs))]) if inplace else self.tls
         else:
             self.tls = tls
+            if len(self.tls) > 0 and len(self.tls[0]) > 0:
+                self.typs = [type(tl[0]) if isinstance(tl[0], torch.Tensor) else self.typs[i] for i,tl in enumerate(self.tls)]
             self.ptls = L([typ(stack(tl[:])) for i,(tl,typ) in enumerate(zip(self.tls,self.typs))]) if inplace and len(tls[0]) != 0 else tls
 
         self.n_inp = 1
@@ -321,7 +324,7 @@ def tscoll_repr(c, max_n=10):
     "String repr of up to `max_n` items of (possibly lazy) collection `c`"
     _len = len(c)
     if _len == 0: return coll_repr(c)
-    if c.split_idx is None: c = c.subset(0)
+#     if c.split_idx is None: c = c.subset(0)
     return f'(#{_len}) {L(c[i] for i in range(min(len(c), max_n)))} ...]'
 
 # Cell
@@ -352,11 +355,14 @@ class TSDatasets(NumpyDatasets):
                 lts = [NoTfmLists if (t is None and not inplace) else TSTfmdLists if getattr(t, 'vectorized', None) else TfmdLists for t in self.tfms]
 
             self.tls = L(lt(item, t, **kwargs) for lt,item,t in zip(lts, items, self.tfms))
-            self.typs = [type(tl[0]) if isinstance(tl[0], torch.Tensor) else self.typs[i] for i,tl in enumerate(self.tls)]
+            if len(self.tls) > 0 and len(self.tls[0]) > 0:
+                self.typs = [type(tl[0]) if isinstance(tl[0], torch.Tensor) else self.typs[i] for i,tl in enumerate(self.tls)]
             self.ptls = L([typ(stack(tl[:]))[...,self.sel_vars, self.sel_steps] if i==0 else typ(stack(tl[:])) \
                             for i,(tl,typ) in enumerate(zip(self.tls,self.typs))]) if inplace else self.tls
         else:
             self.tls = tls
+            if len(self.tls) > 0 and len(self.tls[0]) > 0:
+                self.typs = [type(tl[0]) if isinstance(tl[0], torch.Tensor) else self.typs[i] for i,tl in enumerate(self.tls)]
             self.ptls = L([typ(stack(tl[:]))[...,self.sel_vars, self.sel_steps] if i==0 else typ(stack(tl[:])) \
                             for i,(tl,typ) in enumerate(zip(self.tls,self.typs))]) if inplace and len(tls[0]) != 0 else tls
 
