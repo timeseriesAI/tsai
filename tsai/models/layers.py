@@ -11,8 +11,8 @@ __all__ = ['noop', 'init_lin_zero', 'lin_zero_init', 'SwishBeta', 'Chomp1d', 'sa
            'GAttP1d', 'attentional_pool_head', 'GEGLU', 'ReGLU', 'get_act_fn', 'pytorch_acts', 'pytorch_act_names',
            'create_pool_head', 'pool_head', 'average_pool_head', 'concat_pool_head', 'max_pool_head',
            'create_pool_plus_head', 'pool_plus_head', 'create_conv_head', 'conv_head', 'create_mlp_head', 'mlp_head',
-           'create_fc_head', 'fc_head', 'create_rnn_head', 'rnn_head', 'imputation_head', 'create_conv_lin_3d_head',
-           'conv_lin_3d_head', 'create_lin_3d_head', 'lin_3d_head', 'create_conv_3d_head', 'conv_3d_head',
+           'create_fc_head', 'fc_head', 'create_rnn_head', 'rnn_head', 'imputation_head', 'create_conv_lin_nd_head',
+           'conv_lin_nd_head', 'create_lin_nd_head', 'lin_nd_head', 'create_conv_3d_head', 'conv_3d_head',
            'universal_pool_head', 'heads', 'SqueezeExciteBlock', 'GaussianNoise', 'gambler_loss',
            'CrossEntropyLossOneHot', 'ttest_bin_loss', 'ttest_reg_loss', 'CenterLoss', 'CenterPlusLoss', 'FocalLoss',
            'TweedieLoss', 'PositionwiseFeedForward', 'TokenLayer', 'ScaledDotProductAttention', 'MultiheadAttention',
@@ -745,7 +745,6 @@ def create_rnn_head(*args, fc_dropout=0., bn=False, y_range=None):
 rnn_head = create_rnn_head
 
 # Cell
-
 def imputation_head(c_in, c_out, seq_len=None, ks=1, y_range=None, fc_dropout=0.):
     layers = [nn.Dropout(fc_dropout), nn.Conv1d(c_in, c_out, ks)]
     if y_range is not None:
@@ -753,52 +752,74 @@ def imputation_head(c_in, c_out, seq_len=None, ks=1, y_range=None, fc_dropout=0.
         layers += [SigmoidRange(*y_range)]
     return nn.Sequential(*layers)
 
-
 # Cell
-class create_conv_lin_3d_head(nn.Sequential):
-    "Module to create a 3d output head"
+class create_conv_lin_nd_head(nn.Sequential):
+    "Module to create a nd output head"
 
-    def __init__(self, n_in, n_out, seq_len, d=(), conv_first=True, conv_bn=True, lin_first=False, lin_bn=True, act=None, fc_dropout=0., **kwargs):
+    def __init__(self, n_in, n_out, seq_len, d, conv_first=True, conv_bn=False, lin_bn=False, fc_dropout=0., **kwargs):
 
-        assert len(d) == 2, "you must pass a tuple of len == 2 to create a 3d output"
+        assert d, "you cannot use an nd head when d is None or 0"
+        if is_listy(d):
+            fd = 1
+            shape = []
+            for _d in d:
+                fd *= _d
+                shape.append(_d)
+            if n_out > 1: shape.append(n_out)
+        else:
+            fd = d
+            shape = [d, n_out] if n_out > 1 else [d]
+
         conv = [BatchNorm(n_in, ndim=1)] if conv_bn else []
-        conv.append(Conv1d(n_in, d[0], 1, padding=0, bias=not conv_bn, **kwargs))
-
-        l = [Transpose(-1, -2), BatchNorm(n_out if lin_first else seq_len, ndim=1), Transpose(-1, -2)] if lin_bn else []
+        conv.append(Conv1d(n_in, n_out, 1, padding=0, bias=not conv_bn, **kwargs))
+        l = [Transpose(-1, -2), BatchNorm(seq_len, ndim=1), Transpose(-1, -2)] if lin_bn else []
         if fc_dropout != 0: l.append(nn.Dropout(fc_dropout))
-
-        lin = [nn.Linear(seq_len, d[1], bias=not lin_bn)]
-        if act is not None: lin.append(act)
-
-        lin_layers = lin+l if lin_first else l+lin
+        lin = [nn.Linear(seq_len, fd, bias=not lin_bn)]
+        lin_layers = l+lin
         layers = conv + lin_layers if conv_first else lin_layers + conv
+        layers += [Transpose(-1,-2)]
+        layers += [Reshape(*shape)]
 
         super().__init__(*layers)
 
-conv_lin_3d_head = create_conv_lin_3d_head
+conv_lin_nd_head = create_conv_lin_nd_head
 
 # Cell
-class create_lin_3d_head(nn.Sequential):
-    "Module to create a 3d output head with linear layers"
+class create_lin_nd_head(nn.Sequential):
+    "Module to create a nd output head with linear layers"
 
-    def __init__(self, n_in, n_out, seq_len, d=(), lin_first=False, bn=True, act=None, fc_dropout=0.):
+    def __init__(self, n_in, n_out, seq_len, d, use_bn=False, fc_dropout=0.):
 
-        assert len(d) == 2, "you must pass a tuple of len == 2 to create a 3d output"
+        assert d, "you cannot use an nd head when d is None or 0"
+        if is_listy(d):
+            fd = 1
+            shape = []
+            for _d in d:
+                fd *= _d
+                shape.append(_d)
+            if n_out > 1: shape.append(n_out)
+        else:
+            fd = d
+            shape = [d, n_out] if n_out > 1 else [d]
+
         layers = [Flatten()]
-        layers += LinBnDrop(n_in * seq_len, n_out, bn=bn, p=fc_dropout, act=act, lin_first=lin_first)
-        layers += [Reshape(*d)]
+        layers += LinBnDrop(n_in * seq_len, n_out * fd, bn=use_bn, p=fc_dropout)
+        layers += [Reshape(*shape)]
 
         super().__init__(*layers)
 
-lin_3d_head = create_lin_3d_head
+lin_nd_head = create_lin_nd_head
 
 # Cell
 class create_conv_3d_head(nn.Sequential):
-    "Module to create a 3d output head with a convolutional layer"
-    def __init__(self, n_in, c_out, seq_len, d=(), lin_first=False, bn=True, act=None, fc_dropout=0.):
-        assert len(d) == 2, "you must pass a tuple of len == 2 to create a 3d output"
-        assert d[1] == seq_len, 'You can only use this head when learn.dls.len == learn.dls.d'
-        super().__init__(Conv(n_in, d[0], 1))
+    "Module to create a nd output head with a convolutional layer"
+    def __init__(self, n_in, n_out, seq_len, d, use_bn=False, **kwargs):
+        assert d, "you cannot use an 3d head when d is None or 0"
+        assert d == seq_len, 'You can only use this head when learn.dls.len == learn.dls.d'
+        layers = [nn.BatchNorm1d(n_in)] if use_bn else []
+        layers += [Conv(n_in, n_out, 1, **kwargs), Transpose(-1,-2)]
+        if n_out == 1: layers += [Squeeze(-1)]
+        super().__init__(*layers)
 
 conv_3d_head = create_conv_3d_head
 
@@ -810,7 +831,7 @@ def universal_pool_head(n_in, c_out, seq_len, mult=2, pool_n_layers=2, pool_ln=T
 
 # Cell
 heads = [mlp_head, fc_head, average_pool_head, max_pool_head, concat_pool_head, pool_plus_head, conv_head, rnn_head,
-         conv_lin_3d_head, lin_3d_head, conv_3d_head, attentional_pool_head, universal_pool_head, gwa_pool_head]
+         conv_lin_nd_head, lin_nd_head, conv_3d_head, attentional_pool_head, universal_pool_head, gwa_pool_head]
 
 # Cell
 class SqueezeExciteBlock(Module):

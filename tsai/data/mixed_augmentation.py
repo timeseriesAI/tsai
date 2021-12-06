@@ -26,7 +26,7 @@ class MixHandler1d(Callback):
         self.distrib = Beta(alpha, alpha)
 
     def before_train(self):
-        self.labeled = True if self.dls.d != 0 else False
+        self.labeled = self.dls.d
         if self.labeled:
             self.stack_y = getattr(self.learn.loss_func, 'y_int', False)
             if self.stack_y: self.old_lf, self.learn.loss_func = self.learn.loss_func, self.lf
