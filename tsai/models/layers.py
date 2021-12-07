@@ -12,11 +12,12 @@ __all__ = ['noop', 'init_lin_zero', 'lin_zero_init', 'SwishBeta', 'Chomp1d', 'sa
            'create_pool_head', 'pool_head', 'average_pool_head', 'concat_pool_head', 'max_pool_head',
            'create_pool_plus_head', 'pool_plus_head', 'create_conv_head', 'conv_head', 'create_mlp_head', 'mlp_head',
            'create_fc_head', 'fc_head', 'create_rnn_head', 'rnn_head', 'imputation_head', 'create_conv_lin_nd_head',
-           'conv_lin_nd_head', 'create_conv_lin_3d_head', 'create_lin_nd_head', 'lin_nd_head', 'lin_3d_head',
-           'create_conv_3d_head', 'conv_3d_head', 'universal_pool_head', 'heads', 'SqueezeExciteBlock', 'GaussianNoise',
-           'gambler_loss', 'CrossEntropyLossOneHot', 'ttest_bin_loss', 'ttest_reg_loss', 'CenterLoss', 'CenterPlusLoss',
-           'FocalLoss', 'TweedieLoss', 'PositionwiseFeedForward', 'TokenLayer', 'ScaledDotProductAttention',
-           'MultiheadAttention', 'MultiConv1d', 'LSTMOutput', 'MultiEmbedding']
+           'conv_lin_nd_head', 'conv_lin_3d_head', 'create_conv_lin_3d_head', 'create_lin_nd_head', 'lin_nd_head',
+           'lin_3d_head', 'create_lin_3d_head', 'create_conv_3d_head', 'conv_3d_head', 'universal_pool_head', 'heads',
+           'SqueezeExciteBlock', 'GaussianNoise', 'gambler_loss', 'CrossEntropyLossOneHot', 'ttest_bin_loss',
+           'ttest_reg_loss', 'CenterLoss', 'CenterPlusLoss', 'FocalLoss', 'TweedieLoss', 'PositionwiseFeedForward',
+           'TokenLayer', 'ScaledDotProductAttention', 'MultiheadAttention', 'MultiConv1d', 'LSTMOutput',
+           'MultiEmbedding']
 
 # Cell
 from ..imports import *
@@ -782,6 +783,7 @@ class create_conv_lin_nd_head(nn.Sequential):
         super().__init__(*layers)
 
 conv_lin_nd_head = create_conv_lin_nd_head
+conv_lin_3d_head = create_conv_lin_nd_head # included for compatibility
 create_conv_lin_3d_head = create_conv_lin_nd_head # included for compatibility
 
 # Cell
@@ -810,6 +812,7 @@ class create_lin_nd_head(nn.Sequential):
 
 lin_nd_head = create_lin_nd_head
 lin_3d_head = create_lin_nd_head # included for compatiblity
+create_lin_3d_head = create_lin_nd_head # included for compatiblity
 
 # Cell
 class create_conv_3d_head(nn.Sequential):
