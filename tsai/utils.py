@@ -8,18 +8,18 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'test_ge', 'test_lt', 'test_le', 'stack', 'stack_pad', 'match_seq_len', 'random_shuffle', 'cat2int',
            'cycle_dl', 'cycle_dl_to_device', 'cycle_dl_estimate', 'cache_data', 'memmap2cache', 'cache_memmap',
            'get_func_defaults', 'get_idx_from_df_col_vals', 'get_sublist_idxs', 'flatten_list', 'display_pd_df',
-           'ttest', 'tscore', 'ttest_tensor', 'pcc', 'scc', 'a', 'b', 'remove_fn', 'npsave', 'np_save', 'permute_2D',
-           'random_normal', 'random_half_normal', 'random_normal_tensor', 'random_half_normal_tensor', 'default_dpi',
-           'get_plot_fig', 'fig2buf', 'plot_scatter', 'get_idxs', 'apply_cmap', 'torch_tile', 'to_tsfresh_df', 'pcorr',
-           'scorr', 'torch_diff', 'get_outliers_IQR', 'clip_outliers', 'get_percentile', 'torch_clamp',
-           'torch_slice_by_dim', 'torch_nanmean', 'torch_nanstd', 'concat', 'reduce_memory_usage', 'cls_name', 'roll2d',
-           'roll3d', 'random_roll2d', 'random_roll3d', 'rotate_axis0', 'rotate_axis1', 'rotate_axis2',
-           'chunks_calculator', 'is_memory_shared', 'assign_in_chunks', 'create_array', 'create_empty_array',
-           'np_save_compressed', 'np_load_compressed', 'np2memmap', 'torch_mean_groupby', 'torch_flip',
-           'torch_nan_to_num', 'torch_masked_to_num', 'mpl_trend', 'int2digits', 'array2digits', 'sincos_encoding',
-           'linear_encoding', 'encode_positions', 'sort_generator', 'get_subset_dict', 'create_dir', 'remove_dir',
-           'named_partial', 'yaml2dict', 'str2list', 'str2index', 'get_cont_cols', 'get_cat_cols', 'alphabet',
-           'ALPHABET', 'get_mapping', 'map_array', 'log_tfm', 'to_sincos_time', 'plot_feature_dist']
+           'ttest', 'kstest', 'tscore', 'ttest_tensor', 'pcc', 'scc', 'a', 'b', 'remove_fn', 'npsave', 'np_save',
+           'permute_2D', 'random_normal', 'random_half_normal', 'random_normal_tensor', 'random_half_normal_tensor',
+           'default_dpi', 'get_plot_fig', 'fig2buf', 'plot_scatter', 'get_idxs', 'apply_cmap', 'torch_tile',
+           'to_tsfresh_df', 'pcorr', 'scorr', 'torch_diff', 'get_outliers_IQR', 'clip_outliers', 'get_percentile',
+           'torch_clamp', 'torch_slice_by_dim', 'torch_nanmean', 'torch_nanstd', 'concat', 'reduce_memory_usage',
+           'cls_name', 'roll2d', 'roll3d', 'random_roll2d', 'random_roll3d', 'rotate_axis0', 'rotate_axis1',
+           'rotate_axis2', 'chunks_calculator', 'is_memory_shared', 'assign_in_chunks', 'create_array',
+           'create_empty_array', 'np_save_compressed', 'np_load_compressed', 'np2memmap', 'torch_mean_groupby',
+           'torch_flip', 'torch_nan_to_num', 'torch_masked_to_num', 'mpl_trend', 'int2digits', 'array2digits',
+           'sincos_encoding', 'linear_encoding', 'encode_positions', 'sort_generator', 'get_subset_dict', 'create_dir',
+           'remove_dir', 'named_partial', 'yaml2dict', 'str2list', 'str2index', 'get_cont_cols', 'get_cat_cols',
+           'alphabet', 'ALPHABET', 'get_mapping', 'map_array', 'log_tfm', 'to_sincos_time', 'plot_feature_dist']
 
 # Cell
 from .imports import *
@@ -383,6 +383,30 @@ def ttest(data1, data2, equal_var=False):
     t_stat, p_value = scipy.stats.ttest_ind(data1, data2, equal_var=equal_var)
     return t_stat, np.sign(t_stat) * p_value
 
+def kstest(data1, data2, alternative='two-sided', mode='auto', by_axis=None):
+    """Performs the two-sample Kolmogorov-Smirnov test for goodness of fit.
+
+    Parameters
+    data1, data2: Two arrays of sample observations assumed to be drawn from a continuous distributions. Sample sizes can be different.
+    alternative: {‘two-sided’, ‘less’, ‘greater’}, optional. Defines the null and alternative hypotheses. Default is ‘two-sided’.
+    mode: {‘auto’, ‘exact’, ‘asymp’}, optional. Defines the method used for calculating the p-value.
+    by_axis (optional, int): for arrays with more than 1 dimension, the test will be run for each variable in that axis if by_axis is not None.
+    """
+    if by_axis is None:
+        stat, p_value = scipy.stats.ks_2samp(data1.flatten(), data2.flatten(), alternative=alternative, mode=mode)
+        return stat, np.sign(stat) * p_value
+    else:
+        assert data1.shape[by_axis] == data2.shape[by_axis], f"both arrays must have the same size along axis {by_axis}"
+        stats, p_values = [], []
+        for i in range(data1.shape[by_axis]):
+            d1 = np.take(data1, indices=i, axis=by_axis)
+            d2 = np.take(data2, indices=i, axis=by_axis)
+            stat, p_value = scipy.stats.ks_2samp(d1.flatten(), d2.flatten(), alternative=alternative, mode=mode)
+            stats.append(stat)
+            p_values.append(np.sign(stat) * p_value)
+        return stats, p_values
+
+
 def tscore(o):
     if o.std() == 0: return 0
     else: return np.sqrt(len(o)) * o.mean() / o.std()
@@ -676,7 +700,7 @@ def roll2d(o, roll1: Union[None, list, int] = None, roll2: Union[None, list, int
     if roll1 is not None:
         if isinstance(roll1, int): axis1 = axis1 - np.array(roll1).reshape(1,1)
         else: axis1 = np.array(roll1).reshape(o.shape[0],1)
-    if roll2:
+    if roll2 is not None:
         if isinstance(roll2, int):  axis2 = axis2 - np.array(roll2).reshape(1,1)
         else: axis2 = np.array(roll2).reshape(1,o.shape[1])
     return o[axis1, axis2]
@@ -692,10 +716,10 @@ def roll3d(o, roll1: Union[None, list, int] = None, roll2: Union[None, list, int
     if roll1 is not None:
         if isinstance(roll1, int): axis1 = axis1 - np.array(roll1).reshape(1,1,1)
         else: axis1 = np.array(roll1).reshape(o.shape[0],1,1)
-    if roll2:
+    if roll2 is not None:
         if isinstance(roll2, int):  axis2 = axis2 - np.array(roll2).reshape(1,1,1)
         else: axis2 = np.array(roll2).reshape(1,o.shape[1],1)
-    if roll3:
+    if roll3 is not None:
         if isinstance(roll3, int):  axis3 = axis3 - np.array(roll3).reshape(1,1,1)
         else: axis3 = np.array(roll3).reshape(1,1,o.shape[2])
     return o[axis1, axis2, axis3]
