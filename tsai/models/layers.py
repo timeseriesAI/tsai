@@ -16,7 +16,7 @@ __all__ = ['noop', 'init_lin_zero', 'lin_zero_init', 'SwishBeta', 'Chomp1d', 'sa
            'lin_3d_head', 'create_lin_3d_head', 'create_conv_3d_head', 'conv_3d_head', 'universal_pool_head', 'heads',
            'SqueezeExciteBlock', 'GaussianNoise', 'gambler_loss', 'CrossEntropyLossOneHot', 'ttest_bin_loss',
            'ttest_reg_loss', 'CenterLoss', 'CenterPlusLoss', 'FocalLoss', 'TweedieLoss', 'PositionwiseFeedForward',
-           'TokenLayer', 'ScaledDotProductAttention', 'MultiheadAttention', 'MultiConv1d', 'LSTMOutput',
+           'TokenLayer', 'ScaledDotProductAttention', 'MultiheadAttention', 'MultiConv1d', 'LSTMOutput', 'TSEmbedding',
            'MultiEmbedding']
 
 # Cell
@@ -1130,8 +1130,17 @@ class LSTMOutput(Module):
     def __repr__(self): return f'{self.__class__.__name__}()'
 
 # Cell
+class TSEmbedding(nn.Embedding):
+    "Embedding layer with truncated normal initialization adapted from fastai"
+    def __init__(self, ni, nf, std=0.01, padding_idx=None):
+        super().__init__(ni, nf)
+        trunc_normal_(self.weight.data, std=std)
+        if padding_idx is not None:
+            nn.init.zeros_(self.weight.data[padding_idx])
+
+# Cell
 class MultiEmbedding(Module):
-    def __init__(self, c_in, n_embeds, embed_dims=None, cat_pos=None, std=0.01):
+    def __init__(self, c_in, n_embeds, embed_dims=None, cat_pos=None, std=0.01, padding_idx=0):
         if embed_dims is None:
             embed_dims = [emb_sz_rule(s) for s in n_embeds]
         else:
@@ -1142,7 +1151,7 @@ class MultiEmbedding(Module):
         self.register_buffer("cat_pos", cat_pos)
         cont_pos = torch.tensor([p for p in torch.arange(c_in) if p not in self.cat_pos])
         self.register_buffer("cont_pos", cont_pos)
-        self.cat_embed = nn.ModuleList([Embedding(n,d,std=std) for n,d in zip(n_embeds, embed_dims)])
+        self.cat_embed = nn.ModuleList([TSEmbedding(n,d,std=std, padding_idx=padding_idx) for n,d in zip(n_embeds, embed_dims)])
 
     def forward(self, x):
         if isinstance(x, tuple): x_cat, x_cont, *_ = x
