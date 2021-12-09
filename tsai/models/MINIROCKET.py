@@ -26,7 +26,7 @@ class MiniRocketClassifier(sklearn.pipeline.Pipeline):
         For a larger dataset, you can use MINIROCKET (in Pytorch).
         scoring = None --> defaults to accuracy.
         """
-        self.steps = [('minirocketmultivariate', MiniRocketMultivariate(num_features=num_features,
+        self.steps = [('minirocketmultivariate', MiniRocketMultivariate(num_kernels=num_features,
                                                                         max_dilations_per_kernel=max_dilations_per_kernel,
                                                                         random_state=random_state)),
                       ('ridgeclassifiercv', RidgeClassifierCV(alphas=alphas,
@@ -66,7 +66,7 @@ class MiniRocketRegressor(sklearn.pipeline.Pipeline):
         For a larger dataset, you can use MINIROCKET (in Pytorch).
         scoring = None --> defaults to r2.
         """
-        self.steps = [('minirocketmultivariate', MiniRocketMultivariate(num_features=num_features,
+        self.steps = [('minirocketmultivariate', MiniRocketMultivariate(num_kernels=num_features,
                                                                         max_dilations_per_kernel=max_dilations_per_kernel,
                                                                         random_state=random_state)),
                       ('ridgecv', RidgeCV(alphas=alphas, normalize=normalize_features, scoring=scoring, **kwargs))]
