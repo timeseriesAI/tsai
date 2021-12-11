@@ -10,11 +10,12 @@ from .utils import *
 from .explainability import *
 
 # Cell
-# This is an unofficial PyTorch implementation by Ignacio Oguiza - oguiza@gmail.com based on:
+# This is an unofficial PyTorch implementation of XVM created by Ignacio Oguiza - timeseriesAU@gmail.com based on:
 
-# Fauvel, K., Lin, T., Masson, V., Fromont, É., & Termier, A. (2020). XCM: An Explainable Convolutional Neural Network for
-# Multivariate Time Series Classification. arXiv preprint arXiv:2009.04796.
-# Official XCM PyTorch implementation: not available as of Nov 27th, 2020
+# Fauvel, K., Lin, T., Masson, V., Fromont, É., & Termier, A. (2020). XCM: An Explainable Convolutional Neural Network
+# https://hal.inria.fr/hal-03469487/document
+# Official tensorflow implementation available at: https://github.com/XAIseries/XCM
+# No official XCM PyTorch implementation available as of Dec 11, 2021
 
 class XCM(Module):
     def __init__(self, c_in:int, c_out:int, seq_len:Optional[int]=None, nf:int=128, window_perc:float=1., flatten:bool=False, custom_head:callable=None,
