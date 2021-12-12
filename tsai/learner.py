@@ -187,6 +187,8 @@ def show_probas(self:Learner, figsize=(6,6), ds_idx=1, dl=None, one_batch=False,
     if max_n is not None:
         idxs = np.random.choice(len(probas), max_n, False)
         probas, targets = probas[idxs], targets[idxs]
+    if isinstance(probas, torch.Tensor): probas = probas.detach().cpu().numpy()
+    if isinstance(targets, torch.Tensor): targets = targets.detach().cpu().numpy()
     fig = plt.figure(figsize=figsize, **kwargs)
     classes = np.unique(targets)
     nclasses = len(classes)
@@ -199,7 +201,7 @@ def show_probas(self:Learner, figsize=(6,6), ds_idx=1, dl=None, one_batch=False,
     for i, c in enumerate(classes):
         plt.scatter(class_probas[targets == c] if nclasses > 2 or i > 0 else 1 - class_probas[targets == c],
                     targets[targets == c] + .5 * (np.random.rand((targets == c).sum()) - .5), color=color[i], edgecolor='black', alpha=.2, s=100)
-        if nclasses > 2: plt.vlines((targets == c).float().mean(), i - .5, i + .5, color='r', linewidth=.5)
+        if nclasses > 2: plt.vlines((targets == c).mean(), i - .5, i + .5, color='r', linewidth=.5)
     plt.hlines(vals, 0, 1)
     plt.ylim(min(vals) - 1, max(vals))
     plt.xlim(0,1)
