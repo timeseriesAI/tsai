@@ -64,31 +64,6 @@ nb_path: "nbs/104_models.ResCNN.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ResCNNBlock" class="doc_header"><code>class</code> <code>ResCNNBlock</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/ResCNN.py#L11" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ResCNNBlock</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>kss</code></strong>=<em><code>[7, 5, 3]</code></em>, <strong><code>coord</code></strong>=<em><code>False</code></em>, <strong><code>separable</code></strong>=<em><code>False</code></em>, <strong><code>zero_norm</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
-</blockquote>
-<p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
 <h2 id="ResCNN" class="doc_header"><code>class</code> <code>ResCNN</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/ResCNN.py#L32" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ResCNN</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>coord</code></strong>=<em><code>False</code></em>, <strong><code>separable</code></strong>=<em><code>False</code></em>, <strong><code>zero_norm</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
@@ -152,7 +127,7 @@ nb_path: "nbs/104_models.ResCNN.ipynb"
 
 <div class="output_text output_subarea output_execute_result">
 <pre>ResCNN(
-  (block1): ResCNNBlock(
+  (block1): _ResCNNBlock(
     (convblock1): ConvBlock(
       (0): AddCoords1d()
       (1): SeparableConv1d(
@@ -184,7 +159,7 @@ nb_path: "nbs/104_models.ResCNN.ipynb"
       (1): Conv1d(4, 64, kernel_size=(1,), stride=(1,), bias=False)
       (2): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
     )
-    (add): Add()
+    (add): Add
     (act): ReLU()
   )
   (block2): ConvBlock(
@@ -215,7 +190,7 @@ nb_path: "nbs/104_models.ResCNN.ipynb"
     (3): ELU(alpha=0.3)
   )
   (gap): AdaptiveAvgPool1d(output_size=1)
-  (squeeze): Squeeze()
+  (squeeze): Squeeze(dim=-1)
   (lin): Linear(in_features=128, out_features=2, bias=True)
 )</pre>
 </div>
@@ -247,16 +222,13 @@ nb_path: "nbs/104_models.ResCNN.ipynb"
 
 <div class="output_area">
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>  0 BatchNorm1d     shape: [64]             mean: +1.000  std: +0.000
-  1 BatchNorm1d     shape: [64]             mean: +1.000  std: +0.000
-  2 BatchNorm1d     shape: [64]             mean: +0.000  std: +0.000
-  3 BatchNorm1d     shape: [64]             mean: +1.000  std: +0.000
-  4 BatchNorm1d     shape: [128]            mean: +1.000  std: +0.000
-  5 BatchNorm1d     shape: [256]            mean: +1.000  std: +0.000
-  6 BatchNorm1d     shape: [128]            mean: +1.000  std: +0.000
-</pre>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(array([1., 1., 0., 1., 1., 1., 1.], dtype=float32),
+ array([0., 0., 0., 0., 0., 0., 0.], dtype=float32))</pre>
 </div>
+
 </div>
 
 </div>
