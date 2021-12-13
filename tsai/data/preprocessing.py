@@ -2,8 +2,8 @@
 
 __all__ = ['ToNumpyCategory', 'OneHot', 'Nan2Value', 'TSStandardize', 'TSNormalize', 'TSClipOutliers', 'TSClip',
            'TSRobustScale', 'TSDiff', 'TSLog', 'TSCyclicalPosition', 'TSLinearPosition', 'TSLogReturn', 'TSAdd',
-           'Preprocessor', 'StandardScaler', 'RobustScaler', 'Normalizer', 'BoxCox', 'YeoJohnshon', 'Quantile',
-           'ReLabeler']
+           'TSShrinkDataFrame', 'TSOneHotEncoder', 'Preprocessor', 'StandardScaler', 'RobustScaler', 'Normalizer',
+           'BoxCox', 'YeoJohnshon', 'Quantile', 'ReLabeler']
 
 # Cell
 from ..imports import *
@@ -454,7 +454,83 @@ class TSAdd(Transform):
     def __repr__(self): return f'{self.__class__.__name__}(lag={self.lag}, pad={self.pad})'
 
 # Cell
+from sklearn.base import BaseEstimator, TransformerMixin
+from fastai.data.transforms import CategoryMap
+from joblib import dump, load
 
+
+class TSShrinkDataFrame(BaseEstimator, TransformerMixin):
+
+    def __init__(self, columns=None, skip=[], obj2cat=True, int2uint=False, verbose=True):
+        self.columns, self.skip, self.obj2cat, self.int2uint, self.verbose = listify(columns), skip, obj2cat, int2uint, verbose
+
+    def fit(self, X:pd.DataFrame, y=None, **fit_params):
+        assert isinstance(X, pd.DataFrame)
+        self.old_dtypes = X.dtypes
+        if not self.columns: self.columns = X.columns
+        self.dt = df_shrink_dtypes(X[self.columns], self.skip, obj2cat=self.obj2cat, int2uint=self.int2uint)
+        return self
+
+    def transform(self, X:pd.DataFrame, y=None, **transform_params):
+        assert isinstance(X, pd.DataFrame)
+        if self.verbose:
+            start_memory = X.memory_usage().sum() / 1024**2
+            print(f"Memory usage of dataframe is {start_memory} MB")
+        X[self.columns] = X[self.columns].astype(self.dt)
+        if self.verbose:
+            end_memory = X.memory_usage().sum() / 1024**2
+            print(f"Memory usage of dataframe after reduction {end_memory} MB")
+            print(f"Reduced by {100 * (start_memory - end_memory) / start_memory} % ")
+        return X
+
+    def inverse_transform(self, X):
+        assert isinstance(X, pd.DataFrame)
+        if self.verbose:
+            start_memory = X.memory_usage().sum() / 1024**2
+            print(f"Memory usage of dataframe is {start_memory} MB")
+        X = X.astype(self.old_dtypes)
+        if self.verbose:
+            end_memory = X.memory_usage().sum() / 1024**2
+            print(f"Memory usage of dataframe after reduction {end_memory} MB")
+            print(f"Reduced by {100 * (start_memory - end_memory) / start_memory} % ")
+        return X
+
+
+# Cell
+class TSOneHotEncoder(BaseEstimator, TransformerMixin):
+
+    def __init__(self, columns=None, drop=True, add_na=True, dtype=np.int64):
+        self.columns = listify(columns)
+        self.drop, self.add_na, self.dtype = drop, add_na, dtype
+
+
+    def fit(self, X:pd.DataFrame, y=None, **fit_params):
+        assert isinstance(X, pd.DataFrame)
+        if not self.columns: self.columns = X.columns
+        handle_unknown = "ignore" if self.add_na else "error"
+        self.ohe_tfm = sklearn.preprocessing.OneHotEncoder(handle_unknown=handle_unknown)
+        if len(self.columns) == 1:
+            self.ohe_tfm.fit(X[self.columns].to_numpy().reshape(-1, 1))
+        else:
+            self.ohe_tfm.fit(X[self.columns])
+        return self
+
+    def transform(self, X:pd.DataFrame, y=None, **transform_params):
+        assert isinstance(X, pd.DataFrame)
+        if len(self.columns) == 1:
+            output = self.ohe_tfm.transform(X[self.columns].to_numpy().reshape(-1, 1)).toarray().astype(self.dtype)
+        else:
+            output = self.ohe_tfm.transform(X[self.columns]).toarray().astype(self.dtype)
+        new_cols = []
+        for i,col in enumerate(self.columns):
+            for cats in self.ohe_tfm.categories_[i]:
+                new_cols.append(f"{str(col)}_{str(cats)}")
+        X[new_cols] = output
+        if self.drop: X = X.drop(self.columns, axis=1)
+        return X
+
+
+# Cell
 class Preprocessor():
     def __init__(self, preprocessor, **kwargs):
         self.preprocessor = preprocessor(**kwargs)

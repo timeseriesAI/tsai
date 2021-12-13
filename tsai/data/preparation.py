@@ -126,15 +126,17 @@ def df2np3d(df, groupby, data_cols=None):
     return np.stack([x[data_cols].values for _, x in df.groupby(groupby)]).transpose(0, 2, 1)
 
 # Cell
-def add_missing_value_cols(df, cols=None, dtype=float):
+def add_missing_value_cols(df, cols=None, dtype=float, fill_value=None):
     if cols is None: cols = df.columns
     elif not is_listy(cols): cols = [cols]
     for col in cols:
         df[f'missing_{col}'] = df[col].isnull().astype(dtype)
+        if fill_value is not None:
+            df[col].fillna(fill_value)
     return df
 
-# Cell
 
+# Cell
 def add_missing_timestamps(df, datetime_col, groupby=None, fill_value=np.nan, range_by_group=True, freq=None):
     """Fills missing timestamps in a dataframe to a desired frequency
     Args:
@@ -285,7 +287,6 @@ def get_gaps(o : Tensor, nan_to_num : int = 0, forward : bool = True, backward :
     return gaps
 
 # Cell
-
 def add_delta_timestamp_cols(df, cols=None, groupby=None, forward=True, backward=True, nearest=True, nan_to_num=0, normalize=True):
     if cols is None: cols = df.columns
     elif not is_listy(cols): cols = [cols]
@@ -319,7 +320,7 @@ def add_delta_timestamp_cols(df, cols=None, groupby=None, forward=True, backward
 
 def SlidingWindow(window_len:int, stride:Union[None, int]=1, start:int=0, pad_remainder:bool=False, padding:str="post", padding_value:float=np.nan,
                   add_padding_feature:bool=True, get_x:Union[None, int, list]=None, get_y:Union[None, int, list]=None, y_func:Optional[callable]=None,
-                  output_filter:Optional[callable]=None, copy:bool=False, horizon:Union[int, list]=1, seq_first:bool=True, sort_by:Optional[list]=None,
+                  output_processor:Optional[callable]=None, copy:bool=False, horizon:Union[int, list]=1, seq_first:bool=True, sort_by:Optional[list]=None,
                   ascending:bool=True, check_leakage:bool=True):
 
     """
@@ -342,8 +343,8 @@ def SlidingWindow(window_len:int, stride:Union[None, int]=1, start:int=0, pad_re
         get_y               = indices of columns that contain the target (ys). If None, all data will be used as y.
                               [] means no y data is created (unlabeled data).
         y_func              = optional function to calculate the ys based on the get_y col/s and each y sub-window. y_func must be a function applied to axis=1!
-        output_filter       = optional function to filter output (X (and y if available)). This is useful when some values need to be removed. The function
-                              should take X and y (even if it's None) as arguments.
+        output_processor    = optional function to process the final output (X (and y if available)). This is useful when some values need to be removed.
+                              The function should take X and y (even if it's None) as arguments.
         copy                = copy the original object to avoid changes in it.
         seq_first           = True if input shape (seq_len, n_vars), False if input shape (n_vars, seq_len)
         sort_by             = column/s used for sorting the array in ascending order
@@ -455,8 +456,8 @@ def SlidingWindow(window_len:int, stride:Union[None, int]=1, start:int=0, pad_re
                     if y.shape[d] == 1: y = np.squeeze(y, axis=d)
             if y.ndim == 3:
                 y = y.transpose(0, 2, 1)
-        if output_filter is not None:
-            X, y = output_filter(X, y)
+        if output_processor is not None:
+            X, y = output_processor(X, y)
         return X, y
     return _inner
 
@@ -466,7 +467,7 @@ SlidingWindowSplitter = SlidingWindow
 def SlidingWindowPanel(window_len:int, unique_id_cols:list, stride:Union[None, int]=1, start:int=0,
                        pad_remainder:bool=False, padding:str="post", padding_value:float=np.nan, add_padding_feature:bool=True,
                        get_x:Union[None, int, list]=None,  get_y:Union[None, int, list]=None, y_func:Optional[callable]=None,
-                       output_filter:Optional[callable]=None, copy:bool=False, horizon:Union[int, list]=1, seq_first:bool=True, sort_by:Optional[list]=None,
+                       output_processor:Optional[callable]=None, copy:bool=False, horizon:Union[int, list]=1, seq_first:bool=True, sort_by:Optional[list]=None,
                        ascending:bool=True, check_leakage:bool=True, return_key:bool=False, verbose:bool=True):
 
     """
@@ -491,7 +492,7 @@ def SlidingWindowPanel(window_len:int, unique_id_cols:list, stride:Union[None, i
         get_y               = indices of columns that contain the target (ys). If None, all data will be used as y.
                               [] means no y data is created (unlabeled data).
         y_func              = function to calculate the ys based on the get_y col/s and each y sub-window. y_func must be a function applied to axis=1!
-        output_filter       = optional function to filter output (X (and y if available)). This is useful when some values need to be removed. The function
+        output_processor    = optional function to filter output (X (and y if available)). This is useful when some values need to be removed. The function
                               should take X and y (even if it's None) as arguments.
         copy                = copy the original object to avoid changes in it.
         seq_first           = True if input shape (seq_len, n_vars), False if input shape (n_vars, seq_len)
@@ -522,7 +523,7 @@ def SlidingWindowPanel(window_len:int, unique_id_cols:list, stride:Union[None, i
         _key = []
         for v in progress_bar(unique_id_values, display=verbose, leave=False):
             x_v, y_v = SlidingWindow(window_len, stride=stride, start=start, pad_remainder=pad_remainder, padding=padding, padding_value=padding_value,
-                                     add_padding_feature=add_padding_feature, get_x=get_x, get_y=get_y, y_func=y_func, output_filter=output_filter,
+                                     add_padding_feature=add_padding_feature, get_x=get_x, get_y=get_y, y_func=y_func, output_processor=output_processor,
                                      horizon=horizon, seq_first=seq_first,
                                      check_leakage=check_leakage)(o[(o[unique_id_cols].values == v).sum(axis=1) == len(v)])
             if x_v is not None and len(x_v) > 0:
