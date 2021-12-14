@@ -559,13 +559,18 @@ def decoder(self:Learner, o): return L([self.dls.decodes(oi) for oi in o])
 
 # Cell
 @patch
-def feature_importance(self:Learner, feature_names=None, key_metric_idx=0, show_chart=True, save_df_path=False, random_state=23):
+def feature_importance(self:Learner, X=None, y=None, partial_n=None, feature_names=None, key_metric_idx=0, show_chart=True, save_df_path=False,
+                       random_state=23):
     r"""Calculates feature importance defined to be the change in a model validation loss or metric when a single feature value is randomly shuffled
 
     This procedure breaks the relationship between the feature and the target, thus the change in the model validation loss or metric is indicative of
     how much the model depends on the feature.
 
     Args:
+        X: array-like object  containing the time series data for which importance will be measured. If None, all data in the validation set will be used.
+        y: array-like object containing the targets. If None, all targets in the validation set will be used.
+        partial_n: number of samples (if int) or percent of the validation set (if float) that will be used to measure feature importance. If None,
+                   all data will be used.
         feature_names (Optional[list(str)]): list of feature names that will be displayed if available. Otherwise they will be var_0, var_1, etc.
         key_metric_idx (Optional[int]): integer to select the metric used in the calculation. If None or no metric is available,
                                         the change is calculated using the validation loss.
@@ -574,8 +579,16 @@ def feature_importance(self:Learner, feature_names=None, key_metric_idx=0, show_
         random_state (int): controls the shuffling applied to the data. Pass an int for reproducible output across multiple function calls.
     """
 
-    X_valid = self.dls.valid.dataset.tls[0].items
-    y_valid = self.dls.valid.dataset.tls[1].items
+    if X is None:
+        X = self.dls.valid.dataset.tls[0].items
+    if y is None:
+        y = self.dls.valid.dataset.tls[1].items
+    if partial_n is not None:
+        if isinstance(partial_n, float):
+            partial_n = int(round(partial_n * len(X)))
+        rand_idxs = random_shuffle(np.arange(len(X)), random_state=random_state)[:partial_n]
+        X = X[rand_idxs]
+        y = y[rand_idxs]
 
     metrics = [mn for mn in self.recorder.metric_names if mn not in ['epoch', 'train_loss', 'valid_loss', 'time']]
     if len(metrics) == 0 or key_metric_idx is None:
@@ -588,7 +601,10 @@ def feature_importance(self:Learner, feature_names=None, key_metric_idx=0, show_
 
     # Adapted from https://www.kaggle.com/cdeotte/lstm-feature-importance by Chris Deotte (Kaggle GrandMaster)
     if feature_names is None:
-        feature_names = [f"var_{i}" for i in range(X_valid.shape[1])]
+        feature_names = [f"var_{i}" for i in range(X.shape[1])]
+    else:
+        feature_names = listify(feature_names)
+    assert len(feature_names) == X.shape[1]
 
     results = []
     print('Computing feature importance...')
@@ -597,22 +613,24 @@ def feature_importance(self:Learner, feature_names=None, key_metric_idx=0, show_
     try:
         for k in progress_bar(range(len(COLS))):
             if k>0:
-                save_feat = X_valid[:, k-1].copy()
-                X_valid[:, k-1] = random_shuffle(X_valid[:, k-1].flatten(), random_state=random_state).reshape(X_valid[:, k-1].shape)
+                save_feat = X[:, k-1].copy()
+                X[:, k-1] = random_shuffle(X[:, k-1].flatten(), random_state=random_state).reshape(X[:, k-1].shape)
             if key_metric_idx is None:
-                value = self.get_X_preds(X_valid, y_valid, with_loss=True)[-1].mean().item()
+                value = self.get_X_preds(X, y, with_loss=True)[-1].mean().item()
             else:
-                output = self.get_X_preds(X_valid, y_valid)
+                output = self.get_X_preds(X, y)
                 value = metric(output[0], output[1]).item()
             print(f"{k:3} feature: {COLS[k]:20} {metric_name}: {value:8.6f}")
             results.append([COLS[k], value])
+            del output, value;gc.collect()
             if k>0:
-                X_valid[:, k-1] = save_feat
+                X[:, k-1] = save_feat
                 del save_feat; gc.collect()
+
 
     except KeyboardInterrupt:
         if k>0:
-            X_valid[:, k-1] = save_feat
+            X[:, k-1] = save_feat
             del save_feat; gc.collect()
 
     # Display feature importance
