@@ -2,8 +2,9 @@
 
 __all__ = ['ToNumpyCategory', 'OneHot', 'Nan2Value', 'TSStandardize', 'TSNormalize', 'TSClipOutliers', 'TSClip',
            'TSRobustScale', 'TSDiff', 'TSLog', 'TSCyclicalPosition', 'TSLinearPosition', 'TSLogReturn', 'TSAdd',
-           'TSShrinkDataFrame', 'TSOneHotEncoder', 'Preprocessor', 'StandardScaler', 'RobustScaler', 'Normalizer',
-           'BoxCox', 'YeoJohnshon', 'Quantile', 'ReLabeler']
+           'TSShrinkDataFrame', 'TSOneHotEncoder', 'TSCategoricalEncoder', 'TSDateTimeEncoder', 'default_date_attr',
+           'TSMissingnessEncoder', 'Preprocessor', 'StandardScaler', 'RobustScaler', 'Normalizer', 'BoxCox',
+           'YeoJohnshon', 'Quantile', 'ReLabeler']
 
 # Cell
 from ..imports import *
@@ -529,6 +530,88 @@ class TSOneHotEncoder(BaseEstimator, TransformerMixin):
         if self.drop: X = X.drop(self.columns, axis=1)
         return X
 
+
+# Cell
+class TSCategoricalEncoder(BaseEstimator, TransformerMixin):
+
+    def __init__(self, columns=None, add_na=True):
+        self.columns = listify(columns)
+        self.add_na = add_na
+
+    def fit(self, X:pd.DataFrame, y=None, **fit_params):
+        assert isinstance(X, pd.DataFrame)
+        if not self.columns: self.columns = X.columns
+        self.cat_tfms = []
+        for column in self.columns:
+            self.cat_tfms.append(CategoryMap(X[column], add_na=self.add_na))
+        return self
+
+    def transform(self, X:pd.DataFrame, y=None, **transform_params):
+        assert isinstance(X, pd.DataFrame)
+        for cat_tfm, column in zip(self.cat_tfms, self.columns):
+            X[column] = cat_tfm.map_objs(X[column])
+        return X
+
+    def inverse_transform(self, X):
+        assert isinstance(X, pd.DataFrame)
+        for cat_tfm, column in zip(self.cat_tfms, self.columns):
+            X[column] = cat_tfm.map_ids(X[column])
+        return X
+
+# Cell
+default_date_attr = ['Year', 'Month', 'Week', 'Day', 'Dayofweek', 'Dayofyear', 'Is_month_end', 'Is_month_start',
+                     'Is_quarter_end', 'Is_quarter_start', 'Is_year_end', 'Is_year_start']
+
+class TSDateTimeEncoder(BaseEstimator, TransformerMixin):
+
+    def __init__(self, datetime_columns=None, prefix=None, drop=True, time=False, attr=default_date_attr):
+        self.datetime_columns = listify(datetime_columns)
+        self.prefix, self.drop, self.time, self.attr = prefix, drop, time ,attr
+
+    def fit(self, X:pd.DataFrame, y=None, **fit_params):
+        assert isinstance(X, pd.DataFrame)
+        if self.time: self.attr = self.attr + ['Hour', 'Minute', 'Second']
+        if not self.datetime_columns:
+            self.datetime_columns = X.columns
+        self.prefixes = []
+        for dt_column in self.datetime_columns:
+            self.prefixes.append(re.sub('[Dd]ate$', '', dt_column) if self.prefix is None else self.prefix)
+        return self
+
+    def transform(self, X:pd.DataFrame, y=None, **transform_params):
+        assert isinstance(X, pd.DataFrame)
+
+        for dt_column,prefix in zip(self.datetime_columns,self.prefixes):
+            make_date(X, dt_column)
+            field = X[dt_column]
+
+            # Pandas removed `dt.week` in v1.1.10
+            week = field.dt.isocalendar().week.astype(field.dt.day.dtype) if hasattr(field.dt, 'isocalendar') else field.dt.week
+            for n in self.attr: X[prefix + "_" + n] = getattr(field.dt, n.lower()) if n != 'Week' else week
+            if self.drop: X = X.drop(self.datetime_columns, axis=1)
+        return X
+
+# Cell
+class TSMissingnessEncoder(BaseEstimator, TransformerMixin):
+
+    def __init__(self, columns=None):
+        self.columns = listify(columns)
+
+    def fit(self, X:pd.DataFrame, y=None, **fit_params):
+        assert isinstance(X, pd.DataFrame)
+        if not self.columns: self.columns = X.columns
+        self.missing_columns = [f"{cn}_missing" for cn in self.columns]
+        return self
+
+    def transform(self, X:pd.DataFrame, y=None, **transform_params):
+        assert isinstance(X, pd.DataFrame)
+        X[self.missing_columns] = X[self.columns].isnull().astype(int)
+        return X
+
+    def inverse_transform(self, X):
+        assert isinstance(X, pd.DataFrame)
+        X.drop(self.missing_columns, axis=1, inplace=True)
+        return X
 
 # Cell
 class Preprocessor():
