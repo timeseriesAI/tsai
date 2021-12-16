@@ -232,8 +232,8 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
         (:math:<code>\text{padding\_left}</code>, :math:<code>\text{padding\_right}</code>)</p>
 <p>Shape:</p>
 
-<pre><code>- Input: :math:`(N, C, W_{in})`
-- Output: :math:`(N, C, W_{out})` where
+<pre><code>- Input: :math:`(C, W_{in})` or :math:`(N, C, W_{in})`.
+- Output: :math:`(C, W_{out})` or :math:`(N, C, W_{out})`, where
 
   :math:`W_{out} = W_{in} + \text{padding\_left} + \text{padding\_right}`
 
@@ -352,8 +352,8 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
         :math:<code>\text{padding\_right}</code>, :math:<code>\text{padding\_top}</code>, :math:<code>\text{padding\_bottom}</code>)</p>
 <p>Shape:</p>
 
-<pre><code>- Input: :math:`(N, C, H_{in}, W_{in})`
-- Output: :math:`(N, C, H_{out}, W_{out})` where
+<pre><code>- Input: :math:`(N, C, H_{in}, W_{in})` or :math:`(C, H_{in}, W_{in})`.
+- Output: :math:`(N, C, H_{out}, W_{out})` or :math:`(C, H_{out}, W_{out})`, where
 
   :math:`H_{out} = H_{in} + \text{padding\_top} + \text{padding\_bottom}`
 
