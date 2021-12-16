@@ -2,6 +2,59 @@
 
 <!-- do not remove -->
 
+## 0.2.24
+### Breaking Changes
+
+- removed InceptionTSiT, InceptionTSiTPlus, ConvTSiT & ConvTSiTPlus ([#276](https://github.com/timeseriesAI/tsai/issues/276))
+
+### New Features
+
+- add stateful custom sklearn API type tfms: TSShrinkDataFrame, TSOneHotEncoder, TSCategoricalEncoder ([#313](https://github.com/timeseriesAI/tsai/issues/313))
+
+- Pytorch 1.10 compatibility ([#311](https://github.com/timeseriesAI/tsai/issues/311))
+
+- ability to pad at the start/ end of sequences and filter results in SlidingWindow ([#307](https://github.com/timeseriesAI/tsai/issues/307))
+
+- added bias_init to TSiT ([#288](https://github.com/timeseriesAI/tsai/issues/288))
+
+- plot permutation feature importance after a model's been trained ([#286](https://github.com/timeseriesAI/tsai/issues/286))
+
+- added separable as an option to MultiConv1d ([#285](https://github.com/timeseriesAI/tsai/issues/285))
+
+- Modified TSiTPlus to accept a feature extractor and/or categorical variables ([#278](https://github.com/timeseriesAI/tsai/issues/278))
+
+### Bugs Squashed
+
+- learn modules takes too long to load ([#312](https://github.com/timeseriesAI/tsai/issues/312))
+
+- error in roll2d and roll3d when passing index 2 ([#304](https://github.com/timeseriesAI/tsai/issues/304))
+
+- TypeError: unhashable type: 'numpy.ndarray' ([#302](https://github.com/timeseriesAI/tsai/issues/302))
+
+- ValueError: only one element tensors can be converted to Python scalars ([#300](https://github.com/timeseriesAI/tsai/issues/300))
+
+- unhashable type: 'numpy.ndarray' when using multiclass multistep labels ([#298](https://github.com/timeseriesAI/tsai/issues/298))
+
+- incorrect data types in NumpyDatasets subset ([#297](https://github.com/timeseriesAI/tsai/issues/297))
+
+- create_future_mask creates a mask in the past ([#293](https://github.com/timeseriesAI/tsai/issues/293))
+
+- NameError: name 'X' is not defined in learner.feature_importance ([#291](https://github.com/timeseriesAI/tsai/issues/291))
+
+- TSiT test fails on cuda ([#287](https://github.com/timeseriesAI/tsai/issues/287))
+
+- MultiConv1d breaks when ni == nf ([#284](https://github.com/timeseriesAI/tsai/issues/284))
+
+- WeightedPerSampleLoss reported an error when used with LDS_weights ([#281](https://github.com/timeseriesAI/tsai/issues/281))
+
+- pos_encoding transfer weight in TSiT fails ([#280](https://github.com/timeseriesAI/tsai/issues/280))
+
+- MultiEmbedding cat_pos and cont_pos are not in state_dict() ([#277](https://github.com/timeseriesAI/tsai/issues/277))
+
+- fixed issue with MixedDataLoader  ([#229](https://github.com/timeseriesAI/tsai/pull/229)), thanks to [@Wabinab](https://github.com/Wabinab)
+
+
+
 ## 0.2.23
 ### Breaking Changes
 
