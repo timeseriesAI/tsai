@@ -9,6 +9,7 @@ from .data.core import *
 from .data.validation import *
 from .inference import *
 from .models.utils import *
+from .models.InceptionTimePlus import *
 from fastai.learner import *
 from fastai.vision.models.all import *
 from fastai.data.transforms import *
