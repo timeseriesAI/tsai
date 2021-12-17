@@ -540,6 +540,10 @@ class NumpyDataLoader(TfmdDL):
         self.get_idxs = old_get_idxs
         return b
 
+    def __len__(self):
+        if self.partial_n is None: return super().__len__()
+        return self.partial_n//self.bs + (0 if self.drop_last or self.partial_n%self.bs==0 else 1)
+
     @delegates(plt.subplots)
     def show_batch(self, b=None, ctxs=None, max_n=9, nrows=3, ncols=3, figsize=None, unique=False, sharex=True, sharey=False, decode=False,
                    show_title=True, **kwargs):
