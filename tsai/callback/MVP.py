@@ -173,7 +173,7 @@ class MVP(Callback):
                                               nn.Conv1d(self.learn.model.head_nf, self.learn.dls.vars, 1)
                                              ).to(self.learn.dls.device)
         if self.weights_path is not None:
-            transfer_weights(learn.model, self.weights_path, device=self.learn.dls.device, exclude_head=False)
+            transfer_weights(self.learn.model, self.weights_path, device=self.learn.dls.device, exclude_head=False)
 
         with torch.no_grad():
             xb = torch.randn(2, self.learn.dls.vars, self.learn.dls.len).to(self.learn.dls.device)
