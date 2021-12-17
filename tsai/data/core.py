@@ -126,14 +126,14 @@ class TSClassification(DisplayedTransform):
     "Vectorized, reversible transform of category string to `vocab` id"
     loss_func,order,vectorized=CrossEntropyLossFlat(),1,True
 
-    def __init__(self, vocab=None, sort=True, add_na=False):
-        if vocab is not None: vocab = CategoryMap(vocab, sort=sort, add_na=add_na)
+    def __init__(self, vocab=None, sort=True):
+        if vocab is not None: vocab = CategoryMap(vocab, sort=sort, add_na=False)
         store_attr()
 
     def setups(self, dset):
-        dset = np.asarray(dset).flatten()
         if self.vocab is None and dset is not None:
-            self.vocab = CategoryMap(dset, sort=self.sort, add_na=self.add_na)
+            dset = np.asarray(dset).flatten()
+            self.vocab = CategoryMap(dset, sort=self.sort, add_na=False)
         self.c = len(self.vocab)
         self.vocab_keys = np.array(list(self.vocab.o2i.keys()))[:, None]
 
@@ -152,7 +152,7 @@ class TSClassification(DisplayedTransform):
             return stack([Category(self.vocab[oi]) for oi in o])
         else:
             return stack(MultiCategory(self.vocab[o.flatten()])).reshape(*o.shape)
-#             return stack([MultiCategory(self.vocab[oi]) for oi in o.flatten()]).reshape(*o.shape)
+
 
 TSCategorize = TSClassification
 TSRegression = ToFloat
@@ -162,8 +162,8 @@ TSForecasting = ToFloat
 class TSMultiLabelClassification(Categorize):
     "Reversible combined transform of multi-category strings to one-hot encoded `vocab` id"
     loss_func,order=BCEWithLogitsLossFlat(),1
-    def __init__(self, c=None, vocab=None, add_na=False):
-        super().__init__(vocab=vocab,add_na=add_na,sort=vocab==None)
+    def __init__(self, c=None, vocab=None, add_na=False, sort=True):
+        super().__init__(vocab=vocab,add_na=add_na,sort=sort)
         self.c = c
 
     def setups(self, dsets):
