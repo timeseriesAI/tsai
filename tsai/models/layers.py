@@ -1141,13 +1141,17 @@ class TSEmbedding(nn.Embedding):
 # Cell
 class MultiEmbedding(Module):
     def __init__(self, c_in, n_embeds, embed_dims=None, cat_pos=None, std=0.01, padding_idx=0):
+        n_embeds = listify(n_embeds)
         if embed_dims is None:
             embed_dims = [emb_sz_rule(s) for s in n_embeds]
         else:
             embed_dims = listify(embed_dims)
             if len(embed_dims) == 1: embed_dims = embed_dims * len(n_embeds)
             assert len(embed_dims) == len(n_embeds)
-        cat_pos = torch.as_tensor(listify(cat_pos)) if cat_pos else torch.arange(len(n_embeds))
+        if cat_pos:
+            cat_pos = torch.as_tensor(listify(cat_pos))
+        else:
+            cat_pos = torch.arange(len(n_embeds))
         self.register_buffer("cat_pos", cat_pos)
         cont_pos = torch.tensor([p for p in torch.arange(c_in) if p not in self.cat_pos])
         self.register_buffer("cont_pos", cont_pos)

@@ -530,6 +530,10 @@ def apply_cmap(o, cmap):
 
 # Cell
 def torch_tile(a, n_tile, dim=0):
+    if ismin_torch("1.10") and dim == 0:
+        if isinstance(n_tile, tuple):
+            return torch.tile(a, n_tile)
+        return torch.tile(a, (n_tile,))
     init_dim = a.size(dim)
     repeat_idx = [1] * a.dim()
     repeat_idx[dim] = n_tile
@@ -566,27 +570,23 @@ def scorr(a, b):
     return corr[0], corr[1]
 
 # Cell
-def torch_diff(t, lag=1, pad=True):
+def torch_diff(t, lag=1, pad=True, append=0):
     import torch.nn.functional as F
     diff = t[..., lag:] - t[..., :-lag]
-    if pad: return F.pad(diff, (lag,0))
-    else: return diff
+    if pad:
+        return F.pad(diff, (lag, append))
+    else:
+        return diff
 
 # Cell
 def get_outliers_IQR(o, axis=None, quantile_range=(25.0, 75.0)):
-    tt = False
     if isinstance(o, torch.Tensor):
-        tt = True
-        device = o.device
-        tdtype = o.dtype
-        o = o.detach().cpu().numpy()
-    Q1 = np.nanpercentile(o, quantile_range[0], axis=axis, keepdims=axis is not None)
-    Q3 = np.nanpercentile(o, quantile_range[1], axis=axis, keepdims=axis is not None)
+        Q1 = torch.nanquantile(o, quantile_range[0]/100, axis=axis, keepdims=axis is not None)
+        Q3 = torch.nanquantile(o, quantile_range[1]/100, axis=axis, keepdims=axis is not None)
+    else:
+        Q1 = np.nanpercentile(o, quantile_range[0], axis=axis, keepdims=axis is not None)
+        Q3 = np.nanpercentile(o, quantile_range[1], axis=axis, keepdims=axis is not None)
     IQR = Q3 - Q1
-    if tt:
-        Q1 = torch.tensor(Q1, dtype=tdtype, device=device)
-        Q3 = torch.tensor(Q3, dtype=tdtype, device=device)
-        IQR = torch.tensor(IQR, dtype=tdtype, device=device)
     return Q1 - 1.5 * IQR, Q3 + 1.5 * IQR
 
 def clip_outliers(o, axis=None):
@@ -597,8 +597,10 @@ def clip_outliers(o, axis=None):
         return torch.clamp(o, min_outliers, max_outliers)
 
 def get_percentile(o, percentile, axis=None):
-    if isinstance(o, torch.Tensor): o = o.detach().cpu().numpy()
-    return np.nanpercentile(o, percentile, axis=axis, keepdims=axis is not None)
+    if isinstance(o, torch.Tensor):
+        return torch.nanquantile(o, percentile/100, axis=axis, keepdims=axis is not None)
+    else:
+        return np.nanpercentile(o, percentile, axis=axis, keepdims=axis is not None)
 
 def torch_clamp(o, min=None, max=None):
     r"""Clamp torch.Tensor using 1 or multiple dimensions"""
@@ -917,6 +919,8 @@ def torch_flip(t, dims=-1):
 
 # Cell
 def torch_nan_to_num(o, num=0, inplace=False):
+    if ismin_torch("1.8") and not inplace:
+        return torch.nan_to_num(o, num)
     mask = torch.isnan(o)
     return torch_masked_to_num(o, mask, num=num, inplace=inplace)
 

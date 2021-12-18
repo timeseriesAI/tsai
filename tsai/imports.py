@@ -285,3 +285,10 @@ def my_setup(*pkgs):
     except: print(f'torch          : N/A')
         
 computer_setup = my_setup
+
+#export
+#This function will be available in fastai 2.5.4
+def ismin_torch(min_version):
+    from packaging.version import parse
+    "Check if `torch.__version__` >= `min_version` using packaging.version"
+    return parse(torch.__version__) >= parse(min_version)

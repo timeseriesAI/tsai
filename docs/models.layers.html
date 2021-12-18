@@ -692,28 +692,6 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_text output_error">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
-<span class="ansi-green-fg">&lt;ipython-input-13-c128bf6f8b89&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
-<span class="ansi-green-intense-fg ansi-bold">      9</span> test_eq<span class="ansi-blue-fg">(</span>Conv1d<span class="ansi-blue-fg">(</span>ni<span class="ansi-blue-fg">,</span> nf<span class="ansi-blue-fg">,</span> ks<span class="ansi-blue-fg">,</span> padding<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">&#39;same&#39;</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">(</span>t<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">.</span>shape<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">(</span>bs<span class="ansi-blue-fg">,</span> c_out<span class="ansi-blue-fg">,</span> seq_len<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">     10</span> test_eq<span class="ansi-blue-fg">(</span>Conv1d<span class="ansi-blue-fg">(</span>ni<span class="ansi-blue-fg">,</span> nf<span class="ansi-blue-fg">,</span> ks<span class="ansi-blue-fg">,</span> padding<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">&#39;causal&#39;</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">(</span>t<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">.</span>shape<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">(</span>bs<span class="ansi-blue-fg">,</span> c_out<span class="ansi-blue-fg">,</span> seq_len<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
-<span class="ansi-green-fg">---&gt; 11</span><span class="ansi-red-fg"> </span>test_error<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;use kernel_size or ks but not both simultaneously&#39;</span><span class="ansi-blue-fg">,</span> Conv1d<span class="ansi-blue-fg">,</span> ni<span class="ansi-blue-fg">,</span> nf<span class="ansi-blue-fg">,</span> kernel_size<span class="ansi-blue-fg">=</span><span class="ansi-cyan-fg">3</span><span class="ansi-blue-fg">,</span> ks<span class="ansi-blue-fg">=</span><span class="ansi-cyan-fg">3</span><span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">     12</span> test_error<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;you need to pass a ks&#39;</span><span class="ansi-blue-fg">,</span> Conv1d<span class="ansi-blue-fg">,</span> ni<span class="ansi-blue-fg">,</span> nf<span class="ansi-blue-fg">)</span>
-
-<span class="ansi-red-fg">NameError</span>: name &#39;test_error&#39; is not defined</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
     {% endraw %}
 
@@ -733,6 +711,22 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Conv1d(3, 5, kernel_size=(3,), stride=(1,), padding=(1,))</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -749,6 +743,22 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>CausalConv1d(3, 5, kernel_size=(3,), stride=(1,))</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -772,6 +782,22 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Conv1d(3, 5, kernel_size=(3,), stride=(1,))</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -789,6 +815,22 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Conv1d(3, 5, kernel_size=(3,), stride=(1,))</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -1116,6 +1158,27 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>ConvBlock(
+  (0): AddCoords1d()
+  (1): Conv1d(4, 5, kernel_size=(5,), stride=(1,), padding=(2,), bias=False)
+  (2): BatchNorm1d(5, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (3): Swish()
+)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -1162,6 +1225,26 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>LinLnDrop(
+  (0): LayerNorm((2,), eps=1e-05, elementwise_affine=True)
+  (1): Dropout(p=0.5, inplace=False)
+  (2): Linear(in_features=2, out_features=3, bias=False)
+)</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -1582,6 +1665,27 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(Transpose(1, 2),
+ Permute(dims=0, 2, 1),
+ View(bs, -1, 2, 10),
+ Transpose(dims=1, 2).contiguous(),
+ Reshape(bs, -1, 2, 10),
+ Sequential())</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -1690,6 +1794,24 @@ Original code in <a href="https://github.com/rwightman/pytorch-image-models">htt
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+"
+>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -2659,6 +2781,35 @@ model = nn.Sequential(OrderedDict([
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Sequential(
+  (0): GACP1d(
+    (gacp): AdaptiveConcatPool1d(
+      (ap): AdaptiveAvgPool1d(output_size=1)
+      (mp): AdaptiveMaxPool1d(output_size=1)
+    )
+    (flatten): Flatten(full=False)
+  )
+  (1): LinBnDrop(
+    (0): BatchNorm1d(24, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (1): Dropout(p=0.5, inplace=False)
+    (2): Linear(in_features=24, out_features=2, bias=False)
+  )
+)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -2767,6 +2918,35 @@ model = nn.Sequential(OrderedDict([
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Sequential(
+  (0): AdaptiveConcatPool1d(
+    (ap): AdaptiveAvgPool1d(output_size=1)
+    (mp): AdaptiveMaxPool1d(output_size=1)
+  )
+  (1): Flatten(full=False)
+  (2): BatchNorm1d(24, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (3): Dropout(p=0.25, inplace=False)
+  (4): Linear(in_features=24, out_features=512, bias=False)
+  (5): ReLU(inplace=True)
+  (6): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (7): Dropout(p=0.5, inplace=False)
+  (8): Linear(in_features=512, out_features=2, bias=False)
+)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -2819,6 +2999,42 @@ model = nn.Sequential(OrderedDict([
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Sequential(
+  (0): ConvBlock(
+    (0): Conv1d(12, 6, kernel_size=(1,), stride=(1,), bias=False)
+    (1): BatchNorm1d(6, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+  )
+  (1): ConvBlock(
+    (0): Conv1d(6, 3, kernel_size=(1,), stride=(1,), bias=False)
+    (1): BatchNorm1d(3, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+  )
+  (2): ConvBlock(
+    (0): Conv1d(3, 2, kernel_size=(1,), stride=(1,), bias=False)
+    (1): BatchNorm1d(2, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+  )
+  (3): GAP1d(
+    (gap): AdaptiveAvgPool1d(output_size=1)
+    (flatten): Flatten(full=False)
+  )
+)</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -2877,6 +3093,29 @@ model = nn.Sequential(OrderedDict([
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Sequential(
+  (0): Flatten(full=False)
+  (1): LinBnDrop(
+    (0): BatchNorm1d(240, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (1): Dropout(p=0.5, inplace=False)
+    (2): Linear(in_features=240, out_features=2, bias=False)
+  )
+)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -2931,6 +3170,29 @@ model = nn.Sequential(OrderedDict([
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Sequential(
+  (0): Flatten(full=False)
+  (1): LinBnDrop(
+    (0): BatchNorm1d(240, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (1): Dropout(p=0.5, inplace=False)
+    (2): Linear(in_features=240, out_features=2, bias=False)
+  )
+)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -2982,6 +3244,29 @@ model = nn.Sequential(OrderedDict([
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Sequential(
+  (0): LastStep()
+  (1): LinBnDrop(
+    (0): BatchNorm1d(12, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (1): Dropout(p=0.5, inplace=False)
+    (2): Linear(in_features=12, out_features=2, bias=False)
+  )
+)</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -3050,6 +3335,28 @@ model = nn.Sequential(OrderedDict([
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Sequential(
+  (0): Dropout(p=0.0, inplace=False)
+  (1): Conv1d(12, 2, kernel_size=(1,), stride=(1,))
+  (2): SigmoidRange(low=tensor([0.1000, 0.1000, 0.1000, 0.1000, 0.2000, 0.2000, 0.2000, 0.2000, 0.3000,
+          0.3000, 0.3000, 0.3000]), high=tensor([0.6000, 0.6000, 0.6000, 0.6000, 0.7000, 0.7000, 0.7000, 0.7000, 0.8000,
+          0.8000, 0.8000, 0.8000]))
+)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -3110,6 +3417,29 @@ model = nn.Sequential(OrderedDict([
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(TensorBase(1.7330, grad_fn=&lt;AliasBackward0&gt;),
+ create_conv_lin_nd_head(
+   (0): Conv1d(32, 5, kernel_size=(1,), stride=(1,))
+   (1): Dropout(p=0.5, inplace=False)
+   (2): Linear(in_features=10, out_features=2, bias=True)
+   (3): Transpose(-1, -2)
+   (4): Reshape(bs, 2, 5)
+ ))</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -3135,6 +3465,29 @@ model = nn.Sequential(OrderedDict([
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(TensorBase(1.6857, grad_fn=&lt;AliasBackward0&gt;),
+ create_conv_lin_nd_head(
+   (0): Dropout(p=0.5, inplace=False)
+   (1): Linear(in_features=10, out_features=16, bias=True)
+   (2): Conv1d(32, 5, kernel_size=(1,), stride=(1,))
+   (3): Transpose(-1, -2)
+   (4): Reshape(bs, 2, 8, 5)
+ ))</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -3166,6 +3519,29 @@ model = nn.Sequential(OrderedDict([
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(TensorBase(0.5072, grad_fn=&lt;AliasBackward0&gt;),
+ create_conv_lin_nd_head(
+   (0): Dropout(p=0.5, inplace=False)
+   (1): Linear(in_features=10, out_features=2, bias=True)
+   (2): Conv1d(32, 1, kernel_size=(1,), stride=(1,))
+   (3): Transpose(-1, -2)
+   (4): Reshape(bs, 2)
+ ))</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -3191,6 +3567,29 @@ model = nn.Sequential(OrderedDict([
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(TensorBase(0.6152, grad_fn=&lt;AliasBackward0&gt;),
+ create_conv_lin_nd_head(
+   (0): Dropout(p=0.5, inplace=False)
+   (1): Linear(in_features=10, out_features=6, bias=True)
+   (2): Conv1d(32, 1, kernel_size=(1,), stride=(1,))
+   (3): Transpose(-1, -2)
+   (4): Reshape(bs, 2, 3)
+ ))</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -3254,6 +3653,28 @@ model = nn.Sequential(OrderedDict([
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(TensorBase(1.8259, grad_fn=&lt;AliasBackward0&gt;),
+ create_lin_nd_head(
+   (0): Flatten(full=False)
+   (1): Dropout(p=0.5, inplace=False)
+   (2): Linear(in_features=320, out_features=10, bias=True)
+   (3): Reshape(bs, 2, 5)
+ ))</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -3279,6 +3700,28 @@ model = nn.Sequential(OrderedDict([
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(TensorBase(1.9197, grad_fn=&lt;AliasBackward0&gt;),
+ create_lin_nd_head(
+   (0): Flatten(full=False)
+   (1): Dropout(p=0.5, inplace=False)
+   (2): Linear(in_features=320, out_features=80, bias=True)
+   (3): Reshape(bs, 2, 8, 5)
+ ))</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -3310,6 +3753,28 @@ model = nn.Sequential(OrderedDict([
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(TensorBase(0.8665, grad_fn=&lt;AliasBackward0&gt;),
+ create_lin_nd_head(
+   (0): Flatten(full=False)
+   (1): Dropout(p=0.5, inplace=False)
+   (2): Linear(in_features=320, out_features=2, bias=True)
+   (3): Reshape(bs, 2)
+ ))</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -3335,6 +3800,28 @@ model = nn.Sequential(OrderedDict([
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(TensorBase(0.9406, grad_fn=&lt;AliasBackward0&gt;),
+ create_lin_nd_head(
+   (0): Flatten(full=False)
+   (1): Dropout(p=0.5, inplace=False)
+   (2): Linear(in_features=320, out_features=6, bias=True)
+   (3): Reshape(bs, 2, 3)
+ ))</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -3398,6 +3885,28 @@ model = nn.Sequential(OrderedDict([
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(TensorBase(1.7766, grad_fn=&lt;AliasBackward0&gt;),
+ create_conv_3d_head(
+   (0): ConvBlock(
+     (0): Conv1d(32, 5, kernel_size=(1,), stride=(1,))
+   )
+   (1): Transpose(-1, -2)
+ ))</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -3423,6 +3932,29 @@ model = nn.Sequential(OrderedDict([
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(TensorBase(0.7168, grad_fn=&lt;AliasBackward0&gt;),
+ create_conv_3d_head(
+   (0): ConvBlock(
+     (0): Conv1d(32, 1, kernel_size=(1,), stride=(1,))
+   )
+   (1): Transpose(-1, -2)
+   (2): Squeeze(dim=-1)
+ ))</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -3515,6 +4047,33 @@ model = nn.Sequential(OrderedDict([
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>create_mlp_head
+create_fc_head
+average_pool_head
+max_pool_head
+concat_pool_head
+create_pool_plus_head
+create_conv_head
+create_rnn_head
+create_conv_lin_nd_head
+create_lin_nd_head
+create_conv_3d_head
+attentional_pool_head
+universal_pool_head
+gwa_pool_head
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -3688,6 +4247,22 @@ model = nn.Sequential(OrderedDict([
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor(0.6840)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -3738,6 +4313,22 @@ model = nn.Sequential(OrderedDict([
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor(0.6387)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -3759,6 +4350,22 @@ model = nn.Sequential(OrderedDict([
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor(0.6715, grad_fn=&lt;NllLossBackward0&gt;)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -3773,6 +4380,22 @@ model = nn.Sequential(OrderedDict([
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor(-1.5827)</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -3934,6 +4557,23 @@ Based on paper: Wen et al. A Discriminative Feature Learning Approach for Deep F
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(tensor(9.1555, grad_fn=&lt;DivBackward0&gt;),
+ TensorBase(2.3589, grad_fn=&lt;AliasBackward0&gt;))</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -3948,6 +4588,22 @@ Based on paper: Wen et al. A Discriminative Feature Learning Approach for Deep F
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>CenterPlusLoss(loss=FlattenedLoss of LabelSmoothingCrossEntropy(), c_out=10, λ=0.01)</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -4004,6 +4660,22 @@ Based on paper: Wen et al. A Discriminative Feature Learning Approach for Deep F
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>TensorBase(0.7455)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -4053,6 +4725,22 @@ Based on paper: Wen et al. A Discriminative Feature Learning Approach for Deep F
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor(4.3896)</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -4258,6 +4946,23 @@ model = nn.Sequential(OrderedDict([
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(tensor(-1.2728e-11, grad_fn=&lt;MeanBackward0&gt;),
+ tensor(0.5049, grad_fn=&lt;StdBackward0&gt;))</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -4386,6 +5091,30 @@ model = nn.Sequential(OrderedDict([
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>attn_mask torch.Size([50, 50]) key_padding_mask torch.Size([16, 50])
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(torch.Size([16, 3, 50, 6]), torch.Size([16, 3, 50, 50]))</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -4402,6 +5131,22 @@ model = nn.Sequential(OrderedDict([
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(torch.Size([16, 50, 128]), torch.Size([16, 3, 50, 50]))</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -4655,6 +5400,39 @@ model = nn.Sequential(OrderedDict([
 <span class="n">embeddings</span> <span class="o">=</span> <span class="n">memb</span><span class="p">(</span><span class="n">inp</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">n_embeds</span><span class="p">,</span> <span class="n">szs</span><span class="p">,</span> <span class="n">inp</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">inp</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="nb">sum</span><span class="p">(</span><span class="n">szs</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">inp</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[3, 4] [3, 3] torch.Size([4, 3, 10]) torch.Size([4, 7, 10])
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">me</span> <span class="o">=</span> <span class="n">MultiEmbedding</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">cat_pos</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">cat_embed</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">cat_pos</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="mi">2</span><span class="p">)</span>
 </pre></div>
 
     </div>
