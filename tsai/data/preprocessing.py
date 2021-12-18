@@ -324,11 +324,12 @@ class TSRobustScale(Transform):
     r"""This Scaler removes the median and scales the data according to the quantile range (defaults to IQR: Interquartile Range)"""
     parameters, order = L('median', 'iqr'), 90
     _setup = True # indicates it requires set up
-    def __init__(self, median=None, iqr=None, quantile_range=(25.0, 75.0), use_single_batch=True, verbose=False):
+    def __init__(self, median=None, iqr=None, quantile_range=(25.0, 75.0), use_single_batch=True, eps=1e-8, verbose=False):
         self.median = tensor(median) if median is not None else None
         self.iqr = tensor(iqr) if iqr is not None else None
         self._setup = median is None or iqr is None
         self.use_single_batch = use_single_batch
+        self.eps = eps
         self.verbose = verbose
         self.quantile_range = quantile_range
 
@@ -343,7 +344,7 @@ class TSRobustScale(Transform):
             median = get_percentile(new_o, 50, axis=1)
             iqrmin, iqrmax = get_outliers_IQR(new_o, axis=1, quantile_range=self.quantile_range)
             self.median = median.unsqueeze(0)
-            self.iqr = (iqrmax - iqrmin).unsqueeze(0)
+            self.iqr = torch.clamp_min((iqrmax - iqrmin).unsqueeze(0), self.eps)
 
             pv(f'{self.__class__.__name__} median={self.median.shape} iqr={self.iqr.shape}', self.verbose)
             self._setup = False
