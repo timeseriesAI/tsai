@@ -16,6 +16,7 @@ class _RNN_Backbone(Module):
 
         # Categorical embeddings
         if n_embeds is not None:
+            n_embeds = listify(n_embeds)
             if embed_dims is None:
                 embed_dims = [emb_sz_rule(s) for s in n_embeds]
             self.to_cat_embed = MultiEmbedding(c_in, n_embeds, embed_dims=embed_dims, cat_pos=cat_pos)
