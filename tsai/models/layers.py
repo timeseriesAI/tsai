@@ -1140,8 +1140,13 @@ class TSEmbedding(nn.Embedding):
 
 # Cell
 class MultiEmbedding(Module):
-    def __init__(self, c_in, n_embeds, embed_dims=None, cat_pos=None, std=0.01, padding_idx=0):
+    def __init__(self, c_in, n_embeds, embed_dims=None, cat_pos=None, std=0.01, padding_idxs=None):
         n_embeds = listify(n_embeds)
+        if padding_idxs is None: padding_idxs = [None]
+        else: padding_idxs = listify(padding_idxs)
+        if len(padding_idxs) == 1 and len(padding_idxs) < len(n_embeds):
+            padding_idxs = padding_idxs * len(n_embeds)
+        assert len(n_embeds) == len(padding_idxs)
         if embed_dims is None:
             embed_dims = [emb_sz_rule(s) for s in n_embeds]
         else:
@@ -1155,7 +1160,7 @@ class MultiEmbedding(Module):
         self.register_buffer("cat_pos", cat_pos)
         cont_pos = torch.tensor([p for p in torch.arange(c_in) if p not in self.cat_pos])
         self.register_buffer("cont_pos", cont_pos)
-        self.cat_embed = nn.ModuleList([TSEmbedding(n,d,std=std, padding_idx=padding_idx) for n,d in zip(n_embeds, embed_dims)])
+        self.cat_embed = nn.ModuleList([TSEmbedding(n,d,std=std, padding_idx=p) for n,d,p in zip(n_embeds, embed_dims, padding_idxs)])
 
     def forward(self, x):
         if isinstance(x, tuple): x_cat, x_cont, *_ = x

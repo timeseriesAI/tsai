@@ -53,14 +53,14 @@ class _TSiTBackbone(Module):
     def __init__(self, c_in:int, seq_len:int, depth:int=6, d_model:int=128, n_heads:int=16, d_head:Optional[int]=None, act:str='relu', d_ff:int=256,
                  qkv_bias:bool=True, attn_dropout:float=0., dropout:float=0., drop_path_rate:float=0., mlp_ratio:int=1,
                  pre_norm:bool=False, use_token:bool=True,  use_pe:bool=True, n_embeds:Optional[list]=None, embed_dims:Optional[list]=None,
-                 cat_pos:Optional[list]=None, feature_extractor:Optional[Callable]=None):
+                 padding_idxs:Optional[list]=None, cat_pos:Optional[list]=None, feature_extractor:Optional[Callable]=None):
 
         # Categorical embeddings
         if n_embeds is not None:
             n_embeds = listify(n_embeds)
             if embed_dims is None:
                 embed_dims = [emb_sz_rule(s) for s in n_embeds]
-            self.to_cat_embed = MultiEmbedding(c_in, n_embeds, embed_dims=embed_dims, cat_pos=cat_pos)
+            self.to_cat_embed = MultiEmbedding(c_in, n_embeds, embed_dims=embed_dims, padding_idxs=padding_idxs, cat_pos=cat_pos)
             c_in = c_in + sum(embed_dims) - len(n_embeds)
         else:
             self.to_cat_embed = nn.Identity()
@@ -141,6 +141,9 @@ class TSiTPlus(nn.Sequential):
         use_pe:             flag to indicate if positional embedding is used.
         n_embeds:           list with the sizes of the dictionaries of embeddings (int).
         embed_dims:         list with the sizes of each embedding vector (int).
+        padding_idxs:       If specified, the entries at padding_idxs do not contribute to the gradient; therefore, the embedding vector at padding_idxs
+                            are not updated during training. Use 0 for those categorical embeddings that may have #na# values. Otherwise, leave them as None.
+                            You can enter a combination for different embeddings (for example, [0, None, None]).
         cat_pos:            list with the position of the categorical variables in the input.
         feature_extractor:  an nn.Module or optional callable that will be used to preprocess the time series before
                             the embedding step. It is useful to extract features or resample the time series.
@@ -160,9 +163,10 @@ class TSiTPlus(nn.Sequential):
 
     def __init__(self, c_in:int, c_out:int, seq_len:int, d_model:int=128, depth:int=6, n_heads:int=16, d_head:Optional[int]=None, act:str='relu',
                  d_ff:int=256, attn_dropout:float=0., dropout:float=0., drop_path_rate:float=0., mlp_ratio:int=1, qkv_bias:bool=True, pre_norm:bool=False,
-                 use_token:bool=True, use_pe:bool=True, n_embeds:Optional[list]=None, embed_dims:Optional[list]=None, cat_pos:Optional[list]=None,
-                 feature_extractor:Optional[Callable]=None, flatten:bool=False, concat_pool:bool=True, fc_dropout:float=0., use_bn:bool=False,
-                 bias_init:Optional[Union[float, list]]=None, y_range:Optional[tuple]=None, custom_head:Optional[Callable]=None, verbose:bool=True):
+                 use_token:bool=True, use_pe:bool=True, n_embeds:Optional[list]=None, embed_dims:Optional[list]=None, padding_idxs:Optional[list]=None,
+                 cat_pos:Optional[list]=None, feature_extractor:Optional[Callable]=None, flatten:bool=False, concat_pool:bool=True, fc_dropout:float=0.,
+                 use_bn:bool=False, bias_init:Optional[Union[float, list]]=None, y_range:Optional[tuple]=None, custom_head:Optional[Callable]=None,
+                 verbose:bool=True):
 
         if use_token and c_out == 1:
             use_token = False
@@ -170,7 +174,8 @@ class TSiTPlus(nn.Sequential):
         backbone = _TSiTBackbone(c_in, seq_len, depth=depth, d_model=d_model, n_heads=n_heads, d_head=d_head, act=act,
                                  d_ff=d_ff, attn_dropout=attn_dropout, dropout=dropout, drop_path_rate=drop_path_rate,
                                  pre_norm=pre_norm, mlp_ratio=mlp_ratio, use_pe=use_pe, use_token=use_token,
-                                 n_embeds=n_embeds, embed_dims=embed_dims, cat_pos=cat_pos, feature_extractor=feature_extractor)
+                                 n_embeds=n_embeds, embed_dims=embed_dims, padding_idxs=padding_idxs, cat_pos=cat_pos,
+                                 feature_extractor=feature_extractor)
 
         self.head_nf = d_model
         self.c_out = c_out
