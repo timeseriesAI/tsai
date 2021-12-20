@@ -211,65 +211,59 @@ def time_encoding(series, freq, max_val=None):
     return sin, cos
 
 # Cell
-
-def forward_gaps(o, nan_to_num=0, normalize=True):
+def forward_gaps(o, normalize=True):
     """Number of sequence steps since previous real value along the last dimension of 3D arrays or tensors"""
 
     b,c,s=o.shape
     if isinstance(o, torch.Tensor):
-        idx = torch.where(o==o, torch.arange(s, device=o.device), 0)
+        o = torch.cat([torch.zeros(*o.shape[:2], 1), o], -1)
+        idx = torch.where(o==o, torch.arange(s + 1, device=o.device), 0)
         idx = torch.cummax(idx, axis=-1).values
-        gaps = 1 + (torch.arange(s, device=o.device).reshape(1,1,-1).repeat(b, c, 1) - idx).float()
-        mask = torch.isnan(o[torch.arange(b, device=o.device)[:,None, None], torch.arange(c, device=o.device)[None, :, None], idx])
+        gaps = (torch.arange(1, s + 2) - idx)[..., :-1]
     elif isinstance(o, np.ndarray):
-        idx = np.where(o==o, np.arange(s), 0)
-        idx = np.maximum.accumulate(idx,axis=-1)
-        gaps = 1 + (np.arange(s).reshape(1,1,-1).repeat(b, 0).repeat(c, 1) - idx).astype(float)
-        mask = np.isnan(o[np.arange(b)[:,None, None], np.arange(c)[None, :, None], idx])
-    gaps[mask] = nan_to_num
+        o = np.concatenate([np.zeros((*o.shape[:2], 1)), o], -1)
+        idx = np.where(o==o, np.arange(s + 1), 0)
+        idx = np.maximum.accumulate(idx, axis=-1)
+        gaps = (np.arange(1, s + 2) - idx)[..., :-1]
     if normalize:
-        gaps[gaps > 0] = gaps[gaps > 0] / s
+        gaps = gaps / s
     return gaps
 
 
-def backward_gaps(o, nan_to_num=0, normalize=True):
+def backward_gaps(o, normalize=True):
     """Number of sequence steps to next real value along the last dimension of 3D arrays or tensors"""
 
     if isinstance(o, torch.Tensor): o = torch_flip(o, -1)
     elif isinstance(o, np.ndarray): o = o[..., ::-1]
-    gaps = forward_gaps(o, nan_to_num=nan_to_num, normalize=normalize)
+    gaps = forward_gaps(o, normalize=normalize)
     if isinstance(o, torch.Tensor): gaps = torch_flip(gaps, -1)
     elif isinstance(o, np.ndarray): gaps = gaps[..., ::-1]
     return gaps
 
 
-def nearest_gaps(o, nan_to_num=0, normalize=True):
+def nearest_gaps(o, normalize=True):
     """Number of sequence steps to nearest real value along the last dimension of 3D arrays or tensors"""
 
-    forward = forward_gaps(o, nan_to_num=np.nan, normalize=normalize)
-    backward = backward_gaps(o, nan_to_num=np.nan, normalize=normalize)
+    forward = forward_gaps(o, normalize=normalize)
+    backward = backward_gaps(o, normalize=normalize)
     if isinstance(o, torch.Tensor):
-        gaps = torch.fmin(forward, backward)
-        gaps[torch.isnan(gaps)] = nan_to_num
-        return gaps
+        return torch.fmin(forward, backward)
     elif isinstance(o, np.ndarray):
-        gaps = np.fmin(forward, backward)
-        gaps[np.isnan(gaps)] = nan_to_num
-        return gaps
+        return np.fmin(forward, backward)
 
 
-def get_gaps(o : Tensor, nan_to_num : int = 0, forward : bool = True, backward : bool = True,
+def get_gaps(o : Tensor, forward : bool = True, backward : bool = True,
              nearest : bool = True, normalize : bool = True):
     """Number of sequence steps from previous, to next and/or to nearest real value along the
     last dimension of 3D arrays or tensors"""
 
     _gaps = []
     if forward or nearest:
-        fwd = forward_gaps(o, nan_to_num=np.nan, normalize=normalize)
+        fwd = forward_gaps(o, normalize=normalize)
         if forward:
             _gaps.append(fwd)
     if backward or nearest:
-        bwd = backward_gaps(o, nan_to_num=np.nan, normalize=normalize)
+        bwd = backward_gaps(o, normalize=normalize)
         if backward:
             _gaps.append(bwd)
     if nearest:
@@ -280,37 +274,35 @@ def get_gaps(o : Tensor, nan_to_num : int = 0, forward : bool = True, backward :
         _gaps.append(nst)
     if isinstance(o, torch.Tensor):
         gaps = torch.cat(_gaps, 1)
-        gaps[torch.isnan(gaps)] = nan_to_num
     elif isinstance(o, np.ndarray):
         gaps = np.concatenate(_gaps, 1)
-        gaps[np.isnan(gaps)] = nan_to_num
     return gaps
 
 # Cell
-def add_delta_timestamp_cols(df, cols=None, groupby=None, forward=True, backward=True, nearest=True, nan_to_num=0, normalize=True):
+def add_delta_timestamp_cols(df, cols=None, groupby=None, forward=True, backward=True, nearest=True, normalize=True):
     if cols is None: cols = df.columns
     elif not is_listy(cols): cols = [cols]
     if forward or nearest:
         if groupby:
-            forward_time_gaps = df[cols].groupby(df[groupby]).apply(lambda x: forward_gaps(x.values.transpose(1,0)[None], nan_to_num=np.nan, normalize=normalize))
+            forward_time_gaps = df[cols].groupby(df[groupby]).apply(lambda x: forward_gaps(x.values.transpose(1,0)[None], normalize=normalize))
             forward_time_gaps = np.concatenate(forward_time_gaps, -1)[0].transpose(1,0)
         else:
-            forward_time_gaps = forward_gaps(df[cols].values.transpose(1,0)[None], nan_to_num=np.nan, normalize=normalize)[0].transpose(1,0)
+            forward_time_gaps = forward_gaps(df[cols].values.transpose(1,0)[None], normalize=normalize)[0].transpose(1,0)
         if forward :
             df[[f'{col}_dt_fwd' for col in cols]] = forward_time_gaps
-            df[[f'{col}_dt_fwd' for col in cols]] = df[[f'{col}_dt_fwd' for col in cols]].fillna(nan_to_num)
+            df[[f'{col}_dt_fwd' for col in cols]] = df[[f'{col}_dt_fwd' for col in cols]]
     if backward or nearest:
         if groupby:
-            backward_time_gaps = df[cols].groupby(df[groupby]).apply(lambda x: backward_gaps(x.values.transpose(1,0)[None], nan_to_num=np.nan, normalize=normalize))
+            backward_time_gaps = df[cols].groupby(df[groupby]).apply(lambda x: backward_gaps(x.values.transpose(1,0)[None], normalize=normalize))
             backward_time_gaps = np.concatenate(backward_time_gaps, -1)[0].transpose(1,0)
         else:
-            backward_time_gaps = backward_gaps(df[cols].values.transpose(1,0)[None], nan_to_num=np.nan, normalize=normalize)[0].transpose(1,0)
+            backward_time_gaps = backward_gaps(df[cols].values.transpose(1,0)[None], normalize=normalize)[0].transpose(1,0)
         if backward:
             df[[f'{col}_dt_bwd' for col in cols]] = backward_time_gaps
-            df[[f'{col}_dt_bwd' for col in cols]] = df[[f'{col}_dt_bwd' for col in cols]].fillna(nan_to_num)
+            df[[f'{col}_dt_bwd' for col in cols]] = df[[f'{col}_dt_bwd' for col in cols]]
     if nearest:
         df[[f'{col}_dt_nearest' for col in cols]] = np.fmin(forward_time_gaps, backward_time_gaps)
-        df[[f'{col}_dt_nearest' for col in cols]] = df[[f'{col}_dt_nearest' for col in cols]].fillna(nan_to_num)
+        df[[f'{col}_dt_nearest' for col in cols]] = df[[f'{col}_dt_nearest' for col in cols]]
     return df
 
 
