@@ -216,7 +216,7 @@ def forward_gaps(o, normalize=True):
 
     b,c,s=o.shape
     if isinstance(o, torch.Tensor):
-        o = torch.cat([torch.zeros(*o.shape[:2], 1), o], -1)
+        o = torch.cat([torch.zeros(*o.shape[:2], 1, device=o.device), o], -1)
         idx = torch.where(o==o, torch.arange(s + 1, device=o.device), 0)
         idx = torch.cummax(idx, axis=-1).values
         gaps = (torch.arange(1, s + 2) - idx)[..., :-1]
