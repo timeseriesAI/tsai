@@ -219,7 +219,7 @@ def forward_gaps(o, normalize=True):
         o = torch.cat([torch.zeros(*o.shape[:2], 1, device=o.device), o], -1)
         idx = torch.where(o==o, torch.arange(s + 1, device=o.device), 0)
         idx = torch.cummax(idx, axis=-1).values
-        gaps = (torch.arange(1, s + 2) - idx)[..., :-1]
+        gaps = (torch.arange(1, s + 2, device=o.device) - idx)[..., :-1]
     elif isinstance(o, np.ndarray):
         o = np.concatenate([np.zeros((*o.shape[:2], 1)), o], -1)
         idx = np.where(o==o, np.arange(s + 1), 0)
