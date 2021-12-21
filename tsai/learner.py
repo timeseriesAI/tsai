@@ -513,12 +513,8 @@ def ts_learner(dls, arch=None, c_in=None, c_out=None, seq_len=None, d=None, spli
     if arch is None: arch = InceptionTimePlus
     elif isinstance(arch, str): arch = get_arch(arch)
     model = build_ts_model(arch, dls=dls, c_in=c_in, c_out=c_out, seq_len=seq_len, d=d, **kwargs)
-    try:
-        model[0], model[1]
-        subscriptable = True
-    except:
-        subscriptable = False
-    if subscriptable: splitter = ts_splitter
+    if hasattr(model, "backbone") and hasattr(model, "head"):
+        splitter = ts_splitter
     if loss_func is None:
         if hasattr(dls, 'loss_func'): loss_func = dls.loss_func
         elif hasattr(dls, 'train_ds') and hasattr(dls.train_ds, 'loss_func'): loss_func = dls.train_ds.loss_func
