@@ -126,47 +126,61 @@ load_learner_all = load_all
 @patch
 @delegates(subplots)
 def plot_metrics(self: Recorder, nrows=None, ncols=None, figsize=None, final_losses=True, perc=.5, **kwargs):
+
     n_values = len(self.recorder.values)
     if n_values < 2:
         print('not enough values to plot a chart')
         return
     metrics = np.stack(self.values)
-    n_metrics = metrics.shape[1]
-    names = self.metric_names[1:n_metrics+1]
+    names = self.metric_names[1:-1]
+    metric_names = [m.replace("valid_", "") for m in self.metric_names[1:-1] if 'loss' not in m and 'train' not in m]
     if final_losses:
         sel_idxs = int(round(n_values * perc))
-        if sel_idxs >= 2:
-            metrics = np.concatenate((metrics[:,:2], metrics), -1)
-            names = names[:2] + names
-        else:
+        if sel_idxs < 2:
             final_losses = False
-    n = len(names) - 1 - final_losses
+        else:
+            names = names + ['train_final_loss', 'valid_final_loss']
+            self.loss_idxs = L([i for i,n in enumerate(self.metric_names[1:-1]) if 'loss' in n])
+            metrics = np.concatenate([metrics, metrics[:, self.loss_idxs]], -1)
+
+    n = int(1 + final_losses + len(self.metrics))
     if nrows is None and ncols is None:
-        nrows = int(math.sqrt(n))
+        if n <= 3:
+            nrows = 1
+        else:
+            nrows = int(math.sqrt(n))
         ncols = int(np.ceil(n / nrows))
     elif nrows is None: nrows = int(np.ceil(n / ncols))
     elif ncols is None: ncols = int(np.ceil(n / nrows))
-    figsize = figsize or (ncols * 6, nrows * 4)
+    figsize = figsize or (ncols * 6 + ncols - 1, nrows * 4 + nrows - 1)
     fig, axs = subplots(nrows, ncols, figsize=figsize, **kwargs)
-    axs = [ax if i < n else ax.set_axis_off() for i, ax in enumerate(axs.flatten())][:n]
-    axs = ([axs[0]]*2 + [axs[1]]*2 + axs[2:]) if final_losses else ([axs[0]]*2 + axs[1:])
-    for i, (name, ax) in enumerate(zip(names, axs)):
-        if i in [0, 1]:
-            ax.plot(metrics[:, i], color='#1f77b4' if i == 0 else '#ff7f0e', label='valid' if i == 1 else 'train')
-            ax.set_title('losses')
-            ax.set_xlim(0, len(metrics)-1)
-        elif i in [2, 3] and final_losses:
-            ax.plot(np.arange(len(metrics) - sel_idxs, len(metrics)), metrics[-sel_idxs:, i],
-                    color='#1f77b4' if i == 2 else '#ff7f0e', label='valid' if i == 3 else 'train')
-            ax.set_title('final losses')
-            ax.set_xlim(len(metrics) - sel_idxs, len(metrics)-1)
-            # ax.set_xticks(np.arange(len(metrics) - sel_idxs, len(metrics)))
+    axs = axs.flatten()[:n]
+    for i,name in enumerate(names):
+        xs = np.arange(0, len(metrics))
+        if name in ['train_loss', 'valid_loss']:
+            ax_idx = 0
+            m = metrics[:,i]
+            title = 'losses'
+        elif name in ['train_final_loss', 'valid_final_loss']:
+            ax_idx = 1
+            m = metrics[-sel_idxs:,i]
+            xs = xs[-sel_idxs:]
+            title = 'final losses'
         else:
-            ax.plot(metrics[:, i], color='#1f77b4' if i == 0 else '#ff7f0e', label='valid' if i > 0 else 'train')
-            ax.set_title(name if i >= 2 * (1 + final_losses) else 'losses')
-            ax.set_xlim(0, len(metrics)-1)
-        ax.legend(loc='best')
-        ax.grid(color='gainsboro', linewidth=.5)
+            ax_idx = metric_names.index(name.replace("valid_", "").replace("train_", "")) + 1 + final_losses
+            m = metrics[:,i]
+            title = name.replace("valid_", "").replace("train_", "")
+        if 'train' in name:
+            color = '#1f77b4'
+            label = 'train'
+        else:
+            color = '#ff7f0e'
+            label = 'valid'
+            axs[ax_idx].grid(color='gainsboro', linewidth=.5)
+        axs[ax_idx].plot(xs, m, color=color, label=label)
+        axs[ax_idx].set_xlim(xs[0], xs[-1])
+        axs[ax_idx].legend(loc='best')
+        axs[ax_idx].set_title(title)
     plt.show()
 
 
@@ -506,7 +520,7 @@ def get_arch(arch_name):
 def ts_learner(dls, arch=None, c_in=None, c_out=None, seq_len=None, d=None, splitter=trainable_params,
                # learner args
                loss_func=None, opt_func=Adam, lr=defaults.lr, cbs=None, metrics=None, path=None,
-               model_dir='models', wd=None, wd_bn_bias=False, train_bn=True, moms=(0.95,0.85,0.95),
+               model_dir='models', wd=None, wd_bn_bias=False, train_bn=True, moms=(0.95,0.85,0.95), train_metrics=False,
                # other model args
                **kwargs):
 
@@ -523,6 +537,9 @@ def ts_learner(dls, arch=None, c_in=None, c_out=None, seq_len=None, d=None, spli
     learn = Learner(dls=dls, model=model,
                     loss_func=loss_func, opt_func=opt_func, lr=lr, cbs=cbs, metrics=metrics, path=path, splitter=splitter,
                     model_dir=model_dir, wd=wd, wd_bn_bias=wd_bn_bias, train_bn=train_bn, moms=moms, )
+
+    if train_metrics and hasattr(learn, "recorder"):
+        learn.recorder.train_metrics = True
 
     # keep track of args for loggers
     store_attr('arch', self=learn)
@@ -594,6 +611,7 @@ def feature_importance(self:Learner, X=None, y=None, partial_n=None, feature_nam
     else:
         metric_name = metrics[key_metric_idx]
         metric = self.recorder.metrics[key_metric_idx].func
+    metric_name = metric_name.replace("train_", "").replace("valid_", "")
     print(f'Selected metric: {metric_name}')
 
     # Adapted from https://www.kaggle.com/cdeotte/lstm-feature-importance by Chris Deotte (Kaggle GrandMaster)

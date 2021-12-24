@@ -19,7 +19,8 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'torch_flip', 'torch_nan_to_num', 'torch_masked_to_num', 'mpl_trend', 'int2digits', 'array2digits',
            'sincos_encoding', 'linear_encoding', 'encode_positions', 'sort_generator', 'get_subset_dict', 'create_dir',
            'remove_dir', 'named_partial', 'yaml2dict', 'str2list', 'str2index', 'get_cont_cols', 'get_cat_cols',
-           'alphabet', 'ALPHABET', 'get_mapping', 'map_array', 'log_tfm', 'to_sincos_time', 'plot_feature_dist']
+           'alphabet', 'ALPHABET', 'get_mapping', 'map_array', 'log_tfm', 'to_sincos_time', 'plot_feature_dist',
+           'rolling_moving_average']
 
 # Cell
 from .imports import *
@@ -1119,3 +1120,16 @@ def plot_feature_dist(X, percentiles=[0,0.1,0.5,1,5,10,25,50,75,90,95,99,99.5,99
         plt.grid(color='gainsboro', linewidth=.5)
         plt.title(f"var_{i}")
         plt.show()
+
+# Cell
+def rolling_moving_average(o, window=2):
+    if isinstance(o, torch.Tensor):
+        cunsum = torch.cumsum(o, axis=-1) # nancumsum not available (can't be used with missing data!)
+        lag_cunsum = torch.cat([torch.zeros((o.shape[0], o.shape[1], window), device=o.device), torch.cumsum(o[..., :-window], axis=-1)], -1)
+        count = torch.clip(torch.ones_like(o).cumsum(-1), max=window)
+        return (cunsum - lag_cunsum) / count
+    else:
+        cunsum = np.nancumsum(o, axis=-1)
+        lag_cunsum = np.concatenate([np.zeros((o.shape[0], o.shape[1], window)), np.nancumsum(o[..., :-window], axis=-1)], -1)
+        count = np.minimum(np.ones_like(o).cumsum(-1), window)
+        return (cunsum - lag_cunsum) / count

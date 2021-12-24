@@ -2,9 +2,10 @@
 
 __all__ = ['ToNumpyCategory', 'OneHot', 'TSNan2Value', 'Nan2Value', 'TSStandardize', 'TSNormalize', 'TSClipOutliers',
            'TSClip', 'TSRobustScale', 'TSDiff', 'TSLog', 'TSCyclicalPosition', 'TSLinearPosition', 'TSPosition',
-           'TSMissingness', 'TSPositionGaps', 'TSLogReturn', 'TSAdd', 'TSShrinkDataFrame', 'TSOneHotEncoder',
-           'TSCategoricalEncoder', 'TSDateTimeEncoder', 'default_date_attr', 'TSMissingnessEncoder', 'Preprocessor',
-           'StandardScaler', 'RobustScaler', 'Normalizer', 'BoxCox', 'YeoJohnshon', 'Quantile', 'ReLabeler']
+           'TSMissingness', 'TSPositionGaps', 'TSRollingMean', 'TSLogReturn', 'TSAdd', 'TSShrinkDataFrame',
+           'TSOneHotEncoder', 'TSCategoricalEncoder', 'TSDateTimeEncoder', 'default_date_attr', 'TSMissingnessEncoder',
+           'Preprocessor', 'StandardScaler', 'RobustScaler', 'Normalizer', 'BoxCox', 'YeoJohnshon', 'Quantile',
+           'ReLabeler']
 
 # Cell
 from ..imports import *
@@ -481,6 +482,23 @@ class TSPositionGaps(Transform):
             gaps = self.gap_fn(o)
         return torch.cat([o, gaps], 1)
 
+
+# Cell
+class TSRollingMean(Transform):
+    """Concatenates rolling mean for selected features along the sequence as additional variables"""
+
+    order = 90
+    def __init__(self, feature_idxs=None, magnitude=None, window=2, **kwargs):
+        self.feature_idxs = listify(feature_idxs)
+        self.rolling_mean_fn = partial(rolling_moving_average, window=window)
+        super().__init__(**kwargs)
+
+    def encodes(self, o: TSTensor):
+        if self.feature_idxs:
+            rolling_mean = self.rolling_mean_fn(o[:, self.feature_idxs])
+        else:
+            rolling_mean = self.rolling_mean_fn(o)
+        return torch.cat([o, rolling_mean], 1)
 
 # Cell
 class TSLogReturn(Transform):

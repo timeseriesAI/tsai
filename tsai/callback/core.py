@@ -65,16 +65,21 @@ class ShowGraph(Callback):
     "(Modified) Update a graph of training and validation loss"
     order,run_valid=65,False
     names = ['train', 'valid']
-    def __init__(self, plot_metrics:bool=True, final_losses:bool=False):
+    def __init__(self, plot_metrics:bool=True, final_losses:bool=True):
         store_attr("plot_metrics,final_losses")
-
 
     def before_fit(self):
         self.run = not hasattr(self.learn, 'lr_finder') and not hasattr(self, "gather_preds")
         if not(self.run): return
         self.nb_batches = []
+        self.learn.recorder.loss_idxs = [i for i,n in enumerate(self.learn.recorder.metric_names[1:-1]) if 'loss' in n]
+        _metrics_info = [(i,n) for i,n in enumerate(self.learn.recorder.metric_names[1:-1]) if 'loss' not in n]
+        if len(_metrics_info) > 0:
+            self.metrics_idxs, self.metrics_names = list(zip(*_metrics_info))
+        else:
+            self.metrics_idxs, self.metrics_names = None, None
 
-    def after_train(self): self.nb_batches.append(self.train_iter)
+    def after_train(self): self.nb_batches.append(self.train_iter - 1)
 
     def after_epoch(self):
         "Plot validation loss in the pbar graph"
@@ -83,10 +88,8 @@ class ShowGraph(Callback):
         if self.epoch == 0:
             self.rec_start = len(rec.losses)
         iters = range_of(rec.losses)
-        val_pos = rec.metric_names.index('valid_loss') - 1
-        val_losses = [v[val_pos] for v in rec.values]
-#         x_bounds = (0, (self.n_epoch - len(self.nb_batches)) * self.nb_batches[0] + len(rec.losses))
-        x_bounds = (0, len(rec.losses))
+        val_losses = np.stack(rec.values)[:, self.learn.recorder.loss_idxs[-1]].tolist()
+        x_bounds = (0, len(rec.losses) - 1)
         if self.epoch == 0:
             y_min = min((min(rec.losses), min(val_losses)))
             y_max = max((max(rec.losses), max(val_losses)))
@@ -107,13 +110,15 @@ class ShowGraph(Callback):
             self.graph_out = display(self.graph_ax.figure, display_id=True)
         self.graph_ax.clear()
         if len(self.names) < len(graphs): self.names += [''] * (len(graphs) - len(self.names))
-        for g,n in zip(graphs,self.names): self.graph_ax.plot(*g, label=n)
+        for g,n in zip(graphs,self.names):
+            self.graph_ax.plot(*g, label=n)
         self.graph_ax.legend(loc='upper right')
         self.graph_ax.grid(color='gainsboro', linewidth=.5)
         if x_bounds is not None: self.graph_ax.set_xlim(*x_bounds)
         if y_bounds is not None: self.graph_ax.set_ylim(*y_bounds)
         self.graph_ax.set_title(f'Losses\nepoch: {self.epoch +1}/{self.n_epoch}')
         self.graph_out.update(self.graph_ax.figure)
+
 ShowGraphCallback2 = ShowGraph
 
 # Cell
