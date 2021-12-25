@@ -68,14 +68,14 @@ class GRU_FCN(_RNN_FCN_Base):
 class MRNN_FCN(_RNN_FCN_Base):
     _cell = nn.RNN
     def __init__(self, *args, se=16, **kwargs):
-        super().__init__(*args, se=16, **kwargs)
+        super().__init__(*args, se=se, **kwargs)
 
 class MLSTM_FCN(_RNN_FCN_Base):
     _cell = nn.LSTM
     def __init__(self, *args, se=16, **kwargs):
-        super().__init__(*args, se=16, **kwargs)
+        super().__init__(*args, se=se, **kwargs)
 
 class MGRU_FCN(_RNN_FCN_Base):
     _cell = nn.GRU
     def __init__(self, *args, se=16, **kwargs):
-        super().__init__(*args, se=16, **kwargs)
+        super().__init__(*args, se=se, **kwargs)
