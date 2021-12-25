@@ -20,7 +20,7 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'sincos_encoding', 'linear_encoding', 'encode_positions', 'sort_generator', 'get_subset_dict', 'create_dir',
            'remove_dir', 'named_partial', 'yaml2dict', 'str2list', 'str2index', 'get_cont_cols', 'get_cat_cols',
            'alphabet', 'ALPHABET', 'get_mapping', 'map_array', 'log_tfm', 'to_sincos_time', 'plot_feature_dist',
-           'rolling_moving_average']
+           'rolling_moving_average', 'ffill_sequence', 'bfill_sequence', 'fbfill_sequence']
 
 # Cell
 from .imports import *
@@ -1133,3 +1133,34 @@ def rolling_moving_average(o, window=2):
         lag_cunsum = np.concatenate([np.zeros((o.shape[0], o.shape[1], window)), np.nancumsum(o[..., :-window], axis=-1)], -1)
         count = np.minimum(np.ones_like(o).cumsum(-1), window)
         return (cunsum - lag_cunsum) / count
+
+# Cell
+def ffill_sequence(o):
+    """Forward fills an array-like object alongside sequence dimension"""
+    if isinstance(o, torch.Tensor):
+        mask = torch.isnan(o)
+        idx = torch.where(~mask, torch.arange(mask.shape[-1], device=o.device), 0)
+        idx = torch.cummax(idx, dim=-1).values
+        return o[torch.arange(o.shape[0], device=o.device)[:,None,None], torch.arange(o.shape[1], device=o.device)[None,:,None], idx]
+    else:
+        mask = np.isnan(o)
+        idx = np.where(~mask, np.arange(mask.shape[-1]), 0)
+        idx = np.maximum.accumulate(idx, axis=-1)
+        return o[np.arange(o.shape[0])[:,None,None], np.arange(o.shape[1])[None,:,None], idx]
+
+def bfill_sequence(o):
+    """Backward fills an array-like object alongside sequence dimension"""
+    if isinstance(o, torch.Tensor):
+        o = torch.flip(o, (-1,))
+        o = ffill_sequence(o)
+        return torch.flip(o, (-1,))
+    else:
+        o = o[..., ::-1]
+        o = ffill_sequence(o)
+        return o[..., ::-1]
+
+def fbfill_sequence(o):
+    """Forward and backward fills an array-like object alongside sequence dimension"""
+    o = ffill_sequence(o)
+    o = bfill_sequence(o)
+    return o

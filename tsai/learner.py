@@ -230,6 +230,48 @@ def show_probas(self:Learner, figsize=(6,6), ds_idx=1, dl=None, one_batch=False,
     self.recorder = recorder
 
 # Cell
+@patch
+def plot_confusion_matrix(self:Learner, ds_idx=1, dl=None, thr=.5, normalize=False, title='Confusion matrix', cmap="Blues", norm_dec=2, figsize=(6,6),
+                          title_fontsize=16, fontsize=12, plot_txt=True, **kwargs):
+        "Plot the confusion matrix, with `title` and using `cmap`."
+        # This function is mainly copied from the sklearn docs
+        assert self.dls.cat
+        if self.dls.c == 2: # binary classification
+            probas, preds = self.get_preds(ds_idx=ds_idx, dl=dl)
+            y_pred = (probas[:, 1] > thr).numpy().astype(int)
+            y_test = preds.numpy()
+            if normalize: skm_normalize = 'true'
+            else: skm_normalize = None
+            cm = skm.confusion_matrix(y_test, y_pred, normalize=skm_normalize)
+        else:
+            cm = ClassificationInterpretation.from_learner(self).confusion_matrix()
+
+        if normalize: cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+        fig = plt.figure(figsize=figsize, **kwargs)
+        plt.imshow(cm, interpolation='nearest', cmap=cmap)
+        if self.dls.c == 2:
+            plt.title(f"{title} (threshold: {thr})", fontsize=title_fontsize)
+        else:
+            plt.title(title, fontsize=title_fontsize)
+        tick_marks = np.arange(len(self.dls.vocab))
+        plt.xticks(tick_marks, self.dls.vocab, rotation=90, fontsize=fontsize)
+        plt.yticks(tick_marks, self.dls.vocab, rotation=0, fontsize=fontsize)
+
+        if plot_txt:
+            thresh = cm.max() / 2.
+            for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+                coeff = f'{cm[i, j]:.{norm_dec}f}' if normalize else f'{cm[i, j]}'
+                plt.text(j, i, coeff, horizontalalignment="center", verticalalignment="center", color="white" if cm[i, j] > thresh else "black", fontsize=fontsize)
+
+        ax = fig.gca()
+        ax.set_ylim(len(self.dls.vocab)-.5,-.5)
+
+        plt.tight_layout()
+        plt.ylabel('Actual', fontsize=fontsize)
+        plt.xlabel('Predicted', fontsize=fontsize)
+        plt.grid(False)
+
+# Cell
 all_archs_names = ['FCN', 'FCNPlus', 'InceptionTime', 'InceptionTimePlus', 'InCoordTime', 'XCoordTime', 'InceptionTimePlus17x17', 'InceptionTimePlus32x32',
                    'InceptionTimePlus47x47', 'InceptionTimePlus62x62', 'InceptionTimeXLPlus', 'MultiInceptionTimePlus', 'MiniRocketClassifier',
                    'MiniRocketRegressor', 'MiniRocketVotingClassifier', 'MiniRocketVotingRegressor', 'MiniRocketFeaturesPlus', 'MiniRocketPlus',

@@ -485,19 +485,31 @@ class TSPositionGaps(Transform):
 
 # Cell
 class TSRollingMean(Transform):
-    """Concatenates rolling mean for selected features along the sequence as additional variables"""
+    """Calculates the rolling mean for all/ selected features alongside the sequence
+
+       It replaces the original values or adds additional variables (default)
+       If nan values are found, they will be filled forward and backward"""
 
     order = 90
-    def __init__(self, feature_idxs=None, magnitude=None, window=2, **kwargs):
+    def __init__(self, feature_idxs=None, magnitude=None, window=2, replace=False, **kwargs):
         self.feature_idxs = listify(feature_idxs)
         self.rolling_mean_fn = partial(rolling_moving_average, window=window)
+        self.replace = replace
         super().__init__(**kwargs)
 
     def encodes(self, o: TSTensor):
         if self.feature_idxs:
+            if torch.isnan(o[:, self.feature_idxs]).any():
+                o[:, self.feature_idxs] = fbfill_sequence(o[:, self.feature_idxs])
             rolling_mean = self.rolling_mean_fn(o[:, self.feature_idxs])
+            if self.replace:
+                o[:, self.feature_idxs] = rolling_mean
+                return o
         else:
+            if torch.isnan(o).any():
+                o = fbfill_sequence(o)
             rolling_mean = self.rolling_mean_fn(o)
+            if self.replace: return rolling_mean
         return torch.cat([o, rolling_mean], 1)
 
 # Cell

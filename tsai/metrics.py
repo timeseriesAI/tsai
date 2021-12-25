@@ -2,7 +2,7 @@
 
 __all__ = ['MatthewsCorrCoefBinary', 'get_task_metrics', 'accuracy_multi', 'metrics_multi_common', 'precision_multi',
            'recall_multi', 'specificity_multi', 'balanced_accuracy_multi', 'Fbeta_multi', 'F1_multi', 'mae', 'mape',
-           'mean_per_class_accuracy']
+           'recall_at_specificity', 'mean_per_class_accuracy']
 
 # Cell
 from .imports import *
@@ -144,21 +144,27 @@ def F1_multi(*args, **kwargs):
     return Fbeta_multi(*args, **kwargs)  # beta defaults to 1.0
 
 # Cell
-
 def mae(inp,targ):
     "Mean absolute error between `inp` and `targ`."
     inp,targ = flatten_check(inp,targ)
     return torch.abs(inp - targ).mean()
 
 # Cell
-
 def mape(inp,targ):
     "Mean absolute percentage error between `inp` and `targ`."
     inp,targ = flatten_check(inp, targ)
     return (torch.abs(inp - targ) / torch.clamp_min(targ, 1e-8)).mean()
 
 # Cell
+def _recall_at_specificity(inp, targ, specificity=.95, axis=-1):
+    inp0 = inp[targ == 0]
+    inp1 = inp[targ == 1]
+    thr = torch.sort(inp0).values[-int(len(inp0) * (1 - specificity))]
+    return (inp1 > thr).float().mean()
 
+recall_at_specificity = AccumMetric(_recall_at_specificity, specificity=.95, activation=ActivationType.BinarySoftmax, flatten=False)
+
+# Cell
 def _mean_per_class_accuracy(y_true, y_pred, *, labels=None, sample_weight=None, normalize=None):
     cm = skm.confusion_matrix(y_true, y_pred, labels=labels, sample_weight=sample_weight, normalize=normalize)
     return (cm.diagonal() / cm.sum(1)).mean()
