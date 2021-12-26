@@ -22,7 +22,9 @@ def df2Xy(df, sample_col=None, feat_col=None, data_cols=None, target_col=None, s
     target_col: indicates the column/s where the target is.
     steps_in_rows: flag to indicate if each step is in a different row or in a different column (default).
     to3d: turns X to 3d (including univariate time series)
-    sort_by: used to indicate how to sort the dataframe.
+    sort_by: this is used to pass any colum/s that are needed to sort the steps in the sequence.
+             If you pass a sample_col and/ or feat_col these will be automatically used before the sort_by column/s, and
+             you don't need to add them to the sort_by column/s list.
     y_func: function used to calculate y for each sample (and target_col)
     return_names: flag to return the names of the columns from where X was generated
     """
@@ -31,9 +33,6 @@ def df2Xy(df, sample_col=None, feat_col=None, data_cols=None, target_col=None, s
 
     passed_cols = []
     sort_cols = []
-    if sort_by is not None:
-        if isinstance(sort_by, pd.core.indexes.base.Index): sort_by = sort_by.tolist()
-        sort_cols += listify(sort_by)
     if sample_col is not None:
         if isinstance(sample_col, pd.core.indexes.base.Index): sample_col = sample_col.tolist()
         sample_col = listify(sample_col)
@@ -44,6 +43,9 @@ def df2Xy(df, sample_col=None, feat_col=None, data_cols=None, target_col=None, s
         feat_col = listify(feat_col)
         if feat_col[0] not in sort_cols: sort_cols += listify(feat_col)
         passed_cols += feat_col
+    if sort_by is not None:
+        if isinstance(sort_by, pd.core.indexes.base.Index): sort_by = sort_by.tolist()
+        sort_cols += listify(sort_by)
     if data_cols is not None:
         if isinstance(data_cols, pd.core.indexes.base.Index): data_cols = data_cols.tolist()
         data_cols = listify(data_cols)
@@ -55,7 +57,7 @@ def df2Xy(df, sample_col=None, feat_col=None, data_cols=None, target_col=None, s
         data_cols = [col for col in df.columns if col not in passed_cols]
     if target_col is not None:
         if any([t for t in target_col if t in data_cols]): print(f"Are you sure you want to include {target_col} in X?")
-    if sort_by and sort_cols:
+    if sort_cols:
         df.sort_values(sort_cols, ascending=ascending, inplace=True)
 
     # X

@@ -1165,5 +1165,5 @@ class MultiEmbedding(Module):
     def forward(self, x):
         if isinstance(x, tuple): x_cat, x_cont, *_ = x
         else: x_cat, x_cont = x[:, self.cat_pos], x[:, self.cont_pos]
-        x_cat = torch.cat([e(x_cat[:,i].long()).transpose(1,2) for i,e in enumerate(self.cat_embed)],1)
+        x_cat = torch.cat([e(torch.round(x_cat[:,i]).long()).transpose(1,2) for i,e in enumerate(self.cat_embed)],1)
         return torch.cat([x_cat, x_cont], 1)
