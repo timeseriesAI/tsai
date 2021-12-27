@@ -12,9 +12,9 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'permute_2D', 'random_normal', 'random_half_normal', 'random_normal_tensor', 'random_half_normal_tensor',
            'default_dpi', 'get_plot_fig', 'fig2buf', 'plot_scatter', 'get_idxs', 'apply_cmap', 'torch_tile',
            'to_tsfresh_df', 'pcorr', 'scorr', 'torch_diff', 'get_outliers_IQR', 'clip_outliers', 'get_percentile',
-           'torch_clamp', 'torch_slice_by_dim', 'torch_nanmean', 'torch_nanstd', 'concat', 'reduce_memory_usage',
-           'cls_name', 'roll2d', 'roll3d', 'random_roll2d', 'random_roll3d', 'rotate_axis0', 'rotate_axis1',
-           'rotate_axis2', 'chunks_calculator', 'is_memory_shared', 'assign_in_chunks', 'create_array',
+           'torch_clamp', 'get_robustscale_params', 'torch_slice_by_dim', 'torch_nanmean', 'torch_nanstd', 'concat',
+           'reduce_memory_usage', 'cls_name', 'roll2d', 'roll3d', 'random_roll2d', 'random_roll3d', 'rotate_axis0',
+           'rotate_axis1', 'rotate_axis2', 'chunks_calculator', 'is_memory_shared', 'assign_in_chunks', 'create_array',
            'create_empty_array', 'np_save_compressed', 'np_load_compressed', 'np2memmap', 'torch_mean_groupby',
            'torch_flip', 'torch_nan_to_num', 'torch_masked_to_num', 'mpl_trend', 'int2digits', 'array2digits',
            'sincos_encoding', 'linear_encoding', 'encode_positions', 'sort_generator', 'get_subset_dict', 'create_dir',
@@ -608,6 +608,22 @@ def torch_clamp(o, min=None, max=None):
     if min is not None: o = torch.max(o, min)
     if max is not None: o = torch.min(o, max)
     return o
+
+# Cell
+def get_robustscale_params(o, by_var=True, percentiles=(25, 75), eps=1e-6):
+    assert o.ndim == 3
+    if by_var:
+        median = np.nanpercentile(o, 50, axis=(0,2), keepdims=True)
+        Q1 = np.nanpercentile(o, percentiles[0], axis=(0,2), keepdims=True)
+        Q3 = np.nanpercentile(o, percentiles[1], axis=(0,2), keepdims=True)
+        IQR = Q3 - Q1
+    else:
+        median = np.nanpercentile(o, .50)
+        Q1 = np.nanpercentile(o, percentiles[0])
+        Q3 = np.nanpercentile(o, percentiles[1])
+        IQR = Q3 - Q1
+    if eps is not None: IQR = np.maximum(IQR, eps)
+    return median, IQR
 
 # Cell
 def torch_slice_by_dim(t, index, dim=-1, **kwargs):
