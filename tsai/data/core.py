@@ -139,7 +139,7 @@ class TSClassification(DisplayedTransform):
 
     def encodes(self, o):
         try:
-            if o.ndim <= 1:
+            if not hasattr(o, "ndim") or o.ndim <= 1:
                 return TensorCategory((self.vocab_keys == o).argmax(axis=0))
             else:
                 return TensorCategory((self.vocab_keys == o.flatten()).argmax(axis=0).reshape(*o.shape))
@@ -235,7 +235,7 @@ def _remove_brackets(l):
     return [li if (not li or not is_listy(li) or len(li) > 1) else li[0] for li in l]
 
 class NoTfmLists(TfmdLists):
-    def __init__(self, items, tfms=None, splits=None, split_idx=None, types=None, **kwargs):
+    def __init__(self, items, tfms=None, splits=None, split_idx=None, types=None, do_setup=False, **kwargs):
         self.splits = ifnone(splits, L(np.arange(len(items)).tolist(),[]))
         self._splits = np.asarray(_flatten_list(self.splits))
         store_attr('items,types,split_idx')
@@ -323,9 +323,15 @@ class NumpyDatasets(Datasets):
 
     def __len__(self): return len(self.tls[0])
 
-    def _new(self, X, *args, y=None, **kwargs):
-        items = tuple((X,)) if y is None else tuple((X, y))
-        return super()._new(items, tfms=self.tfms, do_setup=False, **kwargs)
+
+#     def _new(self, X, *args, y=None, **kwargs):
+#         items = tuple((X,)) if y is None else tuple((X, y))
+#         return super()._new(items, tfms=self.tfms, do_setup=False, **kwargs)
+
+    def _new(self, X, y=None, **kwargs):
+        return type(self)(X, y=y, tfms=self.tfms, inplace=self.inplace, do_setup=False, **kwargs)
+
+    def new_empty(self): return type(self)(tls=[tl.new_empty() for tl in self.tls], n_inp=self.n_inp, inplace=self.inplace)
 
     def show_at(self, idx, **kwargs):
         self.show(self[idx], **kwargs)
@@ -350,7 +356,23 @@ class TSDatasets(NumpyDatasets):
     def __init__(self, X=None, y=None, items=None, sel_vars=None, sel_steps=None, tfms=None, tls=None, n_inp=None, dl_type=None,
                  inplace=True, **kwargs):
 
-        self.sel_vars, self.sel_steps, self.tfms, self.inplace = ifnone(sel_vars, slice(None)), ifnone(sel_steps,slice(None)), tfms, inplace
+        self.multi_index = False
+        if sel_vars is None or (type(sel_vars) == slice and sel_vars == slice(None)): self.sel_vars = slice(None)
+        elif type(sel_vars) == slice:
+            self.sel_vars = sel_vars
+            self.multi_index = True
+        else:
+            self.sel_vars = np.asarray(sel_vars)
+            if sel_steps is not None and type(sel_steps) != slice: self.sel_vars = sel_vars[:, None]
+            self.multi_index = True
+        if sel_steps is None or (type(sel_steps) == slice and sel_steps == slice(None)): self.sel_steps = slice(None)
+        elif type(sel_steps) == slice:
+            self.sel_steps = sel_steps
+            self.multi_index = True
+        else:
+            self.sel_steps = np.asarray(sel_steps)
+            self.multi_index = True
+        self.tfms, self.inplace = tfms, inplace
 
         if X is not None:
             if not hasattr(X, '__array__'): X = np.asarray(X)
@@ -371,13 +393,13 @@ class TSDatasets(NumpyDatasets):
             self.tls = L(lt(item, t, **kwargs) for lt,item,t in zip(lts, items, self.tfms))
             if len(self.tls) > 0 and len(self.tls[0]) > 0:
                 self.typs = [type(tl[0]) if isinstance(tl[0], torch.Tensor) else self.typs[i] for i,tl in enumerate(self.tls)]
-            self.ptls = L([typ(stack(tl[:]))[...,self.sel_vars, self.sel_steps] if i==0 else typ(stack(tl[:])) \
+            self.ptls = L([typ(stack(tl[:]))[...,self.sel_vars, self.sel_steps] if (i==0 and self.multi_index) else typ(stack(tl[:])) \
                             for i,(tl,typ) in enumerate(zip(self.tls,self.typs))]) if inplace else self.tls
         else:
             self.tls = tls
             if len(self.tls) > 0 and len(self.tls[0]) > 0:
                 self.typs = [type(tl[0]) if isinstance(tl[0], torch.Tensor) else self.typs[i] for i,tl in enumerate(self.tls)]
-            self.ptls = L([typ(stack(tl[:]))[...,self.sel_vars, self.sel_steps] if i==0 else typ(stack(tl[:])) \
+            self.ptls = L([typ(stack(tl[:]))[...,self.sel_vars, self.sel_steps] if (i==0 and self.multi_index) else typ(stack(tl[:])) \
                             for i,(tl,typ) in enumerate(zip(self.tls,self.typs))]) if inplace and len(tls[0]) != 0 else tls
 
         self.n_inp = 1
@@ -392,7 +414,7 @@ class TSDatasets(NumpyDatasets):
         if self.inplace:
             return tuple([ptl[it] for ptl in self.ptls])
         else:
-            return tuple([typ(stack(ptl[it]))[...,self.sel_vars, self.sel_steps] if i==0 else typ(stack(ptl[it])) \
+            return tuple([typ(stack(ptl[it]))[...,self.sel_vars, self.sel_steps] if (i==0 and self.multi_index) else typ(stack(ptl[it])) \
                           for i,(ptl,typ) in enumerate(zip(self.ptls,self.typs))])
 
     def subset(self, i):
@@ -404,12 +426,27 @@ class TSDatasets(NumpyDatasets):
             return type(self)(*self[i], inplace=True, tfms=None,
                               sel_vars=self.sel_vars, sel_steps=self.sel_steps, splits=splits, split_idx=ifnone(self.split_idx, 1))
 
+    def _new(self, X, y=None, **kwargs):
+        return type(self)(X, y=y, sel_vars=self.sel_vars, sel_steps=self.sel_steps, tfms=self.tfms, inplace=self.inplace,
+                          do_setup=False, **kwargs)
+
+    def new_empty(self): return type(self)(tls=[tl.new_empty() for tl in self.tls], sel_vars=self.sel_vars, sel_steps=self.sel_steps,
+                                           n_inp=self.n_inp, inplace=self.inplace)
+
 # Cell
 def add_ds(dsets, X, y=None, inplace=True):
     "Create test datasets from X (and y) using validation transforms of `dsets`"
     items = tuple((X,)) if y is None else tuple((X, y))
     with_labels = False if y is None else True
-    if isinstance(dsets, Datasets):
+    if isinstance(dsets, TSDatasets):
+        tls = dsets.tls if with_labels else dsets.tls[:dsets.n_inp]
+        new_tls = L([tl._new(item, split_idx=1) for tl,item in zip(tls, items)])
+        return type(dsets)(tls=new_tls, sel_vars=dsets.sel_vars, sel_steps=dsets.sel_steps, inplace=dsets.inplace)
+    elif isinstance(dsets, NumpyDatasets):
+        tls = dsets.tls if with_labels else dsets.tls[:dsets.n_inp]
+        new_tls = L([tl._new(item, split_idx=1) for tl,item in zip(tls, items)])
+        return type(dsets)(tls=new_tls, inplace=dsets.inplace)
+    elif isinstance(dsets, Datasets):
         tls = dsets.tls if with_labels else dsets.tls[:dsets.n_inp]
         new_tls = L([tl._new(item, split_idx=1) for tl,item in zip(tls, items)])
         return type(dsets)(tls=new_tls)
@@ -482,11 +519,12 @@ class NumpyDataLoader(TfmdDL):
         else: res._n_inp,res._types = self._n_inp,self._types
         return res
 
-    def new_dl(self, X, y=None):
+    def new_dl(self, X, y=None, bs=64):
         assert X.ndim == 3, "You must pass an X with 3 dimensions [batch_size x n_vars x seq_len]"
         if y is not None and not is_array(y) and not is_listy(y): y = [y]
-        new_dloader = self.new(self.dataset.add_dataset(X, y=y))
+        new_dloader = self.new(self.dataset.add_dataset(X, y=y), bs=min(bs, len(X)))
         return new_dloader
+
 
     def create_batch(self, b):
         if self.shuffle:
@@ -691,10 +729,10 @@ class NumpyDataLoaders(DataLoaders):
         self.loaders, self.path = list(loaders), Path(path)
         self.device = ifnone(device, default_device())
 
-    def new_dl(self, X, y=None):
+    def new_dl(self, X, y=None, bs=64):
         assert X.ndim == 3, "You must pass an X with 3 dimensions [batch_size x n_vars x seq_len]"
         if y is not None and not is_array(y) and not is_listy(y): y = [y]
-        new_dloader = self.new(self.dataset.add_dataset(X, y=y))
+        new_dloader = self.new(self.dataset.add_dataset(X, y=y), bs=min(bs, len(X)))
         return new_dloader
 
     @delegates(plt.subplots)

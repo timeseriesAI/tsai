@@ -6,6 +6,7 @@ from .losses import *
 from .metrics import *
 from .learner import *
 from .inference import *
+from .analysis import *
 from .tslearner import *
 from .optimizer import *
 from .models.all import *
