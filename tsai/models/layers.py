@@ -14,10 +14,8 @@ __all__ = ['noop', 'init_lin_zero', 'lin_zero_init', 'SwishBeta', 'Chomp1d', 'sa
            'create_fc_head', 'fc_head', 'create_rnn_head', 'rnn_head', 'imputation_head', 'create_conv_lin_nd_head',
            'conv_lin_nd_head', 'conv_lin_3d_head', 'create_conv_lin_3d_head', 'create_lin_nd_head', 'lin_nd_head',
            'lin_3d_head', 'create_lin_3d_head', 'create_conv_3d_head', 'conv_3d_head', 'universal_pool_head', 'heads',
-           'SqueezeExciteBlock', 'GaussianNoise', 'gambler_loss', 'CrossEntropyLossOneHot', 'ttest_bin_loss',
-           'ttest_reg_loss', 'CenterLoss', 'CenterPlusLoss', 'FocalLoss', 'TweedieLoss', 'PositionwiseFeedForward',
-           'TokenLayer', 'ScaledDotProductAttention', 'MultiheadAttention', 'MultiConv1d', 'LSTMOutput', 'TSEmbedding',
-           'MultiEmbedding']
+           'SqueezeExciteBlock', 'GaussianNoise', 'PositionwiseFeedForward', 'TokenLayer', 'ScaledDotProductAttention',
+           'MultiheadAttention', 'MultiConv1d', 'LSTMOutput', 'TSEmbedding', 'MultiEmbedding']
 
 # Cell
 from ..imports import *
@@ -872,109 +870,6 @@ class GaussianNoise(Module):
             sampled_noise = torch.empty(x.size(), device=x.device).normal_() * scale
             x = x + sampled_noise
         return x
-
-# Cell
-def gambler_loss(reward=2):
-    def _gambler_loss(model_output, targets):
-        outputs = torch.nn.functional.softmax(model_output, dim=1)
-        outputs, reservation = outputs[:, :-1], outputs[:, -1]
-        gain = torch.gather(outputs, dim=1, index=targets.unsqueeze(1)).squeeze()
-        doubling_rate = (gain + reservation / reward).log()
-        return - doubling_rate.mean()
-    return _gambler_loss
-
-# Cell
-def CrossEntropyLossOneHot(output, target, **kwargs):
-    if target.ndim == 2: _, target = target.max(dim=1)
-    return nn.CrossEntropyLoss(**kwargs)(output, target)
-
-# Cell
-def ttest_bin_loss(output, target):
-    output = nn.Softmax(dim=-1)(output[:, 1])
-    return ttest_tensor(output[target == 0], output[target == 1])
-
-def ttest_reg_loss(output, target):
-    return ttest_tensor(output[target <= 0], output[target > 0])
-
-# Cell
-class CenterLoss(Module):
-    r"""
-    Code in Pytorch has been slightly modified from: https://github.com/KaiyangZhou/pytorch-center-loss/blob/master/center_loss.py
-    Based on paper: Wen et al. A Discriminative Feature Learning Approach for Deep Face Recognition. ECCV 2016.
-
-    Args:
-        c_out (int): number of classes.
-        logits_dim (int): dim 1 of the logits. By default same as c_out (for one hot encoded logits)
-
-    """
-    def __init__(self, c_out, logits_dim=None):
-        logits_dim = ifnone(logits_dim, c_out)
-        self.c_out, self.logits_dim = c_out, logits_dim
-        self.centers = nn.Parameter(torch.randn(c_out, logits_dim))
-        self.classes = nn.Parameter(torch.arange(c_out).long(), requires_grad=False)
-
-    def forward(self, x, labels):
-        """
-        Args:
-            x: feature matrix with shape (batch_size, logits_dim).
-            labels: ground truth labels with shape (batch_size).
-        """
-        bs = x.shape[0]
-        distmat = torch.pow(x, 2).sum(dim=1, keepdim=True).expand(bs, self.c_out) + \
-                  torch.pow(self.centers, 2).sum(dim=1, keepdim=True).expand(self.c_out, bs).T
-        distmat = torch.addmm(distmat, x, self.centers.T, beta=1, alpha=-2)
-
-        labels = labels.unsqueeze(1).expand(bs, self.c_out)
-        mask = labels.eq(self.classes.expand(bs, self.c_out))
-
-        dist = distmat * mask.float()
-        loss = dist.clamp(min=1e-12, max=1e+12).sum() / bs
-
-        return loss
-
-
-class CenterPlusLoss(Module):
-
-    def __init__(self, loss, c_out, λ=1e-2, logits_dim=None):
-        self.loss, self.c_out, self.λ = loss, c_out, λ
-        self.centerloss = CenterLoss(c_out, logits_dim)
-
-    def forward(self, x, labels):
-        return self.loss(x, labels) + self.λ * self.centerloss(x, labels)
-    def __repr__(self): return f"CenterPlusLoss(loss={self.loss}, c_out={self.c_out}, λ={self.λ})"
-
-# Cell
-class FocalLoss(Module):
-
-    def __init__(self, gamma=0, eps=1e-7):
-        self.gamma, self.eps, self.ce = gamma, eps, CrossEntropyLossFlat()
-
-    def forward(self, input, target):
-        logp = self.ce(input, target)
-        p = torch.exp(-logp)
-        loss = (1 - p) ** self.gamma * logp
-        return loss.mean()
-
-# Cell
-class TweedieLoss(Module):
-    def __init__(self, p=1.5, eps=1e-10):
-        """
-        Tweedie loss as calculated in LightGBM
-        Args:
-            p: tweedie variance power (1 < p < 2)
-            eps: small number to avoid log(zero).
-        """
-        assert p > 1 and p < 2, "make sure 1 < p < 2"
-        self.p, self.eps = p, eps
-
-    def forward(self, inp, targ):
-        inp = inp.flatten()
-        targ = targ.flatten()
-        torch.clamp_min_(inp, self.eps)
-        a = targ * torch.exp((1 - self.p) * torch.log(inp)) / (1 - self.p)
-        b = torch.exp((2 - self.p) * torch.log(inp)) / (2 - self.p)
-        loss = -a + b
-        return loss.mean()
 
 # Cell
 class PositionwiseFeedForward(nn.Sequential):
