@@ -53,22 +53,30 @@ class OneHot(Transform):
 class TSNan2Value(Transform):
     "Replaces any nan values by a predefined value or median"
     order = 90
-    def __init__(self, value=0, median=False, by_sample_and_var=True):
+    def __init__(self, value=0, median=False, by_sample_and_var=True, sel_vars=None):
         store_attr()
-        if not ismin_torch("1.8"):
-            raise ValueError('This function only works with Pytorch>=1.8.')
 
     def encodes(self, o:TSTensor):
-        mask = torch.isnan(o)
-        if mask.any():
-            if self.median:
+        if self.sel_vars is not None:
+            mask = torch.isnan(o[:, self.sel_vars])
+            if mask.any() and self.median:
+                if self.by_sample_and_var:
+                    median = torch.nanmedian(o[:, self.sel_vars], dim=2, keepdim=True)[0].repeat(1, 1, o.shape[-1])
+                    o[:, self.sel_vars][mask] = median[mask]
+                else:
+                    o[:, self.sel_vars] = torch_nan_to_num(o[:, self.sel_vars], torch.nanmedian(o[:, self.sel_vars]))
+            o[:, self.sel_vars] = torch_nan_to_num(o[:, self.sel_vars], self.value)
+        else:
+            mask = torch.isnan(o)
+            if mask.any() and self.median:
                 if self.by_sample_and_var:
                     median = torch.nanmedian(o, dim=2, keepdim=True)[0].repeat(1, 1, o.shape[-1])
                     o[mask] = median[mask]
                 else:
                     o = torch_nan_to_num(o, torch.nanmedian(o))
-        o = torch_nan_to_num(o, self.value)
+            o = torch_nan_to_num(o, self.value)
         return o
+
 
 Nan2Value = TSNan2Value
 
