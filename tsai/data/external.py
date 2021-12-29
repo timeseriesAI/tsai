@@ -224,15 +224,14 @@ get_classification_data = get_UCR_data
 # Cell
 def check_data(X, y=None, splits=None, show_plot=True):
     try: X_is_nan = np.isnan(X).sum()
-    except: X_is_nan = 'couldn not be checked'
+    except: X_is_nan = 'could not be checked'
     if X.ndim == 3:
         shape = f'[{X.shape[0]} samples x {X.shape[1]} features x {X.shape[-1]} timesteps]'
         print(f'X      - shape: {shape}  type: {cls_name(X)}  dtype:{X.dtype}  isnan: {X_is_nan}')
     else:
         print(f'X      - shape: {X.shape}  type: {cls_name(X)}  dtype:{X.dtype}  isnan: {X_is_nan}')
-    if not isinstance(X, np.ndarray): warnings.warn('X must be a np.ndarray')
     if X_is_nan:
-        warnings.warn('X must not contain nan values')
+        warnings.warn('X contains nan values')
     if y is not None:
         y_shape = y.shape
         y = y.ravel()
@@ -243,9 +242,8 @@ def check_data(X, y=None, splits=None, show_plot=True):
         else:
             y_is_nan = np.isnan(y).sum()
             print(f'y      - shape: {y_shape}  type: {cls_name(y)}  dtype:{y.dtype}  isnan: {y_is_nan}')
-        if not isinstance(y, np.ndarray): warnings.warn('y must be a np.ndarray')
         if y_is_nan:
-            warnings.warn('y must not contain nan values')
+            warnings.warn('y contains nan values')
     if splits is not None:
         _splits = get_splits_len(splits)
         overlap = check_splits_overlap(splits)

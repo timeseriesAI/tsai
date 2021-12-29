@@ -30,7 +30,7 @@ def create_subsequence_mask(o, r=.15, lm=3, stateful=True, sync=False):
         pu = torch.clip(pm * (r / max(1e-6, 1 - r)), 1e-3, 1)
         zot, proba_a, proba_b = (torch.as_tensor([False, True], device=device), pu, pm) if random.random() > pm else \
         (torch.as_tensor([True, False], device=device), pm, pu)
-        max_len = max(1, 2 * math.ceil(numels // (1/pm + 1/pu)))
+        max_len = max(1, 2 * torch.div(numels, (1/pm + 1/pu), rounding_mode='floor').long().item())
         for i in range(10):
             _dist_a = (Geometric(probs=proba_a).sample([max_len])+1).long()
             _dist_b = (Geometric(probs=proba_b).sample([max_len])+1).long()
@@ -108,8 +108,9 @@ class MVP(Callback):
     order = 60
 
     def __init__(self, r: float = .15, subsequence_mask: bool = True, lm: float = 3., stateful: bool = True, sync: bool = False, variable_mask: bool = False,
-                 future_mask: bool = False, custom_mask: Optional = None, nan_to_num: int = 0, window_size: Optional[tuple] = None, dropout: float = .1,
-                 crit: callable = None, weights_path: Optional[str] = None, target_dir: str = './data/MVP', fname: str = 'model', save_best: bool = True,
+                 future_mask: bool = False, custom_mask: Optional = None, sel_vars: Optional[list] = None, nan_to_num: int = 0,
+                 window_size: Optional[tuple] = None, dropout: float = .1, crit: callable = None, weights_path: Optional[str] = None,
+                 target_dir: str = './data/MVP', fname: str = 'model', save_best: bool = True,
                  verbose: bool = False):
         r"""
         Callback used to perform the pretext task of reconstruct the original data after a binary mask has been applied.
@@ -123,6 +124,7 @@ class MVP(Callback):
             variable_mask:    apply a mask to random variables. Only applicable to multivariate time series.
             future_mask:      used to train a forecasting model.
             custom_mask:      allows to pass any type of mask with input tensor and output tensor. Values to mask should be set to True.
+            sel_vars:         allows to pass a list of variables to mask. If None, all variables will be masked.
             nan_to_num:       integer used to fill masked values
             window_size:      allows you to pass a fixed window size or tuple of window sizes to train MVP with on sequences of different length.
                               You may pass int(s) or float(s).
@@ -146,6 +148,7 @@ class MVP(Callback):
             os.makedirs(self.PATH.parent)
         self.path_text = f"pretrained weights_path='{self.PATH}.pth'"
         self.window_size = window_size
+        self.sel_vars = sel_vars
 
     def before_fit(self):
         self.run = not hasattr(self, "gather_preds")
@@ -167,16 +170,21 @@ class MVP(Callback):
         # remove and store metrics
         self.learn.metrics = L([])
 
+        device = self.learn.dls.device
+
+        if self.sel_vars is not None:
+            self.sel_vars = torch.Tensor(listify(self.sel_vars)).long().to(device=device)
+
         # change head with conv layer (equivalent to linear layer applied to dim=1)
         assert hasattr(self.learn.model, "head"), "model must have a head attribute to be trained with MVP"
         self.learn.model.head = nn.Sequential(nn.Dropout(self.dropout),
                                               nn.Conv1d(self.learn.model.head_nf, self.learn.dls.vars, 1)
-                                             ).to(self.learn.dls.device)
+                                             ).to(device=device)
         if self.weights_path is not None:
-            transfer_weights(self.learn.model, self.weights_path, device=self.learn.dls.device, exclude_head=False)
+            transfer_weights(self.learn.model, self.weights_path, device=device, exclude_head=False)
 
         with torch.no_grad():
-            xb = torch.randn(2, self.learn.dls.vars, self.learn.dls.len).to(self.learn.dls.device)
+            xb = torch.randn(2, self.learn.dls.vars, self.learn.dls.len).to(device=device)
             assert xb.shape == self.learn.model(xb).shape, 'the model cannot reproduce the input shape'
 
         if self.window_size:
@@ -199,6 +207,10 @@ class MVP(Callback):
             self.mask = torch.logical_and(new_mask, ~original_mask)
         else:
             self.mask = new_mask
+
+        if self.sel_vars is not None:
+            self.mask[:, ~self.sel_vars] = 0
+
 #         self.learn.yb = (torch.nan_to_num(self.x, self.nan_to_num),) # Only available in Pytorch 1.8
         self.learn.yb = (torch_nan_to_num(self.x, self.nan_to_num),)
         self.learn.xb = (self.yb[0].masked_fill(self.mask, self.nan_to_num), )
