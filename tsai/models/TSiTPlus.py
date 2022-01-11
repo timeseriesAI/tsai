@@ -11,7 +11,7 @@ from typing import Callable
 # Cell
 class _TSiTEncoderLayer(nn.Module):
     def __init__(self, d_model:int, n_heads:int, attn_dropout:float=0., dropout:float=0, drop_path_rate:float=0.,
-                 mlp_ratio:int=1, qkv_bias:bool=True, act:str='relu', pre_norm:bool=False):
+                 mlp_ratio:int=1, qkv_bias:bool=True, act:str='gelu', pre_norm:bool=False):
         super().__init__()
         self.mha =  MultiheadAttention(d_model, n_heads, attn_dropout=attn_dropout, proj_dropout=dropout, qkv_bias=qkv_bias)
         self.attn_norm = nn.LayerNorm(d_model)
@@ -32,7 +32,7 @@ class _TSiTEncoderLayer(nn.Module):
 # Cell
 class _TSiTEncoder(nn.Module):
     def __init__(self, d_model, n_heads, depth:int=6, attn_dropout:float=0., dropout:float=0, drop_path_rate:float=0.,
-                 mlp_ratio:int=1, qkv_bias:bool=True, act:str='relu', pre_norm:bool=False):
+                 mlp_ratio:int=1, qkv_bias:bool=True, act:str='gelu', pre_norm:bool=False):
         super().__init__()
         dpr = [x.item() for x in torch.linspace(0, drop_path_rate, depth)]
         layers = []
@@ -50,7 +50,7 @@ class _TSiTEncoder(nn.Module):
 
 # Cell
 class _TSiTBackbone(Module):
-    def __init__(self, c_in:int, seq_len:int, depth:int=6, d_model:int=128, n_heads:int=16, d_head:Optional[int]=None, act:str='relu', d_ff:int=256,
+    def __init__(self, c_in:int, seq_len:int, depth:int=6, d_model:int=128, n_heads:int=16, d_head:Optional[int]=None, act:str='gelu', d_ff:int=256,
                  qkv_bias:bool=True, attn_dropout:float=0., dropout:float=0., drop_path_rate:float=0., mlp_ratio:int=1,
                  pre_norm:bool=False, use_token:bool=True,  use_pe:bool=True, n_embeds:Optional[list]=None, embed_dims:Optional[list]=None,
                  padding_idxs:Optional[list]=None, cat_pos:Optional[list]=None, feature_extractor:Optional[Callable]=None):
@@ -161,7 +161,7 @@ class TSiTPlus(nn.Sequential):
         x: bs (batch size) x nvars (aka features, variables, dimensions, channels) x seq_len (aka time steps)
     """
 
-    def __init__(self, c_in:int, c_out:int, seq_len:int, d_model:int=128, depth:int=6, n_heads:int=16, d_head:Optional[int]=None, act:str='relu',
+    def __init__(self, c_in:int, c_out:int, seq_len:int, d_model:int=128, depth:int=6, n_heads:int=16, d_head:Optional[int]=None, act:str='gelu',
                  d_ff:int=256, attn_dropout:float=0., dropout:float=0., drop_path_rate:float=0., mlp_ratio:int=1, qkv_bias:bool=True, pre_norm:bool=False,
                  use_token:bool=True, use_pe:bool=True, n_embeds:Optional[list]=None, embed_dims:Optional[list]=None, padding_idxs:Optional[list]=None,
                  cat_pos:Optional[list]=None, feature_extractor:Optional[Callable]=None, flatten:bool=False, concat_pool:bool=True, fc_dropout:float=0.,
