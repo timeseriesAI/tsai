@@ -292,9 +292,24 @@ def stack(o, axis=0, retain=True):
 
 def stack_pad(o, padding_value=np.nan):
     'Converts a an iterable into a numpy array using padding if necessary'
+    if not is_listy(o) or not is_array(o):
+        if not hasattr(o, "ndim"): o = np.asarray([o])
+        else: o = np.asarray(o)
+    o_ndim = 1
+    if o.ndim > 1:
+        o_ndim = o.ndim
+        o_shape = o.shape
+        o = o.flatten()
+    o = [oi if (is_array(oi) and oi.ndim > 0) or is_listy(oi) else [oi] for oi in o]
     row_length = len(max(o, key=len))
     result = np.full((len(o), row_length), padding_value)
-    for i,row in enumerate(o): result[i, :len(row)] = row
+    for i,row in enumerate(o):
+        result[i, :len(row)] = row
+    if o_ndim > 1:
+        if row_length == 1:
+            result = result.reshape(*o_shape)
+        else:
+            result = result.reshape(*o_shape, row_length)
     return result
 
 # Cell
