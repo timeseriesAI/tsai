@@ -916,7 +916,7 @@ class ScaledDotProductAttention(Module):
         '''
 
         # Scaled MatMul (q, k) - similarity scores for all pairs of positions in an input sequence
-        attn_scores = torch.matmul(q / self.scale, k)      # attn_scores : [bs x n_heads x max_q_len x q_len]
+        attn_scores = torch.matmul(q, k) * self.scale      # attn_scores : [bs x n_heads x max_q_len x q_len]
 
         # Add pre-softmax attention scores from the previous layer (optional)
         if prev is not None: attn_scores = attn_scores + prev
