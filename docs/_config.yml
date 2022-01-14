@@ -2,14 +2,15 @@ repository: timeseriesAI/tsai
 output: web
 topnav_title: tsai
 site_title: tsai
-company_name: Ignacio Oguiza
+company_name: timeseriesAI
 description: Practical Deep Learning for Time Series / Sequential Data library based on fastai & Pytorch
+google_search: 11230dd821e5ae508
+
 # Set to false to disable KaTeX math
 use_math: true
 # Add Google analytics id if you have one and want to use it here
-google_analytics:
-# See http://nbdev.fast.ai/search for help with adding Search
-google_search:
+google_analytics: 
+twitter_username: timeseriesAI
 
 host: 127.0.0.1
 # the preview server used. Leave as is.
@@ -23,13 +24,17 @@ exclude:
  
 exclude: [vendor]
 
+default_badges:
+  colab: true
+
 highlighter: rouge
 markdown: kramdown
 kramdown:
- input: GFM
- auto_ids: true
- hard_wrap: false
- syntax_highlighter: rouge
+  math_engine: katex
+  input: GFM
+  auto_ids: true
+  hard_wrap: false
+  syntax_highlighter: rouge
 
 collections:
   tooltips:

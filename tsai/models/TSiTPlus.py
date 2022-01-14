@@ -10,35 +10,45 @@ from typing import Callable
 
 # Cell
 class _TSiTEncoderLayer(nn.Module):
-    def __init__(self, d_model:int, n_heads:int, attn_dropout:float=0., dropout:float=0, drop_path_rate:float=0.,
-                 mlp_ratio:int=1, qkv_bias:bool=True, act:str='relu', pre_norm:bool=False):
+    def __init__(self, d_model:int, n_heads:int, q_len:int=None, attn_dropout:float=0., dropout:float=0, drop_path_rate:float=0.,
+                 mlp_ratio:int=1, lsa:bool=False, qkv_bias:bool=True, act:str='gelu', pre_norm:bool=False):
         super().__init__()
-        self.mha =  MultiheadAttention(d_model, n_heads, attn_dropout=attn_dropout, proj_dropout=dropout, qkv_bias=qkv_bias)
+        self.mha =  MultiheadAttention(d_model, n_heads, attn_dropout=attn_dropout, proj_dropout=dropout, lsa=lsa, qkv_bias=qkv_bias)
         self.attn_norm = nn.LayerNorm(d_model)
         self.pwff =  PositionwiseFeedForward(d_model, dropout=dropout, act=act, mlp_ratio=mlp_ratio)
         self.ff_norm = nn.LayerNorm(d_model)
         self.drop_path = DropPath(drop_path_rate) if drop_path_rate != 0 else nn.Identity()
         self.pre_norm = pre_norm
 
+        if lsa and q_len is not None:
+            self.register_buffer('attn_mask', torch.eye(q_len).reshape(1, 1, q_len, q_len).bool())
+        else: self.attn_mask = None
+
     def forward(self, x):
         if self.pre_norm:
-            x = self.drop_path(self.mha(self.attn_norm(x))[0]) + x
+            if self.attn_mask is not None:
+                x = self.drop_path(self.mha(self.attn_norm(x), attn_mask=self.attn_mask)[0]) + x
+            else:
+                x = self.drop_path(self.mha(self.attn_norm(x))[0]) + x
             x = self.drop_path(self.pwff(self.ff_norm(x))) + x
         else:
-            x = self.attn_norm(self.drop_path(self.mha(x)[0]) + x)
+            if self.attn_mask is not None:
+                x = self.attn_norm(self.drop_path(self.mha(x, attn_mask=self.attn_mask)[0]) + x)
+            else:
+                x = self.attn_norm(self.drop_path(self.mha(x)[0]) + x)
             x = self.ff_norm(self.drop_path(self.pwff(x)) + x)
         return x
 
 # Cell
 class _TSiTEncoder(nn.Module):
-    def __init__(self, d_model, n_heads, depth:int=6, attn_dropout:float=0., dropout:float=0, drop_path_rate:float=0.,
-                 mlp_ratio:int=1, qkv_bias:bool=True, act:str='relu', pre_norm:bool=False):
+    def __init__(self, d_model, n_heads, depth:int=6, q_len:int=None, attn_dropout:float=0., dropout:float=0, drop_path_rate:float=0.,
+                 mlp_ratio:int=1, lsa:bool=False, qkv_bias:bool=True, act:str='gelu', pre_norm:bool=False):
         super().__init__()
         dpr = [x.item() for x in torch.linspace(0, drop_path_rate, depth)]
         layers = []
         for i in range(depth):
-            layer = _TSiTEncoderLayer(d_model, n_heads, attn_dropout=attn_dropout, dropout=dropout, drop_path_rate=dpr[i],
-                                      mlp_ratio=mlp_ratio, qkv_bias=qkv_bias, act=act, pre_norm=pre_norm)
+            layer = _TSiTEncoderLayer(d_model, n_heads, q_len=q_len, attn_dropout=attn_dropout, dropout=dropout, drop_path_rate=dpr[i],
+                                      mlp_ratio=mlp_ratio, lsa=lsa, qkv_bias=qkv_bias, act=act, pre_norm=pre_norm)
             layers.append(layer)
         self.encoder = nn.Sequential(*layers)
         self.norm = nn.LayerNorm(d_model) if pre_norm else nn.Identity()
@@ -50,8 +60,8 @@ class _TSiTEncoder(nn.Module):
 
 # Cell
 class _TSiTBackbone(Module):
-    def __init__(self, c_in:int, seq_len:int, depth:int=6, d_model:int=128, n_heads:int=16, d_head:Optional[int]=None, act:str='relu', d_ff:int=256,
-                 qkv_bias:bool=True, attn_dropout:float=0., dropout:float=0., drop_path_rate:float=0., mlp_ratio:int=1,
+    def __init__(self, c_in:int, seq_len:int, depth:int=6, d_model:int=128, n_heads:int=16, d_head:Optional[int]=None, act:str='gelu',
+                 lsa:bool=False, qkv_bias:bool=True, attn_dropout:float=0., dropout:float=0., drop_path_rate:float=0., mlp_ratio:int=1,
                  pre_norm:bool=False, use_token:bool=True,  use_pe:bool=True, n_embeds:Optional[list]=None, embed_dims:Optional[list]=None,
                  padding_idxs:Optional[list]=None, cat_pos:Optional[list]=None, feature_extractor:Optional[Callable]=None):
 
@@ -83,7 +93,7 @@ class _TSiTBackbone(Module):
         self.emb_dropout = nn.Dropout(dropout)
 
         # Encoder
-        self.encoder = _TSiTEncoder(d_model, n_heads, depth=depth, qkv_bias=qkv_bias, dropout=dropout,
+        self.encoder = _TSiTEncoder(d_model, n_heads, depth=depth, q_len=seq_len + use_token, qkv_bias=qkv_bias, lsa=lsa, dropout=dropout,
                                     mlp_ratio=mlp_ratio, drop_path_rate=drop_path_rate, act=act, pre_norm=pre_norm)
 
     def forward(self, x):
@@ -129,7 +139,8 @@ class TSiTPlus(nn.Sequential):
         d_head:             size of the learned linear projection of queries, keys and values in the MHA.
                             Default: None -> (d_model/n_heads) = 32.
         act:                the activation function of positionwise feedforward layer.
-        d_ff:               the dimension of the feedforward network model.
+        lsa:                locality self attention used (see Lee, S. H., Lee, S., & Song, B. C. (2021). Vision Transformer for Small-Size Datasets.
+                            arXiv preprint arXiv:2112.13492.)
         attn_dropout:       dropout rate applied to the attention sublayer.
         dropout:            dropout applied to to the embedded sequence steps after position embeddings have been added and
                             to the mlp sublayer in the encoder.
@@ -161,18 +172,18 @@ class TSiTPlus(nn.Sequential):
         x: bs (batch size) x nvars (aka features, variables, dimensions, channels) x seq_len (aka time steps)
     """
 
-    def __init__(self, c_in:int, c_out:int, seq_len:int, d_model:int=128, depth:int=6, n_heads:int=16, d_head:Optional[int]=None, act:str='relu',
-                 d_ff:int=256, attn_dropout:float=0., dropout:float=0., drop_path_rate:float=0., mlp_ratio:int=1, qkv_bias:bool=True, pre_norm:bool=False,
-                 use_token:bool=True, use_pe:bool=True, n_embeds:Optional[list]=None, embed_dims:Optional[list]=None, padding_idxs:Optional[list]=None,
-                 cat_pos:Optional[list]=None, feature_extractor:Optional[Callable]=None, flatten:bool=False, concat_pool:bool=True, fc_dropout:float=0.,
-                 use_bn:bool=False, bias_init:Optional[Union[float, list]]=None, y_range:Optional[tuple]=None, custom_head:Optional[Callable]=None,
-                 verbose:bool=True):
+    def __init__(self, c_in:int, c_out:int, seq_len:int, d_model:int=128, depth:int=6, n_heads:int=16, d_head:Optional[int]=None, act:str='gelu',
+                 lsa:bool=False, attn_dropout:float=0., dropout:float=0., drop_path_rate:float=0., mlp_ratio:int=1, qkv_bias:bool=True,
+                 pre_norm:bool=False, use_token:bool=True, use_pe:bool=True, n_embeds:Optional[list]=None, embed_dims:Optional[list]=None,
+                 padding_idxs:Optional[list]=None, cat_pos:Optional[list]=None, feature_extractor:Optional[Callable]=None, flatten:bool=False,
+                 concat_pool:bool=True, fc_dropout:float=0., use_bn:bool=False, bias_init:Optional[Union[float, list]]=None, y_range:Optional[tuple]=None,
+                 custom_head:Optional[Callable]=None, verbose:bool=True):
 
         if use_token and c_out == 1:
             use_token = False
             pv("use_token set to False as c_out == 1", verbose)
         backbone = _TSiTBackbone(c_in, seq_len, depth=depth, d_model=d_model, n_heads=n_heads, d_head=d_head, act=act,
-                                 d_ff=d_ff, attn_dropout=attn_dropout, dropout=dropout, drop_path_rate=drop_path_rate,
+                                 lsa=lsa, attn_dropout=attn_dropout, dropout=dropout, drop_path_rate=drop_path_rate,
                                  pre_norm=pre_norm, mlp_ratio=mlp_ratio, use_pe=use_pe, use_token=use_token,
                                  n_embeds=n_embeds, embed_dims=embed_dims, padding_idxs=padding_idxs, cat_pos=cat_pos,
                                  feature_extractor=feature_extractor)
