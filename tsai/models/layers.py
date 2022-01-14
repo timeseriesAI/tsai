@@ -888,11 +888,16 @@ class TokenLayer(Module):
 
 # Cell
 class ScaledDotProductAttention(Module):
-    """Scaled Dot-Product Attention module (Vaswani et al., 2017) with optional residual attention from previous layer (He et al, 2020)"""
+    r"""Scaled Dot-Product Attention module (Attention is all you need by Vaswani et al., 2017) with optional residual attention from previous layer
+    (Realformer: Transformer likes residual attention by He et al, 2020) and locality self sttention (Vision Transformer for Small-Size Datasets
+    by Lee et al, 2021)"""
 
-    def __init__(self, attn_dropout=0., res_attention=False):
+    def __init__(self, d_model, n_heads, attn_dropout=0., res_attention=False, lsa=False):
         self.attn_dropout = nn.Dropout(attn_dropout)
         self.res_attention = res_attention
+        head_dim = d_model // n_heads
+        self.scale = nn.Parameter(torch.tensor(head_dim ** -0.5), requires_grad=lsa)
+        self.lsa = lsa
 
     def forward(self, q:Tensor, k:Tensor, v:Tensor, prev:Optional[Tensor]=None, key_padding_mask:Optional[Tensor]=None, attn_mask:Optional[Tensor]=None):
         '''
@@ -911,7 +916,7 @@ class ScaledDotProductAttention(Module):
         '''
 
         # Scaled MatMul (q, k) - similarity scores for all pairs of positions in an input sequence
-        attn_scores = torch.matmul(q / np.sqrt(q.shape[-2]), k)      # attn_scores : [bs x n_heads x max_q_len x q_len]
+        attn_scores = torch.matmul(q, k) * self.scale      # attn_scores : [bs x n_heads x max_q_len x q_len]
 
         # Add pre-softmax attention scores from the previous layer (optional)
         if prev is not None: attn_scores = attn_scores + prev
@@ -939,7 +944,7 @@ class ScaledDotProductAttention(Module):
 
 # Cell
 class MultiheadAttention(Module):
-    def __init__(self, d_model, n_heads, d_k=None, d_v=None, res_attention=False, attn_dropout=0., proj_dropout=0., qkv_bias=True):
+    def __init__(self, d_model, n_heads, d_k=None, d_v=None, res_attention=False, attn_dropout=0., proj_dropout=0., qkv_bias=True, lsa=False):
         """Multi Head Attention Layer
 
         Input shape:
@@ -959,7 +964,7 @@ class MultiheadAttention(Module):
 
         # Scaled Dot-Product Attention (multiple heads)
         self.res_attention = res_attention
-        self.sdp_attn = ScaledDotProductAttention(attn_dropout=attn_dropout, res_attention=self.res_attention)
+        self.sdp_attn = ScaledDotProductAttention(d_model, n_heads, attn_dropout=attn_dropout, res_attention=self.res_attention, lsa=lsa)
 
         # Poject output
         self.to_out = nn.Sequential(nn.Linear(n_heads * d_v, d_model), nn.Dropout(proj_dropout))

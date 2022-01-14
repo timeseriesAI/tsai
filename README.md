@@ -78,6 +78,7 @@ Here's a list with some of the state-of-the-art models available in `tsai`:
 - [LSTM](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/RNN.py) (Hochreiter, 1997) ([paper](https://ieeexplore.ieee.org/abstract/document/6795963/))
 - [GRU](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/RNN.py) (Cho, 2014) ([paper](https://arxiv.org/abs/1412.3555))
 - [MLP](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/MLP.py) - Multilayer Perceptron (Wang, 2016) ([paper](https://arxiv.org/abs/1611.06455))
+- [gMLP](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/gMLP.py) - Gated Multilayer Perceptron (Liu, 2021) ([paper](https://arxiv.org/abs/2105.08050))
 - [FCN](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/FCN.py) - Fully Convolutional Network (Wang, 2016) ([paper](https://arxiv.org/abs/1611.06455))
 - [ResNet](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/ResNet.py) - Residual Network (Wang, 2016) ([paper](https://arxiv.org/abs/1611.06455))
 - [LSTM-FCN](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/RNN_FCN.py) (Karim, 2017) ([paper](https://arxiv.org/abs/1709.05206))
