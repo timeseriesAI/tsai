@@ -62,7 +62,7 @@ class gMLPClassification(gMLP):
         d_ffn=512,
         depth=6,
     ):
-        assert seq_len % patch_size == 0, "`image_size` must be divisibe by `patch_size`"
+        assert seq_len % patch_size == 0, "`seq_len` must be divisibe by `patch_size`"
         super().__init__(d_model, d_ffn, seq_len // patch_size, depth)
         self.patcher = nn.Conv1d(
             c_in, d_model, kernel_size=patch_size, stride=patch_size
