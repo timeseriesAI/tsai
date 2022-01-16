@@ -34,6 +34,7 @@ from .XResNet1dPlus import *
 from fastai.vision.models.xresnet import *
 from .TabModel import *
 from .TabTransformer import *
+from .GatedTabTransformer import *
 from .TabFusionTransformer import *
 from .TSPerceiver import *
 from .TSiTPlus import *
