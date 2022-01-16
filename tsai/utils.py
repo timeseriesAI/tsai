@@ -20,7 +20,7 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'sincos_encoding', 'linear_encoding', 'encode_positions', 'sort_generator', 'get_subset_dict', 'create_dir',
            'remove_dir', 'named_partial', 'yaml2dict', 'str2list', 'str2index', 'get_cont_cols', 'get_cat_cols',
            'alphabet', 'ALPHABET', 'get_mapping', 'map_array', 'log_tfm', 'to_sincos_time', 'plot_feature_dist',
-           'rolling_moving_average', 'ffill_sequence', 'bfill_sequence', 'fbfill_sequence']
+           'rolling_moving_average', 'ffill_sequence', 'bfill_sequence', 'fbfill_sequence', 'dummify']
 
 # Cell
 from .imports import *
@@ -1195,3 +1195,19 @@ def fbfill_sequence(o):
     o = ffill_sequence(o)
     o = bfill_sequence(o)
     return o
+
+# Cell
+def dummify(o:Union[np.ndarray, torch.Tensor], by_var:bool=True, inplace:bool=False, skip:Optional[list]=None, random_state=None):
+    """Shuffles an array-like object along all dimensions or dimension 1 (variables) if by_bar is True."""
+    if not inplace:
+        if isinstance(o, np.ndarray): o_dummy = o.copy()
+        elif isinstance(o, torch.Tensor): o_dummy = o.clone()
+    else: o_dummy = o
+    if by_var:
+        for k in progress_bar(range(o.shape[1]), leave=False):
+            if skip is not None and k in listify(skip): continue
+            o_dummy[:, k] = random_shuffle(o[:, k].flatten(), random_state=random_state).reshape(o[:, k].shape)
+    else:
+        o_dummy[:] = random_shuffle(o.flatten(), random_state=random_state).reshape(o.shape)
+    if not inplace:
+        return o_dummy
