@@ -121,8 +121,8 @@ def feature_importance(self:Learner, X=None, y=None, partial_n=None, feature_nam
         if isinstance(partial_n, float):
             partial_n = int(round(partial_n * len(X)))
         rand_idxs = random_shuffle(np.arange(len(X)), random_state=random_state)[:partial_n]
-        X = X[rand_idxs]
-        y = y[rand_idxs]
+        X = X.oindex[rand_idxs] if hasattr(X, 'oindex') else X[rand_idxs]
+        y = y.oindex[rand_idxs] if hasattr(y, 'oindex') else y[rand_idxs]
 
     metrics = [mn for mn in self.recorder.metric_names if mn not in ['epoch', 'train_loss', 'valid_loss', 'time']]
     if len(metrics) == 0 or key_metric_idx is None:
