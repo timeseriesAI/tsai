@@ -2,10 +2,10 @@
 
 __all__ = ['ToNumpyCategory', 'OneHot', 'TSNan2Value', 'Nan2Value', 'TSStandardize', 'TSNormalize', 'TSClipOutliers',
            'TSClip', 'TSRobustScale', 'TSDiff', 'TSLog', 'TSCyclicalPosition', 'TSLinearPosition', 'TSPosition',
-           'TSMissingness', 'TSPositionGaps', 'TSRollingMean', 'TSLogReturn', 'TSAdd', 'TSShrinkDataFrame',
-           'TSOneHotEncoder', 'TSCategoricalEncoder', 'TSDateTimeEncoder', 'default_date_attr', 'TSMissingnessEncoder',
-           'Preprocessor', 'StandardScaler', 'RobustScaler', 'Normalizer', 'BoxCox', 'YeoJohnshon', 'Quantile',
-           'ReLabeler']
+           'TSMissingness', 'TSPositionGaps', 'TSRollingMean', 'TSLogReturn', 'TSAdd', 'TSClipByVar',
+           'TSShrinkDataFrame', 'TSOneHotEncoder', 'TSCategoricalEncoder', 'TSDateTimeEncoder', 'default_date_attr',
+           'TSMissingnessEncoder', 'Preprocessor', 'StandardScaler', 'RobustScaler', 'Normalizer', 'BoxCox',
+           'YeoJohnshon', 'Quantile', 'ReLabeler']
 
 # Cell
 from ..imports import *
@@ -545,6 +545,22 @@ class TSAdd(Transform):
     def encodes(self, o:TSTensor):
         return torch.add(o, self.add)
     def __repr__(self): return f'{self.__class__.__name__}(lag={self.lag}, pad={self.pad})'
+
+# Cell
+class TSClipByVar(Transform):
+    """Clip  batch of type `TSTensor` by variable
+
+    Args:
+        var_min_max: list of tuples containing variable index, min value (or None) and max value (or None)
+    """
+    order = 90
+    def __init__(self, var_min_max):
+        self.var_min_max = var_min_max
+
+    def encodes(self, o:TSTensor):
+        for v,m,M in self.var_min_max:
+            o[:, v] = torch.clamp(o[:, v], m, M)
+        return o
 
 # Cell
 from sklearn.base import BaseEstimator, TransformerMixin

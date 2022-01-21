@@ -8,8 +8,8 @@ __all__ = ['TSIdentity', 'TSShuffle_HLs', 'TSShuffleSteps', 'TSMagAddNoise', 'TS
            'TSRandomFreqNoise', 'TSRandomResizedLookBack', 'TSRandomLookBackOut', 'TSVarOut', 'TSCutOut',
            'TSTimeStepOut', 'TSRandomCropPad', 'TSMaskOut', 'TSInputDropout', 'TSTranslateX', 'TSRandomShift',
            'TSHorizontalFlip', 'TSRandomTrend', 'TSRandomRotate', 'TSVerticalFlip', 'TSResize', 'TSRandomSize',
-           'TSRandomLowRes', 'TSDownUpScale', 'TSRandomDownUpScale', 'TSRandomConv', 'all_TS_randaugs', 'RandAugment',
-           'TestTfm', 'get_tfm_name']
+           'TSRandomLowRes', 'TSDownUpScale', 'TSRandomDownUpScale', 'TSRandomConv', 'TSAddNan', 'all_TS_randaugs',
+           'RandAugment', 'TestTfm', 'get_tfm_name']
 
 # Cell
 from ..imports import *
@@ -763,7 +763,6 @@ class TSRandomDownUpScale(RandTransform):
         return output
 
 # Cell
-
 class TSRandomConv(RandTransform):
     """Applies a convolution with a random kernel and random weights with required_grad=False"""
     order = 90
@@ -782,6 +781,27 @@ class TSRandomConv(RandTransform):
         output = (1 - self.magnitude) * o + self.magnitude * self.conv(o)
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
+
+# Cell
+from fastai.vision.augment import RandTransform
+class TSAddNan(RandTransform):
+    "Randomly sets selected variables of type `TSTensor` to Nan values"
+    order = 90
+    def __init__(self, nan_perc=0.1, sel_vars=None, static=False, **kwargs):
+        self.sel_vars = sel_vars if sel_vars is not None else None
+        self.nan_perc = nan_perc
+        self.static = static
+        super().__init__(**kwargs)
+
+    def encodes(self, o:TSTensor):
+        if self.static:
+            nan_vals = torch.rand(*o.shape[:-1])
+        else:
+            nan_vals = torch.rand(*o.shape)
+        if self.sel_vars is not None:
+            nan_vals[:, ~torch.isin(torch.arange(o.shape[1]), tensor(self.sel_vars))] = 0
+        o[nan_vals > 1 - self.nan_perc] = np.nan
+        return o
 
 # Cell
 all_TS_randaugs = [
