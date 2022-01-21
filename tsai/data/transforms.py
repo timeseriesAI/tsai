@@ -799,7 +799,7 @@ class TSAddNan(RandTransform):
         else:
             nan_vals = torch.rand(*o.shape)
         if self.sel_vars is not None:
-            nan_vals[:, ~torch.isin(torch.arange(o.shape[1]), tensor(self.sel_vars))] = 0
+            nan_vals[:, ~np.isin(np.arange(o.shape[1]), self.sel_vars)] = 0
         o[nan_vals > 1 - self.nan_perc] = np.nan
         return o
 
