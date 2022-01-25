@@ -78,6 +78,7 @@ class TemperatureSetter(nn.Module):
         self.scaled_logits = self.model.temperature_scale(logits)
         self.labels = labels
         self.calibrated_model = self.model
+        return self.calibrated_model
 
 
 class ECELoss(nn.Module):
