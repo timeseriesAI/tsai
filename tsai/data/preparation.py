@@ -398,6 +398,7 @@ def SlidingWindow(window_len:int, stride:Union[None, int]=1, start:int=0, pad_re
                 n_windows = 1 + (X_len - max_horizon - window_len) // stride
         else:
             n_windows = 1 + max(0, np.ceil((X_len - max_horizon - window_len) / stride).astype(int))
+
         X_max_len = window_len + max_horizon + (n_windows - 1) * stride # total length required (including y)
         X_seq_len = X_max_len - max_horizon
 
@@ -412,12 +413,15 @@ def SlidingWindow(window_len:int, stride:Union[None, int]=1, start:int=0, pad_re
                 X = np.concatenate((_X, X))
             elif padding == "post":
                 X = np.concatenate((X, _X))
-        if padding == "pre":
-            X_start = X_len - X_max_len
-            X = X[-X_max_len:-X_max_len + X_seq_len]
-        elif padding == "post":
+        if X_max_len != X_seq_len:
+            if padding == "pre":
+                X_start = X_len - X_max_len
+                X = X[-X_max_len:-X_max_len + X_seq_len]
+            elif padding == "post":
+                X_start = 0
+                X = X[:X_seq_len]
+        else:
             X_start = 0
-            X = X[:X_seq_len]
 
         X_sub_windows = (np.expand_dims(np.arange(window_len), 0) +
                          np.expand_dims(np.arange(n_windows * stride, step=stride), 0).T)

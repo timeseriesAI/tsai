@@ -8,8 +8,8 @@ __all__ = ['TSIdentity', 'TSShuffle_HLs', 'TSShuffleSteps', 'TSMagAddNoise', 'TS
            'TSRandomFreqNoise', 'TSRandomResizedLookBack', 'TSRandomLookBackOut', 'TSVarOut', 'TSCutOut',
            'TSTimeStepOut', 'TSRandomCropPad', 'TSMaskOut', 'TSInputDropout', 'TSTranslateX', 'TSRandomShift',
            'TSHorizontalFlip', 'TSRandomTrend', 'TSRandomRotate', 'TSVerticalFlip', 'TSResize', 'TSRandomSize',
-           'TSRandomLowRes', 'TSDownUpScale', 'TSRandomDownUpScale', 'TSRandomConv', 'TSAddNan', 'all_TS_randaugs',
-           'RandAugment', 'TestTfm', 'get_tfm_name']
+           'TSRandomLowRes', 'TSDownUpScale', 'TSRandomDownUpScale', 'TSRandomConv', 'TSRandomSet2Value',
+           'all_TS_randaugs', 'RandAugment', 'TestTfm', 'get_tfm_name']
 
 # Cell
 from ..imports import *
@@ -783,24 +783,23 @@ class TSRandomConv(RandTransform):
         return output
 
 # Cell
-from fastai.vision.augment import RandTransform
-class TSAddNan(RandTransform):
-    "Randomly sets selected variables of type `TSTensor` to Nan values"
+class TSRandomSet2Value(RandTransform):
+    "Randomly sets selected variables of type `TSTensor` to predefined value (default: np.nan)"
     order = 90
-    def __init__(self, nan_perc=0.1, sel_vars=None, static=False, **kwargs):
+    def __init__(self, magnitude=0.1, sel_vars=None, static=False, value=np.nan, **kwargs):
         self.sel_vars = sel_vars if sel_vars is not None else None
-        self.nan_perc = nan_perc
-        self.static = static
+        self.magnitude, self.static, self.value = magnitude , static, value
         super().__init__(**kwargs)
 
     def encodes(self, o:TSTensor):
+        if not self.magnitude or self.magnitude <= 0: return o
         if self.static:
-            nan_vals = torch.rand(*o.shape[:-1])
+            vals = torch.rand(*o.shape[:-1])
         else:
-            nan_vals = torch.rand(*o.shape)
+            vals = torch.rand(*o.shape)
         if self.sel_vars is not None:
-            nan_vals[:, ~np.isin(np.arange(o.shape[1]), self.sel_vars)] = 0
-        o[nan_vals > 1 - self.nan_perc] = np.nan
+            vals[:, ~np.isin(np.arange(o.shape[1]), self.sel_vars)] = 0
+        o[vals > (1 - self.magnitude)] = self.value
         return o
 
 # Cell
