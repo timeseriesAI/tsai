@@ -5,14 +5,9 @@ __all__ = ['ModelWithTemperature', 'TemperatureSetter', 'ECELoss', 'plot_calibra
 # Cell
 from .imports import *
 from .data.core import *
+from torch.nn import functional as F
 
 # Cell
-# import torch
-# from torch import nn, optim
-# from torch.nn import functional as F
-# from fastai.losses import CrossEntropyLossFlat
-
-
 class ModelWithTemperature(nn.Module):
     """ A decorator which wraps a model with temperature scaling """
 
