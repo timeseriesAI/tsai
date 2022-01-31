@@ -6,6 +6,7 @@ __all__ = ['ModelWithTemperature', 'TemperatureSetter', 'ECELoss', 'plot_calibra
 from .imports import *
 from .data.core import *
 from torch.nn import functional as F
+from sklearn.calibration import calibration_curve
 
 # Cell
 class ModelWithTemperature(nn.Module):
@@ -104,7 +105,6 @@ class ECELoss(nn.Module):
 
 # Cell
 def plot_calibration_curve(labels, logits, cal_logits=None, figsize=(6,6), n_bins=10, strategy='uniform'):
-    from sklearn.calibration import calibration_curve
     y_true = labels.cpu().numpy()
     pos_probas = F.softmax(logits, dim=1)[:, 1].detach().cpu().numpy()
     nn_y, nn_x = calibration_curve(y_true, pos_probas, n_bins=n_bins, strategy=strategy)
