@@ -149,7 +149,6 @@
     * added Learner.remove_all_cbs
     * updated get_X_preds to work with multilabel datasets
 * Miscellaneous:
-    * added natural mask that reuses missing data in the input
     * added rotate_axis utility functions
     
 ### Bug Fixes:   
