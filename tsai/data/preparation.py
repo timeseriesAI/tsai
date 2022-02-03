@@ -505,9 +505,12 @@ def SlidingWindowPanel(window_len:int, unique_id_cols:list, stride:Union[None, i
         You can use np.ndarray, pd.DataFrame or torch.Tensor as input
         shape: (seq_len, ) or (seq_len, n_vars) if seq_first=True else (n_vars, seq_len)
     """
+    global unique_id_values
 
     if not is_listy(unique_id_cols): unique_id_cols = [unique_id_cols]
-    if sort_by is not None and not  is_listy(sort_by): sort_by = [sort_by]
+    if sort_by is not None:
+        if not is_listy(sort_by): sort_by = [sort_by]
+        sort_by = [sb for sb in sort_by if sb not in unique_id_cols]
     sort_by = unique_id_cols + (sort_by if sort_by is not None else [])
 
     def _SlidingWindowPanel(o):
@@ -519,10 +522,11 @@ def SlidingWindowPanel(window_len:int, unique_id_cols:list, stride:Union[None, i
         _x = []
         _y = []
         _key = []
+        if verbose: print('processing data...')
         for v in progress_bar(unique_id_values, display=verbose, leave=False):
             x_v, y_v = SlidingWindow(window_len, stride=stride, start=start, pad_remainder=pad_remainder, padding=padding, padding_value=padding_value,
                                      add_padding_feature=add_padding_feature, get_x=get_x, get_y=get_y, y_func=y_func, output_processor=output_processor,
-                                     horizon=horizon, seq_first=seq_first,
+                                     copy=False, horizon=horizon, seq_first=seq_first,
                                      check_leakage=check_leakage)(o[(o[unique_id_cols].values == v).sum(axis=1) == len(v)])
             if x_v is not None and len(x_v) > 0:
                 _x.append(x_v)
@@ -531,9 +535,15 @@ def SlidingWindowPanel(window_len:int, unique_id_cols:list, stride:Union[None, i
             elif verbose>=2:
                 print(f'cannot use {unique_id_cols} = {v} due to not having enough records')
 
+        if verbose:
+            print('...data processed')
+            print('concatenating X...')
         X = np.concatenate(_x)
+        print('...X concatenated')
         if _y != []:
+            print('concatenating y...')
             y = np.concatenate(_y)
+            print('...y concatenated')
             for d in np.arange(1, y.ndim)[::-1]:
                 if y.shape[d] == 1: y = np.squeeze(y, axis=d)
         else: y = None
@@ -544,6 +554,7 @@ def SlidingWindowPanel(window_len:int, unique_id_cols:list, stride:Union[None, i
         else: return X, y
 
     return _SlidingWindowPanel
+
 
 SlidingWindowPanelSplitter = SlidingWindowPanel
 
