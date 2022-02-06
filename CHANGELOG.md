@@ -2,6 +2,85 @@
 
 <!-- do not remove -->
 
+## 0.2.25
+### Breaking Changes
+
+- updated forward_gaps removing nan_to_num ([#331](https://github.com/timeseriesAI/tsai/issues/331))
+
+- TSRobustScaler only applied by_var ([#329](https://github.com/timeseriesAI/tsai/issues/329))
+
+- remove add_na arg from TSCategorize ([#327](https://github.com/timeseriesAI/tsai/issues/327))
+
+### New Features
+
+- added IntraClassCutMix1d ([#384](https://github.com/timeseriesAI/tsai/issues/384))
+
+- added learn.calibrate_model method ([#379](https://github.com/timeseriesAI/tsai/issues/379))
+
+- added analyze_array function ([#378](https://github.com/timeseriesAI/tsai/issues/378))
+
+- Added TSAddNan transform ([#376](https://github.com/timeseriesAI/tsai/issues/376))
+
+- added dummify function to create dummy data from original data ([#366](https://github.com/timeseriesAI/tsai/issues/366))
+
+- added Locality Self Attention to TSiT ([#363](https://github.com/timeseriesAI/tsai/issues/363))
+
+- added sel_vars argument to MVP callback ([#349](https://github.com/timeseriesAI/tsai/issues/349))
+
+- added sel_vars argument to TSNan2Value ([#348](https://github.com/timeseriesAI/tsai/issues/348))
+
+- added multiclass, weighted FocalLoss ([#346](https://github.com/timeseriesAI/tsai/issues/346))
+
+- added TSRollingMean batch transform ([#343](https://github.com/timeseriesAI/tsai/issues/343))
+
+- added recall_at_specificity metric ([#342](https://github.com/timeseriesAI/tsai/issues/342))
+
+- added train_metrics argument to ts_learner ([#341](https://github.com/timeseriesAI/tsai/issues/341))
+
+- added hist to PredictionDynamics for binary classification ([#339](https://github.com/timeseriesAI/tsai/issues/339))
+
+- add padding_idxs to MultiEmbedding ([#330](https://github.com/timeseriesAI/tsai/issues/330))
+
+### Bugs Squashed
+
+- sort_by data may be duplicated in SlidingWindowPanel ([#389](https://github.com/timeseriesAI/tsai/issues/389))
+
+- create_script splits the nb name if multiple underscores are used ([#385](https://github.com/timeseriesAI/tsai/issues/385))
+
+- added torch functional dependency to plot_calibration_curve ([#383](https://github.com/timeseriesAI/tsai/issues/383))
+
+- issue when setting horizon to 0 in SlidingWindow ([#382](https://github.com/timeseriesAI/tsai/issues/382))
+
+- replace learn by self in calibrate_model patch ([#381](https://github.com/timeseriesAI/tsai/issues/381))
+
+- Argument `d_head` is not used in TSiTPlus ([#380](https://github.com/timeseriesAI/tsai/issues/380))
+  - https://github.com/timeseriesAI/tsai/blob/6baf0ba2455895b57b54bf06744633b81cdcb2b3/tsai/models/TSiTPlus.py#L63
+
+- replace default relu activation by gelu in TSiT ([#361](https://github.com/timeseriesAI/tsai/issues/361))
+
+- sel_vars and sel_steps in TSDatasets and TSDalaloaders don't work when used simultaneously ([#347](https://github.com/timeseriesAI/tsai/issues/347))
+
+- ShowGraph fails when recoder.train_metrics=True ([#340](https://github.com/timeseriesAI/tsai/issues/340))
+
+- fixed 'se' always equal to 16 in MLSTM_FCN ([#337](https://github.com/timeseriesAI/tsai/issues/337))
+
+- ShowGraph doesn't work well when train_metrics=True ([#336](https://github.com/timeseriesAI/tsai/issues/336))
+
+- TSPositionGaps doesn't work on cuda ([#333](https://github.com/timeseriesAI/tsai/issues/333))
+
+- XResNet object has no attribute 'backbone' ([#332](https://github.com/timeseriesAI/tsai/issues/332))
+
+- import InceptionTimePlus in tsai.learner ([#328](https://github.com/timeseriesAI/tsai/issues/328))
+
+- df2Xy: Format correctly without the need to specify sort_by ([#324](https://github.com/timeseriesAI/tsai/issues/324))
+
+- bug in MVP code learn.model --> self.learn.model ([#323](https://github.com/timeseriesAI/tsai/issues/323))
+
+- Colab install issues: importing the lib takes forever ([#315](https://github.com/timeseriesAI/tsai/issues/315))
+
+- Calling learner.feature_importance on larger than memory dataset causes OOM ([#310](https://github.com/timeseriesAI/tsai/issues/310))
+
+
 ## 0.2.24
 ### Breaking Changes
 
