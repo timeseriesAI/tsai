@@ -94,7 +94,7 @@ def plot_confusion_matrix(self:Learner, ds_idx=1, dl=None, thr=.5, normalize=Fal
 # Cell
 @patch
 def feature_importance(self:Learner, X=None, y=None, partial_n=None, feature_names=None, key_metric_idx=0, show_chart=True, save_df_path=False,
-                       random_state=23):
+                       baseline_color='green', bar_color="lime", figsize=(10, 5), random_state=23):
     r"""Calculates feature importance defined to be the change in a model validation loss or metric when a single feature value is randomly shuffled
 
     Adapted from https://www.kaggle.com/cdeotte/lstm-feature-importance by Chris Deotte (Kaggle GrandMaster)
@@ -112,6 +112,8 @@ def feature_importance(self:Learner, X=None, y=None, partial_n=None, feature_nam
                                         the change is calculated using the validation loss.
         show_chart (bool): flag to indicate if a chart showing permutation feature importance will be plotted.
         save_df_path (str): path to saved dataframe containing the permutation feature importance results.
+        baseline_color: color of the baseline bar in the chart
+        bar_color: color of the step bars in the chart
         random_state (int): controls the shuffling applied to the data. Pass an int for reproducible output across multiple function calls.
     """
 
@@ -188,7 +190,8 @@ def feature_importance(self:Learner, X=None, y=None, partial_n=None, feature_nam
         df = pd.DataFrame(results, columns=["Feature", metric_name])
 #         df = df.sort_values(metric_name, ascending=key_metric_idx is None)
         plt.figure(figsize=(10, .5*len(results)))
-        plt.barh(np.arange(len(results)), df[metric_name], color="darkblue")
+        barlist = plt.barh(np.arange(len(results)), df[metric_name], color=bar_color, edgecolor='black')
+        barlist[0].set_color(baseline_color)
         plt.yticks(np.arange(len(results)), df["Feature"].values)
         plt.title('Permutation Feature Importance', size=16)
         plt.xlabel(f"{metric_name}")
@@ -202,7 +205,8 @@ def feature_importance(self:Learner, X=None, y=None, partial_n=None, feature_nam
 
 # Cell
 @patch
-def step_importance(self:Learner, X=None, y=None, partial_n=None, key_metric_idx=0, show_chart=True, save_df_path=False, random_state=23):
+def step_importance(self:Learner, X=None, y=None, partial_n=None, key_metric_idx=0, n_steps=1, show_chart=True, save_df_path=False,
+                    baseline_color='green', bar_color="lime", figsize=(10, 5), random_state=23):
     r"""Calculates step importance defined to be the change in a model validation loss or metric when a single step value is randomly shuffled
 
 
@@ -216,8 +220,11 @@ def step_importance(self:Learner, X=None, y=None, partial_n=None, key_metric_idx
                    all data will be used.
         key_metric_idx (Optional[int]): integer to select the metric used in the calculation. If None or no metric is available,
                                         the change is calculated using the validation loss.
+        n_steps (int): number of steps that will be analyzed at a time. Default is 1 but you may choose a larger integer.
         show_chart (bool): flag to indicate if a chart showing permutation feature importance will be plotted.
         save_df_path (str): path to saved dataframe containing the permutation feature importance results.
+        baseline_color: color of the baseline bar in the chart
+        bar_color: color of the step bars in the chart
         random_state (int): controls the shuffling applied to the data. Pass an int for reproducible output across multiple function calls.
     """
 
@@ -242,45 +249,38 @@ def step_importance(self:Learner, X=None, y=None, partial_n=None, key_metric_idx
     metric_name = metric_name.replace("train_", "").replace("valid_", "")
     print(f'Selected metric: {metric_name}')
 
-    sel_steps = not(isinstance(self.dls.sel_steps, slice) and self.dls.sel_steps == slice(None, None, None))
-    step_names = L([f"step_{i}" for i in range(X.shape[-1])])
-    if sel_steps:
-        step_names = step_names[self.dls.sel_steps]
-        assert len(step_names) == len(np.arange(X.shape[-1])[self.dls.sel_steps])
-    else:
-        assert len(step_names) == X.shape[-1]
-
-    sel_step_idxs = L(np.arange(1, X.shape[-1] + 1).tolist())
-    if sel_steps:
-        sel_step_idxs = sel_step_idxs[self.dls.sel_steps]
-    assert len(step_names) == len(sel_step_idxs)
-
+    sel_step_idxs = L(np.arange(X.shape[-1]).tolist())[self.dls.sel_steps]
+    if n_steps != 1:
+        sel_step_idxs = [listify(sel_step_idxs[::-1][n:n+n_steps][::-1]) for n in range(0, len(sel_step_idxs), n_steps)][::-1]
     g = list(zip(np.arange(len(sel_step_idxs)+2), [0] + sel_step_idxs))
 
-    COLS = ['BASELINE'] + list(step_names)
+    COLS = ['BASELINE'] + sel_step_idxs
     results = []
-    print('Computing feature importance...')
+    print('Computing step importance...')
     try:
         for i,k in progress_bar(g):
-            if k not in [0] + sel_step_idxs: continue
-            if k>0:
-                save_feat = X[..., k-1].copy()
-                X[..., k-1] = random_shuffle(X[..., k-1].flatten(), random_state=random_state).reshape(X[..., k-1].shape)
+            if k not in [0] and k not in sel_step_idxs: continue
+            if i>0:
+                save_feat = X[..., k].copy()
+                X[..., k] = random_shuffle(X[..., k].flatten(), random_state=random_state).reshape(X[..., k].shape)
             if key_metric_idx is None:
                 value = self.get_X_preds(X, y, with_loss=True)[-1].mean().item()
             else:
                 output = self.get_X_preds(X, y)
                 value = metric(output[0], output[1]).item()
-            print(f"{k:3} step: {COLS[i]:20} {metric_name}: {value:8.6f}")
-            results.append([COLS[i], value])
+            if i > 0 and n_steps != 1:
+                step_name = f"{str(COLS[i][0])} to {str(COLS[i][-1])}"
+            else: step_name = str(COLS[i])
+            print(f"{i:3} step: {step_name:20} {metric_name}: {value:8.6f}")
+            results.append([step_name, value])
             del output, value;gc.collect()
-            if k>0:
-                X[..., k-1] = save_feat
+            if i>0:
+                X[..., k] = save_feat
                 del save_feat; gc.collect()
 
     except KeyboardInterrupt:
         if k>0:
-            X[..., k-1] = save_feat
+            X[..., k] = save_feat
             del save_feat; gc.collect()
 
     # Display step importance
@@ -288,15 +288,17 @@ def step_importance(self:Learner, X=None, y=None, partial_n=None, key_metric_idx
         print()
         df = pd.DataFrame(results, columns=["Step", metric_name])
 #         df = df.sort_values(metric_name, ascending=key_metric_idx is None)
-        plt.figure(figsize=(10, .5*len(results)))
-        plt.barh(np.arange(len(results)), df[metric_name], color="darkblue")
-        plt.yticks(np.arange(len(results)), df["Step"].values)
+        plt.figure(figsize=figsize)
+        barlist = plt.bar(np.arange(len(results)), df[metric_name], color=bar_color, edgecolor='black')
+        barlist[0].set_color(baseline_color)
+        plt.xticks(np.arange(len(results)), df["Step"].values, rotation=90)
         plt.title('Permutation Step Importance', size=16)
-        plt.xlabel(f"{metric_name}")
-        plt.ylim((-1,len(results)))
+        plt.ylabel(f"{metric_name}")
+        plt.xlim((-1,len(results)))
         plt.show()
 
     # Save step importance
     if save_df_path:
         df = df.sort_values(metric_name,ascending=False)
+
         df.to_csv(f'{save_df_path}.csv', index=False)
