@@ -84,7 +84,6 @@ class TSNan2Value(Transform):
 Nan2Value = TSNan2Value
 
 # Cell
-
 class TSStandardize(Transform):
     """Standardizes batch of type `TSTensor`
 
@@ -109,7 +108,8 @@ class TSStandardize(Transform):
 
     parameters, order = L('mean', 'std'), 90
     _setup = True # indicates it requires set up
-    def __init__(self, mean=None, std=None, by_sample=False, by_var=False, by_step=False, eps=1e-8, use_single_batch=True, verbose=False):
+    def __init__(self, mean=None, std=None, by_sample=False, by_var=False, by_step=False, eps=1e-8, use_single_batch=True, verbose=False, **kwargs):
+        super().__init__(**kwargs)
         self.mean = tensor(mean) if mean is not None else None
         self.std = tensor(std) if std is not None else None
         self._setup = (mean is None or std is None) and not by_sample
@@ -125,7 +125,8 @@ class TSStandardize(Transform):
         self.use_single_batch = use_single_batch
         self.verbose = verbose
         if self.mean is not None or self.std is not None:
-            pv(f'{self.__class__.__name__} mean={self.mean}, std={self.std}, by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step}\n', self.verbose)
+            pv(f'{self.__class__.__name__} mean={self.mean}, std={self.std}, by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step}\n',
+               self.verbose)
 
     @classmethod
     def from_stats(cls, mean, std): return cls(mean, std)
@@ -204,7 +205,8 @@ class TSNormalize(Transform):
     parameters, order = L('min', 'max'), 90
     _setup = True # indicates it requires set up
     def __init__(self, min=None, max=None, range=(-1, 1), by_sample=False, by_var=False, by_step=False, clip_values=True,
-                 use_single_batch=True, verbose=False):
+                 use_single_batch=True, verbose=False, **kwargs):
+        super().__init__(**kwargs)
         self.min = tensor(min) if min is not None else None
         self.max = tensor(max) if max is not None else None
         self._setup = (self.min is None and self.max is None) and not by_sample
@@ -282,8 +284,8 @@ class TSClipOutliers(Transform):
     "Clip outliers batch of type `TSTensor` based on the IQR"
     parameters, order = L('min', 'max'), 90
     _setup = True # indicates it requires set up
-    def __init__(self, min=None, max=None, by_sample=False, by_var=False, use_single_batch=False, verbose=False):
-
+    def __init__(self, min=None, max=None, by_sample=False, by_var=False, use_single_batch=False, verbose=False, **kwargs):
+        super().__init__(**kwargs)
         self.min = tensor(min) if min is not None else tensor(-np.inf)
         self.max = tensor(max) if max is not None else tensor(np.inf)
         self.by_sample, self.by_var = by_sample, by_var
@@ -324,7 +326,8 @@ class TSClipOutliers(Transform):
 class TSClip(Transform):
     "Clip  batch of type `TSTensor`"
     parameters, order = L('min', 'max'), 90
-    def __init__(self, min=-6, max=6):
+    def __init__(self, min=-6, max=6, **kwargs):
+        super().__init__(**kwargs)
         self.min = torch.tensor(min)
         self.max = torch.tensor(max)
 
@@ -337,7 +340,8 @@ class TSRobustScale(Transform):
     r"""This Scaler removes the median and scales the data according to the quantile range (defaults to IQR: Interquartile Range)"""
     parameters, order = L('median', 'iqr'), 90
     _setup = True # indicates it requires set up
-    def __init__(self, median=None, iqr=None, quantile_range=(25.0, 75.0), use_single_batch=True, eps=1e-8, verbose=False):
+    def __init__(self, median=None, iqr=None, quantile_range=(25.0, 75.0), use_single_batch=True, eps=1e-8, verbose=False, **kwargs):
+        super().__init__(**kwargs)
         self.median = tensor(median) if median is not None else None
         self.iqr = tensor(iqr) if iqr is not None else None
         self._setup = median is None or iqr is None
@@ -373,26 +377,24 @@ class TSRobustScale(Transform):
 
 # Cell
 class TSRandomStandardize(Transform):
-    r"""Transform that applies a randomly chosen mean and std to the training set,
-    and a fixed mean and stdev to validation set with the goal to improve generalization"""
+    r"""Transformation that applies a randomly chosen mean and standard deviation from a given
+    distribution to the training set in order to improve generalization."""
 
-    parameters, order = L('mean', 'std'), 90
-    def __init__(self, mean, std, eps=1e-8, split_idx=0, **kwargs):
-        self.mean, self.std, self.eps = torch.from_numpy(mean), torch.from_numpy(std), eps
-        if split_idx == 0: self.size = len(self.mean)
+    parameters, order = L('mean_dist', 'std_dist'), 90
+    def __init__(self, mean_dist, std_dist, eps=1e-8, split_idx=0, **kwargs):
+        self.mean_dist, self.std_dist = torch.from_numpy(mean_dist), torch.clamp(torch.from_numpy(std_dist), eps)
+        self.size = len(self.mean_dist)
         super().__init__(split_idx=split_idx, **kwargs)
     def encodes(self, o:TSTensor):
-        if self.split_idx == 0:
-            rand_idxs = np.random.choice(self.size, o.shape[0])
-            return (o - self.mean[rand_idxs]) / (self.std[rand_idxs] + self.eps)
-        else:
-            return (o - self.mean) / (self.std + self.eps)
+        rand_idxs = np.random.choice(self.size, o.shape[0])
+        return (o - self.mean_dist[rand_idxs]) / self.std_dist[rand_idxs]
 
 # Cell
 class TSDiff(Transform):
     "Differences batch of type `TSTensor`"
     order = 90
-    def __init__(self, lag=1, pad=True):
+    def __init__(self, lag=1, pad=True, **kwargs):
+        super().__init__(**kwargs)
         self.lag, self.pad = lag, pad
 
     def encodes(self, o:TSTensor):
@@ -544,7 +546,8 @@ class TSRollingMean(Transform):
 class TSLogReturn(Transform):
     "Calculates log-return of batch of type `TSTensor`. For positive values only"
     order = 90
-    def __init__(self, lag=1, pad=True):
+    def __init__(self, lag=1, pad=True, **kwargs):
+        super().__init__(**kwargs)
         self.lag, self.pad = lag, pad
 
     def encodes(self, o:TSTensor):
@@ -556,7 +559,8 @@ class TSLogReturn(Transform):
 class TSAdd(Transform):
     "Add a defined amount to each batch of type `TSTensor`."
     order = 90
-    def __init__(self, add):
+    def __init__(self, add, **kwargs):
+        super().__init__(**kwargs)
         self.add = add
 
     def encodes(self, o:TSTensor):
@@ -571,7 +575,8 @@ class TSClipByVar(Transform):
         var_min_max: list of tuples containing variable index, min value (or None) and max value (or None)
     """
     order = 90
-    def __init__(self, var_min_max):
+    def __init__(self, var_min_max, **kwargs):
+        super().__init__(**kwargs)
         self.var_min_max = var_min_max
 
     def encodes(self, o:TSTensor):
