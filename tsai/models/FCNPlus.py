@@ -12,7 +12,7 @@ class FCNPlus(nn.Sequential):
                  zero_norm=False, act=nn.ReLU, act_kwargs={}, residual=False):
         assert len(layers) == len(kss)
         backbone = _FCNBlockPlus(c_in, layers=layers, kss=kss, coord=coord, separable=separable,
-                                 zero_norm=zero_norm, act=nn.ReLU, act_kwargs={}, residual=False)
+                                 zero_norm=zero_norm, act=act, act_kwargs=act_kwargs, residual=residual)
         self.head_nf = layers[2]
         head_layers = [nn.AdaptiveAvgPool1d(1), Squeeze(-1)]
         if use_bn: head_layers += [nn.BatchNorm1d(layers[-1])]
@@ -33,7 +33,7 @@ class _FCNBlockPlus(Module):
         self.convblock3 = ConvBlock(layers[1], layers[2], kss[2], coord=coord, separable=separable, zero_norm=zero_norm if residual else False,
                                     act=None if residual else act, act_kwargs=act_kwargs)
         if residual:
-            self.shortcut = BN1(layers[2]) if c_in == layers[2] else ConvBlock(
+            self.shortcut = BN1d(layers[2]) if c_in == layers[2] else ConvBlock(
                 c_in, layers[2], 1, coord=coord, act=None)
         self.add = Add() if residual else Noop
 
