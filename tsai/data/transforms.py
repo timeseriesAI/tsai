@@ -173,7 +173,7 @@ class TSMagWarp(RandTransform):
 class TSTimeWarp(RandTransform):
     "Applies time warping to the x-axis of a `TSTensor` batch based on a smooth random curve"
     order = 90
-    def __init__(self, magnitude=0.02, ord=4, ex=None, **kwargs):
+    def __init__(self, magnitude=0.1, ord=6, ex=None, **kwargs):
         self.magnitude, self.ord, self.ex = magnitude, ord, ex
         super().__init__(**kwargs)
     def encodes(self, o: TSTensor):

@@ -12,7 +12,7 @@ from .models.utils import *
 # Cell
 
 class TSClassifier(Learner):
-    def __init__(self, X, y=None, splits=None, tfms=None, inplace=True, sel_vars=None, sel_steps=None, weights=None, partial_n=None,
+    def __init__(self, X, y=None, splits=None, tfms=None, inplace=True, sel_vars=None, sel_steps=None, weights=None, partial_n=None, train_metrics=False,
                  bs=[64, 128], batch_size=None, batch_tfms=None, shuffle_train=True, drop_last=True, num_workers=0, do_setup=True, device=None,
                  arch=None, arch_config={}, pretrained=False, weights_path=None, exclude_head=True, cut=-1, init=None,
                  loss_func=None, opt_func=Adam, lr=0.001, metrics=accuracy, cbs=None, wd=None, wd_bn_bias=False,
@@ -62,11 +62,14 @@ class TSClassifier(Learner):
         super().__init__(dls, model, loss_func=loss_func, opt_func=opt_func, lr=lr, cbs=cbs, metrics=metrics, path=path, splitter=splitter,
                          model_dir=model_dir, wd=wd, wd_bn_bias=wd_bn_bias, train_bn=train_bn, moms=moms)
 
+        if train_metrics and hasattr(self, "recorder"):
+            self.recorder.train_metrics = True
+
 # Cell
 
 
 class TSRegressor(Learner):
-    def __init__(self, X, y=None, splits=None, tfms=None, inplace=True, sel_vars=None, sel_steps=None, weights=None, partial_n=None,
+    def __init__(self, X, y=None, splits=None, tfms=None, inplace=True, sel_vars=None, sel_steps=None, weights=None, partial_n=None, train_metrics=False,
                  bs=[64, 128], batch_size=None, batch_tfms=None, shuffle_train=True, drop_last=True, num_workers=0, do_setup=True, device=None,
                  arch=None, arch_config={}, pretrained=False, weights_path=None, exclude_head=True, cut=-1, init=None,
                  loss_func=None, opt_func=Adam, lr=0.001, metrics=None, cbs=None, wd=None, wd_bn_bias=False,
@@ -116,10 +119,13 @@ class TSRegressor(Learner):
         super().__init__(dls, model, loss_func=loss_func, opt_func=opt_func, lr=lr, cbs=cbs, metrics=metrics, path=path, splitter=splitter,
                          model_dir=model_dir, wd=wd, wd_bn_bias=wd_bn_bias, train_bn=train_bn, moms=moms)
 
+        if train_metrics and hasattr(self, "recorder"):
+            self.recorder.train_metrics = True
+
 # Cell
 
 class TSForecaster(Learner):
-    def __init__(self, X, y=None, splits=None, tfms=None, inplace=True, sel_vars=None, sel_steps=None, weights=None, partial_n=None,
+    def __init__(self, X, y=None, splits=None, tfms=None, inplace=True, sel_vars=None, sel_steps=None, weights=None, partial_n=None, train_metrics=False,
                  bs=[64, 128], batch_size=None, batch_tfms=None, shuffle_train=True, drop_last=True, num_workers=0, do_setup=True, device=None,
                  arch=None, arch_config={}, pretrained=False, weights_path=None, exclude_head=True, cut=-1, init=None,
                  loss_func=None, opt_func=Adam, lr=0.001, metrics=None, cbs=None, wd=None, wd_bn_bias=False,
@@ -168,3 +174,6 @@ class TSForecaster(Learner):
 
         super().__init__(dls, model, loss_func=loss_func, opt_func=opt_func, lr=lr, cbs=cbs, metrics=metrics, path=path, splitter=splitter,
                          model_dir=model_dir, wd=wd, wd_bn_bias=wd_bn_bias, train_bn=train_bn, moms=moms)
+
+        if train_metrics and hasattr(self, "recorder"):
+            self.recorder.train_metrics = True

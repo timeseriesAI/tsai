@@ -21,7 +21,7 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'remove_dir', 'named_partial', 'yaml2dict', 'str2list', 'str2index', 'get_cont_cols', 'get_cat_cols',
            'alphabet', 'ALPHABET', 'get_mapping', 'map_array', 'log_tfm', 'to_sincos_time', 'plot_feature_dist',
            'rolling_moving_average', 'ffill_sequence', 'bfill_sequence', 'fbfill_sequence', 'dummify',
-           'analyze_feature', 'analyze_array']
+           'analyze_feature', 'analyze_array', 'get_relpath']
 
 # Cell
 from .imports import *
@@ -1253,3 +1253,14 @@ def analyze_array(o, bins=100, density=False, feature_names=None, clip_outliers_
             analyze_feature(o[:, f].flatten(), feature_name=feature_name)
     else:
         analyze_feature(o.flatten(), feature_name=feature_names)
+
+# Cell
+def get_relpath(path):
+    current_path = os.getcwd()
+    if is_listy(path):
+        relpaths = []
+        for p in path:
+            relpaths.append(os.path.relpath(p, current_path))
+        return relpaths
+    else:
+        return os.path.relpath(path, current_path)

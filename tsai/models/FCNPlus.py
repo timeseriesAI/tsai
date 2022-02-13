@@ -8,13 +8,17 @@ from .layers import *
 
 # Cell
 class FCNPlus(nn.Sequential):
-    def __init__(self, c_in, c_out, layers=[128, 256, 128], kss=[7, 5, 3], coord=False, separable=False,
+    def __init__(self, c_in, c_out, layers=[128, 256, 128], kss=[7, 5, 3], coord=False, separable=False, use_bn=False, fc_dropout=0.,
                  zero_norm=False, act=nn.ReLU, act_kwargs={}, residual=False):
         assert len(layers) == len(kss)
         backbone = _FCNBlockPlus(c_in, layers=layers, kss=kss, coord=coord, separable=separable,
                                  zero_norm=zero_norm, act=act, act_kwargs=act_kwargs, residual=residual)
         self.head_nf = layers[2]
-        head = nn.Sequential(nn.AdaptiveAvgPool1d(1), Squeeze(-1), nn.Linear(layers[-1], c_out))
+        head_layers = [nn.AdaptiveAvgPool1d(1), Squeeze(-1)]
+        if use_bn: head_layers += [nn.BatchNorm1d(layers[-1])]
+        if fc_dropout != 0: head_layers += [nn.Dropout(fc_dropout)]
+        head_layers += [nn.Linear(layers[-1], c_out)]
+        head = nn.Sequential(*head_layers)
         super().__init__(OrderedDict([('backbone', backbone), ('head', head)]))
 
 
