@@ -95,7 +95,7 @@ def plot_confusion_matrix(self:Learner, ds_idx=1, dl=None, thr=.5, normalize=Fal
 @patch
 def feature_importance(self:Learner, X=None, y=None, partial_n=None, feature_names=None, key_metric_idx=0, show_chart=True, save_df_path=False,
                        figsize=(10, 5), random_state=23, verbose=False):
-    r"""Calculates feature importance defined to be the change in a model validation loss or metric when a single feature value is randomly shuffled
+    r"""Calculates feature importance defined as the change in a model validation loss or metric when a single feature value is randomly shuffled
     Adapted from https://www.kaggle.com/cdeotte/lstm-feature-importance by Chris Deotte (Kaggle GrandMaster)
     This procedure breaks the relationship between the feature and the target, thus the change in the model validation loss or metric is indicative of
     how much the model depends on the feature.
@@ -213,7 +213,7 @@ def feature_importance(self:Learner, X=None, y=None, partial_n=None, feature_nam
 @patch
 def step_importance(self:Learner, X=None, y=None, partial_n=None, key_metric_idx=0, n_steps=1, show_chart=True, save_df_path=False,
                     figsize=(10, 5), random_state=23, verbose=False):
-    r"""Calculates step importance defined to be the change in a model validation loss or metric when a single step value is randomly shuffled
+    r"""Calculates step importance defined as the change in a model validation loss or metric when a single step value is randomly shuffled
     This procedure breaks the relationship between the step and the target, thus the change in the model validation loss or metric is indicative of
     how much the model depends on the step.
     Args:
