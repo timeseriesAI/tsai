@@ -4,7 +4,7 @@ __all__ = []
 
 # Cell
 from .imports import *
-from .utils import random_shuffle
+from .utils import random_shuffle, shuffle_along_axis
 from .data.core import *
 from .inference import get_X_preds
 from fastai.learner import *
@@ -95,10 +95,12 @@ def plot_confusion_matrix(self:Learner, ds_idx=1, dl=None, thr=.5, normalize=Fal
 @patch
 def feature_importance(self:Learner, X=None, y=None, partial_n=None, feature_names=None, key_metric_idx=0, show_chart=True, save_df_path=False,
                        figsize=(10, 5), random_state=23, verbose=False):
-    r"""Calculates feature importance defined as the change in a model validation loss or metric when a single feature value is randomly shuffled
+    r"""Calculates feature importance defined to be the change in a model validation loss or metric when a single feature value is randomly shuffled
+
     Adapted from https://www.kaggle.com/cdeotte/lstm-feature-importance by Chris Deotte (Kaggle GrandMaster)
     This procedure breaks the relationship between the feature and the target, thus the change in the model validation loss or metric is indicative of
     how much the model depends on the feature.
+
     Args:
         X: array-like object  containing the time series data for which importance will be measured. If None, all data in the validation set will be used.
         y: array-like object containing the targets. If None, all targets in the validation set will be used.
@@ -114,6 +116,7 @@ def feature_importance(self:Learner, X=None, y=None, partial_n=None, feature_nam
 
     if X is None:
         X = self.dls.valid.dataset.tls[0].items
+        if hasattr(self.dls.valid.dataset.tls[0], '_splits'): X = X[self.dls.valid.dataset.tls[0]._splits]
     if y is None:
         y = self.dls.valid.dataset.tls[1].items
     if partial_n is not None:
@@ -166,10 +169,14 @@ def feature_importance(self:Learner, X=None, y=None, partial_n=None, feature_nam
                 value = self.get_X_preds(X, y, with_loss=True)[-1].mean().item()
             else:
                 output = self.get_X_preds(X, y)
-                value = metric(output[0], output[1]).item()
+                if self.dls.c == 2:
+                    value = metric(output[1], output[0][:, 1]).item()
+                else:
+                    value = metric(output[0], output[1]).item()
+                del output
             pv(f"{k:3} feature: {COLS[i]:20} {metric_name}: {value:8.6f}", verbose)
             results.append([COLS[i], value])
-            del output, value;gc.collect()
+            del value; gc.collect()
             if k>0:
                 X[:, k-1] = save_feat
                 del save_feat; gc.collect()
@@ -198,7 +205,7 @@ def feature_importance(self:Learner, X=None, y=None, partial_n=None, feature_nam
         plt.yticks(np.arange(len(value_change))[::-1], df.loc[1:, "Feature"].values)
         plt.title('Permutation Feature Importance', size=16)
         text = 'increase' if sign == 1 else 'decrease'
-        plt.xlabel(f"{metric_name} {text} when removed")
+        plt.xlabel(f"{metric_name} {text} when feature is removed")
         plt.ylim((-1,len(value_change)))
         plt.show()
 
@@ -211,9 +218,9 @@ def feature_importance(self:Learner, X=None, y=None, partial_n=None, feature_nam
 
 # Cell
 @patch
-def step_importance(self:Learner, X=None, y=None, partial_n=None, key_metric_idx=0, n_steps=1, show_chart=True, save_df_path=False,
-                    figsize=(10, 5), random_state=23, verbose=False):
-    r"""Calculates step importance defined as the change in a model validation loss or metric when a single step value is randomly shuffled
+def step_importance(self:Learner, X=None, y=None, partial_n=None, key_metric_idx=0, step_names=None, n_steps=1, show_chart=True, save_df_path=False,
+                    figsize=(10, 5), title=None, xlabel=None, random_state=23, verbose=False):
+    r"""Calculates step importance defined to be the change in a model validation loss or metric when a single step value is randomly shuffled
     This procedure breaks the relationship between the step and the target, thus the change in the model validation loss or metric is indicative of
     how much the model depends on the step.
     Args:
@@ -231,6 +238,7 @@ def step_importance(self:Learner, X=None, y=None, partial_n=None, key_metric_idx
 
     if X is None:
         X = self.dls.valid.dataset.tls[0].items
+        if hasattr(self.dls.valid.dataset.tls[0], '_splits'): X = X[self.dls.valid.dataset.tls[0]._splits]
     if y is None:
         y = self.dls.valid.dataset.tls[1].items
     if partial_n is not None:
@@ -258,23 +266,35 @@ def step_importance(self:Learner, X=None, y=None, partial_n=None, key_metric_idx
     COLS = ['BASELINE'] + sel_step_idxs
     results = []
     pv('Computing step importance...', verbose)
+    names = []
     try:
         for i,k in progress_bar(g):
             if k not in [0] and k not in sel_step_idxs: continue
             if i>0:
                 save_feat = X[..., k].copy()
-                X[..., k] = random_shuffle(X[..., k].flatten(), random_state=random_state).reshape(X[..., k].shape)
+                X[..., k] = shuffle_along_axis(X[..., k], axis=0, random_state=random_state)
+#                 rand_indx = random_shuffle(np.arange(len(X)))
+#                 X[..., k] = X[rand_indx, :, k]
+#                 X[..., k] = np.nan
             if key_metric_idx is None:
                 value = self.get_X_preds(X, y, with_loss=True)[-1].mean().item()
             else:
                 output = self.get_X_preds(X, y)
-                value = metric(output[0], output[1]).item()
-            if i > 0 and n_steps != 1:
-                step_name = f"{str(COLS[i][0])} to {str(COLS[i][-1])}"
-            else: step_name = str(COLS[i])
+                if self.dls.c == 2:
+                    value = metric(output[1], output[0][:, 1]).item()
+                else:
+                    value = metric(output[0], output[1]).item()
+                del output
+            if i == 0 or step_names is None:
+                if i > 0 and n_steps != 1:
+                    step_name = f"{str(COLS[i][0])} to {str(COLS[i][-1])}"
+                else: step_name = str(COLS[i])
+            else:
+                step_name = step_names[i - 1]
+            if i > 0: names.append(step_name)
             pv(f"{i:3} step: {step_name:20} {metric_name}: {value:8.6f}", verbose)
             results.append([step_name, value])
-            del output, value;gc.collect()
+            del value;gc.collect()
             if i>0:
                 X[..., k] = save_feat
                 del save_feat; gc.collect()
@@ -300,10 +320,12 @@ def step_importance(self:Learner, X=None, y=None, partial_n=None, key_metric_idx
         plt.bar(np.arange(len(value_change)), pos_value_change, color='lime', edgecolor='black')
         plt.bar(np.arange(len(value_change)), neg_value_change, color='red', edgecolor='black')
         plt.axhline(0)
-        plt.xticks(np.arange(len(value_change)), df.loc[1:, "Step"].values, rotation=90)
-        plt.title('Permutation Step Importance', size=16)
+        plt.xticks(np.arange(len(value_change)), names, rotation=90)
+        if title is None: title = 'Step Importance'
+        plt.title(title, size=16)
         text = 'increase' if sign == 1 else 'decrease'
-        plt.xlabel("steps")
+        if xlabel is None: xlabel = 'steps'
+        plt.xlabel(xlabel)
         plt.ylabel(f"{metric_name} {text} when removed")
         plt.xlim((-1,len(value_change)))
         plt.show()

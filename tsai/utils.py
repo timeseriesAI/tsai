@@ -21,7 +21,7 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'remove_dir', 'named_partial', 'yaml2dict', 'str2list', 'str2index', 'get_cont_cols', 'get_cat_cols',
            'alphabet', 'ALPHABET', 'get_mapping', 'map_array', 'log_tfm', 'to_sincos_time', 'plot_feature_dist',
            'rolling_moving_average', 'ffill_sequence', 'bfill_sequence', 'fbfill_sequence', 'dummify',
-           'analyze_feature', 'analyze_array', 'get_relpath']
+           'shuffle_along_axis', 'analyze_feature', 'analyze_array', 'get_relpath']
 
 # Cell
 from .imports import *
@@ -1199,7 +1199,7 @@ def fbfill_sequence(o):
 
 # Cell
 def dummify(o:Union[np.ndarray, torch.Tensor], by_var:bool=True, inplace:bool=False, skip:Optional[list]=None, random_state=None):
-    """Shuffles an array-like object along all dimensions or dimension 1 (variables) if by_bar is True."""
+    """Shuffles an array-like object along all dimensions or dimension 1 (variables) if by_var is True."""
     if not inplace:
         if isinstance(o, np.ndarray): o_dummy = o.copy()
         elif isinstance(o, torch.Tensor): o_dummy = o.clone()
@@ -1212,6 +1212,15 @@ def dummify(o:Union[np.ndarray, torch.Tensor], by_var:bool=True, inplace:bool=Fa
         o_dummy[:] = random_shuffle(o.flatten(), random_state=random_state).reshape(o.shape)
     if not inplace:
         return o_dummy
+
+# Cell
+def shuffle_along_axis(o, axis=-1, random_state=None):
+    if isinstance(o, torch.Tensor): size = o.numel()
+    else: size = np.size(o)
+    for ax in listify(axis):
+        idx = random_shuffle(np.arange(size), random_state=random_state).reshape(*o.shape).argsort(axis=ax)
+        o = np.take_along_axis(o, idx, axis=ax)
+    return o
 
 # Cell
 def analyze_feature(feature, bins=100, density=False, feature_name=None, clip_outliers_plot=False, quantile_range=(25.0, 75.0),
