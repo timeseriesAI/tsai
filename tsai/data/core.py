@@ -510,23 +510,33 @@ class NumpyDataLoader(TfmdDL):
 
     @delegates(DataLoader.new)
     def new(self, dataset=None, cls=None, **kwargs):
-        after_batch = self.after_batch
-        res = super().new(dataset, cls, **kwargs)
-        self.after_batch = res.after_batch
-        if not hasattr(self, '_n_inp') or not hasattr(self, '_types'):
+        if dataset is None: dataset = self.dataset
+        if cls is None: cls = type(self)
+        cur_kwargs = dict(dataset=dataset, weights=self.weights, partial_n=self.partial_n,
+                          num_workers=self.fake_l.num_workers, pin_memory=self.pin_memory, timeout=self.timeout,
+                          bs=self.bs, shuffle=self.shuffle, drop_last=self.drop_last, indexed=self.indexed, device=self.device)
+        for n in self._methods:
+            o = getattr(self, n)
+            if not isinstance(o, MethodType): cur_kwargs[n] = o
+        all_kwargs = merge(cur_kwargs, kwargs)
+        new_dl = cls(**all_kwargs)
+        if 'after_batch' not in all_kwargs.keys():
+            self.after_batch = new_dl.after_batch
+        if not hasattr(new_dl, '_n_inp') or not hasattr(new_dl, '_types'):
             try:
                 self._one_pass()
-                res._n_inp,res._types = self._n_inp,self._types
-            except: print("Could not do one pass in your dataloader, there is something wrong in it")
-        else: res._n_inp,res._types = self._n_inp,self._types
-        return res
+                new_dl._n_inp,new_dl._types = self._n_inp,self._types
+            except:
+                print("Could not do one pass in your dataloader, there is something wrong in it")
+        else: new_dl._n_inp,new_dl._types = self._n_inp,self._types
+        return new_dl
 
     def new_dl(self, X, y=None, bs=64):
         assert X.ndim == 3, "You must pass an X with 3 dimensions [batch_size x n_vars x seq_len]"
         if y is not None and not is_array(y) and not is_listy(y): y = [y]
         new_dloader = self.new(self.dataset.add_dataset(X, y=y), bs=min(bs, len(X)))
+        self.after_batch = new_dloader.after_batch
         return new_dloader
-
 
     def create_batch(self, b):
         if self.shuffle:
