@@ -29,7 +29,7 @@ class ToNumpyCategory(Transform):
         self.vocab = self.cat.vocab
         return np.asarray(stack([self.cat(oi) for oi in o]))
 
-    def decodes(self, o: (np.ndarray, torch.Tensor)):
+    def decodes(self, o: Union[np.ndarray, torch.Tensor]):
         return stack([self.cat.decode(oi) for oi in o])
 
 # Cell
@@ -183,7 +183,7 @@ class TSStandardize(Transform):
 # Cell
 
 @patch
-def mul_min(x:(torch.Tensor, TSTensor, NumpyTensor), axes=(), keepdim=False):
+def mul_min(x:Union[torch.Tensor, TSTensor, NumpyTensor], axes=(), keepdim=False):
     if axes == (): return retain_type(x.min(), x)
     axes = reversed(sorted(axes if is_listy(axes) else [axes]))
     min_x = x
@@ -192,7 +192,7 @@ def mul_min(x:(torch.Tensor, TSTensor, NumpyTensor), axes=(), keepdim=False):
 
 
 @patch
-def mul_max(x:(torch.Tensor, TSTensor, NumpyTensor), axes=(), keepdim=False):
+def mul_max(x:Union[torch.Tensor, TSTensor, NumpyTensor], axes=(), keepdim=False):
     if axes == (): return retain_type(x.max(), x)
     axes = reversed(sorted(axes if is_listy(axes) else [axes]))
     max_x = x
@@ -226,7 +226,7 @@ class TSNormalize(Transform):
             pv(f'{self.__class__.__name__} min={self.min}, max={self.max}, by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step}\n', self.verbose)
 
     @classmethod
-    def from_stats(cls, min, max, range_min=0, range_max=1): return cls(min, max, self.range_min, self.range_max)
+    def from_stats(cls, min, max, range_min=0, range_max=1): return cls(min, max, range_min, range_max)
 
     def setups(self, dl: DataLoader):
         if self._setup:
