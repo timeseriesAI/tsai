@@ -18,23 +18,6 @@
         "Mixed data": "/data.mixed.html",
         "MetaDatasets": "/data.metadatasets.html"
     },
-    "Training": {
-        "Learner": "/learner.html",
-        "TSLearner": "/tslearner.html",
-        "Optimizers": "/optimizer.html",
-        "Metrics": "/metrics.html",
-        "Callbacks": "/callback.core.html",
-        "Prediction Dynamics": "/callback.PredictionDynamics.html",
-        "": {
-            "Semi-supervised learning": {
-                "Self-training (Noisy Student)": "/callback.noisy_student.html",
-                "Self-supervised learning (MVP)": "/callback.MVP.html"
-            }
-        }
-    },
-    "Inference": {
-        "Inference": "/inference.html"
-    },
     "Models": {
         "Layers": "/models.layers.html",
         "Utilities": "/models.utils.html",
@@ -96,6 +79,26 @@
             }
         },
         "MultiInputNet": "/models.MultiInputNet.html"
+    },
+    "Training": {
+        "Learner": "/learner.html",
+        "TSLearner": "/tslearner.html",
+        "Optimizers": "/optimizer.html",
+        "Metrics": "/metrics.html",
+        "Callbacks": "/callback.core.html",
+        "Prediction Dynamics": "/callback.PredictionDynamics.html",
+        "": {
+            "Semi-supervised learning": {
+                "Self-training (Noisy Student)": "/callback.noisy_student.html",
+                "Self-supervised learning (MVP)": "/callback.MVP.html"
+            }
+        }
+    },
+    "Inference": {
+        "Inference": "/inference.html"
+    },
+    "Analysis": {
+        "Analysis": "/analysis.html"
     },
     "Utilities": {
         "Time series utilities": "/utils.html"
