@@ -186,7 +186,7 @@ class TSStandardize(Transform):
 # Cell
 
 @patch
-def mul_min(x:Union[torch.Tensor, TSTensor, NumpyTensor], axes=(), keepdim=False):
+def mul_min(x:(torch.Tensor, TSTensor, NumpyTensor), axes=(), keepdim=False):
     if axes == (): return retain_type(x.min(), x)
     axes = reversed(sorted(axes if is_listy(axes) else [axes]))
     min_x = x
@@ -195,7 +195,7 @@ def mul_min(x:Union[torch.Tensor, TSTensor, NumpyTensor], axes=(), keepdim=False
 
 
 @patch
-def mul_max(x:Union[torch.Tensor, TSTensor, NumpyTensor], axes=(), keepdim=False):
+def mul_max(x:(torch.Tensor, TSTensor, NumpyTensor), axes=(), keepdim=False):
     if axes == (): return retain_type(x.max(), x)
     axes = reversed(sorted(axes if is_listy(axes) else [axes]))
     max_x = x

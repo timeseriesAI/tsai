@@ -404,8 +404,9 @@ class TSSmooth(RandTransform):
         return output
 
 # Cell
-def maddest(d, axis=None): #Mean Absolute Deviation
-    return np.mean(np.absolute(d - np.mean(d, axis)), axis)
+def maddest(d, axis=None):
+    #Mean Absolute Deviation
+    return np.mean(np.absolute(d - np.mean(d, axis=axis)), axis=axis)
 
 class TSFreqDenoise(RandTransform):
     "Denoises a sequence applying a wavelet decomposition method"

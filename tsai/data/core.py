@@ -267,9 +267,7 @@ class TSTfmdLists(TfmdLists):
 class NumpyDatasets(Datasets):
     "A dataset that creates tuples from X (and y) and applies `tfms` of type item_tfms"
     typs = NumpyTensor,tensor
-
-    def __init__(self, X=None, y=None, items=None, tfms=None, tls=None, n_inp=None, dl_type=None,
-                 inplace=True, **kwargs):
+    def __init__(self, X=None, y=None, items=None, tfms=None, tls=None, n_inp=None, dl_type=None, inplace=True, **kwargs):
 
         self.tfms, self.inplace = tfms, inplace
 
@@ -287,7 +285,6 @@ class NumpyDatasets(Datasets):
                 self.tfms, lts = [None] * len(items), [NoTfmLists] * len(items)
             else:
                 self.tfms = _remove_brackets(tfms)
-#                 lts = [NoTfmLists if (t is None and not inplace) else TSTfmdLists if getattr(t, 'vectorized', None) else TfmdLists for t in self.tfms]
                 ts = [NoTfmLists if t is None else TSTfmdLists if getattr(t, 'vectorized', None) else TfmdLists for t in self.tfms]
 
             self.tls = L(lt(item, t, **kwargs) for lt,item,t in zip(lts, items, self.tfms))
@@ -324,11 +321,6 @@ class NumpyDatasets(Datasets):
 
     def __len__(self): return len(self.tls[0])
 
-
-#     def _new(self, X, *args, y=None, **kwargs):
-#         items = tuple((X,)) if y is None else tuple((X, y))
-#         return super()._new(items, tfms=self.tfms, do_setup=False, **kwargs)
-
     def _new(self, X, y=None, **kwargs):
         return type(self)(X, y=y, tfms=self.tfms, inplace=self.inplace, do_setup=False, **kwargs)
 
@@ -345,17 +337,14 @@ def tscoll_repr(c, max_n=10):
     "String repr of up to `max_n` items of (possibly lazy) collection `c`"
     _len = len(c)
     if _len == 0: return coll_repr(c)
-#     if c.split_idx is None: c = c.subset(0)
     return f'(#{_len}) {L(c[i] for i in range(min(len(c), max_n)))} ...]'
 
 # Cell
 @delegates(NumpyDatasets.__init__)
 class TSDatasets(NumpyDatasets):
     """A dataset that creates tuples from X (and optionally y) and applies `item_tfms`"""
-
     typs = TSTensor,tensor
-    def __init__(self, X=None, y=None, items=None, sel_vars=None, sel_steps=None, tfms=None, tls=None, n_inp=None, dl_type=None,
-                 inplace=True, **kwargs):
+    def __init__(self, X=None, y=None, items=None, sel_vars=None, sel_steps=None, tfms=None, tls=None, n_inp=None, dl_type=None, inplace=True, **kwargs):
 
         self.multi_index = False
         if sel_vars is None or (type(sel_vars) == slice and sel_vars == slice(None)): self.sel_vars = slice(None)
@@ -389,7 +378,6 @@ class TSDatasets(NumpyDatasets):
                 self.tfms, lts = [None] * len(items), [NoTfmLists] * len(items)
             else:
                 self.tfms = _remove_brackets(tfms)
-#                 lts = [NoTfmLists if (t is None and not inplace) else TSTfmdLists if getattr(t, 'vectorized', None) else TfmdLists for t in self.tfms]
                 lts = [NoTfmLists if t is None else TSTfmdLists if getattr(t, 'vectorized', None) else TfmdLists for t in self.tfms]
 
             self.tls = L(lt(item, t, **kwargs) for lt,item,t in zip(lts, items, self.tfms))

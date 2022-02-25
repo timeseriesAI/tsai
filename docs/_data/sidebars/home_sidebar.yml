@@ -58,43 +58,6 @@ entries:
     title: Data
   - folderitems:
     - output: web,pdf
-      title: Learner
-      url: /learner.html
-    - output: web,pdf
-      title: TSLearner
-      url: /tslearner.html
-    - output: web,pdf
-      title: Optimizers
-      url: /optimizer.html
-    - output: web,pdf
-      title: Metrics
-      url: /metrics.html
-    - output: web,pdf
-      title: Callbacks
-      url: /callback.core.html
-    - output: web,pdf
-      title: Prediction Dynamics
-      url: /callback.PredictionDynamics.html
-      subfolders:
-      - output: web
-        subfolderitems:
-        - output: web,pdf
-          title: Self-training (Noisy Student)
-          url: /callback.noisy_student.html
-        - output: web,pdf
-          title: Self-supervised learning (MVP)
-          url: /callback.MVP.html
-        title: Semi-supervised learning
-    output: web
-    title: Training
-  - folderitems:
-    - output: web,pdf
-      title: Inference
-      url: /inference.html
-    output: web
-    title: Inference
-  - folderitems:
-    - output: web,pdf
       title: Layers
       url: /models.layers.html
     - output: web,pdf
@@ -214,6 +177,49 @@ entries:
       url: /models.MultiInputNet.html
     output: web
     title: Models
+  - folderitems:
+    - output: web,pdf
+      title: Learner
+      url: /learner.html
+    - output: web,pdf
+      title: TSLearner
+      url: /tslearner.html
+    - output: web,pdf
+      title: Optimizers
+      url: /optimizer.html
+    - output: web,pdf
+      title: Metrics
+      url: /metrics.html
+    - output: web,pdf
+      title: Callbacks
+      url: /callback.core.html
+    - output: web,pdf
+      title: Prediction Dynamics
+      url: /callback.PredictionDynamics.html
+      subfolders:
+      - output: web
+        subfolderitems:
+        - output: web,pdf
+          title: Self-training (Noisy Student)
+          url: /callback.noisy_student.html
+        - output: web,pdf
+          title: Self-supervised learning (MVP)
+          url: /callback.MVP.html
+        title: Semi-supervised learning
+    output: web
+    title: Training
+  - folderitems:
+    - output: web,pdf
+      title: Inference
+      url: /inference.html
+    output: web
+    title: Inference
+  - folderitems:
+    - output: web,pdf
+      title: Analysis
+      url: /analysis.html
+    output: web
+    title: Analysis
   - folderitems:
     - output: web,pdf
       title: Time series utilities
