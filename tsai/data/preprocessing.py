@@ -29,7 +29,10 @@ class ToNumpyCategory(Transform):
         self.vocab = self.cat.vocab
         return np.asarray(stack([self.cat(oi) for oi in o]))
 
-    def decodes(self, o: Union[np.ndarray, torch.Tensor]):
+    def decodes(self, o: np.ndarray):
+        return stack([self.cat.decode(oi) for oi in o])
+
+    def decodes(self, o: torch.Tensor):
         return stack([self.cat.decode(oi) for oi in o])
 
 # Cell
