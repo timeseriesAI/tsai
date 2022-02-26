@@ -5,23 +5,24 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'to3dPlusTensor', 'to3dPlusArray', 'todtype', 'bytes2size', 'bytes2GB', 'get_size', 'is_file',
            'delete_all_in_dir', 'reverse_dict', 'is_tuple', 'itemify', 'isnone', 'exists', 'ifelse', 'is_not_close',
            'test_not_close', 'test_type', 'test_ok', 'test_not_ok', 'test_error', 'test_eq_nan', 'assert_fn', 'test_gt',
-           'test_ge', 'test_lt', 'test_le', 'stack', 'stack_pad', 'match_seq_len', 'random_shuffle', 'cat2int',
-           'cycle_dl', 'cycle_dl_to_device', 'cycle_dl_estimate', 'cache_data', 'memmap2cache', 'cache_memmap',
-           'get_func_defaults', 'get_idx_from_df_col_vals', 'get_sublist_idxs', 'flatten_list', 'display_pd_df',
-           'ttest', 'kstest', 'tscore', 'ttest_tensor', 'pcc', 'scc', 'a', 'b', 'remove_fn', 'npsave', 'np_save',
-           'permute_2D', 'random_normal', 'random_half_normal', 'random_normal_tensor', 'random_half_normal_tensor',
-           'default_dpi', 'get_plot_fig', 'fig2buf', 'plot_scatter', 'get_idxs', 'apply_cmap', 'torch_tile',
-           'to_tsfresh_df', 'pcorr', 'scorr', 'torch_diff', 'get_outliers_IQR', 'clip_outliers', 'get_percentile',
-           'torch_clamp', 'get_robustscale_params', 'torch_slice_by_dim', 'torch_nanmean', 'torch_nanstd', 'concat',
-           'reduce_memory_usage', 'cls_name', 'roll2d', 'roll3d', 'random_roll2d', 'random_roll3d', 'rotate_axis0',
-           'rotate_axis1', 'rotate_axis2', 'chunks_calculator', 'is_memory_shared', 'assign_in_chunks', 'create_array',
-           'create_empty_array', 'np_save_compressed', 'np_load_compressed', 'np2memmap', 'torch_mean_groupby',
-           'torch_flip', 'torch_nan_to_num', 'torch_masked_to_num', 'mpl_trend', 'int2digits', 'array2digits',
-           'sincos_encoding', 'linear_encoding', 'encode_positions', 'sort_generator', 'get_subset_dict', 'create_dir',
-           'remove_dir', 'named_partial', 'yaml2dict', 'str2list', 'str2index', 'get_cont_cols', 'get_cat_cols',
-           'alphabet', 'ALPHABET', 'get_mapping', 'map_array', 'log_tfm', 'to_sincos_time', 'plot_feature_dist',
-           'rolling_moving_average', 'ffill_sequence', 'bfill_sequence', 'fbfill_sequence', 'dummify',
-           'shuffle_along_axis', 'analyze_feature', 'analyze_array', 'get_relpath']
+           'test_ge', 'test_lt', 'test_le', 'stack', 'stack_pad', 'pad_sequences', 'match_seq_len', 'random_shuffle',
+           'cat2int', 'cycle_dl', 'cycle_dl_to_device', 'cycle_dl_estimate', 'cache_data', 'memmap2cache',
+           'cache_memmap', 'get_func_defaults', 'get_idx_from_df_col_vals', 'get_sublist_idxs', 'flatten_list',
+           'display_pd_df', 'ttest', 'kstest', 'tscore', 'ttest_tensor', 'pcc', 'scc', 'a', 'b', 'remove_fn', 'npsave',
+           'np_save', 'permute_2D', 'random_normal', 'random_half_normal', 'random_normal_tensor',
+           'random_half_normal_tensor', 'default_dpi', 'get_plot_fig', 'fig2buf', 'plot_scatter', 'get_idxs',
+           'apply_cmap', 'torch_tile', 'to_tsfresh_df', 'pcorr', 'scorr', 'torch_diff', 'get_outliers_IQR',
+           'clip_outliers', 'get_percentile', 'torch_clamp', 'get_robustscale_params', 'torch_slice_by_dim',
+           'torch_nanmean', 'torch_nanstd', 'concat', 'reduce_memory_usage', 'cls_name', 'roll2d', 'roll3d',
+           'random_roll2d', 'random_roll3d', 'rotate_axis0', 'rotate_axis1', 'rotate_axis2', 'chunks_calculator',
+           'is_memory_shared', 'assign_in_chunks', 'create_array', 'create_empty_array', 'np_save_compressed',
+           'np_load_compressed', 'np2memmap', 'torch_mean_groupby', 'torch_flip', 'torch_nan_to_num',
+           'torch_masked_to_num', 'mpl_trend', 'int2digits', 'array2digits', 'sincos_encoding', 'linear_encoding',
+           'encode_positions', 'sort_generator', 'get_subset_dict', 'create_dir', 'remove_dir', 'named_partial',
+           'yaml2dict', 'str2list', 'str2index', 'get_cont_cols', 'get_cat_cols', 'alphabet', 'ALPHABET', 'get_mapping',
+           'map_array', 'log_tfm', 'to_sincos_time', 'plot_feature_dist', 'rolling_moving_average', 'ffill_sequence',
+           'bfill_sequence', 'fbfill_sequence', 'dummify', 'shuffle_along_axis', 'analyze_feature', 'analyze_array',
+           'get_relpath']
 
 # Cell
 from .imports import *
@@ -311,6 +312,36 @@ def stack_pad(o, padding_value=np.nan):
             result = result.reshape(*o_shape)
         else:
             result = result.reshape(*o_shape, row_length)
+    return result
+
+# Cell
+def pad_sequences(
+    o, # Iterable object
+    maxlen:int=None, # Optional max length of the output. If None, max length of the longest individual sequence.
+    dtype:(str, type)=np.float64, # Type of the output sequences. To pad sequences with variable length strings, you can use object.
+    padding:str='pre', # 'pre' or 'post' pad either before or after each sequence.
+    truncating:str='pre', # 'pre' or 'post' remove values from sequences larger than maxlen, either at the beginning or at the end of the sequences.
+    padding_value:float=np.nan, # Value used for padding.
+):
+    "Transforms an iterable with sequences into a 3d numpy array using padding or truncating sequences if necessary"
+
+    assert padding in ['pre', 'post']
+    assert truncating in ['pre', 'post']
+    assert is_iter(o)
+
+    if not is_array(o):
+        o = [to2darray(oi) for oi in o]
+    seq_len = maxlen or max(o, key=len).shape[-1]
+    result = np.full((len(o), o[0].shape[-2], seq_len), padding_value, dtype=dtype)
+    for i,values in enumerate(o):
+        if truncating == 'pre':
+            values = values[..., -seq_len:]
+        else:
+            values = values[..., :seq_len]
+        if padding == 'pre':
+            result[i, :, -values.shape[-1]:] = values
+        else:
+            result[i, :, :values.shape[-1]] = values
     return result
 
 # Cell
