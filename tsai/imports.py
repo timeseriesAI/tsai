@@ -236,7 +236,7 @@ def import_file_as_module(filepath, return_path=False):
         module = importlib.import_module(mod_path)
     except: 
         module = importlib.import_module(name, package)
-    if return_path: return module, module_path
+    if return_path: return module, mod_path
     else: return module
 
 def my_setup(*pkgs):
