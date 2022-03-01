@@ -3,10 +3,9 @@
 __all__ = ['ModelWithTemperature', 'TemperatureSetter', 'ECELoss', 'plot_calibration_curve']
 
 # Cell
+from sklearn.calibration import calibration_curve
 from .imports import *
 from .data.core import *
-from torch.nn import functional as F
-from sklearn.calibration import calibration_curve
 
 # Cell
 class ModelWithTemperature(nn.Module):

@@ -25,10 +25,9 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'get_relpath']
 
 # Cell
+import string
+from scipy.stats import ttest_ind, ks_2samp, pearsonr, spearmanr, normaltest, linregress
 from .imports import *
-from fastcore.test import *
-import inspect
-import sklearn
 
 # Cell
 def totensor(o):
@@ -37,7 +36,7 @@ def totensor(o):
     elif isinstance(o, pd.DataFrame): return torch.from_numpy(o.values)
     else:
         try: return torch.tensor(o)
-        except: warnings.warn(f"Can't convert {type(o)} to torch.Tensor", Warning)
+        except: warn(f"Can't convert {type(o)} to torch.Tensor", Warning)
 
 
 def toarray(o):
@@ -46,7 +45,7 @@ def toarray(o):
     elif isinstance(o, pd.DataFrame): return o.values
     else:
         try: return np.asarray(o)
-        except: warnings.warn(f"Can't convert {type(o)} to np.array", Warning)
+        except: warn(f"Can't convert {type(o)} to np.array", Warning)
 
 
 def toL(o):
@@ -54,7 +53,7 @@ def toL(o):
     elif isinstance(o, (np.ndarray, torch.Tensor)): return L(o.tolist())
     else:
         try: return L(o)
-        except: warnings.warn(f'passed object needs to be of type L, list, np.ndarray or torch.Tensor but is {type(o)}', Warning)
+        except: warn(f'passed object needs to be of type L, list, np.ndarray or torch.Tensor but is {type(o)}', Warning)
 
 
 def to3dtensor(o):
@@ -182,6 +181,7 @@ def is_file(file_path):
 
 # Cell
 def delete_all_in_dir(tgt_dir, exception=None):
+    import shutil
     if exception is not None and len(L(exception)) > 1: exception = tuple(exception)
     for file in os.listdir(tgt_dir):
         if exception is not None and file.endswith(exception): continue
@@ -254,7 +254,6 @@ def test_error(error, f, *args, **kwargs):
     try: f(*args, **kwargs)
     except Exception as e:
         test_eq(str(e), error)
-
 
 def test_eq_nan(a,b):
     "`test` that `a==b` excluding nan values (valid for torch.Tensor and np.ndarray)"
@@ -351,12 +350,15 @@ def match_seq_len(*arrays):
 
 # Cell
 def random_shuffle(o, random_state=None):
+    import sklearn
     res = sklearn.utils.shuffle(o, random_state=random_state)
     if isinstance(o, L): return L(list(res))
     return res
 
 # Cell
 def cat2int(o):
+    from fastai.data.transforms import Categorize
+    from fastai.data.core import TfmdLists
     cat = Categorize()
     cat.setup(o)
     return stack(TfmdLists(o, cat)[:])
@@ -393,6 +395,7 @@ cache_memmap = cache_data
 
 # Cell
 def get_func_defaults(f):
+    import inspect
     fa = inspect.getfullargspec(f)
     if fa.defaults is None: return dict(zip(fa.args, [''] * (len(fa.args))))
     else: return dict(zip(fa.args, [''] * (len(fa.args) - len(fa.defaults)) + list(fa.defaults)))
@@ -428,7 +431,7 @@ def display_pd_df(df, max_rows:Union[bool, int]=False, max_columns:Union[bool, i
 # Cell
 def ttest(data1, data2, equal_var=False):
     "Calculates t-statistic and p-value based on 2 sample distributions"
-    t_stat, p_value = scipy.stats.ttest_ind(data1, data2, equal_var=equal_var)
+    t_stat, p_value = ttest_ind(data1, data2, equal_var=equal_var)
     return t_stat, np.sign(t_stat) * p_value
 
 def kstest(data1, data2, alternative='two-sided', mode='auto', by_axis=None):
@@ -441,7 +444,7 @@ def kstest(data1, data2, alternative='two-sided', mode='auto', by_axis=None):
     by_axis (optional, int): for arrays with more than 1 dimension, the test will be run for each variable in that axis if by_axis is not None.
     """
     if by_axis is None:
-        stat, p_value = scipy.stats.ks_2samp(data1.flatten(), data2.flatten(), alternative=alternative, mode=mode)
+        stat, p_value = ks_2samp(data1.flatten(), data2.flatten(), alternative=alternative, mode=mode)
         return stat, np.sign(stat) * p_value
     else:
         assert data1.shape[by_axis] == data2.shape[by_axis], f"both arrays must have the same size along axis {by_axis}"
@@ -449,7 +452,7 @@ def kstest(data1, data2, alternative='two-sided', mode='auto', by_axis=None):
         for i in range(data1.shape[by_axis]):
             d1 = np.take(data1, indices=i, axis=by_axis)
             d2 = np.take(data2, indices=i, axis=by_axis)
-            stat, p_value = scipy.stats.ks_2samp(d1.flatten(), d2.flatten(), alternative=alternative, mode=mode)
+            stat, p_value = ks_2samp(d1.flatten(), d2.flatten(), alternative=alternative, mode=mode)
             stats.append(stat)
             p_values.append(np.sign(stat) * p_value)
         return stats, p_values
@@ -471,8 +474,6 @@ def ttest_tensor(a, b):
     return t_stat
 
 # Cell
-from scipy.stats import pearsonr, spearmanr
-
 def pcc(a, b):
     return pearsonr(a, b)[0]
 
@@ -560,7 +561,7 @@ def fig2buf(fig):
 
 # Cell
 def plot_scatter(x, y, deg=1):
-    linreg = sp.stats.linregress(x, y)
+    linreg = linregress(x, y)
     plt.scatter(x, y, label=f'R2:{linreg.rvalue:.2f}', color='lime', edgecolor='black', alpha=.5)
     plt.plot(np.unique(x), np.poly1d(np.polyfit(x, y, deg))(np.unique(x)), color='r')
     plt.legend(loc='best')
@@ -608,13 +609,11 @@ def to_tsfresh_df(ts):
     return df
 
 # Cell
-from scipy.stats import skew, kurtosis
-
 def pcorr(a, b):
-    return scipy.stats.pearsonr(a, b)
+    return pearsonr(a, b)
 
 def scorr(a, b):
-    corr = scipy.stats.spearmanr(a, b)
+    corr = spearmanr(a, b)
     return corr[0], corr[1]
 
 # Cell
@@ -1078,6 +1077,7 @@ def create_dir(directory, verbose=True):
 
 
 def remove_dir(directory, verbose=True):
+    import shutil
     if not is_listy(directory): directory = [directory]
     for d in directory:
         d = Path(d)
@@ -1103,6 +1103,7 @@ class named_partial(object):
 
 # Cell
 def yaml2dict(fname):
+    import yaml
     with maybe_open(fname, 'r') as f:
         dictionary = yaml.safe_load(f)
     return AttrDict(dictionary)
@@ -1270,7 +1271,7 @@ def analyze_feature(feature, bins=100, density=False, feature_name=None, clip_ou
     print(f"{'outliers':>{text_len}}: {((non_nan_feature < min_outliers) | (non_nan_feature > max_outliers)).mean():.1%}")
     print(f"{'mean':>{text_len}}: {np.nanmean(feature)}")
     print(f"{'std':>{text_len}}: {np.nanstd(feature)}")
-    print(f"{'normal dist':>{text_len}}: {scipy.stats.normaltest(non_nan_feature, axis=0, nan_policy='propagate')[1] > .05}")
+    print(f"{'normal dist':>{text_len}}: {normaltest(non_nan_feature, axis=0, nan_policy='propagate')[1] > .05}")
     plt.figure(figsize=figsize)
     if clip_outliers_plot:
         plt.hist(np.clip(non_nan_feature, min_outliers, max_outliers), bins, density=density, color='lime', edgecolor='black')

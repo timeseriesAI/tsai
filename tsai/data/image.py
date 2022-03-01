@@ -3,20 +3,18 @@
 __all__ = ['TSImage', 'ToTSImage', 'TSToPlot', 'TSToMat', 'TSToGADF', 'TSToGASF', 'TSToMTF', 'TSToRP', 'TSToJRP']
 
 # Cell
+from matplotlib.backends.backend_agg import FigureCanvasAgg
+from pyts.image.gaf import GramianAngularField
+from pyts.image import MarkovTransitionField, RecurrencePlot
+from pyts.multivariate.image import JointRecurrencePlot
+from fastai.vision.augment import *
+from fastai.vision.core import *
 from ..imports import *
 from ..utils import *
 from .external import *
 from .core import *
 from .preprocessing import *
 from .transforms import *
-
-# Cell
-from fastai.vision.augment import *
-from fastai.vision.core import *
-from matplotlib.backends.backend_agg import FigureCanvasAgg
-from pyts.image.gaf import GramianAngularField
-from pyts.image import MarkovTransitionField, RecurrencePlot
-from pyts.multivariate.image import JointRecurrencePlot
 
 # Cell
 class TSImage(TensorImage):

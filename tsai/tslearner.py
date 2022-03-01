@@ -3,11 +3,17 @@
 __all__ = ['TSClassifier', 'TSRegressor', 'TSForecaster']
 
 # Cell
+from fastai.learner import Learner
+from fastai.optimizer import Adam
+from fastai.metrics import accuracy
+from fastai.losses import *
 from .imports import *
 from .learner import *
-from .data.all import *
+from .data.validation import *
+from .data.core import *
 from .models.InceptionTimePlus import *
 from .models.utils import *
+from .metrics import *
 
 # Cell
 
@@ -45,13 +51,15 @@ class TSClassifier(Learner):
         if arch is None:
             arch = InceptionTimePlus
         elif isinstance(arch, str): arch = get_arch(arch)
-        if 'xresnet' in arch.__name__.lower() and not '1d' in arch.__name__.lower():
-            model = build_tsimage_model(arch, dls=dls, pretrained=pretrained, init=init, device=device, verbose=verbose, arch_config=arch_config)
-        elif 'tabularmodel' in arch.__name__.lower():
-            build_tabular_model(arch, dls=dls, device=device, arch_config=arch_config)
-        else:
-            model = build_ts_model(arch, dls=dls, device=device, verbose=verbose, pretrained=pretrained, weights_path=weights_path,
-                                   exclude_head=exclude_head, cut=cut, init=init, arch_config=arch_config)
+        # if 'xresnet' in arch.__name__.lower() and not '1d' in arch.__name__.lower():
+        #     model = build_tsimage_model(arch, dls=dls, pretrained=pretrained, init=init, device=device, verbose=verbose, arch_config=arch_config)
+        # elif 'tabularmodel' in arch.__name__.lower():
+        #     model = build_tabular_model(arch, dls=dls, device=device, arch_config=arch_config)
+        # else:
+        #     model = build_ts_model(arch, dls=dls, device=device, verbose=verbose, pretrained=pretrained, weights_path=weights_path,
+        #                            exclude_head=exclude_head, cut=cut, init=init, arch_config=arch_config)
+        model = build_ts_model(arch, dls=dls, device=device, verbose=verbose, pretrained=pretrained, weights_path=weights_path,
+                                exclude_head=exclude_head, cut=cut, init=init, arch_config=arch_config)
         setattr(model, "__name__", arch.__name__)
         try:
             model[0], model[1]
@@ -66,8 +74,6 @@ class TSClassifier(Learner):
             self.recorder.train_metrics = True
 
 # Cell
-
-
 class TSRegressor(Learner):
     def __init__(self, X, y=None, splits=None, tfms=None, inplace=True, sel_vars=None, sel_steps=None, weights=None, partial_n=None, train_metrics=False,
                  bs=[64, 128], batch_size=None, batch_tfms=None, shuffle_train=True, drop_last=True, num_workers=0, do_setup=True, device=None,
@@ -102,12 +108,14 @@ class TSRegressor(Learner):
         if arch is None:
             arch = InceptionTimePlus
         elif isinstance(arch, str): arch = get_arch(arch)
-        if 'xresnet' in arch.__name__.lower() and not '1d' in arch.__name__.lower():
-            model = build_tsimage_model(arch, dls=dls, pretrained=pretrained, init=init, device=device, verbose=verbose, arch_config=arch_config)
-        elif 'tabularmodel' in arch.__name__.lower():
-            build_tabular_model(arch, dls=dls, device=device, arch_config=arch_config)
-        else:
-            model = build_ts_model(arch, dls=dls, device=device, verbose=verbose, pretrained=pretrained, weights_path=weights_path,
+        # if 'xresnet' in arch.__name__.lower() and not '1d' in arch.__name__.lower():
+        #     model = build_tsimage_model(arch, dls=dls, pretrained=pretrained, init=init, device=device, verbose=verbose, arch_config=arch_config)
+        # elif 'tabularmodel' in arch.__name__.lower():
+        #     model = build_tabular_model(arch, dls=dls, device=device, arch_config=arch_config)
+        # else:
+        #     model = build_ts_model(arch, dls=dls, device=device, verbose=verbose, pretrained=pretrained, weights_path=weights_path,
+        #                        exclude_head=exclude_head, cut=cut, init=init, arch_config=arch_config)
+        model = build_ts_model(arch, dls=dls, device=device, verbose=verbose, pretrained=pretrained, weights_path=weights_path,
                                exclude_head=exclude_head, cut=cut, init=init, arch_config=arch_config)
         setattr(model, "__name__", arch.__name__)
         try:
@@ -158,12 +166,14 @@ class TSForecaster(Learner):
         if arch is None:
             arch = InceptionTimePlus
         elif isinstance(arch, str): arch = get_arch(arch)
-        if 'xresnet' in arch.__name__.lower() and not '1d' in arch.__name__.lower():
-            model = build_tsimage_model(arch, dls=dls, pretrained=pretrained, init=init, device=device, verbose=verbose, arch_config=arch_config)
-        elif 'tabularmodel' in arch.__name__.lower():
-            build_tabular_model(arch, dls=dls, device=device, arch_config=arch_config)
-        else:
-            model = build_ts_model(arch, dls=dls, device=device, verbose=verbose, pretrained=pretrained, weights_path=weights_path,
+        # if 'xresnet' in arch.__name__.lower() and not '1d' in arch.__name__.lower():
+        #     model = build_tsimage_model(arch, dls=dls, pretrained=pretrained, init=init, device=device, verbose=verbose, arch_config=arch_config)
+        # elif 'tabularmodel' in arch.__name__.lower():
+        #     model = build_tabular_model(arch, dls=dls, device=device, arch_config=arch_config)
+        # else:
+        #     model = build_ts_model(arch, dls=dls, device=device, verbose=verbose, pretrained=pretrained, weights_path=weights_path,
+        #                        exclude_head=exclude_head, cut=cut, init=init, arch_config=arch_config)
+        model = build_ts_model(arch, dls=dls, device=device, verbose=verbose, pretrained=pretrained, weights_path=weights_path,
                                exclude_head=exclude_head, cut=cut, init=init, arch_config=arch_config)
         setattr(model, "__name__", arch.__name__)
         try:

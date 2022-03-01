@@ -133,7 +133,7 @@ nb_path: "nbs/106_models.XceptionTime.ipynb"
 <span class="n">test_eq</span><span class="p">(</span><span class="n">XceptionTime</span><span class="p">(</span><span class="nb">vars</span><span class="p">,</span><span class="n">c_out</span><span class="p">)(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">])</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">XceptionTime</span><span class="p">(</span><span class="nb">vars</span><span class="p">,</span><span class="n">c_out</span><span class="p">,</span> <span class="n">bottleneck</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">])</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">XceptionTime</span><span class="p">(</span><span class="nb">vars</span><span class="p">,</span><span class="n">c_out</span><span class="p">,</span> <span class="n">residual</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">])</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">total_params</span><span class="p">(</span><span class="n">XceptionTime</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">))[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">399540</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">count_parameters</span><span class="p">(</span><span class="n">XceptionTime</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="mi">399540</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -208,7 +208,7 @@ nb_path: "nbs/106_models.XceptionTime.ipynb"
           (0): MaxPool1d(kernel_size=3, stride=1, padding=1, dilation=1, ceil_mode=False)
           (1): Conv1d(3, 16, kernel_size=(1,), stride=(1,), bias=False)
         )
-        (concat): Concat(1)
+        (concat): Concat(dim=1)
       )
       (1): XceptionModule(
         (bottleneck): Conv1d(64, 32, kernel_size=(1,), stride=(1,), bias=False)
@@ -230,7 +230,7 @@ nb_path: "nbs/106_models.XceptionTime.ipynb"
           (0): MaxPool1d(kernel_size=3, stride=1, padding=1, dilation=1, ceil_mode=False)
           (1): Conv1d(64, 32, kernel_size=(1,), stride=(1,), bias=False)
         )
-        (concat): Concat(1)
+        (concat): Concat(dim=1)
       )
       (2): XceptionModule(
         (bottleneck): Conv1d(128, 64, kernel_size=(1,), stride=(1,), bias=False)
@@ -252,7 +252,7 @@ nb_path: "nbs/106_models.XceptionTime.ipynb"
           (0): MaxPool1d(kernel_size=3, stride=1, padding=1, dilation=1, ceil_mode=False)
           (1): Conv1d(128, 64, kernel_size=(1,), stride=(1,), bias=False)
         )
-        (concat): Concat(1)
+        (concat): Concat(dim=1)
       )
       (3): XceptionModule(
         (bottleneck): Conv1d(256, 128, kernel_size=(1,), stride=(1,), bias=False)
@@ -274,7 +274,7 @@ nb_path: "nbs/106_models.XceptionTime.ipynb"
           (0): MaxPool1d(kernel_size=3, stride=1, padding=1, dilation=1, ceil_mode=False)
           (1): Conv1d(256, 128, kernel_size=(1,), stride=(1,), bias=False)
         )
-        (concat): Concat(1)
+        (concat): Concat(dim=1)
       )
     )
     (shortcut): ModuleList(

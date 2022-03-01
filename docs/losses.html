@@ -86,7 +86,7 @@ This loss is equivalent to nn.SmoothL1Loss when delta == 1.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LogCoshLoss" class="doc_header"><code>class</code> <code>LogCoshLoss</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/losses.py#L41" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LogCoshLoss</code>(<strong><code>reduction</code></strong>=<em><code>'mean'</code></em>, <strong><code>delta</code></strong>=<em><code>1.0</code></em>) :: <code>Module</code></p>
+<h2 id="LogCoshLoss" class="doc_header"><code>class</code> <code>LogCoshLoss</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/losses.py#L40" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LogCoshLoss</code>(<strong><code>reduction</code></strong>=<em><code>'mean'</code></em>, <strong><code>delta</code></strong>=<em><code>1.0</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -155,7 +155,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor(0.4309)</pre>
+<pre>tensor(0.5163)</pre>
 </div>
 
 </div>
@@ -177,7 +177,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MaskedLossWrapper" class="doc_header"><code>class</code> <code>MaskedLossWrapper</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/losses.py#L57" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MaskedLossWrapper</code>(<strong><code>crit</code></strong>) :: <code>Module</code></p>
+<h2 id="MaskedLossWrapper" class="doc_header"><code>class</code> <code>MaskedLossWrapper</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/losses.py#L56" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MaskedLossWrapper</code>(<strong><code>crit</code></strong>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -223,7 +223,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(tensor(nan), tensor(0.8740))</pre>
+<pre>(tensor(nan), tensor(0.8861))</pre>
 </div>
 
 </div>
@@ -245,7 +245,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="CenterLoss" class="doc_header"><code>class</code> <code>CenterLoss</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/losses.py#L69" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CenterLoss</code>(<strong><code>c_out</code></strong>, <strong><code>logits_dim</code></strong>=<em><code>None</code></em>) :: <code>Module</code></p>
+<h2 id="CenterLoss" class="doc_header"><code>class</code> <code>CenterLoss</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/losses.py#L68" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CenterLoss</code>(<strong><code>c_out</code></strong>, <strong><code>logits_dim</code></strong>=<em><code>None</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Code in Pytorch has been slightly modified from: <a href="https://github.com/KaiyangZhou/pytorch-center-loss/blob/master/center_loss.py">https://github.com/KaiyangZhou/pytorch-center-loss/blob/master/center_loss.py</a>
 Based on paper: Wen et al. A Discriminative Feature Learning Approach for Deep Face Recognition. ECCV 2016.</p>
@@ -274,7 +274,7 @@ Based on paper: Wen et al. A Discriminative Feature Learning Approach for Deep F
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="CenterPlusLoss" class="doc_header"><code>class</code> <code>CenterPlusLoss</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/losses.py#L105" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CenterPlusLoss</code>(<strong><code>loss</code></strong>, <strong><code>c_out</code></strong>, <strong><code>λ</code></strong>=<em><code>0.01</code></em>, <strong><code>logits_dim</code></strong>=<em><code>None</code></em>) :: <code>Module</code></p>
+<h2 id="CenterPlusLoss" class="doc_header"><code>class</code> <code>CenterPlusLoss</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/losses.py#L104" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CenterPlusLoss</code>(<strong><code>loss</code></strong>, <strong><code>c_out</code></strong>, <strong><code>λ</code></strong>=<em><code>0.01</code></em>, <strong><code>logits_dim</code></strong>=<em><code>None</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -321,8 +321,8 @@ Based on paper: Wen et al. A Discriminative Feature Learning Approach for Deep F
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(tensor(10.6629, grad_fn=&lt;DivBackward0&gt;),
- TensorBase(2.3617, grad_fn=&lt;AliasBackward0&gt;))</pre>
+<pre>(tensor(10.0209, grad_fn=&lt;DivBackward0&gt;),
+ TensorBase(2.3661, grad_fn=&lt;AliasBackward0&gt;))</pre>
 </div>
 
 </div>
@@ -422,7 +422,7 @@ Based on paper: Wen et al. A Discriminative Feature Learning Approach for Deep F
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor(1.5199)</pre>
+<pre>tensor(1.0812)</pre>
 </div>
 
 </div>
@@ -444,7 +444,7 @@ Based on paper: Wen et al. A Discriminative Feature Learning Approach for Deep F
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TweedieLoss" class="doc_header"><code>class</code> <code>TweedieLoss</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/losses.py#L144" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TweedieLoss</code>(<strong><code>p</code></strong>=<em><code>1.5</code></em>, <strong><code>eps</code></strong>=<em><code>1e-10</code></em>) :: <code>Module</code></p>
+<h2 id="TweedieLoss" class="doc_header"><code>class</code> <code>TweedieLoss</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/losses.py#L143" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TweedieLoss</code>(<strong><code>p</code></strong>=<em><code>1.5</code></em>, <strong><code>eps</code></strong>=<em><code>1e-10</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -490,7 +490,7 @@ Based on paper: Wen et al. A Discriminative Feature Learning Approach for Deep F
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor(3.2877)</pre>
+<pre>tensor(3.2466)</pre>
 </div>
 
 </div>

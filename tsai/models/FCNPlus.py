@@ -3,6 +3,7 @@
 __all__ = ['FCNPlus']
 
 # Cell
+from fastai.layers import *
 from ..imports import *
 from .layers import *
 

@@ -3,7 +3,7 @@
 __all__ = ['wrap_optimizer']
 
 # Cell
-from .imports import *
+from functools import partial
 from fastai.optimizer import *
 
 # Cell

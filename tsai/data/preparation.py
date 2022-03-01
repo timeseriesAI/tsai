@@ -8,8 +8,6 @@ __all__ = ['df2Xy', 'split_Xy', 'df2xy', 'split_xy', 'df2np3d', 'add_missing_val
 # Cell
 from ..imports import *
 from ..utils import *
-from .validation import *
-from io import StringIO
 
 # Cell
 def df2Xy(df, sample_col=None, feat_col=None, data_cols=None, target_col=None, steps_in_rows=False, to3d=True, splits=None,
@@ -254,7 +252,7 @@ def nearest_gaps(o, normalize=True):
         return np.fmin(forward, backward)
 
 
-def get_gaps(o : Tensor, forward : bool = True, backward : bool = True,
+def get_gaps(o : torch.Tensor, forward : bool = True, backward : bool = True,
              nearest : bool = True, normalize : bool = True):
     """Number of sequence steps from previous, to next and/or to nearest real value along the
     last dimension of 3D arrays or tensors"""

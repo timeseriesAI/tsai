@@ -51,13 +51,6 @@ nb_path: "nbs/113_models.TCN.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
 <div class="output_wrapper">
 <div class="output">
 
@@ -65,7 +58,7 @@ nb_path: "nbs/113_models.TCN.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TemporalBlock" class="doc_header"><code>class</code> <code>TemporalBlock</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/TCN.py#L21" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TemporalBlock</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>ks</code></strong>, <strong><code>stride</code></strong>, <strong><code>dilation</code></strong>, <strong><code>padding</code></strong>, <strong><code>dropout</code></strong>=<em><code>0.0</code></em>) :: <code>Module</code></p>
+<h2 id="TemporalBlock" class="doc_header"><code>class</code> <code>TemporalBlock</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/TCN.py#L19" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TemporalBlock</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>ks</code></strong>, <strong><code>stride</code></strong>, <strong><code>dilation</code></strong>, <strong><code>padding</code></strong>, <strong><code>dropout</code></strong>=<em><code>0.0</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -90,7 +83,7 @@ nb_path: "nbs/113_models.TCN.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TemporalConvNet" class="doc_header"><code>TemporalConvNet</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/TCN.py#L47" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TemporalConvNet</code>(<strong><code>c_in</code></strong>, <strong><code>layers</code></strong>, <strong><code>ks</code></strong>=<em><code>2</code></em>, <strong><code>dropout</code></strong>=<em><code>0.0</code></em>)</p>
+<h4 id="TemporalConvNet" class="doc_header"><code>TemporalConvNet</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/TCN.py#L45" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TemporalConvNet</code>(<strong><code>c_in</code></strong>, <strong><code>layers</code></strong>, <strong><code>ks</code></strong>=<em><code>2</code></em>, <strong><code>dropout</code></strong>=<em><code>0.0</code></em>)</p>
 </blockquote>
 
 </div>
@@ -114,7 +107,7 @@ nb_path: "nbs/113_models.TCN.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TCN" class="doc_header"><code>class</code> <code>TCN</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/TCN.py#L56" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TCN</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>layers</code></strong>=<em><code>[25, 25, 25, 25, 25, 25, 25, 25]</code></em>, <strong><code>ks</code></strong>=<em><code>7</code></em>, <strong><code>conv_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>) :: <code>Module</code></p>
+<h2 id="TCN" class="doc_header"><code>class</code> <code>TCN</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/TCN.py#L54" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TCN</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>layers</code></strong>=<em><code>[25, 25, 25, 25, 25, 25, 25, 25]</code></em>, <strong><code>ks</code></strong>=<em><code>7</code></em>, <strong><code>conv_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 

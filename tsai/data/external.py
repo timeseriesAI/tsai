@@ -9,25 +9,19 @@ __all__ = ['decompress_from_url', 'download_data', 'get_UCR_univariate_list', 'U
            'get_forecasting_data']
 
 # Cell
-from ..imports import *
-from ..utils import *
-from .validation import *
-
-# Cell
-from sktime.utils.data_io import load_from_tsfile_to_dataframe as ts2df
-from sktime.utils.validation.panel import check_X
-from sktime.utils.data_io import TsFileParseException
-
-# Cell
-from fastai.data.external import *
 from tqdm import tqdm
 import zipfile
 import tempfile
 try: from urllib import urlretrieve
 except ImportError: from urllib.request import urlretrieve
 import shutil
-from numpy import distutils
 import distutils
+from sktime.utils.data_io import load_from_tsfile_to_dataframe as ts2df
+from sktime.utils.validation.panel import check_X
+from sktime.utils.data_io import TsFileParseException
+from ..imports import *
+from ..utils import *
+from .validation import *
 
 # Cell
 def decompress_from_url(url, target_dir=None, verbose=False):
@@ -59,9 +53,10 @@ def decompress_from_url(url, target_dir=None, verbose=False):
             sys.stderr.write("Could not download url. Please, check url.\n")
 
 # Cell
-from fastdownload import download_url
 def download_data(url, fname=None, c_key='archive', force_download=False, timeout=4, verbose=False):
     "Download `url` to `fname`."
+    from fastai.data.external import URLs
+    from fastdownload import download_url
     fname = Path(fname or URLs.path(url, c_key=c_key))
     fname.parent.mkdir(parents=True, exist_ok=True)
     if not fname.exists() or force_download: download_url(url, dest=fname, timeout=timeout, show_progress=verbose)
@@ -1129,7 +1124,7 @@ def convert_tsf_to_dataframe(full_file_path_and_name, replace_missing_vals_with 
                             elif col_types[i] == "string":
                                 att_val = str(full_info[i])
                             elif col_types[i] == "date":
-                                att_val = datetime.strptime(full_info[i], '%Y-%m-%d %H-%M-%S')
+                                att_val = datetime.datetime.strptime(full_info[i], '%Y-%m-%d %H-%M-%S')
                             else:
                                 raise TsFileParseException("Invalid attribute type.") # Currently, the code supports only numeric, string and date types. Extend this as required.
 

@@ -3,10 +3,12 @@
 __all__ = ['get_acts_and_grads', 'get_attribution_map']
 
 # Cell
+from fastai.callback.hook import *
 from ..imports import *
 from ..utils import *
 from .layers import *
 from .utils import *
+warnings.filterwarnings("ignore", category=UserWarning)
 
 # Cell
 def get_acts_and_grads(model, modules, x, y=None, detach=True, cpu=False):

@@ -4,6 +4,8 @@ __all__ = ['create_subsequence_mask', 'create_variable_mask', 'create_future_mas
            'TSBERT']
 
 # Cell
+from torch.distributions.geometric import Geometric
+from torch.distributions.binomial import Binomial
 from ..imports import *
 from fastai.callback.all import *
 from ..utils import *
@@ -11,12 +13,6 @@ from ..models.utils import *
 from ..models.layers import *
 
 # Cell
-from torch.distributions.beta import Beta
-
-# Cell
-from torch.distributions.geometric import Geometric
-from torch.distributions.binomial import Binomial
-
 def create_subsequence_mask(o, r=.15, lm=3, stateful=True, sync=False):
     if r <= 0: return torch.zeros_like(o).bool()
     device = o.device

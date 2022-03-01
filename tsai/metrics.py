@@ -5,8 +5,9 @@ __all__ = ['MatthewsCorrCoefBinary', 'get_task_metrics', 'accuracy_multi', 'metr
            'recall_at_specificity', 'mean_per_class_accuracy']
 
 # Cell
-from .imports import *
+import sklearn.metrics as skm
 from fastai.metrics import *
+from .imports import *
 
 # Cell
 mk_class('ActivationType', **{o:o.lower() for o in ['No', 'Sigmoid', 'Softmax', 'BinarySoftmax']},

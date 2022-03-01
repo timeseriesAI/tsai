@@ -12,7 +12,7 @@ import torch.nn.functional as F
 from collections import OrderedDict
 import itertools
 
-
+# Cell
 class MiniRocketFeaturesPlus(nn.Module):
     fitting = False
 
@@ -185,8 +185,6 @@ class MiniRocketFeaturesPlus(nn.Module):
         return indices, pos_values
 
 # Cell
-
-
 class Flatten(nn.Module):
     def forward(self, x): return x.view(x.size(0), -1)
 
@@ -218,7 +216,6 @@ class MiniRocketPlus(nn.Sequential):
         super().__init__(OrderedDict([('backbone', backbone), ('head', head)]))
 
 # Cell
-
 def get_minirocket_features(o, model, chunksize=1024, use_cuda=None, to_np=False):
     """Function used to split a large dataset into chunks, avoiding OOM error."""
     use = torch.cuda.is_available() if use_cuda is None else use_cuda
@@ -237,7 +234,6 @@ def get_minirocket_features(o, model, chunksize=1024, use_cuda=None, to_np=False
         return features
 
 # Cell
-
 class MiniRocketHead(nn.Sequential):
     def __init__(self, c_in, c_out, seq_len=1, bn=True, fc_dropout=0.):
         layers = [nn.Flatten()]
@@ -254,7 +250,6 @@ class MiniRocketHead(nn.Sequential):
             [('backbone', nn.Sequential()), ('head', head)]))
 
 # Cell
-
 class InceptionRocketFeaturesPlus(nn.Module):
     fitting = False
 
@@ -303,7 +298,6 @@ class InceptionRocketFeaturesPlus(nn.Module):
         return num_features_per_kernel_size
 
 # Cell
-
 class InceptionRocketPlus(nn.Sequential):
 
     def __init__(self, c_in, c_out, seq_len, num_features=10_000, max_dilations_per_kernel=32, kernel_sizes=[3, 5, 7, 9],

@@ -3,15 +3,11 @@
 __all__ = ['MixHandler1d', 'MixUp1d', 'MixUp1D', 'CutMix1d', 'IntraClassCutMix1d']
 
 # Cell
+from torch.distributions.beta import Beta
+from fastai.callback.core import Callback
+from fastai.layers import NoneReduce
 from ..imports import *
 from ..utils import *
-from .external import *
-from .core import *
-from .preprocessing import *
-
-# Cell
-from torch.distributions.beta import Beta
-import warnings
 warnings.filterwarnings("ignore", category=UserWarning)
 
 # Cell

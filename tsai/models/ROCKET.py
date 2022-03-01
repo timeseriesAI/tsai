@@ -4,14 +4,19 @@ __all__ = ['generate_kernels', 'apply_kernel', 'apply_kernels', 'ROCKET', 'creat
            'get_rocket_features', 'RocketClassifier', 'load_rocket', 'RocketRegressor']
 
 # Cell
+import sklearn
+from sklearn.linear_model import RidgeClassifierCV, RidgeCV
+from sklearn.metrics import make_scorer
 from ..imports import *
 from ..data.external import *
 from .layers import *
 
 # Cell
-from sklearn.linear_model import RidgeClassifierCV, RidgeCV
-from sktime.transformations.panel.rocket import Rocket
-from numba import njit, prange
+try:
+    import numba
+    from numba import njit, prange
+except ImportError:
+    print("You need to install numba to be able to use apply_kernels")
 
 # Cell
 # This is an unofficial ROCKET implementation in Pytorch developed by Ignacio Oguiza - oguiza@gmail.com based on:
@@ -161,6 +166,13 @@ class RocketClassifier(sklearn.pipeline.Pipeline):
             random_state    : int (ignored unless int due to compatability with Numba), random seed (optional, default None)
 
         """
+
+        try:
+            import sktime
+            from sktime.transformations.panel.rocket import Rocket
+        except ImportError:
+            print("You need to install sktime to be able to use RocketClassifier")
+
         self.steps = [('rocket', Rocket(num_kernels=num_kernels, normalise=normalize_input, random_state=random_state)),
                       ('ridgeclassifiercv', RidgeClassifierCV(alphas=alphas, normalize=normalize_features, scoring=scoring,
                                                               class_weight=class_weight, **kwargs))]
@@ -200,6 +212,13 @@ class RocketRegressor(sklearn.pipeline.Pipeline):
             normalize_input : boolean, whether or not to normalise the input time series per instance (default True)
             random_state    : int (ignored unless int due to compatability with Numba), random seed (optional, default None)
         """
+
+        try:
+            import sktime
+            from sktime.transformations.panel.rocket import Rocket
+        except ImportError:
+            print("You need to install sktime to be able to use RocketClassifier")
+
         self.steps = [('rocket', Rocket(num_kernels=num_kernels, normalise=normalize_input, random_state=random_state)),
                       ('ridgecv', RidgeCV(alphas=alphas, normalize=normalize_features, scoring=scoring, **kwargs))]
         store_attr()

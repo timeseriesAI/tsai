@@ -4,18 +4,24 @@ __all__ = ['NumpyTensor', 'ToNumpyTensor', 'TSTensor', 'ToTSTensor', 'show_tuple
            'ToFloat', 'ToInt', 'TSClassification', 'TSCategorize', 'TSRegression', 'TSForecasting',
            'TSMultiLabelClassification', 'NumpyTensorBlock', 'TSTensorBlock', 'TorchDataset', 'NumpyDataset',
            'TSDataset', 'NoTfmLists', 'TSTfmdLists', 'NumpyDatasets', 'tscoll_repr', 'TSDatasets', 'add_ds',
-           'NumpyDataLoader', 'TSDataLoader', 'NumpyDataLoaders', 'TSDataLoaders', 'get_best_dl_params',
+           'NumpyDataLoader', 'TSDataLoader', 'NumpyDataLoaders', 'TSDataLoaders', 'get_c', 'get_best_dl_params',
            'get_best_dls_params', 'get_ts_dls', 'get_ts_dl', 'get_subset_dl', 'get_tsimage_dls']
 
 # Cell
-from ..imports import *
-from ..utils import *
-from .validation import *
-from .external import *
-
-# Cell
+from types import MethodType
 from matplotlib.ticker import PercentFormatter
 import matplotlib.colors as mcolors
+from matplotlib import rcParams
+from fastcore.transform import Transform, DisplayedTransform, Pipeline
+from fastai.data.transforms import (RandomSplitter, ItemGetter, MultiCategorize, CategoryMap,
+Category, MultiCategory, Categorize)
+from fastai.data.core import TfmdLists, Datasets, TfmdDL, DataLoaders
+from fastai.data.load import DataLoader
+from fastai.data.block import CategoryBlock, DataBlock
+from fastai.losses import MSELossFlat, CrossEntropyLossFlat, BCEWithLogitsLossFlat
+from fastai.vision.data import get_grid
+from ..imports import *
+from ..utils import *
 
 # Cell
 class NumpyTensor(TensorBase):
@@ -42,7 +48,7 @@ class NumpyTensor(TensorBase):
         if ax is None: _, ax = plt.subplots(**kwargs)
         ax.plot(self.T)
         ax.axis(xmin=0, xmax=self.shape[-1] - 1)
-        title_color = kwargs['title_color'] if 'title_color' in kwargs else matplotlib.rcParams['axes.labelcolor']
+        title_color = kwargs['title_color'] if 'title_color' in kwargs else rcParams['axes.labelcolor']
         if title is not None:
             if is_listy(title): title = str(title)[1:-1]
             ax.set_title(title, weight='bold', color=title_color)
@@ -591,7 +597,7 @@ class NumpyDataLoader(TfmdDL):
         elif b is None: b = self.one_batch()
         if not decode:                                        # decode = False allows you to see the data as seen by the model
             after_batch = self.after_batch
-            self.after_batch = fastcore.transform.Pipeline()
+            self.after_batch = Pipeline()
             db = self.decode_batch(b, max_n=max_n)
             self.after_batch = after_batch
         else:
@@ -784,6 +790,15 @@ class NumpyDataLoaders(DataLoaders):
 class TSDataLoaders(NumpyDataLoaders):
     _xblock = TSTensorBlock
     _dl_type = TSDataLoader
+
+# Cell
+def get_c(dls):
+    if getattr(dls, 'c', False): return dls.c
+    if getattr(getattr(dls.train, 'after_item', None), 'c', False): return dls.train.after_item.c
+    if getattr(getattr(dls.train, 'after_batch', None), 'c', False): return dls.train.after_batch.c
+    vocab = getattr(dls, 'vocab', [])
+    if len(vocab) > 0 and is_listy(vocab[-1]): vocab = vocab[-1]
+    return len(vocab)
 
 # Cell
 def get_best_dl_params(dl, n_iters=10, num_workers=[0, 1, 2, 4, 8], pin_memory=False, prefetch_factor=[2, 4, 8], return_best=True, verbose=True):

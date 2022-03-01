@@ -4,12 +4,10 @@ __all__ = ['xresnet1d18', 'xresnet1d34', 'xresnet1d50', 'xresnet1d101', 'xresnet
            'xresnet1d34_deep', 'xresnet1d50_deep', 'xresnet1d18_deeper', 'xresnet1d34_deeper', 'xresnet1d50_deeper']
 
 # Cell
+from fastai.vision.models.xresnet import *
 from ..imports import *
 from .layers import *
 from .utils import *
-
-# Cell
-from fastai.vision.models.xresnet import *
 
 # Cell
 @delegates(ResBlock)

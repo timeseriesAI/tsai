@@ -12,18 +12,13 @@ __all__ = ['TSIdentity', 'TSShuffle_HLs', 'TSShuffleSteps', 'TSMagAddNoise', 'TS
            'all_TS_randaugs', 'RandAugment', 'TestTfm', 'get_tfm_name']
 
 # Cell
-from ..imports import *
-from fastai.vision.augment import RandTransform
-from ..utils import *
-from .external import *
-from .core import *
-from .preprocessing import *
-
-# Cell
 from scipy.interpolate import CubicSpline
-from scipy.ndimage import convolve1d, zoom
-import pywt
-from pyts.image.gaf import GramianAngularField
+from scipy.ndimage import convolve1d
+from fastcore.transform import compose_tfms
+from fastai.vision.augment import RandTransform
+from ..imports import *
+from ..utils import *
+from .core import *
 
 # Cell
 class TSIdentity(RandTransform):
@@ -415,6 +410,10 @@ class TSFreqDenoise(RandTransform):
         self.magnitude, self.ex = magnitude, ex
         self.wavelet, self.level, self.thr, self.thr_mode, self.pad_mode = wavelet, level, thr, thr_mode, pad_mode
         super().__init__(**kwargs)
+        try:
+            import pywt
+        except ImportError:
+            raise ImportError('You need to install pywt to run TSFreqDenoise')
     def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
         """
@@ -446,6 +445,10 @@ class TSRandomFreqNoise(RandTransform):
         self.magnitude, self.ex = magnitude, ex
         self.wavelet, self.level, self.mode = wavelet, level, mode
         super().__init__(**kwargs)
+        try:
+            import pywt
+        except ImportError:
+            raise ImportError('You need to install pywt to run TSRandomFreqNoise')
     def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
         self.level = 1 if self.level is None else self.level
@@ -571,21 +574,15 @@ class TSRandomCropPad(RandTransform):
         return output
 
 # Cell
-
-from ..callback.MVP import create_mask
-
 class TSMaskOut(RandTransform):
     """Applies a random mask"""
     order = 90
-    def __init__(self, magnitude=0.1, lm:int=3, stateful:bool=True, sync:bool=False, subsequence_mask:bool=True,
-                 variable_mask:bool=False, future_mask:bool=False, schedule_func:Optional[callable]=None, compensate:bool=False, ex=None, **kwargs):
+    def __init__(self, magnitude=0.1, compensate:bool=False, ex=None, **kwargs):
         store_attr()
         super().__init__(**kwargs)
     def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
-        r = self.magnitude * self.schedule_func(self.pct_train) if self.schedule_func is not None else self.magnitude
-        mask = create_mask(o,  r=r, lm=self.lm, stateful=self.stateful, sync=self.sync,
-                           subsequence_mask=self.subsequence_mask, variable_mask=self.variable_mask, future_mask=self.future_mask)
+        mask = torch.rand_like(o) > (1 - self.magnitude)
         if self.compensate: # per sample and feature
             mean_per_seq = (torch.max(torch.ones(1, device=mask.device), torch.sum(mask, dim=-1).unsqueeze(-1)) / mask.shape[-1])
             output = o.masked_fill(mask, 0) / (1 - mean_per_seq)

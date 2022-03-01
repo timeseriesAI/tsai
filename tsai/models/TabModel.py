@@ -4,7 +4,9 @@ __all__ = ['TabModel', 'TabBackbone', 'TabHead']
 
 # Cell
 from ..imports import *
+# from tsai.data.tabular import *
 from .layers import *
+from .utils import *
 
 # Cell
 class TabModel(Sequential): # Sequential accepts multiple inputs

@@ -5,7 +5,6 @@ __all__ = ['RNNPlus', 'LSTMPlus', 'GRUPlus']
 # Cell
 from ..imports import *
 from ..utils import *
-from ..data.core import *
 from .layers import *
 from .utils import *
 

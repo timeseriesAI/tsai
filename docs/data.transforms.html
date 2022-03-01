@@ -39,20 +39,16 @@ nb_path: "nbs/017_data.transforms.ipynb"
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;NATOPS&#39;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">tsai.data.core</span> <span class="kn">import</span> <span class="n">TSCategorize</span>
+<span class="kn">from</span> <span class="nn">tsai.data.external</span> <span class="kn">import</span> <span class="n">get_UCR_data</span>
+<span class="kn">from</span> <span class="nn">tsai.data.preprocessing</span> <span class="kn">import</span> <span class="n">TSStandardize</span>
+<span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;NATOPS&#39;</span>
 <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">return_split</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">tfms</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">Categorize</span><span class="p">()]</span>
+<span class="n">tfms</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">TSCategorize</span><span class="p">()]</span>
 <span class="n">batch_tfms</span> <span class="o">=</span> <span class="n">TSStandardize</span><span class="p">()</span>
 <span class="n">dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="n">batch_tfms</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">128</span><span class="p">)</span>
 <span class="n">xb</span><span class="p">,</span> <span class="n">yb</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">train</span><span class="p">))</span>
@@ -76,7 +72,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSIdentity" class="doc_header"><code>class</code> <code>TSIdentity</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L29" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSIdentity</code>(<strong><code>magnitude</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSIdentity" class="doc_header"><code>class</code> <code>TSIdentity</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L24" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSIdentity</code>(<strong><code>magnitude</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Applies the identity tfm to a <a href="/data.core.html#TSTensor"><code>TSTensor</code></a> batch</p>
 
@@ -125,7 +121,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSShuffle_HLs" class="doc_header"><code>class</code> <code>TSShuffle_HLs</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L39" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSShuffle_HLs</code>(<strong><code>magnitude</code></strong>=<em><code>1.0</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSShuffle_HLs" class="doc_header"><code>class</code> <code>TSShuffle_HLs</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L34" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSShuffle_HLs</code>(<strong><code>magnitude</code></strong>=<em><code>1.0</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Randomly shuffles HIs/LOs of an OHLC <a href="/data.core.html#TSTensor"><code>TSTensor</code></a> batch</p>
 
@@ -174,7 +170,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSShuffleSteps" class="doc_header"><code>class</code> <code>TSShuffleSteps</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L61" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSShuffleSteps</code>(<strong><code>magnitude</code></strong>=<em><code>1.0</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSShuffleSteps" class="doc_header"><code>class</code> <code>TSShuffleSteps</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L56" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSShuffleSteps</code>(<strong><code>magnitude</code></strong>=<em><code>1.0</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Randomly shuffles consecutive sequence datapoints in batch</p>
 
@@ -225,7 +221,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_png output_subarea ">
-<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAXcAAAD4CAYAAAAXUaZHAAAAOXRFWHRTb2Z0d2FyZQBNYXRwbG90bGliIHZlcnNpb24zLjUuMSwgaHR0cHM6Ly9tYXRwbG90bGliLm9yZy/YYfK9AAAACXBIWXMAAAsTAAALEwEAmpwYAAAPUElEQVR4nO3dbYylZX3H8e+vLPiALQsy3dDdTYfEjYaYKGRCsTTGsm3Dg3F5oRTbykq32TdosZro6hvbpC8waVRMG5oNqEtLRYKa3Si1kgVjfAF1eCgCq2FKwd3two4K+EAspf77Yq5th2WWObNzzhz22u8nOTnX/b+vc+7/HTa/ueea+xxSVUiS+vIr425AkjR8hrskdchwl6QOGe6S1CHDXZI6tGrcDQCcfvrpNTk5Oe42JOmYcs899/ywqiYW2veyCPfJyUmmp6fH3YYkHVOSPH6kfS7LSFKHDHdJ6pDhLkkdMtwlqUOGuyR1yHCXpA4Z7pLUIcNdkjpkuEtSh14Wn1CVVtLktq+N7L0fu+aSkb23tBSG+xIZDJKOBS7LSFKHvHKXRszf9jQOA4V7ktXA9cAbgQL+FPg+8EVgEngMuKyqnkoS4FrgYuBZ4L1Vde+wGz+ejCocDAapX4Muy1wLfL2q3gC8CdgDbAN2V9UGYHfbBrgI2NAeW4HrhtqxJGlRi165JzkFeCvwXoCqeg54Lskm4G1t2g7gm8BHgE3AjVVVwF1JVic5o6oODL17SQvytz0NcuV+JjALfC7JfUmuT3IysGZeYD8BrGnjtcDeea/f12ovkGRrkukk07Ozs0d/BpKkFxkk3FcB5wDXVdXZwM/5/yUYANpVei3lwFW1vaqmqmpqYmLB/0uUJOkoDRLu+4B9VXV3276VubB/MskZAO35YNu/H1g/7/XrWk2StEIWDfeqegLYm+T1rbQReBjYBWxutc3AzjbeBVyROecBz7jeLkkra9D73N8P3JTkJOBR4ErmfjDckmQL8DhwWZt7G3O3Qc4wdyvklUPtWJK0qIHCvaruB6YW2LVxgbkFXLW8tnQ88UM+0vD5CVVJy+atly8/freMJHXIK3e9iFdh0rHPcJd0zPECZHEuy0hShwx3SeqQ4S5JHTLcJalDhrskdchwl6QOGe6S1CHDXZI6ZLhLUocMd0nqkOEuSR0y3CWpQ4a7JHXIcJekDhnuktQhw12SOmS4S1KHDHdJ6pDhLkkdMtwlqUMDhXuSx5J8N8n9SaZb7bQktyd5pD2f2upJ8pkkM0keSHLOKE9AkvRiS7ly/92qenNVTbXtbcDuqtoA7G7bABcBG9pjK3DdsJqVJA1mOcsym4AdbbwDuHRe/caacxewOskZyziOJGmJBg33Ar6R5J4kW1ttTVUdaOMngDVtvBbYO++1+1rtBZJsTTKdZHp2dvYoWpckHcmqAef9TlXtT/LrwO1Jvjd/Z1VVklrKgatqO7AdYGpqakmvlSS9tIGu3Ktqf3s+CHwFOBd48tByS3s+2KbvB9bPe/m6VpMkrZBFwz3JyUl+9dAY+APgQWAXsLlN2wzsbONdwBXtrpnzgGfmLd9IklbAIMsya4CvJDk0/5+q6utJvgPckmQL8DhwWZt/G3AxMAM8C1w59K4lSS9p0XCvqkeBNy1Q/xGwcYF6AVcNpTtJ0lHxE6qS1CHDXZI6ZLhLUocMd0nqkOEuSR0y3CWpQ4a7JHXIcJekDhnuktQhw12SOmS4S1KHDHdJ6pDhLkkdMtwlqUOGuyR1yHCXpA4Z7pLUIcNdkjpkuEtShwx3SeqQ4S5JHTLcJalDhrskdchwl6QODRzuSU5Icl+Sr7btM5PcnWQmyReTnNTqr2jbM23/5Ih6lyQdwVKu3K8G9szb/gTwqap6HfAUsKXVtwBPtfqn2jxJ0goaKNyTrAMuAa5v2wEuAG5tU3YAl7bxprZN27+xzZckrZBBr9w/DXwY+GXbfi3wdFU937b3AWvbeC2wF6Dtf6bNf4EkW5NMJ5menZ09uu4lSQtaNNyTvB04WFX3DPPAVbW9qqaqampiYmKYby1Jx71VA8w5H3hHkouBVwK/BlwLrE6yql2drwP2t/n7gfXAviSrgFOAHw29c0nSES165V5VH62qdVU1CVwO3FFVfwzcCbyzTdsM7GzjXW2btv+Oqqqhdi1JeknLuc/9I8AHk8wwt6Z+Q6vfALy21T8IbFtei5KkpRpkWeb/VNU3gW+28aPAuQvM+QXwriH0Jkk6Sn5CVZI6ZLhLUocMd0nqkOEuSR0y3CWpQ4a7JHXIcJekDhnuktQhw12SOmS4S1KHDHdJ6pDhLkkdMtwlqUOGuyR1yHCXpA4Z7pLUIcNdkjpkuEtShwx3SeqQ4S5JHTLcJalDhrskdchwl6QOGe6S1CHDXZI6tGi4J3llkn9N8m9JHkryV61+ZpK7k8wk+WKSk1r9FW17pu2fHPE5SJIOs2qAOf8FXFBVP0tyIvDtJP8MfBD4VFXdnOTvgS3Ade35qap6XZLLgU8Afzii/pnc9rVRvTWPXXPJyN5bkkZp0XCvqgJ+1jZPbI8CLgD+qNV3AH/JXLhvamOAW4G/TZL2PpJ0zDkWLyIHWnNPckKS+4GDwO3AvwNPV9Xzbco+YG0brwX2ArT9zwCvXeA9tyaZTjI9Ozu7rJOQJL3QQOFeVf9TVW8G1gHnAm9Y7oGrantVTVXV1MTExHLfTpI0z5Lulqmqp4E7gbcAq5McWtZZB+xv4/3AeoC2/xTgR8NoVpI0mEHulplIsrqNXwX8PrCHuZB/Z5u2GdjZxrvaNm3/Ha63S9LKGuRumTOAHUlOYO6HwS1V9dUkDwM3J/lr4D7ghjb/BuAfkswAPwYuH0HfkqSXMMjdMg8AZy9Qf5S59ffD678A3jWU7iRJR8VPqEpShwx3SeqQ4S5JHTLcJalDhrskdchwl6QOGe6S1CHDXZI6ZLhLUocMd0nqkOEuSR0y3CWpQ4a7JHXIcJekDhnuktQhw12SOmS4S1KHDHdJ6pDhLkkdMtwlqUOGuyR1yHCXpA4Z7pLUIcNdkjq0aLgnWZ/kziQPJ3koydWtflqS25M80p5PbfUk+UySmSQPJDln1CchSXqhQa7cnwc+VFVnAecBVyU5C9gG7K6qDcDutg1wEbChPbYC1w29a0nSS1o03KvqQFXd28Y/BfYAa4FNwI42bQdwaRtvAm6sOXcBq5OcMezGJUlHtqQ19ySTwNnA3cCaqjrQdj0BrGnjtcDeeS/b12qHv9fWJNNJpmdnZ5fatyTpJQwc7kleA3wJ+EBV/WT+vqoqoJZy4KraXlVTVTU1MTGxlJdKkhYxULgnOZG5YL+pqr7cyk8eWm5pzwdbfT+wft7L17WaJGmFDHK3TIAbgD1V9cl5u3YBm9t4M7BzXv2KdtfMecAz85ZvJEkrYNUAc84H3gN8N8n9rfYx4BrgliRbgMeBy9q+24CLgRngWeDKYTYsSVrcouFeVd8GcoTdGxeYX8BVy+xLkrQMfkJVkjpkuEtShwx3SeqQ4S5JHTLcJalDhrskdchwl6QOGe6S1CHDXZI6ZLhLUocMd0nqkOEuSR0y3CWpQ4a7JHXIcJekDhnuktQhw12SOmS4S1KHDHdJ6pDhLkkdMtwlqUOGuyR1yHCXpA4Z7pLUoUXDPclnkxxM8uC82mlJbk/ySHs+tdWT5DNJZpI8kOScUTYvSVrYIFfunwcuPKy2DdhdVRuA3W0b4CJgQ3tsBa4bTpuSpKVYNNyr6lvAjw8rbwJ2tPEO4NJ59Rtrzl3A6iRnDKlXSdKAjnbNfU1VHWjjJ4A1bbwW2Dtv3r5We5EkW5NMJ5menZ09yjYkSQtZ9h9Uq6qAOorXba+qqaqampiYWG4bkqR5jjbcnzy03NKeD7b6fmD9vHnrWk2StIKONtx3AZvbeDOwc179inbXzHnAM/OWbyRJK2TVYhOSfAF4G3B6kn3Ax4FrgFuSbAEeBy5r028DLgZmgGeBK0fQsyRpEYuGe1W9+wi7Ni4wt4CrltuUJGl5/ISqJHXIcJekDhnuktQhw12SOmS4S1KHDHdJ6pDhLkkdMtwlqUOGuyR1yHCXpA4Z7pLUIcNdkjpkuEtShwx3SeqQ4S5JHTLcJalDhrskdchwl6QOGe6S1CHDXZI6ZLhLUocMd0nqkOEuSR0y3CWpQ4a7JHVoJOGe5MIk308yk2TbKI4hSTqyoYd7khOAvwMuAs4C3p3krGEfR5J0ZKO4cj8XmKmqR6vqOeBmYNMIjiNJOoJU1XDfMHkncGFV/Vnbfg/wW1X1vsPmbQW2ts3XA98faiNHdjrwwxU61jh4fse+3s/R8xue36yqiYV2rFqhBl6kqrYD21f6uEmmq2pqpY+7Ujy/Y1/v5+j5rYxRLMvsB9bP217XapKkFTKKcP8OsCHJmUlOAi4Hdo3gOJKkIxj6skxVPZ/kfcC/ACcAn62qh4Z9nGVY8aWgFeb5Hft6P0fPbwUM/Q+qkqTx8xOqktQhw12SOnTchHvPX4mQZH2SO5M8nOShJFePu6dRSXJCkvuSfHXcvQxbktVJbk3yvSR7krxl3D0NW5K/aP9GH0zyhSSvHHdPy5Hks0kOJnlwXu20JLcneaQ9nzqO3o6LcD8OvhLheeBDVXUWcB5wVWfnN9/VwJ5xNzEi1wJfr6o3AG+is/NMshb4c2Cqqt7I3A0Xl4+3q2X7PHDhYbVtwO6q2gDsbtsr7rgIdzr/SoSqOlBV97bxT5kLhbXj7Wr4kqwDLgGuH3cvw5bkFOCtwA0AVfVcVT091qZGYxXwqiSrgFcD/znmfpalqr4F/Piw8iZgRxvvAC5dyZ4OOV7CfS2wd972PjoMP4Akk8DZwN1jbmUUPg18GPjlmPsYhTOBWeBzbdnp+iQnj7upYaqq/cDfAD8ADgDPVNU3xtvVSKypqgNt/ASwZhxNHC/hflxI8hrgS8AHquon4+5nmJK8HThYVfeMu5cRWQWcA1xXVWcDP2dMv86PSlt73sTcD7LfAE5O8ifj7Wq0au5e87Hcb368hHv3X4mQ5ETmgv2mqvryuPsZgfOBdyR5jLlltQuS/ON4WxqqfcC+qjr0G9etzIV9T34P+I+qmq2q/wa+DPz2mHsahSeTnAHQng+Oo4njJdy7/kqEJGFurXZPVX1y3P2MQlV9tKrWVdUkc//97qiqbq76quoJYG+S17fSRuDhMbY0Cj8Azkvy6vZvdiOd/dG42QVsbuPNwM5xNDG2b4VcScfAVyIs1/nAe4DvJrm/1T5WVbeNryUdhfcDN7ULkEeBK8fcz1BV1d1JbgXuZe4Or/t4mXxU/2gl+QLwNuD0JPuAjwPXALck2QI8Dlw2lt78+gFJ6s/xsiwjSccVw12SOmS4S1KHDHdJ6pDhLkkdMtwlqUOGuyR16H8BlOX8CBmXFuEAAAAASUVORK5CYII="
+<img src="data:image/png;base64,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"
 >
 </div>
 
@@ -248,7 +244,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSMagAddNoise" class="doc_header"><code>class</code> <code>TSMagAddNoise</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L81" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSMagAddNoise</code>(<strong><code>magnitude</code></strong>=<em><code>1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSMagAddNoise" class="doc_header"><code>class</code> <code>TSMagAddNoise</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L76" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSMagAddNoise</code>(<strong><code>magnitude</code></strong>=<em><code>1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Applies additive noise on the y-axis for each step of a <a href="/data.core.html#TSTensor"><code>TSTensor</code></a> batch</p>
 
@@ -273,7 +269,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSMagMulNoise" class="doc_header"><code>class</code> <code>TSMagMulNoise</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L94" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSMagMulNoise</code>(<strong><code>magnitude</code></strong>=<em><code>1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSMagMulNoise" class="doc_header"><code>class</code> <code>TSMagMulNoise</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L89" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSMagMulNoise</code>(<strong><code>magnitude</code></strong>=<em><code>1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Applies multiplicative noise on the y-axis for each step of a <a href="/data.core.html#TSTensor"><code>TSTensor</code></a> batch</p>
 
@@ -325,7 +321,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="random_curve_generator" class="doc_header"><code>random_curve_generator</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L108" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>random_curve_generator</code>(<strong><code>o</code></strong>, <strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>order</code></strong>=<em><code>4</code></em>, <strong><code>noise</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="random_curve_generator" class="doc_header"><code>random_curve_generator</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L103" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>random_curve_generator</code>(<strong><code>o</code></strong>, <strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>order</code></strong>=<em><code>4</code></em>, <strong><code>noise</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -349,7 +345,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="random_cum_curve_generator" class="doc_header"><code>random_cum_curve_generator</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L114" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>random_cum_curve_generator</code>(<strong><code>o</code></strong>, <strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>order</code></strong>=<em><code>4</code></em>, <strong><code>noise</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="random_cum_curve_generator" class="doc_header"><code>random_cum_curve_generator</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L109" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>random_cum_curve_generator</code>(<strong><code>o</code></strong>, <strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>order</code></strong>=<em><code>4</code></em>, <strong><code>noise</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -373,7 +369,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="random_cum_noise_generator" class="doc_header"><code>random_cum_noise_generator</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L121" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>random_cum_noise_generator</code>(<strong><code>o</code></strong>, <strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>noise</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="random_cum_noise_generator" class="doc_header"><code>random_cum_noise_generator</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L116" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>random_cum_noise_generator</code>(<strong><code>o</code></strong>, <strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>noise</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -397,7 +393,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="random_cum_linear_generator" class="doc_header"><code>random_cum_linear_generator</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L128" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>random_cum_linear_generator</code>(<strong><code>o</code></strong>, <strong><code>magnitude</code></strong>=<em><code>0.1</code></em>)</p>
+<h4 id="random_cum_linear_generator" class="doc_header"><code>random_cum_linear_generator</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L123" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>random_cum_linear_generator</code>(<strong><code>o</code></strong>, <strong><code>magnitude</code></strong>=<em><code>0.1</code></em>)</p>
 </blockquote>
 
 </div>
@@ -428,7 +424,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSTimeNoise" class="doc_header"><code>class</code> <code>TSTimeNoise</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L145" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTimeNoise</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSTimeNoise" class="doc_header"><code>class</code> <code>TSTimeNoise</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L140" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTimeNoise</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Applies noise to each step in the x-axis of a <a href="/data.core.html#TSTensor"><code>TSTensor</code></a> batch based on smooth random curve</p>
 
@@ -478,7 +474,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSMagWarp" class="doc_header"><code>class</code> <code>TSMagWarp</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L159" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSMagWarp</code>(<strong><code>magnitude</code></strong>=<em><code>0.02</code></em>, <strong><code>ord</code></strong>=<em><code>4</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSMagWarp" class="doc_header"><code>class</code> <code>TSMagWarp</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L154" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSMagWarp</code>(<strong><code>magnitude</code></strong>=<em><code>0.02</code></em>, <strong><code>ord</code></strong>=<em><code>4</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Applies warping to the y-axis of a <a href="/data.core.html#TSTensor"><code>TSTensor</code></a> batch based on a smooth random curve</p>
 
@@ -528,7 +524,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSTimeWarp" class="doc_header"><code>class</code> <code>TSTimeWarp</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L173" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTimeWarp</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ord</code></strong>=<em><code>6</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSTimeWarp" class="doc_header"><code>class</code> <code>TSTimeWarp</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L168" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTimeWarp</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ord</code></strong>=<em><code>6</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Applies time warping to the x-axis of a <a href="/data.core.html#TSTensor"><code>TSTensor</code></a> batch based on a smooth random curve</p>
 
@@ -578,7 +574,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSWindowWarp" class="doc_header"><code>class</code> <code>TSWindowWarp</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L187" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSWindowWarp</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSWindowWarp" class="doc_header"><code>class</code> <code>TSWindowWarp</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L182" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSWindowWarp</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Applies window slicing to the x-axis of a <a href="/data.core.html#TSTensor"><code>TSTensor</code></a> batch based on a random linear curve based on
 <a href="https://halshs.archives-ouvertes.fr/halshs-01357973/document">https://halshs.archives-ouvertes.fr/halshs-01357973/document</a></p>
@@ -628,7 +624,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSMagScale" class="doc_header"><code>class</code> <code>TSMagScale</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L202" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSMagScale</code>(<strong><code>magnitude</code></strong>=<em><code>0.5</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSMagScale" class="doc_header"><code>class</code> <code>TSMagScale</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L197" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSMagScale</code>(<strong><code>magnitude</code></strong>=<em><code>0.5</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Applies scaling to the y-axis of a <a href="/data.core.html#TSTensor"><code>TSTensor</code></a> batch based on a scalar</p>
 
@@ -653,7 +649,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSMagScalePerVar" class="doc_header"><code>class</code> <code>TSMagScalePerVar</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L216" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSMagScalePerVar</code>(<strong><code>magnitude</code></strong>=<em><code>0.5</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSMagScalePerVar" class="doc_header"><code>class</code> <code>TSMagScalePerVar</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L211" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSMagScalePerVar</code>(<strong><code>magnitude</code></strong>=<em><code>0.5</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Applies per_var scaling to the y-axis of a <a href="/data.core.html#TSTensor"><code>TSTensor</code></a> batch based on a scalar</p>
 
@@ -705,7 +701,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSRandomResizedCrop" class="doc_header"><code>class</code> <code>TSRandomResizedCrop</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L235" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomResizedCrop</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>size</code></strong>=<em><code>None</code></em>, <strong><code>scale</code></strong>=<em><code>None</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSRandomResizedCrop" class="doc_header"><code>class</code> <code>TSRandomResizedCrop</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L230" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomResizedCrop</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>size</code></strong>=<em><code>None</code></em>, <strong><code>scale</code></strong>=<em><code>None</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Randomly amplifies a sequence focusing on a random section of the steps</p>
 
@@ -756,7 +752,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSWindowSlicing" class="doc_header"><code>class</code> <code>TSWindowSlicing</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L275" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSWindowSlicing</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSWindowSlicing" class="doc_header"><code>class</code> <code>TSWindowSlicing</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L270" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSWindowSlicing</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Randomly extracts an resize a ts slice based on <a href="https://halshs.archives-ouvertes.fr/halshs-01357973/document">https://halshs.archives-ouvertes.fr/halshs-01357973/document</a></p>
 
@@ -806,7 +802,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSRandomZoomOut" class="doc_header"><code>class</code> <code>TSRandomZoomOut</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L291" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomZoomOut</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSRandomZoomOut" class="doc_header"><code>class</code> <code>TSRandomZoomOut</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L286" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomZoomOut</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Randomly compresses a sequence on the x-axis</p>
 
@@ -855,7 +851,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSRandomTimeScale" class="doc_header"><code>class</code> <code>TSRandomTimeScale</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L312" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomTimeScale</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSRandomTimeScale" class="doc_header"><code>class</code> <code>TSRandomTimeScale</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L307" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomTimeScale</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Randomly amplifies/ compresses a sequence on the x-axis keeping the same length</p>
 
@@ -904,7 +900,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSRandomTimeStep" class="doc_header"><code>class</code> <code>TSRandomTimeStep</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L325" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomTimeStep</code>(<strong><code>magnitude</code></strong>=<em><code>0.02</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSRandomTimeStep" class="doc_header"><code>class</code> <code>TSRandomTimeStep</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L320" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomTimeStep</code>(<strong><code>magnitude</code></strong>=<em><code>0.02</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Compresses a sequence on the x-axis by randomly selecting sequence steps and interpolating to previous size</p>
 
@@ -953,7 +949,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSResampleSteps" class="doc_header"><code>class</code> <code>TSResampleSteps</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L344" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSResampleSteps</code>(<strong><code>step_pct</code></strong>=<em><code>1.0</code></em>, <strong><code>same_seq_len</code></strong>=<em><code>True</code></em>, <strong><code>magnitude</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSResampleSteps" class="doc_header"><code>class</code> <code>TSResampleSteps</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L339" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSResampleSteps</code>(<strong><code>step_pct</code></strong>=<em><code>1.0</code></em>, <strong><code>same_seq_len</code></strong>=<em><code>True</code></em>, <strong><code>magnitude</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Transform that randomly selects and sorts sequence steps (with replacement) maintaining the sequence length</p>
 
@@ -1003,7 +999,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSBlur" class="doc_header"><code>class</code> <code>TSBlur</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L368" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSBlur</code>(<strong><code>magnitude</code></strong>=<em><code>1.0</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>filt_len</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSBlur" class="doc_header"><code>class</code> <code>TSBlur</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L363" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSBlur</code>(<strong><code>magnitude</code></strong>=<em><code>1.0</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>filt_len</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Blurs a sequence applying a filter of type [1, 0, 1]</p>
 
@@ -1053,7 +1049,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSSmooth" class="doc_header"><code>class</code> <code>TSSmooth</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L387" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSSmooth</code>(<strong><code>magnitude</code></strong>=<em><code>1.0</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>filt_len</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSSmooth" class="doc_header"><code>class</code> <code>TSSmooth</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L382" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSSmooth</code>(<strong><code>magnitude</code></strong>=<em><code>1.0</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>filt_len</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Smoothens a sequence applying a filter of type [1, 5, 1]</p>
 
@@ -1103,7 +1099,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="maddest" class="doc_header"><code>maddest</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L407" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>maddest</code>(<strong><code>d</code></strong>, <strong><code>axis</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="maddest" class="doc_header"><code>maddest</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L402" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>maddest</code>(<strong><code>d</code></strong>, <strong><code>axis</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -1127,7 +1123,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSFreqDenoise" class="doc_header"><code>class</code> <code>TSFreqDenoise</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L411" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSFreqDenoise</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>wavelet</code></strong>=<em><code>'db4'</code></em>, <strong><code>level</code></strong>=<em><code>2</code></em>, <strong><code>thr</code></strong>=<em><code>None</code></em>, <strong><code>thr_mode</code></strong>=<em><code>'hard'</code></em>, <strong><code>pad_mode</code></strong>=<em><code>'per'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSFreqDenoise" class="doc_header"><code>class</code> <code>TSFreqDenoise</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L406" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSFreqDenoise</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>wavelet</code></strong>=<em><code>'db4'</code></em>, <strong><code>level</code></strong>=<em><code>2</code></em>, <strong><code>thr</code></strong>=<em><code>None</code></em>, <strong><code>thr_mode</code></strong>=<em><code>'hard'</code></em>, <strong><code>pad_mode</code></strong>=<em><code>'per'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Denoises a sequence applying a wavelet decomposition method</p>
 
@@ -1155,8 +1151,12 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">TSFreqDenoise</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="n">test_ne</span><span class="p">(</span><span class="n">TSFreqDenoise</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">xb</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">try</span><span class="p">:</span> 
+    <span class="kn">import</span> <span class="nn">pywt</span>
+    <span class="n">test_eq</span><span class="p">(</span><span class="n">TSFreqDenoise</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">test_ne</span><span class="p">(</span><span class="n">TSFreqDenoise</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">xb</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span> 
+    <span class="k">pass</span>
 </pre></div>
 
     </div>
@@ -1177,7 +1177,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSRandomFreqNoise" class="doc_header"><code>class</code> <code>TSRandomFreqNoise</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L442" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomFreqNoise</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>wavelet</code></strong>=<em><code>'db4'</code></em>, <strong><code>level</code></strong>=<em><code>2</code></em>, <strong><code>mode</code></strong>=<em><code>'constant'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSRandomFreqNoise" class="doc_header"><code>class</code> <code>TSRandomFreqNoise</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L441" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomFreqNoise</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>wavelet</code></strong>=<em><code>'db4'</code></em>, <strong><code>level</code></strong>=<em><code>2</code></em>, <strong><code>mode</code></strong>=<em><code>'constant'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Applys random noise using a wavelet decomposition method</p>
 
@@ -1205,7 +1205,11 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">TSRandomFreqNoise</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">try</span><span class="p">:</span> 
+    <span class="kn">import</span> <span class="nn">pywt</span>
+    <span class="n">test_eq</span><span class="p">(</span><span class="n">TSRandomFreqNoise</span><span class="p">()(</span><span class="n">xb</span><span class="p">,</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span> 
+    <span class="k">pass</span>
 </pre></div>
 
     </div>
@@ -1226,7 +1230,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSRandomResizedLookBack" class="doc_header"><code>class</code> <code>TSRandomResizedLookBack</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L459" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomResizedLookBack</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSRandomResizedLookBack" class="doc_header"><code>class</code> <code>TSRandomResizedLookBack</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L462" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomResizedLookBack</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Selects a random number of sequence steps starting from the end and return an output of the same shape</p>
 
@@ -1277,7 +1281,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSRandomLookBackOut" class="doc_header"><code>class</code> <code>TSRandomLookBackOut</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L475" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomLookBackOut</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSRandomLookBackOut" class="doc_header"><code>class</code> <code>TSRandomLookBackOut</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L478" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomLookBackOut</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Selects a random number of sequence steps starting from the end and set them to zero</p>
 
@@ -1328,7 +1332,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSVarOut" class="doc_header"><code>class</code> <code>TSVarOut</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L491" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSVarOut</code>(<strong><code>magnitude</code></strong>=<em><code>0.05</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSVarOut" class="doc_header"><code>class</code> <code>TSVarOut</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L494" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSVarOut</code>(<strong><code>magnitude</code></strong>=<em><code>0.05</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Set the value of a random number of variables to zero</p>
 
@@ -1377,7 +1381,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSCutOut" class="doc_header"><code>class</code> <code>TSCutOut</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L515" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSCutOut</code>(<strong><code>magnitude</code></strong>=<em><code>0.05</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSCutOut" class="doc_header"><code>class</code> <code>TSCutOut</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L518" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSCutOut</code>(<strong><code>magnitude</code></strong>=<em><code>0.05</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Sets a random section of the sequence to zero</p>
 
@@ -1426,7 +1430,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSTimeStepOut" class="doc_header"><code>class</code> <code>TSTimeStepOut</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L537" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTimeStepOut</code>(<strong><code>magnitude</code></strong>=<em><code>0.05</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSTimeStepOut" class="doc_header"><code>class</code> <code>TSTimeStepOut</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L540" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTimeStepOut</code>(<strong><code>magnitude</code></strong>=<em><code>0.05</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Sets random sequence steps to zero</p>
 
@@ -1475,7 +1479,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSRandomCropPad" class="doc_header"><code>class</code> <code>TSRandomCropPad</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L554" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomCropPad</code>(<strong><code>magnitude</code></strong>=<em><code>0.05</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSRandomCropPad" class="doc_header"><code>class</code> <code>TSRandomCropPad</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L557" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomCropPad</code>(<strong><code>magnitude</code></strong>=<em><code>0.05</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Crops a section of the sequence of a random length</p>
 
@@ -1524,7 +1528,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSMaskOut" class="doc_header"><code>class</code> <code>TSMaskOut</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L577" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSMaskOut</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>lm</code></strong>:<code>int</code>=<em><code>3</code></em>, <strong><code>stateful</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>sync</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>subsequence_mask</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>variable_mask</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>future_mask</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>schedule_func</code></strong>:<code>Optional</code>[<code>callable</code>]=<em><code>None</code></em>, <strong><code>compensate</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSMaskOut" class="doc_header"><code>class</code> <code>TSMaskOut</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L577" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSMaskOut</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>compensate</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Applies a random mask</p>
 
@@ -1574,7 +1578,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSInputDropout" class="doc_header"><code>class</code> <code>TSInputDropout</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L599" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSInputDropout</code>(<strong><code>magnitude</code></strong>=<em><code>0.0</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSInputDropout" class="doc_header"><code>class</code> <code>TSInputDropout</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L596" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSInputDropout</code>(<strong><code>magnitude</code></strong>=<em><code>0.0</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Applies input dropout with required_grad=False</p>
 
@@ -1624,7 +1628,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSTranslateX" class="doc_header"><code>class</code> <code>TSTranslateX</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L613" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTranslateX</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSTranslateX" class="doc_header"><code>class</code> <code>TSTranslateX</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L610" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTranslateX</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Moves a selected sequence window a random number of steps</p>
 
@@ -1673,7 +1677,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSRandomShift" class="doc_header"><code>class</code> <code>TSRandomShift</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L637" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomShift</code>(<strong><code>magnitude</code></strong>=<em><code>0.02</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSRandomShift" class="doc_header"><code>class</code> <code>TSRandomShift</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L634" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomShift</code>(<strong><code>magnitude</code></strong>=<em><code>0.02</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Shifts and splits a sequence</p>
 
@@ -1722,7 +1726,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSHorizontalFlip" class="doc_header"><code>class</code> <code>TSHorizontalFlip</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L651" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSHorizontalFlip</code>(<strong><code>magnitude</code></strong>=<em><code>1.0</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSHorizontalFlip" class="doc_header"><code>class</code> <code>TSHorizontalFlip</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L648" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSHorizontalFlip</code>(<strong><code>magnitude</code></strong>=<em><code>1.0</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Flips the sequence along the x-axis</p>
 
@@ -1772,7 +1776,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSRandomTrend" class="doc_header"><code>class</code> <code>TSRandomTrend</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L664" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomTrend</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSRandomTrend" class="doc_header"><code>class</code> <code>TSRandomTrend</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L661" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomTrend</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Randomly rotates the sequence along the z-axis</p>
 
@@ -1821,7 +1825,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSVerticalFlip" class="doc_header"><code>class</code> <code>TSVerticalFlip</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L685" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSVerticalFlip</code>(<strong><code>magnitude</code></strong>=<em><code>1.0</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSVerticalFlip" class="doc_header"><code>class</code> <code>TSVerticalFlip</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L682" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSVerticalFlip</code>(<strong><code>magnitude</code></strong>=<em><code>1.0</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Applies a negative value to the time sequence</p>
 
@@ -1871,7 +1875,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSResize" class="doc_header"><code>class</code> <code>TSResize</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L696" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSResize</code>(<strong><code>magnitude</code></strong>=<em><code>-0.5</code></em>, <strong><code>size</code></strong>=<em><code>None</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSResize" class="doc_header"><code>class</code> <code>TSResize</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L693" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSResize</code>(<strong><code>magnitude</code></strong>=<em><code>-0.5</code></em>, <strong><code>size</code></strong>=<em><code>None</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Resizes the sequence length of a time series</p>
 
@@ -1921,7 +1925,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSRandomSize" class="doc_header"><code>class</code> <code>TSRandomSize</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L710" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomSize</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSRandomSize" class="doc_header"><code>class</code> <code>TSRandomSize</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L707" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomSize</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Randomly resizes the sequence length of a time series</p>
 
@@ -1975,7 +1979,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSRandomLowRes" class="doc_header"><code>class</code> <code>TSRandomLowRes</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L723" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomLowRes</code>(<strong><code>magnitude</code></strong>=<em><code>0.5</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSRandomLowRes" class="doc_header"><code>class</code> <code>TSRandomLowRes</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L720" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomLowRes</code>(<strong><code>magnitude</code></strong>=<em><code>0.5</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Randomly resizes the sequence length of a time series to a lower resolution</p>
 
@@ -2007,7 +2011,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSDownUpScale" class="doc_header"><code>class</code> <code>TSDownUpScale</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L736" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDownUpScale</code>(<strong><code>magnitude</code></strong>=<em><code>0.5</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSDownUpScale" class="doc_header"><code>class</code> <code>TSDownUpScale</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L733" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDownUpScale</code>(<strong><code>magnitude</code></strong>=<em><code>0.5</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Downscales a time series and upscales it again to previous sequence length</p>
 
@@ -2056,7 +2060,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSRandomDownUpScale" class="doc_header"><code>class</code> <code>TSRandomDownUpScale</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L751" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomDownUpScale</code>(<strong><code>magnitude</code></strong>=<em><code>0.5</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSRandomDownUpScale" class="doc_header"><code>class</code> <code>TSRandomDownUpScale</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L748" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomDownUpScale</code>(<strong><code>magnitude</code></strong>=<em><code>0.5</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'linear'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Randomly downscales a time series and upscales it again to previous sequence length</p>
 
@@ -2107,7 +2111,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSRandomConv" class="doc_header"><code>class</code> <code>TSRandomConv</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L767" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomConv</code>(<strong><code>magnitude</code></strong>=<em><code>0.05</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>ks</code></strong>=<em><code>[1, 3, 5, 7]</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSRandomConv" class="doc_header"><code>class</code> <code>TSRandomConv</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L764" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomConv</code>(<strong><code>magnitude</code></strong>=<em><code>0.05</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong><code>ks</code></strong>=<em><code>[1, 3, 5, 7]</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Applies a convolution with a random kernel and random weights with required_grad=False</p>
 
@@ -2158,7 +2162,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSRandomSet2Value" class="doc_header"><code>class</code> <code>TSRandomSet2Value</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L787" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomSet2Value</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>sel_vars</code></strong>=<em><code>None</code></em>, <strong><code>static</code></strong>=<em><code>False</code></em>, <strong><code>value</code></strong>=<em><code>nan</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TSRandomSet2Value" class="doc_header"><code>class</code> <code>TSRandomSet2Value</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L784" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRandomSet2Value</code>(<strong><code>magnitude</code></strong>=<em><code>0.1</code></em>, <strong><code>sel_vars</code></strong>=<em><code>None</code></em>, <strong><code>static</code></strong>=<em><code>False</code></em>, <strong><code>value</code></strong>=<em><code>nan</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Randomly sets selected variables of type <a href="/data.core.html#TSTensor"><code>TSTensor</code></a> to predefined value (default: np.nan)</p>
 
@@ -2202,13 +2206,13 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor([[[1., 1., nan, nan],
+<pre>tensor([[[nan, nan, nan, 1.],
          [1., 1., 1., 1.],
-         [nan, nan, nan, 1.]],
+         [nan, 1., 1., nan]],
 
-        [[nan, nan, 1., nan],
+        [[1., nan, 1., 1.],
          [1., 1., 1., 1.],
-         [1., 1., nan, nan]]])</pre>
+         [1., nan, 1., nan]]])</pre>
 </div>
 
 </div>
@@ -2259,7 +2263,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RandAugment" class="doc_header"><code>class</code> <code>RandAugment</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L856" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RandAugment</code>(<strong><code>tfms</code></strong>:<code>list</code>, <strong><code>N</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>M</code></strong>:<code>int</code>=<em><code>3</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="RandAugment" class="doc_header"><code>class</code> <code>RandAugment</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L853" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RandAugment</code>(<strong><code>tfms</code></strong>:<code>list</code>, <strong><code>N</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>M</code></strong>:<code>int</code>=<em><code>3</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>A transform that before_call its state at each <code>__call__</code></p>
 
@@ -2308,7 +2312,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TestTfm" class="doc_header"><code>class</code> <code>TestTfm</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L883" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TestTfm</code>(<strong><code>tfm</code></strong>, <strong><code>magnitude</code></strong>=<em><code>1.0</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
+<h2 id="TestTfm" class="doc_header"><code>class</code> <code>TestTfm</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L880" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TestTfm</code>(<strong><code>tfm</code></strong>, <strong><code>magnitude</code></strong>=<em><code>1.0</code></em>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>RandTransform</code></p>
 </blockquote>
 <p>Utility class to test the output of selected tfms during training</p>
 
@@ -2340,7 +2344,7 @@ nb_path: "nbs/017_data.transforms.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_tfm_name" class="doc_header"><code>get_tfm_name</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L897" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_tfm_name</code>(<strong><code>tfm</code></strong>)</p>
+<h4 id="get_tfm_name" class="doc_header"><code>get_tfm_name</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/transforms.py#L894" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_tfm_name</code>(<strong><code>tfm</code></strong>)</p>
 </blockquote>
 
 </div>

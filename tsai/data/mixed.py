@@ -3,15 +3,16 @@
 __all__ = ['MixedDataLoader', 'MixedDataLoaders', 'get_mixed_dls']
 
 # Cell
+from packaging import version
+from torch.utils.data.dataloader import _MultiProcessingDataLoaderIter, _SingleProcessDataLoaderIter, _DatasetKind
+from fastai.data.load import _FakeLoader
+from fastai.tabular.core import *
 from ..imports import *
 
 # Cell
 # This implementation of a mixed dataloader is based on a great implementation created by Zach Mueller in this fastai thread:
 # https://forums.fast.ai/t/combining-tabular-images-in-fastai2-and-should-work-with-almost-any-other-type/73197
 
-from packaging import version
-from fastai.data.load import _FakeLoader
-from torch.utils.data.dataloader import _MultiProcessingDataLoaderIter, _SingleProcessDataLoaderIter, _DatasetKind
 _loaders = (_MultiProcessingDataLoaderIter, _SingleProcessDataLoaderIter)
 
 

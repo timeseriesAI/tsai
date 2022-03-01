@@ -5,7 +5,6 @@ __all__ = ['InceptionModule', 'InceptionBlock', 'InceptionTime']
 # Cell
 from ..imports import *
 from .layers import *
-from .utils import *
 
 # Cell
 # This is an unofficial PyTorch implementation by Ignacio Oguiza - oguiza@gmail.com based on:

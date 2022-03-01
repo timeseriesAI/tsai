@@ -3,15 +3,15 @@
 __all__ = ['load_all', 'load_learner_all', 'get_arch', 'all_archs_names', 'ts_learner', 'tsimage_learner']
 
 # Cell
+import pickle
+from fastai.callback.core import CancelBatchException
+from fastai.learner import Learner, load_learner, Recorder
+from fastai.callback.schedule import *
+from fastai.optimizer import Adam
+from fastai.losses import MSELossFlat
 from .imports import *
-from .utils import random_shuffle
-from .data.core import *
-from .data.validation import *
 from .models.utils import *
 from .models.InceptionTimePlus import *
-from fastai.learner import *
-from fastai.vision.models.all import *
-from fastai.data.transforms import *
 
 # Cell
 @patch
@@ -87,6 +87,7 @@ def load_all(path='export', dls_fname='dls', model_fname='model', learner_fname=
 
 
     if learn.dls_type == "MixedDataLoaders":
+        from .data.mixed import MixedDataLoader, MixedDataLoaders
         dls_fnames = []
         _dls = []
         for i in range(learn.n_loaders[0]):
@@ -482,9 +483,11 @@ def ts_learner(dls, arch=None, c_in=None, c_out=None, seq_len=None, d=None, spli
                model_dir='models', wd=None, wd_bn_bias=False, train_bn=True, moms=(0.95,0.85,0.95), train_metrics=False,
                **kwargs)->Learner:
 
-    if arch is None: arch = InceptionTimePlus
-    elif isinstance(arch, str): arch = get_arch(arch)
-    model = build_ts_model(arch, dls=dls, c_in=c_in, c_out=c_out, seq_len=seq_len, d=d, **kwargs)
+    if isinstance(arch, nn.Module): model = arch
+    else:
+        if arch is None: arch = InceptionTimePlus
+        elif isinstance(arch, str): arch = get_arch(arch)
+        model = build_ts_model(arch, dls=dls, c_in=c_in, c_out=c_out, seq_len=seq_len, d=d, **kwargs)
     if hasattr(model, "backbone") and hasattr(model, "head"):
         splitter = ts_splitter
     if loss_func is None:
@@ -511,7 +514,9 @@ def tsimage_learner(dls, arch=None, pretrained=False,
                model_dir='models', wd=None, wd_bn_bias=False, train_bn=True, moms=(0.95,0.85,0.95),
                **kwargs):
 
-    if arch is None: arch = xresnet34
+    if arch is None:
+        from .models.XResNet1d import xresnet34
+        arch = xresnet34
     elif isinstance(arch, str): arch = get_arch(arch)
     model = build_tsimage_model(arch, dls=dls, pretrained=pretrained, **kwargs)
     learn = Learner(dls=dls, model=model,
