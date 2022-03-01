@@ -35,6 +35,7 @@ requirements = ['pip', 'packaging']
 if cfg.get('requirements'): requirements += cfg.get('requirements','').split()
 if cfg.get('pip_requirements'): requirements += cfg.get('pip_requirements','').split()
 dev_requirements = (cfg.get('dev_requirements') or '').split()
+extra_requirements = (cfg.get('extra_requirements') or '').split()
 
 long_description = open('README.md').read()
 # ![png](docs/images/output_13_0.png)
@@ -54,7 +55,7 @@ setuptools.setup(
     packages = setuptools.find_packages(),
     include_package_data = True,
     install_requires = requirements,
-    extras_require={ 'dev': dev_requirements },
+    extras_require={ 'dev': dev_requirements, 'extras': extra_requirements },
     python_requires  = '>=' + cfg['min_python'],
     long_description = long_description,
     long_description_content_type = 'text/markdown',
