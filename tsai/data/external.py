@@ -2353,10 +2353,10 @@ def get_Monash_regression_data(dsid, path='./data/Monash', on_disk=True, mode='c
             try:
                 if split == 'TRAIN':
                     X_train, y_train = _ts2dfV2(fname)
-                    X_train = _check_X(X_train, coerce_to_numpy=True)
+                    X_train = _check_X(X_train)
                 else:
                     X_valid, y_valid = _ts2dfV2(fname)
-                    X_valid = _check_X(X_valid, coerce_to_numpy=True)
+                    X_valid = _check_X(X_valid)
             except Exception as inst:
                 print(inst)
                 warnings.warn(f'Cannot create numpy arrays for {dsid} dataset')

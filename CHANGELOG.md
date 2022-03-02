@@ -15,6 +15,14 @@
 - Allow from tsai.basics import * to speed up loading ([#320](https://github.com/timeseriesAI/tsai/issues/320))
 
 
+### Bugs Squashed
+
+- Separate core from non-core dependencies in tsai - pip install tsai[extras]([#389](https://github.com/timeseriesAI/tsai/issues/318)). This is an important change that:
+   - reduces the time to ```pip install tsai``` 
+   - avoid errors during installation
+   - reduces the time to load tsai using ```from tsai.all import *```
+
+
 
 ## 0.2.25
 ### Breaking Changes
