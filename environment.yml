@@ -7,6 +7,7 @@ channels:
 dependencies:
 - fastai>=2.5.3
 - conda-forge::pyts>=0.12.0
-- conda-forge::imbalanced-learn>=0.9.0
+- conda-forge::imbalanced-learn>=0.8.0
 - conda-forge::nbformat>=5.1.3
+- conda-forge::psutil>=5.9.0
 - pytorch>=1.7.0

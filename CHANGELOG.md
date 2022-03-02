@@ -2,6 +2,20 @@
 
 <!-- do not remove -->
 
+## 0.2.26
+
+### New Features
+
+- Added function that pads sequences to same length ([#410](https://github.com/timeseriesAI/tsai/issues/410))
+
+- Added TSRandomStandardize preprocessing technique ([#396](https://github.com/timeseriesAI/tsai/issues/396))
+
+- New visualization techniques: model's feature importance and step importance ([#393](https://github.com/timeseriesAI/tsai/issues/393))
+
+- Allow from tsai.basics import * to speed up loading ([#320](https://github.com/timeseriesAI/tsai/issues/320))
+
+
+
 ## 0.2.25
 ### Breaking Changes
 
