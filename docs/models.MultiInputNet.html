@@ -75,12 +75,11 @@ nb_path: "nbs/130_models.MultiInputNet.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai.data.transforms</span> <span class="kn">import</span> <span class="o">*</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">tsai.basics</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">tsai.data.all</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">tsai.models.utils</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">tsai.models.InceptionTimePlus</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">tsai.models.TabModel</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">tsai.learner</span> <span class="kn">import</span> <span class="o">*</span>
 </pre></div>
 
     </div>
@@ -112,9 +111,7 @@ nb_path: "nbs/130_models.MultiInputNet.ipynb"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>Feature Extraction: 100%|█████████████████████████████████| 40/40 [00:05&lt;00:00,  7.03it/s]
-/Users/nacho/notebooks/tsai/nbs/tsai/data/features.py:37: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead.  To get a de-fragmented frame, use `newframe = frame.copy()`
-  df[&#39;target&#39; if y.shape[-1] == 1 else f&#39;target_{i}&#39;] = y[:, i]
+<pre>Feature Extraction: 100%|███████████████████████████████████████████| 40/40 [00:07&lt;00:00,  5.23it/s]
 </pre>
 </div>
 </div>
@@ -133,7 +130,7 @@ nb_path: "nbs/130_models.MultiInputNet.ipynb"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># raw ts</span>
-<span class="n">tfms</span>  <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">[</span><span class="n">Categorize</span><span class="p">()]]</span>
+<span class="n">tfms</span>  <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">[</span><span class="n">TSCategorize</span><span class="p">()]]</span>
 <span class="n">batch_tfms</span> <span class="o">=</span> <span class="n">TSStandardize</span><span class="p">()</span>
 <span class="n">ts_dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="n">batch_tfms</span><span class="p">)</span>
 <span class="n">ts_model</span> <span class="o">=</span> <span class="n">build_ts_model</span><span class="p">(</span><span class="n">InceptionTimePlus</span><span class="p">,</span> <span class="n">dls</span><span class="o">=</span><span class="n">ts_dls</span><span class="p">)</span>
@@ -162,8 +159,7 @@ nb_path: "nbs/130_models.MultiInputNet.ipynb"
 <div class="output_area">
 
 
-<div class="output_html rendered_html output_subarea ">
-<table border="1" class="dataframe">
+<div class="output_html rendered_html output_subarea "><table border="1" class="dataframe">
   <thead>
     <tr style="text-align: left;">
       <th>epoch</th>
@@ -177,15 +173,14 @@ nb_path: "nbs/130_models.MultiInputNet.ipynb"
   <tbody>
     <tr>
       <td>0</td>
-      <td>1.780000</td>
-      <td>1.621414</td>
-      <td>0.544444</td>
-      <td>0.845556</td>
+      <td>1.780674</td>
+      <td>1.571718</td>
+      <td>0.477778</td>
+      <td>0.857444</td>
       <td>00:05</td>
     </tr>
   </tbody>
-</table>
-</div>
+</table></div>
 
 </div>
 

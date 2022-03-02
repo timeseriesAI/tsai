@@ -4,6 +4,13 @@ __all__ = ['MiniRocketClassifier', 'load_minirocket', 'MiniRocketRegressor', 'lo
            'MiniRocketVotingClassifier', 'get_minirocket_preds', 'MiniRocketVotingRegressor']
 
 # Cell
+try:
+    import sktime
+    from sktime.transformations.panel.rocket import MiniRocketMultivariate
+except ImportError:
+    print("You need to install sktime to be able to use MiniRocket")
+
+# Cell
 import sklearn
 from sklearn.metrics import make_scorer
 from sklearn.linear_model import RidgeCV, RidgeClassifierCV

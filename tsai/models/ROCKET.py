@@ -3,6 +3,13 @@
 __all__ = ['RocketClassifier', 'load_rocket', 'RocketRegressor']
 
 # Cell
+try:
+    import sktime
+    from sktime.transformations.panel.rocket import Rocket
+except ImportError:
+    print("You need to install sktime to be able to use RocketClassifier and RocketRegressor")
+
+# Cell
 import sklearn
 from sklearn.linear_model import RidgeClassifierCV, RidgeCV
 from sklearn.metrics import make_scorer

@@ -3,6 +3,13 @@
 __all__ = ['get_ts_features']
 
 # Cell
+try:
+    from tsfresh import extract_features
+    from tsfresh.feature_extraction.settings import ComprehensiveFCParameters, MinimalFCParameters, EfficientFCParameters
+except ImportError:
+    print("You need to install tsfresh to be able to import tsai.data.features")
+
+# Cell
 from ..imports import *
 from ..utils import *
 from .external import *
