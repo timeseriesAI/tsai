@@ -19,23 +19,16 @@ def get_ts_features(X:Union[np.ndarray, torch.Tensor], y:Union[None, np.ndarray,
         features: 'min', 'efficient', 'all', or a dictionary. Be aware that 'efficient' and 'all' may required substantial memory and time.
     """
 
-    try:
-        from tsfresh import extract_features
-        from tsfresh.feature_extraction.settings import ComprehensiveFCParameters, MinimalFCParameters, EfficientFCParameters
-
-        df = to_tsfresh_df(X)
-        n_jobs = ifnone(n_jobs, defaults.cpus)
-        if 'default_fc_parameters' in kwargs.keys(): default_fc_parameters = default_fc_parameters
-        elif features == 'min': default_fc_parameters = MinimalFCParameters()
-        elif features == 'efficient': default_fc_parameters = EfficientFCParameters()
-        elif features == 'all': default_fc_parameters = ComprehensiveFCParameters()
-        else: default_fc_parameters = None
-        df = extract_features(df, column_id="id", n_jobs=n_jobs, default_fc_parameters=default_fc_parameters, **kwargs)
-        if y is not None:
-            if y.ndim == 1: y = y.reshape(-1,1)
-            for i in range(y.shape[-1]):
-                df['target' if y.shape[-1] == 1 else f'target_{i}'] = y[:, i]
-        return df
-
-    except ImportError:
-        print("You need to install tsfresh to be able to run get_ts_features")
+    df = to_tsfresh_df(X)
+    n_jobs = ifnone(n_jobs, defaults.cpus)
+    if 'default_fc_parameters' in kwargs.keys(): default_fc_parameters = default_fc_parameters
+    elif features == 'min': default_fc_parameters = MinimalFCParameters()
+    elif features == 'efficient': default_fc_parameters = EfficientFCParameters()
+    elif features == 'all': default_fc_parameters = ComprehensiveFCParameters()
+    else: default_fc_parameters = None
+    df = extract_features(df, column_id="id", n_jobs=n_jobs, default_fc_parameters=default_fc_parameters, **kwargs)
+    if y is not None:
+        if y.ndim == 1: y = y.reshape(-1,1)
+        for i in range(y.shape[-1]):
+            df['target' if y.shape[-1] == 1 else f'target_{i}'] = y[:, i]
+    return df

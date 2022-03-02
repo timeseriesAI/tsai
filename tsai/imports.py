@@ -13,6 +13,7 @@ from numbers import Integral
 from pathlib import Path
 import time
 from IPython.display import display
+import importlib
 import warnings
 from warnings import warn
 
@@ -41,6 +42,17 @@ import datetime
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 cpus = defaults.cpus
 
+def is_installed(
+    module_name:str # name of the module that is being checked
+    ):
+    "Determines if a module is installed without importing it"
+    return importlib.util.find_spec(module_name) is not None
+
+class ExtraDependencies:
+    sktime = is_installed("sktime")
+    tsfresh = is_installed("tsfresh")
+    pywt = is_installed("pywt")
+
 def is_lab():
     import re
     import psutil
@@ -50,18 +62,12 @@ def is_colab():
     from IPython.core import getipython
     return 'google.colab' in str(getipython.get_ipython())
 
-if is_colab():
-    try:
-        import numba
-        from numba import config
-        config.THREADING_LAYER = 'omp'
-    except ImportError: pass
-
 def to_local_time(t, time_format='%Y-%m-%d %H:%M:%S'):
     return time.strftime(time_format, time.localtime(t))
 
 def _save_nb():
     """Save and checkpoints current jupyter notebook."""
+    
     from IPython.display import HTML, Javascript
     if is_lab():
         script = """

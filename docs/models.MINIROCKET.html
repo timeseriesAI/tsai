@@ -32,6 +32,27 @@ nb_path: "nbs/111b_models.MINIROCKET.ipynb"
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">try</span><span class="p">:</span> 
+    <span class="kn">import</span> <span class="nn">sktime</span>
+    <span class="kn">from</span> <span class="nn">sktime.transformations.panel.rocket</span> <span class="kn">import</span> <span class="n">MiniRocketMultivariate</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span> 
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;You need to install sktime to be able to use MiniRocket&quot;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -79,7 +100,7 @@ nb_path: "nbs/111b_models.MINIROCKET.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="load_minirocket" class="doc_header"><code>load_minirocket</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/MINIROCKET.py#L106" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_minirocket</code>(<strong><code>fname</code></strong>, <strong><code>path</code></strong>=<em><code>'./models'</code></em>)</p>
+<h4 id="load_minirocket" class="doc_header"><code>load_minirocket</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/MINIROCKET.py#L88" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_minirocket</code>(<strong><code>fname</code></strong>, <strong><code>path</code></strong>=<em><code>'./models'</code></em>)</p>
 </blockquote>
 
 </div>
@@ -110,7 +131,7 @@ nb_path: "nbs/111b_models.MINIROCKET.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MiniRocketRegressor" class="doc_header"><code>class</code> <code>MiniRocketRegressor</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/MINIROCKET.py#L68" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocketRegressor</code>() :: <code>Pipeline</code></p>
+<h2 id="MiniRocketRegressor" class="doc_header"><code>class</code> <code>MiniRocketRegressor</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/MINIROCKET.py#L59" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocketRegressor</code>() :: <code>Pipeline</code></p>
 </blockquote>
 <p>Time series regression using MINIROCKET features and a linear regressor</p>
 
@@ -142,7 +163,7 @@ nb_path: "nbs/111b_models.MINIROCKET.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="load_minirocket" class="doc_header"><code>load_minirocket</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/MINIROCKET.py#L106" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_minirocket</code>(<strong><code>fname</code></strong>, <strong><code>path</code></strong>=<em><code>'./models'</code></em>)</p>
+<h4 id="load_minirocket" class="doc_header"><code>load_minirocket</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/MINIROCKET.py#L88" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_minirocket</code>(<strong><code>fname</code></strong>, <strong><code>path</code></strong>=<em><code>'./models'</code></em>)</p>
 </blockquote>
 
 </div>
@@ -173,7 +194,7 @@ nb_path: "nbs/111b_models.MINIROCKET.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MiniRocketVotingClassifier" class="doc_header"><code>class</code> <code>MiniRocketVotingClassifier</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/MINIROCKET.py#L114" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocketVotingClassifier</code>() :: <code>VotingClassifier</code></p>
+<h2 id="MiniRocketVotingClassifier" class="doc_header"><code>class</code> <code>MiniRocketVotingClassifier</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/MINIROCKET.py#L96" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocketVotingClassifier</code>() :: <code>VotingClassifier</code></p>
 </blockquote>
 <p>Time series classification ensemble using MINIROCKET features, a linear classifier and majority voting</p>
 
@@ -205,7 +226,7 @@ nb_path: "nbs/111b_models.MINIROCKET.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_minirocket_preds" class="doc_header"><code>get_minirocket_preds</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/MINIROCKET.py#L144" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_minirocket_preds</code>(<strong><code>X</code></strong>, <strong><code>fname</code></strong>, <strong><code>path</code></strong>=<em><code>'./models'</code></em>, <strong><code>model</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="get_minirocket_preds" class="doc_header"><code>get_minirocket_preds</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/MINIROCKET.py#L120" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_minirocket_preds</code>(<strong><code>X</code></strong>, <strong><code>fname</code></strong>, <strong><code>path</code></strong>=<em><code>'./models'</code></em>, <strong><code>model</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -236,7 +257,7 @@ nb_path: "nbs/111b_models.MINIROCKET.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MiniRocketVotingRegressor" class="doc_header"><code>class</code> <code>MiniRocketVotingRegressor</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/MINIROCKET.py#L152" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocketVotingRegressor</code>() :: <code>VotingRegressor</code></p>
+<h2 id="MiniRocketVotingRegressor" class="doc_header"><code>class</code> <code>MiniRocketVotingRegressor</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/MINIROCKET.py#L128" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocketVotingRegressor</code>() :: <code>VotingRegressor</code></p>
 </blockquote>
 <p>Time series regression ensemble using MINIROCKET features, a linear regressor and a voting regressor</p>
 
@@ -311,7 +332,7 @@ nb_path: "nbs/111b_models.MINIROCKET.ipynb"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>0.9388888888888889</pre>
+<pre>0.9277777777777778</pre>
 </div>
 
 </div>
@@ -346,87 +367,10 @@ nb_path: "nbs/111b_models.MINIROCKET.ipynb"
 
 <div class="output_area">
 
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/Users/nacho/opt/anaconda3/envs/py37torch110/lib/python3.7/site-packages/sklearn/linear_model/_base.py:145: FutureWarning: &#39;normalize&#39; was deprecated in version 1.0 and will be removed in 1.2.
-If you wish to scale the data, use Pipeline with a StandardScaler in a preprocessing stage. To reproduce the previous behavior:
-
-from sklearn.pipeline import make_pipeline
-
-model = make_pipeline(StandardScaler(with_mean=False), _RidgeGCV())
-
-If you wish to pass a sample_weight parameter, you need to pass it as a fit parameter to each step of the pipeline as follows:
-
-kwargs = {s[0] + &#39;__sample_weight&#39;: sample_weight for s in model.steps}
-model.fit(X, y, **kwargs)
-
-
-  FutureWarning,
-/Users/nacho/opt/anaconda3/envs/py37torch110/lib/python3.7/site-packages/sklearn/linear_model/_base.py:145: FutureWarning: &#39;normalize&#39; was deprecated in version 1.0 and will be removed in 1.2.
-If you wish to scale the data, use Pipeline with a StandardScaler in a preprocessing stage. To reproduce the previous behavior:
-
-from sklearn.pipeline import make_pipeline
-
-model = make_pipeline(StandardScaler(with_mean=False), _RidgeGCV())
-
-If you wish to pass a sample_weight parameter, you need to pass it as a fit parameter to each step of the pipeline as follows:
-
-kwargs = {s[0] + &#39;__sample_weight&#39;: sample_weight for s in model.steps}
-model.fit(X, y, **kwargs)
-
-
-  FutureWarning,
-/Users/nacho/opt/anaconda3/envs/py37torch110/lib/python3.7/site-packages/sklearn/linear_model/_base.py:145: FutureWarning: &#39;normalize&#39; was deprecated in version 1.0 and will be removed in 1.2.
-If you wish to scale the data, use Pipeline with a StandardScaler in a preprocessing stage. To reproduce the previous behavior:
-
-from sklearn.pipeline import make_pipeline
-
-model = make_pipeline(StandardScaler(with_mean=False), _RidgeGCV())
-
-If you wish to pass a sample_weight parameter, you need to pass it as a fit parameter to each step of the pipeline as follows:
-
-kwargs = {s[0] + &#39;__sample_weight&#39;: sample_weight for s in model.steps}
-model.fit(X, y, **kwargs)
-
-
-  FutureWarning,
-/Users/nacho/opt/anaconda3/envs/py37torch110/lib/python3.7/site-packages/sklearn/linear_model/_base.py:145: FutureWarning: &#39;normalize&#39; was deprecated in version 1.0 and will be removed in 1.2.
-If you wish to scale the data, use Pipeline with a StandardScaler in a preprocessing stage. To reproduce the previous behavior:
-
-from sklearn.pipeline import make_pipeline
-
-model = make_pipeline(StandardScaler(with_mean=False), _RidgeGCV())
-
-If you wish to pass a sample_weight parameter, you need to pass it as a fit parameter to each step of the pipeline as follows:
-
-kwargs = {s[0] + &#39;__sample_weight&#39;: sample_weight for s in model.steps}
-model.fit(X, y, **kwargs)
-
-
-  FutureWarning,
-/Users/nacho/opt/anaconda3/envs/py37torch110/lib/python3.7/site-packages/sklearn/linear_model/_base.py:145: FutureWarning: &#39;normalize&#39; was deprecated in version 1.0 and will be removed in 1.2.
-If you wish to scale the data, use Pipeline with a StandardScaler in a preprocessing stage. To reproduce the previous behavior:
-
-from sklearn.pipeline import make_pipeline
-
-model = make_pipeline(StandardScaler(with_mean=False), _RidgeGCV())
-
-If you wish to pass a sample_weight parameter, you need to pass it as a fit parameter to each step of the pipeline as follows:
-
-kwargs = {s[0] + &#39;__sample_weight&#39;: sample_weight for s in model.steps}
-model.fit(X, y, **kwargs)
-
-
-  FutureWarning,
-</pre>
-</div>
-</div>
-
-<div class="output_area">
-
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>0.9222222222222223</pre>
+<pre>0.9333333333333333</pre>
 </div>
 
 </div>
@@ -470,7 +414,7 @@ model.fit(X, y, **kwargs)
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>0.04167040105702624
+<pre>0.04167926525909331
 </pre>
 </div>
 </div>
@@ -513,7 +457,7 @@ model.fit(X, y, **kwargs)
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>2.2933066450246664
+<pre>2.154432412077461
 </pre>
 </div>
 </div>
@@ -548,85 +492,8 @@ model.fit(X, y, **kwargs)
 
 <div class="output_area">
 
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/Users/nacho/opt/anaconda3/envs/py37torch110/lib/python3.7/site-packages/sklearn/linear_model/_base.py:145: FutureWarning: &#39;normalize&#39; was deprecated in version 1.0 and will be removed in 1.2.
-If you wish to scale the data, use Pipeline with a StandardScaler in a preprocessing stage. To reproduce the previous behavior:
-
-from sklearn.pipeline import make_pipeline
-
-model = make_pipeline(StandardScaler(with_mean=False), _RidgeGCV())
-
-If you wish to pass a sample_weight parameter, you need to pass it as a fit parameter to each step of the pipeline as follows:
-
-kwargs = {s[0] + &#39;__sample_weight&#39;: sample_weight for s in model.steps}
-model.fit(X, y, **kwargs)
-
-
-  FutureWarning,
-/Users/nacho/opt/anaconda3/envs/py37torch110/lib/python3.7/site-packages/sklearn/linear_model/_base.py:145: FutureWarning: &#39;normalize&#39; was deprecated in version 1.0 and will be removed in 1.2.
-If you wish to scale the data, use Pipeline with a StandardScaler in a preprocessing stage. To reproduce the previous behavior:
-
-from sklearn.pipeline import make_pipeline
-
-model = make_pipeline(StandardScaler(with_mean=False), _RidgeGCV())
-
-If you wish to pass a sample_weight parameter, you need to pass it as a fit parameter to each step of the pipeline as follows:
-
-kwargs = {s[0] + &#39;__sample_weight&#39;: sample_weight for s in model.steps}
-model.fit(X, y, **kwargs)
-
-
-  FutureWarning,
-/Users/nacho/opt/anaconda3/envs/py37torch110/lib/python3.7/site-packages/sklearn/linear_model/_base.py:145: FutureWarning: &#39;normalize&#39; was deprecated in version 1.0 and will be removed in 1.2.
-If you wish to scale the data, use Pipeline with a StandardScaler in a preprocessing stage. To reproduce the previous behavior:
-
-from sklearn.pipeline import make_pipeline
-
-model = make_pipeline(StandardScaler(with_mean=False), _RidgeGCV())
-
-If you wish to pass a sample_weight parameter, you need to pass it as a fit parameter to each step of the pipeline as follows:
-
-kwargs = {s[0] + &#39;__sample_weight&#39;: sample_weight for s in model.steps}
-model.fit(X, y, **kwargs)
-
-
-  FutureWarning,
-/Users/nacho/opt/anaconda3/envs/py37torch110/lib/python3.7/site-packages/sklearn/linear_model/_base.py:145: FutureWarning: &#39;normalize&#39; was deprecated in version 1.0 and will be removed in 1.2.
-If you wish to scale the data, use Pipeline with a StandardScaler in a preprocessing stage. To reproduce the previous behavior:
-
-from sklearn.pipeline import make_pipeline
-
-model = make_pipeline(StandardScaler(with_mean=False), _RidgeGCV())
-
-If you wish to pass a sample_weight parameter, you need to pass it as a fit parameter to each step of the pipeline as follows:
-
-kwargs = {s[0] + &#39;__sample_weight&#39;: sample_weight for s in model.steps}
-model.fit(X, y, **kwargs)
-
-
-  FutureWarning,
-/Users/nacho/opt/anaconda3/envs/py37torch110/lib/python3.7/site-packages/sklearn/linear_model/_base.py:145: FutureWarning: &#39;normalize&#39; was deprecated in version 1.0 and will be removed in 1.2.
-If you wish to scale the data, use Pipeline with a StandardScaler in a preprocessing stage. To reproduce the previous behavior:
-
-from sklearn.pipeline import make_pipeline
-
-model = make_pipeline(StandardScaler(with_mean=False), _RidgeGCV())
-
-If you wish to pass a sample_weight parameter, you need to pass it as a fit parameter to each step of the pipeline as follows:
-
-kwargs = {s[0] + &#39;__sample_weight&#39;: sample_weight for s in model.steps}
-model.fit(X, y, **kwargs)
-
-
-  FutureWarning,
-</pre>
-</div>
-</div>
-
-<div class="output_area">
-
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>2.2812869890543297
+<pre>2.2437828526642454
 </pre>
 </div>
 </div>
