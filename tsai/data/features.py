@@ -3,13 +3,6 @@
 __all__ = ['get_ts_features']
 
 # Cell
-try:
-    from tsfresh import extract_features
-    from tsfresh.feature_extraction.settings import ComprehensiveFCParameters, MinimalFCParameters, EfficientFCParameters
-except ImportError:
-    print("You need to install tsfresh to be able to import tsai.data.features")
-
-# Cell
 from ..imports import *
 from ..utils import *
 from .external import *
@@ -25,6 +18,12 @@ def get_ts_features(X:Union[np.ndarray, torch.Tensor], y:Union[None, np.ndarray,
         y: Not required for unlabeled data. Otherwise, you need to pass it.
         features: 'min', 'efficient', 'all', or a dictionary. Be aware that 'efficient' and 'all' may required substantial memory and time.
     """
+
+    try:
+        from tsfresh import extract_features
+        from tsfresh.feature_extraction.settings import ComprehensiveFCParameters, MinimalFCParameters, EfficientFCParameters
+    except ImportError:
+        print("You need to install tsfresh to be able to import tsai.data.features")
 
     df = to_tsfresh_df(X)
     n_jobs = ifnone(n_jobs, defaults.cpus)

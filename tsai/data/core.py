@@ -516,13 +516,10 @@ class NumpyDataLoader(TfmdDL):
         new_dl = cls(**all_kwargs)
         if 'after_batch' not in all_kwargs.keys():
             self.after_batch = new_dl.after_batch
-        if not hasattr(new_dl, '_n_inp') or not hasattr(new_dl, '_types'):
-            try:
-                self._one_pass()
-                new_dl._n_inp,new_dl._types = self._n_inp,self._types
-            except:
-                print("Could not do one pass in your dataloader, there is something wrong in it")
-        else: new_dl._n_inp,new_dl._types = self._n_inp,self._types
+        if not hasattr(new_dl, '_n_inp') and hasattr(self, '_n_inp'):
+            new_dl._n_inp = self._n_inp
+        if not hasattr(new_dl, '_types') and hasattr(self, '_types'):
+            new_dl._types = self._types
         return new_dl
 
     def new_dl(self, X, y=None, bs=64):

@@ -30,7 +30,6 @@ from fastcore.test import *
 from fastcore.foundation import *
 from fastcore.meta import *
 from fastcore.dispatch import *
-# from fastcore.utils import *
 
 import fastai
 from fastai.basics import *
@@ -48,10 +47,10 @@ def is_installed(
     "Determines if a module is installed without importing it"
     return importlib.util.find_spec(module_name) is not None
 
-class ExtraDependencies:
-    sktime = is_installed("sktime")
-    tsfresh = is_installed("tsfresh")
-    pywt = is_installed("pywt")
+# class ExtraDependencies:
+#     sktime = is_installed("sktime")
+#     tsfresh = is_installed("tsfresh")
+#     pywt = is_installed("pywt")
 
 def is_lab():
     import re
