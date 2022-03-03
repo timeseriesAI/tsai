@@ -52,18 +52,18 @@ We've also added a new PredictionDynamics callback that will display the predict
 ## Installation
 
 You can install the **latest stable** version from pip using:
-```
+```bash
 pip install tsai
 ```
 
 Or you can install the cutting edge version of this library from github by doing:
-```
+```bash
 pip install -Uqq git+https://github.com/timeseriesAI/tsai.git
 ```
 
 Once the install is complete, you should restart your runtime and then run: 
 
-```
+```python
 from tsai.all import *
 ```
 
@@ -117,7 +117,7 @@ These are just a few examples of how you can use `tsai`:
 ### Binary, univariate classification
 
 **Training:**
-```bash
+```python
 from tsai.all import *
 X, y, splits = get_classification_data('ECG200', split_data=False)
 batch_tfms = TSStandardize()
@@ -128,7 +128,7 @@ clf.export("models/clf.pkl") # make sure you set the path to a folder that alrea
 
 **Inference:** 
 
-```bash
+```python
 from tsai.inference import load_learner
 clf = load_learner("models/clf.pkl")
 probas, target, preds = clf.get_X_preds(X[splits[0]], y[splits[0]])
@@ -137,7 +137,7 @@ probas, target, preds = clf.get_X_preds(X[splits[0]], y[splits[0]])
 ### Multi-class, multivariate classification
 
 **Training:**
-```bash
+```python
 from tsai.all import *
 X, y, splits = get_classification_data('LSST', split_data=False)
 batch_tfms = TSStandardize(by_sample=True)
@@ -148,7 +148,7 @@ mv_clf.export("models/mv_clf.pkl") # make sure you set the path to a folder that
 
 **Inference:** 
 
-```bash
+```python
 from tsai.inference import load_learner
 mv_clf = load_learner("models/mv_clf.pkl")
 probas, target, preds = mv_clf.get_X_preds(X[splits[0]], y[splits[0]])
@@ -157,7 +157,7 @@ probas, target, preds = mv_clf.get_X_preds(X[splits[0]], y[splits[0]])
 ### Multivariate Regression
 
 **Training:**
-```bash
+```python
 from tsai.all import *
 X, y, splits = get_regression_data('AppliancesEnergy', split_data=False)
 batch_tfms = TSStandardize(by_sample=True)
@@ -167,7 +167,7 @@ reg.export("models/reg.pkl") # make sure you set the path to a folder that alrea
 ```
 
 **Inference:**
-```bash
+```python
 from tsai.inference import load_learner
 reg = load_learner("models/reg.pkl")
 raw_preds, target, preds = reg.get_X_preds(X[splits[0]], y[splits[0]])
@@ -176,7 +176,7 @@ raw_preds, target, preds = reg.get_X_preds(X[splits[0]], y[splits[0]])
 RocketClassifier, MiniRocketClassifier, RocketRegressor and MiniRocketRegressor are somewhat different (not properly deep learning models) and are used in a slightly different way: 
 
 **Training:**
-```bash
+```python
 from tsai.all import *
 from sklearn.metrics import mean_squared_error
 X_train, y_train, X_test, y_test = get_regression_data('AppliancesEnergy')
@@ -187,7 +187,7 @@ mr_reg.save("minirocket_regressor")
 ```
 
 **Inference:**
-```bash
+```python
 mr_reg = load_rocket("minirocket_regressor")
 y_pred = mr_reg.predict(X_test)
 mean_squared_error(y_test, y_pred, squared=False)
@@ -196,7 +196,7 @@ mean_squared_error(y_test, y_pred, squared=False)
 ### Univariate Forecasting
 
 **Training:**
-```bash
+```python
 from tsai.all import *
 ts = get_forecasting_time_series("Sunspots").values
 X, y = SlidingWindow(60, horizon=1)(ts)
@@ -209,7 +209,7 @@ fcst.export("models/fcst.pkl") # make sure you set the path to a folder that alr
 
 **Inference:**
 
-```bash
+```python
 from tsai.inference import load_learner
 fcst = load_learner("models/fcst.pkl")
 raw_preds, target, preds = fcst.get_X_preds(X[splits[0]], y[splits[0]])
