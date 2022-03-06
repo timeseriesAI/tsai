@@ -7,14 +7,14 @@ import torch
 import torch.nn as nn
 
 from .TabTransformer import TabTransformer
-from .gMLP import gMLPClassification
+from .gMLP import gMLP
 
 # Cell
 class _TabMLP(nn.Module):
     def __init__(self, classes, cont_names, c_out, d_model, mlp_d_model, mlp_d_ffn, mlp_layers):
         super().__init__()
         seq_len = d_model * len(classes) + len(cont_names)
-        self.mlp = gMLPClassification(1, c_out, seq_len, d_model=mlp_d_model, d_ffn=mlp_d_ffn, depth=mlp_layers)
+        self.mlp = gMLP(1, c_out, seq_len, d_model=mlp_d_model, d_ffn=mlp_d_ffn, depth=mlp_layers)
 
     def forward(self, x):
         x = x.unsqueeze(1)
