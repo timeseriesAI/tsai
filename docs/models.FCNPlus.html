@@ -47,7 +47,7 @@ nb_path: "nbs/103c_models.FCNPlus.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FCNPlus" class="doc_header"><code>class</code> <code>FCNPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/FCNPlus.py#L10" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FCNPlus</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>layers</code></strong>=<em><code>[128, 256, 128]</code></em>, <strong><code>kss</code></strong>=<em><code>[7, 5, 3]</code></em>, <strong><code>coord</code></strong>=<em><code>False</code></em>, <strong><code>separable</code></strong>=<em><code>False</code></em>, <strong><code>zero_norm</code></strong>=<em><code>False</code></em>, <strong><code>act</code></strong>=<em><code>ReLU</code></em>, <strong><code>act_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>residual</code></strong>=<em><code>False</code></em>) :: <a href="/models.TabFusionTransformer.html#Sequential"><code>Sequential</code></a></p>
+<h2 id="FCNPlus" class="doc_header"><code>class</code> <code>FCNPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/FCNPlus.py#L11" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FCNPlus</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>layers</code></strong>=<em><code>[128, 256, 128]</code></em>, <strong><code>kss</code></strong>=<em><code>[7, 5, 3]</code></em>, <strong><code>coord</code></strong>=<em><code>False</code></em>, <strong><code>separable</code></strong>=<em><code>False</code></em>, <strong><code>use_bn</code></strong>=<em><code>False</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>zero_norm</code></strong>=<em><code>False</code></em>, <strong><code>act</code></strong>=<em><code>ReLU</code></em>, <strong><code>act_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>residual</code></strong>=<em><code>False</code></em>) :: <a href="/models.TabFusionTransformer.html#Sequential"><code>Sequential</code></a></p>
 </blockquote>
 <p>A sequential container.
 Modules will be added to it in the order they are passed in the
@@ -173,7 +173,7 @@ model = nn.Sequential(OrderedDict([
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">tsai.models.FCN</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">total_params</span><span class="p">(</span><span class="n">FCN</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)),</span> <span class="n">total_params</span><span class="p">(</span><span class="n">FCNPlus</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)))</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">count_parameters</span><span class="p">(</span><span class="n">FCN</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)),</span> <span class="n">count_parameters</span><span class="p">(</span><span class="n">FCNPlus</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)))</span>
 </pre></div>
 
     </div>

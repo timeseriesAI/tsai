@@ -72,7 +72,7 @@ nb_path: "nbs/101_models.ResNet.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ResNet" class="doc_header"><code>class</code> <code>ResNet</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/ResNet.py#L30" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ResNet</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>) :: <code>Module</code></p>
+<h2 id="ResNet" class="doc_header"><code>class</code> <code>ResNet</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/ResNet.py#L31" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ResNet</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -102,7 +102,7 @@ nb_path: "nbs/101_models.ResNet.ipynb"
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">xb</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">ResNet</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">])</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">total_params</span><span class="p">(</span><span class="n">ResNet</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">))[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">479490</span><span class="p">)</span> <span class="c1"># for (3,2)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">count_parameters</span><span class="p">(</span><span class="n">ResNet</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="mi">479490</span><span class="p">)</span> <span class="c1"># for (3,2)</span>
 </pre></div>
 
     </div>
@@ -154,7 +154,7 @@ nb_path: "nbs/101_models.ResNet.ipynb"
       (0): Conv1d(3, 64, kernel_size=(1,), stride=(1,), bias=False)
       (1): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
     )
-    (add): Add()
+    (add): Add
     (act): ReLU()
   )
   (resblock2): ResBlock(
@@ -176,7 +176,7 @@ nb_path: "nbs/101_models.ResNet.ipynb"
       (0): Conv1d(64, 128, kernel_size=(1,), stride=(1,), bias=False)
       (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
     )
-    (add): Add()
+    (add): Add
     (act): ReLU()
   )
   (resblock3): ResBlock(
@@ -195,11 +195,11 @@ nb_path: "nbs/101_models.ResNet.ipynb"
       (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
     )
     (shortcut): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-    (add): Add()
+    (add): Add
     (act): ReLU()
   )
   (gap): AdaptiveAvgPool1d(output_size=1)
-  (squeeze): Squeeze()
+  (squeeze): Squeeze(dim=-1)
   (fc): Linear(in_features=128, out_features=2, bias=True)
 )</pre>
 </div>

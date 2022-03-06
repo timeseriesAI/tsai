@@ -5,6 +5,7 @@ __all__ = ['ResBlock', 'ResNet']
 # Cell
 from ..imports import *
 from .layers import *
+from .utils import *
 
 # Cell
 class ResBlock(Module):

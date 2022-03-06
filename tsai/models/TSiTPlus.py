@@ -60,7 +60,7 @@ class _TSiTEncoder(nn.Module):
 
 # Cell
 class _TSiTBackbone(Module):
-    def __init__(self, c_in:int, seq_len:int, depth:int=6, d_model:int=128, n_heads:int=16, d_head:Optional[int]=None, act:str='gelu',
+    def __init__(self, c_in:int, seq_len:int, depth:int=6, d_model:int=128, n_heads:int=16, act:str='gelu',
                  lsa:bool=False, qkv_bias:bool=True, attn_dropout:float=0., dropout:float=0., drop_path_rate:float=0., mlp_ratio:int=1,
                  pre_norm:bool=False, use_token:bool=True,  use_pe:bool=True, n_embeds:Optional[list]=None, embed_dims:Optional[list]=None,
                  padding_idxs:Optional[list]=None, cat_pos:Optional[list]=None, feature_extractor:Optional[Callable]=None):
@@ -136,8 +136,6 @@ class TSiTPlus(nn.Sequential):
         d_model:            total dimension of the model (number of features created by the model).
         depth:              number of blocks in the encoder.
         n_heads:            parallel attention heads. Default:16 (range(8-16)).
-        d_head:             size of the learned linear projection of queries, keys and values in the MHA.
-                            Default: None -> (d_model/n_heads) = 32.
         act:                the activation function of positionwise feedforward layer.
         lsa:                locality self attention used (see Lee, S. H., Lee, S., & Song, B. C. (2021). Vision Transformer for Small-Size Datasets.
                             arXiv preprint arXiv:2112.13492.)
@@ -172,7 +170,7 @@ class TSiTPlus(nn.Sequential):
         x: bs (batch size) x nvars (aka features, variables, dimensions, channels) x seq_len (aka time steps)
     """
 
-    def __init__(self, c_in:int, c_out:int, seq_len:int, d_model:int=128, depth:int=6, n_heads:int=16, d_head:Optional[int]=None, act:str='gelu',
+    def __init__(self, c_in:int, c_out:int, seq_len:int, d_model:int=128, depth:int=6, n_heads:int=16, act:str='gelu',
                  lsa:bool=False, attn_dropout:float=0., dropout:float=0., drop_path_rate:float=0., mlp_ratio:int=1, qkv_bias:bool=True,
                  pre_norm:bool=False, use_token:bool=True, use_pe:bool=True, n_embeds:Optional[list]=None, embed_dims:Optional[list]=None,
                  padding_idxs:Optional[list]=None, cat_pos:Optional[list]=None, feature_extractor:Optional[Callable]=None, flatten:bool=False,
@@ -182,7 +180,7 @@ class TSiTPlus(nn.Sequential):
         if use_token and c_out == 1:
             use_token = False
             pv("use_token set to False as c_out == 1", verbose)
-        backbone = _TSiTBackbone(c_in, seq_len, depth=depth, d_model=d_model, n_heads=n_heads, d_head=d_head, act=act,
+        backbone = _TSiTBackbone(c_in, seq_len, depth=depth, d_model=d_model, n_heads=n_heads, act=act,
                                  lsa=lsa, attn_dropout=attn_dropout, dropout=dropout, drop_path_rate=drop_path_rate,
                                  pre_norm=pre_norm, mlp_ratio=mlp_ratio, use_pe=use_pe, use_token=use_token,
                                  n_embeds=n_embeds, embed_dims=embed_dims, padding_idxs=padding_idxs, cat_pos=cat_pos,

@@ -3,15 +3,15 @@
 __all__ = ['load_all', 'load_learner_all', 'get_arch', 'all_archs_names', 'ts_learner', 'tsimage_learner']
 
 # Cell
+import pickle
+from fastai.callback.core import CancelBatchException
+from fastai.learner import Learner, load_learner, Recorder
+from fastai.callback.schedule import *
+from fastai.optimizer import Adam
+from fastai.losses import MSELossFlat
 from .imports import *
-from .utils import random_shuffle
-from .data.core import *
-from .data.validation import *
 from .models.utils import *
 from .models.InceptionTimePlus import *
-from fastai.learner import *
-from fastai.vision.models.all import *
-from fastai.data.transforms import *
 
 # Cell
 @patch
@@ -29,7 +29,8 @@ def remove_all_cbs(self:Learner, max_iters=10):
 
 # Cell
 @patch
-def one_batch(self:Learner, i, b): # this fixes a bug that will be managed in the next release of fastai
+def one_batch(self:Learner, i, b):
+    # Fixes a bug that will be managed in the next release of fastai
     self.iter = i
 #     b_on_device = tuple( e.to(device=self.dls.device) for e in b if hasattr(e, "to")) if self.dls.device is not None else b
     b_on_device = to_device(b, device=self.dls.device) if self.dls.device is not None else b
@@ -86,6 +87,7 @@ def load_all(path='export', dls_fname='dls', model_fname='model', learner_fname=
 
 
     if learn.dls_type == "MixedDataLoaders":
+        from .data.mixed import MixedDataLoader, MixedDataLoaders
         dls_fnames = []
         _dls = []
         for i in range(learn.n_loaders[0]):
@@ -480,15 +482,15 @@ def get_arch(arch_name):
 # Cell
 @delegates(build_ts_model)
 def ts_learner(dls, arch=None, c_in=None, c_out=None, seq_len=None, d=None, splitter=trainable_params,
-               # learner args
                loss_func=None, opt_func=Adam, lr=defaults.lr, cbs=None, metrics=None, path=None,
                model_dir='models', wd=None, wd_bn_bias=False, train_bn=True, moms=(0.95,0.85,0.95), train_metrics=False,
-               # other model args
-               **kwargs):
+               **kwargs)->Learner:
 
-    if arch is None: arch = InceptionTimePlus
-    elif isinstance(arch, str): arch = get_arch(arch)
-    model = build_ts_model(arch, dls=dls, c_in=c_in, c_out=c_out, seq_len=seq_len, d=d, **kwargs)
+    if isinstance(arch, nn.Module): model = arch
+    else:
+        if arch is None: arch = InceptionTimePlus
+        elif isinstance(arch, str): arch = get_arch(arch)
+        model = build_ts_model(arch, dls=dls, c_in=c_in, c_out=c_out, seq_len=seq_len, d=d, **kwargs)
     if hasattr(model, "backbone") and hasattr(model, "head"):
         splitter = ts_splitter
     if loss_func is None:
@@ -511,13 +513,13 @@ def ts_learner(dls, arch=None, c_in=None, c_out=None, seq_len=None, d=None, spli
 # Cell
 @delegates(build_tsimage_model)
 def tsimage_learner(dls, arch=None, pretrained=False,
-               # learner args
                loss_func=None, opt_func=Adam, lr=defaults.lr, cbs=None, metrics=None, path=None,
                model_dir='models', wd=None, wd_bn_bias=False, train_bn=True, moms=(0.95,0.85,0.95),
-               # other model args
                **kwargs):
 
-    if arch is None: arch = xresnet34
+    if arch is None:
+        from .models.XResNet1d import xresnet34
+        arch = xresnet34
     elif isinstance(arch, str): arch = get_arch(arch)
     model = build_tsimage_model(arch, dls=dls, pretrained=pretrained, **kwargs)
     learn = Learner(dls=dls, model=model,

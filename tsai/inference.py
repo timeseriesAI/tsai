@@ -4,10 +4,8 @@ __all__ = []
 
 # Cell
 from fastai.learner import load_learner
-from fastai.callback.core import GatherPredsCallback
 from fastai.learner import Learner
 from fastcore.basics import patch
-from fastcore.meta import delegates
 
 # Cell
 @patch

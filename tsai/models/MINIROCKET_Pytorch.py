@@ -3,14 +3,13 @@
 __all__ = ['MiniRocketFeatures', 'MRF', 'get_minirocket_features', 'MiniRocketHead', 'MiniRocket']
 
 # Cell
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 from collections import OrderedDict
 
-
+# Cell
 class MiniRocketFeatures(nn.Module):
     """This is a Pytorch implementation of MiniRocket developed by Malcolm McLean and Ignacio Oguiza
 
@@ -165,7 +164,6 @@ def get_minirocket_features(o, model, chunksize=1024, use_cuda=None, to_np=True)
     else: return features
 
 # Cell
-
 class MiniRocketHead(nn.Sequential):
     def __init__(self, c_in, c_out, seq_len=1, bn=True, fc_dropout=0.):
         layers = [nn.Flatten()]

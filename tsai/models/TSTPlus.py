@@ -4,6 +4,7 @@ __all__ = ['PositionalEncoding', 'SinCosPosEncoding', 'Coord2dPosEncoding', 'Coo
            'MultiTSTPlus']
 
 # Cell
+from typing import Callable
 from ..imports import *
 from ..utils import *
 from .layers import *
@@ -262,7 +263,7 @@ class TSTPlus(nn.Sequential):
                  d_ff:int=256, norm:str='BatchNorm', attn_dropout:float=0., dropout:float=0., act:str="gelu", key_padding_mask:bool='auto',
                  padding_var:Optional[int]=None, attn_mask:Optional[Tensor]=None, res_attention:bool=True, pre_norm:bool=False, store_attn:bool=False,
                  pe:str='zeros', learn_pe:bool=True, flatten:bool=True, fc_dropout:float=0.,
-                 concat_pool:bool=False, bn:bool=False, custom_head:Optional=None,
+                 concat_pool:bool=False, bn:bool=False, custom_head:Optional[Callable]=None,
                  y_range:Optional[tuple]=None, verbose:bool=False, **kwargs):
         """
         Args:

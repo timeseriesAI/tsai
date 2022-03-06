@@ -9,258 +9,705 @@ __all__ = ['decompress_from_url', 'download_data', 'get_UCR_univariate_list', 'U
            'get_forecasting_data']
 
 # Cell
-from ..imports import *
-from ..utils import *
-from .validation import *
-
-# Cell
-from sktime.utils.data_io import load_from_tsfile_to_dataframe as ts2df
-from sktime.utils.validation.panel import check_X
-from sktime.utils.data_io import TsFileParseException
-
-# Cell
-from fastai.data.external import *
 from tqdm import tqdm
 import zipfile
 import tempfile
 try: from urllib import urlretrieve
 except ImportError: from urllib.request import urlretrieve
 import shutil
-from numpy import distutils
 import distutils
+from ..imports import *
+from ..utils import *
+from .validation import *
 
 # Cell
-def decompress_from_url(url, target_dir=None, verbose=False):
-    # Download
-    try:
-        pv("downloading data...", verbose)
-        fname = os.path.basename(url)
-        tmpdir = tempfile.mkdtemp()
-        tmpfile = os.path.join(tmpdir, fname)
-        urlretrieve(url, tmpfile)
-        pv("...data downloaded", verbose)
+# This code was adapted from https://github.com/ChangWeiTan/TSRegression.
+# It's used to load time series examples to demonstrate tsai's functionality.
+# Copyright for above source is below.
 
-        # Decompress
-        try:
-            pv("decompressing data...", verbose)
-            if not os.path.exists(target_dir): os.makedirs(target_dir)
-            shutil.unpack_archive(tmpfile, target_dir)
-            shutil.rmtree(tmpdir)
-            pv("...data decompressed", verbose)
-            return target_dir
+# GNU GENERAL PUBLIC LICENSE
+#                        Version 3, 29 June 2007
 
-        except:
-            shutil.rmtree(tmpdir)
-            if verbose: sys.stderr.write("Could not decompress file, aborting.\n")
+#  Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+#  Everyone is permitted to copy and distribute verbatim copies
+#  of this license document, but changing it is not allowed.
 
-    except:
-        shutil.rmtree(tmpdir)
-        if verbose:
-            sys.stderr.write("Could not download url. Please, check url.\n")
+#                             Preamble
 
-# Cell
-from fastdownload import download_url
-def download_data(url, fname=None, c_key='archive', force_download=False, timeout=4, verbose=False):
-    "Download `url` to `fname`."
-    fname = Path(fname or URLs.path(url, c_key=c_key))
-    fname.parent.mkdir(parents=True, exist_ok=True)
-    if not fname.exists() or force_download: download_url(url, dest=fname, timeout=timeout, show_progress=verbose)
-    return fname
+#   The GNU General Public License is a free, copyleft license for
+# software and other kinds of works.
 
-# Cell
-def get_UCR_univariate_list():
-    return [
-        'ACSF1', 'Adiac', 'AllGestureWiimoteX', 'AllGestureWiimoteY',
-        'AllGestureWiimoteZ', 'ArrowHead', 'Beef', 'BeetleFly', 'BirdChicken',
-        'BME', 'Car', 'CBF', 'Chinatown', 'ChlorineConcentration',
-        'CinCECGTorso', 'Coffee', 'Computers', 'CricketX', 'CricketY',
-        'CricketZ', 'Crop', 'DiatomSizeReduction',
-        'DistalPhalanxOutlineAgeGroup', 'DistalPhalanxOutlineCorrect',
-        'DistalPhalanxTW', 'DodgerLoopDay', 'DodgerLoopGame',
-        'DodgerLoopWeekend', 'Earthquakes', 'ECG200', 'ECG5000', 'ECGFiveDays',
-        'ElectricDevices', 'EOGHorizontalSignal', 'EOGVerticalSignal',
-        'EthanolLevel', 'FaceAll', 'FaceFour', 'FacesUCR', 'FiftyWords',
-        'Fish', 'FordA', 'FordB', 'FreezerRegularTrain', 'FreezerSmallTrain',
-        'Fungi', 'GestureMidAirD1', 'GestureMidAirD2', 'GestureMidAirD3',
-        'GesturePebbleZ1', 'GesturePebbleZ2', 'GunPoint', 'GunPointAgeSpan',
-        'GunPointMaleVersusFemale', 'GunPointOldVersusYoung', 'Ham',
-        'HandOutlines', 'Haptics', 'Herring', 'HouseTwenty', 'InlineSkate',
-        'InsectEPGRegularTrain', 'InsectEPGSmallTrain', 'InsectWingbeatSound',
-        'ItalyPowerDemand', 'LargeKitchenAppliances', 'Lightning2',
-        'Lightning7', 'Mallat', 'Meat', 'MedicalImages', 'MelbournePedestrian',
-        'MiddlePhalanxOutlineAgeGroup', 'MiddlePhalanxOutlineCorrect',
-        'MiddlePhalanxTW', 'MixedShapesRegularTrain', 'MixedShapesSmallTrain',
-        'MoteStrain', 'NonInvasiveFetalECGThorax1',
-        'NonInvasiveFetalECGThorax2', 'OliveOil', 'OSULeaf',
-        'PhalangesOutlinesCorrect', 'Phoneme', 'PickupGestureWiimoteZ',
-        'PigAirwayPressure', 'PigArtPressure', 'PigCVP', 'PLAID', 'Plane',
-        'PowerCons', 'ProximalPhalanxOutlineAgeGroup',
-        'ProximalPhalanxOutlineCorrect', 'ProximalPhalanxTW',
-        'RefrigerationDevices', 'Rock', 'ScreenType', 'SemgHandGenderCh2',
-        'SemgHandMovementCh2', 'SemgHandSubjectCh2', 'ShakeGestureWiimoteZ',
-        'ShapeletSim', 'ShapesAll', 'SmallKitchenAppliances', 'SmoothSubspace',
-        'SonyAIBORobotSurface1', 'SonyAIBORobotSurface2', 'StarLightCurves',
-        'Strawberry', 'SwedishLeaf', 'Symbols', 'SyntheticControl',
-        'ToeSegmentation1', 'ToeSegmentation2', 'Trace', 'TwoLeadECG',
-        'TwoPatterns', 'UMD', 'UWaveGestureLibraryAll', 'UWaveGestureLibraryX',
-        'UWaveGestureLibraryY', 'UWaveGestureLibraryZ', 'Wafer', 'Wine',
-        'WordSynonyms', 'Worms', 'WormsTwoClass', 'Yoga'
-    ]
+#   The licenses for most software and other practical works are designed
+# to take away your freedom to share and change the works.  By contrast,
+# the GNU General Public License is intended to guarantee your freedom to
+# share and change all versions of a program--to make sure it remains free
+# software for all its users.  We, the Free Software Foundation, use the
+# GNU General Public License for most of our software; it applies also to
+# any other work released this way by its authors.  You can apply it to
+# your programs, too.
+
+#   When we speak of free software, we are referring to freedom, not
+# price.  Our General Public Licenses are designed to make sure that you
+# have the freedom to distribute copies of free software (and charge for
+# them if you wish), that you receive source code or can get it if you
+# want it, that you can change the software or use pieces of it in new
+# free programs, and that you know you can do these things.
+
+#   To protect your rights, we need to prevent others from denying you
+# these rights or asking you to surrender the rights.  Therefore, you have
+# certain responsibilities if you distribute copies of the software, or if
+# you modify it: responsibilities to respect the freedom of others.
+
+#   For example, if you distribute copies of such a program, whether
+# gratis or for a fee, you must pass on to the recipients the same
+# freedoms that you received.  You must make sure that they, too, receive
+# or can get the source code.  And you must show them these terms so they
+# know their rights.
+
+#   Developers that use the GNU GPL protect your rights with two steps:
+# (1) assert copyright on the software, and (2) offer you this License
+# giving you legal permission to copy, distribute and/or modify it.
+
+#   For the developers' and authors' protection, the GPL clearly explains
+# that there is no warranty for this free software.  For both users' and
+# authors' sake, the GPL requires that modified versions be marked as
+# changed, so that their problems will not be attributed erroneously to
+# authors of previous versions.
+
+#   Some devices are designed to deny users access to install or run
+# modified versions of the software inside them, although the manufacturer
+# can do so.  This is fundamentally incompatible with the aim of
+# protecting users' freedom to change the software.  The systematic
+# pattern of such abuse occurs in the area of products for individuals to
+# use, which is precisely where it is most unacceptable.  Therefore, we
+# have designed this version of the GPL to prohibit the practice for those
+# products.  If such problems arise substantially in other domains, we
+# stand ready to extend this provision to those domains in future versions
+# of the GPL, as needed to protect the freedom of users.
+
+#   Finally, every program is threatened constantly by software patents.
+# States should not allow patents to restrict development and use of
+# software on general-purpose computers, but in those that do, we wish to
+# avoid the special danger that patents applied to a free program could
+# make it effectively proprietary.  To prevent this, the GPL assures that
+# patents cannot be used to render the program non-free.
+
+#   The precise terms and conditions for copying, distribution and
+# modification follow.
+
+#                        TERMS AND CONDITIONS
+
+#   0. Definitions.
+
+#   "This License" refers to version 3 of the GNU General Public License.
+
+#   "Copyright" also means copyright-like laws that apply to other kinds of
+# works, such as semiconductor masks.
+
+#   "The Program" refers to any copyrightable work licensed under this
+# License.  Each licensee is addressed as "you".  "Licensees" and
+# "recipients" may be individuals or organizations.
+
+#   To "modify" a work means to copy from or adapt all or part of the work
+# in a fashion requiring copyright permission, other than the making of an
+# exact copy.  The resulting work is called a "modified version" of the
+# earlier work or a work "based on" the earlier work.
+
+#   A "covered work" means either the unmodified Program or a work based
+# on the Program.
+
+#   To "propagate" a work means to do anything with it that, without
+# permission, would make you directly or secondarily liable for
+# infringement under applicable copyright law, except executing it on a
+# computer or modifying a private copy.  Propagation includes copying,
+# distribution (with or without modification), making available to the
+# public, and in some countries other activities as well.
+
+#   To "convey" a work means any kind of propagation that enables other
+# parties to make or receive copies.  Mere interaction with a user through
+# a computer network, with no transfer of a copy, is not conveying.
+
+#   An interactive user interface displays "Appropriate Legal Notices"
+# to the extent that it includes a convenient and prominently visible
+# feature that (1) displays an appropriate copyright notice, and (2)
+# tells the user that there is no warranty for the work (except to the
+# extent that warranties are provided), that licensees may convey the
+# work under this License, and how to view a copy of this License.  If
+# the interface presents a list of user commands or options, such as a
+# menu, a prominent item in the list meets this criterion.
+
+#   1. Source Code.
+
+#   The "source code" for a work means the preferred form of the work
+# for making modifications to it.  "Object code" means any non-source
+# form of a work.
+
+#   A "Standard Interface" means an interface that either is an official
+# standard defined by a recognized standards body, or, in the case of
+# interfaces specified for a particular programming language, one that
+# is widely used among developers working in that language.
+
+#   The "System Libraries" of an executable work include anything, other
+# than the work as a whole, that (a) is included in the normal form of
+# packaging a Major Component, but which is not part of that Major
+# Component, and (b) serves only to enable use of the work with that
+# Major Component, or to implement a Standard Interface for which an
+# implementation is available to the public in source code form.  A
+# "Major Component", in this context, means a major essential component
+# (kernel, window system, and so on) of the specific operating system
+# (if any) on which the executable work runs, or a compiler used to
+# produce the work, or an object code interpreter used to run it.
+
+#   The "Corresponding Source" for a work in object code form means all
+# the source code needed to generate, install, and (for an executable
+# work) run the object code and to modify the work, including scripts to
+# control those activities.  However, it does not include the work's
+# System Libraries, or general-purpose tools or generally available free
+# programs which are used unmodified in performing those activities but
+# which are not part of the work.  For example, Corresponding Source
+# includes interface definition files associated with source files for
+# the work, and the source code for shared libraries and dynamically
+# linked subprograms that the work is specifically designed to require,
+# such as by intimate data communication or control flow between those
+# subprograms and other parts of the work.
+
+#   The Corresponding Source need not include anything that users
+# can regenerate automatically from other parts of the Corresponding
+# Source.
+
+#   The Corresponding Source for a work in source code form is that
+# same work.
+
+#   2. Basic Permissions.
+
+#   All rights granted under this License are granted for the term of
+# copyright on the Program, and are irrevocable provided the stated
+# conditions are met.  This License explicitly affirms your unlimited
+# permission to run the unmodified Program.  The output from running a
+# covered work is covered by this License only if the output, given its
+# content, constitutes a covered work.  This License acknowledges your
+# rights of fair use or other equivalent, as provided by copyright law.
+
+#   You may make, run and propagate covered works that you do not
+# convey, without conditions so long as your license otherwise remains
+# in force.  You may convey covered works to others for the sole purpose
+# of having them make modifications exclusively for you, or provide you
+# with facilities for running those works, provided that you comply with
+# the terms of this License in conveying all material for which you do
+# not control copyright.  Those thus making or running the covered works
+# for you must do so exclusively on your behalf, under your direction
+# and control, on terms that prohibit them from making any copies of
+# your copyrighted material outside their relationship with you.
+
+#   Conveying under any other circumstances is permitted solely under
+# the conditions stated below.  Sublicensing is not allowed; section 10
+# makes it unnecessary.
+
+#   3. Protecting Users' Legal Rights From Anti-Circumvention Law.
+
+#   No covered work shall be deemed part of an effective technological
+# measure under any applicable law fulfilling obligations under article
+# 11 of the WIPO copyright treaty adopted on 20 December 1996, or
+# similar laws prohibiting or restricting circumvention of such
+# measures.
+
+#   When you convey a covered work, you waive any legal power to forbid
+# circumvention of technological measures to the extent such circumvention
+# is effected by exercising rights under this License with respect to
+# the covered work, and you disclaim any intention to limit operation or
+# modification of the work as a means of enforcing, against the work's
+# users, your or third parties' legal rights to forbid circumvention of
+# technological measures.
+
+#   4. Conveying Verbatim Copies.
+
+#   You may convey verbatim copies of the Program's source code as you
+# receive it, in any medium, provided that you conspicuously and
+# appropriately publish on each copy an appropriate copyright notice;
+# keep intact all notices stating that this License and any
+# non-permissive terms added in accord with section 7 apply to the code;
+# keep intact all notices of the absence of any warranty; and give all
+# recipients a copy of this License along with the Program.
+
+#   You may charge any price or no price for each copy that you convey,
+# and you may offer support or warranty protection for a fee.
+
+#   5. Conveying Modified Source Versions.
+
+#   You may convey a work based on the Program, or the modifications to
+# produce it from the Program, in the form of source code under the
+# terms of section 4, provided that you also meet all of these conditions:
+
+#     a) The work must carry prominent notices stating that you modified
+#     it, and giving a relevant date.
+
+#     b) The work must carry prominent notices stating that it is
+#     released under this License and any conditions added under section
+#     7.  This requirement modifies the requirement in section 4 to
+#     "keep intact all notices".
+
+#     c) You must license the entire work, as a whole, under this
+#     License to anyone who comes into possession of a copy.  This
+#     License will therefore apply, along with any applicable section 7
+#     additional terms, to the whole of the work, and all its parts,
+#     regardless of how they are packaged.  This License gives no
+#     permission to license the work in any other way, but it does not
+#     invalidate such permission if you have separately received it.
+
+#     d) If the work has interactive user interfaces, each must display
+#     Appropriate Legal Notices; however, if the Program has interactive
+#     interfaces that do not display Appropriate Legal Notices, your
+#     work need not make them do so.
+
+#   A compilation of a covered work with other separate and independent
+# works, which are not by their nature extensions of the covered work,
+# and which are not combined with it such as to form a larger program,
+# in or on a volume of a storage or distribution medium, is called an
+# "aggregate" if the compilation and its resulting copyright are not
+# used to limit the access or legal rights of the compilation's users
+# beyond what the individual works permit.  Inclusion of a covered work
+# in an aggregate does not cause this License to apply to the other
+# parts of the aggregate.
+
+#   6. Conveying Non-Source Forms.
+
+#   You may convey a covered work in object code form under the terms
+# of sections 4 and 5, provided that you also convey the
+# machine-readable Corresponding Source under the terms of this License,
+# in one of these ways:
+
+#     a) Convey the object code in, or embodied in, a physical product
+#     (including a physical distribution medium), accompanied by the
+#     Corresponding Source fixed on a durable physical medium
+#     customarily used for software interchange.
+
+#     b) Convey the object code in, or embodied in, a physical product
+#     (including a physical distribution medium), accompanied by a
+#     written offer, valid for at least three years and valid for as
+#     long as you offer spare parts or customer support for that product
+#     model, to give anyone who possesses the object code either (1) a
+#     copy of the Corresponding Source for all the software in the
+#     product that is covered by this License, on a durable physical
+#     medium customarily used for software interchange, for a price no
+#     more than your reasonable cost of physically performing this
+#     conveying of source, or (2) access to copy the
+#     Corresponding Source from a network server at no charge.
+
+#     c) Convey individual copies of the object code with a copy of the
+#     written offer to provide the Corresponding Source.  This
+#     alternative is allowed only occasionally and noncommercially, and
+#     only if you received the object code with such an offer, in accord
+#     with subsection 6b.
+
+#     d) Convey the object code by offering access from a designated
+#     place (gratis or for a charge), and offer equivalent access to the
+#     Corresponding Source in the same way through the same place at no
+#     further charge.  You need not require recipients to copy the
+#     Corresponding Source along with the object code.  If the place to
+#     copy the object code is a network server, the Corresponding Source
+#     may be on a different server (operated by you or a third party)
+#     that supports equivalent copying facilities, provided you maintain
+#     clear directions next to the object code saying where to find the
+#     Corresponding Source.  Regardless of what server hosts the
+#     Corresponding Source, you remain obligated to ensure that it is
+#     available for as long as needed to satisfy these requirements.
+
+#     e) Convey the object code using peer-to-peer transmission, provided
+#     you inform other peers where the object code and Corresponding
+#     Source of the work are being offered to the general public at no
+#     charge under subsection 6d.
+
+#   A separable portion of the object code, whose source code is excluded
+# from the Corresponding Source as a System Library, need not be
+# included in conveying the object code work.
+
+#   A "User Product" is either (1) a "consumer product", which means any
+# tangible personal property which is normally used for personal, family,
+# or household purposes, or (2) anything designed or sold for incorporation
+# into a dwelling.  In determining whether a product is a consumer product,
+# doubtful cases shall be resolved in favor of coverage.  For a particular
+# product received by a particular user, "normally used" refers to a
+# typical or common use of that class of product, regardless of the status
+# of the particular user or of the way in which the particular user
+# actually uses, or expects or is expected to use, the product.  A product
+# is a consumer product regardless of whether the product has substantial
+# commercial, industrial or non-consumer uses, unless such uses represent
+# the only significant mode of use of the product.
+
+#   "Installation Information" for a User Product means any methods,
+# procedures, authorization keys, or other information required to install
+# and execute modified versions of a covered work in that User Product from
+# a modified version of its Corresponding Source.  The information must
+# suffice to ensure that the continued functioning of the modified object
+# code is in no case prevented or interfered with solely because
+# modification has been made.
+
+#   If you convey an object code work under this section in, or with, or
+# specifically for use in, a User Product, and the conveying occurs as
+# part of a transaction in which the right of possession and use of the
+# User Product is transferred to the recipient in perpetuity or for a
+# fixed term (regardless of how the transaction is characterized), the
+# Corresponding Source conveyed under this section must be accompanied
+# by the Installation Information.  But this requirement does not apply
+# if neither you nor any third party retains the ability to install
+# modified object code on the User Product (for example, the work has
+# been installed in ROM).
+
+#   The requirement to provide Installation Information does not include a
+# requirement to continue to provide support service, warranty, or updates
+# for a work that has been modified or installed by the recipient, or for
+# the User Product in which it has been modified or installed.  Access to a
+# network may be denied when the modification itself materially and
+# adversely affects the operation of the network or violates the rules and
+# protocols for communication across the network.
+
+#   Corresponding Source conveyed, and Installation Information provided,
+# in accord with this section must be in a format that is publicly
+# documented (and with an implementation available to the public in
+# source code form), and must require no special password or key for
+# unpacking, reading or copying.
+
+#   7. Additional Terms.
+
+#   "Additional permissions" are terms that supplement the terms of this
+# License by making exceptions from one or more of its conditions.
+# Additional permissions that are applicable to the entire Program shall
+# be treated as though they were included in this License, to the extent
+# that they are valid under applicable law.  If additional permissions
+# apply only to part of the Program, that part may be used separately
+# under those permissions, but the entire Program remains governed by
+# this License without regard to the additional permissions.
+
+#   When you convey a copy of a covered work, you may at your option
+# remove any additional permissions from that copy, or from any part of
+# it.  (Additional permissions may be written to require their own
+# removal in certain cases when you modify the work.)  You may place
+# additional permissions on material, added by you to a covered work,
+# for which you have or can give appropriate copyright permission.
+
+#   Notwithstanding any other provision of this License, for material you
+# add to a covered work, you may (if authorized by the copyright holders of
+# that material) supplement the terms of this License with terms:
+
+#     a) Disclaiming warranty or limiting liability differently from the
+#     terms of sections 15 and 16 of this License; or
+
+#     b) Requiring preservation of specified reasonable legal notices or
+#     author attributions in that material or in the Appropriate Legal
+#     Notices displayed by works containing it; or
+
+#     c) Prohibiting misrepresentation of the origin of that material, or
+#     requiring that modified versions of such material be marked in
+#     reasonable ways as different from the original version; or
+
+#     d) Limiting the use for publicity purposes of names of licensors or
+#     authors of the material; or
+
+#     e) Declining to grant rights under trademark law for use of some
+#     trade names, trademarks, or service marks; or
+
+#     f) Requiring indemnification of licensors and authors of that
+#     material by anyone who conveys the material (or modified versions of
+#     it) with contractual assumptions of liability to the recipient, for
+#     any liability that these contractual assumptions directly impose on
+#     those licensors and authors.
+
+#   All other non-permissive additional terms are considered "further
+# restrictions" within the meaning of section 10.  If the Program as you
+# received it, or any part of it, contains a notice stating that it is
+# governed by this License along with a term that is a further
+# restriction, you may remove that term.  If a license document contains
+# a further restriction but permits relicensing or conveying under this
+# License, you may add to a covered work material governed by the terms
+# of that license document, provided that the further restriction does
+# not survive such relicensing or conveying.
+
+#   If you add terms to a covered work in accord with this section, you
+# must place, in the relevant source files, a statement of the
+# additional terms that apply to those files, or a notice indicating
+# where to find the applicable terms.
+
+#   Additional terms, permissive or non-permissive, may be stated in the
+# form of a separately written license, or stated as exceptions;
+# the above requirements apply either way.
+
+#   8. Termination.
+
+#   You may not propagate or modify a covered work except as expressly
+# provided under this License.  Any attempt otherwise to propagate or
+# modify it is void, and will automatically terminate your rights under
+# this License (including any patent licenses granted under the third
+# paragraph of section 11).
+
+#   However, if you cease all violation of this License, then your
+# license from a particular copyright holder is reinstated (a)
+# provisionally, unless and until the copyright holder explicitly and
+# finally terminates your license, and (b) permanently, if the copyright
+# holder fails to notify you of the violation by some reasonable means
+# prior to 60 days after the cessation.
+
+#   Moreover, your license from a particular copyright holder is
+# reinstated permanently if the copyright holder notifies you of the
+# violation by some reasonable means, this is the first time you have
+# received notice of violation of this License (for any work) from that
+# copyright holder, and you cure the violation prior to 30 days after
+# your receipt of the notice.
+
+#   Termination of your rights under this section does not terminate the
+# licenses of parties who have received copies or rights from you under
+# this License.  If your rights have been terminated and not permanently
+# reinstated, you do not qualify to receive new licenses for the same
+# material under section 10.
+
+#   9. Acceptance Not Required for Having Copies.
+
+#   You are not required to accept this License in order to receive or
+# run a copy of the Program.  Ancillary propagation of a covered work
+# occurring solely as a consequence of using peer-to-peer transmission
+# to receive a copy likewise does not require acceptance.  However,
+# nothing other than this License grants you permission to propagate or
+# modify any covered work.  These actions infringe copyright if you do
+# not accept this License.  Therefore, by modifying or propagating a
+# covered work, you indicate your acceptance of this License to do so.
+
+#   10. Automatic Licensing of Downstream Recipients.
+
+#   Each time you convey a covered work, the recipient automatically
+# receives a license from the original licensors, to run, modify and
+# propagate that work, subject to this License.  You are not responsible
+# for enforcing compliance by third parties with this License.
+
+#   An "entity transaction" is a transaction transferring control of an
+# organization, or substantially all assets of one, or subdividing an
+# organization, or merging organizations.  If propagation of a covered
+# work results from an entity transaction, each party to that
+# transaction who receives a copy of the work also receives whatever
+# licenses to the work the party's predecessor in interest had or could
+# give under the previous paragraph, plus a right to possession of the
+# Corresponding Source of the work from the predecessor in interest, if
+# the predecessor has it or can get it with reasonable efforts.
+
+#   You may not impose any further restrictions on the exercise of the
+# rights granted or affirmed under this License.  For example, you may
+# not impose a license fee, royalty, or other charge for exercise of
+# rights granted under this License, and you may not initiate litigation
+# (including a cross-claim or counterclaim in a lawsuit) alleging that
+# any patent claim is infringed by making, using, selling, offering for
+# sale, or importing the Program or any portion of it.
+
+#   11. Patents.
+
+#   A "contributor" is a copyright holder who authorizes use under this
+# License of the Program or a work on which the Program is based.  The
+# work thus licensed is called the contributor's "contributor version".
+
+#   A contributor's "essential patent claims" are all patent claims
+# owned or controlled by the contributor, whether already acquired or
+# hereafter acquired, that would be infringed by some manner, permitted
+# by this License, of making, using, or selling its contributor version,
+# but do not include claims that would be infringed only as a
+# consequence of further modification of the contributor version.  For
+# purposes of this definition, "control" includes the right to grant
+# patent sublicenses in a manner consistent with the requirements of
+# this License.
+
+#   Each contributor grants you a non-exclusive, worldwide, royalty-free
+# patent license under the contributor's essential patent claims, to
+# make, use, sell, offer for sale, import and otherwise run, modify and
+# propagate the contents of its contributor version.
+
+#   In the following three paragraphs, a "patent license" is any express
+# agreement or commitment, however denominated, not to enforce a patent
+# (such as an express permission to practice a patent or covenant not to
+# sue for patent infringement).  To "grant" such a patent license to a
+# party means to make such an agreement or commitment not to enforce a
+# patent against the party.
+
+#   If you convey a covered work, knowingly relying on a patent license,
+# and the Corresponding Source of the work is not available for anyone
+# to copy, free of charge and under the terms of this License, through a
+# publicly available network server or other readily accessible means,
+# then you must either (1) cause the Corresponding Source to be so
+# available, or (2) arrange to deprive yourself of the benefit of the
+# patent license for this particular work, or (3) arrange, in a manner
+# consistent with the requirements of this License, to extend the patent
+# license to downstream recipients.  "Knowingly relying" means you have
+# actual knowledge that, but for the patent license, your conveying the
+# covered work in a country, or your recipient's use of the covered work
+# in a country, would infringe one or more identifiable patents in that
+# country that you have reason to believe are valid.
+
+#   If, pursuant to or in connection with a single transaction or
+# arrangement, you convey, or propagate by procuring conveyance of, a
+# covered work, and grant a patent license to some of the parties
+# receiving the covered work authorizing them to use, propagate, modify
+# or convey a specific copy of the covered work, then the patent license
+# you grant is automatically extended to all recipients of the covered
+# work and works based on it.
+
+#   A patent license is "discriminatory" if it does not include within
+# the scope of its coverage, prohibits the exercise of, or is
+# conditioned on the non-exercise of one or more of the rights that are
+# specifically granted under this License.  You may not convey a covered
+# work if you are a party to an arrangement with a third party that is
+# in the business of distributing software, under which you make payment
+# to the third party based on the extent of your activity of conveying
+# the work, and under which the third party grants, to any of the
+# parties who would receive the covered work from you, a discriminatory
+# patent license (a) in connection with copies of the covered work
+# conveyed by you (or copies made from those copies), or (b) primarily
+# for and in connection with specific products or compilations that
+# contain the covered work, unless you entered into that arrangement,
+# or that patent license was granted, prior to 28 March 2007.
+
+#   Nothing in this License shall be construed as excluding or limiting
+# any implied license or other defenses to infringement that may
+# otherwise be available to you under applicable patent law.
+
+#   12. No Surrender of Others' Freedom.
+
+#   If conditions are imposed on you (whether by court order, agreement or
+# otherwise) that contradict the conditions of this License, they do not
+# excuse you from the conditions of this License.  If you cannot convey a
+# covered work so as to satisfy simultaneously your obligations under this
+# License and any other pertinent obligations, then as a consequence you may
+# not convey it at all.  For example, if you agree to terms that obligate you
+# to collect a royalty for further conveying from those to whom you convey
+# the Program, the only way you could satisfy both those terms and this
+# License would be to refrain entirely from conveying the Program.
+
+#   13. Use with the GNU Affero General Public License.
+
+#   Notwithstanding any other provision of this License, you have
+# permission to link or combine any covered work with a work licensed
+# under version 3 of the GNU Affero General Public License into a single
+# combined work, and to convey the resulting work.  The terms of this
+# License will continue to apply to the part which is the covered work,
+# but the special requirements of the GNU Affero General Public License,
+# section 13, concerning interaction through a network will apply to the
+# combination as such.
+
+#   14. Revised Versions of this License.
+
+#   The Free Software Foundation may publish revised and/or new versions of
+# the GNU General Public License from time to time.  Such new versions will
+# be similar in spirit to the present version, but may differ in detail to
+# address new problems or concerns.
+
+#   Each version is given a distinguishing version number.  If the
+# Program specifies that a certain numbered version of the GNU General
+# Public License "or any later version" applies to it, you have the
+# option of following the terms and conditions either of that numbered
+# version or of any later version published by the Free Software
+# Foundation.  If the Program does not specify a version number of the
+# GNU General Public License, you may choose any version ever published
+# by the Free Software Foundation.
+
+#   If the Program specifies that a proxy can decide which future
+# versions of the GNU General Public License can be used, that proxy's
+# public statement of acceptance of a version permanently authorizes you
+# to choose that version for the Program.
+
+#   Later license versions may give you additional or different
+# permissions.  However, no additional obligations are imposed on any
+# author or copyright holder as a result of your choosing to follow a
+# later version.
+
+#   15. Disclaimer of Warranty.
+
+#   THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY
+# APPLICABLE LAW.  EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT
+# HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM "AS IS" WITHOUT WARRANTY
+# OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO,
+# THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+# PURPOSE.  THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM
+# IS WITH YOU.  SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF
+# ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
+
+#   16. Limitation of Liability.
+
+#   IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
+# WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS
+# THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY
+# GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE
+# USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF
+# DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD
+# PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS),
+# EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
+# SUCH DAMAGES.
+
+#   17. Interpretation of Sections 15 and 16.
+
+#   If the disclaimer of warranty and limitation of liability provided
+# above cannot be given local legal effect according to their terms,
+# reviewing courts shall apply local law that most closely approximates
+# an absolute waiver of all civil liability in connection with the
+# Program, unless a warranty or assumption of liability accompanies a
+# copy of the Program in return for a fee.
+
+#                      END OF TERMS AND CONDITIONS
+
+#             How to Apply These Terms to Your New Programs
+
+#   If you develop a new program, and you want it to be of the greatest
+# possible use to the public, the best way to achieve this is to make it
+# free software which everyone can redistribute and change under these terms.
+
+#   To do so, attach the following notices to the program.  It is safest
+# to attach them to the start of each source file to most effectively
+# state the exclusion of warranty; and each file should have at least
+# the "copyright" line and a pointer to where the full""" notice is found.
+
+#     <one line to give the program's name and a brief idea of what it does.>
+#     Copyright (C) <year>  <name of author>
+
+#     This program is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+
+#     This program is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+# Also add information on how to contact you by electronic and paper mail.
+
+#   If the program does terminal interaction, make it output a short
+# notice like this when it starts in an interactive mode:
+
+#     <program>  Copyright (C) <year>  <name of author>
+#     This program comes with ABSOLUTELY NO WARRANTY; for details type `show w'.
+#     This is free software, and you are welcome to redistribute it
+#     under certain conditions; type `show c' for details.
+
+# The hypothetical commands `show w' and `show c' should show the appropriate
+# parts of the General Public License.  Of course, your program's commands
+# might be different; for a GUI interface, you would use an "about box".
+
+#   You should also get your employer (if you work as a programmer) or school,
+# if any, to sign a "copyright disclaimer" for the program, if necessary.
+# For more information on this, and how to apply and follow the GNU GPL, see
+# <https://www.gnu.org/licenses/>.
+
+#   The GNU General Public License does not permit incorporating your program
+# into proprietary programs.  If your program is a subroutine library, you
+# may consider it more useful to permit linking proprietary applications with
+# the library.  If this is what you want to do, use the GNU Lesser General
+# Public License instead of this License.  But first, please read
+# <https://www.gnu.org/licenses/why-not-lgpl.html>.
 
 
-test_eq(len(get_UCR_univariate_list()), 128)
-UTSC_datasets = get_UCR_univariate_list()
-UCR_univariate_list = get_UCR_univariate_list()
-
-# Cell
-def get_UCR_multivariate_list():
-    return [
-        'ArticularyWordRecognition', 'AtrialFibrillation', 'BasicMotions',
-        'CharacterTrajectories', 'Cricket', 'DuckDuckGeese', 'EigenWorms',
-        'Epilepsy', 'ERing', 'EthanolConcentration', 'FaceDetection',
-        'FingerMovements', 'HandMovementDirection', 'Handwriting', 'Heartbeat',
-        'InsectWingbeat', 'JapaneseVowels', 'Libras', 'LSST', 'MotorImagery',
-        'NATOPS', 'PEMS-SF', 'PenDigits', 'PhonemeSpectra', 'RacketSports',
-        'SelfRegulationSCP1', 'SelfRegulationSCP2', 'SpokenArabicDigits',
-        'StandWalkJump', 'UWaveGestureLibrary'
-    ]
-
-test_eq(len(get_UCR_multivariate_list()), 30)
-MTSC_datasets = get_UCR_multivariate_list()
-UCR_multivariate_list = get_UCR_multivariate_list()
-
-UCR_list = sorted(UCR_univariate_list + UCR_multivariate_list)
-classification_list = UCR_list
-TSC_datasets = classification_datasets = UCR_list
-len(UCR_list)
-
-# Cell
-def get_UCR_data(dsid, path='.', parent_dir='data/UCR', on_disk=True, mode='c', Xdtype='float32', ydtype=None, return_split=True, split_data=True,
-                 force_download=False, verbose=False):
-    dsid_list = [ds for ds in UCR_list if ds.lower() == dsid.lower()]
-    assert len(dsid_list) > 0, f'{dsid} is not a UCR dataset'
-    dsid = dsid_list[0]
-    return_split = return_split and split_data # keep return_split for compatibility. It will be replaced by split_data
-    if dsid in ['InsectWingbeat']:
-        warnings.warn(f'Be aware that download of the {dsid} dataset is very slow!')
-    pv(f'Dataset: {dsid}', verbose)
-    full_parent_dir = Path(path)/parent_dir
-    full_tgt_dir = full_parent_dir/dsid
-#     if not os.path.exists(full_tgt_dir): os.makedirs(full_tgt_dir)
-    full_tgt_dir.parent.mkdir(parents=True, exist_ok=True)
-    if force_download or not all([os.path.isfile(f'{full_tgt_dir}/{fn}.npy') for fn in ['X_train', 'X_valid', 'y_train', 'y_valid', 'X', 'y']]):
-        # Option A
-        src_website = 'http://www.timeseriesclassification.com/Downloads'
-        decompress_from_url(f'{src_website}/{dsid}.zip', target_dir=full_tgt_dir, verbose=verbose)
-        if dsid == 'DuckDuckGeese':
-            with zipfile.ZipFile(Path(f'{full_parent_dir}/DuckDuckGeese/DuckDuckGeese_ts.zip'), 'r') as zip_ref:
-                zip_ref.extractall(Path(parent_dir))
-        if not os.path.exists(full_tgt_dir/f'{dsid}_TRAIN.ts') or not os.path.exists(full_tgt_dir/f'{dsid}_TRAIN.ts') or \
-        Path(full_tgt_dir/f'{dsid}_TRAIN.ts').stat().st_size == 0 or Path(full_tgt_dir/f'{dsid}_TEST.ts').stat().st_size == 0:
-            print('It has not been possible to download the required files')
-            if return_split:
-                return None, None, None, None
-            else:
-                return None, None, None
-
-        pv('loading ts files to dataframe...', verbose)
-        X_train_df, y_train = ts2df(full_tgt_dir/f'{dsid}_TRAIN.ts')
-        X_valid_df, y_valid = ts2df(full_tgt_dir/f'{dsid}_TEST.ts')
-        pv('...ts files loaded', verbose)
-        pv('preparing numpy arrays...', verbose)
-        X_train_ = []
-        X_valid_ = []
-        for i in progress_bar(range(X_train_df.shape[-1]), display=verbose, leave=False):
-            X_train_.append(stack_pad(X_train_df[f'dim_{i}'])) # stack arrays even if they have different lengths
-            X_valid_.append(stack_pad(X_valid_df[f'dim_{i}'])) # stack arrays even if they have different lengths
-        X_train = np.transpose(np.stack(X_train_, axis=-1), (0, 2, 1))
-        X_valid = np.transpose(np.stack(X_valid_, axis=-1), (0, 2, 1))
-        X_train, X_valid = match_seq_len(X_train, X_valid)
-
-        np.save(f'{full_tgt_dir}/X_train.npy', X_train)
-        np.save(f'{full_tgt_dir}/y_train.npy', y_train)
-        np.save(f'{full_tgt_dir}/X_valid.npy', X_valid)
-        np.save(f'{full_tgt_dir}/y_valid.npy', y_valid)
-        np.save(f'{full_tgt_dir}/X.npy', concat(X_train, X_valid))
-        np.save(f'{full_tgt_dir}/y.npy', concat(y_train, y_valid))
-        del X_train, X_valid, y_train, y_valid
-        delete_all_in_dir(full_tgt_dir, exception='.npy')
-        pv('...numpy arrays correctly saved', verbose)
-
-    mmap_mode = mode if on_disk else None
-    X_train = np.load(f'{full_tgt_dir}/X_train.npy', mmap_mode=mmap_mode)
-    y_train = np.load(f'{full_tgt_dir}/y_train.npy', mmap_mode=mmap_mode)
-    X_valid = np.load(f'{full_tgt_dir}/X_valid.npy', mmap_mode=mmap_mode)
-    y_valid = np.load(f'{full_tgt_dir}/y_valid.npy', mmap_mode=mmap_mode)
-
-    if return_split:
-        if Xdtype is not None:
-            X_train = X_train.astype(Xdtype)
-            X_valid = X_valid.astype(Xdtype)
-        if ydtype is not None:
-            y_train = y_train.astype(ydtype)
-            y_valid = y_valid.astype(ydtype)
-        if verbose:
-            print('X_train:', X_train.shape)
-            print('y_train:', y_train.shape)
-            print('X_valid:', X_valid.shape)
-            print('y_valid:', y_valid.shape, '\n')
-        return X_train, y_train, X_valid, y_valid
-    else:
-        X = np.load(f'{full_tgt_dir}/X.npy', mmap_mode=mmap_mode)
-        y = np.load(f'{full_tgt_dir}/y.npy', mmap_mode=mmap_mode)
-        splits = get_predefined_splits(X_train, X_valid)
-        if Xdtype is not None:
-            X = X.astype(Xdtype)
-        if verbose:
-            print('X      :', X .shape)
-            print('y      :', y .shape)
-            print('splits :', coll_repr(splits[0]), coll_repr(splits[1]), '\n')
-        return X, y, splits
-
-
-get_classification_data = get_UCR_data
-
-# Cell
-def check_data(X, y=None, splits=None, show_plot=True):
-    try: X_is_nan = np.isnan(X).sum()
-    except: X_is_nan = 'could not be checked'
-    if X.ndim == 3:
-        shape = f'[{X.shape[0]} samples x {X.shape[1]} features x {X.shape[-1]} timesteps]'
-        print(f'X      - shape: {shape}  type: {cls_name(X)}  dtype:{X.dtype}  isnan: {X_is_nan}')
-    else:
-        print(f'X      - shape: {X.shape}  type: {cls_name(X)}  dtype:{X.dtype}  isnan: {X_is_nan}')
-    if X_is_nan:
-        warnings.warn('X contains nan values')
-    if y is not None:
-        y_shape = y.shape
-        y = y.ravel()
-        if isinstance(y[0], str):
-            n_classes = f'{len(np.unique(y))} ({len(y)//len(np.unique(y))} samples per class) {L(np.unique(y).tolist())}'
-            y_is_nan = 'nan' in [c.lower() for c in np.unique(y)]
-            print(f'y      - shape: {y_shape}  type: {cls_name(y)}  dtype:{y.dtype}  n_classes: {n_classes}  isnan: {y_is_nan}')
-        else:
-            y_is_nan = np.isnan(y).sum()
-            print(f'y      - shape: {y_shape}  type: {cls_name(y)}  dtype:{y.dtype}  isnan: {y_is_nan}')
-        if y_is_nan:
-            warnings.warn('y contains nan values')
-    if splits is not None:
-        _splits = get_splits_len(splits)
-        overlap = check_splits_overlap(splits)
-        print(f'splits - n_splits: {len(_splits)} shape: {_splits}  overlap: {overlap}')
-        if show_plot: plot_splits(splits)
-
-# Cell
-# This code comes from https://github.com/ChangWeiTan/TSRegression. As of Jan 16th, 2021 there's no pip install available.
-
-# The following code is adapted from the python package sktime to read .ts file.
 class _TsFileParseException(Exception):
     """
-    Should be raised when parsing a .ts file and the format is incorrect.
+    Should be rcomesaised when parsing a .ts file and the format is incorrect.
     """
     pass
 
-def _load_from_tsfile_to_dataframe2(full_file_path_and_name, return_separate_X_and_y=True, replace_missing_vals_with='NaN'):
+def _ts2dfV2(full_file_path_and_name, return_separate_X_and_y=True, replace_missing_vals_with='NaN'):
     """Loads data from a .ts file into a Pandas DataFrame.
     Parameters
     ----------
@@ -766,6 +1213,1084 @@ def _load_from_tsfile_to_dataframe2(full_file_path_and_name, return_separate_X_a
         raise _TsFileParseException("empty file")
 
 # Cell
+# This code was adapted from sktime.
+# It's used to load time series examples to demonstrate tsai's functionality.
+# Copyright for above source is below.
+
+# Copyright (c) 2019 - 2020 The sktime developers.
+
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+
+# * Redistributions of source code must retain the above copyright notice, this
+#   list of conditions and the following disclaimer.
+
+# * Redistributions in binary form must reproduce the above copyright notice,
+#   this list of conditions and the following disclaimer in the documentation
+#   and/or other materials provided with the distribution.
+
+# * Neither the name of the copyright holder nor the names of its
+#   contributors may be used to endorse or promote products derived from
+#   this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+def _check_X(
+    X:(pd.DataFrame, np.array), # Input data
+):
+    "Validate input data"
+
+    # check np.array format
+    if isinstance(X, np.ndarray):
+        if X.ndim == 2:
+            X = X.reshape(X.shape[0], 1, X.shape[1])
+
+    # check pd.DataFrame
+    if isinstance(X, pd.DataFrame): X = _from_nested_to_3d_numpy(X)
+
+    return X
+
+def _from_nested_to_3d_numpy(
+    X:pd.DataFrame, # Nested pandas DataFrame
+    ):
+    "Convert nested Panel to 3D numpy Panel"
+
+    # n_columns = X.shape[1]
+    nested_col_mask = [*_are_columns_nested(X)]
+
+    # If all the columns are nested in structure
+    if nested_col_mask.count(True) == len(nested_col_mask):
+        X_3d = np.stack(
+            X.applymap(_convert_series_cell_to_numpy)
+            .apply(lambda row: np.stack(row), axis=1)
+            .to_numpy()
+        )
+
+    # If some columns are primitive (non-nested) then first convert to
+    # multi-indexed DataFrame where the same value of these columns is
+    # repeated for each timepoint
+    # Then the multi-indexed DataFrame can be converted to 3d NumPy array
+    else:
+        X_mi = _from_nested_to_multi_index(X)
+        X_3d = _from_multi_index_to_3d_numpy(
+            X_mi, instance_index="instance", time_index="timepoints"
+        )
+
+    return X_3d
+
+def _are_columns_nested(
+    X:pd.DataFrame # DataFrame to check for nested data structures.
+):
+    "Check whether any cells have nested structure in each DataFrame column"
+
+    any_nested = _nested_cell_mask(X).any().values
+    return any_nested
+
+def _nested_cell_mask(X):
+    return X.applymap(_cell_is_series_or_array)
+
+def _cell_is_series_or_array(cell):
+    return isinstance(cell, (pd.Series, np.ndarray))
+
+def _convert_series_cell_to_numpy(cell):
+    if isinstance(cell, pd.Series):
+        return cell.to_numpy()
+    else:
+        return cell
+
+def _from_nested_to_multi_index(
+    X: pd.DataFrame, # The nested DataFrame to convert to a multi-indexed pandas DataFrame
+    )->pd.DataFrame:
+    "Convert nested pandas Panel to multi-index pandas Panel"
+
+    time_index_name = "timepoints"
+
+    # n_columns = X.shape[1]
+    nested_col_mask = [*_are_columns_nested(X)]
+
+    instance_idxs = X.index.get_level_values(-1).unique()
+    # n_instances = instance_idxs.shape[0]
+    instance_index_name = "instance"
+
+    instances = []
+    for instance_idx in instance_idxs:
+        iidx = instance_idx
+        instance = [
+            pd.DataFrame(i[1], columns=[i[0]])
+            for i in X.loc[iidx, :].iteritems()  # noqa
+        ]
+
+        instance = pd.concat(instance, axis=1)
+        # For primitive (non-nested column) assume the same
+        # primitive value applies to every timepoint of the instance
+        for col_idx, is_nested in enumerate(nested_col_mask):
+            if not is_nested:
+                instance.iloc[:, col_idx] = instance.iloc[:, col_idx].ffill()
+
+        # Correctly assign multi-index
+        multi_index = pd.MultiIndex.from_product(
+            [[instance_idx], instance.index],
+            names=[instance_index_name, time_index_name],
+        )
+        instance.index = multi_index
+        instances.append(instance)
+
+    X_mi = pd.concat(instances)
+    X_mi.columns = X.columns
+
+    return X_mi
+
+def _from_multi_index_to_3d_numpy(
+    X:pd.DataFrame, # The multi-index pandas DataFrame
+    instance_index:str=None, # Name of the multi-index level corresponding to the DataFrame's instances
+    time_index:str=None # Name of multi-index level corresponding to DataFrame's timepoints
+    )->np.ndarray:
+    "Convert pandas multi-index Panel to numpy 3D Panel."
+
+    if X.index.nlevels != 2:
+        raise ValueError("Multi-index DataFrame should have 2 levels.")
+
+    if (instance_index is None) or (time_index is None):
+        msg = "Must supply parameters instance_index and time_index"
+        raise ValueError(msg)
+
+    n_instances = len(X.groupby(level=instance_index))
+    # Alternative approach is more verbose
+    # n_instances = (multi_ind_dataframe
+    #                    .index
+    #                    .get_level_values(instance_index)
+    #                    .unique()).shape[0]
+    n_timepoints = len(X.groupby(level=time_index))
+    # Alternative approach is more verbose
+    # n_instances = (multi_ind_dataframe
+    #                    .index
+    #                    .get_level_values(time_index)
+    #                    .unique()).shape[0]
+
+    n_columns = X.shape[1]
+
+    X_3d = X.values.reshape(n_instances, n_timepoints, n_columns).swapaxes(1, 2)
+
+    return X_3d
+
+# Cell
+def _ts2df(
+    full_file_path_and_name:str, # The full pathname of the .ts file to read.
+    replace_missing_vals_with:str="NaN", # The value that missing values in the text file should be replaced with prior to parsing.
+):
+    "Load data from a .ts file into a Pandas DataFrame"
+
+    # Initialize flags and variables used when parsing the file
+    metadata_started = False
+    data_started = False
+
+    has_problem_name_tag = False
+    has_timestamps_tag = False
+    has_univariate_tag = False
+    has_class_labels_tag = False
+    has_data_tag = False
+
+    previous_timestamp_was_int = None
+    prev_timestamp_was_timestamp = None
+    num_dimensions = None
+    is_first_case = True
+    instance_list = []
+    class_val_list = []
+    line_num = 0
+
+    # Parse the file
+    # print(full_file_path_and_name)
+    with open(full_file_path_and_name, "r", encoding="utf-8") as file:
+        for line in file:
+            # Strip white space from start/end of line and change to
+            # lowercase for use below
+            line = line.strip().lower()
+            # Empty lines are valid at any point in a file
+            if line:
+                # Check if this line contains metadata
+                # Please note that even though metadata is stored in this
+                # function it is not currently published externally
+                if line.startswith("@problemname"):
+                    # Check that the data has not started
+                    if data_started:
+                        raise _TsFileParseException("metadata must come before data")
+                    # Check that the associated value is valid
+                    tokens = line.split(" ")
+                    token_len = len(tokens)
+
+                    if token_len == 1:
+                        raise _TsFileParseException(
+                            "problemname tag requires an associated value"
+                        )
+
+                    # problem_name = line[len("@problemname") + 1:]
+                    has_problem_name_tag = True
+                    metadata_started = True
+
+                elif line.startswith("@timestamps"):
+
+                    # Check that the data has not started
+
+                    if data_started:
+                        raise _TsFileParseException("metadata must come before data")
+
+                    # Check that the associated value is valid
+
+                    tokens = line.split(" ")
+                    token_len = len(tokens)
+
+                    if token_len != 2:
+                        raise _TsFileParseException(
+                            "timestamps tag requires an associated Boolean " "value"
+                        )
+
+                    elif tokens[1] == "true":
+                        timestamps = True
+
+                    elif tokens[1] == "false":
+                        timestamps = False
+
+                    else:
+                        raise _TsFileParseException("invalid timestamps value")
+
+                    has_timestamps_tag = True
+                    metadata_started = True
+
+                elif line.startswith("@univariate"):
+
+                    # Check that the data has not started
+
+                    if data_started:
+                        raise _TsFileParseException("metadata must come before data")
+
+                    # Check that the associated value is valid
+
+                    tokens = line.split(" ")
+                    token_len = len(tokens)
+
+                    if token_len != 2:
+                        raise _TsFileParseException(
+                            "univariate tag requires an associated Boolean  " "value"
+                        )
+
+                    elif tokens[1] == "true":
+                        # univariate = True
+                        pass
+
+                    elif tokens[1] == "false":
+                        # univariate = False
+                        pass
+
+                    else:
+                        raise _TsFileParseException("invalid univariate value")
+
+                    has_univariate_tag = True
+                    metadata_started = True
+
+                elif line.startswith("@classlabel"):
+
+                    # Check that the data has not started
+
+                    if data_started:
+                        raise _TsFileParseException("metadata must come before data")
+
+                    # Check that the associated value is valid
+
+                    tokens = line.split(" ")
+                    token_len = len(tokens)
+
+                    if token_len == 1:
+                        raise _TsFileParseException(
+                            "classlabel tag requires an associated Boolean  " "value"
+                        )
+
+                    if tokens[1] == "true":
+                        class_labels = True
+
+                    elif tokens[1] == "false":
+                        class_labels = False
+
+                    else:
+                        raise _TsFileParseException("invalid classLabel value")
+
+                    # Check if we have any associated class values
+
+                    if token_len == 2 and class_labels:
+                        raise _TsFileParseException(
+                            "if the classlabel tag is true then class values "
+                            "must be supplied"
+                        )
+
+                    has_class_labels_tag = True
+                    class_label_list = [token.strip() for token in tokens[2:]]
+                    metadata_started = True
+
+                # Check if this line contains the start of data
+
+                elif line.startswith("@data"):
+
+                    if line != "@data":
+                        raise _TsFileParseException(
+                            "data tag should not have an associated value"
+                        )
+
+                    if data_started and not metadata_started:
+                        raise _TsFileParseException("metadata must come before data")
+
+                    else:
+                        has_data_tag = True
+                        data_started = True
+
+                # If the 'data tag has been found then metadata has been
+                # parsed and data can be loaded
+
+                elif data_started:
+
+                    # Check that a full set of metadata has been provided
+
+                    if (
+                        not has_problem_name_tag
+                        or not has_timestamps_tag
+                        or not has_univariate_tag
+                        or not has_class_labels_tag
+                        or not has_data_tag
+                    ):
+                        raise _TsFileParseException(
+                            "a full set of metadata has not been provided "
+                            "before the data"
+                        )
+
+                    # Replace any missing values with the value specified
+
+                    line = line.replace("?", replace_missing_vals_with)
+
+                    # Check if we dealing with data that has timestamps
+
+                    if timestamps:
+
+                        # We're dealing with timestamps so cannot just split
+                        # line on ':' as timestamps may contain one
+
+                        has_another_value = False
+                        has_another_dimension = False
+
+                        timestamp_for_dim = []
+                        values_for_dimension = []
+
+                        this_line_num_dim = 0
+                        line_len = len(line)
+                        char_num = 0
+
+                        while char_num < line_len:
+
+                            # Move through any spaces
+
+                            while char_num < line_len and str.isspace(line[char_num]):
+                                char_num += 1
+
+                            # See if there is any more data to read in or if
+                            # we should validate that read thus far
+
+                            if char_num < line_len:
+
+                                # See if we have an empty dimension (i.e. no
+                                # values)
+
+                                if line[char_num] == ":":
+                                    if len(instance_list) < (this_line_num_dim + 1):
+                                        instance_list.append([])
+
+                                    instance_list[this_line_num_dim].append(
+                                        pd.Series(dtype="object")
+                                    )
+                                    this_line_num_dim += 1
+
+                                    has_another_value = False
+                                    has_another_dimension = True
+
+                                    timestamp_for_dim = []
+                                    values_for_dimension = []
+
+                                    char_num += 1
+
+                                else:
+
+                                    # Check if we have reached a class label
+
+                                    if line[char_num] != "(" and class_labels:
+
+                                        class_val = line[char_num:].strip()
+
+                                        if class_val not in class_label_list:
+                                            raise _TsFileParseException(
+                                                "the class value '"
+                                                + class_val
+                                                + "' on line "
+                                                + str(line_num + 1)
+                                                + " is not "
+                                                "valid"
+                                            )
+
+                                        class_val_list.append(class_val)
+                                        char_num = line_len
+
+                                        has_another_value = False
+                                        has_another_dimension = False
+
+                                        timestamp_for_dim = []
+                                        values_for_dimension = []
+
+                                    else:
+
+                                        # Read in the data contained within
+                                        # the next tuple
+
+                                        if line[char_num] != "(" and not class_labels:
+                                            raise _TsFileParseException(
+                                                "dimension "
+                                                + str(this_line_num_dim + 1)
+                                                + " on line "
+                                                + str(line_num + 1)
+                                                + " does "
+                                                "not "
+                                                "start "
+                                                "with a "
+                                                "'('"
+                                            )
+
+                                        char_num += 1
+                                        tuple_data = ""
+
+                                        while (
+                                            char_num < line_len
+                                            and line[char_num] != ")"
+                                        ):
+                                            tuple_data += line[char_num]
+                                            char_num += 1
+
+                                        if (
+                                            char_num >= line_len
+                                            or line[char_num] != ")"
+                                        ):
+                                            raise _TsFileParseException(
+                                                "dimension "
+                                                + str(this_line_num_dim + 1)
+                                                + " on line "
+                                                + str(line_num + 1)
+                                                + " does "
+                                                "not end"
+                                                " with a "
+                                                "')'"
+                                            )
+
+                                        # Read in any spaces immediately
+                                        # after the current tuple
+
+                                        char_num += 1
+
+                                        while char_num < line_len and str.isspace(
+                                            line[char_num]
+                                        ):
+                                            char_num += 1
+
+                                        # Check if there is another value or
+                                        # dimension to process after this tuple
+
+                                        if char_num >= line_len:
+                                            has_another_value = False
+                                            has_another_dimension = False
+
+                                        elif line[char_num] == ",":
+                                            has_another_value = True
+                                            has_another_dimension = False
+
+                                        elif line[char_num] == ":":
+                                            has_another_value = False
+                                            has_another_dimension = True
+
+                                        char_num += 1
+
+                                        # Get the numeric value for the
+                                        # tuple by reading from the end of
+                                        # the tuple data backwards to the
+                                        # last comma
+
+                                        last_comma_index = tuple_data.rfind(",")
+
+                                        if last_comma_index == -1:
+                                            raise _TsFileParseException(
+                                                "dimension "
+                                                + str(this_line_num_dim + 1)
+                                                + " on line "
+                                                + str(line_num + 1)
+                                                + " contains a tuple that has "
+                                                "no comma inside of it"
+                                            )
+
+                                        try:
+                                            value = tuple_data[last_comma_index + 1 :]
+                                            value = float(value)
+
+                                        except ValueError:
+                                            raise _TsFileParseException(
+                                                "dimension "
+                                                + str(this_line_num_dim + 1)
+                                                + " on line "
+                                                + str(line_num + 1)
+                                                + " contains a tuple that does "
+                                                "not have a valid numeric "
+                                                "value"
+                                            )
+
+                                        # Check the type of timestamp that
+                                        # we have
+
+                                        timestamp = tuple_data[0:last_comma_index]
+
+                                        try:
+                                            timestamp = int(timestamp)
+                                            timestamp_is_int = True
+                                            timestamp_is_timestamp = False
+
+                                        except ValueError:
+                                            timestamp_is_int = False
+
+                                        if not timestamp_is_int:
+                                            try:
+                                                timestamp = timestamp.strip()
+                                                timestamp_is_timestamp = True
+
+                                            except ValueError:
+                                                timestamp_is_timestamp = False
+
+                                        # Make sure that the timestamps in
+                                        # the file (not just this dimension
+                                        # or case) are consistent
+
+                                        if (
+                                            not timestamp_is_timestamp
+                                            and not timestamp_is_int
+                                        ):
+                                            raise _TsFileParseException(
+                                                "dimension "
+                                                + str(this_line_num_dim + 1)
+                                                + " on line "
+                                                + str(line_num + 1)
+                                                + " contains a tuple that "
+                                                "has an invalid timestamp '"
+                                                + timestamp
+                                                + "'"
+                                            )
+
+                                        if (
+                                            previous_timestamp_was_int is not None
+                                            and previous_timestamp_was_int
+                                            and not timestamp_is_int
+                                        ):
+                                            raise _TsFileParseException(
+                                                "dimension "
+                                                + str(this_line_num_dim + 1)
+                                                + " on line "
+                                                + str(line_num + 1)
+                                                + " contains tuples where the "
+                                                "timestamp format is "
+                                                "inconsistent"
+                                            )
+
+                                        if (
+                                            prev_timestamp_was_timestamp is not None
+                                            and prev_timestamp_was_timestamp
+                                            and not timestamp_is_timestamp
+                                        ):
+                                            raise _TsFileParseException(
+                                                "dimension "
+                                                + str(this_line_num_dim + 1)
+                                                + " on line "
+                                                + str(line_num + 1)
+                                                + " contains tuples where the "
+                                                "timestamp format is "
+                                                "inconsistent"
+                                            )
+
+                                        # Store the values
+
+                                        timestamp_for_dim += [timestamp]
+                                        values_for_dimension += [value]
+
+                                        #  If this was our first tuple then
+                                        #  we store the type of timestamp we
+                                        #  had
+
+                                        if (
+                                            prev_timestamp_was_timestamp is None
+                                            and timestamp_is_timestamp
+                                        ):
+                                            prev_timestamp_was_timestamp = True
+                                            previous_timestamp_was_int = False
+
+                                        if (
+                                            previous_timestamp_was_int is None
+                                            and timestamp_is_int
+                                        ):
+                                            prev_timestamp_was_timestamp = False
+                                            previous_timestamp_was_int = True
+
+                                        # See if we should add the data for
+                                        # this dimension
+
+                                        if not has_another_value:
+                                            if len(instance_list) < (
+                                                this_line_num_dim + 1
+                                            ):
+                                                instance_list.append([])
+
+                                            if timestamp_is_timestamp:
+                                                timestamp_for_dim = pd.DatetimeIndex(
+                                                    timestamp_for_dim
+                                                )
+
+                                            instance_list[this_line_num_dim].append(
+                                                pd.Series(
+                                                    index=timestamp_for_dim,
+                                                    data=values_for_dimension,
+                                                )
+                                            )
+                                            this_line_num_dim += 1
+
+                                            timestamp_for_dim = []
+                                            values_for_dimension = []
+
+                            elif has_another_value:
+                                raise _TsFileParseException(
+                                    "dimension " + str(this_line_num_dim + 1) + " on "
+                                    "line "
+                                    + str(line_num + 1)
+                                    + " ends with a ',' that "
+                                    "is not followed by "
+                                    "another tuple"
+                                )
+
+                            elif has_another_dimension and class_labels:
+                                raise _TsFileParseException(
+                                    "dimension " + str(this_line_num_dim + 1) + " on "
+                                    "line "
+                                    + str(line_num + 1)
+                                    + " ends with a ':' while "
+                                    "it should list a class "
+                                    "value"
+                                )
+
+                            elif has_another_dimension and not class_labels:
+                                if len(instance_list) < (this_line_num_dim + 1):
+                                    instance_list.append([])
+
+                                instance_list[this_line_num_dim].append(
+                                    pd.Series(dtype=np.float32)
+                                )
+                                this_line_num_dim += 1
+                                num_dimensions = this_line_num_dim
+
+                            # If this is the 1st line of data we have seen
+                            # then note the dimensions
+
+                            if not has_another_value and not has_another_dimension:
+                                if num_dimensions is None:
+                                    num_dimensions = this_line_num_dim
+
+                                if num_dimensions != this_line_num_dim:
+                                    raise _TsFileParseException(
+                                        "line "
+                                        + str(line_num + 1)
+                                        + " does not have the "
+                                        "same number of "
+                                        "dimensions as the "
+                                        "previous line of "
+                                        "data"
+                                    )
+
+                        # Check that we are not expecting some more data,
+                        # and if not, store that processed above
+
+                        if has_another_value:
+                            raise _TsFileParseException(
+                                "dimension "
+                                + str(this_line_num_dim + 1)
+                                + " on line "
+                                + str(line_num + 1)
+                                + " ends with a ',' that is "
+                                "not followed by another "
+                                "tuple"
+                            )
+
+                        elif has_another_dimension and class_labels:
+                            raise _TsFileParseException(
+                                "dimension "
+                                + str(this_line_num_dim + 1)
+                                + " on line "
+                                + str(line_num + 1)
+                                + " ends with a ':' while it "
+                                "should list a class value"
+                            )
+
+                        elif has_another_dimension and not class_labels:
+                            if len(instance_list) < (this_line_num_dim + 1):
+                                instance_list.append([])
+
+                            instance_list[this_line_num_dim].append(
+                                pd.Series(dtype="object")
+                            )
+                            this_line_num_dim += 1
+                            num_dimensions = this_line_num_dim
+
+                        # If this is the 1st line of data we have seen then
+                        # note the dimensions
+
+                        if (
+                            not has_another_value
+                            and num_dimensions != this_line_num_dim
+                        ):
+                            raise _TsFileParseException(
+                                "line " + str(line_num + 1) + " does not have the same "
+                                "number of dimensions as the "
+                                "previous line of data"
+                            )
+
+                        # Check if we should have class values, and if so
+                        # that they are contained in those listed in the
+                        # metadata
+
+                        if class_labels and len(class_val_list) == 0:
+                            raise _TsFileParseException(
+                                "the cases have no associated class values"
+                            )
+
+                    else:
+                        dimensions = line.split(":")
+
+                        # If first row then note the number of dimensions (
+                        # that must be the same for all cases)
+
+                        if is_first_case:
+                            num_dimensions = len(dimensions)
+
+                            if class_labels:
+                                num_dimensions -= 1
+
+                            for _dim in range(0, num_dimensions):
+                                instance_list.append([])
+
+                            is_first_case = False
+
+                        # See how many dimensions that the case whose data
+                        # in represented in this line has
+
+                        this_line_num_dim = len(dimensions)
+
+                        if class_labels:
+                            this_line_num_dim -= 1
+
+                        # All dimensions should be included for all series,
+                        # even if they are empty
+
+                        if this_line_num_dim != num_dimensions:
+                            raise _TsFileParseException(
+                                "inconsistent number of dimensions. "
+                                "Expecting "
+                                + str(num_dimensions)
+                                + " but have read "
+                                + str(this_line_num_dim)
+                            )
+
+                        # Process the data for each dimension
+
+                        for dim in range(0, num_dimensions):
+                            dimension = dimensions[dim].strip()
+
+                            if dimension:
+                                data_series = dimension.split(",")
+                                data_series = [float(i) for i in data_series]
+                                instance_list[dim].append(pd.Series(data_series))
+
+                            else:
+                                instance_list[dim].append(pd.Series(dtype="object"))
+
+                        if class_labels:
+                            class_val_list.append(dimensions[num_dimensions].strip())
+
+            line_num += 1
+
+    # Check that the file was not empty
+
+    if line_num:
+        # Check that the file contained both metadata and data
+
+        if metadata_started and not (
+            has_problem_name_tag
+            and has_timestamps_tag
+            and has_univariate_tag
+            and has_class_labels_tag
+            and has_data_tag
+        ):
+            raise _TsFileParseException("metadata incomplete")
+
+        elif metadata_started and not data_started:
+            raise _TsFileParseException("file contained metadata but no data")
+
+        elif metadata_started and data_started and len(instance_list) == 0:
+            raise _TsFileParseException("file contained metadata but no data")
+
+        # Create a DataFrame from the data parsed above
+
+        data = pd.DataFrame(dtype=np.float32)
+
+        for dim in range(0, num_dimensions):
+            data["dim_" + str(dim)] = instance_list[dim]
+
+        # Check if we should return any associated class labels separately
+
+        if class_labels:
+            return data, np.asarray(class_val_list)
+        else:
+            return data
+
+    else:
+        raise _TsFileParseException("empty file")
+
+# Cell
+def decompress_from_url(url, target_dir=None, verbose=False):
+    # Download
+    try:
+        pv("downloading data...", verbose)
+        fname = os.path.basename(url)
+        tmpdir = tempfile.mkdtemp()
+        tmpfile = os.path.join(tmpdir, fname)
+        urlretrieve(url, tmpfile)
+        pv("...data downloaded", verbose)
+
+        # Decompress
+        try:
+            pv("decompressing data...", verbose)
+            if not os.path.exists(target_dir): os.makedirs(target_dir)
+            shutil.unpack_archive(tmpfile, target_dir)
+            shutil.rmtree(tmpdir)
+            pv("...data decompressed", verbose)
+            return target_dir
+
+        except:
+            shutil.rmtree(tmpdir)
+            if verbose: sys.stderr.write("Could not decompress file, aborting.\n")
+
+    except:
+        shutil.rmtree(tmpdir)
+        if verbose:
+            sys.stderr.write("Could not download url. Please, check url.\n")
+
+# Cell
+def download_data(url, fname=None, c_key='archive', force_download=False, timeout=4, verbose=False):
+    "Download `url` to `fname`."
+    from fastai.data.external import URLs
+    from fastdownload import download_url
+    fname = Path(fname or URLs.path(url, c_key=c_key))
+    fname.parent.mkdir(parents=True, exist_ok=True)
+    if not fname.exists() or force_download: download_url(url, dest=fname, timeout=timeout, show_progress=verbose)
+    return fname
+
+# Cell
+def get_UCR_univariate_list():
+    return [
+        'ACSF1', 'Adiac', 'AllGestureWiimoteX', 'AllGestureWiimoteY',
+        'AllGestureWiimoteZ', 'ArrowHead', 'Beef', 'BeetleFly', 'BirdChicken',
+        'BME', 'Car', 'CBF', 'Chinatown', 'ChlorineConcentration',
+        'CinCECGTorso', 'Coffee', 'Computers', 'CricketX', 'CricketY',
+        'CricketZ', 'Crop', 'DiatomSizeReduction',
+        'DistalPhalanxOutlineAgeGroup', 'DistalPhalanxOutlineCorrect',
+        'DistalPhalanxTW', 'DodgerLoopDay', 'DodgerLoopGame',
+        'DodgerLoopWeekend', 'Earthquakes', 'ECG200', 'ECG5000', 'ECGFiveDays',
+        'ElectricDevices', 'EOGHorizontalSignal', 'EOGVerticalSignal',
+        'EthanolLevel', 'FaceAll', 'FaceFour', 'FacesUCR', 'FiftyWords',
+        'Fish', 'FordA', 'FordB', 'FreezerRegularTrain', 'FreezerSmallTrain',
+        'Fungi', 'GestureMidAirD1', 'GestureMidAirD2', 'GestureMidAirD3',
+        'GesturePebbleZ1', 'GesturePebbleZ2', 'GunPoint', 'GunPointAgeSpan',
+        'GunPointMaleVersusFemale', 'GunPointOldVersusYoung', 'Ham',
+        'HandOutlines', 'Haptics', 'Herring', 'HouseTwenty', 'InlineSkate',
+        'InsectEPGRegularTrain', 'InsectEPGSmallTrain', 'InsectWingbeatSound',
+        'ItalyPowerDemand', 'LargeKitchenAppliances', 'Lightning2',
+        'Lightning7', 'Mallat', 'Meat', 'MedicalImages', 'MelbournePedestrian',
+        'MiddlePhalanxOutlineAgeGroup', 'MiddlePhalanxOutlineCorrect',
+        'MiddlePhalanxTW', 'MixedShapesRegularTrain', 'MixedShapesSmallTrain',
+        'MoteStrain', 'NonInvasiveFetalECGThorax1',
+        'NonInvasiveFetalECGThorax2', 'OliveOil', 'OSULeaf',
+        'PhalangesOutlinesCorrect', 'Phoneme', 'PickupGestureWiimoteZ',
+        'PigAirwayPressure', 'PigArtPressure', 'PigCVP', 'PLAID', 'Plane',
+        'PowerCons', 'ProximalPhalanxOutlineAgeGroup',
+        'ProximalPhalanxOutlineCorrect', 'ProximalPhalanxTW',
+        'RefrigerationDevices', 'Rock', 'ScreenType', 'SemgHandGenderCh2',
+        'SemgHandMovementCh2', 'SemgHandSubjectCh2', 'ShakeGestureWiimoteZ',
+        'ShapeletSim', 'ShapesAll', 'SmallKitchenAppliances', 'SmoothSubspace',
+        'SonyAIBORobotSurface1', 'SonyAIBORobotSurface2', 'StarLightCurves',
+        'Strawberry', 'SwedishLeaf', 'Symbols', 'SyntheticControl',
+        'ToeSegmentation1', 'ToeSegmentation2', 'Trace', 'TwoLeadECG',
+        'TwoPatterns', 'UMD', 'UWaveGestureLibraryAll', 'UWaveGestureLibraryX',
+        'UWaveGestureLibraryY', 'UWaveGestureLibraryZ', 'Wafer', 'Wine',
+        'WordSynonyms', 'Worms', 'WormsTwoClass', 'Yoga'
+    ]
+
+
+test_eq(len(get_UCR_univariate_list()), 128)
+UTSC_datasets = get_UCR_univariate_list()
+UCR_univariate_list = get_UCR_univariate_list()
+
+# Cell
+def get_UCR_multivariate_list():
+    return [
+        'ArticularyWordRecognition', 'AtrialFibrillation', 'BasicMotions',
+        'CharacterTrajectories', 'Cricket', 'DuckDuckGeese', 'EigenWorms',
+        'Epilepsy', 'ERing', 'EthanolConcentration', 'FaceDetection',
+        'FingerMovements', 'HandMovementDirection', 'Handwriting', 'Heartbeat',
+        'InsectWingbeat', 'JapaneseVowels', 'Libras', 'LSST', 'MotorImagery',
+        'NATOPS', 'PEMS-SF', 'PenDigits', 'PhonemeSpectra', 'RacketSports',
+        'SelfRegulationSCP1', 'SelfRegulationSCP2', 'SpokenArabicDigits',
+        'StandWalkJump', 'UWaveGestureLibrary'
+    ]
+
+test_eq(len(get_UCR_multivariate_list()), 30)
+MTSC_datasets = get_UCR_multivariate_list()
+UCR_multivariate_list = get_UCR_multivariate_list()
+
+UCR_list = sorted(UCR_univariate_list + UCR_multivariate_list)
+classification_list = UCR_list
+TSC_datasets = classification_datasets = UCR_list
+len(UCR_list)
+
+# Cell
+def get_UCR_data(dsid, path='.', parent_dir='data/UCR', on_disk=True, mode='c', Xdtype='float32', ydtype=None, return_split=True, split_data=True,
+                 force_download=False, verbose=False):
+    dsid_list = [ds for ds in UCR_list if ds.lower() == dsid.lower()]
+    assert len(dsid_list) > 0, f'{dsid} is not a UCR dataset'
+    dsid = dsid_list[0]
+    return_split = return_split and split_data # keep return_split for compatibility. It will be replaced by split_data
+    if dsid in ['InsectWingbeat']:
+        warnings.warn(f'Be aware that download of the {dsid} dataset is very slow!')
+    pv(f'Dataset: {dsid}', verbose)
+    full_parent_dir = Path(path)/parent_dir
+    full_tgt_dir = full_parent_dir/dsid
+#     if not os.path.exists(full_tgt_dir): os.makedirs(full_tgt_dir)
+    full_tgt_dir.parent.mkdir(parents=True, exist_ok=True)
+    if force_download or not all([os.path.isfile(f'{full_tgt_dir}/{fn}.npy') for fn in ['X_train', 'X_valid', 'y_train', 'y_valid', 'X', 'y']]):
+        # Option A
+        src_website = 'http://www.timeseriesclassification.com/Downloads'
+        decompress_from_url(f'{src_website}/{dsid}.zip', target_dir=full_tgt_dir, verbose=verbose)
+        if dsid == 'DuckDuckGeese':
+            with zipfile.ZipFile(Path(f'{full_parent_dir}/DuckDuckGeese/DuckDuckGeese_ts.zip'), 'r') as zip_ref:
+                zip_ref.extractall(Path(parent_dir))
+        if not os.path.exists(full_tgt_dir/f'{dsid}_TRAIN.ts') or not os.path.exists(full_tgt_dir/f'{dsid}_TRAIN.ts') or \
+        Path(full_tgt_dir/f'{dsid}_TRAIN.ts').stat().st_size == 0 or Path(full_tgt_dir/f'{dsid}_TEST.ts').stat().st_size == 0:
+            print('It has not been possible to download the required files')
+            if return_split:
+                return None, None, None, None
+            else:
+                return None, None, None
+
+        pv('loading ts files to dataframe...', verbose)
+        X_train_df, y_train = _ts2df(full_tgt_dir/f'{dsid}_TRAIN.ts')
+        X_valid_df, y_valid = _ts2df(full_tgt_dir/f'{dsid}_TEST.ts')
+        pv('...ts files loaded', verbose)
+        pv('preparing numpy arrays...', verbose)
+        X_train_ = []
+        X_valid_ = []
+        for i in progress_bar(range(X_train_df.shape[-1]), display=verbose, leave=False):
+            X_train_.append(stack_pad(X_train_df[f'dim_{i}'])) # stack arrays even if they have different lengths
+            X_valid_.append(stack_pad(X_valid_df[f'dim_{i}'])) # stack arrays even if they have different lengths
+        X_train = np.transpose(np.stack(X_train_, axis=-1), (0, 2, 1))
+        X_valid = np.transpose(np.stack(X_valid_, axis=-1), (0, 2, 1))
+        X_train, X_valid = match_seq_len(X_train, X_valid)
+
+        np.save(f'{full_tgt_dir}/X_train.npy', X_train)
+        np.save(f'{full_tgt_dir}/y_train.npy', y_train)
+        np.save(f'{full_tgt_dir}/X_valid.npy', X_valid)
+        np.save(f'{full_tgt_dir}/y_valid.npy', y_valid)
+        np.save(f'{full_tgt_dir}/X.npy', concat(X_train, X_valid))
+        np.save(f'{full_tgt_dir}/y.npy', concat(y_train, y_valid))
+        del X_train, X_valid, y_train, y_valid
+        delete_all_in_dir(full_tgt_dir, exception='.npy')
+        pv('...numpy arrays correctly saved', verbose)
+
+    mmap_mode = mode if on_disk else None
+    X_train = np.load(f'{full_tgt_dir}/X_train.npy', mmap_mode=mmap_mode)
+    y_train = np.load(f'{full_tgt_dir}/y_train.npy', mmap_mode=mmap_mode)
+    X_valid = np.load(f'{full_tgt_dir}/X_valid.npy', mmap_mode=mmap_mode)
+    y_valid = np.load(f'{full_tgt_dir}/y_valid.npy', mmap_mode=mmap_mode)
+
+    if return_split:
+        if Xdtype is not None:
+            X_train = X_train.astype(Xdtype)
+            X_valid = X_valid.astype(Xdtype)
+        if ydtype is not None:
+            y_train = y_train.astype(ydtype)
+            y_valid = y_valid.astype(ydtype)
+        if verbose:
+            print('X_train:', X_train.shape)
+            print('y_train:', y_train.shape)
+            print('X_valid:', X_valid.shape)
+            print('y_valid:', y_valid.shape, '\n')
+        return X_train, y_train, X_valid, y_valid
+    else:
+        X = np.load(f'{full_tgt_dir}/X.npy', mmap_mode=mmap_mode)
+        y = np.load(f'{full_tgt_dir}/y.npy', mmap_mode=mmap_mode)
+        splits = get_predefined_splits(X_train, X_valid)
+        if Xdtype is not None:
+            X = X.astype(Xdtype)
+        if verbose:
+            print('X      :', X .shape)
+            print('y      :', y .shape)
+            print('splits :', coll_repr(splits[0]), coll_repr(splits[1]), '\n')
+        return X, y, splits
+
+
+get_classification_data = get_UCR_data
+
+# Cell
+def check_data(X, y=None, splits=None, show_plot=True):
+    try: X_is_nan = np.isnan(X).sum()
+    except: X_is_nan = 'could not be checked'
+    if X.ndim == 3:
+        shape = f'[{X.shape[0]} samples x {X.shape[1]} features x {X.shape[-1]} timesteps]'
+        print(f'X      - shape: {shape}  type: {cls_name(X)}  dtype:{X.dtype}  isnan: {X_is_nan}')
+    else:
+        print(f'X      - shape: {X.shape}  type: {cls_name(X)}  dtype:{X.dtype}  isnan: {X_is_nan}')
+    if X_is_nan:
+        warnings.warn('X contains nan values')
+    if y is not None:
+        y_shape = y.shape
+        y = y.ravel()
+        if isinstance(y[0], str):
+            n_classes = f'{len(np.unique(y))} ({len(y)//len(np.unique(y))} samples per class) {L(np.unique(y).tolist())}'
+            y_is_nan = 'nan' in [c.lower() for c in np.unique(y)]
+            print(f'y      - shape: {y_shape}  type: {cls_name(y)}  dtype:{y.dtype}  n_classes: {n_classes}  isnan: {y_is_nan}')
+        else:
+            y_is_nan = np.isnan(y).sum()
+            print(f'y      - shape: {y_shape}  type: {cls_name(y)}  dtype:{y.dtype}  isnan: {y_is_nan}')
+        if y_is_nan:
+            warnings.warn('y contains nan values')
+    if splits is not None:
+        _splits = get_splits_len(splits)
+        overlap = check_splits_overlap(splits)
+        print(f'splits - n_splits: {len(_splits)} shape: {_splits}  overlap: {overlap}')
+        if show_plot: plot_splits(splits)
+
+# Cell
 def get_Monash_regression_list():
     return sorted([
         "AustraliaRainfall", "HouseholdPowerConsumption1",
@@ -827,11 +2352,11 @@ def get_Monash_regression_data(dsid, path='./data/Monash', on_disk=True, mode='c
             pv('...download complete', verbose)
             try:
                 if split == 'TRAIN':
-                    X_train, y_train = _load_from_tsfile_to_dataframe2(fname)
-                    X_train = check_X(X_train, coerce_to_numpy=True)
+                    X_train, y_train = _ts2dfV2(fname)
+                    X_train = _check_X(X_train)
                 else:
-                    X_valid, y_valid = _load_from_tsfile_to_dataframe2(fname)
-                    X_valid = check_X(X_valid, coerce_to_numpy=True)
+                    X_valid, y_valid = _ts2dfV2(fname)
+                    X_valid = _check_X(X_valid)
             except Exception as inst:
                 print(inst)
                 warnings.warn(f'Cannot create numpy arrays for {dsid} dataset')
@@ -1062,13 +2587,13 @@ def convert_tsf_to_dataframe(full_file_path_and_name, replace_missing_vals_with 
                         line_content = line.split(" ")
                         if line.startswith("@attribute"):
                             if (len(line_content) != 3):  # Attributes have both name and type
-                                raise TsFileParseException("Invalid meta-data specification.")
+                                raise _TsFileParseException("Invalid meta-data specification.")
 
                             col_names.append(line_content[1])
                             col_types.append(line_content[2])
                         else:
                             if len(line_content) != 2:  # Other meta-data have only values
-                                raise TsFileParseException("Invalid meta-data specification.")
+                                raise _TsFileParseException("Invalid meta-data specification.")
 
                             if line.startswith("@frequency"):
                                 frequency = line_content[1]
@@ -1081,14 +2606,14 @@ def convert_tsf_to_dataframe(full_file_path_and_name, replace_missing_vals_with 
 
                     else:
                         if len(col_names) == 0:
-                            raise TsFileParseException("Missing attribute section. Attribute section must come before data.")
+                            raise _TsFileParseException("Missing attribute section. Attribute section must come before data.")
 
                         found_data_tag = True
                 elif not line.startswith("#"):
                     if len(col_names) == 0:
-                        raise TsFileParseException("Missing attribute section. Attribute section must come before data.")
+                        raise _TsFileParseException("Missing attribute section. Attribute section must come before data.")
                     elif not found_data_tag:
-                        raise TsFileParseException("Missing @data tag.")
+                        raise _TsFileParseException("Missing @data tag.")
                     else:
                         if not started_reading_data_section:
                             started_reading_data_section = True
@@ -1101,13 +2626,13 @@ def convert_tsf_to_dataframe(full_file_path_and_name, replace_missing_vals_with 
                         full_info = line.split(":")
 
                         if len(full_info) != (len(col_names) + 1):
-                            raise TsFileParseException("Missing attributes/values in series.")
+                            raise _TsFileParseException("Missing attributes/values in series.")
 
                         series = full_info[len(full_info) - 1]
                         series = series.split(",")
 
                         if(len(series) == 0):
-                            raise TsFileParseException("A given series should contains a set of comma separated numeric values. At least one numeric value should be there in a series. Missing values should be indicated with ? symbol")
+                            raise _TsFileParseException("A given series should contains a set of comma separated numeric values. At least one numeric value should be there in a series. Missing values should be indicated with ? symbol")
 
                         numeric_series = []
 
@@ -1118,7 +2643,7 @@ def convert_tsf_to_dataframe(full_file_path_and_name, replace_missing_vals_with 
                                 numeric_series.append(float(val))
 
                         if (numeric_series.count(replace_missing_vals_with) == len(numeric_series)):
-                            raise TsFileParseException("All series values are missing. A given series should contains a set of comma separated numeric values. At least one numeric value should be there in a series.")
+                            raise _TsFileParseException("All series values are missing. A given series should contains a set of comma separated numeric values. At least one numeric value should be there in a series.")
 
                         all_series.append(pd.Series(numeric_series).array)
 
@@ -1129,23 +2654,23 @@ def convert_tsf_to_dataframe(full_file_path_and_name, replace_missing_vals_with 
                             elif col_types[i] == "string":
                                 att_val = str(full_info[i])
                             elif col_types[i] == "date":
-                                att_val = datetime.strptime(full_info[i], '%Y-%m-%d %H-%M-%S')
+                                att_val = datetime.datetime.strptime(full_info[i], '%Y-%m-%d %H-%M-%S')
                             else:
-                                raise TsFileParseException("Invalid attribute type.") # Currently, the code supports only numeric, string and date types. Extend this as required.
+                                raise _TsFileParseException("Invalid attribute type.") # Currently, the code supports only numeric, string and date types. Extend this as required.
 
                             if(att_val == None):
-                                raise TsFileParseException("Invalid attribute value.")
+                                raise _TsFileParseException("Invalid attribute value.")
                             else:
                                 all_data[col_names[i]].append(att_val)
 
                 line_count = line_count + 1
 
         if line_count == 0:
-            raise TsFileParseException("Empty file.")
+            raise _TsFileParseException("Empty file.")
         if len(col_names) == 0:
-            raise TsFileParseException("Missing attribute section.")
+            raise _TsFileParseException("Missing attribute section.")
         if not found_data_section:
-            raise TsFileParseException("Missing series information under data section.")
+            raise _TsFileParseException("Missing series information under data section.")
 
         all_data[value_column_name] = all_series
         loaded_data = pd.DataFrame(all_data)

@@ -3,9 +3,9 @@
 __all__ = ['get_tabular_ds', 'get_tabular_dls', 'preprocess_df']
 
 # Cell
+from fastai.tabular.all import *
 from ..imports import *
 from ..utils import *
-from fastai.tabular.all import *
 
 # Cell
 @delegates(TabularPandas.__init__)

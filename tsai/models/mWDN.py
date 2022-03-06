@@ -9,9 +9,6 @@ from .InceptionTimePlus import *
 from .utils import build_model
 
 # Cell
-import pywt
-
-# Cell
 # This is an unofficial PyTorch implementation by Ignacio Oguiza - oguiza@gmail.com based on:
 
 # Wang, J., Wang, Z., Li, J., & Wu, J. (2018, July). Multilevel wavelet decomposition network for interpretable time series analysis. In Proceedings of the 24th ACM SIGKDD International Conference on Knowledge Discovery & Data Mining (pp. 2437-2446).
@@ -59,11 +56,15 @@ class WaveBlock(Module):
         return tensor(weight_np)
 
 # Cell
-
 class mWDN(Module):
     def __init__(self, c_in, c_out, seq_len, levels=3, wavelet=None, base_arch=InceptionTimePlus, **kwargs):
         self.levels=levels
         self.blocks = nn.ModuleList()
+        if wavelet is not None:
+            try:
+                import pywt
+            except ImportError:
+                print("You need to either install pywt to run mWDN or leave wavelet=None")
         for i in range(levels): self.blocks.append(WaveBlock(c_in, c_out, seq_len // 2 ** i, wavelet=wavelet))
         self._model = build_model(base_arch, c_in, c_out, seq_len=seq_len, **kwargs)
 

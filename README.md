@@ -19,6 +19,12 @@
 
 ## What's new:
 
+#### March 2022
+
+* ⚡️ Starting with **tsai 0.3.0** you'll get **faster installs and imports** through a better use of dependencies.
+* New visualization methods: learn.feature_importance() and learn.step_importance() will help you gain better insights on how your models works.
+* New calibration model: learn.calibrate_model() for time series classification tasks.
+
 #### November, 2021
 
 - ✅ Implemented some of the learnings from reviewing Kaggle's latest time series competition (see Medium [blog post](https://towardsdatascience.com/key-takeaways-from-kaggles-most-recent-time-series-competition-ventilator-pressure-prediction-7a1d2e4e0131?source=user_profile---------0-------------------------------) for more details) like:
@@ -52,19 +58,23 @@ We've also added a new PredictionDynamics callback that will display the predict
 ## Installation
 
 You can install the **latest stable** version from pip using:
-```
+```python
 pip install tsai
 ```
 
-Or you can install the cutting edge version of this library from github by doing:
-```
+Or you can install the **cutting edge** version of this library from github by doing:
+```python
 pip install -Uqq git+https://github.com/timeseriesAI/tsai.git
 ```
 
-Once the install is complete, you should restart your runtime and then run: 
-
-```
+Once the install is complete just run: 
+```python
 from tsai.all import *
+```
+
+Note: starting with tsai 0.3.0 tsai will only install hard dependencies. Other soft dependencies (which are only required for selected tasks) will not be installed by default (this is the recommended approach. If you require any of the dependencies that is not installed, tsai will ask you to install it when necessary). If you still want to install tsai with all its dependencies you can do it by running:
+```python
+pip install tsai[extras]
 ```
 
 ## Documentation
@@ -108,8 +118,9 @@ It provides an overview of a time series classification task.
 We have also develop many other [tutorial notebooks](https://github.com/timeseriesAI/tsai/tree/main/tutorial_nbs). 
 
 To use tsai in your own notebooks, the only thing you need to do after you have installed the package is to run this:
-
-`from tsai.all import *`
+```python
+from tsai.all import *
+```
 
 ## Examples
 
@@ -118,18 +129,18 @@ These are just a few examples of how you can use `tsai`:
 ### Binary, univariate classification
 
 **Training:**
-```bash
+```python
 from tsai.all import *
 X, y, splits = get_classification_data('ECG200', split_data=False)
 batch_tfms = TSStandardize()
-clf = TSClassifier(X, y, splits=splits, arch=InceptionTimePlus, batch_tfms=batch_tfms, metrics=accuracy, cbs=ShowGraph())
+clf = TSClassifier(X, y, splits=splits, path='models', arch=InceptionTimePlus, batch_tfms=batch_tfms, metrics=accuracy, cbs=ShowGraph())
 clf.fit_one_cycle(100, 3e-4)
-clf.export("models/clf.pkl") # make sure you set the path to a folder that already exists
+clf.export("clf.pkl") 
 ```
 
 **Inference:** 
 
-```bash
+```python
 from tsai.inference import load_learner
 clf = load_learner("models/clf.pkl")
 probas, target, preds = clf.get_X_preds(X[splits[0]], y[splits[0]])
@@ -142,9 +153,9 @@ probas, target, preds = clf.get_X_preds(X[splits[0]], y[splits[0]])
 from tsai.all import *
 X, y, splits = get_classification_data('LSST', split_data=False)
 batch_tfms = TSStandardize(by_sample=True)
-mv_clf = TSClassifier(X, y, splits=splits, arch=InceptionTimePlus, batch_tfms=batch_tfms, metrics=accuracy, cbs=ShowGraph())
+mv_clf = TSClassifier(X, y, splits=splits, path='models', arch=InceptionTimePlus, batch_tfms=batch_tfms, metrics=accuracy, cbs=ShowGraph())
 mv_clf.fit_one_cycle(10, 1e-2)
-mv_clf.export("models/mv_clf.pkl") # make sure you set the path to a folder that already exists
+mv_clf.export("mv_clf.pkl")
 ```
 
 **Inference:** 
@@ -162,9 +173,9 @@ probas, target, preds = mv_clf.get_X_preds(X[splits[0]], y[splits[0]])
 from tsai.all import *
 X, y, splits = get_regression_data('AppliancesEnergy', split_data=False)
 batch_tfms = TSStandardize(by_sample=True)
-reg = TSRegressor(X, y, splits=splits, arch=TSTPlus, batch_tfms=batch_tfms, metrics=rmse, cbs=ShowGraph(), verbose=True)
+reg = TSRegressor(X, y, splits=splits, path='models', arch=TSTPlus, batch_tfms=batch_tfms, metrics=rmse, cbs=ShowGraph(), verbose=True)
 reg.fit_one_cycle(100, 3e-4)
-reg.export("models/reg.pkl") # make sure you set the path to a folder that already exists
+reg.export("reg.pkl")
 ```
 
 **Inference:**
@@ -174,7 +185,7 @@ reg = load_learner("models/reg.pkl")
 raw_preds, target, preds = reg.get_X_preds(X[splits[0]], y[splits[0]])
 ```
 
-RocketClassifier, MiniRocketClassifier, RocketRegressor and MiniRocketRegressor are somewhat different (not properly deep learning models) and are used in a slightly different way: 
+RocketClassifier, MiniRocketClassifier, RocketRegressor and MiniRocketRegressor are somewhat different models (they are not actually deep learning models) and are used in a slightly different way: 
 
 **Training:**
 ```bash
@@ -203,9 +214,9 @@ ts = get_forecasting_time_series("Sunspots").values
 X, y = SlidingWindow(60, horizon=1)(ts)
 splits = TimeSplitter(235)(y) 
 batch_tfms = TSStandardize()
-fcst = TSForecaster(X, y, splits=splits, batch_tfms=batch_tfms, bs=512, arch=TST, metrics=mae, cbs=ShowGraph())
+fcst = TSForecaster(X, y, splits=splits, path='models', batch_tfms=batch_tfms, bs=512, arch=TST, metrics=mae, cbs=ShowGraph())
 fcst.fit_one_cycle(50, 1e-3)
-fcst.export("models/fcst.pkl") # make sure you set the path to a folder that already exists
+fcst.export("fcst.pkl")
 ```
 
 **Inference:**
@@ -215,6 +226,14 @@ from tsai.inference import load_learner
 fcst = load_learner("models/fcst.pkl")
 raw_preds, target, preds = fcst.get_X_preds(X[splits[0]], y[splits[0]])
 ```
+
+## Input data format
+
+The input format for all time series models and image models in tsai is the same. An np.ndarray (or array-like object like zarr, etc) with 3 dimensions:
+
+**[# samples x # variables x sequence length]**
+
+The input format for tabular models in tsai (like TabModel, TabTransformer and TabFusionTransformer) is a pandas dataframe. See [example](https://timeseriesai.github.io/tsai/models.TabModel.html).
 
 ## How to contribute to tsai?
 
@@ -231,7 +250,7 @@ If you use tsai in your research please use the following BibTeX entry:
     author =       {Ignacio Oguiza},
     title =        {tsai - A state-of-the-art deep learning library for time series and sequential data},
     howpublished = {Github},
-    year =         {2020},
+    year =         {2022},
     url =          {https://github.com/timeseriesAI/tsai}
 }
 ```
