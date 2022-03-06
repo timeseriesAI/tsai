@@ -3,6 +3,7 @@
 __all__ = ['MLP']
 
 # Cell
+from fastai.layers import *
 from ..imports import *
 from .layers import *
 

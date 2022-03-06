@@ -3,13 +3,11 @@
 __all__ = ['TemporalBlock', 'TemporalConvNet', 'TCN']
 
 # Cell
+from torch.nn.utils import weight_norm
 from ..imports import *
 from ..utils import *
 from .layers import *
 from .utils import *
-
-# Cell
-from torch.nn.utils import weight_norm
 
 # Cell
 # This is an unofficial PyTorch implementation by Ignacio Oguiza - oguiza@gmail.com based on:

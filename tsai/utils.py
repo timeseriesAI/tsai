@@ -5,28 +5,29 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'to3dPlusTensor', 'to3dPlusArray', 'todtype', 'bytes2size', 'bytes2GB', 'get_size', 'is_file',
            'delete_all_in_dir', 'reverse_dict', 'is_tuple', 'itemify', 'isnone', 'exists', 'ifelse', 'is_not_close',
            'test_not_close', 'test_type', 'test_ok', 'test_not_ok', 'test_error', 'test_eq_nan', 'assert_fn', 'test_gt',
-           'test_ge', 'test_lt', 'test_le', 'stack', 'stack_pad', 'match_seq_len', 'random_shuffle', 'cat2int',
-           'cycle_dl', 'cycle_dl_to_device', 'cycle_dl_estimate', 'cache_data', 'memmap2cache', 'cache_memmap',
-           'get_func_defaults', 'get_idx_from_df_col_vals', 'get_sublist_idxs', 'flatten_list', 'display_pd_df',
-           'ttest', 'kstest', 'tscore', 'ttest_tensor', 'pcc', 'scc', 'a', 'b', 'remove_fn', 'npsave', 'np_save',
-           'permute_2D', 'random_normal', 'random_half_normal', 'random_normal_tensor', 'random_half_normal_tensor',
-           'default_dpi', 'get_plot_fig', 'fig2buf', 'plot_scatter', 'get_idxs', 'apply_cmap', 'torch_tile',
-           'to_tsfresh_df', 'pcorr', 'scorr', 'torch_diff', 'get_outliers_IQR', 'clip_outliers', 'get_percentile',
-           'torch_clamp', 'get_robustscale_params', 'torch_slice_by_dim', 'torch_nanmean', 'torch_nanstd', 'concat',
-           'reduce_memory_usage', 'cls_name', 'roll2d', 'roll3d', 'random_roll2d', 'random_roll3d', 'rotate_axis0',
-           'rotate_axis1', 'rotate_axis2', 'chunks_calculator', 'is_memory_shared', 'assign_in_chunks', 'create_array',
-           'create_empty_array', 'np_save_compressed', 'np_load_compressed', 'np2memmap', 'torch_mean_groupby',
-           'torch_flip', 'torch_nan_to_num', 'torch_masked_to_num', 'mpl_trend', 'int2digits', 'array2digits',
-           'sincos_encoding', 'linear_encoding', 'encode_positions', 'sort_generator', 'get_subset_dict', 'create_dir',
-           'remove_dir', 'named_partial', 'yaml2dict', 'str2list', 'str2index', 'get_cont_cols', 'get_cat_cols',
-           'alphabet', 'ALPHABET', 'get_mapping', 'map_array', 'log_tfm', 'to_sincos_time', 'plot_feature_dist',
-           'rolling_moving_average', 'ffill_sequence', 'bfill_sequence', 'fbfill_sequence']
+           'test_ge', 'test_lt', 'test_le', 'stack', 'stack_pad', 'pad_sequences', 'match_seq_len', 'random_shuffle',
+           'cat2int', 'cycle_dl', 'cycle_dl_to_device', 'cycle_dl_estimate', 'cache_data', 'memmap2cache',
+           'cache_memmap', 'get_func_defaults', 'get_idx_from_df_col_vals', 'get_sublist_idxs', 'flatten_list',
+           'display_pd_df', 'ttest', 'kstest', 'tscore', 'ttest_tensor', 'pcc', 'scc', 'a', 'b', 'remove_fn', 'npsave',
+           'np_save', 'permute_2D', 'random_normal', 'random_half_normal', 'random_normal_tensor',
+           'random_half_normal_tensor', 'default_dpi', 'get_plot_fig', 'fig2buf', 'plot_scatter', 'get_idxs',
+           'apply_cmap', 'torch_tile', 'to_tsfresh_df', 'pcorr', 'scorr', 'torch_diff', 'get_outliers_IQR',
+           'clip_outliers', 'get_percentile', 'torch_clamp', 'get_robustscale_params', 'torch_slice_by_dim',
+           'torch_nanmean', 'torch_nanstd', 'concat', 'reduce_memory_usage', 'cls_name', 'roll2d', 'roll3d',
+           'random_roll2d', 'random_roll3d', 'rotate_axis0', 'rotate_axis1', 'rotate_axis2', 'chunks_calculator',
+           'is_memory_shared', 'assign_in_chunks', 'create_array', 'create_empty_array', 'np_save_compressed',
+           'np_load_compressed', 'np2memmap', 'torch_mean_groupby', 'torch_flip', 'torch_nan_to_num',
+           'torch_masked_to_num', 'mpl_trend', 'int2digits', 'array2digits', 'sincos_encoding', 'linear_encoding',
+           'encode_positions', 'sort_generator', 'get_subset_dict', 'create_dir', 'remove_dir', 'named_partial',
+           'yaml2dict', 'str2list', 'str2index', 'get_cont_cols', 'get_cat_cols', 'alphabet', 'ALPHABET', 'get_mapping',
+           'map_array', 'log_tfm', 'to_sincos_time', 'plot_feature_dist', 'rolling_moving_average', 'ffill_sequence',
+           'bfill_sequence', 'fbfill_sequence', 'dummify', 'shuffle_along_axis', 'analyze_feature', 'analyze_array',
+           'get_relpath']
 
 # Cell
+import string
+from scipy.stats import ttest_ind, ks_2samp, pearsonr, spearmanr, normaltest, linregress
 from .imports import *
-from fastcore.test import *
-import inspect
-import sklearn
 
 # Cell
 def totensor(o):
@@ -35,7 +36,7 @@ def totensor(o):
     elif isinstance(o, pd.DataFrame): return torch.from_numpy(o.values)
     else:
         try: return torch.tensor(o)
-        except: warnings.warn(f"Can't convert {type(o)} to torch.Tensor", Warning)
+        except: warn(f"Can't convert {type(o)} to torch.Tensor", Warning)
 
 
 def toarray(o):
@@ -44,7 +45,7 @@ def toarray(o):
     elif isinstance(o, pd.DataFrame): return o.values
     else:
         try: return np.asarray(o)
-        except: warnings.warn(f"Can't convert {type(o)} to np.array", Warning)
+        except: warn(f"Can't convert {type(o)} to np.array", Warning)
 
 
 def toL(o):
@@ -52,7 +53,7 @@ def toL(o):
     elif isinstance(o, (np.ndarray, torch.Tensor)): return L(o.tolist())
     else:
         try: return L(o)
-        except: warnings.warn(f'passed object needs to be of type L, list, np.ndarray or torch.Tensor but is {type(o)}', Warning)
+        except: warn(f'passed object needs to be of type L, list, np.ndarray or torch.Tensor but is {type(o)}', Warning)
 
 
 def to3dtensor(o):
@@ -180,6 +181,7 @@ def is_file(file_path):
 
 # Cell
 def delete_all_in_dir(tgt_dir, exception=None):
+    import shutil
     if exception is not None and len(L(exception)) > 1: exception = tuple(exception)
     for file in os.listdir(tgt_dir):
         if exception is not None and file.endswith(exception): continue
@@ -253,7 +255,6 @@ def test_error(error, f, *args, **kwargs):
     except Exception as e:
         test_eq(str(e), error)
 
-
 def test_eq_nan(a,b):
     "`test` that `a==b` excluding nan values (valid for torch.Tensor and np.ndarray)"
     mask_a = torch.isnan(a) if isinstance(a, torch.Tensor) else np.isnan(a)
@@ -313,18 +314,51 @@ def stack_pad(o, padding_value=np.nan):
     return result
 
 # Cell
+def pad_sequences(
+    o, # Iterable object
+    maxlen:int=None, # Optional max length of the output. If None, max length of the longest individual sequence.
+    dtype:(str, type)=np.float64, # Type of the output sequences. To pad sequences with variable length strings, you can use object.
+    padding:str='pre', # 'pre' or 'post' pad either before or after each sequence.
+    truncating:str='pre', # 'pre' or 'post' remove values from sequences larger than maxlen, either at the beginning or at the end of the sequences.
+    padding_value:float=np.nan, # Value used for padding.
+):
+    "Transforms an iterable with sequences into a 3d numpy array using padding or truncating sequences if necessary"
+
+    assert padding in ['pre', 'post']
+    assert truncating in ['pre', 'post']
+    assert is_iter(o)
+
+    if not is_array(o):
+        o = [to2darray(oi) for oi in o]
+    seq_len = maxlen or max(o, key=len).shape[-1]
+    result = np.full((len(o), o[0].shape[-2], seq_len), padding_value, dtype=dtype)
+    for i,values in enumerate(o):
+        if truncating == 'pre':
+            values = values[..., -seq_len:]
+        else:
+            values = values[..., :seq_len]
+        if padding == 'pre':
+            result[i, :, -values.shape[-1]:] = values
+        else:
+            result[i, :, :values.shape[-1]] = values
+    return result
+
+# Cell
 def match_seq_len(*arrays):
     max_len = stack([x.shape[-1] for x in arrays]).max()
     return [np.pad(x, pad_width=((0,0), (0,0), (max_len - x.shape[-1], 0)), mode='constant', constant_values=0) for x in arrays]
 
 # Cell
 def random_shuffle(o, random_state=None):
+    import sklearn
     res = sklearn.utils.shuffle(o, random_state=random_state)
     if isinstance(o, L): return L(list(res))
     return res
 
 # Cell
 def cat2int(o):
+    from fastai.data.transforms import Categorize
+    from fastai.data.core import TfmdLists
     cat = Categorize()
     cat.setup(o)
     return stack(TfmdLists(o, cat)[:])
@@ -361,6 +395,7 @@ cache_memmap = cache_data
 
 # Cell
 def get_func_defaults(f):
+    import inspect
     fa = inspect.getfullargspec(f)
     if fa.defaults is None: return dict(zip(fa.args, [''] * (len(fa.args))))
     else: return dict(zip(fa.args, [''] * (len(fa.args) - len(fa.defaults)) + list(fa.defaults)))
@@ -396,7 +431,7 @@ def display_pd_df(df, max_rows:Union[bool, int]=False, max_columns:Union[bool, i
 # Cell
 def ttest(data1, data2, equal_var=False):
     "Calculates t-statistic and p-value based on 2 sample distributions"
-    t_stat, p_value = scipy.stats.ttest_ind(data1, data2, equal_var=equal_var)
+    t_stat, p_value = ttest_ind(data1, data2, equal_var=equal_var)
     return t_stat, np.sign(t_stat) * p_value
 
 def kstest(data1, data2, alternative='two-sided', mode='auto', by_axis=None):
@@ -409,7 +444,7 @@ def kstest(data1, data2, alternative='two-sided', mode='auto', by_axis=None):
     by_axis (optional, int): for arrays with more than 1 dimension, the test will be run for each variable in that axis if by_axis is not None.
     """
     if by_axis is None:
-        stat, p_value = scipy.stats.ks_2samp(data1.flatten(), data2.flatten(), alternative=alternative, mode=mode)
+        stat, p_value = ks_2samp(data1.flatten(), data2.flatten(), alternative=alternative, mode=mode)
         return stat, np.sign(stat) * p_value
     else:
         assert data1.shape[by_axis] == data2.shape[by_axis], f"both arrays must have the same size along axis {by_axis}"
@@ -417,7 +452,7 @@ def kstest(data1, data2, alternative='two-sided', mode='auto', by_axis=None):
         for i in range(data1.shape[by_axis]):
             d1 = np.take(data1, indices=i, axis=by_axis)
             d2 = np.take(data2, indices=i, axis=by_axis)
-            stat, p_value = scipy.stats.ks_2samp(d1.flatten(), d2.flatten(), alternative=alternative, mode=mode)
+            stat, p_value = ks_2samp(d1.flatten(), d2.flatten(), alternative=alternative, mode=mode)
             stats.append(stat)
             p_values.append(np.sign(stat) * p_value)
         return stats, p_values
@@ -439,8 +474,6 @@ def ttest_tensor(a, b):
     return t_stat
 
 # Cell
-from scipy.stats import pearsonr, spearmanr
-
 def pcc(a, b):
     return pearsonr(a, b)[0]
 
@@ -528,7 +561,7 @@ def fig2buf(fig):
 
 # Cell
 def plot_scatter(x, y, deg=1):
-    linreg = sp.stats.linregress(x, y)
+    linreg = linregress(x, y)
     plt.scatter(x, y, label=f'R2:{linreg.rvalue:.2f}', color='lime', edgecolor='black', alpha=.5)
     plt.plot(np.unique(x), np.poly1d(np.polyfit(x, y, deg))(np.unique(x)), color='r')
     plt.legend(loc='best')
@@ -576,13 +609,11 @@ def to_tsfresh_df(ts):
     return df
 
 # Cell
-from scipy.stats import skew, kurtosis
-
 def pcorr(a, b):
-    return scipy.stats.pearsonr(a, b)
+    return pearsonr(a, b)
 
 def scorr(a, b):
-    corr = scipy.stats.spearmanr(a, b)
+    corr = spearmanr(a, b)
     return corr[0], corr[1]
 
 # Cell
@@ -759,7 +790,7 @@ def roll3d(o, roll1: Union[None, list, int] = None, roll2: Union[None, list, int
     return o[axis1, axis2, axis3]
 
 
-def random_roll2d(o, axis=()):
+def random_roll2d(o, axis=(), replace=False):
     """Rolls a 2D object on the indicated axis
     This solution is based on https://stackoverflow.com/questions/20360675/roll-rows-of-a-matrix-independently
     """
@@ -1046,6 +1077,7 @@ def create_dir(directory, verbose=True):
 
 
 def remove_dir(directory, verbose=True):
+    import shutil
     if not is_listy(directory): directory = [directory]
     for d in directory:
         d = Path(d)
@@ -1071,6 +1103,7 @@ class named_partial(object):
 
 # Cell
 def yaml2dict(fname):
+    import yaml
     with maybe_open(fname, 'r') as f:
         dictionary = yaml.safe_load(f)
     return AttrDict(dictionary)
@@ -1195,3 +1228,80 @@ def fbfill_sequence(o):
     o = ffill_sequence(o)
     o = bfill_sequence(o)
     return o
+
+# Cell
+def dummify(o:Union[np.ndarray, torch.Tensor], by_var:bool=True, inplace:bool=False, skip:Optional[list]=None, random_state=None):
+    """Shuffles an array-like object along all dimensions or dimension 1 (variables) if by_var is True."""
+    if not inplace:
+        if isinstance(o, np.ndarray): o_dummy = o.copy()
+        elif isinstance(o, torch.Tensor): o_dummy = o.clone()
+    else: o_dummy = o
+    if by_var:
+        for k in progress_bar(range(o.shape[1]), leave=False):
+            if skip is not None and k in listify(skip): continue
+            o_dummy[:, k] = random_shuffle(o[:, k].flatten(), random_state=random_state).reshape(o[:, k].shape)
+    else:
+        o_dummy[:] = random_shuffle(o.flatten(), random_state=random_state).reshape(o.shape)
+    if not inplace:
+        return o_dummy
+
+# Cell
+def shuffle_along_axis(o, axis=-1, random_state=None):
+    if isinstance(o, torch.Tensor): size = o.numel()
+    else: size = np.size(o)
+    for ax in listify(axis):
+        idx = random_shuffle(np.arange(size), random_state=random_state).reshape(*o.shape).argsort(axis=ax)
+        o = np.take_along_axis(o, idx, axis=ax)
+    return o
+
+# Cell
+def analyze_feature(feature, bins=100, density=False, feature_name=None, clip_outliers_plot=False, quantile_range=(25.0, 75.0),
+           percentiles=[1, 25, 50, 75, 99], text_len=12, figsize=(10,6)):
+    non_nan_feature = feature[~np.isnan(feature)]
+    nan_perc = np.isnan(feature).mean()
+    print(f"{'dtype':>{text_len}}: {feature.dtype}")
+    print(f"{'nan values':>{text_len}}: {nan_perc:.1%}")
+    print(f"{'max':>{text_len}}: {np.nanmax(feature)}")
+    for p in percentiles:
+        print(f"{p:>{text_len}.0f}: {get_percentile(feature, p)}")
+    print(f"{'min':>{text_len}}: {np.nanmin(feature)}")
+    min_outliers, max_outliers = get_outliers_IQR(feature, quantile_range=quantile_range)
+    print(f"{'outlier min':>{text_len}}: {min_outliers}")
+    print(f"{'outlier max':>{text_len}}: {max_outliers}")
+    print(f"{'outliers':>{text_len}}: {((non_nan_feature < min_outliers) | (non_nan_feature > max_outliers)).mean():.1%}")
+    print(f"{'mean':>{text_len}}: {np.nanmean(feature)}")
+    print(f"{'std':>{text_len}}: {np.nanstd(feature)}")
+    print(f"{'normal dist':>{text_len}}: {normaltest(non_nan_feature, axis=0, nan_policy='propagate')[1] > .05}")
+    plt.figure(figsize=figsize)
+    if clip_outliers_plot:
+        plt.hist(np.clip(non_nan_feature, min_outliers, max_outliers), bins, density=density, color='lime', edgecolor='black')
+    else:
+        plt.hist(non_nan_feature, bins, density=density, color='lime', edgecolor='black')
+    plt.axvline(min_outliers, lw=1, ls='--', color='red')
+    plt.axvline(max_outliers, lw=1, ls='--', color='red')
+    plt.title(f"feature: {feature_name}")
+    plt.show()
+
+def analyze_array(o, bins=100, density=False, feature_names=None, clip_outliers_plot=False, quantile_range=(25.0, 75.0),
+           percentiles=[1, 25, 50, 75, 99], text_len=12, figsize=(10,6)):
+    if percentiles:
+        percentiles = np.sort(percentiles)[::-1]
+    print(f"{'array shape':>{text_len}}: {o.shape}")
+    if o.ndim > 1:
+        for f in range(o.shape[1]):
+            feature_name = f"{feature_names[f]}" if feature_names is not None else f
+            print(f"\n{f:3} {'feature':>{text_len - 4}}: {feature_name}\n")
+            analyze_feature(o[:, f].flatten(), feature_name=feature_name)
+    else:
+        analyze_feature(o.flatten(), feature_name=feature_names)
+
+# Cell
+def get_relpath(path):
+    current_path = os.getcwd()
+    if is_listy(path):
+        relpaths = []
+        for p in path:
+            relpaths.append(os.path.relpath(p, current_path))
+        return relpaths
+    else:
+        return os.path.relpath(path, current_path)

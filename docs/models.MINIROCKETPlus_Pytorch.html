@@ -43,6 +43,13 @@ nb_path: "nbs/111d_models.MINIROCKETPlus_Pytorch.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
 <div class="output_wrapper">
 <div class="output">
 
@@ -105,7 +112,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Flatten" class="doc_header"><code>class</code> <code>Flatten</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/MINIROCKETPlus_Pytorch.py#L190" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Flatten</code>() :: <code>Module</code></p>
+<h2 id="Flatten" class="doc_header"><code>class</code> <code>Flatten</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/MINIROCKETPlus_Pytorch.py#L188" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Flatten</code>() :: <code>Module</code></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -153,7 +160,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MiniRocketPlus" class="doc_header"><code>class</code> <code>MiniRocketPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/MINIROCKETPlus_Pytorch.py#L194" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocketPlus</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>num_features</code></strong>=<em><code>10000</code></em>, <strong><code>max_dilations_per_kernel</code></strong>=<em><code>32</code></em>, <strong><code>kernel_size</code></strong>=<em><code>9</code></em>, <strong><code>max_num_channels</code></strong>=<em><code>None</code></em>, <strong><code>max_num_kernels</code></strong>=<em><code>84</code></em>, <strong><code>bn</code></strong>=<em><code>True</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0</code></em>, <strong><code>add_lsaz</code></strong>=<em><code>False</code></em>) :: <a href="/models.TabFusionTransformer.html#Sequential"><code>Sequential</code></a></p>
+<h2 id="MiniRocketPlus" class="doc_header"><code>class</code> <code>MiniRocketPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/MINIROCKETPlus_Pytorch.py#L192" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocketPlus</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>num_features</code></strong>=<em><code>10000</code></em>, <strong><code>max_dilations_per_kernel</code></strong>=<em><code>32</code></em>, <strong><code>kernel_size</code></strong>=<em><code>9</code></em>, <strong><code>max_num_channels</code></strong>=<em><code>None</code></em>, <strong><code>max_num_kernels</code></strong>=<em><code>84</code></em>, <strong><code>bn</code></strong>=<em><code>True</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0</code></em>, <strong><code>add_lsaz</code></strong>=<em><code>False</code></em>) :: <a href="/models.TabFusionTransformer.html#Sequential"><code>Sequential</code></a></p>
 </blockquote>
 <p>A sequential container.
 Modules will be added to it in the order they are passed in the
@@ -223,7 +230,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_minirocket_features" class="doc_header"><code>get_minirocket_features</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/MINIROCKETPlus_Pytorch.py#L222" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_minirocket_features</code>(<strong><code>o</code></strong>, <strong><code>model</code></strong>, <strong><code>chunksize</code></strong>=<em><code>1024</code></em>, <strong><code>use_cuda</code></strong>=<em><code>None</code></em>, <strong><code>to_np</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="get_minirocket_features" class="doc_header"><code>get_minirocket_features</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/MINIROCKETPlus_Pytorch.py#L219" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_minirocket_features</code>(<strong><code>o</code></strong>, <strong><code>model</code></strong>, <strong><code>chunksize</code></strong>=<em><code>1024</code></em>, <strong><code>use_cuda</code></strong>=<em><code>None</code></em>, <strong><code>to_np</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Function used to split a large dataset into chunks, avoiding OOM error.</p>
 
@@ -255,7 +262,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MiniRocketHead" class="doc_header"><code>class</code> <code>MiniRocketHead</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/MINIROCKETPlus_Pytorch.py#L241" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocketHead</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>1</code></em>, <strong><code>bn</code></strong>=<em><code>True</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>) :: <a href="/models.TabFusionTransformer.html#Sequential"><code>Sequential</code></a></p>
+<h2 id="MiniRocketHead" class="doc_header"><code>class</code> <code>MiniRocketHead</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/MINIROCKETPlus_Pytorch.py#L237" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MiniRocketHead</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>1</code></em>, <strong><code>bn</code></strong>=<em><code>True</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>) :: <a href="/models.TabFusionTransformer.html#Sequential"><code>Sequential</code></a></p>
 </blockquote>
 <p>A sequential container.
 Modules will be added to it in the order they are passed in the
@@ -365,8 +372,8 @@ model = nn.Sequential(OrderedDict([
     <tr>
       <td>0</td>
       <td>0.693147</td>
-      <td>0.531260</td>
-      <td>0.751452</td>
+      <td>0.530745</td>
+      <td>0.752613</td>
       <td>00:00</td>
     </tr>
   </tbody>
@@ -425,9 +432,9 @@ model = nn.Sequential(OrderedDict([
     <tr>
       <td>0</td>
       <td>0.693147</td>
-      <td>0.664867</td>
+      <td>0.663585</td>
       <td>0.502904</td>
-      <td>00:05</td>
+      <td>00:07</td>
     </tr>
   </tbody>
 </table>
@@ -477,7 +484,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="InceptionRocketFeaturesPlus" class="doc_header"><code>class</code> <code>InceptionRocketFeaturesPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/MINIROCKETPlus_Pytorch.py#L258" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>InceptionRocketFeaturesPlus</code>() :: <code>Module</code></p>
+<h2 id="InceptionRocketFeaturesPlus" class="doc_header"><code>class</code> <code>InceptionRocketFeaturesPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/MINIROCKETPlus_Pytorch.py#L253" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>InceptionRocketFeaturesPlus</code>() :: <code>Module</code></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -532,7 +539,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="InceptionRocketPlus" class="doc_header"><code>class</code> <code>InceptionRocketPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/MINIROCKETPlus_Pytorch.py#L307" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>InceptionRocketPlus</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>num_features</code></strong>=<em><code>10000</code></em>, <strong><code>max_dilations_per_kernel</code></strong>=<em><code>32</code></em>, <strong><code>kernel_sizes</code></strong>=<em><code>[3, 5, 7, 9]</code></em>, <strong><code>max_num_channels</code></strong>=<em><code>None</code></em>, <strong><code>max_num_kernels</code></strong>=<em><code>84</code></em>, <strong><code>same_n_feats_per_ks</code></strong>=<em><code>False</code></em>, <strong><code>add_lsaz</code></strong>=<em><code>False</code></em>, <strong><code>bn</code></strong>=<em><code>True</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0</code></em>) :: <a href="/models.TabFusionTransformer.html#Sequential"><code>Sequential</code></a></p>
+<h2 id="InceptionRocketPlus" class="doc_header"><code>class</code> <code>InceptionRocketPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/MINIROCKETPlus_Pytorch.py#L301" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>InceptionRocketPlus</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>num_features</code></strong>=<em><code>10000</code></em>, <strong><code>max_dilations_per_kernel</code></strong>=<em><code>32</code></em>, <strong><code>kernel_sizes</code></strong>=<em><code>[3, 5, 7, 9]</code></em>, <strong><code>max_num_channels</code></strong>=<em><code>None</code></em>, <strong><code>max_num_kernels</code></strong>=<em><code>84</code></em>, <strong><code>same_n_feats_per_ks</code></strong>=<em><code>False</code></em>, <strong><code>add_lsaz</code></strong>=<em><code>False</code></em>, <strong><code>bn</code></strong>=<em><code>True</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0</code></em>) :: <a href="/models.TabFusionTransformer.html#Sequential"><code>Sequential</code></a></p>
 </blockquote>
 <p>A sequential container.
 Modules will be added to it in the order they are passed in the

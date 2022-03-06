@@ -4,16 +4,14 @@ __all__ = ['MiniRocketClassifier', 'load_minirocket', 'MiniRocketRegressor', 'lo
            'MiniRocketVotingClassifier', 'get_minirocket_preds', 'MiniRocketVotingRegressor']
 
 # Cell
+import sklearn
+from sklearn.metrics import make_scorer
+from sklearn.linear_model import RidgeCV, RidgeClassifierCV
+from sklearn.ensemble import VotingClassifier, VotingRegressor
 from ..imports import *
 from ..utils import *
 from ..data.external import *
 from .layers import *
-
-# Cell
-from sktime.transformations.panel.rocket import MiniRocketMultivariate
-from sklearn.linear_model import RidgeCV, RidgeClassifierCV
-from sklearn.ensemble import VotingClassifier, VotingRegressor
-import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # Cell
@@ -27,8 +25,12 @@ class MiniRocketClassifier(sklearn.pipeline.Pipeline):
         scoring = None --> defaults to accuracy.
         """
 
-        # Issue caused by sktime when upgraded 0.9.0 (changed num_features to num_kernels was resolved by
-        # Siva Sai (SivaAndMe in GiHub)https://github.com/timeseriesAI/tsai/pull/306)
+        try:
+            import sktime
+            from sktime.transformations.panel.rocket import MiniRocketMultivariate
+        except ImportError:
+            print("You need to install sktime to be able to use MiniRocketClassifier")
+
         self.steps = [('minirocketmultivariate', MiniRocketMultivariate(num_kernels=num_features,
                                                                         max_dilations_per_kernel=max_dilations_per_kernel,
                                                                         random_state=random_state)),
@@ -70,8 +72,12 @@ class MiniRocketRegressor(sklearn.pipeline.Pipeline):
         scoring = None --> defaults to r2.
         """
 
-        # Issue caused by sktime when upgraded 0.9.0 (changed num_features to num_kernels was resolved by
-        # Siva Sai (SivaAndMe in GiHub)https://github.com/timeseriesAI/tsai/pull/306)
+        try:
+            import sktime
+            from sktime.transformations.panel.rocket import MiniRocketMultivariate
+        except ImportError:
+            print("You need to install sktime to be able to use MiniRocketRegressor")
+
         self.steps = [('minirocketmultivariate', MiniRocketMultivariate(num_kernels=num_features,
                                                                         max_dilations_per_kernel=max_dilations_per_kernel,
                                                                         random_state=random_state)),
@@ -104,6 +110,13 @@ class MiniRocketVotingClassifier(VotingClassifier):
     def __init__(self, n_estimators=5, weights=None, n_jobs=-1, num_features=10_000, max_dilations_per_kernel=32, random_state=None,
                  alphas=np.logspace(-3, 3, 7), normalize_features=True, memory=None, verbose=False, scoring=None, class_weight=None, **kwargs):
         store_attr()
+        warnings.filterwarnings("ignore", category=FutureWarning)
+
+        try:
+            import sktime
+        except ImportError:
+            print("You need to install sktime to be able to use MiniRocketVotingClassifier")
+
         estimators = [(f'est_{i}', MiniRocketClassifier(num_features=num_features, max_dilations_per_kernel=max_dilations_per_kernel,
                                                        random_state=random_state, alphas=alphas, normalize_features=normalize_features, memory=memory,
                                                        verbose=verbose, scoring=scoring, class_weight=class_weight, **kwargs))
@@ -135,6 +148,13 @@ class MiniRocketVotingRegressor(VotingRegressor):
     def __init__(self, n_estimators=5, weights=None, n_jobs=-1, num_features=10_000, max_dilations_per_kernel=32, random_state=None,
                  alphas=np.logspace(-3, 3, 7), normalize_features=True, memory=None, verbose=False, scoring=None, **kwargs):
         store_attr()
+        warnings.filterwarnings("ignore", category=FutureWarning)
+
+        try:
+            import sktime
+        except ImportError:
+            print("You need to install sktime to be able to use MiniRocketVotingRegressor")
+
         estimators = [(f'est_{i}', MiniRocketRegressor(num_features=num_features, max_dilations_per_kernel=max_dilations_per_kernel,
                                                       random_state=random_state, alphas=alphas, normalize_features=normalize_features, memory=memory,
                                                       verbose=verbose, scoring=scoring, **kwargs))

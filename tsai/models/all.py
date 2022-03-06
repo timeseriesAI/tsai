@@ -1,7 +1,6 @@
 from .layers import *
 from .utils import *
 from .explainability import *
-
 from .FCN import *
 from .FCNPlus import *
 from .TCN import *
@@ -20,6 +19,7 @@ from .RNN_FCN import *
 from .RNN_FCNPlus import *
 from .ROCKET import *
 from .MINIROCKET import *
+from .ROCKET_Pytorch import *
 from .MINIROCKET_Pytorch import *
 from .MINIROCKETPlus_Pytorch import *
 from .TransformerModel import *
@@ -39,5 +39,4 @@ from .TabFusionTransformer import *
 from .TSPerceiver import *
 from .TSiTPlus import *
 from .MultiInputNet import *
-
 from .misc import *

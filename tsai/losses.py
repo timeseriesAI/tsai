@@ -3,10 +3,10 @@
 __all__ = ['HuberLoss', 'LogCoshLoss', 'MaskedLossWrapper', 'CenterLoss', 'CenterPlusLoss', 'FocalLoss', 'TweedieLoss']
 
 # Cell
+from fastai.losses import *
 from .imports import *
 
 # Cell
-
 ## Available in Pytorch 1.9
 class HuberLoss(nn.Module):
     """Huber loss
@@ -37,7 +37,6 @@ class HuberLoss(nn.Module):
             return loss
 
 # Cell
-
 class LogCoshLoss(nn.Module):
     def __init__(self, reduction='mean', delta=1.0):
         assert reduction in ['mean', 'sum', 'none'], "You must set reduction to 'mean', 'sum' or 'none'"

@@ -5,11 +5,12 @@ __all__ = ['InceptionModulePlus', 'InceptionBlockPlus', 'InceptionTimePlus', 'In
            'InceptionTimeXLPlus', 'MultiInceptionTimePlus']
 
 # Cell
+from collections import OrderedDict
+from fastai.layers import *
 from ..imports import *
 from ..utils import *
 from .layers import *
 from .utils import *
-torch.set_num_threads(cpus)
 
 # Cell
 # This is an unofficial PyTorch implementation by Ignacio Oguiza - oguiza@gmail.com modified from:

@@ -40,13 +40,6 @@ nb_path: "nbs/111_models.ROCKET.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
 <div class="output_wrapper">
 <div class="output">
 
@@ -54,220 +47,7 @@ nb_path: "nbs/111_models.ROCKET.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="generate_kernels" class="doc_header"><code>generate_kernels</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/ROCKET.py#L28" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>generate_kernels</code>(<strong><code>input_length</code></strong>, <strong><code>num_kernels</code></strong>, <strong><code>kss</code></strong>=<em><code>[7, 9, 11]</code></em>, <strong><code>pad</code></strong>=<em><code>True</code></em>, <strong><code>dilate</code></strong>=<em><code>True</code></em>)</p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="apply_kernel" class="doc_header"><code>apply_kernel</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/ROCKET.py#L49" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>apply_kernel</code>(<strong><code>X</code></strong>, <strong><code>weights</code></strong>, <strong><code>length</code></strong>, <strong><code>bias</code></strong>, <strong><code>dilation</code></strong>, <strong><code>padding</code></strong>)</p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="apply_kernels" class="doc_header"><code>apply_kernels</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/ROCKET.py#L71" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>apply_kernels</code>(<strong><code>X</code></strong>, <strong><code>kernels</code></strong>)</p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="ROCKET" class="doc_header"><code>class</code> <code>ROCKET</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/ROCKET.py#L86" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ROCKET</code>(<strong><code>c_in</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>n_kernels</code></strong>=<em><code>10000</code></em>, <strong><code>kss</code></strong>=<em><code>[7, 9, 11]</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
-</blockquote>
-<p>RandOm Convolutional KErnel Transform</p>
-<p>ROCKET is a GPU Pytorch implementation of the ROCKET functions generate_kernels
-and apply_kernels that can be used  with univariate and multivariate time series.</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="create_rocket_features" class="doc_header"><code>create_rocket_features</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/ROCKET.py#L133" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_rocket_features</code>(<strong><code>dl</code></strong>, <strong><code>model</code></strong>, <strong><code>verbose</code></strong>=<em><code>False</code></em>)</p>
-</blockquote>
-<p>Args:
-model     : ROCKET model instance
-dl        : single TSDataLoader (for example dls.train or dls.valid)</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">bs</span> <span class="o">=</span> <span class="mi">16</span>
-<span class="n">c_in</span> <span class="o">=</span> <span class="mi">7</span>  <span class="c1"># aka channels, features, variables, dimensions</span>
-<span class="n">c_out</span> <span class="o">=</span> <span class="mi">2</span>
-<span class="n">seq_len</span> <span class="o">=</span> <span class="mi">15</span>
-<span class="n">xb</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_in</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">default_device</span><span class="p">())</span>
-
-<span class="n">m</span> <span class="o">=</span> <span class="n">ROCKET</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">n_kernels</span><span class="o">=</span><span class="mi">1_000</span><span class="p">,</span> <span class="n">kss</span><span class="o">=</span><span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">11</span><span class="p">])</span> <span class="c1"># 1_000 for testing with a cpu. Default is 10k with a gpu!</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">m</span><span class="p">(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="mi">2_000</span><span class="p">])</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">tsai.data.all</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">tsai.models.utils</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">&#39;OliveOil&#39;</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">tfms</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">TSRegression</span><span class="p">()]</span>
-<span class="n">batch_tfms</span> <span class="o">=</span> <span class="n">TSStandardize</span><span class="p">(</span><span class="n">by_var</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="n">batch_tfms</span><span class="p">,</span> <span class="n">shuffle_train</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">drop_last</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">build_ts_model</span><span class="p">(</span><span class="n">ROCKET</span><span class="p">,</span> <span class="n">dls</span><span class="o">=</span><span class="n">dls</span><span class="p">,</span> <span class="n">n_kernels</span><span class="o">=</span><span class="mi">1_000</span><span class="p">)</span> <span class="c1"># 1_000 for testing with a cpu. Default is 10k with a gpu!</span>
-<span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span> <span class="o">=</span> <span class="n">create_rocket_features</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">train</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span> 
-<span class="n">X_valid</span><span class="p">,</span> <span class="n">y_valid</span> <span class="o">=</span> <span class="n">create_rocket_features</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">valid</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
-<span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">X_valid</span><span class="o">.</span><span class="n">shape</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>((30, 2000), (30, 2000))</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="RocketClassifier" class="doc_header"><code>class</code> <code>RocketClassifier</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/ROCKET.py#L148" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RocketClassifier</code>() :: <code>Pipeline</code></p>
+<h2 id="RocketClassifier" class="doc_header"><code>class</code> <code>RocketClassifier</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/ROCKET.py#L15" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RocketClassifier</code>() :: <code>Pipeline</code></p>
 </blockquote>
 <p>Time series classification using ROCKET features and a linear classifier</p>
 
@@ -299,7 +79,7 @@ dl        : single TSDataLoader (for example dls.train or dls.valid)</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="load_rocket" class="doc_header"><code>load_rocket</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/ROCKET.py#L180" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_rocket</code>(<strong><code>fname</code></strong>=<em><code>'Rocket'</code></em>, <strong><code>path</code></strong>=<em><code>'./models'</code></em>)</p>
+<h4 id="load_rocket" class="doc_header"><code>load_rocket</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/ROCKET.py#L53" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_rocket</code>(<strong><code>fname</code></strong>=<em><code>'Rocket'</code></em>, <strong><code>path</code></strong>=<em><code>'./models'</code></em>)</p>
 </blockquote>
 
 </div>
@@ -330,7 +110,7 @@ dl        : single TSDataLoader (for example dls.train or dls.valid)</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RocketRegressor" class="doc_header"><code>class</code> <code>RocketRegressor</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/ROCKET.py#L188" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RocketRegressor</code>() :: <code>Pipeline</code></p>
+<h2 id="RocketRegressor" class="doc_header"><code>class</code> <code>RocketRegressor</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/ROCKET.py#L61" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RocketRegressor</code>() :: <code>Pipeline</code></p>
 </blockquote>
 <p>Time series regression using ROCKET features and a linear regressor</p>
 
@@ -358,7 +138,8 @@ dl        : single TSDataLoader (for example dls.train or dls.valid)</p>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;OliveOil&#39;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Univariate classification with sklearn-type API</span>
+<span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;OliveOil&#39;</span>
 <span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;RocketClassifier&#39;</span>
 <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">Xdtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
 <span class="bp">cls</span> <span class="o">=</span> <span class="n">RocketClassifier</span><span class="p">()</span>
@@ -379,7 +160,7 @@ dl        : single TSDataLoader (for example dls.train or dls.valid)</p>
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>0.9
+<pre>0.9333333333333333
 </pre>
 </div>
 </div>
@@ -397,7 +178,8 @@ dl        : single TSDataLoader (for example dls.train or dls.valid)</p>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;NATOPS&#39;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Multivariate classification with sklearn-type API</span>
+<span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;NATOPS&#39;</span>
 <span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;RocketClassifier&#39;</span>
 <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">Xdtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
 <span class="bp">cls</span> <span class="o">=</span> <span class="n">RocketClassifier</span><span class="p">()</span>
@@ -418,7 +200,7 @@ dl        : single TSDataLoader (for example dls.train or dls.valid)</p>
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>0.8888888888888888
+<pre>0.8833333333333333
 </pre>
 </div>
 </div>
@@ -436,7 +218,8 @@ dl        : single TSDataLoader (for example dls.train or dls.valid)</p>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">mean_squared_error</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Univariate regression with sklearn-type API</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">mean_squared_error</span>
 <span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;Covid3Month&#39;</span>
 <span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;RocketRegressor&#39;</span>
 <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">get_Monash_regression_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">Xdtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
@@ -461,7 +244,7 @@ dl        : single TSDataLoader (for example dls.train or dls.valid)</p>
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>0.042516063160167095
+<pre>0.04256122787164726
 </pre>
 </div>
 </div>
@@ -479,7 +262,8 @@ dl        : single TSDataLoader (for example dls.train or dls.valid)</p>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">mean_squared_error</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Multivariate regression with sklearn-type API</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">mean_squared_error</span>
 <span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;AppliancesEnergy&#39;</span>
 <span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;RocketRegressor&#39;</span>
 <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">get_Monash_regression_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">Xdtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
@@ -504,7 +288,7 @@ dl        : single TSDataLoader (for example dls.train or dls.valid)</p>
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>2.361209794063753
+<pre>2.302914529495251
 </pre>
 </div>
 </div>

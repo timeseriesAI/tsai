@@ -5,12 +5,9 @@ channels:
 - pytorch
 - defaults
 dependencies:
-- fastai>=2.5.2
-- conda-forge::pywavelets>=1.1.1
-- conda-forge::numba>=0.53
-- conda-forge::sktime>=0.7.0
-- conda-forge::pyts>=0.11.0
+- fastai>=2.5.3
+- conda-forge::pyts>=0.12.0
 - conda-forge::imbalanced-learn>=0.8.0
-- conda-forge::tsfresh>=0.18.0
-- conda-forge::torch-optimizer>=0.1.0
+- conda-forge::nbformat>=5.1.3
+- conda-forge::psutil>=5.9.0
 - pytorch>=1.7.0

@@ -6,8 +6,8 @@ title: gMLP
 keywords: fastai
 sidebar: home_sidebar
 
-summary: "This is an unofficial PyTorch implementation based on **Liu, H., Dai, Z., So, D. R., & Le, Q. V. (2021). Pay Attention to MLPs. arXiv preprint arXiv:2105.08050.** and **Cholakov, R., & Kolev, T. (2022). The GatedTabTransformer. An enhanced deep learning architecture for tabular modeling. arXiv preprint arXiv:2201.00199.** Official gMLP implementation in https://github.com/lucidrains/g-mlp-pytorch"
-description: "This is an unofficial PyTorch implementation based on **Liu, H., Dai, Z., So, D. R., & Le, Q. V. (2021). Pay Attention to MLPs. arXiv preprint arXiv:2105.08050.** and **Cholakov, R., & Kolev, T. (2022). The GatedTabTransformer. An enhanced deep learning architecture for tabular modeling. arXiv preprint arXiv:2201.00199.** Official gMLP implementation in https://github.com/lucidrains/g-mlp-pytorch"
+summary: "This is an unofficial PyTorch implementation based on **Liu, H., Dai, Z., So, D. R., & Le, Q. V. (2021). Pay Attention to MLPs. arXiv preprint arXiv:2105.08050.** and **Cholakov, R., & Kolev, T. (2022). The GatedTabTransformer. An enhanced deep learning architecture for tabular modeling. arXiv preprint arXiv:2201.00199.**"
+description: "This is an unofficial PyTorch implementation based on **Liu, H., Dai, Z., So, D. R., & Le, Q. V. (2021). Pay Attention to MLPs. arXiv preprint arXiv:2105.08050.** and **Cholakov, R., & Kolev, T. (2022). The GatedTabTransformer. An enhanced deep learning architecture for tabular modeling. arXiv preprint arXiv:2201.00199.**"
 nb_path: "nbs/103d_models.gMLP.ipynb"
 ---
 <!--
@@ -47,55 +47,7 @@ nb_path: "nbs/103d_models.gMLP.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="gMLP" class="doc_header"><code>class</code> <code>gMLP</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/gMLP.py#L43" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>gMLP</code>(<strong><code>d_model</code></strong>=<em><code>256</code></em>, <strong><code>d_ffn</code></strong>=<em><code>512</code></em>, <strong><code>seq_len</code></strong>=<em><code>256</code></em>, <strong><code>depth</code></strong>=<em><code>6</code></em>) :: <code>Module</code></p>
-</blockquote>
-<p>Base class for all neural network modules.</p>
-<p>Your models should also subclass this class.</p>
-<p>Modules can also contain other Modules, allowing to nest them in
-a tree structure. You can assign the submodules as regular attributes::</p>
-
-<pre><code>import torch.nn as nn
-import torch.nn.functional as F
-
-class Model(nn.Module):
-    def __init__(self):
-        super(Model, self).__init__()
-        self.conv1 = nn.Conv2d(1, 20, 5)
-        self.conv2 = nn.Conv2d(20, 20, 5)
-
-    def forward(self, x):
-        x = F.relu(self.conv1(x))
-        return F.relu(self.conv2(x))
-
-</code></pre>
-<p>Submodules assigned in this way will be registered, and will have their
-parameters converted too when you call :meth:<code>to</code>, etc.</p>
-<p>:ivar training: Boolean represents whether this module is in training or
-                evaluation mode.
-:vartype training: bool</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="gMLPClassification" class="doc_header"><code>class</code> <code>gMLPClassification</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/gMLP.py#L54" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>gMLPClassification</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>patch_size</code></strong>=<em><code>1</code></em>, <strong><code>d_model</code></strong>=<em><code>256</code></em>, <strong><code>d_ffn</code></strong>=<em><code>512</code></em>, <strong><code>depth</code></strong>=<em><code>6</code></em>) :: <a href="/models.gMLP.html#gMLP"><code>gMLP</code></a></p>
+<h2 id="gMLP" class="doc_header"><code>class</code> <code>gMLP</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/gMLP.py#L55" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>gMLP</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>patch_size</code></strong>=<em><code>1</code></em>, <strong><code>d_model</code></strong>=<em><code>256</code></em>, <strong><code>d_ffn</code></strong>=<em><code>512</code></em>, <strong><code>depth</code></strong>=<em><code>6</code></em>) :: <code>_gMLPBackbone</code></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -152,7 +104,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 <span class="n">seq_len</span> <span class="o">=</span> <span class="mi">64</span>
 <span class="n">patch_size</span> <span class="o">=</span> <span class="mi">4</span>
 <span class="n">xb</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_in</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">)</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">gMLPClassification</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">patch_size</span><span class="o">=</span><span class="n">patch_size</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">gMLP</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">patch_size</span><span class="o">=</span><span class="n">patch_size</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">model</span><span class="p">(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">))</span>
 </pre></div>
 

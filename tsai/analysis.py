@@ -3,19 +3,24 @@
 __all__ = []
 
 # Cell
-from .imports import *
-from .utils import random_shuffle
-from .data.core import *
-from .inference import get_X_preds
+import sklearn.metrics as skm
+from sklearn.model_selection import train_test_split
 from fastai.learner import *
+from fastai.interpret import *
+from .imports import *
+from .utils import *
+from .data.preprocessing import *
+from .data.core import *
+from .inference import *
 
 # Cell
 @patch
 @delegates(subplots)
 def show_probas(self:Learner, figsize=(6,6), ds_idx=1, dl=None, one_batch=False, max_n=None, **kwargs):
     recorder = copy(self.recorder) # This is to avoid loss of recorded values while generating preds
-    if one_batch: dl = self.dls.one_batch()
-    probas, targets = self.get_preds(ds_idx=ds_idx, dl=[dl] if dl is not None else None)
+    if dl is None: dl = self.dls[ds_idx]
+    if one_batch: dl = [dl.one_batch()]
+    probas, targets = self.get_preds(dl=dl)
     if probas.ndim == 2 and probas.min() < 0 or probas.max() > 1: probas = nn.Softmax(-1)(probas)
     if not isinstance(targets[0].item(), Integral): return
     targets = targets.flatten()
@@ -55,9 +60,10 @@ def plot_confusion_matrix(self:Learner, ds_idx=1, dl=None, thr=.5, normalize=Fal
                           title_fontsize=16, fontsize=12, plot_txt=True, **kwargs):
         "Plot the confusion matrix, with `title` and using `cmap`."
         # This function is mainly copied from the sklearn docs
-        assert self.dls.cat
-        if self.dls.c == 2: # binary classification
-            probas, preds = self.get_preds(ds_idx=ds_idx, dl=dl)
+        if dl is None: dl = self.dls[ds_idx]
+        assert dl.cat
+        if dl.c == 2: # binary classification
+            probas, preds = self.get_preds(dl=dl)
             y_pred = (probas[:, 1] > thr).numpy().astype(int)
             y_test = preds.numpy()
             if normalize: skm_normalize = 'true'
@@ -93,37 +99,45 @@ def plot_confusion_matrix(self:Learner, ds_idx=1, dl=None, thr=.5, normalize=Fal
 
 # Cell
 @patch
-def feature_importance(self:Learner, X=None, y=None, partial_n=None, feature_names=None, key_metric_idx=0, show_chart=True, save_df_path=False,
-                       random_state=23):
-    r"""Calculates feature importance defined to be the change in a model validation loss or metric when a single feature value is randomly shuffled
+def feature_importance(self:Learner,
+    X=None, # array-like object containing the time series. If None, all data in the validation set will be used.
+    y=None, # array-like object containing the targets. If None, all targets in the validation set will be used.
+    partial_n:(int, float)=None, # # (int) or % (float) of used to measure feature importance. If None, all data will be used.
+    method:str='permutation', # Method used to invalidate feature. Use 'permutation' for shuffling or 'ablation' for setting values to np.nan.
+    feature_names:list=None, # Optional list of feature names that will be displayed if available. Otherwise var_0, var_1, etc.
+    sel_classes:(str, list)=None, # classes for which the analysis will be made
+    key_metric_idx:int=0, # Optional position of the metric used. If None or no metric is available, the loss will be used.
+    show_chart:bool=True, # Flag to indicate if a chart showing permutation feature importance will be plotted.
+    figsize:tuple=(10, 5), # Size of the chart.
+    title:str=None, # Optional string that will be used as the chart title. If None 'Permutation Feature Importance'.
+    return_df:bool=True, # Flag to indicate if the dataframe with feature importance will be returned.
+    save_df_path:Path=None, # Path where dataframe containing the permutation feature importance results will be saved.
+    random_state:int=23, # Optional int that controls the shuffling applied to the data.
+    verbose:bool=True, # Flag that controls verbosity.
+    ):
+    r"""Calculates feature importance as the drop in the model's validation loss or metric when a feature value is randomly shuffled"""
 
-    This procedure breaks the relationship between the feature and the target, thus the change in the model validation loss or metric is indicative of
-    how much the model depends on the feature.
+    assert method in ['permutation', 'ablation']
 
-    Args:
-        X: array-like object  containing the time series data for which importance will be measured. If None, all data in the validation set will be used.
-        y: array-like object containing the targets. If None, all targets in the validation set will be used.
-        partial_n: number of samples (if int) or percent of the validation set (if float) that will be used to measure feature importance. If None,
-                   all data will be used.
-        feature_names (Optional[list(str)]): list of feature names that will be displayed if available. Otherwise they will be var_0, var_1, etc.
-        key_metric_idx (Optional[int]): integer to select the metric used in the calculation. If None or no metric is available,
-                                        the change is calculated using the validation loss.
-        show_chart (bool): flag to indicate if a chart showing permutation feature importance will be plotted.
-        save_df_path (str): path to saved dataframe containing the permutation feature importance results.
-        random_state (int): controls the shuffling applied to the data. Pass an int for reproducible output across multiple function calls.
-    """
-
+    # X, y
     if X is None:
         X = self.dls.valid.dataset.tls[0].items
+        if hasattr(self.dls.valid.dataset.tls[0], '_splits'): X = X[self.dls.valid.dataset.tls[0]._splits]
     if y is None:
         y = self.dls.valid.dataset.tls[1].items
     if partial_n is not None:
-        if isinstance(partial_n, float):
-            partial_n = int(round(partial_n * len(X)))
-        rand_idxs = random_shuffle(np.arange(len(X)), random_state=random_state)[:partial_n]
-        X = X[rand_idxs]
-        y = y[rand_idxs]
+        _, rand_idxs, *_ = train_test_split(np.arange(len(y)), y, test_size=partial_n, random_state=random_state, stratify=y)
+        X = X.oindex[rand_idxs] if hasattr(X, 'oindex') else X[rand_idxs]
+        y = y.oindex[rand_idxs] if hasattr(y, 'oindex') else y[rand_idxs]
+    else:
+        X, y = X[:], y[:]
+    if sel_classes is not None:
+        filt = np.isin(y, listify(sel_classes))
+        X, y = X[filt], y[filt]
+    pv(f'X.shape: {X.shape}', verbose)
+    pv(f'y.shape: {y.shape}', verbose)
 
+    # Metrics
     metrics = [mn for mn in self.recorder.metric_names if mn not in ['epoch', 'train_loss', 'valid_loss', 'time']]
     if len(metrics) == 0 or key_metric_idx is None:
         metric_name = self.loss_func.__class__.__name__
@@ -132,59 +146,257 @@ def feature_importance(self:Learner, X=None, y=None, partial_n=None, feature_nam
         metric_name = metrics[key_metric_idx]
         metric = self.recorder.metrics[key_metric_idx].func
     metric_name = metric_name.replace("train_", "").replace("valid_", "")
-    print(f'Selected metric: {metric_name}')
+    pv(f'Selected metric: {metric_name}', verbose)
 
-    # Adapted from https://www.kaggle.com/cdeotte/lstm-feature-importance by Chris Deotte (Kaggle GrandMaster)
+    # Selected vars & feature names
+    sel_vars = not(isinstance(self.dls.sel_vars, slice) and self.dls.sel_vars == slice(None, None, None))
     if feature_names is None:
-        feature_names = [f"var_{i}" for i in range(X.shape[1])]
+        feature_names = L([f"var_{i}" for i in range(X.shape[1])])
+        if sel_vars:
+            feature_names = feature_names[self.dls.sel_vars]
     else:
         feature_names = listify(feature_names)
-    assert len(feature_names) == X.shape[1]
 
-    results = []
-    print('Computing feature importance...')
+    if sel_vars:
+        assert len(feature_names) == len(self.dls.sel_vars)
+    else:
+        assert len(feature_names) == X.shape[1]
+    sel_var_idxs = L(np.arange(X.shape[1]).tolist())
+    if sel_vars:
+        sel_var_idxs = sel_var_idxs[self.dls.sel_vars]
+    assert len(feature_names) == len(sel_var_idxs)
+    g = list(zip(np.arange(len(sel_var_idxs)+2), [0] + sel_var_idxs))
 
+    # Loop
     COLS = ['BASELINE'] + list(feature_names)
-    sel_var_ids = np.arange(1, X.shape[1] + 1)[self.dls.sel_vars]
-
+    results = []
+    pv(f'Computing feature importance ({method} method)...', verbose)
     try:
-        for k in progress_bar(range(X.shape[1])):
-            if k not in sel_var_ids: continue
-            if k>0:
-                save_feat = X[:, k-1].copy()
-                X[:, k-1] = random_shuffle(X[:, k-1].flatten(), random_state=random_state).reshape(X[:, k-1].shape)
+        if method == 'ablation':
+            fs = self.dls.valid.after_batch.fs
+            self.dls.valid.after_batch.fs = fs + [TSNan2Value()]
+        for i,k in progress_bar(g):
+            if i > 0:
+                if k not in sel_var_idxs: continue
+                save_feat = X[:, k].copy()
+                if method == 'permutation':
+                    # shuffle along samples & steps
+                    X[:, k] = random_shuffle(X[:, k].flatten(), random_state=random_state).reshape(X[:, k].shape)
+                elif method == 'ablation':
+                    X[:, k] = np.nan
             if key_metric_idx is None:
                 value = self.get_X_preds(X, y, with_loss=True)[-1].mean().item()
             else:
                 output = self.get_X_preds(X, y)
-                value = metric(output[0], output[1]).item()
-            print(f"{k:3} feature: {COLS[k]:20} {metric_name}: {value:8.6f}")
-            results.append([COLS[k], value])
-            del output, value;gc.collect()
-            if k>0:
-                X[:, k-1] = save_feat
+                if self.dls.c == 2:
+                    try: value = metric(output[1], output[0][:, 1]).item()
+                    except: value = metric(output[0], output[1]).item()
+                else:
+                    value = metric(output[0], output[1]).item()
+                del output
+            pv(f"{k:3} feature: {COLS[i]:20} {metric_name}: {value:8.6f}", verbose)
+            results.append([COLS[i], value])
+            del value; gc.collect()
+            if i > 0:
+                X[:, k] = save_feat
                 del save_feat; gc.collect()
 
+        if method == 'ablation':
+            self.dls.valid.after_batch.fs = fs
 
     except KeyboardInterrupt:
-        if k>0:
-            X[:, k-1] = save_feat
+        if i > 0:
+            X[:, k] = save_feat
             del save_feat; gc.collect()
+        if method == 'ablation':
+            self.dls.valid.after_batch.fs = fs
+
+    # DataFrame
+    df = pd.DataFrame(results, columns=["Feature", metric_name])
+    df[f'{metric_name}_change'] = df[metric_name] - df.loc[0, metric_name]
+    sign = np.sign(df[f'{metric_name}_change'].mean())
+    if sign == 0: sign = 1
+    df[f'{metric_name}_change'] = df[f'{metric_name}_change'] * sign
 
     # Display feature importance
     if show_chart:
         print()
-        df = pd.DataFrame(results, columns=["Feature", metric_name])
-        df = df.sort_values(metric_name, ascending=key_metric_idx is None)
-        plt.figure(figsize=(10, .5*len(results)))
-        plt.barh(np.arange(len(results)), df[metric_name], color="darkblue")
-        plt.yticks(np.arange(len(results)), df["Feature"].values)
-        plt.title('Permutation Feature Importance', size=16)
-        plt.xlabel(f"{metric_name}")
-        plt.ylim((-1,len(results)))
+        value_change = df.loc[1:, f'{metric_name}_change'].values
+        pos_value_change = value_change.copy()
+        neg_value_change = value_change.copy()
+        pos_value_change[pos_value_change < 0] = 0
+        neg_value_change[neg_value_change > 0] = 0
+        plt.figure(figsize=(10, .5*len(value_change)))
+        plt.barh(np.arange(len(value_change))[::-1], pos_value_change, color='lime', edgecolor='black')
+        plt.barh(np.arange(len(value_change))[::-1], neg_value_change, color='red', edgecolor='black')
+        plt.axvline(0, color='black')
+        plt.yticks(np.arange(len(value_change))[::-1], df.loc[1:, "Feature"].values)
+        if title is None: title = f'Feature Importance ({method} method)'
+        plt.title(title, size=16)
+        text = 'increase' if sign == 1 else 'decrease'
+        plt.xlabel(f"{metric_name} {text} when feature is removed")
+        plt.ylim((-1,len(value_change)))
         plt.show()
 
     # Save feature importance
+    df = df.sort_values(metric_name, ascending=sign < 0).reset_index(drop=True)
     if save_df_path:
-        df = df.sort_values(metric_name,ascending=False)
-        df.to_csv(f'{save_df_path}.csv', index=False)
+        if save_df_path.split('.')[-1] != 'csv': save_df_path = f'{save_df_path}.csv'
+        df.to_csv(f'{save_df_path}', index=False)
+        pv(f'Feature importance df saved to {save_df_path}', verbose)
+    if return_df:
+        return df
+
+# Cell
+@patch
+def step_importance(
+    self:Learner,
+    X=None, # array-like object containing the time series. If None, all data in the validation set will be used.
+    y=None, # array-like object containing the targets. If None, all targets in the validation set will be used.
+    partial_n:(int, float)=None, # # (int) or % (float) of used to measure feature importance. If None, all data will be used.
+    method:str='permutation', # Method used to invalidate feature. Use 'permutation' for shuffling or 'ablation' for setting values to np.nan.
+    step_names:list=None, # Optional list of step names that will be displayed if available. Otherwise 0, 1, 2, etc.
+    sel_classes:(str, list)=None, # classes for which the analysis will be made
+    n_steps:int=1, # # of steps that will be analyzed at a time. Default is 1.
+    key_metric_idx:int=0, # Optional position of the metric used. If None or no metric is available, the loss will be used.
+    show_chart:bool=True, # Flag to indicate if a chart showing permutation feature importance will be plotted.
+    figsize:tuple=(10, 5), # Size of the chart.
+    title:str=None, # Optional string that will be used as the chart title. If None 'Permutation Feature Importance'.
+    xlabel=None, # Optional string that will be used as the chart xlabel. If None 'steps'.
+    return_df:bool=True, # Flag to indicate if the dataframe with feature importance will be returned.
+    save_df_path:Path=None, # Path where dataframe containing the permutation feature importance results will be saved.
+    random_state:int=23, # Optional int that controls the shuffling applied to the data.
+    verbose:bool=True, # Flag that controls verbosity.
+    ):
+    r"""Calculates step importance as the drop in the model's validation loss or metric when a step/s value/s is/are randomly shuffled"""
+
+    assert method in ['permutation', 'ablation']
+
+    # X, y
+    if X is None:
+        X = self.dls.valid.dataset.tls[0].items
+        if hasattr(self.dls.valid.dataset.tls[0], '_splits'): X = X[self.dls.valid.dataset.tls[0]._splits]
+    if y is None:
+        y = self.dls.valid.dataset.tls[1].items
+    if partial_n is not None:
+        _, rand_idxs, *_ = train_test_split(np.arange(len(y)), y, test_size=partial_n, random_state=random_state, stratify=y)
+        X = X.oindex[rand_idxs] if hasattr(X, 'oindex') else X[rand_idxs]
+        y = y.oindex[rand_idxs] if hasattr(y, 'oindex') else y[rand_idxs]
+    else:
+        X, y = X[:], y[:]
+    if sel_classes is not None:
+        filt = np.isin(y, listify(sel_classes))
+        X, y = X[filt], y[filt]
+    pv(f'X.shape: {X.shape}', verbose)
+    pv(f'y.shape: {y.shape}', verbose)
+
+
+    # Metrics
+    metrics = [mn for mn in self.recorder.metric_names if mn not in ['epoch', 'train_loss', 'valid_loss', 'time']]
+    if len(metrics) == 0 or key_metric_idx is None:
+        metric_name = self.loss_func.__class__.__name__
+        key_metric_idx = None
+    else:
+        metric_name = metrics[key_metric_idx]
+        metric = self.recorder.metrics[key_metric_idx].func
+    metric_name = metric_name.replace("train_", "").replace("valid_", "")
+    pv(f'Selected metric: {metric_name}', verbose)
+
+    # Selected steps
+    sel_step_idxs = L(np.arange(X.shape[-1]).tolist())[self.dls.sel_steps]
+    if n_steps != 1:
+        sel_step_idxs = [listify(sel_step_idxs[::-1][n:n+n_steps][::-1]) for n in range(0, len(sel_step_idxs), n_steps)][::-1]
+    g = list(zip(np.arange(len(sel_step_idxs)+2), [0] + sel_step_idxs))
+
+    # Loop
+    COLS = ['BASELINE'] + sel_step_idxs
+    results = []
+    _step_names = []
+    pv('Computing step importance...', verbose)
+    try:
+        if method == 'ablation':
+            fs = self.dls.valid.after_batch.fs
+            self.dls.valid.after_batch.fs = fs + [TSNan2Value()]
+        for i,k in progress_bar(g):
+            if i > 0:
+                if k not in sel_step_idxs: continue
+                save_feat = X[..., k].copy()
+                if method == 'permutation':
+                    # shuffle along samples
+                    X[..., k] = shuffle_along_axis(X[..., k], axis=0, random_state=random_state)
+                elif method == 'ablation':
+                    X[..., k] = np.nan
+            if key_metric_idx is None:
+                value = self.get_X_preds(X, y, with_loss=True)[-1].mean().item()
+            else:
+                output = self.get_X_preds(X, y)
+                if self.dls.c == 2:
+                    try: value = metric(output[1], output[0][:, 1]).item()
+                    except: value = metric(output[0], output[1]).item()
+                else:
+                    value = metric(output[0], output[1]).item()
+                del output
+
+            # Step names
+            if i == 0 or step_names is None:
+                if i > 0 and n_steps != 1:
+                    step_name = f"{str(COLS[i][0])} to {str(COLS[i][-1])}"
+                else: step_name = str(COLS[i])
+            else:
+                step_name = step_names[i - 1]
+            if i > 0: _step_names.append(step_name)
+
+            pv(f"{i:3} step: {step_name:20} {metric_name}: {value:8.6f}", verbose)
+            results.append([step_name, value])
+            del value; gc.collect()
+            if i > 0:
+                X[..., k] = save_feat
+                del save_feat; gc.collect()
+
+        if method == 'ablation':
+            self.dls.valid.after_batch.fs = fs
+
+    except KeyboardInterrupt:
+        if i > 0:
+            X[..., k] = save_feat
+            del save_feat; gc.collect()
+        if method == 'ablation':
+            self.dls.valid.after_batch.fs = fs
+
+    # DataFrame
+    df = pd.DataFrame(results, columns=["Step", metric_name])
+    df[f'{metric_name}_change'] = df[metric_name] - df.loc[0, metric_name]
+    sign = np.sign(df[f'{metric_name}_change'].mean())
+    if sign == 0: sign = 1
+    df[f'{metric_name}_change'] = df[f'{metric_name}_change'] * sign
+
+    # Display step importance
+    if show_chart:
+        print()
+        value_change = df.loc[1:, f'{metric_name}_change'].values
+        pos_value_change = value_change.copy()
+        neg_value_change = value_change.copy()
+        pos_value_change[pos_value_change < 0] = 0
+        neg_value_change[neg_value_change > 0] = 0
+        plt.figure(figsize=(10, .5*len(value_change)))
+        plt.bar(np.arange(len(value_change)), pos_value_change, color='lime', edgecolor='black')
+        plt.bar(np.arange(len(value_change)), neg_value_change, color='red', edgecolor='black')
+        plt.axhline(0, color='black')
+        plt.xticks(np.arange(len(value_change)), _step_names, rotation=90)
+        if title is None: title = f'Step Importance ({method} method)'
+        plt.title(title, size=16)
+        text = 'increase' if sign == 1 else 'decrease'
+        if xlabel is None: xlabel = 'steps'
+        plt.xlabel(xlabel)
+        plt.ylabel(f"{metric_name} {text} when removed")
+        plt.xlim((-1,len(value_change)))
+        plt.show()
+
+    # Save step importance
+    df = df.sort_values(metric_name, ascending=sign < 0).reset_index(drop=True)
+    if save_df_path:
+        if save_df_path.split('.')[-1] != 'csv': save_df_path = f'{save_df_path}.csv'
+        df.to_csv(f'{save_df_path}', index=False)
+        pv(f'Step importance df saved to {save_df_path}', verbose)
+    if return_df:
+        return df

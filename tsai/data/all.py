@@ -8,6 +8,6 @@ from .preprocessing import *
 from .transforms import *
 from .image import *
 from .tabular import *
-from .features import *
 from .mixed import *
 from .mixed_augmentation import *
+from .features import *

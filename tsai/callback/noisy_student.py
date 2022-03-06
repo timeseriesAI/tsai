@@ -3,16 +3,16 @@
 __all__ = ['NoisyStudent']
 
 # Cell
+import torch.multiprocessing
+torch.multiprocessing.set_sharing_strategy('file_system')
+
+# Cell
 from ..imports import *
 from ..utils import *
 from ..data.preprocessing import *
 from ..data.transforms import *
 from ..models.layers import *
 from fastai.callback.all import *
-
-# Cell
-import torch.multiprocessing
-torch.multiprocessing.set_sharing_strategy('file_system')
 
 # Cell
 

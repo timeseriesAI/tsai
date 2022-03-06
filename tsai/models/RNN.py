@@ -5,6 +5,7 @@ __all__ = ['RNN', 'LSTM', 'GRU']
 # Cell
 from ..imports import *
 from .layers import *
+from .utils import *
 
 # Cell
 class _RNN_Base(Module):

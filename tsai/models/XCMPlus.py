@@ -48,7 +48,6 @@ class XCMPlus(nn.Sequential):
 
 
     def show_gradcam(self, x, y=None, detach=True, cpu=True, apply_relu=True, cmap='inferno', figsize=None, **kwargs):
-
         att_maps = get_attribution_map(self, [self.backbone.conv2dblock, self.backbone.conv1dblock], x, y=y, detach=detach, cpu=cpu, apply_relu=apply_relu)
         att_maps[0] = (att_maps[0] - att_maps[0].min()) / (att_maps[0].max() - att_maps[0].min())
         att_maps[1] = (att_maps[1] - att_maps[1].min()) / (att_maps[1].max() - att_maps[1].min())
@@ -73,7 +72,6 @@ class XCMPlus(nn.Sequential):
 
 class _XCMPlus_Backbone(Module):
     def __init__(self, c_in:int, c_out:int, seq_len:Optional[int]=None, nf:int=128, window_perc:float=1.):
-
         window_size = int(round(seq_len * window_perc, 0))
         self.conv2dblock = nn.Sequential(*[Unsqueeze(1), Conv2d(1, nf, kernel_size=(1, window_size), padding='same'), BatchNorm(nf), nn.ReLU()])
         self.conv2d1x1block = nn.Sequential(*[nn.Conv2d(nf, 1, kernel_size=1), nn.ReLU(), Squeeze(1)])

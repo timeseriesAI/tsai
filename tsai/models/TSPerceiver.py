@@ -146,7 +146,6 @@ class LatentTransformer(Module):
         return x
 
 # Cell
-#export
 class TSPerceiver(Module):
     def __init__(self, c_in, c_out, seq_len, cat_szs=0, n_cont=0, n_latents=512, d_latent=128, d_context=None, n_layers=6, self_per_cross_attn=1,
                  share_weights=True, cross_n_heads=1, self_n_heads=8, d_head=None, attn_dropout=0., fc_dropout=0., concat_pool=False):

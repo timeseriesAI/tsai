@@ -63,7 +63,7 @@ They finished in 3rd position in Kaggle's Google Brain - Ventilator Pressure Pre
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RNNPlus" class="doc_header"><code>class</code> <code>RNNPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/RNNPlus.py#L113" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RNNPlus</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>None</code></em>, <strong><code>hidden_size</code></strong>=<em><code>[100]</code></em>, <strong><code>n_layers</code></strong>=<em><code>1</code></em>, <strong><code>bias</code></strong>=<em><code>True</code></em>, <strong><code>rnn_dropout</code></strong>=<em><code>0</code></em>, <strong><code>bidirectional</code></strong>=<em><code>False</code></em>, <strong><code>n_embeds</code></strong>=<em><code>None</code></em>, <strong><code>embed_dims</code></strong>=<em><code>None</code></em>, <strong><code>padding_idxs</code></strong>=<em><code>None</code></em>, <strong><code>cat_pos</code></strong>=<em><code>None</code></em>, <strong><code>feature_extractor</code></strong>=<em><code>None</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>last_step</code></strong>=<em><code>True</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>init_weights</code></strong>=<em><code>True</code></em>) :: <code>_RNNPlus_Base</code></p>
+<h2 id="RNNPlus" class="doc_header"><code>class</code> <code>RNNPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/RNNPlus.py#L112" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RNNPlus</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>None</code></em>, <strong><code>hidden_size</code></strong>=<em><code>[100]</code></em>, <strong><code>n_layers</code></strong>=<em><code>1</code></em>, <strong><code>bias</code></strong>=<em><code>True</code></em>, <strong><code>rnn_dropout</code></strong>=<em><code>0</code></em>, <strong><code>bidirectional</code></strong>=<em><code>False</code></em>, <strong><code>n_embeds</code></strong>=<em><code>None</code></em>, <strong><code>embed_dims</code></strong>=<em><code>None</code></em>, <strong><code>padding_idxs</code></strong>=<em><code>None</code></em>, <strong><code>cat_pos</code></strong>=<em><code>None</code></em>, <strong><code>feature_extractor</code></strong>=<em><code>None</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>last_step</code></strong>=<em><code>True</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>init_weights</code></strong>=<em><code>True</code></em>) :: <code>_RNNPlus_Base</code></p>
 </blockquote>
 <p>A sequential container.
 Modules will be added to it in the order they are passed in the
@@ -126,7 +126,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LSTMPlus" class="doc_header"><code>class</code> <code>LSTMPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/RNNPlus.py#L116" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTMPlus</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>None</code></em>, <strong><code>hidden_size</code></strong>=<em><code>[100]</code></em>, <strong><code>n_layers</code></strong>=<em><code>1</code></em>, <strong><code>bias</code></strong>=<em><code>True</code></em>, <strong><code>rnn_dropout</code></strong>=<em><code>0</code></em>, <strong><code>bidirectional</code></strong>=<em><code>False</code></em>, <strong><code>n_embeds</code></strong>=<em><code>None</code></em>, <strong><code>embed_dims</code></strong>=<em><code>None</code></em>, <strong><code>padding_idxs</code></strong>=<em><code>None</code></em>, <strong><code>cat_pos</code></strong>=<em><code>None</code></em>, <strong><code>feature_extractor</code></strong>=<em><code>None</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>last_step</code></strong>=<em><code>True</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>init_weights</code></strong>=<em><code>True</code></em>) :: <code>_RNNPlus_Base</code></p>
+<h2 id="LSTMPlus" class="doc_header"><code>class</code> <code>LSTMPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/RNNPlus.py#L115" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTMPlus</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>None</code></em>, <strong><code>hidden_size</code></strong>=<em><code>[100]</code></em>, <strong><code>n_layers</code></strong>=<em><code>1</code></em>, <strong><code>bias</code></strong>=<em><code>True</code></em>, <strong><code>rnn_dropout</code></strong>=<em><code>0</code></em>, <strong><code>bidirectional</code></strong>=<em><code>False</code></em>, <strong><code>n_embeds</code></strong>=<em><code>None</code></em>, <strong><code>embed_dims</code></strong>=<em><code>None</code></em>, <strong><code>padding_idxs</code></strong>=<em><code>None</code></em>, <strong><code>cat_pos</code></strong>=<em><code>None</code></em>, <strong><code>feature_extractor</code></strong>=<em><code>None</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>last_step</code></strong>=<em><code>True</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>init_weights</code></strong>=<em><code>True</code></em>) :: <code>_RNNPlus_Base</code></p>
 </blockquote>
 <p>A sequential container.
 Modules will be added to it in the order they are passed in the
@@ -189,7 +189,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="GRUPlus" class="doc_header"><code>class</code> <code>GRUPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/RNNPlus.py#L119" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GRUPlus</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>None</code></em>, <strong><code>hidden_size</code></strong>=<em><code>[100]</code></em>, <strong><code>n_layers</code></strong>=<em><code>1</code></em>, <strong><code>bias</code></strong>=<em><code>True</code></em>, <strong><code>rnn_dropout</code></strong>=<em><code>0</code></em>, <strong><code>bidirectional</code></strong>=<em><code>False</code></em>, <strong><code>n_embeds</code></strong>=<em><code>None</code></em>, <strong><code>embed_dims</code></strong>=<em><code>None</code></em>, <strong><code>padding_idxs</code></strong>=<em><code>None</code></em>, <strong><code>cat_pos</code></strong>=<em><code>None</code></em>, <strong><code>feature_extractor</code></strong>=<em><code>None</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>last_step</code></strong>=<em><code>True</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>init_weights</code></strong>=<em><code>True</code></em>) :: <code>_RNNPlus_Base</code></p>
+<h2 id="GRUPlus" class="doc_header"><code>class</code> <code>GRUPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/RNNPlus.py#L118" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GRUPlus</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>None</code></em>, <strong><code>hidden_size</code></strong>=<em><code>[100]</code></em>, <strong><code>n_layers</code></strong>=<em><code>1</code></em>, <strong><code>bias</code></strong>=<em><code>True</code></em>, <strong><code>rnn_dropout</code></strong>=<em><code>0</code></em>, <strong><code>bidirectional</code></strong>=<em><code>False</code></em>, <strong><code>n_embeds</code></strong>=<em><code>None</code></em>, <strong><code>embed_dims</code></strong>=<em><code>None</code></em>, <strong><code>padding_idxs</code></strong>=<em><code>None</code></em>, <strong><code>cat_pos</code></strong>=<em><code>None</code></em>, <strong><code>feature_extractor</code></strong>=<em><code>None</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>last_step</code></strong>=<em><code>True</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>init_weights</code></strong>=<em><code>True</code></em>) :: <code>_RNNPlus_Base</code></p>
 </blockquote>
 <p>A sequential container.
 Modules will be added to it in the order they are passed in the
@@ -300,6 +300,20 @@ model = nn.Sequential(OrderedDict([
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>[W NNPACK.cpp:79] Could not initialize NNPACK! Reason: Unsupported hardware.
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -417,10 +431,10 @@ model = nn.Sequential(OrderedDict([
   <tbody>
     <tr>
       <td>0</td>
-      <td>1.766669</td>
-      <td>1.671509</td>
-      <td>0.377778</td>
-      <td>00:02</td>
+      <td>1.770549</td>
+      <td>1.695585</td>
+      <td>0.244444</td>
+      <td>00:01</td>
     </tr>
   </tbody>
 </table>
@@ -470,10 +484,10 @@ model = nn.Sequential(OrderedDict([
   <tbody>
     <tr>
       <td>0</td>
-      <td>1.210454</td>
-      <td>0.648154</td>
-      <td>0.744444</td>
-      <td>00:01</td>
+      <td>1.120653</td>
+      <td>0.634209</td>
+      <td>0.738889</td>
+      <td>00:02</td>
     </tr>
   </tbody>
 </table>
@@ -524,10 +538,10 @@ model = nn.Sequential(OrderedDict([
   <tbody>
     <tr>
       <td>0</td>
-      <td>1.642108</td>
-      <td>1.443092</td>
-      <td>0.655556</td>
-      <td>00:01</td>
+      <td>1.711861</td>
+      <td>1.544655</td>
+      <td>0.477778</td>
+      <td>00:02</td>
     </tr>
   </tbody>
 </table>
@@ -578,10 +592,10 @@ model = nn.Sequential(OrderedDict([
   <tbody>
     <tr>
       <td>0</td>
-      <td>0.822840</td>
-      <td>1.407717</td>
-      <td>0.627778</td>
-      <td>00:01</td>
+      <td>0.973254</td>
+      <td>1.331597</td>
+      <td>0.672222</td>
+      <td>00:02</td>
     </tr>
   </tbody>
 </table>
@@ -604,7 +618,7 @@ model = nn.Sequential(OrderedDict([
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">m</span> <span class="o">=</span> <span class="n">RNNPlus</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">rnn_dropout</span><span class="o">=</span><span class="mf">.5</span><span class="p">,</span><span class="n">fc_dropout</span><span class="o">=</span><span class="mf">.5</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">total_params</span><span class="p">(</span><span class="n">m</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">count_parameters</span><span class="p">(</span><span class="n">m</span><span class="p">))</span>
 <span class="n">m</span><span class="p">(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
 </pre></div>
 
@@ -634,7 +648,7 @@ model = nn.Sequential(OrderedDict([
     (2): Linear(in_features=200, out_features=2, bias=True)
   )
 )
-(81802, True)
+81802
 </pre>
 </div>
 </div>
@@ -664,7 +678,7 @@ model = nn.Sequential(OrderedDict([
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">m</span> <span class="o">=</span> <span class="n">LSTMPlus</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">rnn_dropout</span><span class="o">=</span><span class="mf">.5</span><span class="p">,</span><span class="n">fc_dropout</span><span class="o">=</span><span class="mf">.5</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">total_params</span><span class="p">(</span><span class="n">m</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">count_parameters</span><span class="p">(</span><span class="n">m</span><span class="p">))</span>
 <span class="n">m</span><span class="p">(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
 </pre></div>
 
@@ -694,7 +708,7 @@ model = nn.Sequential(OrderedDict([
     (2): Linear(in_features=200, out_features=2, bias=True)
   )
 )
-(326002, True)
+326002
 </pre>
 </div>
 </div>
@@ -724,7 +738,7 @@ model = nn.Sequential(OrderedDict([
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">m</span> <span class="o">=</span> <span class="n">GRUPlus</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">rnn_dropout</span><span class="o">=</span><span class="mf">.5</span><span class="p">,</span><span class="n">fc_dropout</span><span class="o">=</span><span class="mf">.5</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">total_params</span><span class="p">(</span><span class="n">m</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">count_parameters</span><span class="p">(</span><span class="n">m</span><span class="p">))</span>
 <span class="n">m</span><span class="p">(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
 </pre></div>
 
@@ -754,7 +768,7 @@ model = nn.Sequential(OrderedDict([
     (2): Linear(in_features=200, out_features=2, bias=True)
   )
 )
-(244602, True)
+244602
 </pre>
 </div>
 </div>

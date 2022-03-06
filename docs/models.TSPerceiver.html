@@ -57,7 +57,7 @@ nb_path: "nbs/123_models.TSPerceiver.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSPerceiver" class="doc_header"><code>class</code> <code>TSPerceiver</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/TSPerceiver.py#L150" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSPerceiver</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>cat_szs</code></strong>=<em><code>0</code></em>, <strong><code>n_cont</code></strong>=<em><code>0</code></em>, <strong><code>n_latents</code></strong>=<em><code>512</code></em>, <strong><code>d_latent</code></strong>=<em><code>128</code></em>, <strong><code>d_context</code></strong>=<em><code>None</code></em>, <strong><code>n_layers</code></strong>=<em><code>6</code></em>, <strong><code>self_per_cross_attn</code></strong>=<em><code>1</code></em>, <strong><code>share_weights</code></strong>=<em><code>True</code></em>, <strong><code>cross_n_heads</code></strong>=<em><code>1</code></em>, <strong><code>self_n_heads</code></strong>=<em><code>8</code></em>, <strong><code>d_head</code></strong>=<em><code>None</code></em>, <strong><code>attn_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>concat_pool</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
+<h2 id="TSPerceiver" class="doc_header"><code>class</code> <code>TSPerceiver</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/TSPerceiver.py#L149" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSPerceiver</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>cat_szs</code></strong>=<em><code>0</code></em>, <strong><code>n_cont</code></strong>=<em><code>0</code></em>, <strong><code>n_latents</code></strong>=<em><code>512</code></em>, <strong><code>d_latent</code></strong>=<em><code>128</code></em>, <strong><code>d_context</code></strong>=<em><code>None</code></em>, <strong><code>n_layers</code></strong>=<em><code>6</code></em>, <strong><code>self_per_cross_attn</code></strong>=<em><code>1</code></em>, <strong><code>share_weights</code></strong>=<em><code>True</code></em>, <strong><code>cross_n_heads</code></strong>=<em><code>1</code></em>, <strong><code>self_n_heads</code></strong>=<em><code>8</code></em>, <strong><code>d_head</code></strong>=<em><code>None</code></em>, <strong><code>attn_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>concat_pool</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -85,7 +85,8 @@ nb_path: "nbs/123_models.TSPerceiver.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">tsai.data.all</span> <span class="kn">import</span> <span class="o">*</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">tsai.basics</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">tsai.data.all</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;OliveOil&#39;</span>
 <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">ts_features_df</span> <span class="o">=</span> <span class="n">get_ts_features</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
@@ -102,7 +103,7 @@ nb_path: "nbs/123_models.TSPerceiver.ipynb"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>Feature Extraction: 100%|██████████| 30/30 [00:00&lt;00:00, 331.19it/s]
+<pre>Feature Extraction: 100%|██████████████████████████████████████████| 30/30 [00:00&lt;00:00, 189.16it/s]
 </pre>
 </div>
 </div>
@@ -112,7 +113,7 @@ nb_path: "nbs/123_models.TSPerceiver.ipynb"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(60, 10)</pre>
+<pre>(60, 11)</pre>
 </div>
 
 </div>
@@ -130,7 +131,8 @@ nb_path: "nbs/123_models.TSPerceiver.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tfms</span>  <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">[</span><span class="n">Categorize</span><span class="p">()]]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># raw ts</span>
+<span class="n">tfms</span>  <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">[</span><span class="n">Categorize</span><span class="p">()]]</span>
 <span class="n">batch_tfms</span> <span class="o">=</span> <span class="n">TSStandardize</span><span class="p">(</span><span class="n">by_sample</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">ts_dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="n">batch_tfms</span><span class="p">)</span>
 

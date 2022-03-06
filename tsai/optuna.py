@@ -6,15 +6,15 @@ __all__ = ['run_optuna_study']
 from pathlib import Path
 from fastcore.script import *
 import joblib
-from .imports import *
 from importlib import import_module
+from .imports import *
 import warnings
 warnings.filterwarnings("ignore")
 
 # Cell
-def run_optuna_study(objective, resume=None, study_type=None, multivariate=True, search_space=None, evaluate=None, seed=None, sampler=None, pruner=None, study_name=None,
-                     direction='maximize', load_if_exists=False, n_trials=None, timeout=None, gc_after_trial=False, show_progress_bar=True, save_study=True,
-                     path='optuna', show_plots=True):
+def run_optuna_study(objective, resume=None, study_type=None, multivariate=True, search_space=None, evaluate=None, seed=None, sampler=None, pruner=None,
+                     study_name=None, direction='maximize', load_if_exists=False, n_trials=None, timeout=None, gc_after_trial=False, show_progress_bar=True,
+                     save_study=True, path='optuna', show_plots=True):
     r"""Creates and runs an optuna study.
 
     Args:
@@ -47,7 +47,7 @@ def run_optuna_study(objective, resume=None, study_type=None, multivariate=True,
     """
 
     try: import optuna
-    except ImportError: raise ImportError('You need to install optuna!')
+    except ImportError: raise ImportError('You need to install optuna to use run_optuna_study')
 
     # Sampler
     if sampler is None:

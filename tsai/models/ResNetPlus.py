@@ -3,9 +3,10 @@
 __all__ = ['ResBlockPlus', 'ResNetPlus']
 
 # Cell
+from fastai.layers import *
 from ..imports import *
-from .utils import *
 from .layers import *
+from .utils import *
 torch.set_num_threads(cpus)
 
 # Cell
