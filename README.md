@@ -168,7 +168,7 @@ probas, target, preds = mv_clf.get_X_preds(X[splits[0]], y[splits[0]])
 ### Multivariate Regression
 
 **Training:**
-```bash
+```python
 from tsai.all import *
 X, y, splits = get_regression_data('AppliancesEnergy', split_data=False)
 batch_tfms = TSStandardize(by_sample=True)
@@ -178,7 +178,7 @@ reg.export("reg.pkl")
 ```
 
 **Inference:**
-```bash
+```python
 from tsai.inference import load_learner
 reg = load_learner("models/reg.pkl")
 raw_preds, target, preds = reg.get_X_preds(X[splits[0]], y[splits[0]])
@@ -187,7 +187,8 @@ raw_preds, target, preds = reg.get_X_preds(X[splits[0]], y[splits[0]])
 RocketClassifier, MiniRocketClassifier, RocketRegressor and MiniRocketRegressor are somewhat different models (they are not actually deep learning models) and are used in a slightly different way: 
 
 **Training:**
-```bash
+
+```python
 from tsai.all import *
 from sklearn.metrics import mean_squared_error
 X_train, y_train, X_test, y_test = get_regression_data('AppliancesEnergy')
@@ -198,7 +199,8 @@ mr_reg.save("minirocket_regressor")
 ```
 
 **Inference:**
-```bash
+
+```python
 mr_reg = load_rocket("minirocket_regressor")
 y_pred = mr_reg.predict(X_test)
 mean_squared_error(y_test, y_pred, squared=False)
@@ -207,7 +209,7 @@ mean_squared_error(y_test, y_pred, squared=False)
 ### Univariate Forecasting
 
 **Training:**
-```bash
+```python
 from tsai.all import *
 ts = get_forecasting_time_series("Sunspots").values
 X, y = SlidingWindow(60, horizon=1)(ts)
@@ -219,8 +221,7 @@ fcst.export("fcst.pkl")
 ```
 
 **Inference:**
-
-```bash
+```python
 from tsai.inference import load_learner
 fcst = load_learner("models/fcst.pkl")
 raw_preds, target, preds = fcst.get_X_preds(X[splits[0]], y[splits[0]])

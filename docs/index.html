@@ -289,17 +289,17 @@ probas, target, <span class="nv">preds</span> <span class="o">=</span> mv_clf.ge
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Training:</strong></p>
-<div class="highlight"><pre><span></span>from tsai.all import *
-X, y, <span class="nv">splits</span> <span class="o">=</span> get_regression_data<span class="o">(</span><span class="s1">&#39;AppliancesEnergy&#39;</span>, <span class="nv">split_data</span><span class="o">=</span>False<span class="o">)</span>
-<span class="nv">batch_tfms</span> <span class="o">=</span> TSStandardize<span class="o">(</span><span class="nv">by_sample</span><span class="o">=</span>True<span class="o">)</span>
-<span class="nv">reg</span> <span class="o">=</span> TSRegressor<span class="o">(</span>X, y, <span class="nv">splits</span><span class="o">=</span>splits, <span class="nv">path</span><span class="o">=</span><span class="s1">&#39;models&#39;</span>, <span class="nv">arch</span><span class="o">=</span>TSTPlus, <span class="nv">batch_tfms</span><span class="o">=</span>batch_tfms, <span class="nv">metrics</span><span class="o">=</span>rmse, <span class="nv">cbs</span><span class="o">=</span>ShowGraph<span class="o">()</span>, <span class="nv">verbose</span><span class="o">=</span>True<span class="o">)</span>
-reg.fit_one_cycle<span class="o">(</span><span class="m">100</span>, 3e-4<span class="o">)</span>
-reg.export<span class="o">(</span><span class="s2">&quot;reg.pkl&quot;</span><span class="o">)</span>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tsai.all</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_regression_data</span><span class="p">(</span><span class="s1">&#39;AppliancesEnergy&#39;</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">batch_tfms</span> <span class="o">=</span> <span class="n">TSStandardize</span><span class="p">(</span><span class="n">by_sample</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">reg</span> <span class="o">=</span> <span class="n">TSRegressor</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;models&#39;</span><span class="p">,</span> <span class="n">arch</span><span class="o">=</span><span class="n">TSTPlus</span><span class="p">,</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="n">batch_tfms</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">rmse</span><span class="p">,</span> <span class="n">cbs</span><span class="o">=</span><span class="n">ShowGraph</span><span class="p">(),</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">reg</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mf">3e-4</span><span class="p">)</span>
+<span class="n">reg</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="s2">&quot;reg.pkl&quot;</span><span class="p">)</span>
 </pre></div>
 <p><strong>Inference:</strong></p>
-<div class="highlight"><pre><span></span>from tsai.inference import load_learner
-<span class="nv">reg</span> <span class="o">=</span> load_learner<span class="o">(</span><span class="s2">&quot;models/reg.pkl&quot;</span><span class="o">)</span>
-raw_preds, target, <span class="nv">preds</span> <span class="o">=</span> reg.get_X_preds<span class="o">(</span>X<span class="o">[</span>splits<span class="o">[</span><span class="m">0</span><span class="o">]]</span>, y<span class="o">[</span>splits<span class="o">[</span><span class="m">0</span><span class="o">]])</span>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tsai.inference</span> <span class="kn">import</span> <span class="n">load_learner</span>
+<span class="n">reg</span> <span class="o">=</span> <span class="n">load_learner</span><span class="p">(</span><span class="s2">&quot;models/reg.pkl&quot;</span><span class="p">)</span>
+<span class="n">raw_preds</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">preds</span> <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">get_X_preds</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">y</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
 </pre></div>
 
 </div>
@@ -315,18 +315,18 @@ raw_preds, target, <span class="nv">preds</span> <span class="o">=</span> reg.ge
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Training:</strong></p>
-<div class="highlight"><pre><span></span>from tsai.all import *
-from sklearn.metrics import mean_squared_error
-X_train, y_train, X_test, <span class="nv">y_test</span> <span class="o">=</span> get_regression_data<span class="o">(</span><span class="s1">&#39;AppliancesEnergy&#39;</span><span class="o">)</span>
-<span class="nv">rmse_scorer</span> <span class="o">=</span> make_scorer<span class="o">(</span>mean_squared_error, <span class="nv">greater_is_better</span><span class="o">=</span>False<span class="o">)</span>
-<span class="nv">mr_reg</span> <span class="o">=</span> MiniRocketRegressor<span class="o">(</span><span class="nv">scoring</span><span class="o">=</span>rmse_scorer<span class="o">)</span>
-mr_reg.fit<span class="o">(</span>X_train, y_train<span class="o">)</span>
-mr_reg.save<span class="o">(</span><span class="s2">&quot;minirocket_regressor&quot;</span><span class="o">)</span>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tsai.all</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">mean_squared_error</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">get_regression_data</span><span class="p">(</span><span class="s1">&#39;AppliancesEnergy&#39;</span><span class="p">)</span>
+<span class="n">rmse_scorer</span> <span class="o">=</span> <span class="n">make_scorer</span><span class="p">(</span><span class="n">mean_squared_error</span><span class="p">,</span> <span class="n">greater_is_better</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">mr_reg</span> <span class="o">=</span> <span class="n">MiniRocketRegressor</span><span class="p">(</span><span class="n">scoring</span><span class="o">=</span><span class="n">rmse_scorer</span><span class="p">)</span>
+<span class="n">mr_reg</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">mr_reg</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;minirocket_regressor&quot;</span><span class="p">)</span>
 </pre></div>
 <p><strong>Inference:</strong></p>
-<div class="highlight"><pre><span></span><span class="nv">mr_reg</span> <span class="o">=</span> load_rocket<span class="o">(</span><span class="s2">&quot;minirocket_regressor&quot;</span><span class="o">)</span>
-<span class="nv">y_pred</span> <span class="o">=</span> mr_reg.predict<span class="o">(</span>X_test<span class="o">)</span>
-mean_squared_error<span class="o">(</span>y_test, y_pred, <span class="nv">squared</span><span class="o">=</span>False<span class="o">)</span>
+<div class="highlight"><pre><span></span><span class="n">mr_reg</span> <span class="o">=</span> <span class="n">load_rocket</span><span class="p">(</span><span class="s2">&quot;minirocket_regressor&quot;</span><span class="p">)</span>
+<span class="n">y_pred</span> <span class="o">=</span> <span class="n">mr_reg</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">squared</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -341,19 +341,19 @@ mean_squared_error<span class="o">(</span>y_test, y_pred, <span class="nv">squar
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Training:</strong></p>
-<div class="highlight"><pre><span></span>from tsai.all import *
-<span class="nv">ts</span> <span class="o">=</span> get_forecasting_time_series<span class="o">(</span><span class="s2">&quot;Sunspots&quot;</span><span class="o">)</span>.values
-X, <span class="nv">y</span> <span class="o">=</span> SlidingWindow<span class="o">(</span><span class="m">60</span>, <span class="nv">horizon</span><span class="o">=</span><span class="m">1</span><span class="o">)(</span>ts<span class="o">)</span>
-<span class="nv">splits</span> <span class="o">=</span> TimeSplitter<span class="o">(</span><span class="m">235</span><span class="o">)(</span>y<span class="o">)</span> 
-<span class="nv">batch_tfms</span> <span class="o">=</span> TSStandardize<span class="o">()</span>
-<span class="nv">fcst</span> <span class="o">=</span> TSForecaster<span class="o">(</span>X, y, <span class="nv">splits</span><span class="o">=</span>splits, <span class="nv">path</span><span class="o">=</span><span class="s1">&#39;models&#39;</span>, <span class="nv">batch_tfms</span><span class="o">=</span>batch_tfms, <span class="nv">bs</span><span class="o">=</span><span class="m">512</span>, <span class="nv">arch</span><span class="o">=</span>TST, <span class="nv">metrics</span><span class="o">=</span>mae, <span class="nv">cbs</span><span class="o">=</span>ShowGraph<span class="o">())</span>
-fcst.fit_one_cycle<span class="o">(</span><span class="m">50</span>, 1e-3<span class="o">)</span>
-fcst.export<span class="o">(</span><span class="s2">&quot;fcst.pkl&quot;</span><span class="o">)</span>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tsai.all</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">get_forecasting_time_series</span><span class="p">(</span><span class="s2">&quot;Sunspots&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">SlidingWindow</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="n">horizon</span><span class="o">=</span><span class="mi">1</span><span class="p">)(</span><span class="n">ts</span><span class="p">)</span>
+<span class="n">splits</span> <span class="o">=</span> <span class="n">TimeSplitter</span><span class="p">(</span><span class="mi">235</span><span class="p">)(</span><span class="n">y</span><span class="p">)</span> 
+<span class="n">batch_tfms</span> <span class="o">=</span> <span class="n">TSStandardize</span><span class="p">()</span>
+<span class="n">fcst</span> <span class="o">=</span> <span class="n">TSForecaster</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;models&#39;</span><span class="p">,</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="n">batch_tfms</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">arch</span><span class="o">=</span><span class="n">TST</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">mae</span><span class="p">,</span> <span class="n">cbs</span><span class="o">=</span><span class="n">ShowGraph</span><span class="p">())</span>
+<span class="n">fcst</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">)</span>
+<span class="n">fcst</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="s2">&quot;fcst.pkl&quot;</span><span class="p">)</span>
 </pre></div>
 <p><strong>Inference:</strong></p>
-<div class="highlight"><pre><span></span>from tsai.inference import load_learner
-<span class="nv">fcst</span> <span class="o">=</span> load_learner<span class="o">(</span><span class="s2">&quot;models/fcst.pkl&quot;</span><span class="o">)</span>
-raw_preds, target, <span class="nv">preds</span> <span class="o">=</span> fcst.get_X_preds<span class="o">(</span>X<span class="o">[</span>splits<span class="o">[</span><span class="m">0</span><span class="o">]]</span>, y<span class="o">[</span>splits<span class="o">[</span><span class="m">0</span><span class="o">]])</span>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tsai.inference</span> <span class="kn">import</span> <span class="n">load_learner</span>
+<span class="n">fcst</span> <span class="o">=</span> <span class="n">load_learner</span><span class="p">(</span><span class="s2">&quot;models/fcst.pkl&quot;</span><span class="p">)</span>
+<span class="n">raw_preds</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">preds</span> <span class="o">=</span> <span class="n">fcst</span><span class="o">.</span><span class="n">get_X_preds</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">y</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
 </pre></div>
 
 </div>
