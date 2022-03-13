@@ -159,28 +159,33 @@ def todtype(dtype):
     return _to_type
 
 # Cell
-def bytes2size(size_bytes):
+def bytes2size(
+    size_bytes : int, # Number of bytes
+    decimals=2 # Number of decimals in the output
+    )->str:
     if size_bytes == 0: return "0B"
     size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
     i = int(math.floor(math.log(size_bytes, 1024)))
     p = math.pow(1024, i)
-    s = round(size_bytes / p, 2)
-    return "%s %s" % (s, size_name[i])
+    s = round(size_bytes / p, decimals)
+    return f'{s} {size_name[i]}'
 
 def bytes2GB(byts):
     return round(byts / math.pow(1024, 3), 2)
 
 def get_size(
     o, # Any object
-    return_str=True # True returns size in human-readable format (KB, MB, GB, ...). False in bytes.
+    return_str : bool = True, # True returns size in human-readable format (KB, MB, GB, ...). False in bytes.
+    decimals : int = 2, # Number of decimals in the output
     ):
     s = sys.getsizeof(o)
-    if return_str: return bytes2size(s)
+    if return_str: return bytes2size(s, decimals=decimals)
     else: return s
 
 def get_dir_size(
     dir_path : str,  # path to directory
-    return_str=True, # True returns size in human-readable format (KB, MB, GB, ...). False in bytes.
+    return_str : bool = True, # True returns size in human-readable format (KB, MB, GB, ...). False in bytes.
+    decimals : int = 2, # Number of decimals in the output
     ):
     assert os.path.isdir(dir_path)
     total_size = 0
@@ -191,7 +196,7 @@ def get_dir_size(
             if not os.path.islink(fp):
                 total_size += os.path.getsize(fp)
     if return_str:
-        return bytes2size(total_size)
+        return bytes2size(total_size, decimals=decimals)
     return total_size
 
 # Cell
