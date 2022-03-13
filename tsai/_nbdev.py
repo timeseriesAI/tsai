@@ -727,7 +727,17 @@ index = {"get_nb_name": "000_export.ipynb",
          "run_optuna_study": "200_optuna.ipynb",
          "wandb_agent": "201_wandb.ipynb",
          "get_wandb_agent": "201_wandb.ipynb",
-         "run_wandb_agent": "201_wandb.ipynb"}
+         "run_wandb_agent": "201_wandb.ipynb",
+         "AutoFormer": "125_models.Autoformer.ipynb",
+         "LayerNorm": "125_models.Autoformer.ipynb",
+         "MovingAvg": "125_models.Autoformer.ipynb",
+         "SeriesDecomp": "125_models.Autoformer.ipynb",
+         "PosEmbedding": "125_models.Autoformer.ipynb",
+         "TemporalEmbedding": "125_models.Autoformer.ipynb",
+         "AutoAttentionLayer": "125_models.Autoformer.ipynb",
+         "Encoder": "125_models.Autoformer.ipynb",
+         "DecoderLayer": "125_models.Autoformer.ipynb",
+         "Decoder": "125_models.Autoformer.ipynb"}
 
 modules = ["export.py",
            "utils.py",
@@ -797,7 +807,8 @@ modules = ["export.py",
            "models/MultiInputNet.py",
            "models/misc.py",
            "optuna.py",
-           "wandb.py"]
+           "wandb.py",
+           "models/Autoformer.py"]
 
 doc_url = "https://timeseriesAI.github.io/tsai/"
 

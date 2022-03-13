@@ -205,7 +205,9 @@ all_archs_names = ['FCN', 'FCNPlus', 'InceptionTime', 'InceptionTimePlus', 'InCo
 
 
 def get_arch(arch_name):
-    if arch_name == "FCN":
+    if arch_name == "AutoFormer":
+        from .models.AutoFormer import AutoFormer
+    elif arch_name == "FCN":
         from .models.FCN import FCN
         arch = FCN
     elif arch_name == "FCNPlus":
