@@ -3,8 +3,8 @@
 __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor', 'to3darray', 'to2darray',
            'to1darray', 'to3d', 'to2d', 'to1d', 'to2dPlus', 'to3dPlus', 'to2dPlusTensor', 'to2dPlusArray',
            'to3dPlusTensor', 'to3dPlusArray', 'todtype', 'bytes2size', 'bytes2GB', 'get_size', 'get_dir_size',
-           'is_file', 'is_dir', 'delete_all_in_dir', 'reverse_dict', 'is_tuple', 'itemify', 'isnone', 'exists',
-           'ifelse', 'is_not_close', 'test_not_close', 'test_type', 'test_ok', 'test_not_ok', 'test_error',
+           'get_file_size', 'is_file', 'is_dir', 'delete_all_in_dir', 'reverse_dict', 'is_tuple', 'itemify', 'isnone',
+           'exists', 'ifelse', 'is_not_close', 'test_not_close', 'test_type', 'test_ok', 'test_not_ok', 'test_error',
            'test_eq_nan', 'assert_fn', 'test_gt', 'test_ge', 'test_lt', 'test_le', 'stack', 'stack_pad',
            'pad_sequences', 'match_seq_len', 'random_shuffle', 'cat2int', 'cycle_dl', 'cycle_dl_to_device',
            'cycle_dl_estimate', 'cache_data', 'memmap2cache', 'cache_memmap', 'get_func_defaults',
@@ -186,6 +186,7 @@ def get_dir_size(
     dir_path : str,  # path to directory
     return_str : bool = True, # True returns size in human-readable format (KB, MB, GB, ...). False in bytes.
     decimals : int = 2, # Number of decimals in the output
+    verbose : bool = False, # Controls verbosity
     ):
     assert os.path.isdir(dir_path)
     total_size = 0
@@ -194,10 +195,23 @@ def get_dir_size(
             fp = os.path.join(dirpath, f)
             # skip if it is symbolic link
             if not os.path.islink(fp):
-                total_size += os.path.getsize(fp)
+                fp_size = os.path.getsize(fp)
+                total_size += fp_size
+                pv(f'file: {fp[-50:]:50} size: {fp_size}', verbose)
     if return_str:
         return bytes2size(total_size, decimals=decimals)
     return total_size
+
+def get_file_size(
+    file_path : str,  # path to file
+    return_str : bool = True, # True returns size in human-readable format (KB, MB, GB, ...). False in bytes.
+    decimals : int = 2, # Number of decimals in the output
+    ):
+    assert os.path.isfile(file_path)
+    fsize = os.path.getsize(file_path)
+    if return_str:
+        return bytes2size(fsize, decimals=decimals)
+    return fsize
 
 # Cell
 def is_file(path):
@@ -391,11 +405,17 @@ def cat2int(o):
     return stack(TfmdLists(o, cat)[:])
 
 # Cell
-def cycle_dl(dl):
-    for _ in dl: _
+def cycle_dl(dl, show_progress_bar=False):
+    if show_progress_bar:
+        for _ in progress_bar(dl): _
+    else:
+        for _ in dl: _
 
-def cycle_dl_to_device(dl):
-    for bs in dl: [b.to(default_device()) for b in bs]
+def cycle_dl_to_device(dl, show_progress_bar=False):
+    if show_progress_bar:
+        for bs in progress_bar(dl): [b.to(default_device()) for b in bs]
+    else:
+        for bs in dl: [b.to(default_device()) for b in bs]
 
 def cycle_dl_estimate(dl, iters=10):
     iters = min(iters, len(dl))
