@@ -148,7 +148,7 @@ probas, target, preds = clf.get_X_preds(X[splits[0]], y[splits[0]])
 ### Multi-class, multivariate classification
 
 **Training:**
-```bash
+```python
 from tsai.all import *
 X, y, splits = get_classification_data('LSST', split_data=False)
 batch_tfms = TSStandardize(by_sample=True)
@@ -159,7 +159,7 @@ mv_clf.export("mv_clf.pkl")
 
 **Inference:** 
 
-```bash
+```python
 from tsai.inference import load_learner
 mv_clf = load_learner("models/mv_clf.pkl")
 probas, target, preds = mv_clf.get_X_preds(X[splits[0]], y[splits[0]])
@@ -184,7 +184,12 @@ reg = load_learner("models/reg.pkl")
 raw_preds, target, preds = reg.get_X_preds(X[splits[0]], y[splits[0]])
 ```
 
-RocketClassifier, MiniRocketClassifier, RocketRegressor and MiniRocketRegressor are somewhat different models (they are not actually deep learning models) and are used in a slightly different way: 
+The ROCKETs (RocketClassifier, RocketRegressor, MiniRocketClassifier, MiniRocketRegressor, MiniRocketVotingClassifier or MiniRocketVotingRegressor) are somewhat different models. They are not actually deep learning models (although they use convolutions) and are used in a different way.
+
+⚠️ You'll also need to install sktime to be able to use them. You can install it separately or use:
+```python
+pip install tsai[extras]
+```
 
 **Training:**
 

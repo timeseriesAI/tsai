@@ -264,17 +264,17 @@ It provides an overview of a time series classification task.</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Training:</strong></p>
-<div class="highlight"><pre><span></span>from tsai.all import *
-X, y, <span class="nv">splits</span> <span class="o">=</span> get_classification_data<span class="o">(</span><span class="s1">&#39;LSST&#39;</span>, <span class="nv">split_data</span><span class="o">=</span>False<span class="o">)</span>
-<span class="nv">batch_tfms</span> <span class="o">=</span> TSStandardize<span class="o">(</span><span class="nv">by_sample</span><span class="o">=</span>True<span class="o">)</span>
-<span class="nv">mv_clf</span> <span class="o">=</span> TSClassifier<span class="o">(</span>X, y, <span class="nv">splits</span><span class="o">=</span>splits, <span class="nv">path</span><span class="o">=</span><span class="s1">&#39;models&#39;</span>, <span class="nv">arch</span><span class="o">=</span>InceptionTimePlus, <span class="nv">batch_tfms</span><span class="o">=</span>batch_tfms, <span class="nv">metrics</span><span class="o">=</span>accuracy, <span class="nv">cbs</span><span class="o">=</span>ShowGraph<span class="o">())</span>
-mv_clf.fit_one_cycle<span class="o">(</span><span class="m">10</span>, 1e-2<span class="o">)</span>
-mv_clf.export<span class="o">(</span><span class="s2">&quot;mv_clf.pkl&quot;</span><span class="o">)</span>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tsai.all</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_classification_data</span><span class="p">(</span><span class="s1">&#39;LSST&#39;</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">batch_tfms</span> <span class="o">=</span> <span class="n">TSStandardize</span><span class="p">(</span><span class="n">by_sample</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">mv_clf</span> <span class="o">=</span> <span class="n">TSClassifier</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;models&#39;</span><span class="p">,</span> <span class="n">arch</span><span class="o">=</span><span class="n">InceptionTimePlus</span><span class="p">,</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="n">batch_tfms</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">accuracy</span><span class="p">,</span> <span class="n">cbs</span><span class="o">=</span><span class="n">ShowGraph</span><span class="p">())</span>
+<span class="n">mv_clf</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">1e-2</span><span class="p">)</span>
+<span class="n">mv_clf</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="s2">&quot;mv_clf.pkl&quot;</span><span class="p">)</span>
 </pre></div>
 <p><strong>Inference:</strong></p>
-<div class="highlight"><pre><span></span>from tsai.inference import load_learner
-<span class="nv">mv_clf</span> <span class="o">=</span> load_learner<span class="o">(</span><span class="s2">&quot;models/mv_clf.pkl&quot;</span><span class="o">)</span>
-probas, target, <span class="nv">preds</span> <span class="o">=</span> mv_clf.get_X_preds<span class="o">(</span>X<span class="o">[</span>splits<span class="o">[</span><span class="m">0</span><span class="o">]]</span>, y<span class="o">[</span>splits<span class="o">[</span><span class="m">0</span><span class="o">]])</span>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tsai.inference</span> <span class="kn">import</span> <span class="n">load_learner</span>
+<span class="n">mv_clf</span> <span class="o">=</span> <span class="n">load_learner</span><span class="p">(</span><span class="s2">&quot;models/mv_clf.pkl&quot;</span><span class="p">)</span>
+<span class="n">probas</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">preds</span> <span class="o">=</span> <span class="n">mv_clf</span><span class="o">.</span><span class="n">get_X_preds</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">y</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
 </pre></div>
 
 </div>
@@ -307,7 +307,10 @@ probas, target, <span class="nv">preds</span> <span class="o">=</span> mv_clf.ge
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>RocketClassifier, MiniRocketClassifier, RocketRegressor and MiniRocketRegressor are somewhat different models (they are not actually deep learning models) and are used in a slightly different way:</p>
+<p>The ROCKETs (RocketClassifier, RocketRegressor, MiniRocketClassifier, MiniRocketRegressor, MiniRocketVotingClassifier or MiniRocketVotingRegressor) are somewhat different models. They are not actually deep learning models (although they use convolutions) and are used in a different way.</p>
+<p>⚠️ You'll also need to install sktime to be able to use them. You can install it separately or use:</p>
+<div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">tsai</span><span class="p">[</span><span class="n">extras</span><span class="p">]</span>
+</pre></div>
 
 </div>
 </div>
