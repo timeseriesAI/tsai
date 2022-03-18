@@ -2,8 +2,8 @@
 
 __all__ = ['ToNumpyCategory', 'OneHot', 'TSNan2Value', 'Nan2Value', 'TSStandardize', 'TSNormalize', 'TSClipOutliers',
            'TSClip', 'TSSelfMissingness', 'TSRobustScale', 'get_stats_with_uncertainty', 'get_random_stats',
-           'TSRandomStandardize', 'TSDiff', 'TSLog', 'TSCyclicalPosition', 'TSLinearPosition', 'TSPosition',
-           'TSMissingness', 'TSPositionGaps', 'TSRollingMean', 'TSLogReturn', 'TSAdd', 'TSClipByVar',
+           'TSGaussianStandardize', 'TSRandomStandardize', 'TSDiff', 'TSLog', 'TSCyclicalPosition', 'TSLinearPosition',
+           'TSPosition', 'TSMissingness', 'TSPositionGaps', 'TSRollingMean', 'TSLogReturn', 'TSAdd', 'TSClipByVar',
            'TSShrinkDataFrame', 'TSOneHotEncoder', 'TSCategoricalEncoder', 'TSDateTimeEncoder', 'default_date_attr',
            'TSMissingnessEncoder', 'Preprocessor', 'StandardScaler', 'RobustScaler', 'Normalizer', 'BoxCox',
            'YeoJohnshon', 'Quantile', 'ReLabeler']
@@ -436,7 +436,7 @@ def get_random_stats(E_mean, S_mean, E_std, S_std):
     return new_mean, new_std
 
 
-class TSRandomStandardize(Transform):
+class TSGaussianStandardize(Transform):
     "Scales each batch using modeled mean and std based on UNCERTAINTY MODELING FOR OUT-OF-DISTRIBUTION GENERALIZATION https://arxiv.org/abs/2202.03958"
 
     parameters, order = L('E_mean', 'S_mean', 'E_std', 'S_std'), 90
@@ -452,7 +452,6 @@ class TSRandomStandardize(Transform):
         self.E_mean, self.S_mean = torch.from_numpy(E_mean), torch.from_numpy(S_mean)
         self.E_std, self.S_std = torch.from_numpy(E_std), torch.from_numpy(S_std)
         self.eps = eps
-        self.sel_vars = ifnone(sel_vars, slice(None))
         super().__init__(split_idx=split_idx, **kwargs)
 
     def encodes(self, o:TSTensor):
@@ -460,6 +459,8 @@ class TSRandomStandardize(Transform):
         new_mean = self.E_mean + self.S_mean * mult[0]
         new_std = torch.clamp(self.E_std + self.S_std * mult[1], self.eps)
         return (o - new_mean) / new_std
+
+TSRandomStandardize = TSGaussianStandardize
 
 # Cell
 class TSDiff(Transform):

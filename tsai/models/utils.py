@@ -224,12 +224,25 @@ def split_model(m): return m.backbone, m.head
 
 # Cell
 @torch.no_grad()
-def output_size_calculator(m, c_in, seq_len):
-    try: device = list(m.parameters())[0].device
-    except: device = None
-    xb = torch.randn(1, c_in, seq_len, device=device)
-    c_in, seq_len = m(xb).shape[1:]
-    return c_in, seq_len
+def output_size_calculator(mod, c_in, seq_len=None):
+    assert isinstance(mod, nn.Module)
+    return_q_len = True
+    if seq_len is None:
+        seq_len = 50
+        return_q_len = False
+    try:
+        params_0 = list(mod.parameters())[0]
+        xb = torch.rand(1, c_in, seq_len, device=params_0.device, dtype=params_0.dtype)
+    except:
+        xb = torch.rand(1, c_in, seq_len)
+    training = mod.training
+    mod.eval()
+    c_out, q_len = mod(xb).shape[1:]
+    mod.training = training
+    if return_q_len:
+        return c_out, q_len
+    else:
+        return c_out, None
 
 # Cell
 def change_model_head(model, custom_head, **kwargs):

@@ -8,7 +8,7 @@ __all__ = ['TSIdentity', 'TSShuffle_HLs', 'TSShuffleSteps', 'TSMagAddNoise', 'TS
            'TSRandomFreqNoise', 'TSRandomResizedLookBack', 'TSRandomLookBackOut', 'TSVarOut', 'TSCutOut',
            'TSTimeStepOut', 'TSRandomCropPad', 'TSMaskOut', 'TSInputDropout', 'TSTranslateX', 'TSRandomShift',
            'TSHorizontalFlip', 'TSRandomTrend', 'TSRandomRotate', 'TSVerticalFlip', 'TSResize', 'TSRandomSize',
-           'TSRandomLowRes', 'TSDownUpScale', 'TSRandomDownUpScale', 'TSRandomConv', 'TSRandomSet2Value',
+           'TSRandomLowRes', 'TSDownUpScale', 'TSRandomDownUpScale', 'TSRandomConv', 'TSRandom2Value', 'TSMask2Value',
            'all_TS_randaugs', 'RandAugment', 'TestTfm', 'get_tfm_name']
 
 # Cell
@@ -592,7 +592,6 @@ class TSMaskOut(RandTransform):
         return output
 
 # Cell
-
 class TSInputDropout(RandTransform):
     """Applies input dropout with required_grad=False"""
     order = 90
@@ -600,9 +599,11 @@ class TSInputDropout(RandTransform):
         self.magnitude, self.ex = magnitude, ex
         self.dropout = nn.Dropout(magnitude)
         super().__init__(**kwargs)
+
+    @torch.no_grad()
     def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
-        with torch.no_grad(): output = self.dropout(o)
+        output = self.dropout(o)
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
@@ -781,24 +782,40 @@ class TSRandomConv(RandTransform):
         return output
 
 # Cell
-class TSRandomSet2Value(RandTransform):
+class TSRandom2Value(RandTransform):
     "Randomly sets selected variables of type `TSTensor` to predefined value (default: np.nan)"
     order = 90
-    def __init__(self, magnitude=0.1, sel_vars=None, static=False, value=np.nan, **kwargs):
-        self.sel_vars = sel_vars if sel_vars is not None else None
+    def __init__(self, magnitude=0.1, sel_vars=None, static=False, value=np.nan, mask_fn=None, **kwargs):
+        self.sel_vars = sel_vars
         self.magnitude, self.static, self.value = magnitude , static, value
         super().__init__(**kwargs)
 
     def encodes(self, o:TSTensor):
-        if not self.magnitude or self.magnitude <= 0: return o
+        if not self.magnitude or self.magnitude <= 0 or self.magnitude >= 1: return o
         if self.static:
-            vals = torch.rand(*o.shape[:-1])
+            vals = torch.rand(*o.shape[:-1], device=device)
         else:
-            vals = torch.rand(*o.shape)
+            vals = torch.rand(*o.shape, device=device)
+        mask = vals > (1 - self.magnitude)
         if self.sel_vars is not None:
-            vals[:, ~np.isin(np.arange(o.shape[1]), self.sel_vars)] = 0
-        o[vals > (1 - self.magnitude)] = self.value
-        return o
+            mask[:, np.isin(np.arange(o.shape[1]), self.sel_vars, invert=True)] = False
+        return o.masked_fill(mask, self.value)
+
+# Cell
+class TSMask2Value(RandTransform):
+    "Randomly sets selected variables of type `TSTensor` to predefined value (default: np.nan)"
+    order = 90
+    def __init__(self, mask_fn, value=np.nan, sel_vars=None, **kwargs):
+        self.sel_vars = sel_vars
+        self.mask_fn = mask_fn
+        self.value = value
+        super().__init__(**kwargs)
+
+    def encodes(self, o:TSTensor):
+        mask = self.mask_fn(o)
+        if self.sel_vars is not None:
+            mask[:, self.sel_vars] = False
+        return o.masked_fill(mask, self.value)
 
 # Cell
 all_TS_randaugs = [

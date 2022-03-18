@@ -697,7 +697,7 @@ Taken from the great self-supervised repository created by Kerem Turgutlu.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="output_size_calculator" class="doc_header"><code>output_size_calculator</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/utils.py#L226" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>output_size_calculator</code>(<strong><code>m</code></strong>, <strong><code>c_in</code></strong>, <strong><code>seq_len</code></strong>)</p>
+<h4 id="output_size_calculator" class="doc_header"><code>output_size_calculator</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/utils.py#L226" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>output_size_calculator</code>(<strong><code>mod</code></strong>, <strong><code>c_in</code></strong>, <strong><code>seq_len</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -763,7 +763,7 @@ Taken from the great self-supervised repository created by Kerem Turgutlu.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="change_model_head" class="doc_header"><code>change_model_head</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/utils.py#L235" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>change_model_head</code>(<strong><code>model</code></strong>, <strong><code>custom_head</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="change_model_head" class="doc_header"><code>change_model_head</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/utils.py#L248" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>change_model_head</code>(<strong><code>model</code></strong>, <strong><code>custom_head</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Replaces a model's head by a custom head as long as the model has a head, head_nf, c_out and seq_len attributes</p>
 
@@ -795,7 +795,7 @@ Taken from the great self-supervised repository created by Kerem Turgutlu.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="naive_forecaster" class="doc_header"><code>naive_forecaster</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/utils.py#L241" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>naive_forecaster</code>(<strong><code>o</code></strong>, <strong><code>split</code></strong>, <strong><code>horizon</code></strong>=<em><code>1</code></em>)</p>
+<h4 id="naive_forecaster" class="doc_header"><code>naive_forecaster</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/utils.py#L254" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>naive_forecaster</code>(<strong><code>o</code></strong>, <strong><code>split</code></strong>, <strong><code>horizon</code></strong>=<em><code>1</code></em>)</p>
 </blockquote>
 
 </div>
@@ -819,7 +819,7 @@ Taken from the great self-supervised repository created by Kerem Turgutlu.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="true_forecaster" class="doc_header"><code>true_forecaster</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/utils.py#L249" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>true_forecaster</code>(<strong><code>o</code></strong>, <strong><code>split</code></strong>, <strong><code>horizon</code></strong>=<em><code>1</code></em>)</p>
+<h4 id="true_forecaster" class="doc_header"><code>true_forecaster</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/utils.py#L262" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>true_forecaster</code>(<strong><code>o</code></strong>, <strong><code>split</code></strong>, <strong><code>horizon</code></strong>=<em><code>1</code></em>)</p>
 </blockquote>
 
 </div>
@@ -863,14 +863,14 @@ Taken from the great self-supervised repository created by Kerem Turgutlu.
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(array([ 0.29703701,  1.14328602,  1.6992265 ,  2.64616778,  3.36418122,
-         3.98658992,  4.10974508,  4.36005142,  5.2332599 ,  6.21769293,
-         6.91080708,  7.72884632,  7.78637809,  7.79332501,  8.2008655 ,
-         8.38949525,  9.02412211,  9.39409598,  9.58950536, 10.3940703 ]),
- array([6.21769293, 6.91080708, 7.72884632, 7.78637809, 7.79332501,
-        8.2008655 , 8.38949525, 9.02412211, 9.39409598, 9.58950536]),
- array([ 6.91080708,  7.72884632,  7.78637809,  7.79332501,  8.2008655 ,
-         8.38949525,  9.02412211,  9.39409598,  9.58950536, 10.3940703 ]))</pre>
+<pre>(array([0.75824406, 1.44089244, 1.96599577, 2.05912096, 2.19185765,
+        2.91649055, 2.9490446 , 3.26490034, 3.73418291, 3.99290371,
+        4.84733296, 5.53770126, 5.57092399, 6.20556058, 6.92206666,
+        7.70492845, 7.84463518, 8.38710628, 9.16524866, 9.93049145]),
+ array([3.99290371, 4.84733296, 5.53770126, 5.57092399, 6.20556058,
+        6.92206666, 7.70492845, 7.84463518, 8.38710628, 9.16524866]),
+ array([4.84733296, 5.53770126, 5.57092399, 6.20556058, 6.92206666,
+        7.70492845, 7.84463518, 8.38710628, 9.16524866, 9.93049145]))</pre>
 </div>
 
 </div>
