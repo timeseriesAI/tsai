@@ -41,6 +41,18 @@ import datetime
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 cpus = defaults.cpus
 
+def get_gpu_memory():
+    import subprocess
+    command = "nvidia-smi --query-gpu=memory.total --format=csv"
+    memory_info = subprocess.check_output(command.split()).decode('ascii').split('\n')[:-1][1:]
+    memory_values = [round(int(x.split()[0])/1024, 2) for i, x in enumerate(memory_info)]
+    return memory_values
+
+def get_ram_memory():
+    import psutil
+    nbytes = psutil.virtual_memory().total
+    return round(nbytes / 1024**3, 2)
+
 def is_installed(
     module_name:str # name of the module that is being checked
     ):
@@ -279,8 +291,8 @@ def my_setup(*pkgs):
     except: 
         print(f'fastcore       : N/A')
     
-    if pkgs is not None: 
-        for pkg in listify(pkgs):
+    if pkgs: 
+        for pkg in pkgs:
             try: print(f'{pkg.__name__:15}: {pkg.__version__}')
             except: pass 
     try: 
@@ -291,9 +303,24 @@ def my_setup(*pkgs):
             print(f'device         : TPU')
         except:
             iscuda = torch.cuda.is_available()
-            print(f'n_cpus         : {cpus}')
-            print(f'device         : {device} ({torch.cuda.get_device_name(0)})' if iscuda else f'device         : {device}')
-    except: print(f'torch          : N/A')
+            if iscuda:
+                print(f'cuda device    : {device} ({torch.cuda.get_device_name(0)})' if iscuda else f'cuda device    : {device}')
+            else:
+                print(f'cuda device    : N/A')
+    except: pass
+    try:
+        print(f'n_cpus         : {cpus}')
+    except:
+        print(f'n_cpus         : N/A')
+    try:
+        print(f'RAM            : {get_ram_memory()} GB')
+    except:
+        print(f'RAM            : N/A')
+    try:
+        print(f'GPU memory     : {get_gpu_memory()} GB')
+    except:
+        print(f'GPU memory     : N/A')
+        
         
 computer_setup = my_setup
 

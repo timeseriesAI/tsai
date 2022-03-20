@@ -481,9 +481,11 @@ class NumpyDataLoader(TfmdDL):
     idxs = None
     do_item = noops # create batch returns indices
     def __init__(self, dataset, bs=64, shuffle=True, drop_last=True, num_workers=None, verbose=False, do_setup=True, batch_tfms=None,
-                 weights=None, partial_n=None, **kwargs):
+                 weights=None, partial_n=None, sampler=None, **kwargs):
         '''batch_tfms == after_batch (either can be used)'''
 
+        if sampler is not None and shuffle:
+            raise ValueError('sampler option is mutually exclusive with shuffle')
         if num_workers is None: num_workers = min(16, defaults.cpus)
         for nm in _batch_tfms:
             if nm == 'after_batch':
@@ -495,7 +497,7 @@ class NumpyDataLoader(TfmdDL):
         if isinstance(partial_n, float): partial_n = int(round(partial_n * len(dataset)))
         if partial_n is not None: bs = min(bs, partial_n)
         if weights is not None: weights = weights / weights.sum()
-        self.weights, self.partial_n = weights, partial_n
+        self.weights, self.partial_n, self.sampler = weights, partial_n, sampler
         super().__init__(dataset, bs=bs, shuffle=shuffle, drop_last=drop_last, num_workers=num_workers, **kwargs)
         if do_setup:
             for nm in _batch_tfms:
@@ -506,7 +508,7 @@ class NumpyDataLoader(TfmdDL):
     def new(self, dataset=None, cls=None, **kwargs):
         if dataset is None: dataset = self.dataset
         if cls is None: cls = type(self)
-        cur_kwargs = dict(dataset=dataset, weights=self.weights, partial_n=self.partial_n,
+        cur_kwargs = dict(dataset=dataset, weights=self.weights, partial_n=self.partial_n, sampler=self.sampler,
                           num_workers=self.fake_l.num_workers, pin_memory=self.pin_memory, timeout=self.timeout,
                           bs=self.bs, shuffle=self.shuffle, drop_last=self.drop_last, indexed=self.indexed, device=self.device)
         for n in self._methods:
@@ -546,6 +548,7 @@ class NumpyDataLoader(TfmdDL):
 
     def get_idxs(self):
         if self.n==0: return []
+        if self.sampler: return np.array(list(iter(self.sampler)))
         if self.partial_n is not None: n = min(self.partial_n, self.n)
         else: n = self.n
         if self.weights is not None:
@@ -767,7 +770,7 @@ class NumpyDataLoaders(DataLoaders):
 
     @classmethod
     def from_dsets(cls, *ds, path='.', bs=64, num_workers=0, batch_tfms=None, device=None, shuffle_train=True, drop_last=True,
-                   weights=None, partial_n=None, **kwargs):
+                   weights=None, partial_n=None, sampler=None, **kwargs):
         device = ifnone(device, default_device())
         if batch_tfms is not None and not isinstance(batch_tfms, list): batch_tfms = [batch_tfms]
         default = (shuffle_train,) + (False,) * (len(ds)-1)
@@ -779,8 +782,10 @@ class NumpyDataLoaders(DataLoaders):
         if weights is None: weights = [None] * len(ds)
         if not is_listy(partial_n): partial_n = [partial_n]
         if len(partial_n) != len(ds): partial_n = partial_n * len(ds)
-        loaders = [cls._dl_type(d, bs=b, num_workers=num_workers, batch_tfms=batch_tfms, weights=w, partial_n=n, **k) \
-                   for d,k,b,w,n in zip(ds, kwargs, bs, weights, partial_n)]
+        if not is_listy(sampler): sampler = [sampler]
+        if len(sampler) != len(ds): sampler = sampler * len(ds)
+        loaders = [cls._dl_type(d, bs=b, num_workers=num_workers, batch_tfms=batch_tfms, weights=w, partial_n=n, sampler=s, **k) \
+                   for d,k,b,w,n,s in zip(ds, kwargs, bs, weights, partial_n, sampler)]
         return cls(*loaders, path=path, device=device)
 
 
@@ -798,7 +803,7 @@ def get_c(dls):
     return len(vocab)
 
 # Cell
-def get_best_dl_params(dl, n_iters=10, num_workers=[0, 1, 2, 4, 8], pin_memory=False, prefetch_factor=[2, 4, 8], return_best=True, verbose=True):
+def get_best_dl_params(dl, n_iters=10, num_workers=[0, 1, 2, 4, 8], pin_memory=[True, False], prefetch_factor=[2, 4, 8], return_best=True, verbose=True):
 
     if not torch.cuda.is_available():
         num_workers = 0
@@ -854,7 +859,8 @@ def get_best_dl_params(dl, n_iters=10, num_workers=[0, 1, 2, 4, 8], pin_memory=F
         dl.fake_l.pin_memory = best_pm
 
         # prefetch_factor
-        if not prefetch_factor: best_pf = pf
+        if best_nw == 0: best_pf = 2
+        elif not prefetch_factor: best_pf = pf
         elif isinstance(prefetch_factor, Integral): best_pf = prefetch_factor
         else:
             best_time = np.inf
@@ -893,7 +899,7 @@ def get_best_dl_params(dl, n_iters=10, num_workers=[0, 1, 2, 4, 8], pin_memory=F
 
     return dl
 
-def get_best_dls_params(dls, n_iters=10, num_workers=[0, 1, 2, 4, 8], pin_memory=False, prefetch_factor=[2, 4, 8], return_best=True, verbose=True):
+def get_best_dls_params(dls, n_iters=10, num_workers=[0, 1, 2, 4, 8], pin_memory=[True, False], prefetch_factor=[2, 4, 8], return_best=True, verbose=True):
 
     for i in range(len(dls.loaders)):
         try:
@@ -905,7 +911,8 @@ def get_best_dls_params(dls, n_iters=10, num_workers=[0, 1, 2, 4, 8], pin_memory
 
 # Cell
 def get_ts_dls(X, y=None, splits=None, sel_vars=None, sel_steps=None, tfms=None, inplace=True,
-            path='.', bs=64, batch_tfms=None, num_workers=0, device=None, shuffle_train=True, drop_last=True, weights=None, partial_n=None, **kwargs):
+               path='.', bs=64, batch_tfms=None, num_workers=0, device=None, shuffle_train=True, drop_last=True,
+               weights=None, partial_n=None, sampler=None, **kwargs):
     if splits is None: splits = (L(np.arange(len(X)).tolist()), L([]))
     create_dir(path, verbose=False)
     dsets = TSDatasets(X, y, splits=splits, sel_vars=sel_vars, sel_steps=sel_steps, tfms=tfms, inplace=inplace)
@@ -913,17 +920,20 @@ def get_ts_dls(X, y=None, splits=None, sel_vars=None, sel_steps=None, tfms=None,
         assert len(X) == len(weights)
         if splits is not None: weights = [weights[split] if i == 0 else None for i,split in enumerate(splits)] # weights only applied to train set
     dls   = TSDataLoaders.from_dsets(dsets.train, dsets.valid, path=path, bs=bs, batch_tfms=batch_tfms, num_workers=num_workers,
-                                     device=device, shuffle_train=shuffle_train, drop_last=drop_last, weights=weights, partial_n=partial_n, **kwargs)
+                                     device=device, shuffle_train=shuffle_train, drop_last=drop_last, weights=weights,
+                                     partial_n=partial_n, sampler=sampler, **kwargs)
     return dls
 
 def get_ts_dl(X, y=None, sel_vars=None, sel_steps=None, tfms=None, inplace=True,
-            path='.', bs=64, batch_tfms=None, num_workers=0, device=None, shuffle_train=True, drop_last=True, weights=None, partial_n=None, **kwargs):
+              path='.', bs=64, batch_tfms=None, num_workers=0, device=None, shuffle_train=True, drop_last=True, weights=None,
+              partial_n=None, sampler=None, **kwargs):
     splits = (L(np.arange(len(X)).tolist()), L([]))
     create_dir(path, verbose=False)
     dsets = TSDatasets(X, y, splits=splits, sel_vars=sel_vars, sel_steps=sel_steps, tfms=tfms, inplace=inplace, **kwargs)
     if not is_listy(partial_n): partial_n = [partial_n]
     dls   = TSDataLoaders.from_dsets(dsets.train, path=path, bs=bs, batch_tfms=batch_tfms, num_workers=num_workers,
-                                     device=device, shuffle_train=shuffle_train, drop_last=drop_last, weights=weights, partial_n=partial_n, **kwargs)
+                                     device=device, shuffle_train=shuffle_train, drop_last=drop_last, weights=weights,
+                                     partial_n=partial_n, sampler=sampler, **kwargs)
     return dls.train
 
 get_tsimage_dls = get_ts_dls
