@@ -304,9 +304,10 @@ def my_setup(*pkgs):
         except:
             iscuda = torch.cuda.is_available()
             if iscuda:
-                print(f'cuda device    : {device} ({torch.cuda.get_device_name(0)})' if iscuda else f'cuda device    : {device}')
+                device_count = torch.cuda.device_count()
+                print(f'device         : {device_count} {device} ({[torch.cuda.get_device_name(i) for i in range(device_count)]})')
             else:
-                print(f'cuda device    : N/A')
+                print(f'device         : {device}')
     except: pass
     try:
         print(f'n_cpus         : {cpus}')
