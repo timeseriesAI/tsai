@@ -219,7 +219,9 @@ You can use tsai for forecast in the following scenarios:
 * univariate or multivariate time series output
 * single or multi-step ahead
 
-You'll need to prepare X (time series input) and the target y (see [documentation](https://timeseriesai.github.io/tsai/data.preparation.html)). The model will configure a head to yield an output with the same shape as the target input y. 
+You'll need to:
+* prepare X (time series input) and the target y (see [documentation](https://timeseriesai.github.io/tsai/data.preparation.html))
+* select one of tsai's models ending in Plus (TSTPlus, InceptionTimePlus, TSiTPlus, etc). The model will auto-configure a head to yield an output with the same shape as the target input y. 
 
 #### Single step
 

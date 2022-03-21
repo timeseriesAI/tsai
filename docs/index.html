@@ -349,7 +349,11 @@ It provides an overview of a time series classification task.</p>
 <li>univariate or multivariate time series output</li>
 <li>single or multi-step ahead</li>
 </ul>
-<p>You'll need to prepare X (time series input) and the target y (see <a href="https://timeseriesai.github.io/tsai/data.preparation.html">documentation</a>). The model will configure a head to yield an output with the same shape as the target input y.</p>
+<p>You'll need to:</p>
+<ul>
+<li>prepare X (time series input) and the target y (see <a href="https://timeseriesai.github.io/tsai/data.preparation.html">documentation</a>)</li>
+<li>select one of tsai's models ending in Plus (TSTPlus, InceptionTimePlus, TSiTPlus, etc). The model will auto-configure a head to yield an output with the same shape as the target input y. </li>
+</ul>
 
 </div>
 </div>
