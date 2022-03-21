@@ -337,7 +337,26 @@ It provides an overview of a time series classification task.</p>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Univariate-Forecasting">Univariate Forecasting<a class="anchor-link" href="#Univariate-Forecasting"> </a></h3>
+<h3 id="Forecasting">Forecasting<a class="anchor-link" href="#Forecasting"> </a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>You can use tsai for forecast in the following scenarios:</p>
+<ul>
+<li>univariate or multivariate time series input</li>
+<li>univariate or multivariate time series output</li>
+<li>single or multi-step ahead</li>
+</ul>
+<p>You'll need to prepare X (time series input) and the target y (see <a href="https://timeseriesai.github.io/tsai/data.preparation.html">documentation</a>). The model will configure a head to yield an output with the same shape as the target input y.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Single-step">Single step<a class="anchor-link" href="#Single-step"> </a></h4>
 </div>
 </div>
 </div>
@@ -349,15 +368,53 @@ It provides an overview of a time series classification task.</p>
 <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">SlidingWindow</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="n">horizon</span><span class="o">=</span><span class="mi">1</span><span class="p">)(</span><span class="n">ts</span><span class="p">)</span>
 <span class="n">splits</span> <span class="o">=</span> <span class="n">TimeSplitter</span><span class="p">(</span><span class="mi">235</span><span class="p">)(</span><span class="n">y</span><span class="p">)</span> 
 <span class="n">batch_tfms</span> <span class="o">=</span> <span class="n">TSStandardize</span><span class="p">()</span>
-<span class="n">fcst</span> <span class="o">=</span> <span class="n">TSForecaster</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;models&#39;</span><span class="p">,</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="n">batch_tfms</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">arch</span><span class="o">=</span><span class="n">TST</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">mae</span><span class="p">,</span> <span class="n">cbs</span><span class="o">=</span><span class="n">ShowGraph</span><span class="p">())</span>
+<span class="n">fcst</span> <span class="o">=</span> <span class="n">TSForecaster</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;models&#39;</span><span class="p">,</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="n">batch_tfms</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">arch</span><span class="o">=</span><span class="n">TSTPlus</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">mae</span><span class="p">,</span> <span class="n">cbs</span><span class="o">=</span><span class="n">ShowGraph</span><span class="p">())</span>
 <span class="n">fcst</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">)</span>
 <span class="n">fcst</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="s2">&quot;fcst.pkl&quot;</span><span class="p">)</span>
 </pre></div>
 <p><strong>Inference:</strong></p>
 <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tsai.inference</span> <span class="kn">import</span> <span class="n">load_learner</span>
-<span class="n">fcst</span> <span class="o">=</span> <span class="n">load_learner</span><span class="p">(</span><span class="s2">&quot;models/fcst.pkl&quot;</span><span class="p">)</span>
+<span class="n">fcst</span> <span class="o">=</span> <span class="n">load_learner</span><span class="p">(</span><span class="s2">&quot;models/fcst.pkl&quot;</span><span class="p">,</span> <span class="n">cpu</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">raw_preds</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">preds</span> <span class="o">=</span> <span class="n">fcst</span><span class="o">.</span><span class="n">get_X_preds</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">y</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+<span class="n">raw_preds</span><span class="o">.</span><span class="n">shape</span>
 </pre></div>
+<p>output: torch.Size([2940, 1])</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Multi-step">Multi-step<a class="anchor-link" href="#Multi-step"> </a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This example show how to build a 3-step ahead univariate forecast.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Training:</strong></p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tsai.all</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">get_forecasting_time_series</span><span class="p">(</span><span class="s2">&quot;Sunspots&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">SlidingWindow</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="n">horizon</span><span class="o">=</span><span class="mi">3</span><span class="p">)(</span><span class="n">ts</span><span class="p">)</span>
+<span class="n">splits</span> <span class="o">=</span> <span class="n">TimeSplitter</span><span class="p">(</span><span class="mi">235</span><span class="p">)(</span><span class="n">y</span><span class="p">)</span> 
+<span class="n">batch_tfms</span> <span class="o">=</span> <span class="n">TSStandardize</span><span class="p">()</span>
+<span class="n">fcst</span> <span class="o">=</span> <span class="n">TSForecaster</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;models&#39;</span><span class="p">,</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="n">batch_tfms</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">arch</span><span class="o">=</span><span class="n">TSTPlus</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">mae</span><span class="p">,</span> <span class="n">cbs</span><span class="o">=</span><span class="n">ShowGraph</span><span class="p">())</span>
+<span class="n">fcst</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">)</span>
+<span class="n">fcst</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="s2">&quot;fcst.pkl&quot;</span><span class="p">)</span>
+</pre></div>
+<p><strong>Inference:</strong></p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tsai.inference</span> <span class="kn">import</span> <span class="n">load_learner</span>
+<span class="n">fcst</span> <span class="o">=</span> <span class="n">load_learner</span><span class="p">(</span><span class="s2">&quot;models/fcst.pkl&quot;</span><span class="p">,</span> <span class="n">cpu</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">raw_preds</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">preds</span> <span class="o">=</span> <span class="n">fcst</span><span class="o">.</span><span class="n">get_X_preds</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">y</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+<span class="n">raw_preds</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+<p>output: torch.Size([2938, 3])</p>
 
 </div>
 </div>
