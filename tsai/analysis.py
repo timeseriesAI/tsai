@@ -99,6 +99,35 @@ def plot_confusion_matrix(self:Learner, ds_idx=1, dl=None, thr=.5, normalize=Fal
 
 # Cell
 @patch
+def top_losses(self:Learner,
+    X, # array-like object representing the independent variables
+    y, # array-like object representing the target
+    k:int=9, # Optional. #items to plot
+    largest=True, # Flag to show largest or smallest losses
+    bs:int=64, # batch size
+    ):
+    *_, losses = self.get_X_preds(X, y, bs=bs, with_loss=True)
+    top_losses, idxs = losses.topk(ifnone(k, len(losses)), largest=largest)
+    idxs = idxs.tolist()
+    return top_losses, idxs
+
+@patch
+def plot_top_losses(self:Learner,
+    X, # array-like object representing the independent variables
+    y, # array-like object representing the target
+    k:int=9, # Optional. #items to plot
+    largest=True, # Flag to show largest or smallest losses
+    bs:int=64, # batch size
+    **kwargs, # show_batch kwargs
+    ):
+    *_, losses = self.get_X_preds(X, y, bs=bs, with_loss=True)
+    idxs = losses.topk(ifnone(k, len(losses)), largest=largest)[1].tolist()
+    dl = self.dls.valid.new_dl(X[idxs], y=y[idxs], bs=k)
+    b = dl.one_batch()
+    dl.show_batch(b, max_n=k, **kwargs)
+
+# Cell
+@patch
 def feature_importance(self:Learner,
     X=None, # array-like object containing the time series. If None, all data in the validation set will be used.
     y=None, # array-like object containing the targets. If None, all targets in the validation set will be used.
