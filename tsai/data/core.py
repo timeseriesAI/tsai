@@ -72,7 +72,9 @@ class TSTensor(NumpyTensor):
     def len(self): return self.shape[-1]
 
     def __repr__(self):
-        if self.ndim >= 3:
+        if self.ndim > 3:
+            return f'TSTensor(shape:{tuple(self.shape)}, device={self.device})'
+        elif self.ndim == 3:
             return f'TSTensor(samples:{self.shape[-3]}, vars:{self.shape[-2]}, len:{self.shape[-1]}, device={self.device})'
         elif self.ndim == 2:
             return f'TSTensor(vars:{self.shape[-2]}, len:{self.shape[-1]}, device={self.device})'
@@ -480,7 +482,7 @@ _batch_tfms = ('after_item','before_batch','after_batch')
 class NumpyDataLoader(TfmdDL):
     idxs = None
     do_item = noops # create batch returns indices
-    def __init__(self, dataset, bs=64, shuffle=True, drop_last=True, num_workers=None, verbose=False, do_setup=True, batch_tfms=None, sort=True,
+    def __init__(self, dataset, bs=64, shuffle=True, drop_last=True, num_workers=0, verbose=False, do_setup=True, batch_tfms=None, sort=True,
                  weights=None, partial_n=None, sampler=None, **kwargs):
 
         if sampler is not None and shuffle:

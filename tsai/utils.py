@@ -405,13 +405,13 @@ def cat2int(o):
     return stack(TfmdLists(o, cat)[:])
 
 # Cell
-def cycle_dl(dl, show_progress_bar=False):
+def cycle_dl(dl, show_progress_bar=True):
     if show_progress_bar:
         for _ in progress_bar(dl): _
     else:
         for _ in dl: _
 
-def cycle_dl_to_device(dl, show_progress_bar=False):
+def cycle_dl_to_device(dl, show_progress_bar=True):
     if show_progress_bar:
         for bs in progress_bar(dl): [b.to(default_device()) for b in bs]
     else:

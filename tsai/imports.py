@@ -305,14 +305,15 @@ def my_setup(*pkgs):
             iscuda = torch.cuda.is_available()
             if iscuda:
                 device_count = torch.cuda.device_count()
-                print(f'device         : {device_count} {device} ({[torch.cuda.get_device_name(i) for i in range(device_count)]})')
+                gpu_text = 'gpu' if device_count == 1 else 'gpus'
+                print(f'device         : {device_count} {gpu_text} ({[torch.cuda.get_device_name(i) for i in range(device_count)]})')
             else:
                 print(f'device         : {device}')
     except: pass
     try:
-        print(f'n_cpus         : {cpus}')
+        print(f'cpu_cores      : {cpus}')
     except:
-        print(f'n_cpus         : N/A')
+        print(f'cpu_cores      : N/A')
     try:
         print(f'RAM            : {get_ram_memory()} GB')
     except:

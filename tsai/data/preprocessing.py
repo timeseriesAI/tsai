@@ -402,7 +402,8 @@ class TSRobustScale(Transform):
     def __repr__(self): return f'{self.__class__.__name__}(quantile_range={self.quantile_range}, use_single_batch={self.use_single_batch})'
 
 # Cell
-def get_stats_with_uncertainty(o, sel_vars=None, bs=64, n_trials=None, axis=(0,2)):
+def get_stats_with_uncertainty(o, sel_vars=None, sel_vars_zero_mean_unit_var=False, bs=64, n_trials=None, axis=(0,2)):
+    o_dtype = o.dtype
     if n_trials is None: n_trials = len(o) // bs
     random_idxs = np.random.choice(len(o), n_trials * bs, n_trials * bs > len(o))
     oi_mean = []
@@ -417,16 +418,22 @@ def get_stats_with_uncertainty(o, sel_vars=None, bs=64, n_trials=None, axis=(0,2
             oi = o[idxs].compute()
         else:
             oi = o[idxs]
-        oi_mean.append(np.nanmean(oi, axis=axis, keepdims=True))
-        oi_std.append(np.nanstd(oi, axis=axis, keepdims=True))
+        oi_mean.append(np.nanmean(oi.astype('float32'), axis=axis, keepdims=True))
+        oi_std.append(np.nanstd(oi.astype('float32'), axis=axis, keepdims=True))
     oi_mean = np.concatenate(oi_mean)
     oi_std = np.concatenate(oi_std)
-    E_mean, S_mean = np.mean(oi_mean, axis=0, keepdims=True), np.std(oi_mean, axis=0, keepdims=True)
-    E_std, S_std = np.mean(oi_std, axis=0, keepdims=True), np.std(oi_std, axis=0, keepdims=True)
+    E_mean = np.nanmean(oi_mean, axis=0, keepdims=True).astype(o_dtype)
+    S_mean = np.nanstd(oi_mean, axis=0, keepdims=True).astype(o_dtype)
+    E_std = np.nanmean(oi_std, axis=0, keepdims=True).astype(o_dtype)
+    S_std = np.nanstd(oi_std, axis=0, keepdims=True).astype(o_dtype)
     if sel_vars is not None:
-        S_mean[:, sel_vars] = 0 # no uncertainty
-        S_std[:, sel_vars] = 0  # no uncertainty
-    return E_mean, S_mean, E_std, S_std
+        non_sel_vars = np.isin(np.arange(o.shape[1]), sel_vars, invert=True)
+        if sel_vars_zero_mean_unit_var:
+            E_mean[:, non_sel_vars] = 0 # zero mean
+            E_std[:, non_sel_vars] = 1  # unit var
+        S_mean[:, non_sel_vars] = 0 # no uncertainty
+        S_std[:, non_sel_vars] = 0  # no uncertainty
+    return np.stack([E_mean, S_mean, E_std, S_std])
 
 
 def get_random_stats(E_mean, S_mean, E_std, S_std):
