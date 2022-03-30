@@ -16,6 +16,7 @@ from IPython.display import display
 import importlib
 import warnings
 from warnings import warn
+import psutil
 
 import torch
 import torch.nn as nn
@@ -49,7 +50,6 @@ def get_gpu_memory():
     return memory_values
 
 def get_ram_memory():
-    import psutil
     nbytes = psutil.virtual_memory().total
     return round(nbytes / 1024**3, 2)
 
@@ -66,7 +66,6 @@ def is_installed(
 
 def is_lab():
     import re
-    import psutil
     return any(re.search('jupyter-lab', x) for x in psutil.Process().parent().cmdline())
 
 def is_colab():
