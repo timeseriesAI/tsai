@@ -22,7 +22,8 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'named_partial', 'yaml2dict', 'str2list', 'str2index', 'get_cont_cols', 'get_cat_cols', 'alphabet',
            'ALPHABET', 'get_mapping', 'map_array', 'log_tfm', 'to_sincos_time', 'plot_feature_dist',
            'rolling_moving_average', 'ffill_sequence', 'bfill_sequence', 'fbfill_sequence', 'dummify',
-           'shuffle_along_axis', 'analyze_feature', 'analyze_array', 'get_relpath', 'is_zarr', 'is_dask', 'is_memmap']
+           'shuffle_along_axis', 'analyze_feature', 'analyze_array', 'get_relpath', 'is_zarr', 'is_dask', 'is_memmap',
+           'split_in_chunks']
 
 # Cell
 import string
@@ -1367,3 +1368,11 @@ def get_relpath(path):
 def is_zarr(o): return hasattr(o, 'oindex')
 def is_dask(o): return hasattr(o, 'compute')
 def is_memmap(o): return isinstance(o, np.memmap)
+
+# Cell
+def split_in_chunks(o, chunksize, start=0, drop_last=False):
+    stop = ((len(o) - start)//chunksize*chunksize) if drop_last else None
+    chunk_list = []
+    for s in o[start:stop:chunksize]:
+        chunk_list.append(o[s:s+chunksize])
+    return chunk_list
