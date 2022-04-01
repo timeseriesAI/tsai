@@ -310,9 +310,9 @@ def my_setup(*pkgs):
                 print(f'device         : {device}')
     except: pass
     try:
-        print(f'cpu_cores      : {cpus}')
+        print(f'cpu cores      : {cpus}')
     except:
-        print(f'cpu_cores      : N/A')
+        print(f'cpu cores      : N/A')
     try:
         print(f'RAM            : {get_ram_memory()} GB')
     except:

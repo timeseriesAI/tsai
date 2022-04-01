@@ -22,7 +22,7 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'named_partial', 'yaml2dict', 'str2list', 'str2index', 'get_cont_cols', 'get_cat_cols', 'alphabet',
            'ALPHABET', 'get_mapping', 'map_array', 'log_tfm', 'to_sincos_time', 'plot_feature_dist',
            'rolling_moving_average', 'ffill_sequence', 'bfill_sequence', 'fbfill_sequence', 'dummify',
-           'shuffle_along_axis', 'analyze_feature', 'analyze_array', 'get_relpath']
+           'shuffle_along_axis', 'analyze_feature', 'analyze_array', 'get_relpath', 'is_zarr', 'is_dask', 'is_memmap']
 
 # Cell
 import string
@@ -406,22 +406,32 @@ def cat2int(o):
 
 # Cell
 def cycle_dl(dl, show_progress_bar=True):
-    if show_progress_bar:
-        for _ in progress_bar(dl): _
-    else:
-        for _ in dl: _
+    try:
+        if show_progress_bar:
+            for _ in progress_bar(dl): _
+        else:
+            for _ in dl: _
+    except KeyboardInterrupt:
+        pass
+
 
 def cycle_dl_to_device(dl, show_progress_bar=True):
-    if show_progress_bar:
-        for bs in progress_bar(dl): [b.to(default_device()) for b in bs]
-    else:
-        for bs in dl: [b.to(default_device()) for b in bs]
+    try:
+        if show_progress_bar:
+            for bs in progress_bar(dl): [b.to(default_device()) for b in bs]
+        else:
+            for bs in dl: [b.to(default_device()) for b in bs]
+    except KeyboardInterrupt:
+        pass
 
 def cycle_dl_estimate(dl, iters=10):
     iters = min(iters, len(dl))
     iterator = iter(dl)
     timer.start(False)
-    for _ in range(iters): next(iterator)
+    try:
+        for _ in range(iters): next(iterator)
+    except KeyboardInterrupt:
+        pass
     t = timer.stop()
     return (t/iters * len(dl)).total_seconds()
 
@@ -1352,3 +1362,8 @@ def get_relpath(path):
         return relpaths
     else:
         return os.path.relpath(path, current_path)
+
+# Cell
+def is_zarr(o): return hasattr(o, 'oindex')
+def is_dask(o): return hasattr(o, 'compute')
+def is_memmap(o): return isinstance(o, np.memmap)
