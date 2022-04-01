@@ -223,16 +223,31 @@ class NumpyDataset():
 
 
 class TSDataset():
-    def __init__(self, X, y=None, types=None, sel_vars=None, sel_steps=None):
-        self.X, self.y, self.types = to3darray(X), y, types
+    _types = TSTensor, TSLabelTensor
+    def __init__(self, X, y=None, types=None, sel_vars=None, sel_steps=None, split=None):
+        self.X, self.y, self.types, self.split = X, y, types, split
         self.sel_vars = ifnone(sel_vars, slice(None))
         self.sel_steps = ifnone(sel_steps,slice(None))
     def __getitem__(self, idx):
-        if self.types is None: return (self.X[idx, self.sel_vars, self.sel_steps], self.y[idx]) if self.y is not None else (self.X[idx])
+        if self.split is not None:
+            idx = split[idx]
+        if hasattr(self.X, 'oindex'):
+            X = self._types[0](self.X.oindex[idx, self.sel_vars, self.sel_steps])
+        elif hasattr(self.X, 'compute'):
+            X = self._types[0](self.X[idx, self.sel_vars, self.sel_steps].compute())
         else:
-            return (self.types[0](self.X[idx, self.sel_vars, self.sel_steps]), self.types[1](self.y[idx])) if self.y is not None \
-            else (self.types[0](self.X[idx]))
-    def __len__(self): return len(self.X)
+            X = self._types[0](self.X[idx, self.sel_vars, self.sel_steps])
+        if self.y is None:
+            return (X, )
+        if hasattr(self.y, 'oindex'):
+            y = self._types[1](self.y.oindex[idx])
+        elif hasattr(self.X, 'compute'):
+            y = self._types[1](self.y[idx].compute())
+        else:
+            y = self._types[1](self.y.oindex[idx])
+        return (X, y)
+    def __len__(self): return len(self.X) if self.split is None else len(self.split)
+
 
 # Cell
 def _flatten_list(l):
@@ -482,7 +497,7 @@ _batch_tfms = ('after_item','before_batch','after_batch')
 class NumpyDataLoader(TfmdDL):
     idxs = None
     do_item = noops # create batch returns indices
-    def __init__(self, dataset, bs=64, shuffle=True, drop_last=True, num_workers=0, verbose=False, do_setup=True, batch_tfms=None, sort=True,
+    def __init__(self, dataset, bs=64, shuffle=False, drop_last=False, num_workers=0, verbose=False, do_setup=True, batch_tfms=None, sort=True,
                  weights=None, partial_n=None, sampler=None, **kwargs):
 
         if sampler is not None and shuffle:
@@ -782,8 +797,9 @@ class NumpyDataLoaders(DataLoaders):
                    weights=None, partial_n=None, sampler=None, sort=True, **kwargs):
         device = ifnone(device, default_device())
         if batch_tfms is not None and not isinstance(batch_tfms, list): batch_tfms = [batch_tfms]
-        default = (shuffle_train,) + (False,) * (len(ds)-1)
-        defaults = {'shuffle': default, 'drop_last': default}
+        shuffle_default = (shuffle_train,) + (False,) * (len(ds)-1)
+        drop_last_default = (drop_last,) + (False,) * (len(ds)-1)
+        defaults = {'shuffle': shuffle_default, 'drop_last': drop_last_default}
         kwargs = merge(defaults, {k: tuplify(v, match=ds) for k,v in kwargs.items()})
         kwargs = [{k: v[i] for k,v in kwargs.items()} for i in range_of(ds)]
         if not is_listy(bs): bs = [bs]

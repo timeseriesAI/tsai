@@ -1370,9 +1370,10 @@ def is_dask(o): return hasattr(o, 'compute')
 def is_memmap(o): return isinstance(o, np.memmap)
 
 # Cell
-def split_in_chunks(o, chunksize, start=0, drop_last=False):
+def split_in_chunks(o, chunksize, start=0, shuffle=False, drop_last=False):
     stop = ((len(o) - start)//chunksize*chunksize) if drop_last else None
     chunk_list = []
-    for s in o[start:stop:chunksize]:
-        chunk_list.append(o[s:s+chunksize])
+    for s in np.arange(len(o))[start:stop:chunksize]:
+        chunk_list.append(np.random.permutation(o[slice(s, s+chunksize)]) if shuffle else o[slice(s, s+chunksize)])
+    if shuffle: random.shuffle(chunk_list)
     return chunk_list
