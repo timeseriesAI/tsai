@@ -27,17 +27,18 @@ from ..utils import *
 class NumpyTensor(TensorBase):
     "Returns a `tensor` with subclass `NumpyTensor` that has a show method"
 
-    def __new__(cls, o, **kwargs):
+    def __new__(cls, o, dtype=None, device=None, **kwargs):
+        if dtype is not None or device is not None: o = torch.as_tensor(o, dtype=dtype, device=device)
         res = cast(o, cls)
         for k,v in kwargs.items(): setattr(res, k, v)
         return res
 
     @property
-    def data(self): return cast(self, Tensor).data
+    def data(self): return cast(self, Tensor)
 
     def __repr__(self):
-        if self.ndim > 0: return f'NumpyTensor(shape:{tuple(self.shape)}, device={self.device})'
-        else: return f'NumpyTensor([{self}], device={self.device})'
+        if self.ndim > 0: return f'NumpyTensor(shape:{tuple(self.shape)}, device={self.device}, dtype={self.dtype})'
+        else: return f'NumpyTensor([{self}], device={self.device}, dtype={self.dtype})'
 
 
     def show(self, ax=None, ctx=None, title=None, **kwargs):
@@ -73,14 +74,14 @@ class TSTensor(NumpyTensor):
 
     def __repr__(self):
         if self.ndim > 3:
-            return f'TSTensor(shape:{tuple(self.shape)}, device={self.device})'
+            return f'TSTensor(shape:{tuple(self.shape)}, device={self.device}, dtype={self.dtype})'
         elif self.ndim == 3:
-            return f'TSTensor(samples:{self.shape[-3]}, vars:{self.shape[-2]}, len:{self.shape[-1]}, device={self.device})'
+            return f'TSTensor(samples:{self.shape[-3]}, vars:{self.shape[-2]}, len:{self.shape[-1]}, device={self.device}, dtype={self.dtype})'
         elif self.ndim == 2:
-            return f'TSTensor(vars:{self.shape[-2]}, len:{self.shape[-1]}, device={self.device})'
+            return f'TSTensor(vars:{self.shape[-2]}, len:{self.shape[-1]}, device={self.device}, dtype={self.dtype})'
         elif self.ndim == 1:
-            return f'TSTensor(len:{self.shape[-1]}, device={self.device})'
-        else: return f'TSTensor([{self}], device={self.device})'
+            return f'TSTensor(len:{self.shape[-1]}, device={self.device}, dtype={self.dtype})'
+        else: return f'TSTensor([{self}], device={self.device}, dtype={self.dtype})'
 
 
 class ToTSTensor(Transform):
@@ -100,12 +101,12 @@ def show_tuple(tup, **kwargs):
 class TSLabelTensor(NumpyTensor):
     def __repr__(self):
         if self.ndim == 0: return f'{self}'
-        else: return f'TSLabelTensor(shape:{tuple(self.shape)})'
+        else: return f'TSLabelTensor(shape:{tuple(self.shape)}, device={self.device}, dtype={self.dtype})'
 
 class TSMaskTensor(NumpyTensor):
     def __repr__(self):
         if self.ndim == 0: return f'{self}'
-        else: return f'TSMaskTensor(shape:{tuple(self.shape)})'
+        else: return f'TSMaskTensor(shape:{tuple(self.shape)}, device={self.device}, dtype={self.dtype})'
 
 # Cell
 class ToFloat(Transform):
@@ -224,30 +225,31 @@ class NumpyDataset():
 
 class TSDataset():
     _types = TSTensor, TSLabelTensor
-    def __init__(self, X, y=None, types=None, sel_vars=None, sel_steps=None, split=None):
-        self.X, self.y, self.types, self.split = X, y, types, split
+    def __init__(self, X, y=None, split=None, sel_vars=None, sel_steps=None, types=None, dtype=None, device=None):
+        self.X, self.y, self.split = X, y, split
         self.sel_vars = ifnone(sel_vars, slice(None))
         self.sel_steps = ifnone(sel_steps,slice(None))
+        if types is not None: types = listify(types)
+        self.dtype, self.device = dtype, device
     def __getitem__(self, idx):
         if self.split is not None:
             idx = split[idx]
         if hasattr(self.X, 'oindex'):
-            X = self._types[0](self.X.oindex[idx, self.sel_vars, self.sel_steps])
+            X = self._types[0](self.X.oindex[idx, self.sel_vars, self.sel_steps], device=self.device, dtype=self.dtype)
         elif hasattr(self.X, 'compute'):
-            X = self._types[0](self.X[idx, self.sel_vars, self.sel_steps].compute())
+            X = self._types[0](self.X[idx, self.sel_vars, self.sel_steps].compute(), device=self.device, dtype=self.dtype)
         else:
-            X = self._types[0](self.X[idx, self.sel_vars, self.sel_steps])
+            X = self._types[0](self.X[idx, self.sel_vars, self.sel_steps], device=self.device, dtype=self.dtype)
         if self.y is None:
             return (X, )
         if hasattr(self.y, 'oindex'):
-            y = self._types[1](self.y.oindex[idx])
+            y = self._types[1](self.y.oindex[idx], device=self.device, dtype=self.dtype)
         elif hasattr(self.X, 'compute'):
-            y = self._types[1](self.y[idx].compute())
+            y = self._types[1](self.y[idx].compute(), device=self.device, dtype=self.dtype)
         else:
-            y = self._types[1](self.y.oindex[idx])
+            y = self._types[1](self.y.oindex[idx], device=self.device, dtype=self.dtype)
         return (X, y)
     def __len__(self): return len(self.X) if self.split is None else len(self.split)
-
 
 # Cell
 def _flatten_list(l):
