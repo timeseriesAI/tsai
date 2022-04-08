@@ -112,6 +112,47 @@ nb_path: "nbs/052b_analysis.ipynb"
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="Learner.top_losses" class="doc_header"><code>Learner.top_losses</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/analysis.py#L101" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.top_losses</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>, <strong><code>k</code></strong>:<code>int</code>=<em><code>9</code></em>, <strong><code>largest</code></strong>=<em><code>True</code></em>, <strong><code>bs</code></strong>:<code>int</code>=<em><code>64</code></em>)</p>
 </blockquote>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>X</code></strong></td>
+<td></td>
+<td></td>
+<td>array-like object representing the independent variables</td>
+</tr>
+<tr>
+<td><strong><code>y</code></strong></td>
+<td></td>
+<td></td>
+<td>array-like object representing the target</td>
+</tr>
+<tr>
+<td><strong><code>k</code></strong></td>
+<td><code>int</code></td>
+<td><code>9</code></td>
+<td>Optional. #items to plot</td>
+</tr>
+<tr>
+<td><strong><code>largest</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>Flag to show largest or smallest losses</td>
+</tr>
+<tr>
+<td><strong><code>bs</code></strong></td>
+<td><code>int</code></td>
+<td><code>64</code></td>
+<td>batch size</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -136,6 +177,53 @@ nb_path: "nbs/052b_analysis.ipynb"
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="Learner.plot_top_losses" class="doc_header"><code>Learner.plot_top_losses</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/analysis.py#L114" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.plot_top_losses</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>, <strong><code>k</code></strong>:<code>int</code>=<em><code>9</code></em>, <strong><code>largest</code></strong>=<em><code>True</code></em>, <strong><code>bs</code></strong>:<code>int</code>=<em><code>64</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>X</code></strong></td>
+<td></td>
+<td></td>
+<td>array-like object representing the independent variables</td>
+</tr>
+<tr>
+<td><strong><code>y</code></strong></td>
+<td></td>
+<td></td>
+<td>array-like object representing the target</td>
+</tr>
+<tr>
+<td><strong><code>k</code></strong></td>
+<td><code>int</code></td>
+<td><code>9</code></td>
+<td>Optional. #items to plot</td>
+</tr>
+<tr>
+<td><strong><code>largest</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>Flag to show largest or smallest losses</td>
+</tr>
+<tr>
+<td><strong><code>bs</code></strong></td>
+<td><code>int</code></td>
+<td><code>64</code></td>
+<td>batch size</td>
+</tr>
+<tr>
+<td><strong><code>kwargs</code></strong></td>
+<td></td>
+<td></td>
+<td><em>No Content</em></td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -188,9 +276,104 @@ nb_path: "nbs/052b_analysis.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.feature_importance" class="doc_header"><code>Learner.feature_importance</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/analysis.py#L130" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.feature_importance</code>(<strong><code>X</code></strong>=<em><code>None</code></em>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>partial_n</code></strong>:<code>(&lt;class 'int'&gt;, &lt;class 'float'&gt;)</code>=<em><code>None</code></em>, <strong><code>method</code></strong>:<code>str</code>=<em><code>'permutation'</code></em>, <strong><code>feature_names</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>sel_classes</code></strong>:<code>(&lt;class 'str'&gt;, &lt;class 'list'&gt;)</code>=<em><code>None</code></em>, <strong><code>key_metric_idx</code></strong>:<code>int</code>=<em><code>0</code></em>, <strong><code>show_chart</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>figsize</code></strong>:<code>tuple</code>=<em><code>(10, 5)</code></em>, <strong><code>title</code></strong>:<code>str</code>=<em><code>None</code></em>, <strong><code>return_df</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>save_df_path</code></strong>:<code>Path</code>=<em><code>None</code></em>, <strong><code>random_state</code></strong>:<code>int</code>=<em><code>23</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>True</code></em>)</p>
+<h4 id="Learner.feature_importance" class="doc_header"><code>Learner.feature_importance</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/analysis.py#L130" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.feature_importance</code>(<strong><code>X</code></strong>=<em><code>None</code></em>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>partial_n</code></strong>:<code>(int, float)</code>=<em><code>None</code></em>, <strong><code>method</code></strong>:<code>str</code>=<em><code>'permutation'</code></em>, <strong><code>feature_names</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>sel_classes</code></strong>:<code>(str, list)</code>=<em><code>None</code></em>, <strong><code>key_metric_idx</code></strong>:<code>int</code>=<em><code>0</code></em>, <strong><code>show_chart</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>figsize</code></strong>:<code>tuple</code>=<em><code>(10, 5)</code></em>, <strong><code>title</code></strong>:<code>str</code>=<em><code>None</code></em>, <strong><code>return_df</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>save_df_path</code></strong>:<code>Path</code>=<em><code>None</code></em>, <strong><code>random_state</code></strong>:<code>int</code>=<em><code>23</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Calculates feature importance as the drop in the model's validation loss or metric when a feature value is randomly shuffled</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>X</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>array-like object containing the time series. If None, all data in the validation set will be used.</td>
+</tr>
+<tr>
+<td><strong><code>y</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>array-like object containing the targets. If None, all targets in the validation set will be used.</td>
+</tr>
+<tr>
+<td><strong><code>partial_n</code></strong></td>
+<td><code>(int, float)</code></td>
+<td><code>None</code></td>
+<td># (int) or % (float) of used to measure feature importance. If None, all data will be used.</td>
+</tr>
+<tr>
+<td><strong><code>method</code></strong></td>
+<td><code>str</code></td>
+<td><code>permutation</code></td>
+<td>Method used to invalidate feature. Use 'permutation' for shuffling or 'ablation' for setting values to np.nan.</td>
+</tr>
+<tr>
+<td><strong><code>feature_names</code></strong></td>
+<td><code>list</code></td>
+<td><code>None</code></td>
+<td>Optional list of feature names that will be displayed if available. Otherwise var_0, var_1, etc.</td>
+</tr>
+<tr>
+<td><strong><code>sel_classes</code></strong></td>
+<td><code>(str, list)</code></td>
+<td><code>None</code></td>
+<td>classes for which the analysis will be made</td>
+</tr>
+<tr>
+<td><strong><code>key_metric_idx</code></strong></td>
+<td><code>int</code></td>
+<td><code>0</code></td>
+<td>Optional position of the metric used. If None or no metric is available, the loss will be used.</td>
+</tr>
+<tr>
+<td><strong><code>show_chart</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>Flag to indicate if a chart showing permutation feature importance will be plotted.</td>
+</tr>
+<tr>
+<td><strong><code>figsize</code></strong></td>
+<td><code>tuple</code></td>
+<td><code>(10, 5)</code></td>
+<td>Size of the chart.</td>
+</tr>
+<tr>
+<td><strong><code>title</code></strong></td>
+<td><code>str</code></td>
+<td><code>None</code></td>
+<td>Optional string that will be used as the chart title. If None 'Permutation Feature Importance'.</td>
+</tr>
+<tr>
+<td><strong><code>return_df</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>Flag to indicate if the dataframe with feature importance will be returned.</td>
+</tr>
+<tr>
+<td><strong><code>save_df_path</code></strong></td>
+<td><code>Path</code></td>
+<td><code>None</code></td>
+<td>Path where dataframe containing the permutation feature importance results will be saved.</td>
+</tr>
+<tr>
+<td><strong><code>random_state</code></strong></td>
+<td><code>int</code></td>
+<td><code>23</code></td>
+<td>Optional int that controls the shuffling applied to the data.</td>
+</tr>
+<tr>
+<td><strong><code>verbose</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>Flag that controls verbosity.</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -220,9 +403,116 @@ nb_path: "nbs/052b_analysis.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.step_importance" class="doc_header"><code>Learner.step_importance</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/analysis.py#L280" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.step_importance</code>(<strong><code>X</code></strong>=<em><code>None</code></em>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>partial_n</code></strong>:<code>(&lt;class 'int'&gt;, &lt;class 'float'&gt;)</code>=<em><code>None</code></em>, <strong><code>method</code></strong>:<code>str</code>=<em><code>'permutation'</code></em>, <strong><code>step_names</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>sel_classes</code></strong>:<code>(&lt;class 'str'&gt;, &lt;class 'list'&gt;)</code>=<em><code>None</code></em>, <strong><code>n_steps</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>key_metric_idx</code></strong>:<code>int</code>=<em><code>0</code></em>, <strong><code>show_chart</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>figsize</code></strong>:<code>tuple</code>=<em><code>(10, 5)</code></em>, <strong><code>title</code></strong>:<code>str</code>=<em><code>None</code></em>, <strong><code>xlabel</code></strong>=<em><code>None</code></em>, <strong><code>return_df</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>save_df_path</code></strong>:<code>Path</code>=<em><code>None</code></em>, <strong><code>random_state</code></strong>:<code>int</code>=<em><code>23</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>True</code></em>)</p>
+<h4 id="Learner.step_importance" class="doc_header"><code>Learner.step_importance</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/analysis.py#L280" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.step_importance</code>(<strong><code>X</code></strong>=<em><code>None</code></em>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>partial_n</code></strong>:<code>(int, float)</code>=<em><code>None</code></em>, <strong><code>method</code></strong>:<code>str</code>=<em><code>'permutation'</code></em>, <strong><code>step_names</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>sel_classes</code></strong>:<code>(str, list)</code>=<em><code>None</code></em>, <strong><code>n_steps</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>key_metric_idx</code></strong>:<code>int</code>=<em><code>0</code></em>, <strong><code>show_chart</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>figsize</code></strong>:<code>tuple</code>=<em><code>(10, 5)</code></em>, <strong><code>title</code></strong>:<code>str</code>=<em><code>None</code></em>, <strong><code>xlabel</code></strong>=<em><code>None</code></em>, <strong><code>return_df</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>save_df_path</code></strong>:<code>Path</code>=<em><code>None</code></em>, <strong><code>random_state</code></strong>:<code>int</code>=<em><code>23</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Calculates step importance as the drop in the model's validation loss or metric when a step/s value/s is/are randomly shuffled</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>X</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>array-like object containing the time series. If None, all data in the validation set will be used.</td>
+</tr>
+<tr>
+<td><strong><code>y</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>array-like object containing the targets. If None, all targets in the validation set will be used.</td>
+</tr>
+<tr>
+<td><strong><code>partial_n</code></strong></td>
+<td><code>(int, float)</code></td>
+<td><code>None</code></td>
+<td># (int) or % (float) of used to measure feature importance. If None, all data will be used.</td>
+</tr>
+<tr>
+<td><strong><code>method</code></strong></td>
+<td><code>str</code></td>
+<td><code>permutation</code></td>
+<td>Method used to invalidate feature. Use 'permutation' for shuffling or 'ablation' for setting values to np.nan.</td>
+</tr>
+<tr>
+<td><strong><code>step_names</code></strong></td>
+<td><code>list</code></td>
+<td><code>None</code></td>
+<td>Optional list of step names that will be displayed if available. Otherwise 0, 1, 2, etc.</td>
+</tr>
+<tr>
+<td><strong><code>sel_classes</code></strong></td>
+<td><code>(str, list)</code></td>
+<td><code>None</code></td>
+<td>classes for which the analysis will be made</td>
+</tr>
+<tr>
+<td><strong><code>n_steps</code></strong></td>
+<td><code>int</code></td>
+<td><code>1</code></td>
+<td># of steps that will be analyzed at a time. Default is 1.</td>
+</tr>
+<tr>
+<td><strong><code>key_metric_idx</code></strong></td>
+<td><code>int</code></td>
+<td><code>0</code></td>
+<td>Optional position of the metric used. If None or no metric is available, the loss will be used.</td>
+</tr>
+<tr>
+<td><strong><code>show_chart</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>Flag to indicate if a chart showing permutation feature importance will be plotted.</td>
+</tr>
+<tr>
+<td><strong><code>figsize</code></strong></td>
+<td><code>tuple</code></td>
+<td><code>(10, 5)</code></td>
+<td>Size of the chart.</td>
+</tr>
+<tr>
+<td><strong><code>title</code></strong></td>
+<td><code>str</code></td>
+<td><code>None</code></td>
+<td>Optional string that will be used as the chart title. If None 'Permutation Feature Importance'.</td>
+</tr>
+<tr>
+<td><strong><code>xlabel</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Optional string that will be used as the chart xlabel. If None 'steps'.</td>
+</tr>
+<tr>
+<td><strong><code>return_df</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>Flag to indicate if the dataframe with feature importance will be returned.</td>
+</tr>
+<tr>
+<td><strong><code>save_df_path</code></strong></td>
+<td><code>Path</code></td>
+<td><code>None</code></td>
+<td>Path where dataframe containing the permutation feature importance results will be saved.</td>
+</tr>
+<tr>
+<td><strong><code>random_state</code></strong></td>
+<td><code>int</code></td>
+<td><code>23</code></td>
+<td>Optional int that controls the shuffling applied to the data.</td>
+</tr>
+<tr>
+<td><strong><code>verbose</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>Flag that controls verbosity.</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -381,7 +671,6 @@ Computing feature importance (permutation method)...
 
 
 <div class="output_html rendered_html output_subarea ">
-
     <div>
         <style>
             /* Turns off some styling */
@@ -398,8 +687,7 @@ Computing feature importance (permutation method)...
       <progress value='6' class='' max='6' style='width:300px; height:20px; vertical-align: middle;'></progress>
       100.00% [6/6 00:03<00:00]
     </div>
-    
-</div>
+    </div>
 
 </div>
 
@@ -432,8 +720,7 @@ Computing feature importance (permutation method)...
 <div class="output_area">
 
 
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
+<div class="output_html rendered_html output_subarea output_execute_result"><div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
         vertical-align: middle;
@@ -495,8 +782,7 @@ Computing feature importance (permutation method)...
     </tr>
   </tbody>
 </table>
-</div>
-</div>
+</div></div>
 
 </div>
 
@@ -538,7 +824,6 @@ Computing step importance...
 
 
 <div class="output_html rendered_html output_subarea ">
-
     <div>
         <style>
             /* Turns off some styling */
@@ -555,8 +840,7 @@ Computing step importance...
       <progress value='7' class='' max='7' style='width:300px; height:20px; vertical-align: middle;'></progress>
       100.00% [7/7 00:04<00:00]
     </div>
-    
-</div>
+    </div>
 
 </div>
 

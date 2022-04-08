@@ -561,7 +561,7 @@ nb_path: "nbs/063_callback.MVP.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MVP" class="doc_header"><code>class</code> <code>MVP</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/callback/MVP.py#L102" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MVP</code>(<strong><code>r</code></strong>:<code>float</code>=<em><code>0.15</code></em>, <strong><code>subsequence_mask</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>lm</code></strong>:<code>float</code>=<em><code>3.0</code></em>, <strong><code>stateful</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>sync</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>variable_mask</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>future_mask</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>custom_mask</code></strong>:<code>Optional</code>=<em><code>None</code></em>, <strong><code>sel_vars</code></strong>:<code>Optional</code>[<code>list</code>]=<em><code>None</code></em>, <strong><code>nan_to_num</code></strong>:<code>int</code>=<em><code>0</code></em>, <strong><code>window_size</code></strong>:<code>Optional</code>[<code>tuple</code>]=<em><code>None</code></em>, <strong><code>dropout</code></strong>:<code>float</code>=<em><code>0.1</code></em>, <strong><code>crit</code></strong>:<code>callable</code>=<em><code>None</code></em>, <strong><code>weights_path</code></strong>:<code>Optional</code>[<code>str</code>]=<em><code>None</code></em>, <strong><code>target_dir</code></strong>:<code>str</code>=<em><code>'./data/MVP'</code></em>, <strong><code>fname</code></strong>:<code>str</code>=<em><code>'model'</code></em>, <strong><code>save_best</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <code>Callback</code></p>
+<h2 id="MVP" class="doc_header"><code>class</code> <code>MVP</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/callback/MVP.py#L102" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MVP</code>(<strong><code>r</code></strong>:<code>float</code>=<em><code>0.15</code></em>, <strong><code>subsequence_mask</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>lm</code></strong>:<code>float</code>=<em><code>3.0</code></em>, <strong><code>stateful</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>sync</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>variable_mask</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>future_mask</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>custom_mask</code></strong>:<code>typing.Optional</code>=<em><code>None</code></em>, <strong><code>sel_vars</code></strong>:<code>Optional</code>[<code>list</code>]=<em><code>None</code></em>, <strong><code>nan_to_num</code></strong>:<code>int</code>=<em><code>0</code></em>, <strong><code>window_size</code></strong>:<code>Optional</code>[<code>tuple</code>]=<em><code>None</code></em>, <strong><code>dropout</code></strong>:<code>float</code>=<em><code>0.1</code></em>, <strong><code>crit</code></strong>:<code>callable</code>=<em><code>None</code></em>, <strong><code>weights_path</code></strong>:<code>Optional</code>[<code>str</code>]=<em><code>None</code></em>, <strong><code>target_dir</code></strong>:<code>str</code>=<em><code>'./data/MVP'</code></em>, <strong><code>fname</code></strong>:<code>str</code>=<em><code>'model'</code></em>, <strong><code>save_best</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <code>Callback</code></p>
 </blockquote>
 <p>Basic class handling tweaks of the training loop by changing a <code>Learner</code> in various events</p>
 
@@ -653,8 +653,7 @@ splits - n_splits: 2 shape: [20, 1252]  overlap: False
 <div class="output_area">
 
 
-<div class="output_html rendered_html output_subarea ">
-<table border="1" class="dataframe">
+<div class="output_html rendered_html output_subarea "><table border="1" class="dataframe">
   <thead>
     <tr style="text-align: left;">
       <th>epoch</th>
@@ -671,8 +670,7 @@ splits - n_splits: 2 shape: [20, 1252]  overlap: False
       <td>00:21</td>
     </tr>
   </tbody>
-</table>
-</div>
+</table></div>
 
 </div>
 
@@ -720,8 +718,7 @@ splits - n_splits: 2 shape: [20, 1252]  overlap: False
 <div class="output_area">
 
 
-<div class="output_html rendered_html output_subarea ">
-<table border="1" class="dataframe">
+<div class="output_html rendered_html output_subarea "><table border="1" class="dataframe">
   <thead>
     <tr style="text-align: left;">
       <th>epoch</th>
@@ -738,8 +735,7 @@ splits - n_splits: 2 shape: [20, 1252]  overlap: False
       <td>00:21</td>
     </tr>
   </tbody>
-</table>
-</div>
+</table></div>
 
 </div>
 
@@ -824,8 +820,7 @@ splits - n_splits: 2 shape: [20, 1252]  overlap: False
 <div class="output_area">
 
 
-<div class="output_html rendered_html output_subarea ">
-<table border="1" class="dataframe">
+<div class="output_html rendered_html output_subarea "><table border="1" class="dataframe">
   <thead>
     <tr style="text-align: left;">
       <th>epoch</th>
@@ -844,8 +839,7 @@ splits - n_splits: 2 shape: [20, 1252]  overlap: False
       <td>00:22</td>
     </tr>
   </tbody>
-</table>
-</div>
+</table></div>
 
 </div>
 
