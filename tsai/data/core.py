@@ -247,7 +247,7 @@ class TSDataset():
         elif hasattr(self.X, 'compute'):
             y = self._types[1](self.y[idx].compute(), device=self.device, dtype=self.dtype)
         else:
-            y = self._types[1](self.y.oindex[idx], device=self.device, dtype=self.dtype)
+            y = self._types[1](self.y[idx], device=self.device, dtype=self.dtype)
         return (X, y)
     def __len__(self): return len(self.X) if self.split is None else len(self.split)
 
@@ -951,10 +951,11 @@ def get_ts_dls(X, y=None, splits=None, sel_vars=None, sel_steps=None, tfms=None,
                                      partial_n=partial_n, sampler=sampler, sort=sort, **kwargs)
     return dls
 
-def get_ts_dl(X, y=None, sel_vars=None, sel_steps=None, tfms=None, inplace=True,
+def get_ts_dl(X, y=None, split=None, sel_vars=None, sel_steps=None, tfms=None, inplace=True,
               path='.', bs=64, batch_tfms=None, num_workers=0, device=None, shuffle_train=True, drop_last=True, weights=None,
               partial_n=None, sampler=None, sort=True, **kwargs):
-    splits = (L(np.arange(len(X)).tolist()), L([]))
+    if split is None: split = L(np.arange(len(X)).tolist())
+    splits = (split, L([]))
     create_dir(path, verbose=False)
     dsets = TSDatasets(X, y, splits=splits, sel_vars=sel_vars, sel_steps=sel_steps, tfms=tfms, inplace=inplace, **kwargs)
     if not is_listy(partial_n): partial_n = [partial_n]
