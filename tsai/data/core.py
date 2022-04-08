@@ -227,19 +227,23 @@ class TSDataset():
     _types = TSTensor, TSLabelTensor
     def __init__(self, X, y=None, split=None, sel_vars=None, sel_steps=None, types=None, dtype=None, device=None):
         self.X, self.y, self.split = X, y, split
-        self.sel_vars = ifnone(sel_vars, slice(None))
-        self.sel_steps = ifnone(sel_steps,slice(None))
-        if types is not None: types = listify(types)
+        self.sel_vars = sel_vars
+        self.sel_steps = sel_steps
+        self.multi_idx = sel_vars is not None or sel_steps is not None
+        if types is not None: self._types = listify(types)
         self.dtype, self.device = dtype, device
     def __getitem__(self, idx):
         if self.split is not None:
-            idx = split[idx]
+            idx = self.split[idx]
         if hasattr(self.X, 'oindex'):
-            X = self._types[0](self.X.oindex[idx, self.sel_vars, self.sel_steps], device=self.device, dtype=self.dtype)
+            X = self._types[0](self.X.oindex[idx, self.sel_vars, self.sel_steps] if self.multi_idx \
+                               else self.X.oindex[idx], device=self.device, dtype=self.dtype)
         elif hasattr(self.X, 'compute'):
-            X = self._types[0](self.X[idx, self.sel_vars, self.sel_steps].compute(), device=self.device, dtype=self.dtype)
+            X = self._types[0](self.X[idx, self.sel_vars, self.sel_steps].compute() if self.multi_idx \
+                               else self.X[idx].compute(), device=self.device, dtype=self.dtype)
         else:
-            X = self._types[0](self.X[idx, self.sel_vars, self.sel_steps], device=self.device, dtype=self.dtype)
+            X = self._types[0](self.X[idx, self.sel_vars, self.sel_steps] if self.multi_idx \
+                               else self.X[idx], device=self.device, dtype=self.dtype)
         if self.y is None:
             return (X, )
         if hasattr(self.y, 'oindex'):
@@ -499,7 +503,7 @@ _batch_tfms = ('after_item','before_batch','after_batch')
 class NumpyDataLoader(TfmdDL):
     idxs = None
     do_item = noops # create batch returns indices
-    def __init__(self, dataset, bs=64, shuffle=False, drop_last=False, num_workers=0, verbose=False, do_setup=True, batch_tfms=None, sort=True,
+    def __init__(self, dataset, bs=64, shuffle=False, drop_last=False, num_workers=0, verbose=False, do_setup=True, batch_tfms=None, sort=False,
                  weights=None, partial_n=None, sampler=None, **kwargs):
 
         if sampler is not None and shuffle:
@@ -796,7 +800,7 @@ class NumpyDataLoaders(DataLoaders):
 
     @classmethod
     def from_dsets(cls, *ds, path='.', bs=64, num_workers=0, batch_tfms=None, device=None, shuffle_train=True, drop_last=True,
-                   weights=None, partial_n=None, sampler=None, sort=True, **kwargs):
+                   weights=None, partial_n=None, sampler=None, sort=False, **kwargs):
         device = ifnone(device, default_device())
         if batch_tfms is not None and not isinstance(batch_tfms, list): batch_tfms = [batch_tfms]
         shuffle_default = (shuffle_train,) + (False,) * (len(ds)-1)
@@ -939,7 +943,7 @@ def get_best_dls_params(dls, n_iters=10, num_workers=[0, 1, 2, 4, 8], pin_memory
 # Cell
 def get_ts_dls(X, y=None, splits=None, sel_vars=None, sel_steps=None, tfms=None, inplace=True,
                path='.', bs=64, batch_tfms=None, num_workers=0, device=None, shuffle_train=True, drop_last=True,
-               weights=None, partial_n=None, sampler=None, sort=True, **kwargs):
+               weights=None, partial_n=None, sampler=None, sort=False, **kwargs):
     if splits is None: splits = (L(np.arange(len(X)).tolist()), L([]))
     create_dir(path, verbose=False)
     dsets = TSDatasets(X, y, splits=splits, sel_vars=sel_vars, sel_steps=sel_steps, tfms=tfms, inplace=inplace)
@@ -953,7 +957,7 @@ def get_ts_dls(X, y=None, splits=None, sel_vars=None, sel_steps=None, tfms=None,
 
 def get_ts_dl(X, y=None, split=None, sel_vars=None, sel_steps=None, tfms=None, inplace=True,
               path='.', bs=64, batch_tfms=None, num_workers=0, device=None, shuffle_train=True, drop_last=True, weights=None,
-              partial_n=None, sampler=None, sort=True, **kwargs):
+              partial_n=None, sampler=None, sort=False, **kwargs):
     if split is None: split = L(np.arange(len(X)).tolist())
     splits = (split, L([]))
     create_dir(path, verbose=False)
