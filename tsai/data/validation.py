@@ -2,7 +2,7 @@
 
 __all__ = ['RandomSplitter', 'check_overlap', 'check_splits_overlap', 'leakage_finder', 'balance_idx',
            'TrainValidTestSplitter', 'plot_splits', 'get_splits', 'TSSplitter', 'TimeSplitter', 'get_predefined_splits',
-           'combine_split_data', 'get_splits_len', 'save_splits', 'load_splits']
+           'combine_split_data', 'get_splits_len']
 
 # Cell
 from imblearn.over_sampling import RandomOverSampler
@@ -317,19 +317,3 @@ def get_splits_len(splits):
         if isinstance(split[0], (list, L, tuple)):  _len.append([len(s) for s in split])
         else: _len.append(len(split))
     return _len
-
-# Cell
-def save_splits(*splits, file_path, verbose=True):
-    if file_path.split('.')[-1] != 'npy':
-        file_path = '.'.join([file_path, 'npy'])
-    file_path = Path(file_path)
-    create_dir(file_path.parent, verbose)
-    keys = [f'split_{i}' for i in np.arange(len(splits))]
-    split_dict = dict(zip(keys, splits))
-    np.save(file_path, split_dict)
-    pv(f'{len(splits)} {("splits" if len(splits) > 1 else "split")} saved as {file_path}', verbose)
-
-
-def load_splits(file_path):
-    split_dict = np.load(file_path,allow_pickle=True).item()
-    return tuple(L(v.tolist()) for k,v in split_dict.items())

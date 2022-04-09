@@ -23,11 +23,12 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'ALPHABET', 'get_mapping', 'map_array', 'log_tfm', 'to_sincos_time', 'plot_feature_dist',
            'rolling_moving_average', 'ffill_sequence', 'bfill_sequence', 'fbfill_sequence', 'dummify',
            'shuffle_along_axis', 'analyze_feature', 'analyze_array', 'get_relpath', 'is_zarr', 'is_dask', 'is_memmap',
-           'split_in_chunks']
+           'split_in_chunks', 'save_object', 'load_object']
 
 # Cell
-import string
 from scipy.stats import ttest_ind, ks_2samp, pearsonr, spearmanr, normaltest, linregress
+import joblib
+import string
 from .imports import *
 
 # Cell
@@ -1377,3 +1378,18 @@ def split_in_chunks(o, chunksize, start=0, shuffle=False, drop_last=False):
         chunk_list.append(np.random.permutation(o[slice(s, s+chunksize)]) if shuffle else o[slice(s, s+chunksize)])
     if shuffle: random.shuffle(chunk_list)
     return chunk_list
+
+# Cell
+def save_object(o, file_path, verbose=True):
+    if file_path.split('.')[-1] != 'pkl':
+        file_path = '.'.join([file_path, 'pkl'])
+    file_path = Path(file_path)
+    create_dir(file_path.parent, verbose)
+    joblib.dump(o, file_path, )
+    pv(f'saved as {file_path}', verbose)
+
+def load_object(file_path):
+    if file_path.split('.')[-1] != 'pkl':
+        file_path = '.'.join([file_path, 'pkl'])
+    file_path = Path(file_path)
+    return joblib.load(file_path)
