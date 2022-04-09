@@ -57,10 +57,10 @@ class build_layer_with_layer_parameter(Module):
 
 
 class OmniScaleCNN(Module):
-    def __init__(self, c_in, c_out, seq_len, paramenter_number_of_layer_list=[8 * 128, 5 * 128 * 256 + 2 * 256 * 128], few_shot=False):
+    def __init__(self, c_in, c_out, seq_len, layers=[8 * 128, 5 * 128 * 256 + 2 * 256 * 128], few_shot=False):
 
         receptive_field_shape = seq_len//4
-        layer_parameter_list = generate_layer_parameter_list(1,receptive_field_shape, paramenter_number_of_layer_list, in_channel=c_in)
+        layer_parameter_list = generate_layer_parameter_list(1,receptive_field_shape, layers, in_channel=c_in)
         self.few_shot = few_shot
         self.layer_parameter_list = layer_parameter_list
         self.layer_list = []
@@ -94,15 +94,15 @@ def get_Prime_number_in_a_range(start, end):
 
 
 def get_out_channel_number(paramenter_layer, in_channel, prime_list):
-    out_channel_expect = int(paramenter_layer / (in_channel * sum(prime_list)))
+    out_channel_expect = max(1, int(paramenter_layer / (in_channel * sum(prime_list))))
     return out_channel_expect
 
 
-def generate_layer_parameter_list(start, end, paramenter_number_of_layer_list, in_channel=1):
+def generate_layer_parameter_list(start, end, layers, in_channel=1):
     prime_list = get_Prime_number_in_a_range(start, end)
 
     layer_parameter_list = []
-    for paramenter_number_of_layer in paramenter_number_of_layer_list:
+    for paramenter_number_of_layer in layers:
         out_channel = get_out_channel_number(paramenter_number_of_layer, in_channel, prime_list)
 
         tuples_in_layer = []
@@ -113,7 +113,7 @@ def generate_layer_parameter_list(start, end, paramenter_number_of_layer_list, i
         layer_parameter_list.append(tuples_in_layer)
 
     tuples_in_layer_last = []
-    first_out_channel = len(prime_list) * get_out_channel_number(paramenter_number_of_layer_list[0], 1, prime_list)
+    first_out_channel = len(prime_list) * get_out_channel_number(layers[0], 1, prime_list)
     tuples_in_layer_last.append((in_channel, first_out_channel, 1))
     tuples_in_layer_last.append((in_channel, first_out_channel, 2))
     layer_parameter_list.append(tuples_in_layer_last)
