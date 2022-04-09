@@ -1381,15 +1381,15 @@ def split_in_chunks(o, chunksize, start=0, shuffle=False, drop_last=False):
 
 # Cell
 def save_object(o, file_path, verbose=True):
-    if file_path.split('.')[-1] != 'pkl':
-        file_path = '.'.join([file_path, 'pkl'])
     file_path = Path(file_path)
+    if not file_path.suffix == '.pkl':
+        file_path = file_path.parent / (file_path.name + '.pkl')
     create_dir(file_path.parent, verbose)
     joblib.dump(o, file_path, )
     pv(f'saved as {file_path}', verbose)
 
 def load_object(file_path):
-    if file_path.split('.')[-1] != 'pkl':
-        file_path = '.'.join([file_path, 'pkl'])
     file_path = Path(file_path)
+    if not file_path.suffix == '.pkl':
+        file_path = file_path.parent / (file_path.name + '.pkl')
     return joblib.load(file_path)
