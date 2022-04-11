@@ -64,7 +64,7 @@ pip install tsai
 
 Or you can install the **cutting edge** version of this library from github by doing:
 ```python
-pip install -Uqq git+https://github.com/timeseriesAI/tsai.git
+pip install git+https://github.com/timeseriesAI/tsai.git
 ```
 
 Once the install is complete just run: 

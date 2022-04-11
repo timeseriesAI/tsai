@@ -558,7 +558,11 @@ class NumpyDataLoader(TfmdDL):
             if self.sort and hasattr(b, 'sort'): b.sort()
             self.idxs = L(b)
         else:
-            b = slice(b[0], b[0] + self.bs)
+            if self.n is not None:
+                b = slice(b[0], min(self.n, b[0] + self.bs))
+            else:
+                b = slice(b[0], b[0] + self.bs)
+
             self.idxs = b
         if hasattr(self, "split_idxs"): self.input_idxs = self.split_idxs[b]
         else: self.input_idxs = self.idxs

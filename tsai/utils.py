@@ -23,7 +23,7 @@ __all__ = ['totensor', 'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor
            'ALPHABET', 'get_mapping', 'map_array', 'log_tfm', 'to_sincos_time', 'plot_feature_dist',
            'rolling_moving_average', 'ffill_sequence', 'bfill_sequence', 'fbfill_sequence', 'dummify',
            'shuffle_along_axis', 'analyze_feature', 'analyze_array', 'get_relpath', 'is_zarr', 'is_dask', 'is_memmap',
-           'split_in_chunks', 'save_object', 'load_object']
+           'is_slice', 'split_in_chunks', 'save_object', 'load_object', 'get_idxs_to_keep']
 
 # Cell
 from scipy.stats import ttest_ind, ks_2samp, pearsonr, spearmanr, normaltest, linregress
@@ -1369,6 +1369,7 @@ def get_relpath(path):
 def is_zarr(o): return hasattr(o, 'oindex')
 def is_dask(o): return hasattr(o, 'compute')
 def is_memmap(o): return isinstance(o, np.memmap)
+def is_slice(o): return isinstance(o, slice)
 
 # Cell
 def split_in_chunks(o, chunksize, start=0, shuffle=False, drop_last=False):
@@ -1386,10 +1387,30 @@ def save_object(o, file_path, verbose=True):
         file_path = file_path.parent / (file_path.name + '.pkl')
     create_dir(file_path.parent, verbose)
     joblib.dump(o, file_path, )
-    pv(f'saved as {file_path}', verbose)
+    pv(f'{type(o)} saved as {file_path}', verbose)
 
 def load_object(file_path):
     file_path = Path(file_path)
     if not file_path.suffix == '.pkl':
         file_path = file_path.parent / (file_path.name + '.pkl')
     return joblib.load(file_path)
+
+# Cell
+def get_idxs_to_keep(o, cond, crit='all', invert=False, axis=(1,2), keepdims=False):
+    idxs_to_keep = cond(o)
+    if isinstance(o, torch.Tensor):
+        axis = tuplify(axis)
+        for ax in axis[::-1]:
+            if crit == 'all':
+                idxs_to_keep = torch.all(idxs_to_keep, axis=ax, keepdim=keepdims)
+            elif crit == 'any':
+                idxs_to_keep = torch.any(idxs_to_keep, axis=ax, keepdim=keepdims)
+        if invert: idxs_to_keep =  ~idxs_to_keep
+        return idxs_to_keep
+    else:
+        if crit == 'all':
+            idxs_to_keep = np.all(idxs_to_keep, axis=axis, keepdims=keepdims)
+        elif crit == 'any':
+            idxs_to_keep = np.any(idxs_to_keep, axis=axis, keepdims=keepdims)
+        if invert: idxs_to_keep = ~idxs_to_keep
+        return idxs_to_keep
