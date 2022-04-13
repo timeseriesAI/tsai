@@ -64,7 +64,7 @@ class _TSiTBackbone(Module):
                  lsa:bool=False, qkv_bias:bool=True, attn_dropout:float=0., dropout:float=0., drop_path_rate:float=0., mlp_ratio:int=1,
                  pre_norm:bool=False, use_token:bool=True,  use_pe:bool=True, n_embeds:Optional[list]=None, embed_dims:Optional[list]=None,
                  padding_idxs:Optional[list]=None, cat_pos:Optional[list]=None, feature_extractor:Optional[Callable]=None,
-                 seq_emb_size:int=None, seq_emb:Optional[Callable]=None):
+                 seq_embed_size:int=None, seq_embed:Optional[Callable]=None):
 
         # Categorical embeddings
         if n_embeds is not None:
@@ -77,15 +77,15 @@ class _TSiTBackbone(Module):
             self.to_cat_embed = nn.Identity()
 
         # Sequence embedding
-        if seq_emb_size is not None:
-            self.seq_emb = SeqEmbed(c_in, d_model, seq_emb_size)
-            c_in, seq_len = output_size_calculator(self.seq_emb, c_in, seq_len)
-        elif seq_emb is not None:
-            if isinstance(seq_emb, nn.Module):  self.seq_emb = seq_emb
-            else: self.seq_emb = seq_emb(c_in, d_model)
-            c_in, seq_len = output_size_calculator(self.seq_emb, c_in, seq_len)
+        if seq_embed_size is not None:
+            self.seq_embed = SeqEmbed(c_in, d_model, seq_embed_size)
+            c_in, seq_len = output_size_calculator(self.seq_embed, c_in, seq_len)
+        elif seq_embed is not None:
+            if isinstance(seq_embed, nn.Module):  self.seq_embed = seq_embed
+            else: self.seq_embed = seq_embed(c_in, d_model)
+            c_in, seq_len = output_size_calculator(self.seq_embed, c_in, seq_len)
         else:
-            self.seq_emb = nn.Identity()
+            self.seq_embed = nn.Identity()
 
         # Feature extractor
         if feature_extractor:
@@ -114,7 +114,7 @@ class _TSiTBackbone(Module):
         x = self.to_cat_embed(x)
 
         # Sequence embedding
-        x = self.seq_emb(x)
+        x = self.seq_embed(x)
 
         # Feature extractor
         x = self.feature_extractor(x)
@@ -169,7 +169,9 @@ class TSiTPlus(nn.Sequential):
                             are not updated during training. Use 0 for those categorical embeddings that may have #na# values. Otherwise, leave them as None.
                             You can enter a combination for different embeddings (for example, [0, None, None]).
         cat_pos:            list with the position of the categorical variables in the input.
-        feature_extractor:  an nn.Module or optional callable that will be used to preprocess the time series before
+        seq_embed_size:     Size of the embedding function used to reduce the sequence length (similar to ViT's patch size)
+        seq_embed:          an nn.Module or callable that will be used to reduce the sequence length
+        feature_extractor:  an nn.Module or callable that will be used to preprocess the time series before
                             the embedding step. It is useful to extract features or resample the time series.
         flatten:            flag to indicate if the 3d logits will be flattened to 2d in the model's head if use_token is set to False.
                             If use_token is False and flatten is False, the model will apply a pooling layer.
@@ -189,7 +191,7 @@ class TSiTPlus(nn.Sequential):
                  lsa:bool=False, attn_dropout:float=0., dropout:float=0., drop_path_rate:float=0., mlp_ratio:int=1, qkv_bias:bool=True,
                  pre_norm:bool=False, use_token:bool=True, use_pe:bool=True, n_embeds:Optional[list]=None, embed_dims:Optional[list]=None,
                  padding_idxs:Optional[list]=None, cat_pos:Optional[list]=None, feature_extractor:Optional[Callable]=None,
-                 seq_emb_size:int=None, seq_emb:Optional[Callable]=None, flatten:bool=False, concat_pool:bool=True, fc_dropout:float=0., use_bn:bool=False,
+                 seq_embed_size:int=None, seq_embed:Optional[Callable]=None, flatten:bool=False, concat_pool:bool=True, fc_dropout:float=0., use_bn:bool=False,
                  bias_init:Optional[Union[float, list]]=None, y_range:Optional[tuple]=None, custom_head:Optional[Callable]=None, verbose:bool=True):
 
         if use_token and c_out == 1:
@@ -199,7 +201,7 @@ class TSiTPlus(nn.Sequential):
                                  lsa=lsa, attn_dropout=attn_dropout, dropout=dropout, drop_path_rate=drop_path_rate,
                                  pre_norm=pre_norm, mlp_ratio=mlp_ratio, use_pe=use_pe, use_token=use_token,
                                  n_embeds=n_embeds, embed_dims=embed_dims, padding_idxs=padding_idxs, cat_pos=cat_pos,
-                                 feature_extractor=feature_extractor, seq_emb_size=seq_emb_size, seq_emb=seq_emb)
+                                 feature_extractor=feature_extractor, seq_embed_size=seq_embed_size, seq_embed=seq_embed)
 
         self.head_nf = d_model
         self.c_out = c_out
