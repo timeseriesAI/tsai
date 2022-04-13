@@ -194,7 +194,7 @@ def plot_metrics(self: Learner, **kwargs):
 all_archs_names = ['FCN', 'FCNPlus', 'InceptionTime', 'InceptionTimePlus', 'InCoordTime', 'XCoordTime', 'InceptionTimePlus17x17', 'InceptionTimePlus32x32',
                    'InceptionTimePlus47x47', 'InceptionTimePlus62x62', 'InceptionTimeXLPlus', 'MultiInceptionTimePlus', 'MiniRocketClassifier',
                    'MiniRocketRegressor', 'MiniRocketVotingClassifier', 'MiniRocketVotingRegressor', 'MiniRocketFeaturesPlus', 'MiniRocketPlus',
-                   'MiniRocketHead', 'InceptionRocketFeaturesPlus', 'InceptionRocketPlus', 'MLP', 'MultiInputNet', 'OmniScaleCNN', 'RNN', 'LSTM', 'GRU',
+                   'MiniRocketHead', 'InceptionRocketFeaturesPlus', 'InceptionRocketPlus', 'MLP', 'gMLP', 'MultiInputNet', 'OmniScaleCNN', 'RNN', 'LSTM', 'GRU',
                    'RNNPlus', 'LSTMPlus', 'GRUPlus', 'RNN_FCN', 'LSTM_FCN', 'GRU_FCN', 'MRNN_FCN', 'MLSTM_FCN', 'MGRU_FCN', 'ROCKET', 'RocketClassifier',
                    'RocketRegressor', 'ResCNN', 'ResNet', 'ResNetPlus', 'TCN', 'TSPerceiver', 'TST', 'TSTPlus', 'MultiTSTPlus', 'TSiTPlus', 'TSiTPlus',
                    'TabFusionTransformer', 'TSTabFusionTransformer', 'TabModel', 'TabTransformer', 'TransformerModel', 'XCM', 'XCMPlus', 'xresnet1d18',
@@ -271,6 +271,9 @@ def get_arch(arch_name):
     elif arch_name == "MLP":
         from .models.MLP import MLP
         arch = MLP
+    elif arch_name == "gMLP":
+        from .models.gMLP import gMLP
+        arch = gMLP
     elif arch_name == "MultiInputNet":
         from .models.MultiInputNet import MultiInputNet
         arch = MultiInputNet

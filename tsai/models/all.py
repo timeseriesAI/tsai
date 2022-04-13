@@ -7,6 +7,7 @@ from .TCN import *
 from .InceptionTime import *
 from .InceptionTimePlus import *
 from .MLP import *
+from .gMLP import *
 from .mWDN import *
 from .OmniScaleCNN import *
 from .ResCNN import *
