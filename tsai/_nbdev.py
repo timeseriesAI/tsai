@@ -748,7 +748,8 @@ index = {"get_nb_name": "000_export.ipynb",
          "run_optuna_study": "200_optuna.ipynb",
          "wandb_agent": "201_wandb.ipynb",
          "get_wandb_agent": "201_wandb.ipynb",
-         "run_wandb_agent": "201_wandb.ipynb"}
+         "run_wandb_agent": "201_wandb.ipynb",
+         "GatedTabTransformer": "121b_models.GatedTabTransformer.ipynb"}
 
 modules = ["export.py",
            "utils.py",
@@ -819,7 +820,8 @@ modules = ["export.py",
            "models/MultiInputNet.py",
            "models/misc.py",
            "optuna.py",
-           "wandb.py"]
+           "wandb.py",
+           "models/GatedTabTransformer.py"]
 
 doc_url = "https://timeseriesAI.github.io/tsai/"
 
