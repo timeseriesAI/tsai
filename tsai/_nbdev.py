@@ -731,6 +731,7 @@ index = {"get_nb_name": "000_export.ipynb",
          "SharedEmbedding": "121_models.TabTransformer.ipynb",
          "FullEmbeddingDropout": "121_models.TabTransformer.ipynb",
          "TabTransformer": "121_models.TabTransformer.ipynb",
+         "GatedTabTransformer": "121b_models.GatedTabTransformer.ipynb",
          "TabFusionBackbone": "122_models.TabFusionTransformer.ipynb",
          "TabFusionTransformer": "122_models.TabFusionTransformer.ipynb",
          "TSTabFusionTransformer": "122_models.TabFusionTransformer.ipynb",
@@ -748,8 +749,7 @@ index = {"get_nb_name": "000_export.ipynb",
          "run_optuna_study": "200_optuna.ipynb",
          "wandb_agent": "201_wandb.ipynb",
          "get_wandb_agent": "201_wandb.ipynb",
-         "run_wandb_agent": "201_wandb.ipynb",
-         "GatedTabTransformer": "121b_models.GatedTabTransformer.ipynb"}
+         "run_wandb_agent": "201_wandb.ipynb"}
 
 modules = ["export.py",
            "utils.py",
@@ -814,14 +814,14 @@ modules = ["export.py",
            "models/XCMPlus.py",
            "models/TabModel.py",
            "models/TabTransformer.py",
+           "models/GatedTabTransformer.py",
            "models/TabFusionTransformer.py",
            "models/TSPerceiver.py",
            "models/TSiTPlus.py",
            "models/MultiInputNet.py",
            "models/misc.py",
            "optuna.py",
-           "wandb.py",
-           "models/GatedTabTransformer.py"]
+           "wandb.py"]
 
 doc_url = "https://timeseriesAI.github.io/tsai/"
 
