@@ -732,29 +732,6 @@ nb_path: "nbs/001_utils.ipynb"
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="bytes2size" class="doc_header"><code>bytes2size</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/utils.py#L172" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>bytes2size</code>(<strong><code>size_bytes</code></strong>:<code>int</code>, <strong><code>decimals</code></strong>=<em><code>2</code></em>)</p>
 </blockquote>
-<table>
-<thead><tr>
-<th></th>
-<th>Type</th>
-<th>Default</th>
-<th>Details</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong><code>size_bytes</code></strong></td>
-<td><code>int</code></td>
-<td></td>
-<td>Number of bytes</td>
-</tr>
-<tr>
-<td><strong><code>decimals</code></strong></td>
-<td><code>int</code></td>
-<td><code>2</code></td>
-<td>Number of decimals in the output</td>
-</tr>
-</tbody>
-</table>
 
 </div>
 
@@ -803,35 +780,6 @@ nb_path: "nbs/001_utils.ipynb"
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="get_size" class="doc_header"><code>get_size</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/utils.py#L186" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_size</code>(<strong><code>o</code></strong>, <strong><code>return_str</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>decimals</code></strong>:<code>int</code>=<em><code>2</code></em>)</p>
 </blockquote>
-<table>
-<thead><tr>
-<th></th>
-<th>Type</th>
-<th>Default</th>
-<th>Details</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong><code>o</code></strong></td>
-<td></td>
-<td></td>
-<td>Any object</td>
-</tr>
-<tr>
-<td><strong><code>return_str</code></strong></td>
-<td><code>bool</code></td>
-<td><code>True</code></td>
-<td>True returns size in human-readable format (KB, MB, GB, ...). False in bytes.</td>
-</tr>
-<tr>
-<td><strong><code>decimals</code></strong></td>
-<td><code>int</code></td>
-<td><code>2</code></td>
-<td>Number of decimals in the output</td>
-</tr>
-</tbody>
-</table>
 
 </div>
 
@@ -856,41 +804,6 @@ nb_path: "nbs/001_utils.ipynb"
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="get_dir_size" class="doc_header"><code>get_dir_size</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/utils.py#L195" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_dir_size</code>(<strong><code>dir_path</code></strong>:<code>str</code>, <strong><code>return_str</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>decimals</code></strong>:<code>int</code>=<em><code>2</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>False</code></em>)</p>
 </blockquote>
-<table>
-<thead><tr>
-<th></th>
-<th>Type</th>
-<th>Default</th>
-<th>Details</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong><code>dir_path</code></strong></td>
-<td><code>str</code></td>
-<td></td>
-<td>path to directory</td>
-</tr>
-<tr>
-<td><strong><code>return_str</code></strong></td>
-<td><code>bool</code></td>
-<td><code>True</code></td>
-<td>True returns size in human-readable format (KB, MB, GB, ...). False in bytes.</td>
-</tr>
-<tr>
-<td><strong><code>decimals</code></strong></td>
-<td><code>int</code></td>
-<td><code>2</code></td>
-<td>Number of decimals in the output</td>
-</tr>
-<tr>
-<td><strong><code>verbose</code></strong></td>
-<td><code>bool</code></td>
-<td><code>False</code></td>
-<td>Controls verbosity</td>
-</tr>
-</tbody>
-</table>
 
 </div>
 
@@ -915,35 +828,6 @@ nb_path: "nbs/001_utils.ipynb"
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="get_file_size" class="doc_header"><code>get_file_size</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/utils.py#L215" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_file_size</code>(<strong><code>file_path</code></strong>:<code>str</code>, <strong><code>return_str</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>decimals</code></strong>:<code>int</code>=<em><code>2</code></em>)</p>
 </blockquote>
-<table>
-<thead><tr>
-<th></th>
-<th>Type</th>
-<th>Default</th>
-<th>Details</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong><code>file_path</code></strong></td>
-<td><code>str</code></td>
-<td></td>
-<td>path to file</td>
-</tr>
-<tr>
-<td><strong><code>return_str</code></strong></td>
-<td><code>bool</code></td>
-<td><code>True</code></td>
-<td>True returns size in human-readable format (KB, MB, GB, ...). False in bytes.</td>
-</tr>
-<tr>
-<td><strong><code>decimals</code></strong></td>
-<td><code>int</code></td>
-<td><code>2</code></td>
-<td>Number of decimals in the output</td>
-</tr>
-</tbody>
-</table>
 
 </div>
 
@@ -1874,56 +1758,9 @@ nb_path: "nbs/001_utils.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="pad_sequences" class="doc_header"><code>pad_sequences</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/utils.py#L368" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>pad_sequences</code>(<strong><code>o</code></strong>, <strong><code>maxlen</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>dtype</code></strong>:<code>(str, type)</code>=<em><code>float64</code></em>, <strong><code>padding</code></strong>:<code>str</code>=<em><code>'pre'</code></em>, <strong><code>truncating</code></strong>:<code>str</code>=<em><code>'pre'</code></em>, <strong><code>padding_value</code></strong>:<code>float</code>=<em><code>nan</code></em>)</p>
+<h4 id="pad_sequences" class="doc_header"><code>pad_sequences</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/utils.py#L368" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>pad_sequences</code>(<strong><code>o</code></strong>, <strong><code>maxlen</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>dtype</code></strong>:<code>(&lt;class 'str'&gt;, &lt;class 'type'&gt;)</code>=<em><code>float64</code></em>, <strong><code>padding</code></strong>:<code>str</code>=<em><code>'pre'</code></em>, <strong><code>truncating</code></strong>:<code>str</code>=<em><code>'pre'</code></em>, <strong><code>padding_value</code></strong>:<code>float</code>=<em><code>nan</code></em>)</p>
 </blockquote>
 <p>Transforms an iterable with sequences into a 3d numpy array using padding or truncating sequences if necessary</p>
-<table>
-<thead><tr>
-<th></th>
-<th>Type</th>
-<th>Default</th>
-<th>Details</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong><code>o</code></strong></td>
-<td></td>
-<td></td>
-<td>Iterable object</td>
-</tr>
-<tr>
-<td><strong><code>maxlen</code></strong></td>
-<td><code>int</code></td>
-<td><code>None</code></td>
-<td>Optional max length of the output. If None, max length of the longest individual sequence.</td>
-</tr>
-<tr>
-<td><strong><code>dtype</code></strong></td>
-<td><code>(str, type)</code></td>
-<td><code>float64</code></td>
-<td>Type of the output sequences. To pad sequences with variable length strings, you can use object.</td>
-</tr>
-<tr>
-<td><strong><code>padding</code></strong></td>
-<td><code>str</code></td>
-<td><code>pre</code></td>
-<td>'pre' or 'post' pad either before or after each sequence.</td>
-</tr>
-<tr>
-<td><strong><code>truncating</code></strong></td>
-<td><code>str</code></td>
-<td><code>pre</code></td>
-<td>'pre' or 'post' remove values from sequences larger than maxlen, either at the beginning or at the end of the sequences.</td>
-</tr>
-<tr>
-<td><strong><code>padding_value</code></strong></td>
-<td><code>float</code></td>
-<td><code>nan</code></td>
-<td>Value used for padding.</td>
-</tr>
-</tbody>
-</table>
 
 </div>
 
@@ -2733,7 +2570,7 @@ nb_path: "nbs/001_utils.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="display_pd_df" class="doc_header"><code>display_pd_df</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/utils.py#L485" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>display_pd_df</code>(<strong><code>df</code></strong>, <strong><code>max_rows</code></strong>:<code>Union</code>[<code>bool</code>, <code>int</code>]=<em><code>False</code></em>, <strong><code>max_columns</code></strong>:<code>Union</code>[<code>bool</code>, <code>int</code>]=<em><code>False</code></em>)</p>
+<h4 id="display_pd_df" class="doc_header"><code>display_pd_df</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/utils.py#L485" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>display_pd_df</code>(<strong><code>df</code></strong>, <strong><code>max_rows</code></strong>:<code>int</code>=<em><code>False</code></em>, <strong><code>max_columns</code></strong>:<code>int</code>=<em><code>False</code></em>)</p>
 </blockquote>
 
 </div>
@@ -2777,7 +2614,8 @@ nb_path: "nbs/001_utils.ipynb"
 <div class="output_area">
 
 
-<div class="output_html rendered_html output_subarea "><div>
+<div class="output_html rendered_html output_subarea ">
+<div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
         vertical-align: middle;
@@ -2822,7 +2660,8 @@ nb_path: "nbs/001_utils.ipynb"
   </tbody>
 </table>
 <p>70 rows × 25 columns</p>
-</div></div>
+</div>
+</div>
 
 </div>
 
@@ -4349,7 +4188,7 @@ data/remove_fn_test.npy does not exist
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="concat" class="doc_header"><code>concat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L425" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>concat</code>(<strong>*<code>ls</code></strong>)</p>
+<h4 id="concat" class="doc_header"><code>concat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L424" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>concat</code>(<strong>*<code>ls</code></strong>)</p>
 </blockquote>
 <p>Concatenate tensors, arrays, lists, or tuples</p>
 
@@ -4968,7 +4807,9 @@ chunksize: is the size of chunks. If 'auto' chunks will have around 1GB each.</p
 <div class="output_area">
 
 
-<div class="output_html rendered_html output_subarea "></div>
+<div class="output_html rendered_html output_subarea ">
+
+</div>
 
 </div>
 
@@ -4983,7 +4824,9 @@ chunksize: is the size of chunks. If 'auto' chunks will have around 1GB each.</p
 <div class="output_area">
 
 
-<div class="output_html rendered_html output_subarea "></div>
+<div class="output_html rendered_html output_subarea ">
+
+</div>
 
 </div>
 
@@ -5046,7 +4889,9 @@ chunksize: is the size of chunks. If 'auto' chunks will have around 1GB each.</p
 <div class="output_area">
 
 
-<div class="output_html rendered_html output_subarea "></div>
+<div class="output_html rendered_html output_subarea ">
+
+</div>
 
 </div>
 
@@ -5061,7 +4906,9 @@ chunksize: is the size of chunks. If 'auto' chunks will have around 1GB each.</p
 <div class="output_area">
 
 
-<div class="output_html rendered_html output_subarea "></div>
+<div class="output_html rendered_html output_subarea ">
+
+</div>
 
 </div>
 
@@ -5134,7 +4981,9 @@ chunksize = 'auto' to calculate chunks of 1GB, or any integer (for a given numbe
 <div class="output_area">
 
 
-<div class="output_html rendered_html output_subarea "></div>
+<div class="output_html rendered_html output_subarea ">
+
+</div>
 
 </div>
 
@@ -5185,7 +5034,9 @@ chunksize = 'auto' to calculate chunks of 1GB, or any integer (for a given numbe
 <div class="output_area">
 
 
-<div class="output_html rendered_html output_subarea "></div>
+<div class="output_html rendered_html output_subarea ">
+
+</div>
 
 </div>
 
@@ -7453,14 +7304,18 @@ tensor([[[ 0.0000,  0.5000,  1.0000,  2.0000,  3.0000,  4.0000,  5.0000,
 <div class="output_area">
 
 
-<div class="output_html rendered_html output_subarea "></div>
+<div class="output_html rendered_html output_subarea ">
+
+</div>
 
 </div>
 
 <div class="output_area">
 
 
-<div class="output_html rendered_html output_subarea "></div>
+<div class="output_html rendered_html output_subarea ">
+
+</div>
 
 </div>
 
@@ -7496,14 +7351,18 @@ tensor([[[ 0.0000,  0.5000,  1.0000,  2.0000,  3.0000,  4.0000,  5.0000,
 <div class="output_area">
 
 
-<div class="output_html rendered_html output_subarea "></div>
+<div class="output_html rendered_html output_subarea ">
+
+</div>
 
 </div>
 
 <div class="output_area">
 
 
-<div class="output_html rendered_html output_subarea "></div>
+<div class="output_html rendered_html output_subarea ">
+
+</div>
 
 </div>
 
