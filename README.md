@@ -88,7 +88,6 @@ Here's a list with some of the state-of-the-art models available in `tsai`:
 - [LSTM](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/RNN.py) (Hochreiter, 1997) ([paper](https://ieeexplore.ieee.org/abstract/document/6795963/))
 - [GRU](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/RNN.py) (Cho, 2014) ([paper](https://arxiv.org/abs/1412.3555))
 - [MLP](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/MLP.py) - Multilayer Perceptron (Wang, 2016) ([paper](https://arxiv.org/abs/1611.06455))
-- [gMLP](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/gMLP.py) - Gated Multilayer Perceptron (Liu, 2021) ([paper](https://arxiv.org/abs/2105.08050))
 - [FCN](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/FCN.py) - Fully Convolutional Network (Wang, 2016) ([paper](https://arxiv.org/abs/1611.06455))
 - [ResNet](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/ResNet.py) - Residual Network (Wang, 2016) ([paper](https://arxiv.org/abs/1611.06455))
 - [LSTM-FCN](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/RNN_FCN.py) (Karim, 2017) ([paper](https://arxiv.org/abs/1709.05206))
@@ -104,10 +103,10 @@ Here's a list with some of the state-of-the-art models available in `tsai`:
 - [OmniScale](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/OmniScaleCNN.py) - Omni-Scale 1D-CNN (Tang, 2020) ([paper](https://arxiv.org/abs/2002.10061))
 - [TST](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/TST.py) - Time Series Transformer (Zerveas, 2020) ([paper](https://dl.acm.org/doi/abs/10.1145/3447548.3467401))
 - [TabTransformer](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/TabTransformer.py) (Huang, 2020) ([paper](https://arxiv.org/pdf/2012.06678))
-- [GatedTabTransformer](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/GatedTabTransformer.py) (Cholakov, 2022) ([paper](https://arxiv.org/abs/2201.00199))
 - [MiniRocket](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/MINIROCKET.py) (Dempster, 2021) ([paper](https://arxiv.org/abs/2102.00457))
 - [XCM](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/XCM.py) - An Explainable Convolutional Neural Network (Fauvel, 2021) ([paper](https://hal.inria.fr/hal-03469487/document))
-
+- [gMLP](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/gMLP.py) - Gated Multilayer Perceptron (Liu, 2021) ([paper](https://arxiv.org/abs/2105.08050))
+- [GatedTabTransformer](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/GatedTabTransformer.py) (Cholakov, 2022) ([paper](https://arxiv.org/abs/2201.00199))
 
 among others!
 
