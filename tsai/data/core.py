@@ -4,10 +4,11 @@ __all__ = ['NumpyTensor', 'ToNumpyTensor', 'TSTensor', 'ToTSTensor', 'show_tuple
            'ToFloat', 'ToInt', 'TSClassification', 'TSCategorize', 'TSRegression', 'TSForecasting',
            'TSMultiLabelClassification', 'NumpyTensorBlock', 'TSTensorBlock', 'TorchDataset', 'NumpyDataset',
            'TSDataset', 'NoTfmLists', 'TSTfmdLists', 'NumpyDatasets', 'tscoll_repr', 'TSDatasets', 'add_ds',
-           'NumpyDataLoader', 'TSDataLoader', 'NumpyDataLoaders', 'TSDataLoaders', 'get_c', 'get_best_dl_params',
-           'get_best_dls_params', 'get_ts_dls', 'get_ts_dl', 'get_subset_dl', 'get_tsimage_dls']
+           'NumpyDataLoader', 'TSDataLoader', 'NumpyDataLoaders', 'TSDataLoaders', 'StratifiedSampler', 'get_c',
+           'get_best_dl_params', 'get_best_dls_params', 'get_ts_dls', 'get_ts_dl', 'get_subset_dl', 'get_tsimage_dls']
 
 # Cell
+from sklearn.model_selection import StratifiedKFold
 from types import MethodType
 from matplotlib.ticker import PercentFormatter
 import matplotlib.colors as mcolors
@@ -575,10 +576,12 @@ class NumpyDataLoader(TfmdDL):
 
     def get_idxs(self):
         if self.n==0: return []
-        if self.sampler is not None:
-            return np.array(list(iter(self.sampler)))
         if self.partial_n is not None: n = min(self.partial_n, self.n)
         else: n = self.n
+        if self.sampler is not None:
+            idxs = np.array(list(iter(self.sampler)))
+            if self.partial_n is not None: idxs = idxs[:n]
+            return idxs
         if self.weights is not None:
             return np.random.choice(self.n, n, p=self.weights)
         idxs = Inf.count if self.indexed else Inf.nones
@@ -588,6 +591,7 @@ class NumpyDataLoader(TfmdDL):
                 idxs = np.random.choice(idxs, n, False)
         if self.shuffle: idxs = self.shuffle_fn(idxs)
         return idxs
+
 
     def shuffle_fn(self, idxs):
         return np.random.permutation(idxs)
@@ -827,6 +831,33 @@ class NumpyDataLoaders(DataLoaders):
 class TSDataLoaders(NumpyDataLoaders):
     _xblock = TSTensorBlock
     _dl_type = TSDataLoader
+
+# Cell
+class StratifiedSampler:
+    "Sampler where batches preserve the percentage of samples for each class"
+
+    def __init__(self,
+        y, # The target variable for supervised learning problems. Stratification is done based on the y labels.
+        bs : int = 64, # Batch size
+        shuffle : bool = False, # Flag to shuffle each class’s samples before splitting into batches.
+        drop_last : bool = False # Flag to drop the last incomplete batch.
+        ):
+        self.n_splits = len(y) // bs if drop_last else int(np.ceil(len(y) / bs))
+        self.skf = StratifiedKFold(n_splits=self.n_splits, shuffle=shuffle)
+        self.y = y
+        self.shuffle = shuffle
+        self.n = self.n_splits * bs if drop_last else len(y)
+
+    def __iter__(self):
+        if self.shuffle:
+            self.skf.random_state = np.random.randint(0, 1e8)
+        chunklist = []
+        for _,idx in self.skf.split(self.y, self.y):
+            chunklist.extend(idx)
+        yield chunklist
+
+    def __len__(self):
+        return self.n
 
 # Cell
 def get_c(dls):

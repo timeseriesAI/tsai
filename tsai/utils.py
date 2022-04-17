@@ -1380,7 +1380,7 @@ def save_object(o, file_path, verbose=True):
         file_path = file_path.parent / (file_path.name + '.pkl')
     create_dir(file_path.parent, verbose)
     joblib.dump(o, file_path, )
-    pv(f'{type(o)} saved as {file_path}', verbose)
+    pv(f'{type(o).__name__} saved as {file_path}', verbose)
 
 def load_object(file_path):
     file_path = Path(file_path)
