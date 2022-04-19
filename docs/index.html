@@ -310,7 +310,10 @@ It provides an overview of a time series classification task.</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The ROCKETs (RocketClassifier, RocketRegressor, MiniRocketClassifier, MiniRocketRegressor, MiniRocketVotingClassifier or MiniRocketVotingRegressor) are somewhat different models. They are not actually deep learning models (although they use convolutions) and are used in a different way.</p>
-<p>⚠️ You'll also need to install sktime to be able to use them. You can install it separately or use:</p>
+<p>⚠️ You'll also need to install sktime to be able to use them. You can install it separately:</p>
+<div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">sktime</span>
+</pre></div>
+<p>or use:</p>
 <div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">tsai</span><span class="p">[</span><span class="n">extras</span><span class="p">]</span>
 </pre></div>
 
@@ -320,8 +323,9 @@ It provides an overview of a time series classification task.</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Training:</strong></p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tsai.all</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">mean_squared_error</span>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">mean_squared_error</span><span class="p">,</span> <span class="n">make_scorer</span>
+<span class="kn">from</span> <span class="nn">tsai.all</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">tsai.models.MINIROCKET</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">get_regression_data</span><span class="p">(</span><span class="s1">&#39;AppliancesEnergy&#39;</span><span class="p">)</span>
 <span class="n">rmse_scorer</span> <span class="o">=</span> <span class="n">make_scorer</span><span class="p">(</span><span class="n">mean_squared_error</span><span class="p">,</span> <span class="n">greater_is_better</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">mr_reg</span> <span class="o">=</span> <span class="n">MiniRocketRegressor</span><span class="p">(</span><span class="n">scoring</span><span class="o">=</span><span class="n">rmse_scorer</span><span class="p">)</span>

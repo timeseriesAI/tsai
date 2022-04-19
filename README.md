@@ -187,7 +187,11 @@ raw_preds, target, preds = reg.get_X_preds(X[splits[0]], y[splits[0]])
 
 The ROCKETs (RocketClassifier, RocketRegressor, MiniRocketClassifier, MiniRocketRegressor, MiniRocketVotingClassifier or MiniRocketVotingRegressor) are somewhat different models. They are not actually deep learning models (although they use convolutions) and are used in a different way.
 
-⚠️ You'll also need to install sktime to be able to use them. You can install it separately or use:
+⚠️ You'll also need to install sktime to be able to use them. You can install it separately:
+```python
+pip install sktime
+```
+or use:
 ```python
 pip install tsai[extras]
 ```
@@ -195,8 +199,9 @@ pip install tsai[extras]
 **Training:**
 
 ```python
+from sklearn.metrics import mean_squared_error, make_scorer
 from tsai.all import *
-from sklearn.metrics import mean_squared_error
+from tsai.models.MINIROCKET import *
 X_train, y_train, X_test, y_test = get_regression_data('AppliancesEnergy')
 rmse_scorer = make_scorer(mean_squared_error, greater_is_better=False)
 mr_reg = MiniRocketRegressor(scoring=rmse_scorer)
