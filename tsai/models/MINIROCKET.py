@@ -27,7 +27,7 @@ class MiniRocketClassifier(sklearn.pipeline.Pipeline):
 
         try:
             import sktime
-            from sktime.transformations.panel.rocket import MiniRocketMultivariate
+            from sktime.transformations.panel.rocket._minirocket_multivariate import MiniRocketMultivariate
         except ImportError:
             print("You need to install sktime to be able to use MiniRocketClassifier")
 
@@ -74,7 +74,7 @@ class MiniRocketRegressor(sklearn.pipeline.Pipeline):
 
         try:
             import sktime
-            from sktime.transformations.panel.rocket import MiniRocketMultivariate
+            from sktime.transformations.panel.rocket._minirocket_multivariate import MiniRocketMultivariate
         except ImportError:
             print("You need to install sktime to be able to use MiniRocketRegressor")
 
