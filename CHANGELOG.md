@@ -2,6 +2,49 @@
 
 <!-- do not remove -->
 
+## 0.3.1
+
+### New Features
+
+- added StratifiedSampler to handle imbalanced datasets ([#479](https://github.com/timeseriesAI/tsai/issues/479))
+
+- added seq_embed_size and seq_embed arguments to TSiT ([#476](https://github.com/timeseriesAI/tsai/issues/476))
+
+- added get_idxs_to_keep that can be used to filter indices based on different conditions ([#469](https://github.com/timeseriesAI/tsai/issues/469))
+
+- added SmeLU activation function ([#458](https://github.com/timeseriesAI/tsai/issues/458))
+
+- added split_in_chunks ([#454](https://github.com/timeseriesAI/tsai/issues/454))
+
+- upgraded min Python version to 3.7 ([#450](https://github.com/timeseriesAI/tsai/issues/450))
+
+- added sampler argument to NumpyDataLoader and TSDataLoader ([#436](https://github.com/timeseriesAI/tsai/issues/436))
+
+- added TSMask2Value transform which supports multiple masks ([#431](https://github.com/timeseriesAI/tsai/issues/431))
+
+- added TSRandomStandardize for improved ood generalization ([#428](https://github.com/timeseriesAI/tsai/issues/428))
+
+- added get_dir_size function ([#421](https://github.com/timeseriesAI/tsai/issues/421))
+
+- Is there any ways of recording the wrong predictions into a txt files? ([#397](https://github.com/timeseriesAI/tsai/issues/397))
+  - I am wondering if the net could record the wrong predictions of the dataset? So maybe I can find a pattern from the wrong files and adjust my method of preprocessing data.
+
+### Bugs Squashed
+
+- slow import of MiniRocketMultivariate from sktime ([#482](https://github.com/timeseriesAI/tsai/issues/482))
+
+- Installing from source fails on Windows (UnicodeDecodeError) ([#470](https://github.com/timeseriesAI/tsai/issues/470))
+  - Hi everyone,
+
+trying to install the package from source does not work for on Windows 10; it fails with `UnicodeDecodeError: 'charmap' codec can't decode byte 0x8f in position [...]`. The problem also affects other packages (e.g. https://github.com/iitzco/faced/issues/21), but is easily solved by specifying an `encoding` in the `setup.py`, see PR.
+
+- TSDataset error oindex is not an attribute ([#462](https://github.com/timeseriesAI/tsai/issues/462))
+
+- split_in_chunks incorrectly calculated ([#455](https://github.com/timeseriesAI/tsai/issues/455))
+
+- _check_X() got an unexpected keyword argument 'coerce_to_numpy' ([#415](https://github.com/timeseriesAI/tsai/issues/415))
+
+
 ## 0.3.0
 
 ### New Features
