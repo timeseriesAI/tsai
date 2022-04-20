@@ -919,7 +919,6 @@ def is_memory_shared(a, b):
 # Cell
 def assign_in_chunks(a, b, chunksize='auto', inplace=True, verbose=True):
     """Assigns values in b to an array-like object a using chunks to avoid memory overload.
-
     The resulting a retains it's dtype and share it's memory.
     a: array-like object
     b: may be an integer, float, str, 'rand' (for random data), or another array like object.
@@ -934,13 +933,18 @@ def assign_in_chunks(a, b, chunksize='auto', inplace=True, verbose=True):
         if chunksize == "auto":
             chunksize = chunks_calculator(shape, dtype)
             chunksize = shape[0] if not chunksize else  chunksize[0]
+            if verbose:
+                print(f'auto chunksize: {chunksize}')
         for i in progress_bar(range((shape[0] - 1) // chunksize + 1), display=verbose, leave=False):
             start, end = i * chunksize, min(shape[0], (i + 1) * chunksize)
             if start >= shape[0]: break
             if b == 'rand':
                 a[start:end] = np.random.rand(end - start, *shape[1:])
             else:
-                a[start:end] = b[start:end]
+                if is_dask(b):
+                    a[start:end] = b[start:end].compute()
+                else:
+                    a[start:end] = b[start:end]
     if not inplace: return a
 
 # Cell

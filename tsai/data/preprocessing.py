@@ -511,14 +511,23 @@ class TSCyclicalPosition(Transform):
             magnitude: added for compatibility. It's not used.
     """
     order = 90
-    def __init__(self, magnitude=None, **kwargs):
+    def __init__(self, cyclical_var=None, magnitude=None, **kwargs):
         super().__init__(**kwargs)
+        self.cyclical_var = cyclical_var
 
     def encodes(self, o: TSTensor):
-        bs,_,seq_len = o.shape
-        sin, cos = sincos_encoding(seq_len, device=o.device)
-        output = torch.cat([o, sin.reshape(1,1,-1).repeat(bs,1,1), cos.reshape(1,1,-1).repeat(bs,1,1)], 1)
-        return output
+        bs,nvars,seq_len = o.shape
+        if self.cyclical_var is None:
+            sin, cos = sincos_encoding(seq_len, device=o.device)
+            output = torch.cat([o, sin.reshape(1,1,-1).repeat(bs,1,1), cos.reshape(1,1,-1).repeat(bs,1,1)], 1)
+            return output
+        else:
+            sin = torch.sin(o[:, [self.cyclical_var]]/seq_len * 2 * np.pi)
+            cos = torch.cos(o[:, [self.cyclical_var]]/seq_len * 2 * np.pi)
+            exc_vars = np.isin(np.arange(nvars), self.cyclical_var, invert=True)
+            output = torch.cat([o[:, exc_vars], sin, cos], 1)
+            return output
+
 
 # Cell
 class TSLinearPosition(Transform):
