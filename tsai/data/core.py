@@ -5,7 +5,8 @@ __all__ = ['NumpyTensor', 'ToNumpyTensor', 'TSTensor', 'ToTSTensor', 'show_tuple
            'TSMultiLabelClassification', 'NumpyTensorBlock', 'TSTensorBlock', 'TorchDataset', 'NumpyDataset',
            'TSDataset', 'NoTfmLists', 'TSTfmdLists', 'NumpyDatasets', 'tscoll_repr', 'TSDatasets', 'add_ds',
            'NumpyDataLoader', 'TSDataLoader', 'NumpyDataLoaders', 'TSDataLoaders', 'StratifiedSampler', 'get_c',
-           'get_best_dl_params', 'get_best_dls_params', 'get_ts_dls', 'get_ts_dl', 'get_subset_dl', 'get_tsimage_dls']
+           'get_best_dl_params', 'get_best_dls_params', 'get_ts_dls', 'get_ts_dl', 'get_subset_dl', 'get_tsimage_dls',
+           'get_time_per_batch', 'get_dl_percent_per_epoch']
 
 # Cell
 from sklearn.model_selection import StratifiedKFold
@@ -1007,3 +1008,28 @@ def get_ts_dl(X, y=None, split=None, sel_vars=None, sel_steps=None, tfms=None, i
 get_tsimage_dls = get_ts_dls
 
 def get_subset_dl(dl, idxs): return dl.new(dl.dataset.subset(idxs))
+
+# Cell
+def get_time_per_batch(dl, model=None, n_batches=None):
+    try:
+        timer.start(False)
+        pbar = progress_bar(dl, leave=False)
+        for i, (xb, _) in enumerate(pbar):
+            if model is not None:
+                _ = model(xb)
+            if n_batches is not None and i >= n_batches - 1:
+                t = timer.stop()
+                pbar.on_interrupt()
+                break
+        if n_batches is None or i < n_batches - 1:
+            t = timer.stop()
+
+    except KeyboardInterrupt:
+        t = timer.stop()
+        pbar.on_interrupt()
+    return t / datetime.timedelta(seconds=1) / (i+1)
+
+def get_dl_percent_per_epoch(dl, model, n_batches=None):
+    dl_time = get_time_per_batch(dl, model=None, n_batches=n_batches)
+    model_time = get_time_per_batch(dl, model=model, n_batches=n_batches)
+    return f'{min(1, dl_time/model_time):.2%}'
