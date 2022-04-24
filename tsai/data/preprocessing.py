@@ -3,7 +3,7 @@
 __all__ = ['ToNumpyCategory', 'OneHot', 'TSNan2Value', 'Nan2Value', 'TSStandardize', 'TSNormalize', 'TSClipOutliers',
            'TSClip', 'TSSelfMissingness', 'TSRobustScale', 'get_stats_with_uncertainty', 'get_random_stats',
            'TSGaussianStandardize', 'TSRandomStandardize', 'TSDiff', 'TSLog', 'TSCyclicalPosition', 'TSLinearPosition',
-           'TSPosition', 'TSMissingness', 'TSPositionGaps', 'TSRollingMean', 'TSLogReturn', 'TSAdd', 'TSClipByVar',
+           'TSMissingness', 'TSPositionGaps', 'TSRollingMean', 'TSLogReturn', 'TSAdd', 'TSClipByVar', 'TSDropVars',
            'TSShrinkDataFrame', 'TSOneHotEncoder', 'TSCategoricalEncoder', 'TSDateTimeEncoder', 'default_date_attr',
            'TSMissingnessEncoder', 'Preprocessor', 'StandardScaler', 'RobustScaler', 'Normalizer', 'BoxCox',
            'YeoJohnshon', 'Quantile', 'ReLabeler']
@@ -505,15 +505,16 @@ class TSLog(Transform):
 
 # Cell
 class TSCyclicalPosition(Transform):
-    """Concatenates the position along the sequence as 2 additional variables (sine and cosine)
-
-        Args:
-            magnitude: added for compatibility. It's not used.
-    """
+    "Concatenates the position along the sequence as 2 additional variables (sine and cosine)"
     order = 90
-    def __init__(self, cyclical_var=None, magnitude=None, **kwargs):
+    def __init__(self,
+        cyclical_var=None, # Optional variable to indicate the steps withing the cycle (ie minute of the day)
+        magnitude=None, # Added for compatibility. It's not used.
+        drop_var=False, # Flag to indicate if the cyclical var is removed
+        **kwargs
+        ):
         super().__init__(**kwargs)
-        self.cyclical_var = cyclical_var
+        self.cyclical_var, self.drop_var = cyclical_var, drop_var
 
     def encodes(self, o: TSTensor):
         bs,nvars,seq_len = o.shape
@@ -524,49 +525,48 @@ class TSCyclicalPosition(Transform):
         else:
             sin = torch.sin(o[:, [self.cyclical_var]]/seq_len * 2 * np.pi)
             cos = torch.cos(o[:, [self.cyclical_var]]/seq_len * 2 * np.pi)
-            exc_vars = np.isin(np.arange(nvars), self.cyclical_var, invert=True)
-            output = torch.cat([o[:, exc_vars], sin, cos], 1)
+            if self.drop_var:
+                exc_vars = np.isin(np.arange(nvars), self.cyclical_var, invert=True)
+                output = torch.cat([o[:, exc_vars], sin, cos], 1)
+            else:
+                output = torch.cat([o, sin, cos], 1)
             return output
 
 
 # Cell
 class TSLinearPosition(Transform):
-    """Concatenates the position along the sequence as 1 additional variable
-
-        Args:
-            magnitude: added for compatibility. It's not used.
-    """
+    "Concatenates the position along the sequence as 1 additional variable"
 
     order = 90
-    def __init__(self, magnitude=None, lin_range=(-1,1), **kwargs):
-        self.lin_range = lin_range
+    def __init__(self,
+        linear_var:int=None, # Optional variable to indicate the steps withing the cycle (ie minute of the day)
+        var_range:tuple=None, # Optional range indicating min and max values of the linear variable
+        magnitude=None, # Added for compatibility. It's not used.
+        drop_var:bool=False, # Flag to indicate if the cyclical var is removed
+        lin_range:tuple=(-1,1),
+        **kwargs):
+        self.linear_var, self.var_range, self.drop_var, self.lin_range = linear_var, var_range, drop_var, lin_range
         super().__init__(**kwargs)
 
     def encodes(self, o: TSTensor):
-        bs,_,seq_len = o.shape
-        lin = linear_encoding(seq_len, device=o.device, lin_range=self.lin_range)
-        output = torch.cat([o, lin.reshape(1,1,-1).repeat(bs,1,1)], 1)
-        return output
-
-# Cell
-class TSPosition(Transform):
-    """Concatenates linear and/or cyclical positions along the sequence as additional variables"""
-
-    order = 90
-    def __init__(self, cyclical=True, linear=True, magnitude=None, lin_range=(-1,1), **kwargs):
-        self.lin_range = lin_range
-        self.cyclical, self.linear = cyclical, linear
-        super().__init__(**kwargs)
-
-    def encodes(self, o: TSTensor):
-        bs,_,seq_len = o.shape
-        if self.linear:
+        bs,nvars,seq_len = o.shape
+        if self.linear_var is None:
             lin = linear_encoding(seq_len, device=o.device, lin_range=self.lin_range)
-            o = torch.cat([o, lin.reshape(1,1,-1).repeat(bs,1,1)], 1)
-        if self.cyclical:
-            sin, cos = sincos_encoding(seq_len, device=o.device)
-            o = torch.cat([o, sin.reshape(1,1,-1).repeat(bs,1,1), cos.reshape(1,1,-1).repeat(bs,1,1)], 1)
-        return o
+            output = torch.cat([o, lin.reshape(1,1,-1).repeat(bs,1,1)], 1)
+        else:
+            linear_var = o[:, [self.linear_var]]
+            if self.var_range is None:
+                lin = (linear_var - linear_var.min()) / (linear_var.max() - linear_var.min())
+            else:
+                lin = (linear_var - self.var_range[0]) / (self.var_range[1] - self.var_range[0])
+            lin = (linear_var - self.lin_range[0]) / (self.lin_range[1] - self.lin_range[0])
+            if self.drop_var:
+                exc_vars = np.isin(np.arange(nvars), self.linear_var, invert=True)
+                output = torch.cat([o[:, exc_vars], lin], 1)
+            else:
+                output = torch.cat([o, lin], 1)
+            return output
+        return output
 
 # Cell
 class TSMissingness(Transform):
@@ -672,6 +672,18 @@ class TSClipByVar(Transform):
         for v,m,M in self.var_min_max:
             o[:, v] = torch.clamp(o[:, v], m, M)
         return o
+
+# Cell
+class TSDropVars(Transform):
+    "Drops selected variable from the input"
+    order = 90
+    def __init__(self, drop_vars, **kwargs):
+        super().__init__(**kwargs)
+        self.drop_vars = drop_vars
+
+    def encodes(self, o:TSTensor):
+        exc_vars = np.isin(np.arange(o.shape[1]), self.drop_vars, invert=True)
+        return o[:, exc_vars]
 
 # Cell
 from sklearn.base import BaseEstimator, TransformerMixin

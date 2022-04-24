@@ -770,6 +770,7 @@ class NumpyDataLoaders(DataLoaders):
     _xblock = NumpyTensorBlock
     _dl_type = NumpyDataLoader
     def __init__(self, *loaders, path='.', device=None):
+        create_dir(path, verbose=False)
         self.loaders, self.path = list(loaders), Path(path)
         self.device = ifnone(device, default_device())
 
