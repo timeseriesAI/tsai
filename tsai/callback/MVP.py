@@ -179,8 +179,8 @@ class MVP(Callback):
             transfer_weights(self.learn.model, self.weights_path, device=device, exclude_head=False)
 
         with torch.no_grad():
-            xb = torch.randn(2, self.learn.dls.vars, self.learn.dls.len).to(device=device)
-            assert xb.shape == self.learn.model(xb).shape, 'the model cannot reproduce the input shape'
+            xb = self.learn.dls.train.one_batch()[0][:2]
+            assert xb.shape == self.learn.model(xb).shape, f'the model cannot reproduce the input shape {xb.shape}, {self.learn.model(xb).shape}'
 
         if self.window_size:
             if isinstance(self.window_size, float) or self.window_size == 1:

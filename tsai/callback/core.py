@@ -94,7 +94,8 @@ class ShowGraph(Callback):
         self.update_graph([(iters, rec.losses), (self.nb_batches, val_losses)], x_bounds, y_bounds)
 
     def after_fit(self):
-        plt.close(self.graph_ax.figure)
+        if hasattr(self, 'graph_ax'):
+            plt.close(self.graph_ax.figure)
         if self.plot_metrics: self.learn.plot_metrics(final_losses=self.final_losses)
 
     def update_graph(self, graphs, x_bounds=None, y_bounds=None, figsize=(6,4)):
@@ -115,7 +116,6 @@ class ShowGraph(Callback):
 ShowGraphCallback2 = ShowGraph
 
 # Cell
-
 class SaveModel(TrackerCallback):
     "A `TrackerCallback` that saves the model's best during training and loads it at the end with a verbose option."
     _only_train_loop,order = True,TrackerCallback.order+1
@@ -255,7 +255,6 @@ class _PerInstanceLoss(Module):
             return ((self.crit(input, target) * self.weights)).mean()
 
 # Cell
-
 class BatchSubsampler(Callback):
     """ Callback that selects a percentage of samples and/ or sequence steps with replacement from each training batch
 

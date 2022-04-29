@@ -62,38 +62,45 @@ class _TSiTEncoder(nn.Module):
 class _TSiTBackbone(Module):
     def __init__(self, c_in:int, seq_len:int, depth:int=6, d_model:int=128, n_heads:int=16, act:str='gelu',
                  lsa:bool=False, qkv_bias:bool=True, attn_dropout:float=0., dropout:float=0., drop_path_rate:float=0., mlp_ratio:int=1,
-                 pre_norm:bool=False, use_token:bool=True,  use_pe:bool=True, n_embeds:Optional[list]=None, embed_dims:Optional[list]=None,
-                 padding_idxs:Optional[list]=None, cat_pos:Optional[list]=None, feature_extractor:Optional[Callable]=None,
-                 seq_embed_size:int=None, seq_embed:Optional[Callable]=None):
+                 pre_norm:bool=False, use_token:bool=True,  use_pe:bool=True, n_cat_embeds:Optional[list]=None, cat_embed_dims:Optional[list]=None,
+                 cat_padding_idxs:Optional[list]=None, cat_pos:Optional[list]=None, feature_extractor:Optional[Callable]=None,
+                 token_size:int=None, tokenizer:Optional[Callable]=None):
 
         # Categorical embeddings
-        if n_embeds is not None:
-            n_embeds = listify(n_embeds)
-            if embed_dims is None:
-                embed_dims = [emb_sz_rule(s) for s in n_embeds]
-            self.to_cat_embed = MultiEmbedding(c_in, n_embeds, embed_dims=embed_dims, padding_idxs=padding_idxs, cat_pos=cat_pos)
+        if n_cat_embeds is not None:
+            n_cat_embeds = listify(n_cat_embeds)
+            if cat_embed_dims is None:
+                cat_embed_dims = [emb_sz_rule(s) for s in n_cat_embeds]
+            self.to_cat_embed = MultiEmbedding(c_in, n_cat_embeds, cat_embed_dims=cat_embed_dims, cat_padding_idxs=cat_padding_idxs, cat_pos=cat_pos)
             c_in, seq_len = output_size_calculator(self.to_cat_embed, c_in, seq_len)
         else:
             self.to_cat_embed = nn.Identity()
 
         # Sequence embedding
-        if seq_embed_size is not None:
-            self.seq_embed = SeqEmbed(c_in, d_model, seq_embed_size)
-            c_in, seq_len = output_size_calculator(self.seq_embed, c_in, seq_len)
-        elif seq_embed is not None:
-            if isinstance(seq_embed, nn.Module):  self.seq_embed = seq_embed
-            else: self.seq_embed = seq_embed(c_in, d_model)
-            c_in, seq_len = output_size_calculator(self.seq_embed, c_in, seq_len)
+        if token_size is not None:
+            self.tokenizer = SeqTokenizer(c_in, d_model, token_size)
+            c_in, seq_len = output_size_calculator(self.tokenizer, c_in, seq_len)
+        elif tokenizer is not None:
+            if isinstance(tokenizer, nn.Module):  self.tokenizer = tokenizer
+            else: self.tokenizer = tokenizer(c_in, d_model)
+            c_in, seq_len = output_size_calculator(self.tokenizer, c_in, seq_len)
         else:
-            self.seq_embed = nn.Identity()
+            self.tokenizer = nn.Identity()
 
         # Feature extractor
-        if feature_extractor:
+        if feature_extractor is not None:
             if isinstance(feature_extractor, nn.Module):  self.feature_extractor = feature_extractor
             else: self.feature_extractor = feature_extractor(c_in, d_model)
             c_in, seq_len = output_size_calculator(self.feature_extractor, c_in, seq_len)
         else:
-            self.feature_extractor = nn.Conv1d(c_in, d_model, 1)
+            self.feature_extractor = nn.Identity()
+
+        # Linear projection
+        if token_size is None and tokenizer is None and feature_extractor is None:
+            self.linear_proj = nn.Conv1d(c_in, d_model, 1)
+        else:
+            self.linear_proj = nn.Identity()
+
         self.transpose = Transpose(1,2)
 
         # Position embedding & token
@@ -114,10 +121,13 @@ class _TSiTBackbone(Module):
         x = self.to_cat_embed(x)
 
         # Sequence embedding
-        x = self.seq_embed(x)
+        x = self.tokenizer(x)
 
         # Feature extractor
         x = self.feature_extractor(x)
+
+        # Linear projection
+        x = self.linear_proj(x)
 
         # Position embedding & token
         x = self.transpose(x)
@@ -163,15 +173,15 @@ class TSiTPlus(nn.Sequential):
         pre_norm:           if True normalization will be applied as the first step in the sublayers. Defaults to False.
         use_token:          if True, the output will come from the transformed token. This is meant to be use in classification tasks.
         use_pe:             flag to indicate if positional embedding is used.
-        n_embeds:           list with the sizes of the dictionaries of embeddings (int).
-        embed_dims:         list with the sizes of each embedding vector (int).
-        padding_idxs:       If specified, the entries at padding_idxs do not contribute to the gradient; therefore, the embedding vector at padding_idxs
+        n_cat_embeds:       list with the sizes of the dictionaries of embeddings (int).
+        cat_embed_dims:     list with the sizes of each embedding vector (int).
+        cat_padding_idxs:       If specified, the entries at cat_padding_idxs do not contribute to the gradient; therefore, the embedding vector at cat_padding_idxs
                             are not updated during training. Use 0 for those categorical embeddings that may have #na# values. Otherwise, leave them as None.
                             You can enter a combination for different embeddings (for example, [0, None, None]).
         cat_pos:            list with the position of the categorical variables in the input.
-        seq_embed_size:     Size of the embedding function used to reduce the sequence length (similar to ViT's patch size)
-        seq_embed:          an nn.Module or callable that will be used to reduce the sequence length
-        feature_extractor:  an nn.Module or callable that will be used to preprocess the time series before
+        token_size:         Size of the embedding function used to reduce the sequence length (similar to ViT's patch size)
+        tokenizer:          nn.Module or callable that will be used to reduce the sequence length
+        feature_extractor:  nn.Module or callable that will be used to preprocess the time series before
                             the embedding step. It is useful to extract features or resample the time series.
         flatten:            flag to indicate if the 3d logits will be flattened to 2d in the model's head if use_token is set to False.
                             If use_token is False and flatten is False, the model will apply a pooling layer.
@@ -189,9 +199,10 @@ class TSiTPlus(nn.Sequential):
 
     def __init__(self, c_in:int, c_out:int, seq_len:int, d_model:int=128, depth:int=6, n_heads:int=16, act:str='gelu',
                  lsa:bool=False, attn_dropout:float=0., dropout:float=0., drop_path_rate:float=0., mlp_ratio:int=1, qkv_bias:bool=True,
-                 pre_norm:bool=False, use_token:bool=True, use_pe:bool=True, n_embeds:Optional[list]=None, embed_dims:Optional[list]=None,
-                 padding_idxs:Optional[list]=None, cat_pos:Optional[list]=None, feature_extractor:Optional[Callable]=None,
-                 seq_embed_size:int=None, seq_embed:Optional[Callable]=None, flatten:bool=False, concat_pool:bool=True, fc_dropout:float=0., use_bn:bool=False,
+                 pre_norm:bool=False, use_token:bool=True, use_pe:bool=True,
+                 cat_pos:Optional[list]=None, n_cat_embeds:Optional[list]=None, cat_embed_dims:Optional[list]=None, cat_padding_idxs:Optional[list]=None,
+                 token_size:int=None, tokenizer:Optional[Callable]=None, feature_extractor:Optional[Callable]=None,
+                 flatten:bool=False, concat_pool:bool=True, fc_dropout:float=0., use_bn:bool=False,
                  bias_init:Optional[Union[float, list]]=None, y_range:Optional[tuple]=None, custom_head:Optional[Callable]=None, verbose:bool=True):
 
         if use_token and c_out == 1:
@@ -200,8 +211,8 @@ class TSiTPlus(nn.Sequential):
         backbone = _TSiTBackbone(c_in, seq_len, depth=depth, d_model=d_model, n_heads=n_heads, act=act,
                                  lsa=lsa, attn_dropout=attn_dropout, dropout=dropout, drop_path_rate=drop_path_rate,
                                  pre_norm=pre_norm, mlp_ratio=mlp_ratio, use_pe=use_pe, use_token=use_token,
-                                 n_embeds=n_embeds, embed_dims=embed_dims, padding_idxs=padding_idxs, cat_pos=cat_pos,
-                                 feature_extractor=feature_extractor, seq_embed_size=seq_embed_size, seq_embed=seq_embed)
+                                 n_cat_embeds=n_cat_embeds, cat_embed_dims=cat_embed_dims, cat_padding_idxs=cat_padding_idxs, cat_pos=cat_pos,
+                                 feature_extractor=feature_extractor, token_size=token_size, tokenizer=tokenizer)
 
         self.head_nf = d_model
         self.c_out = c_out
