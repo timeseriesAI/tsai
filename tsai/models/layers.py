@@ -8,14 +8,15 @@ __all__ = ['init_lin_zero', 'lin_zero_init', 'SwishBeta', 'SmeLU', 'Chomp1d', 's
            'Sequential', 'TimeDistributed', 'Temp_Scale', 'Vector_Scale', 'Matrix_Scale', 'get_calibrator',
            'LogitAdjustmentLayer', 'LogitAdjLayer', 'PPV', 'PPAuc', 'MaxPPVPool1d', 'AdaptiveWeightedAvgPool1d',
            'GAP1d', 'GACP1d', 'GAWP1d', 'GlobalWeightedAveragePool1d', 'gwa_pool_head', 'GWAP1d', 'AttentionalPool1d',
-           'GAttP1d', 'attentional_pool_head', 'GEGLU', 'ReGLU', 'get_act_fn', 'pytorch_acts', 'pytorch_act_names',
-           'create_pool_head', 'pool_head', 'average_pool_head', 'concat_pool_head', 'max_pool_head',
-           'create_pool_plus_head', 'pool_plus_head', 'create_conv_head', 'conv_head', 'create_mlp_head', 'mlp_head',
-           'create_fc_head', 'fc_head', 'create_rnn_head', 'rnn_head', 'imputation_head', 'create_conv_lin_nd_head',
-           'conv_lin_nd_head', 'conv_lin_3d_head', 'create_conv_lin_3d_head', 'create_lin_nd_head', 'lin_nd_head',
-           'lin_3d_head', 'create_lin_3d_head', 'create_conv_3d_head', 'conv_3d_head', 'universal_pool_head', 'heads',
-           'SqueezeExciteBlock', 'GaussianNoise', 'PositionwiseFeedForward', 'TokenLayer', 'ScaledDotProductAttention',
-           'MultiheadAttention', 'MultiConv1d', 'LSTMOutput', 'emb_sz_rule', 'TSEmbedding', 'MultiEmbedding']
+           'GAttP1d', 'attentional_pool_head', 'PoolingLayer', 'GEGLU', 'ReGLU', 'get_act_fn', 'pytorch_acts',
+           'pytorch_act_names', 'create_pool_head', 'pool_head', 'average_pool_head', 'concat_pool_head',
+           'max_pool_head', 'create_pool_plus_head', 'pool_plus_head', 'create_conv_head', 'conv_head',
+           'create_mlp_head', 'mlp_head', 'create_fc_head', 'fc_head', 'create_rnn_head', 'rnn_head', 'imputation_head',
+           'create_conv_lin_nd_head', 'conv_lin_nd_head', 'conv_lin_3d_head', 'create_conv_lin_3d_head',
+           'create_lin_nd_head', 'lin_nd_head', 'lin_3d_head', 'create_lin_3d_head', 'create_conv_3d_head',
+           'conv_3d_head', 'universal_pool_head', 'heads', 'SqueezeExciteBlock', 'GaussianNoise',
+           'PositionwiseFeedForward', 'TokenLayer', 'ScaledDotProductAttention', 'MultiheadAttention', 'MultiConv1d',
+           'LSTMOutput', 'emb_sz_rule', 'TSEmbedding', 'MultiEmbedding']
 
 # Cell
 from torch.nn.utils import weight_norm, spectral_norm
@@ -635,6 +636,37 @@ class GAttP1d(nn.Sequential):
 
 def attentional_pool_head(n_in, c_out, seq_len=None, bn=True, **kwargs):
     return nn.Sequential(AttentionalPool1d(n_in, c_out, bn=bn, **kwargs), Flatten())
+
+# Cell
+class PoolingLayer(Module):
+    def __init__(self, method='cls', seq_len=None, token=True, seq_last=True):
+        method = method.lower()
+        assert method in ['cls', 'max', 'mean', 'max-mean', 'linear', 'conv1d', 'flatten']
+        if method == 'cls': assert token, 'you can only choose method=cls if a token exists'
+        self.method = method
+        self.token = token
+        self.seq_last = seq_last
+        if method == 'linear' or method == 'conv1d':
+            self.linear = nn.Linear(seq_len - token, 1)
+
+    def forward(self, x):
+        if self.method == 'cls':
+            return x[..., 0] if self.seq_last else x[:, 0]
+        if self.token:
+            x = x[..., 1:] if self.seq_last else x[:, 1:]
+        if self.method == 'max':
+            return torch.max(x, -1)[0] if self.seq_last else torch.max(x, 1)[0]
+        elif self.method == 'mean':
+            return torch.mean(x, -1) if self.seq_last else torch.mean(x, 1)
+        elif self.method == 'max-mean':
+            return torch.cat([torch.max(x, -1)[0] if self.seq_last else torch.max(x, 1)[0],
+                              torch.mean(x, -1) if self.seq_last else torch.mean(x, 1)], 1)
+        elif self.method == 'flatten':
+            return x.flatten(1)
+        elif self.method == 'linear' or self.method == 'conv1d':
+            return self.linear(x)[...,0] if self.seq_last else self.linear(x.transpose(1,2))[...,0]
+
+    def __repr__(self): return f"{self.__class__.__name__}(method={method}, token={token}, seq_last={seq_last})"
 
 # Cell
 class GEGLU(Module):
