@@ -60,6 +60,7 @@
         },
         "empty4": {
             "Transformers": {
+                "Positional encoders": "models.positional_encoders.html",
                 "TransformerModel": "models.TransformerModel.html",
                 "Time Series Transformer (TST)": "models.TST.html",
                 "Time Series Transformer Plus (TSTPlus)": "models.TSTPlus.html"
