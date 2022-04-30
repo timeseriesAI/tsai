@@ -666,7 +666,7 @@ class PoolingLayer(Module):
         elif self.method == 'linear' or self.method == 'conv1d':
             return self.linear(x)[...,0] if self.seq_last else self.linear(x.transpose(1,2))[...,0]
 
-    def __repr__(self): return f"{self.__class__.__name__}(method={method}, token={token}, seq_last={seq_last})"
+    def __repr__(self): return f"{self.__class__.__name__}(method={self.method}, token={self.token}, seq_last={self.seq_last})"
 
 # Cell
 class GEGLU(Module):
