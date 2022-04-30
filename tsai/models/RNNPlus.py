@@ -11,15 +11,15 @@ from .utils import *
 # Cell
 class _RNN_Backbone(Module):
     def __init__(self, cell, c_in, c_out, seq_len=None, hidden_size=100, n_layers=1, bias=True, rnn_dropout=0, bidirectional=False,
-                 n_embeds=None, embed_dims=None, padding_idxs=None, cat_pos=None, feature_extractor=None, init_weights=True):
+                 n_cat_embeds=None, cat_embed_dims=None, cat_padding_idxs=None, cat_pos=None, feature_extractor=None, init_weights=True):
 
         # Categorical embeddings
-        if n_embeds is not None:
-            n_embeds = listify(n_embeds)
-            if embed_dims is None:
-                embed_dims = [emb_sz_rule(s) for s in n_embeds]
-            self.to_cat_embed = MultiEmbedding(c_in, n_embeds, embed_dims=embed_dims, padding_idxs=padding_idxs, cat_pos=cat_pos)
-            c_in = c_in + sum(embed_dims) - len(n_embeds)
+        if n_cat_embeds is not None:
+            n_cat_embeds = listify(n_cat_embeds)
+            if cat_embed_dims is None:
+                cat_embed_dims = [emb_sz_rule(s) for s in n_cat_embeds]
+            self.to_cat_embed = MultiEmbedding(c_in, n_cat_embeds, cat_embed_dims=cat_embed_dims, cat_padding_idxs=cat_padding_idxs, cat_pos=cat_pos)
+            c_in = c_in + sum(cat_embed_dims) - len(n_cat_embeds)
         else:
             self.to_cat_embed = nn.Identity()
 
@@ -77,7 +77,7 @@ class _RNN_Backbone(Module):
 # Cell
 class _RNNPlus_Base(nn.Sequential):
     def __init__(self, c_in, c_out, seq_len=None, hidden_size=[100], n_layers=1, bias=True, rnn_dropout=0, bidirectional=False,
-                 n_embeds=None, embed_dims=None, padding_idxs=None, cat_pos=None, feature_extractor=None, fc_dropout=0., last_step=True, bn=False,
+                 n_cat_embeds=None, cat_embed_dims=None, cat_padding_idxs=None, cat_pos=None, feature_extractor=None, fc_dropout=0., last_step=True, bn=False,
                  custom_head=None, y_range=None, init_weights=True):
 
         if not last_step: assert seq_len, 'you need to pass a seq_len value'
@@ -85,7 +85,7 @@ class _RNNPlus_Base(nn.Sequential):
         # Backbone
         hidden_size = listify(hidden_size)
         backbone = _RNN_Backbone(self._cell, c_in, c_out, seq_len=seq_len, hidden_size=hidden_size, n_layers=n_layers,
-                                 n_embeds=n_embeds, embed_dims=embed_dims, padding_idxs=padding_idxs, cat_pos=cat_pos, feature_extractor=feature_extractor,
+                                 n_cat_embeds=n_cat_embeds, cat_embed_dims=cat_embed_dims, cat_padding_idxs=cat_padding_idxs, cat_pos=cat_pos, feature_extractor=feature_extractor,
                                  bias=bias, rnn_dropout=rnn_dropout,  bidirectional=bidirectional, init_weights=init_weights)
 
         # Head

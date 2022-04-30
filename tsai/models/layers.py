@@ -38,7 +38,7 @@ lin_zero_init = init_lin_zero
 
 # Cell
 class SwishBeta(Module):
-    def __init__(self, beta=1.):
+    def __multiinit__(self, beta=1.):
         self.sigmoid = torch.sigmoid
         self.beta = nn.Parameter(torch.Tensor(1).fill_(beta))
     def forward(self, x): return x.mul(self.sigmoid(x*self.beta))
@@ -1088,27 +1088,27 @@ class TSEmbedding(nn.Embedding):
 
 # Cell
 class MultiEmbedding(Module):
-    def __init__(self, c_in, n_embeds, embed_dims=None, cat_pos=None, std=0.01, padding_idxs=None):
-        n_embeds = listify(n_embeds)
-        if padding_idxs is None: padding_idxs = [None]
-        else: padding_idxs = listify(padding_idxs)
-        if len(padding_idxs) == 1 and len(padding_idxs) < len(n_embeds):
-            padding_idxs = padding_idxs * len(n_embeds)
-        assert len(n_embeds) == len(padding_idxs)
-        if embed_dims is None:
-            embed_dims = [emb_sz_rule(s) for s in n_embeds]
+    def __init__(self, c_in, n_cat_embeds, cat_embed_dims=None, cat_pos=None, std=0.01, cat_padding_idxs=None):
+        cat_n_embeds = listify(n_cat_embeds)
+        if cat_padding_idxs is None: cat_padding_idxs = [None]
+        else: cat_padding_idxs = listify(cat_padding_idxs)
+        if len(cat_padding_idxs) == 1 and len(cat_padding_idxs) < len(cat_n_embeds):
+            cat_padding_idxs = cat_padding_idxs * len(cat_n_embeds)
+        assert len(cat_n_embeds) == len(cat_padding_idxs)
+        if cat_embed_dims is None:
+            cat_embed_dims = [emb_sz_rule(s) for s in cat_n_embeds]
         else:
-            embed_dims = listify(embed_dims)
-            if len(embed_dims) == 1: embed_dims = embed_dims * len(n_embeds)
-            assert len(embed_dims) == len(n_embeds)
+            cat_embed_dims = listify(cat_embed_dims)
+            if len(cat_embed_dims) == 1: cat_embed_dims = cat_embed_dims * len(cat_n_embeds)
+            assert len(cat_embed_dims) == len(cat_n_embeds)
         if cat_pos:
             cat_pos = torch.as_tensor(listify(cat_pos))
         else:
-            cat_pos = torch.arange(len(n_embeds))
+            cat_pos = torch.arange(len(cat_n_embeds))
         self.register_buffer("cat_pos", cat_pos)
         cont_pos = torch.tensor([p for p in torch.arange(c_in) if p not in self.cat_pos])
         self.register_buffer("cont_pos", cont_pos)
-        self.cat_embed = nn.ModuleList([TSEmbedding(n,d,std=std, padding_idx=p) for n,d,p in zip(n_embeds, embed_dims, padding_idxs)])
+        self.cat_embed = nn.ModuleList([TSEmbedding(n,d,std=std, padding_idx=p) for n,d,p in zip(cat_n_embeds, cat_embed_dims, cat_padding_idxs)])
 
     def forward(self, x):
         if isinstance(x, tuple): x_cat, x_cont, *_ = x

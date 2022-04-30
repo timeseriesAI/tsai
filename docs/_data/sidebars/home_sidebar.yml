@@ -142,6 +142,9 @@ entries:
       - output: web
         subfolderitems:
         - output: web,pdf
+          title: Positional encoders
+          url: models.positional_encoders.html
+        - output: web,pdf
           title: TransformerModel
           url: models.TransformerModel.html
         - output: web,pdf
