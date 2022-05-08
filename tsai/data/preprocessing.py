@@ -4,9 +4,9 @@ __all__ = ['ToNumpyCategory', 'OneHot', 'TSNan2Value', 'Nan2Value', 'TSStandardi
            'TSClip', 'TSSelfMissingness', 'TSRobustScale', 'get_stats_with_uncertainty', 'get_random_stats',
            'TSGaussianStandardize', 'TSRandomStandardize', 'TSDiff', 'TSLog', 'TSCyclicalPosition', 'TSLinearPosition',
            'TSMissingness', 'TSPositionGaps', 'TSRollingMean', 'TSLogReturn', 'TSAdd', 'TSClipByVar', 'TSDropVars',
-           'TSShrinkDataFrame', 'TSOneHotEncoder', 'TSCategoricalEncoder', 'TSDateTimeEncoder', 'default_date_attr',
-           'TSMissingnessEncoder', 'Preprocessor', 'StandardScaler', 'RobustScaler', 'Normalizer', 'BoxCox',
-           'YeoJohnshon', 'Quantile', 'ReLabeler']
+           'TSOneHot', 'TSShrinkDataFrame', 'TSOneHotEncoder', 'TSCategoricalEncoder', 'TSDateTimeEncoder',
+           'default_date_attr', 'TSMissingnessEncoder', 'Preprocessor', 'StandardScaler', 'RobustScaler', 'Normalizer',
+           'BoxCox', 'YeoJohnshon', 'Quantile', 'ReLabeler']
 
 # Cell
 import re
@@ -684,6 +684,45 @@ class TSDropVars(Transform):
     def encodes(self, o:TSTensor):
         exc_vars = np.isin(np.arange(o.shape[1]), self.drop_vars, invert=True)
         return o[:, exc_vars]
+
+# Cell
+class TSOneHot(Transform):
+    "Applies one-hot encoding to a selected variable in a `TSTensor`"
+    order = 90
+    def __init__(self,
+        sel_var:int, # Variable that is one-hot encoded
+        num_classes:int, # Total number of classes (excluding nan values)
+        vocab:dict=None, # Optional dictionary used to apply to selected variable
+        add_na:bool=False, # Flag to indicate if values not included in vocab should be set as 0
+        drop_var:bool=True, # Flag to indicate if the cyclical var is removed
+        magnitude=None, # Added for compatibility. It's not used.
+        **kwargs
+        ):
+        store_attr()
+        super().__init__(**kwargs)
+
+    def encodes(self, o:TSTensor):
+        o_var = o[:, [self.sel_var]]
+        if self.vocab is not None:
+            is_na = torch.isin(o_var, o_var.new(list(self.vocab.keys())), invert=True) # na in dict
+            o_var[~is_na] = o_var[~is_na].apply_(self.vocab.get)
+        else:
+            is_na = torch.isnan(o_var)
+        if is_na.sum():
+            o_var[~is_na] = o_var[~is_na] + 1
+            o_var[is_na] = 0
+            if self.add_na:
+                ohe_var = F.one_hot(o_var.long(), self.num_classes + 1)[:, 0].swapaxes(1,2)
+            else:
+                ohe_var = F.one_hot(o_var.long(), self.num_classes + 1)[:, 0, :, 1:].swapaxes(1,2)
+        else:
+            ohe_var = F.one_hot(o_var.long(), self.num_classes)[:, 0].swapaxes(1,2)
+        if self.drop_var:
+            exc_vars = np.isin(np.arange(o.shape[1]), self.sel_var, invert=True)
+            output = torch.cat([o[:, exc_vars], ohe_var], 1)
+        else:
+            output = torch.cat([o, ohe_var], 1)
+        return output
 
 # Cell
 from sklearn.base import BaseEstimator, TransformerMixin
