@@ -4,7 +4,7 @@ __all__ = ['ToNumpyCategory', 'OneHot', 'TSNan2Value', 'Nan2Value', 'TSStandardi
            'TSClip', 'TSSelfMissingness', 'TSRobustScale', 'get_stats_with_uncertainty', 'get_random_stats',
            'TSGaussianStandardize', 'TSRandomStandardize', 'TSDiff', 'TSLog', 'TSCyclicalPosition', 'TSLinearPosition',
            'TSMissingness', 'TSPositionGaps', 'TSRollingMean', 'TSLogReturn', 'TSAdd', 'TSClipByVar', 'TSDropVars',
-           'TSOneHot', 'TSShrinkDataFrame', 'TSOneHotEncoder', 'TSCategoricalEncoder', 'TSDateTimeEncoder',
+           'TSOneHotEncode', 'TSShrinkDataFrame', 'TSOneHotEncoder', 'TSCategoricalEncoder', 'TSDateTimeEncoder',
            'default_date_attr', 'TSMissingnessEncoder', 'Preprocessor', 'StandardScaler', 'RobustScaler', 'Normalizer',
            'BoxCox', 'YeoJohnshon', 'Quantile', 'ReLabeler']
 
@@ -686,39 +686,35 @@ class TSDropVars(Transform):
         return o[:, exc_vars]
 
 # Cell
-class TSOneHot(Transform):
-    "Applies one-hot encoding to a selected variable in a `TSTensor`"
+class TSOneHotEncode(Transform):
     order = 90
     def __init__(self,
         sel_var:int, # Variable that is one-hot encoded
-        num_classes:int, # Total number of classes (excluding nan values)
-        vocab:dict=None, # Optional dictionary used to apply to selected variable
+        unique_labels:list, # List containing all labels (excluding nan values)
         add_na:bool=False, # Flag to indicate if values not included in vocab should be set as 0
-        drop_var:bool=True, # Flag to indicate if the cyclical var is removed
+        drop_var:bool=True, # Flag to indicate if the selected var is removed
         magnitude=None, # Added for compatibility. It's not used.
         **kwargs
         ):
-        store_attr()
+        unique_labels = listify(unique_labels)
+        self.sel_var = sel_var
+        self.unique_labels = unique_labels
+        self.n_classes = len(unique_labels) + add_na
+        self.add_na = add_na
+        self.drop_var = drop_var
         super().__init__(**kwargs)
 
-    def encodes(self, o:TSTensor):
+    def encodes(self, o: TSTensor):
+        bs, n_vars, seq_len = o.shape
         o_var = o[:, [self.sel_var]]
-        if self.vocab is not None:
-            is_na = torch.isin(o_var, o_var.new(list(self.vocab.keys())), invert=True) # na in dict
-            o_var[~is_na] = o_var[~is_na].apply_(self.vocab.get)
-        else:
-            is_na = torch.isnan(o_var)
-        if is_na.sum():
-            o_var[~is_na] = o_var[~is_na] + 1
-            o_var[is_na] = 0
-            if self.add_na:
-                ohe_var = F.one_hot(o_var.long(), self.num_classes + 1)[:, 0].swapaxes(1,2)
-            else:
-                ohe_var = F.one_hot(o_var.long(), self.num_classes + 1)[:, 0, :, 1:].swapaxes(1,2)
-        else:
-            ohe_var = F.one_hot(o_var.long(), self.num_classes)[:, 0].swapaxes(1,2)
+        ohe_var = torch.zeros(bs, self.n_classes, seq_len, device=o.device)
+        if self.add_na:
+            is_na = torch.isin(o_var, o_var.new(list(self.unique_labels)), invert=True) # not available in dict
+            ohe_var[:, [0]] = is_na.to(ohe_var.dtype)
+        for i,l in enumerate(self.unique_labels):
+            ohe_var[:, [i + self.add_na]] = (o_var == l).to(ohe_var.dtype)
         if self.drop_var:
-            exc_vars = np.isin(np.arange(o.shape[1]), self.sel_var, invert=True)
+            exc_vars = torch.isin(torch.arange(o.shape[1], device=o.device), self.sel_var, invert=True)
             output = torch.cat([o[:, exc_vars], ohe_var], 1)
         else:
             output = torch.cat([o, ohe_var], 1)
