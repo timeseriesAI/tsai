@@ -4,9 +4,9 @@ __all__ = ['ToNumpyCategory', 'OneHot', 'TSNan2Value', 'Nan2Value', 'TSStandardi
            'TSClip', 'TSSelfMissingness', 'TSRobustScale', 'get_stats_with_uncertainty', 'get_random_stats',
            'TSGaussianStandardize', 'TSRandomStandardize', 'TSDiff', 'TSLog', 'TSCyclicalPosition', 'TSLinearPosition',
            'TSMissingness', 'TSPositionGaps', 'TSRollingMean', 'TSLogReturn', 'TSAdd', 'TSClipByVar', 'TSDropVars',
-           'TSOneHotEncode', 'TSShrinkDataFrame', 'TSOneHotEncoder', 'TSCategoricalEncoder', 'TSDateTimeEncoder',
-           'default_date_attr', 'TSMissingnessEncoder', 'Preprocessor', 'StandardScaler', 'RobustScaler', 'Normalizer',
-           'BoxCox', 'YeoJohnshon', 'Quantile', 'ReLabeler']
+           'TSOneHotEncode', 'TSPosition', 'TSShrinkDataFrame', 'TSOneHotEncoder', 'TSCategoricalEncoder',
+           'TSDateTimeEncoder', 'default_date_attr', 'TSMissingnessEncoder', 'Preprocessor', 'StandardScaler',
+           'RobustScaler', 'Normalizer', 'BoxCox', 'YeoJohnshon', 'Quantile', 'ReLabeler']
 
 # Cell
 import re
@@ -719,6 +719,22 @@ class TSOneHotEncode(Transform):
         else:
             output = torch.cat([o, ohe_var], 1)
         return output
+
+# Cell
+class TSPosition(Transform):
+    order = 90
+    def __init__(self,
+        steps:list, # Flag to indicate if the selected var is removed
+        magnitude=None, # Added for compatibility. It's not used.
+        **kwargs
+        ):
+        self.steps = torch.from_numpy(np.asarray(steps)).reshape(1, 1, -1)
+        super().__init__(**kwargs)
+
+    def encodes(self, o: TSTensor):
+        bs = o.shape[0]
+        steps = self.steps.expand(bs, -1, -1).to(device=o.device, dtype=o.dtype)
+        return torch.cat([o, steps], 1)
 
 # Cell
 from sklearn.base import BaseEstimator, TransformerMixin
