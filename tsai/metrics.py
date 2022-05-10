@@ -158,8 +158,8 @@ def mape(inp,targ):
 
 # Cell
 def _recall_at_specificity(inp, targ, specificity=.95, axis=-1):
-    inp0 = inp[targ == 0]
-    inp1 = inp[targ == 1]
+    inp0 = inp[(targ == 0).data]
+    inp1 = inp[(targ == 1).data]
     thr = torch.sort(inp0).values[-int(len(inp0) * (1 - specificity))]
     return (inp1 > thr).float().mean()
 
