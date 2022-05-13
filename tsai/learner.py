@@ -373,6 +373,12 @@ def get_arch(arch_name):
     elif arch_name == "TSiTPlus":
         from .models.TSiTPlus import TSiTPlus
         arch = TSiTPlus
+    elif arch_name == "TSSequencer":
+        from .models.TSiTPlus import TSSequencer
+        arch = TSSequencer
+    elif arch_name == "TSSequencerPlus":
+        from .models.TSSequencerPlus import TSSequencerPlus
+        arch = TSSequencerPlus
     elif arch_name == "TabFusionTransformer":
         from .models.TabFusionTransformer import TabFusionTransformer
         arch = TabFusionTransformer
