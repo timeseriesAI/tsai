@@ -21,14 +21,20 @@
     "Models": {
         "Layers": "models.layers.html",
         "Utilities": "models.utils.html",
-        "MLP": "models.MLP.html",
         "": {
-            "RNNs": {
-                "RNN": "models.RNN.html",
-                "RNNPlus": "models.RNNPlus.html"
+            "MLP": {
+                "MLP": "models.MLP.html",
+                "gMLP": "models.gMLP.html"
             }
         },
         "empty1": {
+            "RNNs": {
+                "RNN": "models.RNN.html",
+                "RNNPlus": "models.RNNPlus.html",
+                "TSSequencerPlus": "models.TSSequencerPlus.html"
+            }
+        },
+        "empty2": {
             "1D CNNs": {
                 "FCN": "models.FCN.html",
                 "FCNPlus": "models.FCNPlus.html",
@@ -47,18 +53,18 @@
                 "XCMPlus": "models.XCMPlus.html"
             }
         },
-        "empty2": {
+        "empty3": {
             "RNN-CNNs": {
                 "RNN_FCN": "models.RNN_FCN.html",
                 "RNN_FCNPlus": "models.RNN_FCNPlus.html"
             }
         },
-        "empty3": {
+        "empty4": {
             "Wavelet-based NNs": {
                 "mWDN": "models.mWDN.html"
             }
         },
-        "empty4": {
+        "empty5": {
             "Transformers": {
                 "Positional encoders": "models.positional_encoders.html",
                 "TransformerModel": "models.TransformerModel.html",
@@ -66,7 +72,7 @@
                 "Time Series Transformer Plus (TSTPlus)": "models.TSTPlus.html"
             }
         },
-        "empty5": {
+        "empty6": {
             "ROCKETs": {
                 "ROCKET": "models.ROCKET.html",
                 "ROCKET_Pytorch": "models.ROCKET_Pytorch.html",
@@ -74,10 +80,11 @@
                 "MINIROCKET_Pytorch": "models.MINIROCKET_Pytorch.html"
             }
         },
-        "empty6": {
+        "empty7": {
             "Tabular models": {
                 "Tabular Model": "models.TabModel.html",
-                "TabTransformer": "models.TabTransformer.html"
+                "TabTransformer": "models.TabTransformer.html",
+                "GatedTabTransformer": "models.GatedTabTransformer.html"
             }
         },
         "MultiInputNet": "models.MultiInputNet.html"
