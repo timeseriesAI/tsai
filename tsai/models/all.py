@@ -38,5 +38,6 @@ from .TabTransformer import *
 from .TabFusionTransformer import *
 from .TSPerceiver import *
 from .TSiTPlus import *
+from .TSSequencerPlus import *
 from .MultiInputNet import *
 from .misc import *
