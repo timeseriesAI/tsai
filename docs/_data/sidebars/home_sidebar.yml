@@ -63,10 +63,16 @@ entries:
     - output: web,pdf
       title: Utilities
       url: models.utils.html
-    - output: web,pdf
-      title: MLP
-      url: models.MLP.html
       subfolders:
+      - output: web
+        subfolderitems:
+        - output: web,pdf
+          title: MLP
+          url: models.MLP.html
+        - output: web,pdf
+          title: gMLP
+          url: models.gMLP.html
+        title: MLP
       - output: web
         subfolderitems:
         - output: web,pdf
@@ -75,6 +81,9 @@ entries:
         - output: web,pdf
           title: RNNPlus
           url: models.RNNPlus.html
+        - output: web,pdf
+          title: TSSequencerPlus
+          url: models.TSSequencerPlus.html
         title: RNNs
       - output: web
         subfolderitems:
@@ -177,6 +186,9 @@ entries:
         - output: web,pdf
           title: TabTransformer
           url: models.TabTransformer.html
+        - output: web,pdf
+          title: GatedTabTransformer
+          url: models.GatedTabTransformer.html
         title: Tabular models
     - output: web,pdf
       title: MultiInputNet
