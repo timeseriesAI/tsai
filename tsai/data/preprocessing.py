@@ -724,7 +724,7 @@ class TSOneHotEncode(Transform):
 class TSPosition(Transform):
     order = 90
     def __init__(self,
-        steps:list, # Flag to indicate if the selected var is removed
+        steps:list, # List containing the steps passed as an additional variable. Theu should be normalized.
         magnitude=None, # Added for compatibility. It's not used.
         **kwargs
         ):
