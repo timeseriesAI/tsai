@@ -540,8 +540,7 @@ class NumpyDataLoader(TfmdDL):
             if not isinstance(o, MethodType): cur_kwargs[n] = o
         all_kwargs = merge(cur_kwargs, kwargs)
         new_dl = cls(**all_kwargs)
-        if 'after_batch' not in all_kwargs.keys():
-            self.after_batch = new_dl.after_batch
+        setattr(self, "after_batch", new_dl.after_batch) # self.after_batch is set to an empty Pipeline (?)
         if not hasattr(new_dl, '_n_inp') and hasattr(self, '_n_inp'):
             new_dl._n_inp = self._n_inp
         if not hasattr(new_dl, '_types') and hasattr(self, '_types'):
