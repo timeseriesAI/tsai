@@ -7,7 +7,6 @@ from fastai.layers import *
 from ..imports import *
 from .layers import *
 from .utils import *
-torch.set_num_threads(cpus)
 
 # Cell
 class ResBlockPlus(Module):
