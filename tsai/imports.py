@@ -40,7 +40,6 @@ from fastai.torch_core import *
 import datetime
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-cpus = defaults.cpus
 
 def get_gpu_memory():
     import subprocess
@@ -201,10 +200,18 @@ def create_scripts(nb_name=None, max_elapsed=60, wait=2):
     return output
 
 class Timer:
-    def start(self, verbose=True): 
+    def __init__(self, instance=None, verbose=True, return_seconds=True): 
+        self.instance = instance
+        self.return_seconds = return_seconds
+        self.verbose = verbose
+        
+    def start(self, verbose=None, return_seconds=None): 
         self.all_elapsed = 0
         self.n = 0
-        self.verbose = verbose
+        if verbose is not None:
+            self.verbose = verbose
+        if return_seconds is not None: 
+            self.return_seconds = return_seconds
         self.start_dt = datetime.datetime.now()
         self.start_dt0 = self.start_dt
 
@@ -215,7 +222,12 @@ class Timer:
         elapsed = end_dt - self.start_dt
         if self.all_elapsed == 0: self.all_elapsed = elapsed
         else: self.all_elapsed += elapsed
-        pv(f'Elapsed time ({self.n:3}): {elapsed}', self.verbose)
+        if self.return_seconds:
+            elapsed = elapsed / datetime.timedelta(seconds=1)
+        if self.instance is not None:
+            pv(f'Elapsed time ({self.n:3}) (timer:{self.instance}): {elapsed}', self.verbose)
+        else:
+            pv(f'Elapsed time ({self.n:3}): {elapsed}', self.verbose)
         self.start_dt = datetime.datetime.now()
         if not self.verbose: 
             return elapsed
@@ -225,17 +237,32 @@ class Timer:
         self.n += 1
         assert hasattr(self, "start_dt0"), "You need to first use timer.start()"
         elapsed = end_dt - self.start_dt
-        if self.all_elapsed == 0: self.all_elapsed = elapsed
-        else: self.all_elapsed += elapsed
+        if self.all_elapsed == 0: 
+            self.all_elapsed = elapsed
+        else: 
+            self.all_elapsed += elapsed
         total_elapsed = end_dt - self.start_dt0
         delattr(self, "start_dt0")
         delattr(self, "start_dt")
+        
         if self.verbose:
             if self.n > 1:
-                print(f'Elapsed time ({self.n:3}): {elapsed}')
-                print(f'Total time        : {self.all_elapsed}')
+                if self.return_seconds:
+                    elapsed = elapsed / datetime.timedelta(seconds=1)
+                    self.all_elapsed = self.all_elapsed / datetime.timedelta(seconds=1)
+                if self.instance is not None:
+                    print(f'Elapsed time ({self.n:3}) (timer:{self.instance}): {elapsed}')
+                    print(f'Total time         (timer:{self.instance}): {self.all_elapsed}')
+                else:
+                    print(f'Elapsed time ({self.n:3}): {elapsed}')
+                    print(f'Total time        : {self.all_elapsed}')
             else: 
-                print(f'Total time        : {total_elapsed}')
+                if self.return_seconds:
+                    total_elapsed = total_elapsed / datetime.timedelta(seconds=1)
+                if self.instance is not None:
+                    print(f'Total time         (timer:{self.instance}): {total_elapsed}')
+                else:
+                    print(f'Total time        : {total_elapsed}')
         else: return total_elapsed
 
 timer = Timer()
@@ -266,67 +293,65 @@ def my_setup(*pkgs):
     warnings.filterwarnings("ignore")
     try: 
         import platform
-        print(f'os             : {platform.platform()}')
+        print(f'os              : {platform.platform()}')
     except: 
         pass
     try: 
         from platform import python_version
-        print(f'python         : {python_version()}')
+        print(f'python          : {python_version()}')
     except: 
         pass
     try: 
         import tsai
-        print(f'tsai           : {tsai.__version__}')
+        print(f'tsai            : {tsai.__version__}')
     except: 
-        print(f'tsai           : N/A')
+        print(f'tsai            : N/A')
     try: 
         import fastai
-        print(f'fastai         : {fastai.__version__}')
+        print(f'fastai          : {fastai.__version__}')
     except: 
-        print(f'fastai         : N/A')
+        print(f'fastai          : N/A')
     try: 
         import fastcore
-        print(f'fastcore       : {fastcore.__version__}')
+        print(f'fastcore        : {fastcore.__version__}')
     except: 
-        print(f'fastcore       : N/A')
+        print(f'fastcore        : N/A')
     
     if pkgs: 
         for pkg in pkgs:
-            try: print(f'{pkg.__name__:15}: {pkg.__version__}')
+            try: print(f'{pkg.__name__:15} : {pkg.__version__}')
             except: pass 
     try: 
         import torch
-        print(f'torch          : {torch.__version__}')
+        print(f'torch           : {torch.__version__}')
         try:
             import torch_xla
-            print(f'device         : TPU')
+            print(f'device          : TPU')
         except:
             iscuda = torch.cuda.is_available()
             if iscuda:
                 device_count = torch.cuda.device_count()
                 gpu_text = 'gpu' if device_count == 1 else 'gpus'
-                print(f'device         : {device_count} {gpu_text} ({[torch.cuda.get_device_name(i) for i in range(device_count)]})')
+                print(f'device          : {device_count} {gpu_text} ({[torch.cuda.get_device_name(i) for i in range(device_count)]})')
             else:
-                print(f'device         : {device}')
+                print(f'device          : {device}')
     except: pass
     try:
-        print(f'cpu cores      : {cpus}')
+        print(f'cpu cores       : {psutil.cpu_count(logical=False)}')
     except:
-        print(f'cpu cores      : N/A')
+        print(f'cpu cores       : N/A')
     try:
-        print(f'RAM            : {get_ram_memory()} GB')
+        print(f'threads per cpu : {psutil.cpu_count() // psutil.cpu_count(logical=False)}')
     except:
-        print(f'RAM            : N/A')
+        print(f'threads per cpu : N/A')
     try:
-        print(f'GPU memory     : {get_gpu_memory()} GB')
+        print(f'RAM             : {get_ram_memory()} GB')
     except:
-        print(f'GPU memory     : N/A')
+        print(f'RAM             : N/A')
+    try:
+        print(f'GPU memory      : {get_gpu_memory()} GB')
+    except:
+        print(f'GPU memory      : N/A')
         
         
 computer_setup = my_setup
-
-#This function will be available in fastai 2.5.4
-def ismin_torch(min_version):
-    from packaging.version import parse
-    "Check if `torch.__version__` >= `min_version` using packaging.version"
-    return parse(torch.__version__) >= parse(min_version)

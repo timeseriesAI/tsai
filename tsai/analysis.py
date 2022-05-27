@@ -56,8 +56,8 @@ def show_probas(self:Learner, figsize=(6,6), ds_idx=1, dl=None, one_batch=False,
 
 # Cell
 @patch
-def plot_confusion_matrix(self:Learner, ds_idx=1, dl=None, thr=.5, normalize=False, title='Confusion matrix', cmap="Blues", norm_dec=2, figsize=(6,6),
-                          title_fontsize=16, fontsize=12, plot_txt=True, **kwargs):
+def plot_confusion_matrix(self:Learner, ds_idx=1, dl=None, thr=.5, normalize=False, title='Confusion matrix', cmap="Blues", norm_dec=2, figsize=(5,5),
+                          title_fontsize=12, fontsize=10, plot_txt=True, **kwargs):
         "Plot the confusion matrix, with `title` and using `cmap`."
         # This function is mainly copied from the sklearn docs
         if dl is None: dl = self.dls[ds_idx]

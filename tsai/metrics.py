@@ -2,7 +2,7 @@
 
 __all__ = ['MatthewsCorrCoefBinary', 'get_task_metrics', 'accuracy_multi', 'metrics_multi_common', 'precision_multi',
            'recall_multi', 'specificity_multi', 'balanced_accuracy_multi', 'Fbeta_multi', 'F1_multi', 'mae', 'mape',
-           'recall_at_specificity', 'mean_per_class_accuracy']
+           'recall_at_specificity', 'lift', 'lift_at_specificity', 'top_k_lift', 'mean_per_class_accuracy']
 
 # Cell
 import sklearn.metrics as skm
@@ -163,7 +163,32 @@ def _recall_at_specificity(inp, targ, specificity=.95, axis=-1):
     thr = torch.sort(inp0).values[-int(len(inp0) * (1 - specificity))]
     return (inp1 > thr).float().mean()
 
-recall_at_specificity = AccumMetric(_recall_at_specificity, specificity=.95, activation=ActivationType.BinarySoftmax, flatten=False)
+recall_at_specificity = AccumMetric(_recall_at_specificity, specificity=.95, activation=ActivationType.BinarySoftmax,
+                                    flatten=False, name='recall_at_specificity')
+
+# Cell
+def _lift(inp, targ, axis=-1):
+    "Calculates lift as precision / average rate"
+    return targ[(torch.argmax(inp, -1) == 1).data].mean() / targ.mean()
+
+lift = AccumMetric(_lift, activation=ActivationType.BinarySoftmax, flatten=False, name='lift')
+
+def _lift_at_specificity(inp, targ, specificity=0.95, axis=-1):
+    "Calculates lift as precision / average rate at a given specificity"
+    inp0 = inp[(targ == 0).data]
+    thr = torch.sort(inp0).values[-int(len(inp0) * (1 - specificity))]
+    return (targ[(inp >= thr).data] == 1).float().mean() / (targ == 1).float().mean()
+
+lift_at_specificity = AccumMetric(_lift_at_specificity, specificity=.95, activation=ActivationType.BinarySoftmax,
+                                  flatten=False, name='lift_at_specificity')
+
+def _top_k_lift(inp, targ, k=0.01):
+    """Top k over random k lift calculated as the ratio between precision at
+    top k % positive probabilities and average ratio"""
+    top_k_thr = torch.sort(inp).values[-int(k * len(inp))]
+    return targ[(inp >= top_k_thr).data].float().mean() / (targ == 1).float().mean()
+
+top_k_lift = AccumMetric(_top_k_lift, k=.01, activation=ActivationType.BinarySoftmax, flatten=False, name='top_k_lift')
 
 # Cell
 def _mean_per_class_accuracy(y_true, y_pred, *, labels=None, sample_weight=None, normalize=None):
