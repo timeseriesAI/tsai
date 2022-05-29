@@ -200,20 +200,21 @@ def create_scripts(nb_name=None, max_elapsed=60, wait=2):
     return output
 
 class Timer:
-    def __init__(self, instance=None, verbose=True, return_seconds=True): 
-        self.instance = instance
-        self.return_seconds = return_seconds
-        self.verbose = verbose
+    def __init__(self, verbose=True, return_seconds=True, instance=None): 
+        self.verbose, self.return_seconds, self.instance = verbose, return_seconds, instance
         
-    def start(self, verbose=None, return_seconds=None): 
-        self.all_elapsed = 0
-        self.n = 0
+    def start(self, verbose=None, return_seconds=None, instance=None): 
         if verbose is not None:
             self.verbose = verbose
-        if return_seconds is not None: 
+        if return_seconds is not None:
             self.return_seconds = return_seconds
+        if instance is not None:
+            self.instance = instance
+        self.all_elapsed = 0
+        self.n = 0
         self.start_dt = datetime.datetime.now()
         self.start_dt0 = self.start_dt
+        return self
 
     def elapsed(self):
         end_dt = datetime.datetime.now()
@@ -223,9 +224,9 @@ class Timer:
         if self.all_elapsed == 0: self.all_elapsed = elapsed
         else: self.all_elapsed += elapsed
         if self.return_seconds:
-            elapsed = elapsed / datetime.timedelta(seconds=1)
+            elapsed = elapsed.total_seconds()
         if self.instance is not None:
-            pv(f'Elapsed time ({self.n:3}) (timer:{self.instance}): {elapsed}', self.verbose)
+            pv(f'Elapsed time ({self.n:3}) ({self.instance:3}): {elapsed}', self.verbose)
         else:
             pv(f'Elapsed time ({self.n:3}): {elapsed}', self.verbose)
         self.start_dt = datetime.datetime.now()
@@ -242,30 +243,32 @@ class Timer:
         else: 
             self.all_elapsed += elapsed
         total_elapsed = end_dt - self.start_dt0
+        if self.return_seconds:
+            total_elapsed = total_elapsed.total_seconds()
         delattr(self, "start_dt0")
         delattr(self, "start_dt")
-        
+
         if self.verbose:
             if self.n > 1:
                 if self.return_seconds:
-                    elapsed = elapsed / datetime.timedelta(seconds=1)
-                    self.all_elapsed = self.all_elapsed / datetime.timedelta(seconds=1)
+                    elapsed = elapsed.total_seconds()
+                    self.all_elapsed = self.all_elapsed.total_seconds()
                 if self.instance is not None:
-                    print(f'Elapsed time ({self.n:3}) (timer:{self.instance}): {elapsed}')
-                    print(f'Total time         (timer:{self.instance}): {self.all_elapsed}')
+                    print(f'Elapsed time ({self.n:3}) ({self.instance:3}): {elapsed}')
+                    print(f'Total time         ({self.instance:3}): {self.all_elapsed}')
                 else:
                     print(f'Elapsed time ({self.n:3}): {elapsed}')
-                    print(f'Total time        : {self.all_elapsed}')
+                    print(f'Total time              : {self.all_elapsed}')
             else: 
-                if self.return_seconds:
-                    total_elapsed = total_elapsed / datetime.timedelta(seconds=1)
                 if self.instance is not None:
-                    print(f'Total time         (timer:{self.instance}): {total_elapsed}')
+                    print(f'Total time         ({self.instance:3}): {total_elapsed}')
                 else:
-                    print(f'Total time        : {total_elapsed}')
-        else: return total_elapsed
+                    print(f'Total time              : {total_elapsed}')
+        else: 
+            return total_elapsed
 
 timer = Timer()
+
 
 def import_file_as_module(filepath, return_path=False):
     from pathlib import Path

@@ -271,7 +271,8 @@ class NoTfmLists(TfmdLists):
         self._splits = np.asarray(_flatten_list(self.splits))
         store_attr('items,types,split_idx')
         self.tfms = Pipeline(split_idx=split_idx)
-    def subset(self, i, **kwargs): return type(self)(self.items, splits=self.splits[i], split_idx=i, do_setup=False, types=self.types, **kwargs)
+    def subset(self, i, **kwargs): return type(self)(self.items, splits=self.splits[i], split_idx=i, do_setup=False, types=self.types,
+                                                     **kwargs)
     def __getitem__(self, it):
         if hasattr(self.items, 'oindex'): return self.items.oindex[self._splits[it]]
         else: return self.items[self._splits[it]]
@@ -375,7 +376,8 @@ def tscoll_repr(c, max_n=10):
 class TSDatasets(NumpyDatasets):
     """A dataset that creates tuples from X (and optionally y) and applies `item_tfms`"""
     typs = TSTensor,tensor
-    def __init__(self, X=None, y=None, items=None, sel_vars=None, sel_steps=None, tfms=None, tls=None, n_inp=None, dl_type=None, inplace=True, **kwargs):
+    def __init__(self, X=None, y=None, items=None, sel_vars=None, sel_steps=None, tfms=None, tls=None, n_inp=None, dl_type=None,
+                 inplace=True, **kwargs):
 
         self.multi_index = False
         if sel_vars is None or (type(sel_vars) == slice and sel_vars == slice(None)): self.sel_vars = slice(None)
@@ -441,7 +443,8 @@ class TSDatasets(NumpyDatasets):
     def subset(self, i):
         if is_indexer(i):
             return type(self)(tls=L([tl.subset(i) for tl in self.tls]), inplace=self.inplace, tfms=self.tfms,
-                              sel_vars=self.sel_vars, sel_steps=self.sel_steps, splits=None if self.splits is None else self.splits[i], split_idx=i)
+                              sel_vars=self.sel_vars, sel_steps=self.sel_steps, splits=None if self.splits is None else self.splits[i],
+                              split_idx=i)
         else:
             splits = None if self.splits is None else L(np.arange(len(i)).tolist())
             return type(self)(*self[i], inplace=True, tfms=None,
@@ -505,8 +508,8 @@ _batch_tfms = ('after_item','before_batch','after_batch')
 class NumpyDataLoader(TfmdDL):
     idxs = None
     do_item = noops # create batch returns indices
-    def __init__(self, dataset, bs=64, shuffle=False, drop_last=False, num_workers=0, verbose=False, do_setup=True, batch_tfms=None, sort=False,
-                 weights=None, partial_n=None, sampler=None, **kwargs):
+    def __init__(self, dataset, bs=64, shuffle=False, drop_last=False, num_workers=0, verbose=False, do_setup=True, batch_tfms=None,
+                 sort=False, weights=None, partial_n=None, sampler=None, **kwargs):
 
         if sampler is not None and shuffle:
             raise ValueError('sampler option is mutually exclusive with shuffle')
@@ -824,7 +827,7 @@ class NumpyDataLoaders(DataLoaders):
         if len(partial_n) != len(ds): partial_n = partial_n * len(ds)
         if not is_listy(sampler): sampler = [sampler]
         if len(sampler) != len(ds): sampler = sampler * len(ds)
-        loaders = [cls._dl_type(d, bs=b, num_workers=num_workers, batch_tfms=batch_tfms, weights=w, partial_n=n, sampler=s, sort=sort, **k) \
+        loaders = [cls._dl_type(d, bs=b, num_workers=num_workers, batch_tfms=batch_tfms, weights=w, partial_n=n, sampler=s, sort=sort, **k)\
                    for d,k,b,w,n,s in zip(ds, kwargs, bs, weights, partial_n, sampler)]
         return cls(*loaders, path=path, device=device)
 
@@ -870,7 +873,8 @@ def get_c(dls):
     return len(vocab)
 
 # Cell
-def get_best_dl_params(dl, n_iters=10, num_workers=[0, 1, 2, 4, 8], pin_memory=[True, False], prefetch_factor=[2, 4, 8], return_best=True, verbose=True):
+def get_best_dl_params(dl, n_iters=10, num_workers=[0, 1, 2, 4, 8], pin_memory=[True, False], prefetch_factor=[2, 4, 8], return_best=True,
+                       verbose=True):
 
     if not torch.cuda.is_available():
         num_workers = 0
@@ -896,7 +900,7 @@ def get_best_dl_params(dl, n_iters=10, num_workers=[0, 1, 2, 4, 8], pin_memory=[
                 timer.start(False)
                 for i, _ in enumerate(dl):
                     if i == n_iters - 1:
-                        t = timer.stop().total_seconds() / (i + 1)
+                        t = timer.stop() / (i + 1)
                         pv(f'   num_workers: {_nw:2}  pin_memory: {pm!s:^5}  prefetch_factor: {pf:2}  -  time: {1_000 * t/n_iters:8.3f} ms/iter', verbose)
                         if t < best_time:
                             best_nw = _nw
@@ -916,7 +920,7 @@ def get_best_dl_params(dl, n_iters=10, num_workers=[0, 1, 2, 4, 8], pin_memory=[
                 timer.start(False)
                 for i, _ in enumerate(dl):
                     if i == n_iters - 1:
-                        t = timer.stop().total_seconds() / (i + 1)
+                        t = timer.stop() / (i + 1)
                         pv(f'   num_workers: {best_nw:2}  pin_memory: {_pm!s:^5}  prefetch_factor: {pf:2}  -  time: {1_000 * t/n_iters:8.3f} ms/iter',
                            verbose)
                         if t < best_time:
@@ -937,7 +941,7 @@ def get_best_dl_params(dl, n_iters=10, num_workers=[0, 1, 2, 4, 8], pin_memory=[
                 timer.start(False)
                 for i, _ in enumerate(dl):
                     if i == n_iters - 1:
-                        t = timer.stop().total_seconds() / (i + 1)
+                        t = timer.stop() / (i + 1)
                         pv(f'   num_workers: {best_nw:2}  pin_memory: {best_pm!s:^5}  prefetch_factor: {_pf:2}  -  time: {1_000 * t/n_iters:8.3f} ms/iter',
                            verbose)
                         if t < best_time:
@@ -966,7 +970,8 @@ def get_best_dl_params(dl, n_iters=10, num_workers=[0, 1, 2, 4, 8], pin_memory=[
 
     return dl
 
-def get_best_dls_params(dls, n_iters=10, num_workers=[0, 1, 2, 4, 8], pin_memory=[True, False], prefetch_factor=[2, 4, 8], return_best=True, verbose=True):
+def get_best_dls_params(dls, n_iters=10, num_workers=[0, 1, 2, 4, 8], pin_memory=[True, False], prefetch_factor=[2, 4, 8],
+                        return_best=True, verbose=True):
 
     for i in range(len(dls.loaders)):
         try:
@@ -985,7 +990,8 @@ def get_ts_dls(X, y=None, splits=None, sel_vars=None, sel_steps=None, tfms=None,
     dsets = TSDatasets(X, y, splits=splits, sel_vars=sel_vars, sel_steps=sel_steps, tfms=tfms, inplace=inplace)
     if weights is not None:
         assert len(X) == len(weights)
-        if splits is not None: weights = [weights[split] if i == 0 else None for i,split in enumerate(splits)] # weights only applied to train set
+        if splits is not None:
+            weights = [weights[split] if i == 0 else None for i,split in enumerate(splits)] # weights only applied to train set
     dls   = TSDataLoaders.from_dsets(dsets.train, dsets.valid, path=path, bs=bs, batch_tfms=batch_tfms, num_workers=num_workers,
                                      device=device, shuffle_train=shuffle_train, drop_last=drop_last, weights=weights,
                                      partial_n=partial_n, sampler=sampler, sort=sort, **kwargs)
@@ -1026,7 +1032,7 @@ def get_time_per_batch(dl, model=None, n_batches=None):
     except KeyboardInterrupt:
         t = timer.stop()
         pbar.on_interrupt()
-    return t / datetime.timedelta(seconds=1) / (i+1)
+    return t / (i+1)
 
 def get_dl_percent_per_epoch(dl, model, n_batches=None):
     dl_time = get_time_per_batch(dl, model=None, n_batches=n_batches)
