@@ -141,17 +141,18 @@ class FocalLoss(Module):
 
 # Cell
 class TweedieLoss(Module):
-    def __init__(self, p=1.5, eps=1e-10):
+    def __init__(self, p=1.5, eps=1e-8):
         """
         Tweedie loss as calculated in LightGBM
         Args:
             p: tweedie variance power (1 < p < 2)
             eps: small number to avoid log(zero).
         """
-        assert p > 1 and p < 2, "make sure 1 < p < 2"
+        assert 1 < p < 2, "make sure 1 < p < 2"
         self.p, self.eps = p, eps
 
     def forward(self, inp, targ):
+        "Poisson and compound Poisson distribution, targ >= 0, inp > 0"
         inp = inp.flatten()
         targ = targ.flatten()
         torch.clamp_min_(inp, self.eps)

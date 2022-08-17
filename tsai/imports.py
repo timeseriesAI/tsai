@@ -41,6 +41,12 @@ import datetime
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
+from configparser import ConfigParser
+config = ConfigParser(delimiters=['='])
+config.read('../settings.ini')
+cfg = config['DEFAULT']
+lib_name = cfg.get('lib_name')
+
 def get_gpu_memory():
     import subprocess
     command = "nvidia-smi --query-gpu=memory.total --format=csv"
@@ -132,7 +138,7 @@ def all_last_saved(max_elapsed=60):
     from fastai.data.transforms import get_files
     print('\n')
     lib_path = Path(os.getcwd()).parent
-    folder = lib_path / 'tsai'
+    folder = lib_path / lib_name
     print('Checking folder:', folder)
     counter = 0
     elapsed = 0
@@ -161,7 +167,7 @@ def py_last_saved(nb_name, max_elapsed=1):
     from time import strftime
     print('\n')
     lib_path = Path(os.getcwd()).parent
-    folder = Path(lib_path / 'tsai')
+    folder = Path(lib_path / lib_name)
     if nb_name == "index.ipynb": 
         script_name = nb_name
     else: 
@@ -230,8 +236,7 @@ class Timer:
         else:
             pv(f'Elapsed time ({self.n:3}): {elapsed}', self.verbose)
         self.start_dt = datetime.datetime.now()
-        if not self.verbose: 
-            return elapsed
+        return elapsed
 
     def stop(self):
         end_dt = datetime.datetime.now()
@@ -264,11 +269,9 @@ class Timer:
                     print(f'Total time         ({self.instance:3}): {total_elapsed}')
                 else:
                     print(f'Total time              : {total_elapsed}')
-        else: 
-            return total_elapsed
+        return total_elapsed
 
 timer = Timer()
-
 
 def import_file_as_module(filepath, return_path=False):
     from pathlib import Path

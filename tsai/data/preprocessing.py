@@ -816,9 +816,12 @@ class TSOneHotEncoder(BaseEstimator, TransformerMixin):
 # Cell
 class TSCategoricalEncoder(BaseEstimator, TransformerMixin):
 
-    def __init__(self, columns=None, add_na=True):
+    def __init__(self, columns=None, add_na=True, prefix=None, suffix=None, verbose=True):
         self.columns = listify(columns)
         self.add_na = add_na
+        self.prefix = prefix
+        self.suffix = suffix
+        self.verbose = verbose
 
     def fit(self, X:pd.DataFrame, y=None, **fit_params):
         assert isinstance(X, pd.DataFrame)
@@ -831,13 +834,27 @@ class TSCategoricalEncoder(BaseEstimator, TransformerMixin):
     def transform(self, X:pd.DataFrame, y=None, **transform_params):
         assert isinstance(X, pd.DataFrame)
         for cat_tfm, column in zip(self.cat_tfms, self.columns):
-            X[column] = cat_tfm.map_objs(X[column])
+            new_col = column
+            if self.prefix is not None:
+                new_col = self.prefix + str(new_col)
+            if self.suffix is not None:
+                new_col = str(new_col) + self.suffix
+            pv(f'encoding {column}...', self.verbose)
+            X[new_col] = cat_tfm.map_objs(X[column])
+            pv(f'...{column} encoded', self.verbose)
         return X
 
-    def inverse_transform(self, X):
+    def inverse_transform(self, X:pd.DataFrame):
         assert isinstance(X, pd.DataFrame)
         for cat_tfm, column in zip(self.cat_tfms, self.columns):
-            X[column] = cat_tfm.map_ids(X[column])
+            new_col = column
+            if self.prefix is not None:
+                new_col = self.prefix + str(new_col)
+            if self.suffix is not None:
+                new_col = str(new_col) + self.suffix
+            pv(f'decoding {new_col}...', self.verbose)
+            X[new_col] = cat_tfm.map_ids(X[new_col])
+            pv(f'...{new_col} decoded', self.verbose)
         return X
 
 # Cell
