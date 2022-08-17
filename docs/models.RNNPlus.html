@@ -62,6 +62,7 @@ They finished in 3rd position in Kaggle's Google Brain - Ventilator Pressure Pre
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="RNNPlus" class="doc_header"><code>class</code> <code>RNNPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/RNNPlus.py#L112" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RNNPlus</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>None</code></em>, <strong><code>hidden_size</code></strong>=<em><code>[100]</code></em>, <strong><code>n_layers</code></strong>=<em><code>1</code></em>, <strong><code>bias</code></strong>=<em><code>True</code></em>, <strong><code>rnn_dropout</code></strong>=<em><code>0</code></em>, <strong><code>bidirectional</code></strong>=<em><code>False</code></em>, <strong><code>n_cat_embeds</code></strong>=<em><code>None</code></em>, <strong><code>cat_embed_dims</code></strong>=<em><code>None</code></em>, <strong><code>cat_padding_idxs</code></strong>=<em><code>None</code></em>, <strong><code>cat_pos</code></strong>=<em><code>None</code></em>, <strong><code>feature_extractor</code></strong>=<em><code>None</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>last_step</code></strong>=<em><code>True</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>init_weights</code></strong>=<em><code>True</code></em>) :: <code>_RNNPlus_Base</code></p>
 </blockquote>
@@ -125,6 +126,7 @@ model = nn.Sequential(OrderedDict([
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="LSTMPlus" class="doc_header"><code>class</code> <code>LSTMPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/RNNPlus.py#L115" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTMPlus</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>None</code></em>, <strong><code>hidden_size</code></strong>=<em><code>[100]</code></em>, <strong><code>n_layers</code></strong>=<em><code>1</code></em>, <strong><code>bias</code></strong>=<em><code>True</code></em>, <strong><code>rnn_dropout</code></strong>=<em><code>0</code></em>, <strong><code>bidirectional</code></strong>=<em><code>False</code></em>, <strong><code>n_cat_embeds</code></strong>=<em><code>None</code></em>, <strong><code>cat_embed_dims</code></strong>=<em><code>None</code></em>, <strong><code>cat_padding_idxs</code></strong>=<em><code>None</code></em>, <strong><code>cat_pos</code></strong>=<em><code>None</code></em>, <strong><code>feature_extractor</code></strong>=<em><code>None</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>last_step</code></strong>=<em><code>True</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>init_weights</code></strong>=<em><code>True</code></em>) :: <code>_RNNPlus_Base</code></p>
 </blockquote>
@@ -186,6 +188,7 @@ model = nn.Sequential(OrderedDict([
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -369,7 +372,7 @@ model = nn.Sequential(OrderedDict([
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">tsai.data.all</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">tsai.models.utils</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;NATOPS&#39;</span> 
+<span class="n">dsid</span> <span class="o">=</span> <span class="s1">'NATOPS'</span> 
 <span class="n">bs</span> <span class="o">=</span> <span class="mi">16</span>
 <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">return_split</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">tfms</span>  <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">[</span><span class="n">Categorize</span><span class="p">()]]</span>
@@ -782,5 +785,5 @@ model = nn.Sequential(OrderedDict([
     {% endraw %}
 
 </div>
- 
+
 

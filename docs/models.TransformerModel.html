@@ -46,6 +46,7 @@ nb_path: "nbs/108_models.TransformerModel.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="TransformerModel" class="doc_header"><code>class</code> <code>TransformerModel</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/TransformerModel.py#L12" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TransformerModel</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>d_model</code></strong>=<em><code>64</code></em>, <strong><code>n_head</code></strong>=<em><code>1</code></em>, <strong><code>d_ffn</code></strong>=<em><code>128</code></em>, <strong><code>dropout</code></strong>=<em><code>0.1</code></em>, <strong><code>activation</code></strong>=<em><code>'relu'</code></em>, <strong><code>n_layers</code></strong>=<em><code>1</code></em>) :: <code>Module</code></p>
 </blockquote>
@@ -82,7 +83,7 @@ nb_path: "nbs/108_models.TransformerModel.ipynb"
 <span class="n">xb</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">nvars</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">)</span>
 
 
-<span class="n">model</span> <span class="o">=</span> <span class="n">TransformerModel</span><span class="p">(</span><span class="n">nvars</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">d_model</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">n_head</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">d_ffn</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;gelu&#39;</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">TransformerModel</span><span class="p">(</span><span class="n">nvars</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">d_model</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">n_head</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">d_ffn</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">'gelu'</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">model</span><span class="p">(</span><span class="n">xb</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">])</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">count_parameters</span><span class="p">(</span><span class="n">model</span><span class="p">))</span>
 <span class="n">model</span>
@@ -168,5 +169,5 @@ nb_path: "nbs/108_models.TransformerModel.ipynb"
     {% endraw %}
 
 </div>
- 
+
 

@@ -46,8 +46,9 @@ nb_path: "nbs/010_data.validation.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="RandomSplitter" class="doc_header"><code>RandomSplitter</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L87" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>RandomSplitter</code>(<strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="RandomSplitter" class="doc_header"><code>RandomSplitter</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L89" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>RandomSplitter</code>(<strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Create function that splits <code>items</code> between train/val with <code>valid_pct</code> randomly.</p>
 
@@ -78,6 +79,7 @@ nb_path: "nbs/010_data.validation.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="check_overlap" class="doc_header"><code>check_overlap</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/validation.py#L26" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>check_overlap</code>(<strong><code>a</code></strong>, <strong><code>b</code></strong>, <strong><code>c</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
@@ -100,6 +102,7 @@ nb_path: "nbs/010_data.validation.ipynb"
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -126,6 +129,7 @@ nb_path: "nbs/010_data.validation.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="leakage_finder" class="doc_header"><code>leakage_finder</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/validation.py#L46" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>leakage_finder</code>(<strong>*<code>splits</code></strong>, <strong><code>verbose</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
@@ -149,6 +153,7 @@ nb_path: "nbs/010_data.validation.ipynb"
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -308,7 +313,7 @@ nb_path: "nbs/010_data.validation.ipynb"
     <span class="n">error</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">pseudolabels</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">values</span>
     <span class="n">filt_pl_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">error</span><span class="p">))[</span><span class="n">error</span> <span class="o">&lt;</span> <span class="n">filter_pseudolabels</span><span class="p">]</span>
     <span class="n">filt_pl</span> <span class="o">=</span> <span class="n">pseudolabels</span><span class="p">[</span><span class="n">error</span> <span class="o">&lt;</span> <span class="n">filter_pseudolabels</span><span class="p">]</span>
-    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">filt_pl</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;no filtered pseudolabels&#39;</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">filt_pl</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">'no filtered pseudolabels'</span>
     <span class="n">filt_hpl</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">filt_pl</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span> 
     <span class="n">filt_pl_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pseudolabels</span><span class="p">))</span>
@@ -350,6 +355,7 @@ nb_path: "nbs/010_data.validation.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="TrainValidTestSplitter" class="doc_header"><code>TrainValidTestSplitter</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/validation.py#L68" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TrainValidTestSplitter</code>(<strong><code>n_splits</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>valid_size</code></strong>:<code>Union</code>[<code>float</code>, <code>int</code>]=<em><code>0.2</code></em>, <strong><code>test_size</code></strong>:<code>Union</code>[<code>float</code>, <code>int</code>]=<em><code>0.0</code></em>, <strong><code>train_only</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>stratify</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>balance</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>shuffle</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>random_state</code></strong>:<code>Union</code>[<code>NoneType</code>, <code>int</code>]=<em><code>None</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
@@ -382,6 +388,7 @@ nb_path: "nbs/010_data.validation.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="plot_splits" class="doc_header"><code>plot_splits</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/validation.py#L168" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>plot_splits</code>(<strong><code>splits</code></strong>)</p>
 </blockquote>
@@ -411,6 +418,7 @@ nb_path: "nbs/010_data.validation.ipynb"
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -593,6 +601,7 @@ show_plot    : plot the split distribution</p>
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -1464,6 +1473,7 @@ valid == train
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="get_predefined_splits" class="doc_header"><code>get_predefined_splits</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/validation.py#L297" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_predefined_splits</code>(<strong>*<code>xs</code></strong>)</p>
 </blockquote>
@@ -1487,6 +1497,7 @@ valid == train
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -1519,6 +1530,7 @@ valid == train
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -1587,5 +1599,5 @@ valid == train
     {% endraw %}
 
 </div>
- 
+
 

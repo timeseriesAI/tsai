@@ -58,6 +58,7 @@ nb_path: "nbs/100c_models.positional_encoders.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="PositionalEncoding" class="doc_header"><code>PositionalEncoding</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/positional_encoders.py#L10" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>PositionalEncoding</code>(<strong><code>q_len</code></strong>, <strong><code>d_model</code></strong>, <strong><code>normalize</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
@@ -87,8 +88,8 @@ nb_path: "nbs/100c_models.positional_encoders.ipynb"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">pe</span> <span class="o">=</span> <span class="n">PositionalEncoding</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">512</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">pe</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;PositionalEncoding&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">pe</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'viridis'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'PositionalEncoding'</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 <span class="n">pe</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">pe</span><span class="o">.</span><span class="n">std</span><span class="p">(),</span> <span class="n">pe</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">pe</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">pe</span><span class="o">.</span><span class="n">shape</span>
@@ -139,6 +140,7 @@ nb_path: "nbs/100c_models.positional_encoders.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="Coord2dPosEncoding" class="doc_header"><code>Coord2dPosEncoding</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/positional_encoders.py#L24" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Coord2dPosEncoding</code>(<strong><code>q_len</code></strong>, <strong><code>d_model</code></strong>, <strong><code>exponential</code></strong>=<em><code>False</code></em>, <strong><code>normalize</code></strong>=<em><code>True</code></em>, <strong><code>eps</code></strong>=<em><code>0.001</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
@@ -168,8 +170,8 @@ nb_path: "nbs/100c_models.positional_encoders.ipynb"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">cpe</span> <span class="o">=</span> <span class="n">Coord2dPosEncoding</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">512</span><span class="p">,</span> <span class="n">exponential</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">cpe</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Coord2dPosEncoding&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">cpe</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'viridis'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'Coord2dPosEncoding'</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">cpe</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
@@ -248,6 +250,7 @@ nb_path: "nbs/100c_models.positional_encoders.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="Coord1dPosEncoding" class="doc_header"><code>Coord1dPosEncoding</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/positional_encoders.py#L40" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Coord1dPosEncoding</code>(<strong><code>q_len</code></strong>, <strong><code>exponential</code></strong>=<em><code>False</code></em>, <strong><code>normalize</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
@@ -277,8 +280,8 @@ nb_path: "nbs/100c_models.positional_encoders.ipynb"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">cpe</span> <span class="o">=</span> <span class="n">Coord1dPosEncoding</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="n">exponential</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">cpe</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Coord1dPosEncoding&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">cpe</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'viridis'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'Coord1dPosEncoding'</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">cpe</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
@@ -341,8 +344,8 @@ nb_path: "nbs/100c_models.positional_encoders.ipynb"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">cpe</span> <span class="o">=</span> <span class="n">Coord1dPosEncoding</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="n">exponential</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">cpe</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Coord1dPosEncoding&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">cpe</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'viridis'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'Coord1dPosEncoding'</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">cpe</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
@@ -398,5 +401,5 @@ nb_path: "nbs/100c_models.positional_encoders.ipynb"
     {% endraw %}
 
 </div>
- 
+
 

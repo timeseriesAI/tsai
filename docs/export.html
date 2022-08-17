@@ -84,6 +84,7 @@ nb_path: "nbs/000_export.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="get_nb_name" class="doc_header"><code>get_nb_name</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/export.py#L143" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_nb_name</code>()</p>
 </blockquote>
@@ -110,6 +111,7 @@ or raises a FileNotFoundError exception if it cannot be determined.</p>
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="get_colab_nb_name" class="doc_header"><code>get_colab_nb_name</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/export.py#L156" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_colab_nb_name</code>()</p>
 </blockquote>
@@ -132,6 +134,7 @@ or raises a FileNotFoundError exception if it cannot be determined.</p>
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -160,6 +163,7 @@ or raises a FileNotFoundError exception if it cannot be determined.</p>
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="nb_name_to_py" class="doc_header"><code>nb_name_to_py</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/export.py#L180" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>nb_name_to_py</code>(<strong><code>nb_name</code></strong>)</p>
 </blockquote>
@@ -182,6 +186,7 @@ or raises a FileNotFoundError exception if it cannot be determined.</p>
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -220,6 +225,7 @@ or raises a FileNotFoundError exception if it cannot be determined.</p>
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -261,7 +267,7 @@ or raises a FileNotFoundError exception if it cannot be determined.</p>
         <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">pyname</span><span class="p">)</span>
         <span class="k">assert</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">pyname</span><span class="p">)</span>
 
-    <span class="n">nb</span> <span class="o">=</span> <span class="s1">&#39;000_export.ipynb&#39;</span>
+    <span class="n">nb</span> <span class="o">=</span> <span class="s1">'000_export.ipynb'</span>
     <span class="n">folder</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">name</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">pyname</span> <span class="o">=</span> <span class="n">nb2py</span><span class="p">(</span><span class="n">nb</span><span class="o">=</span><span class="n">nb</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="n">folder</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
@@ -270,7 +276,7 @@ or raises a FileNotFoundError exception if it cannot be determined.</p>
         <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">pyname</span><span class="p">)</span>
         <span class="k">assert</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">pyname</span><span class="p">)</span>
 
-    <span class="n">nb</span> <span class="o">=</span> <span class="s1">&#39;../nbs/000_export&#39;</span>
+    <span class="n">nb</span> <span class="o">=</span> <span class="s1">'../nbs/000_export'</span>
     <span class="n">folder</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">name</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">pyname</span> <span class="o">=</span> <span class="n">nb2py</span><span class="p">(</span><span class="n">nb</span><span class="o">=</span><span class="n">nb</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="n">folder</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
@@ -280,7 +286,7 @@ or raises a FileNotFoundError exception if it cannot be determined.</p>
         <span class="k">assert</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">pyname</span><span class="p">)</span>
 
     <span class="n">nb</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">folder</span> <span class="o">=</span> <span class="s1">&#39;../test_export/&#39;</span>
+    <span class="n">folder</span> <span class="o">=</span> <span class="s1">'../test_export/'</span>
     <span class="n">name</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">pyname</span> <span class="o">=</span> <span class="n">nb2py</span><span class="p">(</span><span class="n">nb</span><span class="o">=</span><span class="n">nb</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="n">folder</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">pyname</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> 
@@ -314,5 +320,5 @@ nb2py couldn&#39;t get the nb name. Pass it as an nb argument and rerun nb2py.
     {% endraw %}
 
 </div>
- 
+
 

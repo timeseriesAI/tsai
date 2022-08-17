@@ -67,6 +67,7 @@ nb_path: "nbs/012_data.external.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="decompress_from_url" class="doc_header"><code>decompress_from_url</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/external.py#L2072" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>decompress_from_url</code>(<strong><code>url</code></strong>, <strong><code>target_dir</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
@@ -96,6 +97,7 @@ nb_path: "nbs/012_data.external.ipynb"
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -130,6 +132,7 @@ nb_path: "nbs/012_data.external.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="get_UCR_univariate_list" class="doc_header"><code>get_UCR_univariate_list</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/external.py#L2111" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_UCR_univariate_list</code>()</p>
 </blockquote>
@@ -159,6 +162,7 @@ nb_path: "nbs/012_data.external.ipynb"
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -208,6 +212,7 @@ nb_path: "nbs/012_data.external.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="get_UCR_data" class="doc_header"><code>get_UCR_data</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/external.py#L2178" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_UCR_data</code>(<strong><code>dsid</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>parent_dir</code></strong>=<em><code>'data/UCR'</code></em>, <strong><code>on_disk</code></strong>=<em><code>True</code></em>, <strong><code>mode</code></strong>=<em><code>'c'</code></em>, <strong><code>Xdtype</code></strong>=<em><code>'float32'</code></em>, <strong><code>ydtype</code></strong>=<em><code>None</code></em>, <strong><code>return_split</code></strong>=<em><code>True</code></em>, <strong><code>split_data</code></strong>=<em><code>True</code></em>, <strong><code>force_download</code></strong>=<em><code>False</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
@@ -237,16 +242,16 @@ nb_path: "nbs/012_data.external.ipynb"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai.data.transforms</span> <span class="kn">import</span> <span class="n">get_files</span>
-<span class="n">PATH</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
-<span class="n">dsids</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ECGFiveDays&#39;</span><span class="p">,</span> <span class="s1">&#39;AtrialFibrillation&#39;</span><span class="p">]</span> <span class="c1"># univariate and multivariate</span>
+<span class="n">PATH</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)</span>
+<span class="n">dsids</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'ECGFiveDays'</span><span class="p">,</span> <span class="s1">'AtrialFibrillation'</span><span class="p">]</span> <span class="c1"># univariate and multivariate</span>
 <span class="k">for</span> <span class="n">dsid</span> <span class="ow">in</span> <span class="n">dsids</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">dsid</span><span class="p">)</span>
-    <span class="n">tgt_dir</span> <span class="o">=</span> <span class="n">PATH</span><span class="o">/</span><span class="sa">f</span><span class="s1">&#39;data/UCR/</span><span class="si">{</span><span class="n">dsid</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="n">tgt_dir</span> <span class="o">=</span> <span class="n">PATH</span><span class="o">/</span><span class="sa">f</span><span class="s1">'data/UCR/</span><span class="si">{</span><span class="n">dsid</span><span class="si">}</span><span class="s1">'</span>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">tgt_dir</span><span class="p">):</span> <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">tgt_dir</span><span class="p">)</span>
     <span class="n">test_eq</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">get_files</span><span class="p">(</span><span class="n">tgt_dir</span><span class="p">)),</span> <span class="mi">0</span><span class="p">)</span> <span class="c1"># no file left</span>
     <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_valid</span><span class="p">,</span> <span class="n">y_valid</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">)</span>
-    <span class="n">test_eq</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">get_files</span><span class="p">(</span><span class="n">tgt_dir</span><span class="p">,</span> <span class="s1">&#39;.npy&#39;</span><span class="p">)),</span> <span class="mi">6</span><span class="p">)</span>
-    <span class="n">test_eq</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">get_files</span><span class="p">(</span><span class="n">tgt_dir</span><span class="p">,</span> <span class="s1">&#39;.npy&#39;</span><span class="p">)),</span> <span class="nb">len</span><span class="p">(</span><span class="n">get_files</span><span class="p">(</span><span class="n">tgt_dir</span><span class="p">)))</span> <span class="c1"># test no left file/ dir</span>
+    <span class="n">test_eq</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">get_files</span><span class="p">(</span><span class="n">tgt_dir</span><span class="p">,</span> <span class="s1">'.npy'</span><span class="p">)),</span> <span class="mi">6</span><span class="p">)</span>
+    <span class="n">test_eq</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">get_files</span><span class="p">(</span><span class="n">tgt_dir</span><span class="p">,</span> <span class="s1">'.npy'</span><span class="p">)),</span> <span class="nb">len</span><span class="p">(</span><span class="n">get_files</span><span class="p">(</span><span class="n">tgt_dir</span><span class="p">)))</span> <span class="c1"># test no left file/ dir</span>
     <span class="k">del</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_valid</span><span class="p">,</span> <span class="n">y_valid</span>
     <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
     <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_valid</span><span class="p">,</span> <span class="n">y_valid</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">)</span>
@@ -256,17 +261,17 @@ nb_path: "nbs/012_data.external.ipynb"
     <span class="n">test_eq</span><span class="p">(</span><span class="n">y_train</span><span class="o">.</span><span class="n">ndim</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">test_eq</span><span class="p">(</span><span class="n">X_valid</span><span class="o">.</span><span class="n">ndim</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
     <span class="n">test_eq</span><span class="p">(</span><span class="n">y_valid</span><span class="o">.</span><span class="n">ndim</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="n">test_eq</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">get_files</span><span class="p">(</span><span class="n">tgt_dir</span><span class="p">,</span> <span class="s1">&#39;.npy&#39;</span><span class="p">)),</span> <span class="mi">6</span><span class="p">)</span>
-    <span class="n">test_eq</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">get_files</span><span class="p">(</span><span class="n">tgt_dir</span><span class="p">,</span> <span class="s1">&#39;.npy&#39;</span><span class="p">)),</span> <span class="nb">len</span><span class="p">(</span><span class="n">get_files</span><span class="p">(</span><span class="n">tgt_dir</span><span class="p">)))</span> <span class="c1"># test no left file/ dir</span>
+    <span class="n">test_eq</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">get_files</span><span class="p">(</span><span class="n">tgt_dir</span><span class="p">,</span> <span class="s1">'.npy'</span><span class="p">)),</span> <span class="mi">6</span><span class="p">)</span>
+    <span class="n">test_eq</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">get_files</span><span class="p">(</span><span class="n">tgt_dir</span><span class="p">,</span> <span class="s1">'.npy'</span><span class="p">)),</span> <span class="nb">len</span><span class="p">(</span><span class="n">get_files</span><span class="p">(</span><span class="n">tgt_dir</span><span class="p">)))</span> <span class="c1"># test no left file/ dir</span>
     <span class="n">test_eq</span><span class="p">(</span><span class="n">X_train</span><span class="o">.</span><span class="n">ndim</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
     <span class="n">test_eq</span><span class="p">(</span><span class="n">y_train</span><span class="o">.</span><span class="n">ndim</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">test_eq</span><span class="p">(</span><span class="n">X_valid</span><span class="o">.</span><span class="n">ndim</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
     <span class="n">test_eq</span><span class="p">(</span><span class="n">y_valid</span><span class="o">.</span><span class="n">ndim</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">test_eq</span><span class="p">(</span><span class="n">X_train</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-    <span class="n">test_eq</span><span class="p">(</span><span class="n">X_train</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;memmap&#39;</span><span class="p">)</span>
+    <span class="n">test_eq</span><span class="p">(</span><span class="n">X_train</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">'memmap'</span><span class="p">)</span>
     <span class="k">del</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_valid</span><span class="p">,</span> <span class="n">y_valid</span>
     <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_valid</span><span class="p">,</span> <span class="n">y_valid</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="n">test_eq</span><span class="p">(</span><span class="n">X_train</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;ndarray&#39;</span><span class="p">)</span>
+    <span class="n">test_eq</span><span class="p">(</span><span class="n">X_train</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">'ndarray'</span><span class="p">)</span>
     <span class="k">del</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_valid</span><span class="p">,</span> <span class="n">y_valid</span>
 </pre></div>
 
@@ -299,7 +304,7 @@ AtrialFibrillation
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_valid</span><span class="p">,</span> <span class="n">y_valid</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">&#39;natops&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_valid</span><span class="p">,</span> <span class="n">y_valid</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">'natops'</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -316,7 +321,7 @@ AtrialFibrillation
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;natops&#39;</span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsid</span> <span class="o">=</span> <span class="s1">'natops'</span> 
 <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_valid</span><span class="p">,</span> <span class="n">y_valid</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">X_train</span><span class="p">)</span>
@@ -363,6 +368,7 @@ y_valid: (180,)
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="check_data" class="doc_header"><code>check_data</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/external.py#L2265" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>check_data</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>show_plot</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
@@ -391,7 +397,7 @@ y_valid: (180,)
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;ECGFiveDays&#39;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsid</span> <span class="o">=</span> <span class="s1">'ECGFiveDays'</span>
 <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">force_download</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">check_data</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="p">)</span>
 <span class="n">check_data</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="p">)</span>
@@ -605,6 +611,7 @@ splits - n_splits: 3 shape: [[589, 295], [589, 295], [590, 294]]  overlap: [Fals
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="get_Monash_regression_list" class="doc_header"><code>get_Monash_regression_list</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/external.py#L2294" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_Monash_regression_list</code>()</p>
 </blockquote>
@@ -652,6 +659,7 @@ splits - n_splits: 3 shape: [[589, 295], [589, 295], [590, 294]]  overlap: [Fals
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="get_Monash_regression_data" class="doc_header"><code>get_Monash_regression_data</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/external.py#L2311" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_Monash_regression_data</code>(<strong><code>dsid</code></strong>, <strong><code>path</code></strong>=<em><code>'./data/Monash'</code></em>, <strong><code>on_disk</code></strong>=<em><code>True</code></em>, <strong><code>mode</code></strong>=<em><code>'c'</code></em>, <strong><code>Xdtype</code></strong>=<em><code>'float32'</code></em>, <strong><code>ydtype</code></strong>=<em><code>None</code></em>, <strong><code>split_data</code></strong>=<em><code>True</code></em>, <strong><code>force_download</code></strong>=<em><code>False</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>4</code></em>)</p>
 </blockquote>
@@ -680,7 +688,7 @@ splits - n_splits: 3 shape: [[589, 295], [589, 295], [590, 294]]  overlap: [Fals
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsid</span> <span class="o">=</span> <span class="s2">&quot;Covid3Month&quot;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsid</span> <span class="o">=</span> <span class="s2">"Covid3Month"</span>
 <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_valid</span><span class="p">,</span> <span class="n">y_valid</span> <span class="o">=</span> <span class="n">get_Monash_regression_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">force_download</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_Monash_regression_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">force_download</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">if</span> <span class="n">X_train</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> 
@@ -724,6 +732,7 @@ splits : (#140) [0,1,2,3,4,5,6,7,8,9...] (#61) [140,141,142,143,144,145,146,147,
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="get_forecasting_list" class="doc_header"><code>get_forecasting_list</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/external.py#L2408" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_forecasting_list</code>()</p>
 </blockquote>
@@ -755,6 +764,7 @@ splits : (#140) [0,1,2,3,4,5,6,7,8,9...] (#61) [140,141,142,143,144,145,146,147,
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="get_forecasting_time_series" class="doc_header"><code>get_forecasting_time_series</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/external.py#L2416" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_forecasting_time_series</code>(<strong><code>dsid</code></strong>, <strong><code>path</code></strong>=<em><code>'./data/forecasting/'</code></em>, <strong><code>force_download</code></strong>=<em><code>False</code></em>, <strong><code>verbose</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
@@ -783,7 +793,7 @@ splits : (#140) [0,1,2,3,4,5,6,7,8,9...] (#61) [140,141,142,143,144,145,146,147,
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ts</span> <span class="o">=</span> <span class="n">get_forecasting_time_series</span><span class="p">(</span><span class="s2">&quot;sunspots&quot;</span><span class="p">,</span> <span class="n">force_download</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ts</span> <span class="o">=</span> <span class="n">get_forecasting_time_series</span><span class="p">(</span><span class="s2">"sunspots"</span><span class="p">,</span> <span class="n">force_download</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ts</span><span class="p">),</span> <span class="mi">3235</span><span class="p">)</span>
 <span class="n">ts</span>
 </pre></div>
@@ -898,7 +908,7 @@ downloading data...
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ts</span> <span class="o">=</span> <span class="n">get_forecasting_time_series</span><span class="p">(</span><span class="s2">&quot;weather&quot;</span><span class="p">,</span> <span class="n">force_download</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ts</span> <span class="o">=</span> <span class="n">get_forecasting_time_series</span><span class="p">(</span><span class="s2">"weather"</span><span class="p">,</span> <span class="n">force_download</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">if</span> <span class="n">ts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> 
     <span class="n">test_eq</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ts</span><span class="p">),</span> <span class="mi">70091</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
@@ -953,6 +963,7 @@ module &#39;datetime&#39; has no attribute &#39;timestamp&#39;
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="convert_tsf_to_dataframe" class="doc_header"><code>convert_tsf_to_dataframe</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/external.py#L2566" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>convert_tsf_to_dataframe</code>(<strong><code>full_file_path_and_name</code></strong>, <strong><code>replace_missing_vals_with</code></strong>=<em><code>'NaN'</code></em>, <strong><code>value_column_name</code></strong>=<em><code>'series_value'</code></em>)</p>
 </blockquote>
@@ -984,6 +995,7 @@ module &#39;datetime&#39; has no attribute &#39;timestamp&#39;
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="get_Monash_forecasting_data" class="doc_header"><code>get_Monash_forecasting_data</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/external.py#L2682" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_Monash_forecasting_data</code>(<strong><code>dsid</code></strong>, <strong><code>path</code></strong>=<em><code>'./data/forecasting/'</code></em>, <strong><code>force_download</code></strong>=<em><code>False</code></em>, <strong><code>remove_from_disk</code></strong>=<em><code>False</code></em>, <strong><code>verbose</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
@@ -1012,7 +1024,7 @@ module &#39;datetime&#39; has no attribute &#39;timestamp&#39;
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;m1_yearly_dataset&#39;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsid</span> <span class="o">=</span> <span class="s1">'m1_yearly_dataset'</span>
 <span class="n">X</span> <span class="o">=</span> <span class="n">get_Monash_forecasting_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">force_download</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">if</span> <span class="n">X</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> 
     <span class="n">test_eq</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="mi">181</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">58</span><span class="p">))</span>
@@ -1048,5 +1060,5 @@ contain_equal_length: False
     {% endraw %}
 
 </div>
- 
+
 

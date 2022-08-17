@@ -53,6 +53,7 @@ nb_path: "nbs/020_data.features.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="get_ts_features" class="doc_header"><code>get_ts_features</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/features.py#L13" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_ts_features</code>(<strong><code>X</code></strong>:<code>Union</code>[<code>ndarray</code>, <code>Tensor</code>], <strong><code>y</code></strong>:<code>Union</code>[<code>NoneType</code>, <code>ndarray</code>, <code>Tensor</code>]=<em><code>None</code></em>, <strong><code>features</code></strong>:<code>Union</code>[<code>str</code>, <code>dict</code>]=<em><code>'min'</code></em>, <strong><code>n_jobs</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
@@ -85,7 +86,7 @@ nb_path: "nbs/020_data.features.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;NATOPS&#39;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsid</span> <span class="o">=</span> <span class="s1">'NATOPS'</span>
 <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">return_split</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
 </pre></div>
@@ -179,7 +180,7 @@ nb_path: "nbs/020_data.features.ipynb"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">cont_names</span> <span class="o">=</span> <span class="n">ts_features_df</span><span class="o">.</span><span class="n">columns</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-<span class="n">y_names</span> <span class="o">=</span> <span class="s1">&#39;target&#39;</span>
+<span class="n">y_names</span> <span class="o">=</span> <span class="s1">'target'</span>
 <span class="n">dls</span> <span class="o">=</span> <span class="n">get_tabular_dls</span><span class="p">(</span><span class="n">ts_features_df</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">cont_names</span><span class="o">=</span><span class="n">cont_names</span><span class="p">,</span> <span class="n">y_names</span><span class="o">=</span><span class="n">y_names</span><span class="p">)</span>
 <span class="n">dls</span><span class="o">.</span><span class="n">show_batch</span><span class="p">()</span>
 </pre></div>
@@ -2934,5 +2935,5 @@ nb_path: "nbs/020_data.features.ipynb"
     {% endraw %}
 
 </div>
- 
+
 

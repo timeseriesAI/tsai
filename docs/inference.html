@@ -46,6 +46,7 @@ nb_path: "nbs/052a_inference.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="Learner.get_X_preds" class="doc_header"><code>Learner.get_X_preds</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/inference.py#L11" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.get_X_preds</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>with_input</code></strong>=<em><code>False</code></em>, <strong><code>with_decoded</code></strong>=<em><code>True</code></em>, <strong><code>with_loss</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
@@ -91,7 +92,7 @@ nb_path: "nbs/052a_inference.ipynb"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">tsai.data.external</span> <span class="kn">import</span> <span class="n">get_UCR_data</span>
-<span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;OliveOil&#39;</span>
+<span class="n">dsid</span> <span class="o">=</span> <span class="s1">'OliveOil'</span>
 <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">X_test</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
 <span class="n">y_test</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
@@ -111,7 +112,7 @@ nb_path: "nbs/052a_inference.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">load_learner</span><span class="p">(</span><span class="s2">&quot;./models/test.pth&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">load_learner</span><span class="p">(</span><span class="s2">"./models/test.pth"</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -270,5 +271,5 @@ nb_path: "nbs/052a_inference.ipynb"
     {% endraw %}
 
 </div>
- 
+
 

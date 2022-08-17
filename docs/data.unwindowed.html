@@ -55,6 +55,7 @@ nb_path: "nbs/014_data.unwindowed.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="TSUnwindowedDataset" class="doc_header"><code>class</code> <code>TSUnwindowedDataset</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/unwindowed.py#L12" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSUnwindowedDataset</code>(<strong><code>X</code></strong>=<em><code>None</code></em>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>y_func</code></strong>=<em><code>None</code></em>, <strong><code>window_size</code></strong>=<em><code>1</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>drop_start</code></strong>=<em><code>0</code></em>, <strong><code>drop_end</code></strong>=<em><code>0</code></em>, <strong><code>seq_first</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
@@ -77,6 +78,7 @@ nb_path: "nbs/014_data.unwindowed.ipynb"
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -108,7 +110,7 @@ nb_path: "nbs/014_data.unwindowed.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">y_func</span><span class="p">(</span><span class="n">y</span><span class="p">):</span> <span class="k">return</span> <span class="n">y</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">y_func</span><span class="p">(</span><span class="n">y</span><span class="p">):</span> <span class="k">return</span> <span class="n">y</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'float'</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -408,5 +410,5 @@ nb_path: "nbs/014_data.unwindowed.ipynb"
     {% endraw %}
 
 </div>
- 
+
 

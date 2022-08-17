@@ -46,8 +46,9 @@ class MixedDataLoader():
             self.rng = np.arange(len(self.dataset)).tolist()
         self.loaders = loaders
         self.count = 0
-        self.fake_l = _FakeLoader(self, False, 0, 0, 0) if version.parse(
-            fastai.__version__) >= version.parse("2.1") else _FakeLoader(self, False, 0, 0)
+        self.fake_l = _FakeLoader(self, False, 0, 0, 0, "") if version.parse(fastai.__version__) >= version.parse("2.7") \
+            else _FakeLoader(self, False, 0, 0, 0) if version.parse(fastai.__version__) >= version.parse("2.1") \
+            else _FakeLoader(self, False, 0, 0)
         if sum([len(dl.dataset) for dl in loaders]) > 0:
             self._get_idxs()  # Do not apply on an empty dataset
 
@@ -83,23 +84,28 @@ class MixedDataLoader():
         self.y_idxs = self._get_vals(outs)
 
     def __iter__(self):
-        z = zip(*[_loaders[i.fake_l.num_workers == 0](i.fake_l) for i in self.loaders])
+        z = zip(*[_loaders[i.fake_l.num_workers == 0](i.fake_l)
+                for i in self.loaders])
         for b in z:
             inps = []
             outs = []
             if self.device is not None:
                 b = to_device(b, self.device)
             for batch, dl in zip(b, self.loaders):
-                if hasattr(dl, 'idxs'): self.idxs = dl.idxs
-                if hasattr(dl, 'input_idxs'): self.input_idxs = dl.input_idxs
+                if hasattr(dl, 'idxs'):
+                    self.idxs = dl.idxs
+                if hasattr(dl, 'input_idxs'):
+                    self.input_idxs = dl.input_idxs
                 batch = dl.after_batch(batch)
                 inps += batch[:dl.n_inp]
                 outs += batch[dl.n_inp:]
             inps = tuple([tuple(L(inps)[idx]) if isinstance(idx, list) else inps[idx]
                           for idx in self.x_idxs]) if len(self.x_idxs) > 1 else tuple(L(outs)[self.x_idxs][0])
-            if len(self.y_idxs) == 0: # based on issue identified by @Wabinab https://github.com/timeseriesAI/tsai/pull/229
+            # based on issue identified by @Wabinab https://github.com/timeseriesAI/tsai/pull/229
+            if len(self.y_idxs) == 0:
                 yield tuple((inps,))
-            outs =  tuple(L(outs)[self.y_idxs]) if len(self.y_idxs) > 1 else L(outs)[self.y_idxs][0]
+            outs = tuple(L(outs)[self.y_idxs]) if len(
+                self.y_idxs) > 1 else L(outs)[self.y_idxs][0]
             yield inps, outs
 
     def one_batch(self):
@@ -116,7 +122,8 @@ class MixedDataLoader():
             self.shuffled_idxs = np.random.permutation(idxs)
         # sort each batch
         for i in range(len(self.shuffled_idxs)//self.bs + 1):
-            self.shuffled_idxs[i*self.bs:(i+1)*self.bs] = np.sort(self.shuffled_idxs[i*self.bs:(i+1)*self.bs])
+            self.shuffled_idxs[i*self.bs:(i+1)*self.bs] = np.sort(
+                self.shuffled_idxs[i*self.bs:(i+1)*self.bs])
         self.count += 1
         if self.count == len(self.loaders):
             self.count = 0

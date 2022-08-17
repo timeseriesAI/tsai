@@ -53,6 +53,7 @@ nb_path: "nbs/018_data.mixed_augmentation.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="MixHandler1d" class="doc_header"><code>class</code> <code>MixHandler1d</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/mixed_augmentation.py#L19" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MixHandler1d</code>(<strong><code>alpha</code></strong>=<em><code>0.5</code></em>) :: <code>Callback</code></p>
 </blockquote>
@@ -83,6 +84,7 @@ nb_path: "nbs/018_data.mixed_augmentation.ipynb"
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -121,7 +123,7 @@ nb_path: "nbs/018_data.mixed_augmentation.ipynb"
 <span class="kn">from</span> <span class="nn">tsai.data.preprocessing</span> <span class="kn">import</span> <span class="n">TSStandardize</span>
 <span class="kn">from</span> <span class="nn">tsai.learner</span> <span class="kn">import</span> <span class="n">ts_learner</span>
 
-<span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">&#39;NATOPS&#39;</span><span class="p">,</span> <span class="n">return_split</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">'NATOPS'</span><span class="p">,</span> <span class="n">return_split</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">tfms</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">TSCategorize</span><span class="p">()]</span>
 <span class="n">batch_tfms</span> <span class="o">=</span> <span class="n">TSStandardize</span><span class="p">()</span>
 <span class="n">dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="n">batch_tfms</span><span class="p">)</span>
@@ -160,6 +162,7 @@ nb_path: "nbs/018_data.mixed_augmentation.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="CutMix1d" class="doc_header"><code>class</code> <code>CutMix1d</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/mixed_augmentation.py#L60" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CutMix1d</code>(<strong><code>alpha</code></strong>=<em><code>1.0</code></em>) :: <a href="/data.mixed_augmentation.html#MixHandler1d"><code>MixHandler1d</code></a></p>
 </blockquote>
@@ -192,6 +195,7 @@ nb_path: "nbs/018_data.mixed_augmentation.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="IntraClassCutMix1d" class="doc_header"><code>class</code> <code>IntraClassCutMix1d</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/mixed_augmentation.py#L90" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>IntraClassCutMix1d</code>(<strong><code>alpha</code></strong>=<em><code>1.0</code></em>) :: <code>Callback</code></p>
 </blockquote>
@@ -221,7 +225,7 @@ nb_path: "nbs/018_data.mixed_augmentation.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">&#39;NATOPS&#39;</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">'NATOPS'</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">tfms</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">TSCategorize</span><span class="p">()]</span>
 <span class="n">batch_tfms</span> <span class="o">=</span> <span class="n">TSStandardize</span><span class="p">()</span>
 <span class="n">dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="n">batch_tfms</span><span class="p">)</span>
@@ -257,7 +261,7 @@ nb_path: "nbs/018_data.mixed_augmentation.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">&#39;NATOPS&#39;</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">'NATOPS'</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">tfms</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">TSCategorize</span><span class="p">()]</span>
 <span class="n">batch_tfms</span> <span class="o">=</span> <span class="n">TSStandardize</span><span class="p">()</span>
 <span class="n">dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="n">batch_tfms</span><span class="p">)</span>
@@ -287,5 +291,5 @@ nb_path: "nbs/018_data.mixed_augmentation.ipynb"
     {% endraw %}
 
 </div>
- 
+
 

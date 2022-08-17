@@ -44,7 +44,7 @@ nb_path: "nbs/016_data.preprocessing.ipynb"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">tsai.data.external</span> <span class="kn">import</span> <span class="n">get_UCR_data</span>
-<span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;NATOPS&#39;</span>
+<span class="n">dsid</span> <span class="o">=</span> <span class="s1">'NATOPS'</span>
 <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">return_split</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">tfms</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">Categorize</span><span class="p">()]</span>
 <span class="n">dsets</span> <span class="o">=</span> <span class="n">TSDatasets</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">)</span>
@@ -67,8 +67,9 @@ nb_path: "nbs/016_data.preprocessing.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ToNumpyCategory" class="doc_header"><code>class</code> <code>ToNumpyCategory</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L24" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ToNumpyCategory</code>(<strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
+<h2 id="ToNumpyCategory" class="doc_header"><code>class</code> <code>ToNumpyCategory</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L24" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ToNumpyCategory</code>(<strong><code>self</code></strong>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
 </blockquote>
 <p>Categorize a numpy batch</p>
 
@@ -152,8 +153,9 @@ nb_path: "nbs/016_data.preprocessing.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="OneHot" class="doc_header"><code>class</code> <code>OneHot</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L45" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>OneHot</code>(<strong><code>n_classes</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
+<h2 id="OneHot" class="doc_header"><code>class</code> <code>OneHot</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L45" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>OneHot</code>(<strong><code>self</code></strong>, <strong><code>n_classes</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
 </blockquote>
 <p>One-hot encode/ decode a batch</p>
 
@@ -279,8 +281,9 @@ nb_path: "nbs/016_data.preprocessing.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSNan2Value" class="doc_header"><code>class</code> <code>TSNan2Value</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L62" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSNan2Value</code>(<strong><code>value</code></strong>=<em><code>0</code></em>, <strong><code>median</code></strong>=<em><code>False</code></em>, <strong><code>by_sample_and_var</code></strong>=<em><code>True</code></em>, <strong><code>sel_vars</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
+<h2 id="TSNan2Value" class="doc_header"><code>class</code> <code>TSNan2Value</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L62" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSNan2Value</code>(<strong><code>self</code></strong>, <strong><code>value</code></strong>=<em><code>0</code></em>, <strong><code>median</code></strong>=<em><code>False</code></em>, <strong><code>by_sample_and_var</code></strong>=<em><code>True</code></em>, <strong><code>sel_vars</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
 </blockquote>
 <p>Replaces any nan values by a predefined value or median</p>
 
@@ -309,9 +312,9 @@ nb_path: "nbs/016_data.preprocessing.ipynb"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">o</span> <span class="o">=</span> <span class="n">TSTensor</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
-<span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">)</span>
-<span class="n">o</span><span class="p">[</span><span class="n">o</span> <span class="o">&gt;</span> <span class="mf">.9</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">)</span>
-<span class="n">o</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">14</span><span class="p">,</span><span class="mi">15</span><span class="p">],</span> <span class="p">:,</span> <span class="o">-</span><span class="mi">20</span><span class="p">:]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">)</span>
+<span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">'nan'</span><span class="p">)</span>
+<span class="n">o</span><span class="p">[</span><span class="n">o</span> <span class="o">&gt;</span> <span class="mf">.9</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">'nan'</span><span class="p">)</span>
+<span class="n">o</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">14</span><span class="p">,</span><span class="mi">15</span><span class="p">],</span> <span class="p">:,</span> <span class="o">-</span><span class="mi">20</span><span class="p">:]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">'nan'</span><span class="p">)</span>
 <span class="n">nan_vals1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">o</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 <span class="n">o2</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">TSNan2Value</span><span class="p">(),</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)(</span><span class="n">o</span><span class="o">.</span><span class="n">clone</span><span class="p">())</span>
 <span class="n">o3</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">TSNan2Value</span><span class="p">(</span><span class="n">median</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">by_sample_and_var</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">split_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)(</span><span class="n">o</span><span class="o">.</span><span class="n">clone</span><span class="p">())</span>
@@ -340,7 +343,7 @@ nb_path: "nbs/016_data.preprocessing.ipynb"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">o</span> <span class="o">=</span> <span class="n">TSTensor</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
-<span class="n">o</span><span class="p">[</span><span class="n">o</span> <span class="o">&gt;</span> <span class="mf">.9</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">)</span>
+<span class="n">o</span><span class="p">[</span><span class="n">o</span> <span class="o">&gt;</span> <span class="mf">.9</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">'nan'</span><span class="p">)</span>
 <span class="n">o</span> <span class="o">=</span> <span class="n">TSNan2Value</span><span class="p">(</span><span class="n">median</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sel_vars</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])(</span><span class="n">o</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">o</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]])</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="mi">0</span><span class="p">)</span>
 </pre></div>
@@ -362,8 +365,9 @@ nb_path: "nbs/016_data.preprocessing.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSStandardize" class="doc_header"><code>class</code> <code>TSStandardize</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L96" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSStandardize</code>(<strong><code>mean</code></strong>=<em><code>None</code></em>, <strong><code>std</code></strong>=<em><code>None</code></em>, <strong><code>by_sample</code></strong>=<em><code>False</code></em>, <strong><code>by_var</code></strong>=<em><code>False</code></em>, <strong><code>by_step</code></strong>=<em><code>False</code></em>, <strong><code>eps</code></strong>=<em><code>1e-08</code></em>, <strong><code>use_single_batch</code></strong>=<em><code>True</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
+<h2 id="TSStandardize" class="doc_header"><code>class</code> <code>TSStandardize</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L96" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSStandardize</code>(<strong><code>self</code></strong>, <strong><code>mean</code></strong>=<em><code>None</code></em>, <strong><code>std</code></strong>=<em><code>None</code></em>, <strong><code>by_sample</code></strong>=<em><code>False</code></em>, <strong><code>by_var</code></strong>=<em><code>False</code></em>, <strong><code>by_step</code></strong>=<em><code>False</code></em>, <strong><code>eps</code></strong>=<em><code>1e-08</code></em>, <strong><code>use_single_batch</code></strong>=<em><code>True</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
 </blockquote>
 <p>Standardizes batch of type <a href="/data.core.html#TSTensor"><code>TSTensor</code></a></p>
 <p>Args:</p>
@@ -433,9 +437,9 @@ nb_path: "nbs/016_data.preprocessing.ipynb"
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">tsai.data.validation</span> <span class="kn">import</span> <span class="n">TimeSplitter</span>
 <span class="n">X_nan</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
 <span class="n">idxs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X_nan</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X_nan</span><span class="p">)</span><span class="o">*</span><span class="mf">.5</span><span class="p">),</span> <span class="kc">False</span><span class="p">)</span>
-<span class="n">X_nan</span><span class="p">[</span><span class="n">idxs</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">)</span>
+<span class="n">X_nan</span><span class="p">[</span><span class="n">idxs</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">'nan'</span><span class="p">)</span>
 <span class="n">idxs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X_nan</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X_nan</span><span class="p">)</span><span class="o">*</span><span class="mf">.5</span><span class="p">),</span> <span class="kc">False</span><span class="p">)</span>
-<span class="n">X_nan</span><span class="p">[</span><span class="n">idxs</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">:]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">)</span>
+<span class="n">X_nan</span><span class="p">[</span><span class="n">idxs</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">:]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">'nan'</span><span class="p">)</span>
 <span class="n">batch_tfms</span> <span class="o">=</span> <span class="n">TSStandardize</span><span class="p">(</span><span class="n">by_var</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X_nan</span><span class="p">,</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="n">batch_tfms</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">TimeSplitter</span><span class="p">(</span><span class="n">show_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">range_of</span><span class="p">(</span><span class="n">X_nan</span><span class="p">)))</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">after_batch</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span> <span class="mi">0</span><span class="p">)</span>
@@ -540,6 +544,7 @@ nb_path: "nbs/016_data.preprocessing.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="Tensor.mul_min" class="doc_header"><code>Tensor.mul_min</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L194" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Tensor.mul_min</code>(<strong><code>x</code></strong>:<code>(Tensor, TSTensor, NumpyTensor)</code>, <strong><code>axes</code></strong>=<em><code>()</code></em>, <strong><code>keepdim</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
@@ -562,6 +567,7 @@ nb_path: "nbs/016_data.preprocessing.ipynb"
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -588,6 +594,7 @@ nb_path: "nbs/016_data.preprocessing.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="NumpyTensor.mul_min" class="doc_header"><code>NumpyTensor.mul_min</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L194" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>NumpyTensor.mul_min</code>(<strong><code>x</code></strong>:<code>(Tensor, TSTensor, NumpyTensor)</code>, <strong><code>axes</code></strong>=<em><code>()</code></em>, <strong><code>keepdim</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
@@ -610,6 +617,7 @@ nb_path: "nbs/016_data.preprocessing.ipynb"
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -636,6 +644,7 @@ nb_path: "nbs/016_data.preprocessing.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="TSTensor.mul_max" class="doc_header"><code>TSTensor.mul_max</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L203" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TSTensor.mul_max</code>(<strong><code>x</code></strong>:<code>(Tensor, TSTensor, NumpyTensor)</code>, <strong><code>axes</code></strong>=<em><code>()</code></em>, <strong><code>keepdim</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
@@ -658,6 +667,7 @@ nb_path: "nbs/016_data.preprocessing.ipynb"
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -684,8 +694,9 @@ nb_path: "nbs/016_data.preprocessing.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSNormalize" class="doc_header"><code>class</code> <code>TSNormalize</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L212" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSNormalize</code>(<strong><code>min</code></strong>=<em><code>None</code></em>, <strong><code>max</code></strong>=<em><code>None</code></em>, <strong><code>range</code></strong>=<em><code>(-1, 1)</code></em>, <strong><code>by_sample</code></strong>=<em><code>False</code></em>, <strong><code>by_var</code></strong>=<em><code>False</code></em>, <strong><code>by_step</code></strong>=<em><code>False</code></em>, <strong><code>clip_values</code></strong>=<em><code>True</code></em>, <strong><code>use_single_batch</code></strong>=<em><code>True</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
+<h2 id="TSNormalize" class="doc_header"><code>class</code> <code>TSNormalize</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L212" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSNormalize</code>(<strong><code>self</code></strong>, <strong><code>min</code></strong>=<em><code>None</code></em>, <strong><code>max</code></strong>=<em><code>None</code></em>, <strong><code>range</code></strong>=<em><code>(-1, 1)</code></em>, <strong><code>by_sample</code></strong>=<em><code>False</code></em>, <strong><code>by_var</code></strong>=<em><code>False</code></em>, <strong><code>by_step</code></strong>=<em><code>False</code></em>, <strong><code>clip_values</code></strong>=<em><code>True</code></em>, <strong><code>use_single_batch</code></strong>=<em><code>True</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
 </blockquote>
 <p>Normalizes batch of type <a href="/data.core.html#TSTensor"><code>TSTensor</code></a></p>
 
@@ -779,8 +790,9 @@ nb_path: "nbs/016_data.preprocessing.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSClipOutliers" class="doc_header"><code>class</code> <code>TSClipOutliers</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L292" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSClipOutliers</code>(<strong><code>min</code></strong>=<em><code>None</code></em>, <strong><code>max</code></strong>=<em><code>None</code></em>, <strong><code>by_sample</code></strong>=<em><code>False</code></em>, <strong><code>by_var</code></strong>=<em><code>False</code></em>, <strong><code>use_single_batch</code></strong>=<em><code>False</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
+<h2 id="TSClipOutliers" class="doc_header"><code>class</code> <code>TSClipOutliers</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L292" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSClipOutliers</code>(<strong><code>self</code></strong>, <strong><code>min</code></strong>=<em><code>None</code></em>, <strong><code>max</code></strong>=<em><code>None</code></em>, <strong><code>by_sample</code></strong>=<em><code>False</code></em>, <strong><code>by_var</code></strong>=<em><code>False</code></em>, <strong><code>use_single_batch</code></strong>=<em><code>False</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
 </blockquote>
 <p>Clip outliers batch of type <a href="/data.core.html#TSTensor"><code>TSTensor</code></a> based on the IQR</p>
 
@@ -852,8 +864,9 @@ nb_path: "nbs/016_data.preprocessing.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSClip" class="doc_header"><code>class</code> <code>TSClip</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L335" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSClip</code>(<strong><code>min</code></strong>=<em><code>-6</code></em>, <strong><code>max</code></strong>=<em><code>6</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
+<h2 id="TSClip" class="doc_header"><code>class</code> <code>TSClip</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L335" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSClip</code>(<strong><code>self</code></strong>, <strong><code>min</code></strong>=<em><code>-6</code></em>, <strong><code>max</code></strong>=<em><code>6</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
 </blockquote>
 <p>Clip  batch of type <a href="/data.core.html#TSTensor"><code>TSTensor</code></a></p>
 
@@ -903,8 +916,9 @@ nb_path: "nbs/016_data.preprocessing.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSSelfMissingness" class="doc_header"><code>class</code> <code>TSSelfMissingness</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L348" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSSelfMissingness</code>(<strong><code>sel_vars</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
+<h2 id="TSSelfMissingness" class="doc_header"><code>class</code> <code>TSSelfMissingness</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L348" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSSelfMissingness</code>(<strong><code>self</code></strong>, <strong><code>sel_vars</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
 </blockquote>
 <p>Applies missingness from samples in a batch to random samples in the batch for selected variables</p>
 
@@ -956,8 +970,9 @@ nb_path: "nbs/016_data.preprocessing.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSRobustScale" class="doc_header"><code>class</code> <code>TSRobustScale</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L365" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRobustScale</code>(<strong><code>median</code></strong>=<em><code>None</code></em>, <strong><code>iqr</code></strong>=<em><code>None</code></em>, <strong><code>quantile_range</code></strong>=<em><code>(25.0, 75.0)</code></em>, <strong><code>use_single_batch</code></strong>=<em><code>True</code></em>, <strong><code>eps</code></strong>=<em><code>1e-08</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
+<h2 id="TSRobustScale" class="doc_header"><code>class</code> <code>TSRobustScale</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L365" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRobustScale</code>(<strong><code>self</code></strong>, <strong><code>median</code></strong>=<em><code>None</code></em>, <strong><code>iqr</code></strong>=<em><code>None</code></em>, <strong><code>quantile_range</code></strong>=<em><code>(25.0, 75.0)</code></em>, <strong><code>use_single_batch</code></strong>=<em><code>True</code></em>, <strong><code>eps</code></strong>=<em><code>1e-08</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
 </blockquote>
 <p>This Scaler removes the median and scales the data according to the quantile range (defaults to IQR: Interquartile Range)</p>
 
@@ -1032,6 +1047,7 @@ nb_path: "nbs/016_data.preprocessing.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="get_stats_with_uncertainty" class="doc_header"><code>get_stats_with_uncertainty</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L405" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_stats_with_uncertainty</code>(<strong><code>o</code></strong>, <strong><code>sel_vars</code></strong>=<em><code>None</code></em>, <strong><code>sel_vars_zero_mean_unit_var</code></strong>=<em><code>False</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>n_trials</code></strong>=<em><code>None</code></em>, <strong><code>axis</code></strong>=<em><code>(0, 2)</code></em>)</p>
 </blockquote>
@@ -1054,6 +1070,7 @@ nb_path: "nbs/016_data.preprocessing.ipynb"
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -1080,8 +1097,9 @@ nb_path: "nbs/016_data.preprocessing.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSGaussianStandardize" class="doc_header"><code>class</code> <code>TSGaussianStandardize</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L446" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSGaussianStandardize</code>(<strong><code>E_mean</code></strong>:<code>ndarray</code>, <strong><code>S_mean</code></strong>:<code>ndarray</code>, <strong><code>E_std</code></strong>:<code>ndarray</code>, <strong><code>S_std</code></strong>:<code>ndarray</code>, <strong><code>eps</code></strong>=<em><code>1e-08</code></em>, <strong><code>split_idx</code></strong>=<em><code>0</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
+<h2 id="TSGaussianStandardize" class="doc_header"><code>class</code> <code>TSGaussianStandardize</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L446" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSGaussianStandardize</code>(<strong><code>self</code></strong>, <strong><code>E_mean</code></strong>:<code>ndarray</code>, <strong><code>S_mean</code></strong>:<code>ndarray</code>, <strong><code>E_std</code></strong>:<code>ndarray</code>, <strong><code>S_std</code></strong>:<code>ndarray</code>, <strong><code>eps</code></strong>=<em><code>1e-08</code></em>, <strong><code>split_idx</code></strong>=<em><code>0</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
 </blockquote>
 <p>Scales each batch using modeled mean and std based on UNCERTAINTY MODELING FOR OUT-OF-DISTRIBUTION GENERALIZATION <a href="https://arxiv.org/abs/2202.03958">https://arxiv.org/abs/2202.03958</a></p>
 <table>
@@ -1250,8 +1268,9 @@ nb_path: "nbs/016_data.preprocessing.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSDiff" class="doc_header"><code>class</code> <code>TSDiff</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L473" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDiff</code>(<strong><code>lag</code></strong>=<em><code>1</code></em>, <strong><code>pad</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
+<h2 id="TSDiff" class="doc_header"><code>class</code> <code>TSDiff</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L473" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDiff</code>(<strong><code>self</code></strong>, <strong><code>lag</code></strong>=<em><code>1</code></em>, <strong><code>pad</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
 </blockquote>
 <p>Differences batch of type <a href="/data.core.html#TSTensor"><code>TSTensor</code></a></p>
 
@@ -1301,8 +1320,9 @@ nb_path: "nbs/016_data.preprocessing.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSLog" class="doc_header"><code>class</code> <code>TSLog</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L486" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSLog</code>(<strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
+<h2 id="TSLog" class="doc_header"><code>class</code> <code>TSLog</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L486" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSLog</code>(<strong><code>self</code></strong>, <strong><code>ex</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
 </blockquote>
 <p>Log transforms batch of type <a href="/data.core.html#TSTensor"><code>TSTensor</code></a> + 1. Accepts positive and negative numbers</p>
 
@@ -1354,8 +1374,9 @@ nb_path: "nbs/016_data.preprocessing.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSCyclicalPosition" class="doc_header"><code>class</code> <code>TSCyclicalPosition</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L507" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSCyclicalPosition</code>(<strong><code>cyclical_var</code></strong>=<em><code>None</code></em>, <strong><code>magnitude</code></strong>=<em><code>None</code></em>, <strong><code>drop_var</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
+<h2 id="TSCyclicalPosition" class="doc_header"><code>class</code> <code>TSCyclicalPosition</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L507" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSCyclicalPosition</code>(<strong><code>self</code></strong>, <strong><code>cyclical_var</code></strong>=<em><code>None</code></em>, <strong><code>magnitude</code></strong>=<em><code>None</code></em>, <strong><code>drop_var</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
 </blockquote>
 <p>Concatenates the position along the sequence as 2 additional variables (sine and cosine)</p>
 <table>
@@ -1508,8 +1529,9 @@ nb_path: "nbs/016_data.preprocessing.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSLinearPosition" class="doc_header"><code>class</code> <code>TSLinearPosition</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L537" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSLinearPosition</code>(<strong><code>linear_var</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>var_range</code></strong>:<code>tuple</code>=<em><code>None</code></em>, <strong><code>magnitude</code></strong>=<em><code>None</code></em>, <strong><code>drop_var</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>lin_range</code></strong>:<code>tuple</code>=<em><code>(-1, 1)</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
+<h2 id="TSLinearPosition" class="doc_header"><code>class</code> <code>TSLinearPosition</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L537" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSLinearPosition</code>(<strong><code>self</code></strong>, <strong><code>linear_var</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>var_range</code></strong>:<code>tuple</code>=<em><code>None</code></em>, <strong><code>magnitude</code></strong>=<em><code>None</code></em>, <strong><code>drop_var</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>lin_range</code></strong>:<code>tuple</code>=<em><code>(-1, 1)</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
 </blockquote>
 <p>Concatenates the position along the sequence as 1 additional variable</p>
 <table>
@@ -1674,8 +1696,9 @@ nb_path: "nbs/016_data.preprocessing.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSMissingness" class="doc_header"><code>class</code> <code>TSMissingness</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L572" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSMissingness</code>(<strong><code>feature_idxs</code></strong>=<em><code>None</code></em>, <strong><code>magnitude</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
+<h2 id="TSMissingness" class="doc_header"><code>class</code> <code>TSMissingness</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L572" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSMissingness</code>(<strong><code>self</code></strong>, <strong><code>feature_idxs</code></strong>=<em><code>None</code></em>, <strong><code>magnitude</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
 </blockquote>
 <p>Concatenates data missingness for selected features along the sequence as additional variables</p>
 
@@ -1728,8 +1751,9 @@ nb_path: "nbs/016_data.preprocessing.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSPositionGaps" class="doc_header"><code>class</code> <code>TSPositionGaps</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L588" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSPositionGaps</code>(<strong><code>feature_idxs</code></strong>=<em><code>None</code></em>, <strong><code>magnitude</code></strong>=<em><code>None</code></em>, <strong><code>forward</code></strong>=<em><code>True</code></em>, <strong><code>backward</code></strong>=<em><code>False</code></em>, <strong><code>nearest</code></strong>=<em><code>False</code></em>, <strong><code>normalize</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
+<h2 id="TSPositionGaps" class="doc_header"><code>class</code> <code>TSPositionGaps</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L588" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSPositionGaps</code>(<strong><code>self</code></strong>, <strong><code>feature_idxs</code></strong>=<em><code>None</code></em>, <strong><code>magnitude</code></strong>=<em><code>None</code></em>, <strong><code>forward</code></strong>=<em><code>True</code></em>, <strong><code>backward</code></strong>=<em><code>False</code></em>, <strong><code>nearest</code></strong>=<em><code>False</code></em>, <strong><code>normalize</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
 </blockquote>
 <p>Concatenates gaps for selected features along the sequence as additional variables</p>
 
@@ -1806,8 +1830,9 @@ nb_path: "nbs/016_data.preprocessing.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSRollingMean" class="doc_header"><code>class</code> <code>TSRollingMean</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L606" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRollingMean</code>(<strong><code>feature_idxs</code></strong>=<em><code>None</code></em>, <strong><code>magnitude</code></strong>=<em><code>None</code></em>, <strong><code>window</code></strong>=<em><code>2</code></em>, <strong><code>replace</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
+<h2 id="TSRollingMean" class="doc_header"><code>class</code> <code>TSRollingMean</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L606" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSRollingMean</code>(<strong><code>self</code></strong>, <strong><code>feature_idxs</code></strong>=<em><code>None</code></em>, <strong><code>magnitude</code></strong>=<em><code>None</code></em>, <strong><code>window</code></strong>=<em><code>2</code></em>, <strong><code>replace</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
 </blockquote>
 <p>Calculates the rolling mean for all/ selected features alongside the sequence</p>
 <p>It replaces the original values or adds additional variables (default)
@@ -1890,8 +1915,9 @@ tensor([[[0.1487, 0.1487, 0.1487, 0.1487, 0.2325, 0.3163, 0.3239, 0.2477],
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSLogReturn" class="doc_header"><code>class</code> <code>TSLogReturn</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L635" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSLogReturn</code>(<strong><code>lag</code></strong>=<em><code>1</code></em>, <strong><code>pad</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
+<h2 id="TSLogReturn" class="doc_header"><code>class</code> <code>TSLogReturn</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L635" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSLogReturn</code>(<strong><code>self</code></strong>, <strong><code>lag</code></strong>=<em><code>1</code></em>, <strong><code>pad</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
 </blockquote>
 <p>Calculates log-return of batch of type <a href="/data.core.html#TSTensor"><code>TSTensor</code></a>. For positive values only</p>
 
@@ -1940,8 +1966,9 @@ tensor([[[0.1487, 0.1487, 0.1487, 0.1487, 0.2325, 0.3163, 0.3239, 0.2477],
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSAdd" class="doc_header"><code>class</code> <code>TSAdd</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L648" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSAdd</code>(<strong><code>add</code></strong>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
+<h2 id="TSAdd" class="doc_header"><code>class</code> <code>TSAdd</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L648" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSAdd</code>(<strong><code>self</code></strong>, <strong><code>add</code></strong>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
 </blockquote>
 <p>Add a defined amount to each batch of type <a href="/data.core.html#TSTensor"><code>TSTensor</code></a>.</p>
 
@@ -1990,8 +2017,9 @@ tensor([[[0.1487, 0.1487, 0.1487, 0.1487, 0.2325, 0.3163, 0.3239, 0.2477],
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSClipByVar" class="doc_header"><code>class</code> <code>TSClipByVar</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L660" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSClipByVar</code>(<strong><code>var_min_max</code></strong>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
+<h2 id="TSClipByVar" class="doc_header"><code>class</code> <code>TSClipByVar</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L660" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSClipByVar</code>(<strong><code>self</code></strong>, <strong><code>var_min_max</code></strong>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
 </blockquote>
 <p>Clip  batch of type <a href="/data.core.html#TSTensor"><code>TSTensor</code></a> by variable</p>
 <p>Args:
@@ -2046,8 +2074,9 @@ tensor([[[0.1487, 0.1487, 0.1487, 0.1487, 0.2325, 0.3163, 0.3239, 0.2477],
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSDropVars" class="doc_header"><code>class</code> <code>TSDropVars</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L677" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDropVars</code>(<strong><code>drop_vars</code></strong>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
+<h2 id="TSDropVars" class="doc_header"><code>class</code> <code>TSDropVars</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L677" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDropVars</code>(<strong><code>self</code></strong>, <strong><code>drop_vars</code></strong>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
 </blockquote>
 <p>Drops selected variable from the input</p>
 
@@ -2118,8 +2147,9 @@ tensor([[[0.1487, 0.1487, 0.1487, 0.1487, 0.2325, 0.3163, 0.3239, 0.2477],
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSOneHotEncode" class="doc_header"><code>class</code> <code>TSOneHotEncode</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L689" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSOneHotEncode</code>(<strong><code>sel_var</code></strong>:<code>int</code>, <strong><code>unique_labels</code></strong>:<code>list</code>, <strong><code>add_na</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>drop_var</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>magnitude</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
+<h2 id="TSOneHotEncode" class="doc_header"><code>class</code> <code>TSOneHotEncode</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L689" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSOneHotEncode</code>(<strong><code>self</code></strong>, <strong><code>sel_var</code></strong>:<code>int</code>, <strong><code>unique_labels</code></strong>:<code>list</code>, <strong><code>add_na</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>drop_var</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>magnitude</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
 </blockquote>
 <p>Delegates (<code>__call__</code>,<code>decode</code>,<code>setup</code>) to (<code>encodes</code>,<code>decodes</code>,<code>setups</code>) if <code>split_idx</code> matches</p>
 <table>
@@ -2386,8 +2416,9 @@ tensor([[[0.1487, 0.1487, 0.1487, 0.1487, 0.2325, 0.3163, 0.3239, 0.2477],
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSPosition" class="doc_header"><code>class</code> <code>TSPosition</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L724" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSPosition</code>(<strong><code>steps</code></strong>:<code>list</code>, <strong><code>magnitude</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
+<h2 id="TSPosition" class="doc_header"><code>class</code> <code>TSPosition</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L724" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSPosition</code>(<strong><code>self</code></strong>, <strong><code>steps</code></strong>:<code>list</code>, <strong><code>magnitude</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
 </blockquote>
 <p>Delegates (<code>__call__</code>,<code>decode</code>,<code>setup</code>) to (<code>encodes</code>,<code>decodes</code>,<code>setups</code>) if <code>split_idx</code> matches</p>
 <table>
@@ -2445,7 +2476,7 @@ tensor([[[0.1487, 0.1487, 0.1487, 0.1487, 0.2325, 0.3163, 0.3239, 0.2477],
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">TSTensor</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
-<span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'float64'</span><span class="p">)</span>
 <span class="n">TSPosition</span><span class="p">(</span><span class="n">a</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">dtype</span>
 </pre></div>
 
@@ -2488,6 +2519,7 @@ tensor([[[0.1487, 0.1487, 0.1487, 0.1487, 0.2325, 0.3163, 0.3239, 0.2477],
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="TSShrinkDataFrame" class="doc_header"><code>class</code> <code>TSShrinkDataFrame</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L745" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSShrinkDataFrame</code>(<strong><code>columns</code></strong>=<em><code>None</code></em>, <strong><code>skip</code></strong>=<em><code>[]</code></em>, <strong><code>obj2cat</code></strong>=<em><code>True</code></em>, <strong><code>int2uint</code></strong>=<em><code>False</code></em>, <strong><code>verbose</code></strong>=<em><code>True</code></em>) :: <code>BaseEstimator</code></p>
 </blockquote>
@@ -2521,13 +2553,13 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
-<span class="n">df</span><span class="p">[</span><span class="s2">&quot;ints64&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
-<span class="n">df</span><span class="p">[</span><span class="s1">&#39;floats64&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">"ints64"</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">'floats64'</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 <span class="n">tfm</span> <span class="o">=</span> <span class="n">TSShrinkDataFrame</span><span class="p">()</span>
 <span class="n">tfm</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">tfm</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;ints64&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="s2">&quot;int8&quot;</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;floats64&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="s2">&quot;float32&quot;</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">"ints64"</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="s2">"int8"</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">"floats64"</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="s2">"float32"</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -2563,6 +2595,7 @@ Reduced by 38.19444444444444 %
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="TSOneHotEncoder" class="doc_header"><code>class</code> <code>TSOneHotEncoder</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L783" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSOneHotEncoder</code>(<strong><code>columns</code></strong>=<em><code>None</code></em>, <strong><code>drop</code></strong>=<em><code>True</code></em>, <strong><code>add_na</code></strong>=<em><code>True</code></em>, <strong><code>dtype</code></strong>=<em><code>int64</code></em>) :: <code>BaseEstimator</code></p>
 </blockquote>
@@ -2596,9 +2629,9 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
-<span class="n">df</span><span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
-<span class="n">df</span><span class="p">[</span><span class="s2">&quot;b&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
-<span class="n">unique_cols</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;b&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">"a"</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">"b"</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">unique_cols</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">"a"</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">"b"</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
 <span class="n">tfm</span> <span class="o">=</span> <span class="n">TSOneHotEncoder</span><span class="p">()</span>
 <span class="n">tfm</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">tfm</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
@@ -2620,6 +2653,7 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -2663,17 +2697,17 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">joblib</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
-<span class="n">df</span><span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">alphabet</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">100</span><span class="p">)]</span>
-<span class="n">df</span><span class="p">[</span><span class="s2">&quot;b&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ALPHABET</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">100</span><span class="p">)]</span>
-<span class="n">a_unique</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
-<span class="n">b_unique</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;b&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">"a"</span><span class="p">]</span> <span class="o">=</span> <span class="n">alphabet</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">100</span><span class="p">)]</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">"b"</span><span class="p">]</span> <span class="o">=</span> <span class="n">ALPHABET</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">100</span><span class="p">)]</span>
+<span class="n">a_unique</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">"a"</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
+<span class="n">b_unique</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">"b"</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
 <span class="n">tfm</span> <span class="o">=</span> <span class="n">TSCategoricalEncoder</span><span class="p">()</span>
 <span class="n">tfm</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-<span class="n">joblib</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">tfm</span><span class="p">,</span> <span class="s2">&quot;data/TSCategoricalEncoder.joblib&quot;</span><span class="p">)</span>
-<span class="n">tfm</span> <span class="o">=</span> <span class="n">joblib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;data/TSCategoricalEncoder.joblib&quot;</span><span class="p">)</span>
+<span class="n">joblib</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">tfm</span><span class="p">,</span> <span class="s2">"data/TSCategoricalEncoder.joblib"</span><span class="p">)</span>
+<span class="n">tfm</span> <span class="o">=</span> <span class="n">joblib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"data/TSCategoricalEncoder.joblib"</span><span class="p">)</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">tfm</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">a_unique</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">b_unique</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">'a'</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">a_unique</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">'b'</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">b_unique</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -2710,6 +2744,7 @@ encoding b...
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="TSDateTimeEncoder" class="doc_header"><code>class</code> <code>TSDateTimeEncoder</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L864" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDateTimeEncoder</code>(<strong><code>datetime_columns</code></strong>=<em><code>None</code></em>, <strong><code>prefix</code></strong>=<em><code>None</code></em>, <strong><code>drop</code></strong>=<em><code>True</code></em>, <strong><code>time</code></strong>=<em><code>False</code></em>, <strong><code>attr</code></strong>=<em><code>['Year', 'Month', 'Week', 'Day', 'Dayofweek', 'Dayofyear', 'Is_month_end', 'Is_month_start', 'Is_quarter_end', 'Is_quarter_start', 'Is_year_end', 'Is_year_start']</code></em>) :: <code>BaseEstimator</code></p>
 </blockquote>
@@ -2744,11 +2779,11 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">datetime</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
-<span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;date&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-<span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;date&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">+</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="s2">"date"</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+<span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"date"</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">+</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">"D"</span><span class="p">)</span>
 <span class="n">tfm</span> <span class="o">=</span> <span class="n">TSDateTimeEncoder</span><span class="p">()</span>
-<span class="n">joblib</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">tfm</span><span class="p">,</span> <span class="s2">&quot;data/TSDateTimeEncoder.joblib&quot;</span><span class="p">)</span>
-<span class="n">tfm</span> <span class="o">=</span> <span class="n">joblib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;data/TSDateTimeEncoder.joblib&quot;</span><span class="p">)</span>
+<span class="n">joblib</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">tfm</span><span class="p">,</span> <span class="s2">"data/TSDateTimeEncoder.joblib"</span><span class="p">)</span>
+<span class="n">tfm</span> <span class="o">=</span> <span class="n">joblib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"data/TSDateTimeEncoder.joblib"</span><span class="p">)</span>
 <span class="n">tfm</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 </pre></div>
 
@@ -2847,6 +2882,7 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="TSMissingnessEncoder" class="doc_header"><code>class</code> <code>TSMissingnessEncoder</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L894" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSMissingnessEncoder</code>(<strong><code>columns</code></strong>=<em><code>None</code></em>) :: <code>BaseEstimator</code></p>
 </blockquote>
@@ -2881,11 +2917,11 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
 <span class="n">data</span><span class="p">[</span><span class="n">data</span> <span class="o">&gt;</span> <span class="mf">.8</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">])</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">,</span> <span class="s2">"c"</span><span class="p">])</span>
 <span class="n">tfm</span> <span class="o">=</span> <span class="n">TSMissingnessEncoder</span><span class="p">()</span>
 <span class="n">tfm</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-<span class="n">joblib</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">tfm</span><span class="p">,</span> <span class="s2">&quot;data/TSMissingnessEncoder.joblib&quot;</span><span class="p">)</span>
-<span class="n">tfm</span> <span class="o">=</span> <span class="n">joblib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;data/TSMissingnessEncoder.joblib&quot;</span><span class="p">)</span>
+<span class="n">joblib</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">tfm</span><span class="p">,</span> <span class="s2">"data/TSMissingnessEncoder.joblib"</span><span class="p">)</span>
+<span class="n">tfm</span> <span class="o">=</span> <span class="n">joblib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"data/TSMissingnessEncoder.joblib"</span><span class="p">)</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">tfm</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 <span class="n">df</span>
 </pre></div>
@@ -3045,6 +3081,7 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="Preprocessor" class="doc_header"><code>class</code> <code>Preprocessor</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L916" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Preprocessor</code>(<strong><code>preprocessor</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
@@ -3080,9 +3117,9 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
 <span class="n">preprocessor</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
 <span class="n">y_tfm</span> <span class="o">=</span> <span class="n">preprocessor</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 <span class="n">test_close</span><span class="p">(</span><span class="n">preprocessor</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span><span class="n">y_tfm</span><span class="p">),</span> <span class="n">y</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;ori&#39;</span><span class="p">,)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">y_tfm</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;tfm&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'ori'</span><span class="p">,)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">y_tfm</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'tfm'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">'best'</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 
@@ -3136,9 +3173,9 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
 <span class="n">preprocessor</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
 <span class="n">y_tfm</span> <span class="o">=</span> <span class="n">preprocessor</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 <span class="n">test_close</span><span class="p">(</span><span class="n">preprocessor</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span><span class="n">y_tfm</span><span class="p">),</span> <span class="n">y</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;ori&#39;</span><span class="p">,)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">y_tfm</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;tfm&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'ori'</span><span class="p">,)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">y_tfm</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'tfm'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">'best'</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 
@@ -3192,9 +3229,9 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
 <span class="n">preprocessor</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
 <span class="n">y_tfm</span> <span class="o">=</span> <span class="n">preprocessor</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 <span class="n">test_close</span><span class="p">(</span><span class="n">preprocessor</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span><span class="n">y_tfm</span><span class="p">),</span> <span class="n">y</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;ori&#39;</span><span class="p">,)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">y_tfm</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;tfm&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'ori'</span><span class="p">,)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">y_tfm</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'tfm'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">'best'</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 
@@ -3248,9 +3285,9 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
 <span class="n">preprocessor</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
 <span class="n">y_tfm</span> <span class="o">=</span> <span class="n">preprocessor</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 <span class="n">test_close</span><span class="p">(</span><span class="n">preprocessor</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span><span class="n">y_tfm</span><span class="p">),</span> <span class="n">y</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;ori&#39;</span><span class="p">,)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">y_tfm</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;tfm&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'ori'</span><span class="p">,)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">y_tfm</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'tfm'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">'best'</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 
@@ -3305,9 +3342,9 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
 <span class="n">preprocessor</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
 <span class="n">y_tfm</span> <span class="o">=</span> <span class="n">preprocessor</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 <span class="n">test_close</span><span class="p">(</span><span class="n">preprocessor</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span><span class="n">y_tfm</span><span class="p">),</span> <span class="n">y</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;ori&#39;</span><span class="p">,)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">y_tfm</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;tfm&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'ori'</span><span class="p">,)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">y_tfm</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'tfm'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">'best'</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 
@@ -3359,12 +3396,12 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
 <span class="n">splits</span> <span class="o">=</span> <span class="n">TimeSplitter</span><span class="p">()(</span><span class="n">y</span><span class="p">)</span>
 <span class="n">preprocessor</span> <span class="o">=</span> <span class="n">Preprocessor</span><span class="p">(</span><span class="n">Quantile</span><span class="p">)</span>
 <span class="n">preprocessor</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;ori&#39;</span><span class="p">,)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'ori'</span><span class="p">,)</span>
 <span class="n">y_tfm</span> <span class="o">=</span> <span class="n">preprocessor</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">'best'</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">y_tfm</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;tfm&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">y_tfm</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'tfm'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">'best'</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 <span class="n">test_close</span><span class="p">(</span><span class="n">preprocessor</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span><span class="n">y_tfm</span><span class="p">),</span> <span class="n">y</span><span class="p">,</span> <span class="mf">1e-1</span><span class="p">)</span>
 </pre></div>
@@ -3428,6 +3465,7 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="ReLabeler" class="doc_header"><code>ReLabeler</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/preprocessing.py#L958" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ReLabeler</code>(<strong><code>cm</code></strong>)</p>
 </blockquote>
@@ -3459,9 +3497,9 @@ Args:
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">vals</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span><span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span><span class="s1">&#39;e&#39;</span><span class="p">}</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">vals</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span><span class="s1">'a'</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="s1">'b'</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="s1">'c'</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span><span class="s1">'d'</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span><span class="s1">'e'</span><span class="p">}</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">vals</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">20</span><span class="p">)])</span>
-<span class="n">labeler</span> <span class="o">=</span> <span class="n">ReLabeler</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="n">e</span><span class="o">=</span><span class="s1">&#39;z&#39;</span><span class="p">))</span>
+<span class="n">labeler</span> <span class="o">=</span> <span class="n">ReLabeler</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="s1">'x'</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="s1">'x'</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">'y'</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="s1">'z'</span><span class="p">,</span> <span class="n">e</span><span class="o">=</span><span class="s1">'z'</span><span class="p">))</span>
 <span class="n">y_new</span> <span class="o">=</span> <span class="n">labeler</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">y_new</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="n">y</span><span class="p">,</span> <span class="n">y_new</span>
@@ -3494,5 +3532,5 @@ Args:
     {% endraw %}
 
 </div>
- 
+
 

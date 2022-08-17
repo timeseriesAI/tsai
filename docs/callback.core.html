@@ -129,6 +129,7 @@ nb_path: "nbs/060_callback.core.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="TransformScheduler" class="doc_header"><code>class</code> <code>TransformScheduler</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/callback/core.py#L19" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TransformScheduler</code>(<strong><code>schedule_func</code></strong>:<code>callable</code>, <strong><code>show_plot</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <code>Callback</code></p>
 </blockquote>
@@ -274,6 +275,7 @@ nb_path: "nbs/060_callback.core.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="ShowGraph" class="doc_header"><code>class</code> <code>ShowGraph</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/callback/core.py#L57" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ShowGraph</code>(<strong><code>plot_metrics</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>final_losses</code></strong>:<code>bool</code>=<em><code>True</code></em>) :: <code>Callback</code></p>
 </blockquote>
@@ -310,6 +312,7 @@ nb_path: "nbs/060_callback.core.ipynb"
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -359,6 +362,7 @@ nb_path: "nbs/060_callback.core.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="get_lds_kernel_window" class="doc_header"><code>get_lds_kernel_window</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/callback/core.py#L153" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_lds_kernel_window</code>(<strong><code>lds_kernel</code></strong>=<em><code>'gaussian'</code></em>, <strong><code>lds_ks</code></strong>=<em><code>9</code></em>, <strong><code>lds_sigma</code></strong>=<em><code>1</code></em>)</p>
 </blockquote>
@@ -385,6 +389,7 @@ lds_sigma (float): LDS gaussian/laplace kernel sigma</p>
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -416,13 +421,13 @@ lds_sigma (float): LDS gaussian/laplace kernel sigma</p>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">300</span><span class="p">)],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">labels</span><span class="p">[(</span><span class="o">-</span><span class="mi">1</span><span class="o">&lt;</span><span class="n">labels</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">labels</span><span class="o">&lt;</span><span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>   <span class="c1"># This is done to create some &#39;gaps&#39; for demo purposes</span>
-<span class="n">labels</span><span class="p">[(</span><span class="mi">10</span><span class="o">&lt;</span><span class="n">labels</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">labels</span><span class="o">&lt;</span><span class="mi">12</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># This is done to create some &#39;gaps&#39; for demo purposes</span>
+<span class="n">labels</span><span class="p">[(</span><span class="o">-</span><span class="mi">1</span><span class="o">&lt;</span><span class="n">labels</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">labels</span><span class="o">&lt;</span><span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>   <span class="c1"># This is done to create some 'gaps' for demo purposes</span>
+<span class="n">labels</span><span class="p">[(</span><span class="mi">10</span><span class="o">&lt;</span><span class="n">labels</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">labels</span><span class="o">&lt;</span><span class="mi">12</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># This is done to create some 'gaps' for demo purposes</span>
 
 <span class="n">n_bins</span> <span class="o">=</span> <span class="mi">50</span>
 <span class="n">label_range</span><span class="o">=</span><span class="kc">None</span>
-<span class="n">reweight</span> <span class="o">=</span> <span class="s1">&#39;inv&#39;</span>
-<span class="n">lds_kernel</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span>
+<span class="n">reweight</span> <span class="o">=</span> <span class="s1">'inv'</span>
+<span class="n">lds_kernel</span><span class="o">=</span><span class="s1">'gaussian'</span>
 <span class="n">lds_ks</span><span class="o">=</span><span class="mi">5</span>
 <span class="n">lds_sigma</span><span class="o">=</span><span class="mi">2</span>
 
@@ -431,8 +436,8 @@ lds_sigma (float): LDS gaussian/laplace kernel sigma</p>
 
 <span class="n">n_bins</span> <span class="o">=</span> <span class="mi">50</span>
 <span class="n">label_range</span><span class="o">=</span><span class="kc">None</span>
-<span class="n">reweight</span> <span class="o">=</span> <span class="s1">&#39;sqrt_inv&#39;</span>
-<span class="n">lds_kernel</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span>
+<span class="n">reweight</span> <span class="o">=</span> <span class="s1">'sqrt_inv'</span>
+<span class="n">lds_kernel</span><span class="o">=</span><span class="s1">'gaussian'</span>
 <span class="n">lds_ks</span><span class="o">=</span><span class="mi">5</span>
 <span class="n">lds_sigma</span><span class="o">=</span><span class="mi">2</span>
 
@@ -441,8 +446,8 @@ lds_sigma (float): LDS gaussian/laplace kernel sigma</p>
 
 <span class="n">n_bins</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="n">label_range</span><span class="o">=</span><span class="kc">None</span>
-<span class="n">reweight</span> <span class="o">=</span> <span class="s1">&#39;sqrt_inv&#39;</span>
-<span class="n">lds_kernel</span><span class="o">=</span><span class="s1">&#39;triang&#39;</span>
+<span class="n">reweight</span> <span class="o">=</span> <span class="s1">'sqrt_inv'</span>
+<span class="n">lds_kernel</span><span class="o">=</span><span class="s1">'triang'</span>
 <span class="n">lds_ks</span><span class="o">=</span><span class="mi">9</span>
 <span class="n">lds_sigma</span><span class="o">=</span><span class="mi">1</span>
 
@@ -509,6 +514,7 @@ lds_sigma (float): LDS gaussian/laplace kernel sigma</p>
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="WeightedPerSampleLoss" class="doc_header"><code>class</code> <code>WeightedPerSampleLoss</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/callback/core.py#L208" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>WeightedPerSampleLoss</code>(<strong><code>instance_weights</code></strong>) :: <code>Callback</code></p>
 </blockquote>
@@ -547,6 +553,7 @@ lds_sigma (float): LDS gaussian/laplace kernel sigma</p>
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="BatchSubsampler" class="doc_header"><code>class</code> <code>BatchSubsampler</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/callback/core.py#L258" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BatchSubsampler</code>(<strong><code>sample_pct</code></strong>:<code>Optional</code>[<code>float</code>]=<em><code>None</code></em>, <strong><code>step_pct</code></strong>:<code>Optional</code>[<code>float</code>]=<em><code>None</code></em>, <strong><code>same_seq_len</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>update_y</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <code>Callback</code></p>
 </blockquote>
@@ -577,5 +584,5 @@ update_y:       used with step_pct. If True, it applies the same random indices 
     {% endraw %}
 
 </div>
- 
+
 

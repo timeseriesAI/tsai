@@ -46,6 +46,7 @@ nb_path: "nbs/114_models.XCM.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="XCM" class="doc_header"><code>class</code> <code>XCM</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/XCM.py#L20" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>XCM</code>(<strong><code>c_in</code></strong>:<code>int</code>, <strong><code>c_out</code></strong>:<code>int</code>, <strong><code>seq_len</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>nf</code></strong>:<code>int</code>=<em><code>128</code></em>, <strong><code>window_perc</code></strong>:<code>float</code>=<em><code>1.0</code></em>, <strong><code>flatten</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>custom_head</code></strong>:<code>callable</code>=<em><code>None</code></em>, <strong><code>concat_pool</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>fc_dropout</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>bn</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>y_range</code></strong>:<code>tuple</code>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Module</code></p>
 </blockquote>
@@ -78,7 +79,7 @@ nb_path: "nbs/114_models.XCM.ipynb"
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">tsai.data.basics</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">tsai.learner</span> <span class="kn">import</span> <span class="o">*</span>
 
-<span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;NATOPS&#39;</span>
+<span class="n">dsid</span> <span class="o">=</span> <span class="s1">'NATOPS'</span>
 <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">tfms</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">TSCategorize</span><span class="p">()]</span>
 <span class="n">dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">)</span>
@@ -324,5 +325,5 @@ nb_path: "nbs/114_models.XCM.ipynb"
     {% endraw %}
 
 </div>
- 
+
 

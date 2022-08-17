@@ -46,6 +46,7 @@ nb_path: "nbs/101b_models.ResNetPlus.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="ResBlockPlus" class="doc_header"><code>class</code> <code>ResBlockPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/ResNetPlus.py#L12" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ResBlockPlus</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>ks</code></strong>=<em><code>[7, 5, 3]</code></em>, <strong><code>coord</code></strong>=<em><code>False</code></em>, <strong><code>separable</code></strong>=<em><code>False</code></em>, <strong><code>bn_1st</code></strong>=<em><code>True</code></em>, <strong><code>zero_norm</code></strong>=<em><code>False</code></em>, <strong><code>sa</code></strong>=<em><code>False</code></em>, <strong><code>se</code></strong>=<em><code>None</code></em>, <strong><code>act</code></strong>=<em><code>ReLU</code></em>, <strong><code>act_kwargs</code></strong>=<em><code>{}</code></em>) :: <code>Module</code></p>
 </blockquote>
@@ -69,6 +70,7 @@ nb_path: "nbs/101b_models.ResNetPlus.ipynb"
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -178,7 +180,7 @@ model = nn.Sequential(OrderedDict([
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">m</span> <span class="o">=</span> <span class="n">ResNetPlus</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">zero_norm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">coord</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">separable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;n_params:&#39;</span><span class="p">,</span> <span class="n">count_parameters</span><span class="p">(</span><span class="n">m</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'n_params:'</span><span class="p">,</span> <span class="n">count_parameters</span><span class="p">(</span><span class="n">m</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">check_weight</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">is_bn</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
 </pre></div>
@@ -318,5 +320,5 @@ ResNetPlus(
     {% endraw %}
 
 </div>
- 
+
 

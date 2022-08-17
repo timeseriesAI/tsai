@@ -44,7 +44,7 @@ nb_path: "nbs/013_data.core.ipynb"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">tsai.data.external</span> <span class="kn">import</span> <span class="n">get_UCR_data</span>
-<span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;OliveOil&#39;</span>
+<span class="n">dsid</span> <span class="o">=</span> <span class="s1">'OliveOil'</span>
 <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_valid</span><span class="p">,</span> <span class="n">y_valid</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">force_download</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">X_on_disk</span><span class="p">,</span> <span class="n">y_on_disk</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_split</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">force_download</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">X_in_memory</span><span class="p">,</span> <span class="n">y_in_memory</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">return_split</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">force_download</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -67,6 +67,7 @@ nb_path: "nbs/013_data.core.ipynb"
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -94,8 +95,9 @@ nb_path: "nbs/013_data.core.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ToNumpyTensor" class="doc_header"><code>class</code> <code>ToNumpyTensor</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/core.py#L62" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ToNumpyTensor</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
+<h2 id="ToNumpyTensor" class="doc_header"><code>class</code> <code>ToNumpyTensor</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/core.py#L62" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ToNumpyTensor</code>(<strong><code>self</code></strong>, <strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
 </blockquote>
 <p>Transforms an object into NumpyTensor</p>
 
@@ -126,6 +128,7 @@ nb_path: "nbs/013_data.core.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="TSTensor" class="doc_header"><code>class</code> <code>TSTensor</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/core.py#L67" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTensor</code>(<strong><code>o</code></strong>, <strong><code>dtype</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/data.core.html#NumpyTensor"><code>NumpyTensor</code></a></p>
 </blockquote>
@@ -151,8 +154,9 @@ nb_path: "nbs/013_data.core.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ToTSTensor" class="doc_header"><code>class</code> <code>ToTSTensor</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/core.py#L89" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ToTSTensor</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
+<h2 id="ToTSTensor" class="doc_header"><code>class</code> <code>ToTSTensor</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/core.py#L89" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ToTSTensor</code>(<strong><code>self</code></strong>, <strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
 </blockquote>
 <p>Transforms an object into TSTensor</p>
 
@@ -174,6 +178,7 @@ nb_path: "nbs/013_data.core.ipynb"
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -420,7 +425,7 @@ TSTensor([-0.6113752722740173], device=cpu, dtype=torch.float32) 0 True
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">TSTensor</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">);</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">TSTensor</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">'1'</span><span class="p">);</span>
 </pre></div>
 
     </div>
@@ -455,7 +460,7 @@ TSTensor([-0.6113752722740173], device=cpu, dtype=torch.float32) 0 True
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">show_tuple</span><span class="p">((</span><span class="n">TSTensor</span><span class="p">(</span><span class="n">X_train</span><span class="p">),</span> <span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">]))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">show_tuple</span><span class="p">((</span><span class="n">TSTensor</span><span class="p">(</span><span class="n">X_train</span><span class="p">),</span> <span class="p">[</span><span class="s1">'1'</span><span class="p">,</span> <span class="s1">'2'</span><span class="p">]))</span>
 </pre></div>
 
     </div>
@@ -525,7 +530,7 @@ TSTensor([-0.6113752722740173], device=cpu, dtype=torch.float32) 0 True
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">show_tuple</span><span class="p">((</span><span class="n">TSTensor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">)),</span> <span class="s1">&#39;1&#39;</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">show_tuple</span><span class="p">((</span><span class="n">TSTensor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">)),</span> <span class="s1">'1'</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -595,7 +600,7 @@ TSTensor([-0.6113752722740173], device=cpu, dtype=torch.float32) 0 True
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">show_tuple</span><span class="p">((</span><span class="n">TSTensor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">)),</span> <span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">]))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">show_tuple</span><span class="p">((</span><span class="n">TSTensor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">)),</span> <span class="p">[</span><span class="s1">'1'</span><span class="p">,</span> <span class="s1">'2'</span><span class="p">]))</span>
 </pre></div>
 
     </div>
@@ -633,6 +638,7 @@ TSTensor([-0.6113752722740173], device=cpu, dtype=torch.float32) 0 True
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="TSLabelTensor" class="doc_header"><code>class</code> <code>TSLabelTensor</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/core.py#L103" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSLabelTensor</code>(<strong><code>o</code></strong>, <strong><code>dtype</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/data.core.html#NumpyTensor"><code>NumpyTensor</code></a></p>
 </blockquote>
@@ -656,6 +662,7 @@ TSTensor([-0.6113752722740173], device=cpu, dtype=torch.float32) 0 True
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -764,8 +771,9 @@ TSTensor([-0.6113752722740173], device=cpu, dtype=torch.float32) 0 True
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ToFloat" class="doc_header"><code>class</code> <code>ToFloat</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/core.py#L114" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ToFloat</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
+<h2 id="ToFloat" class="doc_header"><code>class</code> <code>ToFloat</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/core.py#L114" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ToFloat</code>(<strong><code>self</code></strong>, <strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
 </blockquote>
 <p>Transforms an object dtype to float (vectorized)</p>
 
@@ -789,8 +797,9 @@ TSTensor([-0.6113752722740173], device=cpu, dtype=torch.float32) 0 True
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ToInt" class="doc_header"><code>class</code> <code>ToInt</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/core.py#L126" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ToInt</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
+<h2 id="ToInt" class="doc_header"><code>class</code> <code>ToInt</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/core.py#L126" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ToInt</code>(<strong><code>self</code></strong>, <strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
 </blockquote>
 <p>Transforms an object dtype to int</p>
 
@@ -814,8 +823,9 @@ TSTensor([-0.6113752722740173], device=cpu, dtype=torch.float32) 0 True
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSClassification" class="doc_header"><code>class</code> <code>TSClassification</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/core.py#L136" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSClassification</code>(<strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>sort</code></strong>=<em><code>True</code></em>) :: <code>DisplayedTransform</code></p>
+<h2 id="TSClassification" class="doc_header"><code>class</code> <code>TSClassification</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/core.py#L136" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSClassification</code>(<strong><code>self</code></strong>, <strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>sort</code></strong>=<em><code>True</code></em>) :: <code>DisplayedTransform</code></p>
 </blockquote>
 <p>Vectorized, reversible transform of category string to <code>vocab</code> id</p>
 
@@ -844,12 +854,12 @@ TSTensor([-0.6113752722740173], device=cpu, dtype=torch.float32) 0 True
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-<span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;3&#39;</span><span class="p">])</span>
-<span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;1.0&#39;</span><span class="p">,</span> <span class="s1">&#39;2.0&#39;</span><span class="p">,</span> <span class="s1">&#39;3.0&#39;</span><span class="p">])</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">'1'</span><span class="p">,</span> <span class="s1">'2'</span><span class="p">,</span> <span class="s1">'3'</span><span class="p">])</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">'1.0'</span><span class="p">,</span> <span class="s1">'2.0'</span><span class="p">,</span> <span class="s1">'3.0'</span><span class="p">])</span>
 <span class="n">t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="p">))</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">ToFloat</span><span class="p">()(</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="s1">&#39;float32&#39;</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">ToFloat</span><span class="p">()(</span><span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="s1">&#39;float32&#39;</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">ToFloat</span><span class="p">()(</span><span class="n">c</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">ToFloat</span><span class="p">()(</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="s1">'float32'</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">ToFloat</span><span class="p">()(</span><span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="s1">'float32'</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">ToFloat</span><span class="p">()(</span><span class="n">c</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="s1">'float32'</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">ToFloat</span><span class="p">()(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 </pre></div>
 
@@ -868,10 +878,10 @@ TSTensor([-0.6113752722740173], device=cpu, dtype=torch.float32) 0 True
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">*</span><span class="mi">10</span>
-<span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;1.0&#39;</span><span class="p">,</span> <span class="s1">&#39;2.0&#39;</span><span class="p">,</span> <span class="s1">&#39;3.0&#39;</span><span class="p">])</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">'1.0'</span><span class="p">,</span> <span class="s1">'2.0'</span><span class="p">,</span> <span class="s1">'3.0'</span><span class="p">])</span>
 <span class="n">t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">*</span><span class="mi">10</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">ToInt</span><span class="p">()(</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="s1">&#39;int64&#39;</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">ToInt</span><span class="p">()(</span><span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="s1">&#39;int64&#39;</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">ToInt</span><span class="p">()(</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="s1">'int64'</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">ToInt</span><span class="p">()(</span><span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="s1">'int64'</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">ToInt</span><span class="p">()(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>
 </pre></div>
 
@@ -971,8 +981,9 @@ TSTensor([-0.6113752722740173], device=cpu, dtype=torch.float32) 0 True
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSMultiLabelClassification" class="doc_header"><code>class</code> <code>TSMultiLabelClassification</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/core.py#L173" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSMultiLabelClassification</code>(<strong><code>c</code></strong>=<em><code>None</code></em>, <strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>add_na</code></strong>=<em><code>False</code></em>, <strong><code>sort</code></strong>=<em><code>True</code></em>) :: <code>Categorize</code></p>
+<h2 id="TSMultiLabelClassification" class="doc_header"><code>class</code> <code>TSMultiLabelClassification</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/core.py#L173" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSMultiLabelClassification</code>(<strong><code>self</code></strong>, <strong><code>c</code></strong>=<em><code>None</code></em>, <strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>add_na</code></strong>=<em><code>False</code></em>, <strong><code>sort</code></strong>=<em><code>True</code></em>) :: <code>Categorize</code></p>
 </blockquote>
 <p>Reversible combined transform of multi-category strings to one-hot encoded <code>vocab</code> id</p>
 
@@ -1003,6 +1014,7 @@ TSTensor([-0.6113752722740173], device=cpu, dtype=torch.float32) 0 True
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="NumpyTensorBlock" class="doc_header"><code>class</code> <code>NumpyTensorBlock</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/core.py#L199" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyTensorBlock</code>(<strong><code>type_tfms</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong><code>dls_kwargs</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
@@ -1025,6 +1037,7 @@ TSTensor([-0.6113752722740173], device=cpu, dtype=torch.float32) 0 True
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -1055,8 +1068,8 @@ TSTensor([-0.6113752722740173], device=cpu, dtype=torch.float32) 0 True
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">NumpyTensorBlock</span><span class="p">()</span><span class="o">.</span><span class="n">item_tfms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;ToNumpyTensor&#39;</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">TSTensorBlock</span><span class="p">()</span><span class="o">.</span><span class="n">item_tfms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;ToTSTensor&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">NumpyTensorBlock</span><span class="p">()</span><span class="o">.</span><span class="n">item_tfms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">'ToNumpyTensor'</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">TSTensorBlock</span><span class="p">()</span><span class="o">.</span><span class="n">item_tfms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">'ToTSTensor'</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1074,6 +1087,7 @@ TSTensor([-0.6113752722740173], device=cpu, dtype=torch.float32) 0 True
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -1100,6 +1114,7 @@ TSTensor([-0.6113752722740173], device=cpu, dtype=torch.float32) 0 True
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="NumpyDataset" class="doc_header"><code>class</code> <code>NumpyDataset</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/core.py#L220" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyDataset</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>types</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
@@ -1122,6 +1137,7 @@ TSTensor([-0.6113752722740173], device=cpu, dtype=torch.float32) 0 True
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -1177,6 +1193,7 @@ TSTensor([-0.6113752722740173], device=cpu, dtype=torch.float32) 0 True
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="NoTfmLists" class="doc_header"><code>class</code> <code>NoTfmLists</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/core.py#L268" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NoTfmLists</code>(<strong><code>items</code></strong>=<em><code>None</code></em>, <strong>*<code>rest</code></strong>, <strong><code>use_list</code></strong>=<em><code>False</code></em>, <strong><code>match</code></strong>=<em><code>None</code></em>) :: <code>TfmdLists</code></p>
 </blockquote>
@@ -1202,10 +1219,82 @@ TSTensor([-0.6113752722740173], device=cpu, dtype=torch.float32) 0 True
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="TSTfmdLists" class="doc_header"><code>class</code> <code>TSTfmdLists</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/core.py#L289" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSTfmdLists</code>(<strong><code>items</code></strong>=<em><code>None</code></em>, <strong>*<code>rest</code></strong>, <strong><code>use_list</code></strong>=<em><code>False</code></em>, <strong><code>match</code></strong>=<em><code>None</code></em>) :: <code>TfmdLists</code></p>
 </blockquote>
 <p>A <code>Pipeline</code> of <code>tfms</code> applied to a collection of <code>items</code></p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>items</code></strong></td>
+<td><code>list</code></td>
+<td></td>
+<td>Items to apply <code>Transform</code>s to</td>
+</tr>
+<tr>
+<td><strong><code>tfms</code></strong></td>
+<td><code>list or Pipeline</code></td>
+<td></td>
+<td><code>Transform</code>(s) or <code>Pipeline</code> to apply</td>
+</tr>
+<tr>
+<td><strong><code>use_list</code></strong></td>
+<td><code>bool</code></td>
+<td><code>None</code></td>
+<td>Use <code>list</code> in <code>L</code></td>
+</tr>
+<tr>
+<td><strong><code>do_setup</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>Call <code>setup()</code> for <code>Transform</code></td>
+</tr>
+<tr>
+<td><strong><code>split_idx</code></strong></td>
+<td><code>int</code></td>
+<td><code>None</code></td>
+<td>Apply <code>Transform</code>(s) to training or validation set. <code>0</code> for training set and <code>1</code> for validation set</td>
+</tr>
+<tr>
+<td><strong><code>train_setup</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>Apply <code>Transform</code>(s) only on training <code>DataLoader</code></td>
+</tr>
+<tr>
+<td><strong><code>splits</code></strong></td>
+<td><code>list</code></td>
+<td><code>None</code></td>
+<td>Indices for training and validation sets</td>
+</tr>
+<tr>
+<td><strong><code>types</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Types of data in <code>items</code></td>
+</tr>
+<tr>
+<td><strong><code>verbose</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Print verbose output</td>
+</tr>
+<tr>
+<td><strong><code>dl_type</code></strong></td>
+<td><code>TfmdDL</code></td>
+<td><code>None</code></td>
+<td>Type of <code>DataLoader</code></td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -1400,8 +1489,9 @@ NoTfmLists: memmap(30, 1, 570)
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="NumpyDatasets" class="doc_header"><code>class</code> <code>NumpyDatasets</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/core.py#L299" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyDatasets</code>(<strong><code>items</code></strong>=<em><code>None</code></em>, <strong><code>tfms</code></strong>=<em><code>None</code></em>, <strong><code>tls</code></strong>=<em><code>None</code></em>, <strong><code>n_inp</code></strong>=<em><code>None</code></em>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong><code>use_list</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>train_setup</code></strong>=<em><code>True</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>types</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>) :: <code>Datasets</code></p>
+<h2 id="NumpyDatasets" class="doc_header"><code>class</code> <code>NumpyDatasets</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/core.py#L299" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyDatasets</code>(<strong><code>items</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>tfms</code></strong>:<code>list | Pipeline</code>=<em><code>None</code></em>, <strong><code>tls</code></strong>:<code>TfmdLists</code>=<em><code>None</code></em>, <strong><code>n_inp</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong><code>use_list</code></strong>:<code>bool</code>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>split_idx</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>train_setup</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>splits</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>types</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <code>Datasets</code></p>
 </blockquote>
 <p>A dataset that creates tuples from X (and y) and applies <code>tfms</code> of type item_tfms</p>
 
@@ -1423,6 +1513,7 @@ NoTfmLists: memmap(30, 1, 570)
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -1457,8 +1548,9 @@ NoTfmLists: memmap(30, 1, 570)
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSDatasets" class="doc_header"><code>class</code> <code>TSDatasets</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/core.py#L376" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDatasets</code>(<strong><code>items</code></strong>=<em><code>None</code></em>, <strong><code>tfms</code></strong>=<em><code>None</code></em>, <strong><code>tls</code></strong>=<em><code>None</code></em>, <strong><code>n_inp</code></strong>=<em><code>None</code></em>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong><code>use_list</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>train_setup</code></strong>=<em><code>True</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>types</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>) :: <a href="/data.core.html#NumpyDatasets"><code>NumpyDatasets</code></a></p>
+<h2 id="TSDatasets" class="doc_header"><code>class</code> <code>TSDatasets</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/core.py#L376" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDatasets</code>(<strong><code>items</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>tfms</code></strong>:<code>list | Pipeline</code>=<em><code>None</code></em>, <strong><code>tls</code></strong>:<code>TfmdLists</code>=<em><code>None</code></em>, <strong><code>n_inp</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong><code>use_list</code></strong>:<code>bool</code>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>split_idx</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>train_setup</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>splits</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>types</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <a href="/data.core.html#NumpyDatasets"><code>NumpyDatasets</code></a></p>
 </blockquote>
 <p>A dataset that creates tuples from X (and optionally y) and applies <code>item_tfms</code></p>
 
@@ -1531,6 +1623,7 @@ NoTfmLists: memmap(30, 1, 570)
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="add_ds" class="doc_header"><code>add_ds</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/core.py#L461" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>add_ds</code>(<strong><code>dsets</code></strong>, <strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>inplace</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
@@ -1554,6 +1647,7 @@ NoTfmLists: memmap(30, 1, 570)
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -1580,6 +1674,7 @@ NoTfmLists: memmap(30, 1, 570)
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="NumpyDatasets.add_test" class="doc_header"><code>NumpyDatasets.add_test</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/core.py#L487" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>NumpyDatasets.add_test</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>inplace</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
@@ -1602,6 +1697,7 @@ NoTfmLists: memmap(30, 1, 570)
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -1969,9 +2065,9 @@ None 0 1
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsets</span> <span class="o">=</span> <span class="n">TSDatasets</span><span class="p">(</span><span class="n">X_on_disk</span><span class="p">,</span> <span class="n">y_array</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">)</span>
-<span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">dsets</span><span class="p">,</span> <span class="s1">&#39;export/dsets.pth&#39;</span><span class="p">)</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">dsets</span><span class="p">,</span> <span class="s1">'export/dsets.pth'</span><span class="p">)</span>
 <span class="k">del</span> <span class="n">dsets</span>
-<span class="n">dsets</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;export/dsets.pth&#39;</span><span class="p">)</span>
+<span class="n">dsets</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'export/dsets.pth'</span><span class="p">)</span>
 <span class="n">dsets</span>
 </pre></div>
 
@@ -2006,9 +2102,9 @@ None 0 1
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsets</span> <span class="o">=</span> <span class="n">TSDatasets</span><span class="p">(</span><span class="n">X_on_disk</span><span class="p">,</span> <span class="n">y_array</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">)</span>
-<span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">dsets</span><span class="o">.</span><span class="n">train</span><span class="p">,</span> <span class="s1">&#39;export/dsets.pth&#39;</span><span class="p">)</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">dsets</span><span class="o">.</span><span class="n">train</span><span class="p">,</span> <span class="s1">'export/dsets.pth'</span><span class="p">)</span>
 <span class="k">del</span> <span class="n">dsets</span>
-<span class="n">dsets</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;export/dsets.pth&#39;</span><span class="p">)</span>
+<span class="n">dsets</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'export/dsets.pth'</span><span class="p">)</span>
 <span class="n">dsets</span>
 </pre></div>
 
@@ -2095,8 +2191,9 @@ None 0 1
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="NumpyDataLoader" class="doc_header"><code>class</code> <code>NumpyDataLoader</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/core.py#L508" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyDataLoader</code>(<strong><code>dataset</code></strong>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>num_workers</code></strong>=<em><code>0</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>sort</code></strong>=<em><code>False</code></em>, <strong><code>weights</code></strong>=<em><code>None</code></em>, <strong><code>partial_n</code></strong>=<em><code>None</code></em>, <strong><code>sampler</code></strong>=<em><code>None</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>persistent_workers</code></strong>=<em><code>False</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>) :: <code>TfmdDL</code></p>
+<h2 id="NumpyDataLoader" class="doc_header"><code>class</code> <code>NumpyDataLoader</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/core.py#L508" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NumpyDataLoader</code>(<strong><code>dataset</code></strong>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>num_workers</code></strong>=<em><code>0</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>sort</code></strong>=<em><code>False</code></em>, <strong><code>weights</code></strong>=<em><code>None</code></em>, <strong><code>partial_n</code></strong>=<em><code>None</code></em>, <strong><code>sampler</code></strong>=<em><code>None</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>persistent_workers</code></strong>=<em><code>False</code></em>, <strong><code>pin_memory_device</code></strong>=<em><code>''</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>) :: <code>TfmdDL</code></p>
 </blockquote>
 <p>Transformed <code>DataLoader</code></p>
 
@@ -2120,8 +2217,9 @@ None 0 1
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TSDataLoader" class="doc_header"><code>class</code> <code>TSDataLoader</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/core.py#L749" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDataLoader</code>(<strong><code>dataset</code></strong>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>num_workers</code></strong>=<em><code>0</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>sort</code></strong>=<em><code>False</code></em>, <strong><code>weights</code></strong>=<em><code>None</code></em>, <strong><code>partial_n</code></strong>=<em><code>None</code></em>, <strong><code>sampler</code></strong>=<em><code>None</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>persistent_workers</code></strong>=<em><code>False</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>) :: <a href="/data.core.html#NumpyDataLoader"><code>NumpyDataLoader</code></a></p>
+<h2 id="TSDataLoader" class="doc_header"><code>class</code> <code>TSDataLoader</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/core.py#L749" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSDataLoader</code>(<strong><code>dataset</code></strong>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>num_workers</code></strong>=<em><code>0</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>sort</code></strong>=<em><code>False</code></em>, <strong><code>weights</code></strong>=<em><code>None</code></em>, <strong><code>partial_n</code></strong>=<em><code>None</code></em>, <strong><code>sampler</code></strong>=<em><code>None</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>persistent_workers</code></strong>=<em><code>False</code></em>, <strong><code>pin_memory_device</code></strong>=<em><code>''</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>) :: <a href="/data.core.html#NumpyDataLoader"><code>NumpyDataLoader</code></a></p>
 </blockquote>
 <p>Transformed <code>DataLoader</code></p>
 
@@ -2150,6 +2248,7 @@ None 0 1
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -2175,6 +2274,7 @@ None 0 1
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -2207,6 +2307,7 @@ None 0 1
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -2321,8 +2422,9 @@ None 0 1
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_c" class="doc_header"><code>get_c</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L327" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_c</code>(<strong><code>dls</code></strong>)</p>
+<h4 id="get_c" class="doc_header"><code>get_c</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L332" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_c</code>(<strong><code>dls</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -2350,6 +2452,7 @@ None 0 1
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -2374,6 +2477,7 @@ None 0 1
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -2407,6 +2511,7 @@ None 0 1
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="get_ts_dls" class="doc_header"><code>get_ts_dls</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/core.py#L985" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_ts_dls</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>sel_vars</code></strong>=<em><code>None</code></em>, <strong><code>sel_steps</code></strong>=<em><code>None</code></em>, <strong><code>tfms</code></strong>=<em><code>None</code></em>, <strong><code>inplace</code></strong>=<em><code>True</code></em>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>num_workers</code></strong>=<em><code>0</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>True</code></em>, <strong><code>drop_last</code></strong>=<em><code>True</code></em>, <strong><code>weights</code></strong>=<em><code>None</code></em>, <strong><code>partial_n</code></strong>=<em><code>None</code></em>, <strong><code>sampler</code></strong>=<em><code>None</code></em>, <strong><code>sort</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
@@ -2431,6 +2536,7 @@ None 0 1
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="get_ts_dl" class="doc_header"><code>get_ts_dl</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/core.py#L1000" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_ts_dl</code>(<strong><code>X</code></strong>, <strong><code>y</code></strong>=<em><code>None</code></em>, <strong><code>split</code></strong>=<em><code>None</code></em>, <strong><code>sel_vars</code></strong>=<em><code>None</code></em>, <strong><code>sel_steps</code></strong>=<em><code>None</code></em>, <strong><code>tfms</code></strong>=<em><code>None</code></em>, <strong><code>inplace</code></strong>=<em><code>True</code></em>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>num_workers</code></strong>=<em><code>0</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>True</code></em>, <strong><code>drop_last</code></strong>=<em><code>True</code></em>, <strong><code>weights</code></strong>=<em><code>None</code></em>, <strong><code>partial_n</code></strong>=<em><code>None</code></em>, <strong><code>sampler</code></strong>=<em><code>None</code></em>, <strong><code>sort</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
@@ -2453,6 +2559,7 @@ None 0 1
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -2563,7 +2670,7 @@ Dataloader 1
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">&#39;OliveOil&#39;</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">'OliveOil'</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">TSClassification</span><span class="p">()],</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="n">idxs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">valid_ds</span><span class="p">),</span> <span class="mi">10</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
@@ -2588,7 +2695,7 @@ Dataloader 1
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">&#39;OliveOil&#39;</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">'OliveOil'</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
 <span class="n">dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">TSClassification</span><span class="p">()],</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
 <span class="n">weights2</span> <span class="o">=</span> <span class="n">weights</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">/</span> <span class="n">weights</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
@@ -2611,12 +2718,12 @@ Dataloader 1
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">partial_n</span> <span class="o">=</span> <span class="mi">12</span>
-<span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">&#39;OliveOil&#39;</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">'OliveOil'</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">TSClassification</span><span class="p">()],</span> <span class="n">bs</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">partial_n</span><span class="o">=</span><span class="n">partial_n</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">one_batch</span><span class="p">()[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">partial_n</span><span class="p">)</span>
 
 <span class="n">partial_n</span> <span class="o">=</span> <span class="mf">.1</span>
-<span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">&#39;OliveOil&#39;</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">'OliveOil'</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">TSClassification</span><span class="p">()],</span> <span class="n">bs</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">partial_n</span><span class="o">=</span><span class="n">partial_n</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">one_batch</span><span class="p">()[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span> <span class="o">*</span> <span class="n">partial_n</span><span class="p">)))</span>
 </pre></div>
@@ -2645,15 +2752,15 @@ Dataloader 1
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">&#39;OliveOil&#39;</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">'OliveOil'</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">train_sampler</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">sampler</span><span class="o">.</span><span class="n">RandomSampler</span><span class="p">(</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="n">valid_sampler</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">sampler</span><span class="o">.</span><span class="n">SequentialSampler</span><span class="p">(</span><span class="n">splits</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 <span class="n">dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">TSClassification</span><span class="p">()],</span> <span class="n">bs</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
                  <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">drop_last</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sampler</span><span class="o">=</span><span class="p">[</span><span class="n">train_sampler</span><span class="p">,</span> <span class="n">valid_sampler</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;train&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'train'</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">dls</span><span class="o">.</span><span class="n">train</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">idxs</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;valid&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'valid'</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">dls</span><span class="o">.</span><span class="n">valid</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">valid</span><span class="o">.</span><span class="n">idxs</span><span class="p">)</span>
 </pre></div>
@@ -2694,7 +2801,7 @@ valid
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">&#39;OliveOil&#39;</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">'OliveOil'</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">train_sampler</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">sampler</span><span class="o">.</span><span class="n">SequentialSampler</span><span class="p">(</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="n">valid_sampler</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">sampler</span><span class="o">.</span><span class="n">SequentialSampler</span><span class="p">(</span><span class="n">splits</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 <span class="n">dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">TSClassification</span><span class="p">()],</span> <span class="n">bs</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
@@ -2705,7 +2812,7 @@ valid
 <span class="n">xb</span> <span class="o">=</span> <span class="n">dls</span><span class="o">.</span><span class="n">valid</span><span class="o">.</span><span class="n">one_batch</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
 <span class="n">test_close</span><span class="p">(</span><span class="n">xb</span><span class="p">,</span> <span class="n">X</span><span class="p">[</span><span class="n">dls</span><span class="o">.</span><span class="n">valid</span><span class="o">.</span><span class="n">split_idxs</span><span class="p">])</span>
 
-<span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">&#39;OliveOil&#39;</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">'OliveOil'</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">train_sampler</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">sampler</span><span class="o">.</span><span class="n">RandomSampler</span><span class="p">(</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="n">valid_sampler</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">sampler</span><span class="o">.</span><span class="n">SequentialSampler</span><span class="p">(</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="n">dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">TSClassification</span><span class="p">()],</span> <span class="n">bs</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
@@ -2729,7 +2836,7 @@ valid
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">&#39;OliveOil&#39;</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">'OliveOil'</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">TSClassification</span><span class="p">()],</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="n">idxs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">valid_ds</span><span class="p">),</span> <span class="mi">10</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
@@ -2754,7 +2861,7 @@ valid
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">&#39;OliveOil&#39;</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">'OliveOil'</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">TSClassification</span><span class="p">()],</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
 <span class="n">b</span> <span class="o">=</span> <span class="n">dls</span><span class="o">.</span><span class="n">one_batch</span><span class="p">()</span>
 <span class="n">input_idxs</span> <span class="o">=</span> <span class="n">dls</span><span class="o">.</span><span class="n">input_idxs</span>
@@ -2783,7 +2890,7 @@ valid
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">&#39;OliveOil&#39;</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">'OliveOil'</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">TSCategorize</span><span class="p">()],</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
 <span class="n">b</span><span class="o">=</span><span class="n">first</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">train</span><span class="p">)</span>
 <span class="n">dls</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
@@ -2805,7 +2912,7 @@ valid
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">&#39;OliveOil&#39;</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">'OliveOil'</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">TSCategorize</span><span class="p">()],</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)))</span>
 <span class="n">b</span><span class="o">=</span><span class="n">first</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">train</span><span class="p">)</span>
 <span class="n">dls</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
@@ -2827,12 +2934,12 @@ valid
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">&#39;OliveOil&#39;</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">'OliveOil'</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">dsets</span> <span class="o">=</span> <span class="n">TSDatasets</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">TSCategorize</span><span class="p">()],</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">)</span>
 <span class="n">ts_dls</span> <span class="o">=</span> <span class="n">TSDataLoaders</span><span class="o">.</span><span class="n">from_dsets</span><span class="p">(</span><span class="n">dsets</span><span class="o">.</span><span class="n">train</span><span class="p">,</span> <span class="n">dsets</span><span class="o">.</span><span class="n">valid</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">default_device</span><span class="p">(),</span> <span class="n">bs</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
-<span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">ts_dls</span><span class="p">,</span> <span class="s1">&#39;export/ts_dls.pth&#39;</span><span class="p">)</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">ts_dls</span><span class="p">,</span> <span class="s1">'export/ts_dls.pth'</span><span class="p">)</span>
 <span class="k">del</span> <span class="n">ts_dls</span>
-<span class="n">ts_dls</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;export/ts_dls.pth&#39;</span><span class="p">)</span>
+<span class="n">ts_dls</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'export/ts_dls.pth'</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">xb</span><span class="p">,</span><span class="n">yb</span> <span class="ow">in</span> <span class="n">ts_dls</span><span class="o">.</span><span class="n">train</span><span class="p">:</span> 
     <span class="n">test_eq</span><span class="p">(</span><span class="n">tensor</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">ts_dls</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">idxs</span><span class="p">]),</span> <span class="n">xb</span><span class="o">.</span><span class="n">cpu</span><span class="p">())</span>
 </pre></div>
@@ -2851,7 +2958,7 @@ valid
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">&#39;OliveOil&#39;</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">'OliveOil'</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">TSCategorize</span><span class="p">()],</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">xb</span><span class="p">,</span><span class="n">yb</span> <span class="ow">in</span> <span class="n">dls</span><span class="o">.</span><span class="n">train</span><span class="p">:</span>
     <span class="n">test_eq</span><span class="p">(</span><span class="n">xb</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span> <span class="n">X</span><span class="p">[</span><span class="n">dls</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">input_idxs</span><span class="p">])</span>
@@ -2890,7 +2997,7 @@ valid
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;OliveOil&#39;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsid</span> <span class="o">=</span> <span class="s1">'OliveOil'</span>
 <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">TSCategorize</span><span class="p">()],</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">xb</span><span class="p">,</span> <span class="n">yb</span> <span class="o">=</span> <span class="n">first</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">train</span><span class="p">)</span>
@@ -2928,7 +3035,7 @@ valid
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;OliveOil&#39;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsid</span> <span class="o">=</span> <span class="s1">'OliveOil'</span>
 <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">TSCategorize</span><span class="p">()],</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">dls</span><span class="o">.</span><span class="n">show_dist</span><span class="p">()</span>
@@ -3104,17 +3211,17 @@ valid
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">&#39;OliveOil&#39;</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">'OliveOil'</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
 <span class="n">tfms</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">TSCategorize</span><span class="p">()]</span>
 <span class="n">dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">dls</span><span class="o">.</span><span class="n">vars</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">dls</span><span class="o">.</span><span class="n">len</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">tls</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;NoTfmLists&#39;</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">tls</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">'NoTfmLists'</span><span class="p">)</span>
 <span class="n">dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">dls</span><span class="o">.</span><span class="n">vars</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">dls</span><span class="o">.</span><span class="n">len</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">tls</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;NoTfmLists&#39;</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">tls</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">'NoTfmLists'</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -3131,7 +3238,7 @@ valid
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;OliveOil&#39;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsid</span> <span class="o">=</span> <span class="s1">'OliveOil'</span>
 <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="p">),</span> <span class="n">tfms</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">ToNumpyTensor</span><span class="p">],</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">)</span>
 <span class="n">dls</span><span class="o">.</span><span class="n">show_dist</span><span class="p">()</span>
@@ -3191,7 +3298,7 @@ valid
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;OliveOil&#39;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsid</span> <span class="o">=</span> <span class="s1">'OliveOil'</span>
 <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="mi">5</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">ToNumpyTensor</span><span class="p">],</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">)</span>
 <span class="n">dls</span><span class="o">.</span><span class="n">show_dist</span><span class="p">()</span>
@@ -3251,13 +3358,13 @@ valid
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;OliveOil&#39;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsid</span> <span class="o">=</span> <span class="s1">'OliveOil'</span>
 <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">cm</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;1&#39;</span><span class="p">:</span><span class="s1">&#39;A&#39;</span><span class="p">,</span>        
-    <span class="s1">&#39;2&#39;</span><span class="p">:[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">],</span>
-    <span class="s1">&#39;3&#39;</span><span class="p">:[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">]</span> <span class="p">,</span> 
-    <span class="s1">&#39;4&#39;</span><span class="p">:</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> 
+    <span class="s1">'1'</span><span class="p">:</span><span class="s1">'A'</span><span class="p">,</span>        
+    <span class="s1">'2'</span><span class="p">:[</span><span class="s1">'B'</span><span class="p">,</span> <span class="s1">'C'</span><span class="p">],</span>
+    <span class="s1">'3'</span><span class="p">:[</span><span class="s1">'B'</span><span class="p">,</span> <span class="s1">'D'</span><span class="p">]</span> <span class="p">,</span> 
+    <span class="s1">'4'</span><span class="p">:</span><span class="s1">'E'</span><span class="p">,</span> 
     <span class="p">}</span>
 <span class="n">keys</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
 <span class="n">new_cm</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span><span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="p">[</span><span class="n">listify</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">cm</span><span class="o">.</span><span class="n">values</span><span class="p">()])}</span>
@@ -3320,13 +3427,13 @@ valid
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;OliveOil&#39;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsid</span> <span class="o">=</span> <span class="s1">'OliveOil'</span>
 <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">on_disk</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">cm</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;1&#39;</span><span class="p">:</span><span class="s1">&#39;A&#39;</span><span class="p">,</span>        
-    <span class="s1">&#39;2&#39;</span><span class="p">:[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">],</span>
-    <span class="s1">&#39;3&#39;</span><span class="p">:[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">]</span> <span class="p">,</span> 
-    <span class="s1">&#39;4&#39;</span><span class="p">:</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> 
+    <span class="s1">'1'</span><span class="p">:</span><span class="s1">'A'</span><span class="p">,</span>        
+    <span class="s1">'2'</span><span class="p">:[</span><span class="s1">'B'</span><span class="p">,</span> <span class="s1">'C'</span><span class="p">],</span>
+    <span class="s1">'3'</span><span class="p">:[</span><span class="s1">'B'</span><span class="p">,</span> <span class="s1">'D'</span><span class="p">]</span> <span class="p">,</span> 
+    <span class="s1">'4'</span><span class="p">:</span><span class="s1">'E'</span><span class="p">,</span> 
     <span class="p">}</span>
 <span class="n">keys</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
 <span class="n">new_cm</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span><span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="p">[</span><span class="n">listify</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">cm</span><span class="o">.</span><span class="n">values</span><span class="p">()])}</span>
@@ -3472,7 +3579,7 @@ valid
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">&#39;NATOPS&#39;</span><span class="p">,</span> <span class="n">return_split</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">'NATOPS'</span><span class="p">,</span> <span class="n">return_split</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">tfms</span>  <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">[</span><span class="n">TSCategorize</span><span class="p">()]]</span>
 <span class="n">dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">,</span> <span class="mi">128</span><span class="p">])</span>
 <span class="n">dls</span><span class="o">.</span><span class="n">show_batch</span><span class="p">()</span>
@@ -3523,7 +3630,7 @@ valid
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;NATOPS&#39;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsid</span> <span class="o">=</span> <span class="s1">'NATOPS'</span>
 <span class="n">bs</span> <span class="o">=</span> <span class="mi">64</span>
 <span class="n">X2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">splits2</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">return_split</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">vocab</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
@@ -3733,6 +3840,7 @@ valid
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="get_time_per_batch" class="doc_header"><code>get_time_per_batch</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/data/core.py#L1018" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_time_per_batch</code>(<strong><code>dl</code></strong>, <strong><code>model</code></strong>=<em><code>None</code></em>, <strong><code>n_batches</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
@@ -3755,6 +3863,7 @@ valid
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -3785,7 +3894,7 @@ valid
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">&#39;NATOPS&#39;</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="s1">'NATOPS'</span><span class="p">,</span> <span class="n">split_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">tfms</span>  <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">[</span><span class="n">TSCategorize</span><span class="p">()]]</span>
 <span class="n">dls</span> <span class="o">=</span> <span class="n">get_ts_dls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">)</span>
 <span class="n">train_dl</span> <span class="o">=</span> <span class="n">dls</span><span class="o">.</span><span class="n">train</span>
@@ -3831,5 +3940,5 @@ valid
     {% endraw %}
 
 </div>
- 
+
 

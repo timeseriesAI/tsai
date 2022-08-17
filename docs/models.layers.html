@@ -46,6 +46,7 @@ nb_path: "nbs/100_models.layers.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="init_lin_zero" class="doc_header"><code>init_lin_zero</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L31" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>init_lin_zero</code>(<strong><code>m</code></strong>)</p>
 </blockquote>
@@ -75,6 +76,7 @@ nb_path: "nbs/100_models.layers.ipynb"
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -107,6 +109,7 @@ nb_path: "nbs/100_models.layers.ipynb"
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -158,6 +161,7 @@ nb_path: "nbs/100_models.layers.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="Chomp1d" class="doc_header"><code>class</code> <code>Chomp1d</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L60" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Chomp1d</code>(<strong><code>chomp_size</code></strong>) :: <code>Module</code></p>
 </blockquote>
@@ -171,7 +175,7 @@ import torch.nn.functional as F
 
 class Model(nn.Module):
     def __init__(self):
-        super(Model, self).__init__()
+        super().__init__()
         self.conv1 = nn.Conv2d(1, 20, 5)
         self.conv2 = nn.Conv2d(20, 20, 5)
 
@@ -182,6 +186,9 @@ class Model(nn.Module):
 </code></pre>
 <p>Submodules assigned in this way will be registered, and will have their
 parameters converted too when you call :meth:<code>to</code>, etc.</p>
+<p>.. note::
+    As per the example above, an <code>__init__()</code> call to the parent class
+    must be made before assignment on the child.</p>
 <p>:ivar training: Boolean represents whether this module is in training or
                 evaluation mode.
 :vartype training: bool</p>
@@ -213,6 +220,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="same_padding1d" class="doc_header"><code>same_padding1d</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L69" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>same_padding1d</code>(<strong><code>seq_len</code></strong>, <strong><code>ks</code></strong>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>dilation</code></strong>=<em><code>1</code></em>)</p>
 </blockquote>
@@ -236,6 +244,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -301,6 +310,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="SameConv1d" class="doc_header"><code>class</code> <code>SameConv1d</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L81" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SameConv1d</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>dilation</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>:<code>Union</code>[<code>str</code>, <code>int</code>, <code>typing.Tuple[int]</code>]=<em><code>0</code></em>, <strong><code>groups</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>bias</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>padding_mode</code></strong>:<code>str</code>=<em><code>'zeros'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>dtype</code></strong>=<em><code>None</code></em>) :: <code>Module</code></p>
 </blockquote>
@@ -333,6 +343,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="same_padding2d" class="doc_header"><code>same_padding2d</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L95" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>same_padding2d</code>(<strong><code>H</code></strong>, <strong><code>W</code></strong>, <strong><code>ks</code></strong>, <strong><code>stride</code></strong>=<em><code>(1, 1)</code></em>, <strong><code>dilation</code></strong>=<em><code>(1, 1)</code></em>)</p>
 </blockquote>
@@ -356,6 +367,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  1.6616,  1.4523, -1.1255,  3.5000],
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -420,6 +432,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  3.5000,  3.5000],
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="Conv2dSame" class="doc_header"><code>class</code> <code>Conv2dSame</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L111" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conv2dSame</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>ks</code></strong>=<em><code>(3, 3)</code></em>, <strong><code>stride</code></strong>=<em><code>(1, 1)</code></em>, <strong><code>dilation</code></strong>=<em><code>(1, 1)</code></em>, <strong><code>padding</code></strong>:<code>Union</code>[<code>str</code>, <code>int</code>, <code>typing.Tuple[int, int]</code>]=<em><code>0</code></em>, <strong><code>groups</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>bias</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>padding_mode</code></strong>:<code>str</code>=<em><code>'zeros'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>dtype</code></strong>=<em><code>None</code></em>) :: <code>Module</code></p>
 </blockquote>
@@ -443,6 +456,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  3.5000,  3.5000],
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -485,7 +499,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  3.5000,  3.5000],
 <span class="n">test_eq</span><span class="p">(</span><span class="n">Conv2dSame</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">ks</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">dilation</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">))</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">Conv2dSame</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">ks</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dilation</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">h</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span> <span class="n">w</span><span class="o">//</span><span class="mi">2</span><span class="p">))</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">Conv2dSame</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">ks</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dilation</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">h</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span> <span class="n">w</span><span class="o">//</span><span class="mi">2</span><span class="p">))</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">ks</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dilation</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">))</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">ks</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s1">'same'</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dilation</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -505,6 +519,7 @@ tensor([[[ 3.5000,  3.5000,  3.5000,  3.5000,  3.5000],
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="CausalConv1d" class="doc_header"><code>class</code> <code>CausalConv1d</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L142" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CausalConv1d</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>ks</code></strong>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>dilation</code></strong>=<em><code>1</code></em>, <strong><code>groups</code></strong>=<em><code>1</code></em>, <strong><code>bias</code></strong>=<em><code>True</code></em>) :: <a href="/models.layers.html#Conv1d"><code>Conv1d</code></a></p>
 </blockquote>
@@ -521,6 +536,7 @@ precisely described as:</p>
 :math:<code>N</code> is a batch size, :math:<code>C</code> denotes a number of channels,
 :math:<code>L</code> is a length of signal sequence.</p>
 <p>This module supports :ref:<code>TensorFloat32&lt;tf32_on_ampere&gt;</code>.</p>
+<p>On certain ROCm devices, when using float16 inputs this module will use :ref:<code>different precision&lt;fp16_on_mi200&gt;</code> for backward.</p>
 <ul>
 <li><p>:attr:<code>stride</code> controls the stride for the cross-correlation, a single
 number or a one-element tuple.</p>
@@ -562,6 +578,8 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
     <code>padding='valid'</code> is the same as no padding. <code>padding='same'</code> pads
     the input so the output has the shape as the input. However, this mode
     doesn't support any stride values other than 1.</p>
+<p>Note:
+    This module supports complex data types i.e. <code>complex32, complex64, complex128</code>.</p>
 <p>Args:
     in_channels (int): Number of channels in the input image
     out_channels (int): Number of channels produced by the convolution
@@ -579,8 +597,8 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
         output. Default: <code>True</code></p>
 <p>Shape:</p>
 
-<pre><code>- Input: :math:`(N, C_{in}, L_{in})`
-- Output: :math:`(N, C_{out}, L_{out})` where
+<pre><code>- Input: :math:`(N, C_{in}, L_{in})` or :math:`(C_{in}, L_{in})`
+- Output: :math:`(N, C_{out}, L_{out})` or :math:`(C_{out}, L_{out})`, where
 
   .. math::
       L_{out} = \left\lfloor\frac{L_{in} + 2 \times \text{padding} - \text{dilation}
@@ -637,6 +655,7 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="Conv1d" class="doc_header"><code>Conv1d</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L150" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Conv1d</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>kernel_size</code></strong>=<em><code>None</code></em>, <strong><code>ks</code></strong>=<em><code>None</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>'same'</code></em>, <strong><code>dilation</code></strong>=<em><code>1</code></em>, <strong><code>init</code></strong>=<em><code>'auto'</code></em>, <strong><code>bias_std</code></strong>=<em><code>0.01</code></em>, <strong><code>groups</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>bias</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>padding_mode</code></strong>:<code>str</code>=<em><code>'zeros'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>dtype</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
@@ -672,9 +691,9 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 <span class="n">seq_len</span> <span class="o">=</span> <span class="mi">512</span>
 <span class="n">t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_in</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">)</span>
 <span class="n">dilation</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">CausalConv1d</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">ks</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dilation</span><span class="o">=</span><span class="n">dilation</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">Conv1d</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">ks</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;same&quot;</span><span class="p">,</span> <span class="n">dilation</span><span class="o">=</span><span class="n">dilation</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">CausalConv1d</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">ks</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dilation</span><span class="o">=</span><span class="n">dilation</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">Conv1d</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">ks</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">"same"</span><span class="p">,</span> <span class="n">dilation</span><span class="o">=</span><span class="n">dilation</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="n">dilation</span> <span class="o">=</span> <span class="mi">2</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">CausalConv1d</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">ks</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dilation</span><span class="o">=</span><span class="n">dilation</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">Conv1d</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">ks</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;same&quot;</span><span class="p">,</span> <span class="n">dilation</span><span class="o">=</span><span class="n">dilation</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">CausalConv1d</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">ks</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dilation</span><span class="o">=</span><span class="n">dilation</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">Conv1d</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">ks</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">"same"</span><span class="p">,</span> <span class="n">dilation</span><span class="o">=</span><span class="n">dilation</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -698,11 +717,11 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 <span class="n">ks</span> <span class="o">=</span> <span class="mi">3</span>
 <span class="n">t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_in</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">Conv1d</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">ks</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">0</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span> <span class="o">-</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">ks</span><span class="o">//</span><span class="mi">2</span><span class="p">))))</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">Conv1d</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">ks</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s1">&#39;valid&#39;</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span> <span class="o">-</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">ks</span><span class="o">//</span><span class="mi">2</span><span class="p">))))</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">Conv1d</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">ks</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">))</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">Conv1d</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">ks</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s1">&#39;causal&#39;</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">))</span>
-<span class="n">test_error</span><span class="p">(</span><span class="s1">&#39;use kernel_size or ks but not both simultaneously&#39;</span><span class="p">,</span> <span class="n">Conv1d</span><span class="p">,</span> <span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">ks</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-<span class="n">test_error</span><span class="p">(</span><span class="s1">&#39;you need to pass a ks&#39;</span><span class="p">,</span> <span class="n">Conv1d</span><span class="p">,</span> <span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">Conv1d</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">ks</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s1">'valid'</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span> <span class="o">-</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">ks</span><span class="o">//</span><span class="mi">2</span><span class="p">))))</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">Conv1d</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">ks</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s1">'same'</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">))</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">Conv1d</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">ks</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s1">'causal'</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">))</span>
+<span class="n">test_error</span><span class="p">(</span><span class="s1">'use kernel_size or ks but not both simultaneously'</span><span class="p">,</span> <span class="n">Conv1d</span><span class="p">,</span> <span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">ks</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">test_error</span><span class="p">(</span><span class="s1">'you need to pass a ks'</span><span class="p">,</span> <span class="n">Conv1d</span><span class="p">,</span> <span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -719,8 +738,8 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">conv</span> <span class="o">=</span> <span class="n">Conv1d</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">ks</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">)</span>
-<span class="n">init_linear</span><span class="p">(</span><span class="n">conv</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">bias_std</span><span class="o">=</span><span class="mf">.01</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">conv</span> <span class="o">=</span> <span class="n">Conv1d</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">ks</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s1">'same'</span><span class="p">)</span>
+<span class="n">init_linear</span><span class="p">(</span><span class="n">conv</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="s1">'auto'</span><span class="p">,</span> <span class="n">bias_std</span><span class="o">=</span><span class="mf">.01</span><span class="p">)</span>
 <span class="n">conv</span>
 </pre></div>
 
@@ -754,8 +773,8 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">conv</span> <span class="o">=</span> <span class="n">Conv1d</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">ks</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s1">&#39;causal&#39;</span><span class="p">)</span>
-<span class="n">init_linear</span><span class="p">(</span><span class="n">conv</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">bias_std</span><span class="o">=</span><span class="mf">.01</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">conv</span> <span class="o">=</span> <span class="n">Conv1d</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">ks</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s1">'causal'</span><span class="p">)</span>
+<span class="n">init_linear</span><span class="p">(</span><span class="n">conv</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="s1">'auto'</span><span class="p">,</span> <span class="n">bias_std</span><span class="o">=</span><span class="mf">.01</span><span class="p">)</span>
 <span class="n">conv</span>
 </pre></div>
 
@@ -789,8 +808,8 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">conv</span> <span class="o">=</span> <span class="n">Conv1d</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">ks</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s1">&#39;valid&#39;</span><span class="p">)</span>
-<span class="n">init_linear</span><span class="p">(</span><span class="n">conv</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">bias_std</span><span class="o">=</span><span class="mf">.01</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">conv</span> <span class="o">=</span> <span class="n">Conv1d</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">ks</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s1">'valid'</span><span class="p">)</span>
+<span class="n">init_linear</span><span class="p">(</span><span class="n">conv</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="s1">'auto'</span><span class="p">,</span> <span class="n">bias_std</span><span class="o">=</span><span class="mf">.01</span><span class="p">)</span>
 <span class="n">weight_norm</span><span class="p">(</span><span class="n">conv</span><span class="p">)</span>
 <span class="n">conv</span>
 </pre></div>
@@ -826,7 +845,7 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">conv</span> <span class="o">=</span> <span class="n">Conv1d</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">ks</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">init_linear</span><span class="p">(</span><span class="n">conv</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">bias_std</span><span class="o">=</span><span class="mf">.01</span><span class="p">)</span>
+<span class="n">init_linear</span><span class="p">(</span><span class="n">conv</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="s1">'auto'</span><span class="p">,</span> <span class="n">bias_std</span><span class="o">=</span><span class="mf">.01</span><span class="p">)</span>
 <span class="n">weight_norm</span><span class="p">(</span><span class="n">conv</span><span class="p">)</span>
 <span class="n">conv</span>
 </pre></div>
@@ -862,6 +881,7 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -916,6 +936,7 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -977,6 +998,7 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="ConvBlock" class="doc_header"><code>class</code> <code>ConvBlock</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L196" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ConvBlock</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>kernel_size</code></strong>=<em><code>None</code></em>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>'same'</code></em>, <strong><code>bias</code></strong>=<em><code>None</code></em>, <strong><code>bias_std</code></strong>=<em><code>0.01</code></em>, <strong><code>norm</code></strong>=<em><code>'Batch'</code></em>, <strong><code>zero_norm</code></strong>=<em><code>False</code></em>, <strong><code>bn_1st</code></strong>=<em><code>True</code></em>, <strong><code>act</code></strong>=<em><code>ReLU</code></em>, <strong><code>act_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>init</code></strong>=<em><code>'auto'</code></em>, <strong><code>dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>xtra</code></strong>=<em><code>None</code></em>, <strong><code>coord</code></strong>=<em><code>False</code></em>, <strong><code>separable</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/models.TabFusionTransformer.html#Sequential"><code>Sequential</code></a></p>
 </blockquote>
@@ -1009,6 +1031,7 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="ResBlock1dPlus" class="doc_header"><code>class</code> <code>ResBlock1dPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L230" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ResBlock1dPlus</code>(<strong><code>expansion</code></strong>, <strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>coord</code></strong>=<em><code>False</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>groups</code></strong>=<em><code>1</code></em>, <strong><code>reduction</code></strong>=<em><code>None</code></em>, <strong><code>nh1</code></strong>=<em><code>None</code></em>, <strong><code>nh2</code></strong>=<em><code>None</code></em>, <strong><code>dw</code></strong>=<em><code>False</code></em>, <strong><code>g2</code></strong>=<em><code>1</code></em>, <strong><code>sa</code></strong>=<em><code>False</code></em>, <strong><code>sym</code></strong>=<em><code>False</code></em>, <strong><code>norm</code></strong>=<em><code>'Batch'</code></em>, <strong><code>zero_norm</code></strong>=<em><code>True</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU</code></em>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>pool</code></strong>=<em><code>AvgPool</code></em>, <strong><code>pool_first</code></strong>=<em><code>True</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>bias</code></strong>=<em><code>None</code></em>, <strong><code>ndim</code></strong>=<em><code>2</code></em>, <strong><code>norm_type</code></strong>=<em><code>&lt;NormType.Batch: 1&gt;</code></em>, <strong><code>bn_1st</code></strong>=<em><code>True</code></em>, <strong><code>transpose</code></strong>=<em><code>False</code></em>, <strong><code>init</code></strong>=<em><code>'auto'</code></em>, <strong><code>xtra</code></strong>=<em><code>None</code></em>, <strong><code>bias_std</code></strong>=<em><code>0.01</code></em>, <strong><code>dilation</code></strong>:<code>Union</code>[<code>int</code>, <code>typing.Tuple[int, int]</code>]=<em><code>1</code></em>, <strong><code>padding_mode</code></strong>:<code>str</code>=<em><code>'zeros'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>dtype</code></strong>=<em><code>None</code></em>) :: <code>Module</code></p>
 </blockquote>
@@ -1039,6 +1062,7 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -1091,6 +1115,7 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="Norm" class="doc_header"><code>Norm</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L268" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Norm</code>(<strong><code>nf</code></strong>, <strong><code>ndim</code></strong>=<em><code>1</code></em>, <strong><code>norm</code></strong>=<em><code>'Batch'</code></em>, <strong><code>zero_norm</code></strong>=<em><code>False</code></em>, <strong><code>init</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
@@ -1128,7 +1153,7 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 
 <span class="n">t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">ni</span><span class="p">,</span> <span class="n">sl</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">ConvBlock</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">ks</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">sl</span><span class="p">))</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">ConvBlock</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">ks</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s1">&#39;causal&#39;</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">sl</span><span class="p">))</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">ConvBlock</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">ks</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s1">'causal'</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">sl</span><span class="p">))</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">ConvBlock</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">ks</span><span class="p">,</span> <span class="n">coord</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">sl</span><span class="p">))</span>
 </pre></div>
 
@@ -1165,8 +1190,8 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">ConvBlock</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">ks</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s1">&#39;batch&#39;</span><span class="p">,</span> <span class="n">zero_norm</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="mi">0</span><span class="p">)</span>
-<span class="n">test_ne</span><span class="p">(</span><span class="n">ConvBlock</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">ks</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s1">&#39;batch&#39;</span><span class="p">,</span> <span class="n">zero_norm</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="mi">0</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">ConvBlock</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">ks</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s1">'batch'</span><span class="p">,</span> <span class="n">zero_norm</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">test_ne</span><span class="p">(</span><span class="n">ConvBlock</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">ks</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s1">'batch'</span><span class="p">,</span> <span class="n">zero_norm</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="mi">0</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">ConvBlock</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">ks</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">bias</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 <span class="n">ConvBlock</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">ks</span><span class="p">,</span> <span class="n">act</span><span class="o">=</span><span class="n">Swish</span><span class="p">,</span> <span class="n">coord</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
@@ -1207,6 +1232,7 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -1278,6 +1304,7 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="LambdaPlus" class="doc_header"><code>class</code> <code>LambdaPlus</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L292" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LambdaPlus</code>(<strong><code>func</code></strong>, <strong>*<code>args</code></strong>, <strong>**<code>kwargs</code></strong>) :: <code>Module</code></p>
 </blockquote>
@@ -1310,6 +1337,7 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="Squeeze" class="doc_header"><code>class</code> <code>Squeeze</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L297" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Squeeze</code>(<strong><code>dim</code></strong>=<em><code>-1</code></em>) :: <code>Module</code></p>
 </blockquote>
@@ -1333,6 +1361,7 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -1360,6 +1389,7 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="Add" class="doc_header"><code>class</code> <code>Add</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L309" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Add</code>() :: <code>Module</code></p>
 </blockquote>
@@ -1383,6 +1413,7 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -1410,6 +1441,7 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="Permute" class="doc_header"><code>class</code> <code>Permute</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L320" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Permute</code>(<strong>*<code>dims</code></strong>) :: <code>Module</code></p>
 </blockquote>
@@ -1433,6 +1465,7 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -1460,8 +1493,9 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="View" class="doc_header"><code>class</code> <code>View</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L78" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>View</code>(<strong>*<code>size</code></strong>) :: <code>Module</code></p>
+<h2 id="View" class="doc_header"><code>class</code> <code>View</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L80" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>View</code>(<strong>*<code>size</code></strong>) :: <code>Module</code></p>
 </blockquote>
 <p>Reshape <code>x</code> to <code>size</code></p>
 
@@ -1483,6 +1517,7 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -1510,6 +1545,7 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="Max" class="doc_header"><code>class</code> <code>Max</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L348" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Max</code>(<strong><code>dim</code></strong>=<em><code>None</code></em>, <strong><code>keepdim</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
@@ -1533,6 +1569,7 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -1560,6 +1597,7 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="SoftMax" class="doc_header"><code>class</code> <code>SoftMax</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L359" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SoftMax</code>(<strong><code>dim</code></strong>=<em><code>-1</code></em>) :: <code>Module</code></p>
 </blockquote>
@@ -1583,6 +1621,7 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -1610,6 +1649,7 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="Clip" class="doc_header"><code>class</code> <code>Clip</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L376" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Clip</code>(<strong><code>min</code></strong>=<em><code>None</code></em>, <strong><code>max</code></strong>=<em><code>None</code></em>) :: <code>Module</code></p>
 </blockquote>
@@ -1633,6 +1673,7 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -1716,6 +1757,7 @@ a depthwise convolution with a depthwise multiplier `K` can be performed with th
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="DropPath" class="doc_header"><code>class</code> <code>DropPath</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L400" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DropPath</code>(<strong><code>p</code></strong>=<em><code>None</code></em>) :: <code>Module</code></p>
 </blockquote>
@@ -1769,6 +1811,7 @@ Original code in <a href="https://github.com/rwightman/pytorch-image-models">htt
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="Sharpen" class="doc_header"><code>class</code> <code>Sharpen</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L422" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Sharpen</code>(<strong><code>T</code></strong>=<em><code>0.5</code></em>) :: <code>Module</code></p>
 </blockquote>
@@ -1804,8 +1847,8 @@ Original code in <a href="https://github.com/rwightman/pytorch-image-models">htt
 <span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">n_classes</span><span class="p">)</span> <span class="o">-</span> <span class="mf">.5</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10</span>
 <span class="n">probas</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">sharpened_probas</span> <span class="o">=</span> <span class="n">Sharpen</span><span class="p">()(</span><span class="n">probas</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">probas</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">sharpened_probas</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">probas</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">'r'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">sharpened_probas</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">'b'</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 <span class="n">test_gt</span><span class="p">(</span><span class="n">sharpened_probas</span><span class="p">[</span><span class="n">n_samples</span><span class="o">//</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="n">probas</span><span class="p">[</span><span class="n">n_samples</span><span class="o">//</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
 </pre></div>
@@ -1845,6 +1888,7 @@ Original code in <a href="https://github.com/rwightman/pytorch-image-models">htt
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="Sequential" class="doc_header"><code>class</code> <code>Sequential</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L430" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Sequential</code>(<strong>*<code>args</code></strong>) :: <a href="/models.TabFusionTransformer.html#Sequential"><code>Sequential</code></a></p>
 </blockquote>
@@ -1877,8 +1921,9 @@ Original code in <a href="https://github.com/rwightman/pytorch-image-models">htt
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TimeDistributed" class="doc_header"><code>class</code> <code>TimeDistributed</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L510" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TimeDistributed</code>(<strong><code>module</code></strong>, <strong><code>low_mem</code></strong>=<em><code>False</code></em>, <strong><code>tdim</code></strong>=<em><code>1</code></em>) :: <code>Module</code></p>
+<h2 id="TimeDistributed" class="doc_header"><code>class</code> <code>TimeDistributed</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L511" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TimeDistributed</code>(<strong><code>module</code></strong>, <strong><code>low_mem</code></strong>=<em><code>False</code></em>, <strong><code>tdim</code></strong>=<em><code>1</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Applies <code>module</code> over <code>tdim</code> identically for each step, use <code>low_mem</code> to compute one at a time.</p>
 
@@ -1909,6 +1954,7 @@ Original code in <a href="https://github.com/rwightman/pytorch-image-models">htt
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="Temp_Scale" class="doc_header"><code>class</code> <code>Temp_Scale</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L463" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Temp_Scale</code>(<strong><code>temp</code></strong>=<em><code>1.0</code></em>, <strong><code>dirichlet</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
@@ -1932,6 +1978,7 @@ Original code in <a href="https://github.com/rwightman/pytorch-image-models">htt
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -1959,6 +2006,7 @@ Original code in <a href="https://github.com/rwightman/pytorch-image-models">htt
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="Matrix_Scale" class="doc_header"><code>class</code> <code>Matrix_Scale</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L487" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Matrix_Scale</code>(<strong><code>n_classes</code></strong>=<em><code>1</code></em>, <strong><code>dirichlet</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
@@ -1982,6 +2030,7 @@ Original code in <a href="https://github.com/rwightman/pytorch-image-models">htt
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -2016,16 +2065,16 @@ Original code in <a href="https://github.com/rwightman/pytorch-image-models">htt
 <span class="n">c_out</span> <span class="o">=</span> <span class="mi">3</span>
 
 <span class="n">t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_out</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">calibrator</span><span class="p">,</span> <span class="n">cal_name</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="s1">&#39;temp&#39;</span><span class="p">,</span> <span class="s1">&#39;vector&#39;</span><span class="p">,</span> <span class="s1">&#39;matrix&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;Temp_Scale&#39;</span><span class="p">,</span> <span class="s1">&#39;Vector_Scale&#39;</span><span class="p">,</span> <span class="s1">&#39;Matrix_Scale&#39;</span><span class="p">]):</span> 
+<span class="k">for</span> <span class="n">calibrator</span><span class="p">,</span> <span class="n">cal_name</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="s1">'temp'</span><span class="p">,</span> <span class="s1">'vector'</span><span class="p">,</span> <span class="s1">'matrix'</span><span class="p">],</span> <span class="p">[</span><span class="s1">'Temp_Scale'</span><span class="p">,</span> <span class="s1">'Vector_Scale'</span><span class="p">,</span> <span class="s1">'Matrix_Scale'</span><span class="p">]):</span> 
     <span class="n">cal</span> <span class="o">=</span> <span class="n">get_calibrator</span><span class="p">(</span><span class="n">calibrator</span><span class="p">,</span> <span class="n">n_classes</span><span class="o">=</span><span class="n">c_out</span><span class="p">)</span>
 <span class="c1">#     print(calibrator)</span>
-<span class="c1">#     print(cal.weight, cal.bias, &#39;\n&#39;)</span>
+<span class="c1">#     print(cal.weight, cal.bias, '\n')</span>
     <span class="n">test_eq</span><span class="p">(</span><span class="n">cal</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">t</span><span class="p">)</span>
     <span class="n">test_eq</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">cal_name</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">calibrator</span><span class="p">,</span> <span class="n">cal_name</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="s1">&#39;dtemp&#39;</span><span class="p">,</span> <span class="s1">&#39;dvector&#39;</span><span class="p">,</span> <span class="s1">&#39;dmatrix&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;Temp_Scale&#39;</span><span class="p">,</span> <span class="s1">&#39;Vector_Scale&#39;</span><span class="p">,</span> <span class="s1">&#39;Matrix_Scale&#39;</span><span class="p">]):</span>
+<span class="k">for</span> <span class="n">calibrator</span><span class="p">,</span> <span class="n">cal_name</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="s1">'dtemp'</span><span class="p">,</span> <span class="s1">'dvector'</span><span class="p">,</span> <span class="s1">'dmatrix'</span><span class="p">],</span> <span class="p">[</span><span class="s1">'Temp_Scale'</span><span class="p">,</span> <span class="s1">'Vector_Scale'</span><span class="p">,</span> <span class="s1">'Matrix_Scale'</span><span class="p">]):</span>
     <span class="n">cal</span> <span class="o">=</span> <span class="n">get_calibrator</span><span class="p">(</span><span class="n">calibrator</span><span class="p">,</span> <span class="n">n_classes</span><span class="o">=</span><span class="n">c_out</span><span class="p">)</span>
 <span class="c1">#     print(calibrator)</span>
-<span class="c1">#     print(cal.weight, cal.bias, &#39;\n&#39;)</span>
+<span class="c1">#     print(cal.weight, cal.bias, '\n')</span>
     <span class="n">test_eq</span><span class="p">(</span><span class="n">cal</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">F</span><span class="o">.</span><span class="n">log_softmax</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
     <span class="n">test_eq</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">cal_name</span><span class="p">)</span>
 </pre></div>
@@ -2127,6 +2176,7 @@ Original code in <a href="https://github.com/rwightman/pytorch-image-models">htt
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="LogitAdjustmentLayer" class="doc_header"><code>class</code> <code>LogitAdjustmentLayer</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L513" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LogitAdjustmentLayer</code>(<strong><code>class_priors</code></strong>) :: <code>Module</code></p>
 </blockquote>
@@ -2179,6 +2229,7 @@ Original code in <a href="https://github.com/rwightman/pytorch-image-models">htt
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="PPV" class="doc_header"><code>class</code> <code>PPV</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L523" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PPV</code>(<strong><code>dim</code></strong>=<em><code>-1</code></em>) :: <code>Module</code></p>
 </blockquote>
@@ -2204,6 +2255,7 @@ Original code in <a href="https://github.com/rwightman/pytorch-image-models">htt
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="PPAuc" class="doc_header"><code>class</code> <code>PPAuc</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L531" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PPAuc</code>(<strong><code>dim</code></strong>=<em><code>-1</code></em>) :: <code>Module</code></p>
 </blockquote>
@@ -2227,6 +2279,7 @@ Original code in <a href="https://github.com/rwightman/pytorch-image-models">htt
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -2284,6 +2337,7 @@ Original code in <a href="https://github.com/rwightman/pytorch-image-models">htt
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="AdaptiveWeightedAvgPool1d" class="doc_header"><code>class</code> <code>AdaptiveWeightedAvgPool1d</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L548" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AdaptiveWeightedAvgPool1d</code>(<strong><code>n_in</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>mult</code></strong>=<em><code>2</code></em>, <strong><code>n_layers</code></strong>=<em><code>2</code></em>, <strong><code>ln</code></strong>=<em><code>False</code></em>, <strong><code>dropout</code></strong>=<em><code>0.5</code></em>, <strong><code>act</code></strong>=<em><code>ReLU()</code></em>, <strong><code>zero_init</code></strong>=<em><code>True</code></em>) :: <code>Module</code></p>
 </blockquote>
@@ -2318,6 +2372,7 @@ Hyun, J., Seong, H., &amp; Kim, E. (2019). Universal Pooling--A New Pooling Meth
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="GAP1d" class="doc_header"><code>class</code> <code>GAP1d</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L573" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GAP1d</code>(<strong><code>output_size</code></strong>=<em><code>1</code></em>) :: <code>Module</code></p>
 </blockquote>
@@ -2343,6 +2398,7 @@ Hyun, J., Seong, H., &amp; Kim, E. (2019). Universal Pooling--A New Pooling Meth
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="GACP1d" class="doc_header"><code>class</code> <code>GACP1d</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L582" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GACP1d</code>(<strong><code>output_size</code></strong>=<em><code>1</code></em>) :: <code>Module</code></p>
 </blockquote>
@@ -2366,6 +2422,7 @@ Hyun, J., Seong, H., &amp; Kim, E. (2019). Universal Pooling--A New Pooling Meth
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -2400,6 +2457,7 @@ Hyun, J., Seong, H., &amp; Kim, E. (2019). Universal Pooling--A New Pooling Meth
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="GlobalWeightedAveragePool1d" class="doc_header"><code>class</code> <code>GlobalWeightedAveragePool1d</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L600" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GlobalWeightedAveragePool1d</code>(<strong><code>n_in</code></strong>, <strong><code>seq_len</code></strong>) :: <code>Module</code></p>
 </blockquote>
@@ -2425,6 +2483,7 @@ Hyun, J., Seong, H., &amp; Kim, E. (2019). Universal Pooling--A New Pooling Meth
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -2477,6 +2536,7 @@ Hyun, J., Seong, H., &amp; Kim, E. (2019). Universal Pooling--A New Pooling Meth
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="AttentionalPool1d" class="doc_header"><code>class</code> <code>AttentionalPool1d</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L621" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AttentionalPool1d</code>(<strong><code>n_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>bn</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
@@ -2500,6 +2560,7 @@ Hyun, J., Seong, H., &amp; Kim, E. (2019). Universal Pooling--A New Pooling Meth
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -2563,6 +2624,7 @@ model = nn.Sequential(OrderedDict([
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -2647,6 +2709,7 @@ model = nn.Sequential(OrderedDict([
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="PoolingLayer" class="doc_header"><code>class</code> <code>PoolingLayer</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L641" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PoolingLayer</code>(<strong><code>method</code></strong>=<em><code>'cls'</code></em>, <strong><code>seq_len</code></strong>=<em><code>None</code></em>, <strong><code>token</code></strong>=<em><code>True</code></em>, <strong><code>seq_last</code></strong>=<em><code>True</code></em>) :: <code>Module</code></p>
 </blockquote>
@@ -2677,22 +2740,22 @@ model = nn.Sequential(OrderedDict([
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">24</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">&#39;cls&#39;</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">t</span><span class="p">),</span> <span class="n">tensor</span><span class="p">([[</span> <span class="mf">0.</span><span class="p">,</span>  <span class="mf">4.</span><span class="p">,</span>  <span class="mf">8.</span><span class="p">],</span> <span class="p">[</span><span class="mf">12.</span><span class="p">,</span> <span class="mf">16.</span><span class="p">,</span> <span class="mf">20.</span><span class="p">]]))</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">&#39;max&#39;</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">t</span><span class="p">),</span> <span class="n">tensor</span><span class="p">([[</span> <span class="mf">3.</span><span class="p">,</span>  <span class="mf">7.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">],</span> <span class="p">[</span><span class="mf">15.</span><span class="p">,</span> <span class="mf">19.</span><span class="p">,</span> <span class="mf">23.</span><span class="p">]]))</span>
-<span class="n">test_close</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">t</span><span class="p">),</span> <span class="n">tensor</span><span class="p">([[</span> <span class="mf">2.</span><span class="p">,</span>  <span class="mf">6.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">],</span> <span class="p">[</span><span class="mf">14.</span><span class="p">,</span> <span class="mf">18.</span><span class="p">,</span> <span class="mf">22.</span><span class="p">]]))</span>
-<span class="n">test_close</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">&#39;max-mean&#39;</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">t</span><span class="p">),</span> <span class="n">tensor</span><span class="p">([[</span> <span class="mf">3.</span><span class="p">,</span>  <span class="mf">7.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">,</span>  <span class="mf">2.</span><span class="p">,</span>  <span class="mf">6.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">],</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">'cls'</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">t</span><span class="p">),</span> <span class="n">tensor</span><span class="p">([[</span> <span class="mf">0.</span><span class="p">,</span>  <span class="mf">4.</span><span class="p">,</span>  <span class="mf">8.</span><span class="p">],</span> <span class="p">[</span><span class="mf">12.</span><span class="p">,</span> <span class="mf">16.</span><span class="p">,</span> <span class="mf">20.</span><span class="p">]]))</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">'max'</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">t</span><span class="p">),</span> <span class="n">tensor</span><span class="p">([[</span> <span class="mf">3.</span><span class="p">,</span>  <span class="mf">7.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">],</span> <span class="p">[</span><span class="mf">15.</span><span class="p">,</span> <span class="mf">19.</span><span class="p">,</span> <span class="mf">23.</span><span class="p">]]))</span>
+<span class="n">test_close</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">'mean'</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">t</span><span class="p">),</span> <span class="n">tensor</span><span class="p">([[</span> <span class="mf">2.</span><span class="p">,</span>  <span class="mf">6.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">],</span> <span class="p">[</span><span class="mf">14.</span><span class="p">,</span> <span class="mf">18.</span><span class="p">,</span> <span class="mf">22.</span><span class="p">]]))</span>
+<span class="n">test_close</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">'max-mean'</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">t</span><span class="p">),</span> <span class="n">tensor</span><span class="p">([[</span> <span class="mf">3.</span><span class="p">,</span>  <span class="mf">7.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">,</span>  <span class="mf">2.</span><span class="p">,</span>  <span class="mf">6.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">],</span>
                                                                            <span class="p">[</span><span class="mf">15.</span><span class="p">,</span> <span class="mf">19.</span><span class="p">,</span> <span class="mf">23.</span><span class="p">,</span> <span class="mf">14.</span><span class="p">,</span> <span class="mf">18.</span><span class="p">,</span> <span class="mf">22.</span><span class="p">]]))</span>
-<span class="n">test_close</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">&#39;flatten&#39;</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">t</span><span class="p">),</span> <span class="n">tensor</span><span class="p">([[</span> <span class="mf">1.</span><span class="p">,</span>  <span class="mf">2.</span><span class="p">,</span>  <span class="mf">3.</span><span class="p">,</span>  <span class="mf">5.</span><span class="p">,</span>  <span class="mf">6.</span><span class="p">,</span>  <span class="mf">7.</span><span class="p">,</span>  <span class="mf">9.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">],</span>
+<span class="n">test_close</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">'flatten'</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">t</span><span class="p">),</span> <span class="n">tensor</span><span class="p">([[</span> <span class="mf">1.</span><span class="p">,</span>  <span class="mf">2.</span><span class="p">,</span>  <span class="mf">3.</span><span class="p">,</span>  <span class="mf">5.</span><span class="p">,</span>  <span class="mf">6.</span><span class="p">,</span>  <span class="mf">7.</span><span class="p">,</span>  <span class="mf">9.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">],</span>
                                                                           <span class="p">[</span><span class="mf">13.</span><span class="p">,</span> <span class="mf">14.</span><span class="p">,</span> <span class="mf">15.</span><span class="p">,</span> <span class="mf">17.</span><span class="p">,</span> <span class="mf">18.</span><span class="p">,</span> <span class="mf">19.</span><span class="p">,</span> <span class="mf">21.</span><span class="p">,</span> <span class="mf">22.</span><span class="p">,</span> <span class="mf">23.</span><span class="p">]]))</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span> <span class="n">seq_len</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">&#39;max&#39;</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">t</span><span class="p">),</span> <span class="n">tensor</span><span class="p">([[</span> <span class="mf">3.</span><span class="p">,</span>  <span class="mf">7.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">],</span> <span class="p">[</span><span class="mf">15.</span><span class="p">,</span> <span class="mf">19.</span><span class="p">,</span> <span class="mf">23.</span><span class="p">]]))</span>
-<span class="n">test_close</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">t</span><span class="p">),</span> <span class="n">tensor</span><span class="p">([[</span> <span class="mf">1.5000</span><span class="p">,</span>  <span class="mf">5.5000</span><span class="p">,</span>  <span class="mf">9.5000</span><span class="p">],</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">'linear'</span><span class="p">,</span> <span class="n">seq_len</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">'max'</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">t</span><span class="p">),</span> <span class="n">tensor</span><span class="p">([[</span> <span class="mf">3.</span><span class="p">,</span>  <span class="mf">7.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">],</span> <span class="p">[</span><span class="mf">15.</span><span class="p">,</span> <span class="mf">19.</span><span class="p">,</span> <span class="mf">23.</span><span class="p">]]))</span>
+<span class="n">test_close</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">'mean'</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">t</span><span class="p">),</span> <span class="n">tensor</span><span class="p">([[</span> <span class="mf">1.5000</span><span class="p">,</span>  <span class="mf">5.5000</span><span class="p">,</span>  <span class="mf">9.5000</span><span class="p">],</span>
                                                                         <span class="p">[</span><span class="mf">13.5000</span><span class="p">,</span> <span class="mf">17.5000</span><span class="p">,</span> <span class="mf">21.5000</span><span class="p">]]))</span>
-<span class="n">test_close</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">&#39;max-mean&#39;</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">t</span><span class="p">),</span> <span class="n">tensor</span><span class="p">([[</span> <span class="mf">3.</span><span class="p">,</span>  <span class="mf">7.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">,</span>  <span class="mf">1.5000</span><span class="p">,</span>  <span class="mf">5.5000</span><span class="p">,</span>  <span class="mf">9.5000</span><span class="p">],</span>
+<span class="n">test_close</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">'max-mean'</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">t</span><span class="p">),</span> <span class="n">tensor</span><span class="p">([[</span> <span class="mf">3.</span><span class="p">,</span>  <span class="mf">7.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">,</span>  <span class="mf">1.5000</span><span class="p">,</span>  <span class="mf">5.5000</span><span class="p">,</span>  <span class="mf">9.5000</span><span class="p">],</span>
                                                                             <span class="p">[</span><span class="mf">15.</span><span class="p">,</span> <span class="mf">19.</span><span class="p">,</span> <span class="mf">23.</span><span class="p">,</span> <span class="mf">13.5000</span><span class="p">,</span> <span class="mf">17.5000</span><span class="p">,</span> <span class="mf">21.5000</span><span class="p">]]))</span>
-<span class="n">test_close</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">&#39;flatten&#39;</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">t</span><span class="p">),</span> <span class="n">tensor</span><span class="p">([[</span> <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">2.</span><span class="p">,</span>  <span class="mf">3.</span><span class="p">,</span>  <span class="mf">4.</span><span class="p">,</span>  <span class="mf">5.</span><span class="p">,</span>  <span class="mf">6.</span><span class="p">,</span>  <span class="mf">7.</span><span class="p">,</span>  <span class="mf">8.</span><span class="p">,</span>  <span class="mf">9.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">],</span>
+<span class="n">test_close</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">'flatten'</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">t</span><span class="p">),</span> <span class="n">tensor</span><span class="p">([[</span> <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">2.</span><span class="p">,</span>  <span class="mf">3.</span><span class="p">,</span>  <span class="mf">4.</span><span class="p">,</span>  <span class="mf">5.</span><span class="p">,</span>  <span class="mf">6.</span><span class="p">,</span>  <span class="mf">7.</span><span class="p">,</span>  <span class="mf">8.</span><span class="p">,</span>  <span class="mf">9.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">],</span>
                                                                            <span class="p">[</span><span class="mf">12.</span><span class="p">,</span> <span class="mf">13.</span><span class="p">,</span> <span class="mf">14.</span><span class="p">,</span> <span class="mf">15.</span><span class="p">,</span> <span class="mf">16.</span><span class="p">,</span> <span class="mf">17.</span><span class="p">,</span> <span class="mf">18.</span><span class="p">,</span> <span class="mf">19.</span><span class="p">,</span> <span class="mf">20.</span><span class="p">,</span> <span class="mf">21.</span><span class="p">,</span> <span class="mf">22.</span><span class="p">,</span> <span class="mf">23.</span><span class="p">]]))</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span> <span class="n">seq_len</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">'linear'</span><span class="p">,</span> <span class="n">seq_len</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -2710,23 +2773,23 @@ model = nn.Sequential(OrderedDict([
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">24</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">&#39;cls&#39;</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">t</span><span class="p">),</span> <span class="n">tensor</span><span class="p">([[</span> <span class="mf">0.</span><span class="p">,</span>  <span class="mf">4.</span><span class="p">,</span>  <span class="mf">8.</span><span class="p">],</span> <span class="p">[</span><span class="mf">12.</span><span class="p">,</span> <span class="mf">16.</span><span class="p">,</span> <span class="mf">20.</span><span class="p">]]))</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">&#39;max&#39;</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">t</span><span class="p">),</span> <span class="n">tensor</span><span class="p">([[</span> <span class="mf">3.</span><span class="p">,</span>  <span class="mf">7.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">],</span> <span class="p">[</span><span class="mf">15.</span><span class="p">,</span> <span class="mf">19.</span><span class="p">,</span> <span class="mf">23.</span><span class="p">]]))</span>
-<span class="n">test_close</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">t</span><span class="p">),</span> <span class="n">tensor</span><span class="p">([[</span> <span class="mf">2.</span><span class="p">,</span>  <span class="mf">6.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">],</span> <span class="p">[</span><span class="mf">14.</span><span class="p">,</span> <span class="mf">18.</span><span class="p">,</span> <span class="mf">22.</span><span class="p">]]))</span>
-<span class="n">test_close</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">&#39;max-mean&#39;</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">t</span><span class="p">),</span> <span class="n">tensor</span><span class="p">([[</span> <span class="mf">3.</span><span class="p">,</span>  <span class="mf">7.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">,</span>  <span class="mf">2.</span><span class="p">,</span>  <span class="mf">6.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">],</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">'cls'</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">t</span><span class="p">),</span> <span class="n">tensor</span><span class="p">([[</span> <span class="mf">0.</span><span class="p">,</span>  <span class="mf">4.</span><span class="p">,</span>  <span class="mf">8.</span><span class="p">],</span> <span class="p">[</span><span class="mf">12.</span><span class="p">,</span> <span class="mf">16.</span><span class="p">,</span> <span class="mf">20.</span><span class="p">]]))</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">'max'</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">t</span><span class="p">),</span> <span class="n">tensor</span><span class="p">([[</span> <span class="mf">3.</span><span class="p">,</span>  <span class="mf">7.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">],</span> <span class="p">[</span><span class="mf">15.</span><span class="p">,</span> <span class="mf">19.</span><span class="p">,</span> <span class="mf">23.</span><span class="p">]]))</span>
+<span class="n">test_close</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">'mean'</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">t</span><span class="p">),</span> <span class="n">tensor</span><span class="p">([[</span> <span class="mf">2.</span><span class="p">,</span>  <span class="mf">6.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">],</span> <span class="p">[</span><span class="mf">14.</span><span class="p">,</span> <span class="mf">18.</span><span class="p">,</span> <span class="mf">22.</span><span class="p">]]))</span>
+<span class="n">test_close</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">'max-mean'</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">t</span><span class="p">),</span> <span class="n">tensor</span><span class="p">([[</span> <span class="mf">3.</span><span class="p">,</span>  <span class="mf">7.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">,</span>  <span class="mf">2.</span><span class="p">,</span>  <span class="mf">6.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">],</span>
                                                                            <span class="p">[</span><span class="mf">15.</span><span class="p">,</span> <span class="mf">19.</span><span class="p">,</span> <span class="mf">23.</span><span class="p">,</span> <span class="mf">14.</span><span class="p">,</span> <span class="mf">18.</span><span class="p">,</span> <span class="mf">22.</span><span class="p">]]))</span>
-<span class="n">test_close</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">&#39;flatten&#39;</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">t</span><span class="p">),</span> <span class="n">tensor</span><span class="p">([[</span> <span class="mf">1.</span><span class="p">,</span>  <span class="mf">5.</span><span class="p">,</span>  <span class="mf">9.</span><span class="p">,</span>  <span class="mf">2.</span><span class="p">,</span>  <span class="mf">6.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">,</span>  <span class="mf">3.</span><span class="p">,</span>  <span class="mf">7.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">],</span>
+<span class="n">test_close</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">'flatten'</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">t</span><span class="p">),</span> <span class="n">tensor</span><span class="p">([[</span> <span class="mf">1.</span><span class="p">,</span>  <span class="mf">5.</span><span class="p">,</span>  <span class="mf">9.</span><span class="p">,</span>  <span class="mf">2.</span><span class="p">,</span>  <span class="mf">6.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">,</span>  <span class="mf">3.</span><span class="p">,</span>  <span class="mf">7.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">],</span>
                                                                            <span class="p">[</span><span class="mf">13.</span><span class="p">,</span> <span class="mf">17.</span><span class="p">,</span> <span class="mf">21.</span><span class="p">,</span> <span class="mf">14.</span><span class="p">,</span> <span class="mf">18.</span><span class="p">,</span> <span class="mf">22.</span><span class="p">,</span> <span class="mf">15.</span><span class="p">,</span> <span class="mf">19.</span><span class="p">,</span> <span class="mf">23.</span><span class="p">]]))</span>
 <span class="n">t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">24</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">&#39;conv1d&#39;</span><span class="p">,</span> <span class="n">seq_len</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">&#39;max&#39;</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">t</span><span class="p">),</span> <span class="n">tensor</span><span class="p">([[</span> <span class="mf">3.</span><span class="p">,</span>  <span class="mf">7.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">],</span> <span class="p">[</span><span class="mf">15.</span><span class="p">,</span> <span class="mf">19.</span><span class="p">,</span> <span class="mf">23.</span><span class="p">]]))</span>
-<span class="n">test_close</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">t</span><span class="p">),</span> <span class="n">tensor</span><span class="p">([[</span> <span class="mf">1.5000</span><span class="p">,</span>  <span class="mf">5.5000</span><span class="p">,</span>  <span class="mf">9.5000</span><span class="p">],</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">'conv1d'</span><span class="p">,</span> <span class="n">seq_len</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">'max'</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">t</span><span class="p">),</span> <span class="n">tensor</span><span class="p">([[</span> <span class="mf">3.</span><span class="p">,</span>  <span class="mf">7.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">],</span> <span class="p">[</span><span class="mf">15.</span><span class="p">,</span> <span class="mf">19.</span><span class="p">,</span> <span class="mf">23.</span><span class="p">]]))</span>
+<span class="n">test_close</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">'mean'</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">t</span><span class="p">),</span> <span class="n">tensor</span><span class="p">([[</span> <span class="mf">1.5000</span><span class="p">,</span>  <span class="mf">5.5000</span><span class="p">,</span>  <span class="mf">9.5000</span><span class="p">],</span>
                                                                         <span class="p">[</span><span class="mf">13.5000</span><span class="p">,</span> <span class="mf">17.5000</span><span class="p">,</span> <span class="mf">21.5000</span><span class="p">]]))</span>
-<span class="n">test_close</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">&#39;max-mean&#39;</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">t</span><span class="p">),</span> <span class="n">tensor</span><span class="p">([[</span> <span class="mf">3.</span><span class="p">,</span>  <span class="mf">7.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">,</span>  <span class="mf">1.5000</span><span class="p">,</span>  <span class="mf">5.5000</span><span class="p">,</span>  <span class="mf">9.5000</span><span class="p">],</span>
+<span class="n">test_close</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">'max-mean'</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">t</span><span class="p">),</span> <span class="n">tensor</span><span class="p">([[</span> <span class="mf">3.</span><span class="p">,</span>  <span class="mf">7.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">,</span>  <span class="mf">1.5000</span><span class="p">,</span>  <span class="mf">5.5000</span><span class="p">,</span>  <span class="mf">9.5000</span><span class="p">],</span>
                                                                             <span class="p">[</span><span class="mf">15.</span><span class="p">,</span> <span class="mf">19.</span><span class="p">,</span> <span class="mf">23.</span><span class="p">,</span> <span class="mf">13.5000</span><span class="p">,</span> <span class="mf">17.5000</span><span class="p">,</span> <span class="mf">21.5000</span><span class="p">]]))</span>
-<span class="n">test_close</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">&#39;flatten&#39;</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">t</span><span class="p">),</span> <span class="n">tensor</span><span class="p">([[</span> <span class="mf">0.</span><span class="p">,</span>  <span class="mf">4.</span><span class="p">,</span>  <span class="mf">8.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">5.</span><span class="p">,</span>  <span class="mf">9.</span><span class="p">,</span>  <span class="mf">2.</span><span class="p">,</span>  <span class="mf">6.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">,</span>  <span class="mf">3.</span><span class="p">,</span>  <span class="mf">7.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">],</span>
+<span class="n">test_close</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">'flatten'</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">t</span><span class="p">),</span> <span class="n">tensor</span><span class="p">([[</span> <span class="mf">0.</span><span class="p">,</span>  <span class="mf">4.</span><span class="p">,</span>  <span class="mf">8.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">5.</span><span class="p">,</span>  <span class="mf">9.</span><span class="p">,</span>  <span class="mf">2.</span><span class="p">,</span>  <span class="mf">6.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">,</span>  <span class="mf">3.</span><span class="p">,</span>  <span class="mf">7.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">],</span>
                                                                             <span class="p">[</span><span class="mf">12.</span><span class="p">,</span> <span class="mf">16.</span><span class="p">,</span> <span class="mf">20.</span><span class="p">,</span> <span class="mf">13.</span><span class="p">,</span> <span class="mf">17.</span><span class="p">,</span> <span class="mf">21.</span><span class="p">,</span> <span class="mf">14.</span><span class="p">,</span> <span class="mf">18.</span><span class="p">,</span> <span class="mf">22.</span><span class="p">,</span> <span class="mf">15.</span><span class="p">,</span> <span class="mf">19.</span><span class="p">,</span> <span class="mf">23.</span><span class="p">]]))</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">&#39;conv1d&#39;</span><span class="p">,</span> <span class="n">seq_len</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">PoolingLayer</span><span class="p">(</span><span class="s1">'conv1d'</span><span class="p">,</span> <span class="n">seq_len</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">seq_last</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -2744,6 +2807,7 @@ model = nn.Sequential(OrderedDict([
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -2769,6 +2833,7 @@ model = nn.Sequential(OrderedDict([
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -2803,6 +2868,7 @@ model = nn.Sequential(OrderedDict([
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="get_act_fn" class="doc_header"><code>get_act_fn</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L687" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_act_fn</code>(<strong><code>act</code></strong>, <strong>**<code>act_kwargs</code></strong>)</p>
 </blockquote>
@@ -2831,11 +2897,11 @@ model = nn.Sequential(OrderedDict([
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">get_act_fn</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">)</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(),</span> <span class="s2">&quot;ReLU()&quot;</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">get_act_fn</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">())</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(),</span> <span class="s2">&quot;ReLU()&quot;</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">get_act_fn</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">LeakyReLU</span><span class="p">,</span> <span class="n">negative_slope</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(),</span> <span class="s2">&quot;LeakyReLU(negative_slope=0.05)&quot;</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">get_act_fn</span><span class="p">(</span><span class="s1">&#39;reglu&#39;</span><span class="p">)</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(),</span> <span class="s2">&quot;ReGLU()&quot;</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">get_act_fn</span><span class="p">(</span><span class="s1">&#39;leakyrelu&#39;</span><span class="p">,</span> <span class="n">negative_slope</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(),</span> <span class="s2">&quot;LeakyReLU(negative_slope=0.05)&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">get_act_fn</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">)</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(),</span> <span class="s2">"ReLU()"</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">get_act_fn</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">())</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(),</span> <span class="s2">"ReLU()"</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">get_act_fn</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">LeakyReLU</span><span class="p">,</span> <span class="n">negative_slope</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(),</span> <span class="s2">"LeakyReLU(negative_slope=0.05)"</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">get_act_fn</span><span class="p">(</span><span class="s1">'reglu'</span><span class="p">)</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(),</span> <span class="s2">"ReGLU()"</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">get_act_fn</span><span class="p">(</span><span class="s1">'leakyrelu'</span><span class="p">,</span> <span class="n">negative_slope</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(),</span> <span class="s2">"LeakyReLU(negative_slope=0.05)"</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -2853,6 +2919,7 @@ model = nn.Sequential(OrderedDict([
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -2939,6 +3006,7 @@ model = nn.Sequential(OrderedDict([
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="max_pool_head" class="doc_header"><code>max_pool_head</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L710" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>max_pool_head</code>(<strong><code>n_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
@@ -2990,6 +3058,7 @@ model = nn.Sequential(OrderedDict([
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -3074,6 +3143,7 @@ model = nn.Sequential(OrderedDict([
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -3167,6 +3237,7 @@ model = nn.Sequential(OrderedDict([
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="create_mlp_head" class="doc_header"><code>create_mlp_head</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L755" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_mlp_head</code>(<strong><code>nf</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>=<em><code>None</code></em>, <strong><code>flatten</code></strong>=<em><code>True</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>lin_first</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
@@ -3243,6 +3314,7 @@ model = nn.Sequential(OrderedDict([
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -3322,6 +3394,7 @@ model = nn.Sequential(OrderedDict([
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="create_rnn_head" class="doc_header"><code>create_rnn_head</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L778" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_rnn_head</code>(<strong>*<code>args</code></strong>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
@@ -3397,6 +3470,7 @@ model = nn.Sequential(OrderedDict([
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -3484,6 +3558,7 @@ model = nn.Sequential(OrderedDict([
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -3722,6 +3797,7 @@ model = nn.Sequential(OrderedDict([
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="create_lin_nd_head" class="doc_header"><code>class</code> <code>create_lin_nd_head</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L831" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>create_lin_nd_head</code>(<strong><code>n_in</code></strong>, <strong><code>n_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>d</code></strong>, <strong><code>use_bn</code></strong>=<em><code>False</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>) :: <a href="/models.TabFusionTransformer.html#Sequential"><code>Sequential</code></a></p>
 </blockquote>
@@ -3954,6 +4030,7 @@ model = nn.Sequential(OrderedDict([
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="create_conv_3d_head" class="doc_header"><code>class</code> <code>create_conv_3d_head</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L859" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>create_conv_3d_head</code>(<strong><code>n_in</code></strong>, <strong><code>n_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>d</code></strong>, <strong><code>use_bn</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/models.TabFusionTransformer.html#Sequential"><code>Sequential</code></a></p>
 </blockquote>
@@ -4087,6 +4164,7 @@ model = nn.Sequential(OrderedDict([
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="universal_pool_head" class="doc_header"><code>universal_pool_head</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L872" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>universal_pool_head</code>(<strong><code>n_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>mult</code></strong>=<em><code>2</code></em>, <strong><code>pool_n_layers</code></strong>=<em><code>2</code></em>, <strong><code>pool_ln</code></strong>=<em><code>True</code></em>, <strong><code>pool_dropout</code></strong>=<em><code>0.5</code></em>, <strong><code>pool_act</code></strong>=<em><code>ReLU()</code></em>, <strong><code>zero_init</code></strong>=<em><code>True</code></em>, <strong><code>bn</code></strong>=<em><code>True</code></em>, <strong><code>fc_dropout</code></strong>=<em><code>0.0</code></em>)</p>
 </blockquote>
@@ -4151,10 +4229,10 @@ model = nn.Sequential(OrderedDict([
 <span class="n">t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">c_in</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">head</span> <span class="ow">in</span> <span class="n">heads</span><span class="p">:</span> 
     <span class="nb">print</span><span class="p">(</span><span class="n">head</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">head</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;create_conv_3d_head&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">head</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"create_conv_3d_head"</span><span class="p">:</span>
         <span class="n">h</span> <span class="o">=</span> <span class="n">head</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">)</span>
         <span class="n">test_eq</span><span class="p">(</span><span class="n">h</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">c_out</span><span class="p">))</span>
-    <span class="k">elif</span> <span class="s1">&#39;nd&#39;</span> <span class="ow">in</span> <span class="n">head</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span> 
+    <span class="k">elif</span> <span class="s1">'nd'</span> <span class="ow">in</span> <span class="n">head</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span> 
         <span class="n">h</span> <span class="o">=</span> <span class="n">head</span><span class="p">(</span><span class="n">c_in</span><span class="p">,</span> <span class="n">c_out</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
         <span class="n">test_eq</span><span class="p">(</span><span class="n">h</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">c_out</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span> 
@@ -4204,6 +4282,7 @@ gwa_pool_head
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -4257,6 +4336,7 @@ gwa_pool_head
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -4358,6 +4438,7 @@ gwa_pool_head
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="PositionwiseFeedForward" class="doc_header"><code>class</code> <code>PositionwiseFeedForward</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L918" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PositionwiseFeedForward</code>(<strong><code>dim</code></strong>, <strong><code>dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>act</code></strong>=<em><code>'reglu'</code></em>, <strong><code>mlp_ratio</code></strong>=<em><code>1</code></em>) :: <a href="/models.TabFusionTransformer.html#Sequential"><code>Sequential</code></a></p>
 </blockquote>
@@ -4421,6 +4502,7 @@ model = nn.Sequential(OrderedDict([
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="TokenLayer" class="doc_header"><code>class</code> <code>TokenLayer</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L927" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TokenLayer</code>(<strong><code>token</code></strong>=<em><code>True</code></em>) :: <code>Module</code></p>
 </blockquote>
@@ -4451,9 +4533,9 @@ model = nn.Sequential(OrderedDict([
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
-<span class="n">m</span> <span class="o">=</span> <span class="n">PositionwiseFeedForward</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">act</span><span class="o">=</span><span class="s1">&#39;reglu&#39;</span><span class="p">,</span> <span class="n">mlp_ratio</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">PositionwiseFeedForward</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">act</span><span class="o">=</span><span class="s1">'reglu'</span><span class="p">,</span> <span class="n">mlp_ratio</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">m</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="n">m</span> <span class="o">=</span> <span class="n">PositionwiseFeedForward</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">act</span><span class="o">=</span><span class="s1">&#39;smelu&#39;</span><span class="p">,</span> <span class="n">mlp_ratio</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">PositionwiseFeedForward</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">act</span><span class="o">=</span><span class="s1">'smelu'</span><span class="p">,</span> <span class="n">mlp_ratio</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">m</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 </pre></div>
 
@@ -4472,6 +4554,7 @@ model = nn.Sequential(OrderedDict([
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -4511,7 +4594,7 @@ by Lee et al, 2021)</p>
 
 <span class="n">n_heads</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="n">D</span> <span class="o">=</span> <span class="mi">128</span> <span class="c1"># model dimension</span>
-<span class="n">N</span> <span class="o">=</span> <span class="mi">512</span> <span class="c1"># max_seq_len - latent&#39;s index dimension</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">512</span> <span class="c1"># max_seq_len - latent's index dimension</span>
 <span class="n">d_k</span> <span class="o">=</span> <span class="n">D</span> <span class="o">//</span> <span class="n">n_heads</span>
 
 <span class="n">xb</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">M</span><span class="p">)</span>
@@ -4581,6 +4664,7 @@ by Lee et al, 2021)</p>
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="MultiheadAttention" class="doc_header"><code>class</code> <code>MultiheadAttention</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L989" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MultiheadAttention</code>(<strong><code>d_model</code></strong>, <strong><code>n_heads</code></strong>, <strong><code>d_k</code></strong>=<em><code>None</code></em>, <strong><code>d_v</code></strong>=<em><code>None</code></em>, <strong><code>res_attention</code></strong>=<em><code>False</code></em>, <strong><code>attn_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>proj_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>qkv_bias</code></strong>=<em><code>True</code></em>, <strong><code>lsa</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
@@ -4617,7 +4701,7 @@ by Lee et al, 2021)</p>
 <span class="n">key_padding_mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
 <span class="n">key_padding_mask</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">15</span><span class="p">],</span> <span class="o">-</span><span class="mi">10</span><span class="p">:]</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="n">key_padding_mask</span> <span class="o">=</span> <span class="n">key_padding_mask</span><span class="o">.</span><span class="n">bool</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;attn_mask&#39;</span><span class="p">,</span> <span class="n">attn_mask</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s1">&#39;key_padding_mask&#39;</span><span class="p">,</span> <span class="n">key_padding_mask</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'attn_mask'</span><span class="p">,</span> <span class="n">attn_mask</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s1">'key_padding_mask'</span><span class="p">,</span> <span class="n">key_padding_mask</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="n">output</span><span class="p">,</span> <span class="n">attn</span> <span class="o">=</span> <span class="n">ScaledDotProductAttention</span><span class="p">(</span><span class="mi">24</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">attn_dropout</span><span class="o">=</span><span class="mf">.1</span><span class="p">)(</span><span class="n">q</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">attn_mask</span><span class="o">=</span><span class="n">attn_mask</span><span class="p">,</span> <span class="n">key_padding_mask</span><span class="o">=</span><span class="n">key_padding_mask</span><span class="p">)</span>
 <span class="n">output</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">attn</span><span class="o">.</span><span class="n">shape</span>
 </pre></div>
@@ -4801,6 +4885,7 @@ by Lee et al, 2021)</p>
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="MultiConv1d" class="doc_header"><code>class</code> <code>MultiConv1d</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L1043" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MultiConv1d</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>=<em><code>None</code></em>, <strong><code>kss</code></strong>=<em><code>[1, 3, 5, 7]</code></em>, <strong><code>keep_original</code></strong>=<em><code>False</code></em>, <strong><code>separable</code></strong>=<em><code>False</code></em>, <strong><code>dim</code></strong>=<em><code>1</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Module</code></p>
 </blockquote>
@@ -4855,6 +4940,7 @@ by Lee et al, 2021)</p>
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="LSTMOutput" class="doc_header"><code>class</code> <code>LSTMOutput</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L1071" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTMOutput</code>() :: <code>Module</code></p>
 </blockquote>
@@ -4903,6 +4989,7 @@ by Lee et al, 2021)</p>
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -4954,6 +5041,7 @@ by Lee et al, 2021)</p>
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="TSEmbedding" class="doc_header"><code>class</code> <code>TSEmbedding</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/layers.py#L1081" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TSEmbedding</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>std</code></strong>=<em><code>0.01</code></em>, <strong><code>padding_idx</code></strong>=<em><code>None</code></em>) :: <code>Embedding</code></p>
 </blockquote>
@@ -4984,6 +5072,7 @@ by Lee et al, 2021)</p>
 <div class="output">
 
 <div class="output_area">
+
 
 
 <div class="output_markdown rendered_html output_subarea ">
@@ -5027,7 +5116,7 @@ by Lee et al, 2021)</p>
 <span class="n">inp</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">c</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">),</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
 <span class="n">memb</span> <span class="o">=</span> <span class="n">MultiEmbedding</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">n_embeds</span><span class="p">,</span> <span class="n">cat_pos</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
 <span class="c1"># registered buffers are part of the state_dict() but not module.parameters()</span>
-<span class="k">assert</span> <span class="nb">all</span><span class="p">([(</span><span class="n">k</span> <span class="ow">in</span> <span class="n">memb</span><span class="o">.</span><span class="n">state_dict</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;cat_pos&#39;</span><span class="p">,</span> <span class="s1">&#39;cont_pos&#39;</span><span class="p">]])</span>
+<span class="k">assert</span> <span class="nb">all</span><span class="p">([(</span><span class="n">k</span> <span class="ow">in</span> <span class="n">memb</span><span class="o">.</span><span class="n">state_dict</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'cat_pos'</span><span class="p">,</span> <span class="s1">'cont_pos'</span><span class="p">]])</span>
 <span class="n">embeddings</span> <span class="o">=</span> <span class="n">memb</span><span class="p">(</span><span class="n">inp</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">n_embeds</span><span class="p">,</span> <span class="n">szs</span><span class="p">,</span> <span class="n">inp</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">inp</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="nb">sum</span><span class="p">(</span><span class="n">szs</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">inp</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
@@ -5074,5 +5163,5 @@ by Lee et al, 2021)</p>
     {% endraw %}
 
 </div>
- 
+
 

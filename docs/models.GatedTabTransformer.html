@@ -60,6 +60,7 @@ nb_path: "nbs/121b_models.GatedTabTransformer.ipynb"
 <div class="output_area">
 
 
+
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="GatedTabTransformer" class="doc_header"><code>class</code> <code>GatedTabTransformer</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/GatedTabTransformer.py#L24" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GatedTabTransformer</code>(<strong><code>classes</code></strong>, <strong><code>cont_names</code></strong>, <strong><code>c_out</code></strong>, <strong><code>column_embed</code></strong>=<em><code>True</code></em>, <strong><code>add_shared_embed</code></strong>=<em><code>False</code></em>, <strong><code>shared_embed_div</code></strong>=<em><code>8</code></em>, <strong><code>embed_dropout</code></strong>=<em><code>0.1</code></em>, <strong><code>drop_whole_embed</code></strong>=<em><code>False</code></em>, <strong><code>d_model</code></strong>=<em><code>32</code></em>, <strong><code>n_layers</code></strong>=<em><code>6</code></em>, <strong><code>n_heads</code></strong>=<em><code>8</code></em>, <strong><code>d_k</code></strong>=<em><code>None</code></em>, <strong><code>d_v</code></strong>=<em><code>None</code></em>, <strong><code>d_ff</code></strong>=<em><code>None</code></em>, <strong><code>res_attention</code></strong>=<em><code>True</code></em>, <strong><code>attention_act</code></strong>=<em><code>'gelu'</code></em>, <strong><code>res_dropout</code></strong>=<em><code>0.1</code></em>, <strong><code>norm_cont</code></strong>=<em><code>True</code></em>, <strong><code>mlp_d_model</code></strong>=<em><code>32</code></em>, <strong><code>mlp_d_ffn</code></strong>=<em><code>64</code></em>, <strong><code>mlp_layers</code></strong>=<em><code>4</code></em>) :: <a href="/models.TabTransformer.html#TabTransformer"><code>TabTransformer</code></a></p>
 </blockquote>
@@ -73,7 +74,7 @@ import torch.nn.functional as F
 
 class Model(nn.Module):
     def __init__(self):
-        super(Model, self).__init__()
+        super().__init__()
         self.conv1 = nn.Conv2d(1, 20, 5)
         self.conv2 = nn.Conv2d(20, 20, 5)
 
@@ -84,6 +85,9 @@ class Model(nn.Module):
 </code></pre>
 <p>Submodules assigned in this way will be registered, and will have their
 parameters converted too when you call :meth:<code>to</code>, etc.</p>
+<p>.. note::
+    As per the example above, an <code>__init__()</code> call to the parent class
+    must be made before assignment on the child.</p>
 <p>:ivar training: Boolean represents whether this module is in training or
                 evaluation mode.
 :vartype training: bool</p>
@@ -120,10 +124,10 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 <span class="kn">from</span> <span class="nn">fastai.data.transforms</span> <span class="kn">import</span> <span class="n">Normalize</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="n">path</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">ADULT_SAMPLE</span><span class="p">)</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">&#39;adult.csv&#39;</span><span class="p">)</span>
-<span class="n">dls</span> <span class="o">=</span> <span class="n">TabularDataLoaders</span><span class="o">.</span><span class="n">from_csv</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">&#39;adult.csv&#39;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">y_names</span><span class="o">=</span><span class="s2">&quot;salary&quot;</span><span class="p">,</span>
-    <span class="n">cat_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;workclass&#39;</span><span class="p">,</span> <span class="s1">&#39;education&#39;</span><span class="p">,</span> <span class="s1">&#39;marital-status&#39;</span><span class="p">,</span> <span class="s1">&#39;occupation&#39;</span><span class="p">,</span> <span class="s1">&#39;relationship&#39;</span><span class="p">,</span> <span class="s1">&#39;race&#39;</span><span class="p">],</span>
-    <span class="n">cont_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">,</span> <span class="s1">&#39;fnlwgt&#39;</span><span class="p">,</span> <span class="s1">&#39;education-num&#39;</span><span class="p">],</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">'adult.csv'</span><span class="p">)</span>
+<span class="n">dls</span> <span class="o">=</span> <span class="n">TabularDataLoaders</span><span class="o">.</span><span class="n">from_csv</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">'adult.csv'</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">y_names</span><span class="o">=</span><span class="s2">"salary"</span><span class="p">,</span>
+    <span class="n">cat_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'workclass'</span><span class="p">,</span> <span class="s1">'education'</span><span class="p">,</span> <span class="s1">'marital-status'</span><span class="p">,</span> <span class="s1">'occupation'</span><span class="p">,</span> <span class="s1">'relationship'</span><span class="p">,</span> <span class="s1">'race'</span><span class="p">],</span>
+    <span class="n">cont_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'age'</span><span class="p">,</span> <span class="s1">'fnlwgt'</span><span class="p">,</span> <span class="s1">'education-num'</span><span class="p">],</span>
     <span class="n">procs</span> <span class="o">=</span> <span class="p">[</span><span class="n">Categorify</span><span class="p">,</span> <span class="n">FillMissing</span><span class="p">,</span> <span class="n">Normalize</span><span class="p">])</span>
 <span class="n">x_cat</span><span class="p">,</span> <span class="n">x_cont</span><span class="p">,</span> <span class="n">yb</span> <span class="o">=</span> <span class="n">first</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">train</span><span class="p">)</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">GatedTabTransformer</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">classes</span><span class="p">,</span> <span class="n">dls</span><span class="o">.</span><span class="n">cont_names</span><span class="p">,</span> <span class="n">dls</span><span class="o">.</span><span class="n">c</span><span class="p">)</span>
@@ -138,5 +142,5 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
     {% endraw %}
 
 </div>
- 
+
 
