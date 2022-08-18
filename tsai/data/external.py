@@ -15,7 +15,7 @@ import tempfile
 try: from urllib import urlretrieve
 except ImportError: from urllib.request import urlretrieve
 import shutil
-import distutils
+from distutils.util import strtobool
 from ..imports import *
 from ..utils import *
 from .validation import *
@@ -2600,9 +2600,9 @@ def convert_tsf_to_dataframe(full_file_path_and_name, replace_missing_vals_with 
                             elif line.startswith("@horizon"):
                                 forecast_horizon = int(line_content[1])
                             elif line.startswith("@missing"):
-                                contain_missing_values = bool(distutils.util.strtobool(line_content[1]))
+                                contain_missing_values = bool(strtobool(line_content[1]))
                             elif line.startswith("@equallength"):
-                                contain_equal_length = bool(distutils.util.strtobool(line_content[1]))
+                                contain_equal_length = bool(strtobool(line_content[1]))
 
                     else:
                         if len(col_names) == 0:
