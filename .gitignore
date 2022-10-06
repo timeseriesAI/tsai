@@ -168,3 +168,5 @@ tmp/
 pythonenv*/
 *.tgz
 token
+_docs/
+sidebar.yml
