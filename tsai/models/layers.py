@@ -915,7 +915,7 @@ class GaussianNoise(Module):
             x = x + sampled_noise
         return x 
 
-# %% ../../nbs/100_models.layers.ipynb 102
+# %% ../../nbs/100_models.layers.ipynb 103
 class PositionwiseFeedForward(nn.Sequential):
     def __init__(self, dim, dropout=0., act='reglu', mlp_ratio=1):
         act_mult = 2 if act.lower() in ["geglu", "reglu"] else 1
@@ -930,7 +930,7 @@ class TokenLayer(Module):
     def forward(self, x): return x[..., 0] if self.token is not None else x.mean(-1)
     def __repr__(self): return f"{self.__class__.__name__}()"
 
-# %% ../../nbs/100_models.layers.ipynb 104
+# %% ../../nbs/100_models.layers.ipynb 105
 class ScaledDotProductAttention(Module):
     r"""Scaled Dot-Product Attention module (Attention is all you need by Vaswani et al., 2017) with optional residual attention from previous layer 
     (Realformer: Transformer likes residual attention by He et al, 2020) and locality self sttention (Vision Transformer for Small-Size Datasets 
@@ -986,7 +986,7 @@ class ScaledDotProductAttention(Module):
         if self.res_attention: return output, attn_weights, attn_scores
         else: return output, attn_weights
 
-# %% ../../nbs/100_models.layers.ipynb 106
+# %% ../../nbs/100_models.layers.ipynb 107
 class MultiheadAttention(Module):
     def __init__(self, d_model, n_heads, d_k=None, d_v=None, res_attention=False, attn_dropout=0., proj_dropout=0., qkv_bias=True, lsa=False):
         """Multi Head Attention Layer
@@ -1040,7 +1040,7 @@ class MultiheadAttention(Module):
         if self.res_attention: return output, attn_weights, attn_scores
         else: return output, attn_weights 
 
-# %% ../../nbs/100_models.layers.ipynb 113
+# %% ../../nbs/100_models.layers.ipynb 114
 class MultiConv1d(Module):
     """Module that applies multiple convolutions with different kernel sizes"""
 
@@ -1068,17 +1068,17 @@ class MultiConv1d(Module):
         x = torch.cat(output, dim=self.dim)
         return x
 
-# %% ../../nbs/100_models.layers.ipynb 115
+# %% ../../nbs/100_models.layers.ipynb 116
 class LSTMOutput(Module):
     def forward(self, x): return x[0]
     def __repr__(self): return f'{self.__class__.__name__}()'
 
-# %% ../../nbs/100_models.layers.ipynb 117
+# %% ../../nbs/100_models.layers.ipynb 118
 def emb_sz_rule(n_cat):
     "Rule of thumb to pick embedding size corresponding to `n_cat` (original from fastai)"
     return min(600, round(1.6 * n_cat**0.56))
 
-# %% ../../nbs/100_models.layers.ipynb 119
+# %% ../../nbs/100_models.layers.ipynb 120
 class TSEmbedding(nn.Embedding):
     "Embedding layer with truncated normal initialization adapted from fastai"
     def __init__(self, ni, nf, std=0.01, padding_idx=None):
@@ -1087,7 +1087,7 @@ class TSEmbedding(nn.Embedding):
         if padding_idx is not None:
             nn.init.zeros_(self.weight.data[padding_idx])
 
-# %% ../../nbs/100_models.layers.ipynb 120
+# %% ../../nbs/100_models.layers.ipynb 121
 class MultiEmbedding(Module):
     def __init__(self, c_in, n_cat_embeds, cat_embed_dims=None, cat_pos=None, std=0.01, cat_padding_idxs=None):
         cat_n_embeds = listify(n_cat_embeds)

@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "tsai"
+  site-url: "https://timeseriesAI.github.io/tsai/"
+  description: "Practical Deep Learning for Time Series / Sequential Data library based on fastai & Pytorch"
+  repo-branch: main
+  repo-url: "https://github.com/timeseriesAI/tsai/tree/main/"

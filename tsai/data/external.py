@@ -2262,7 +2262,7 @@ def get_UCR_data(dsid, path='.', parent_dir='data/UCR', on_disk=True, mode='c', 
     
 get_classification_data = get_UCR_data
 
-# %% ../../nbs/012_data.external.ipynb 14
+# %% ../../nbs/012_data.external.ipynb 15
 def check_data(X, y=None, splits=None, show_plot=True):
     try: X_is_nan = np.isnan(X).sum()
     except: X_is_nan = 'could not be checked'
@@ -2291,7 +2291,7 @@ def check_data(X, y=None, splits=None, show_plot=True):
         print(f'splits - n_splits: {len(_splits)} shape: {_splits}  overlap: {overlap}')
         if show_plot: plot_splits(splits)
 
-# %% ../../nbs/012_data.external.ipynb 16
+# %% ../../nbs/012_data.external.ipynb 17
 def get_Monash_regression_list():
     return sorted([
         "AustraliaRainfall", "HouseholdPowerConsumption1",
@@ -2308,7 +2308,7 @@ regression_list = Monash_regression_list
 TSR_datasets = regression_datasets = regression_list
 len(Monash_regression_list)
 
-# %% ../../nbs/012_data.external.ipynb 17
+# %% ../../nbs/012_data.external.ipynb 18
 def get_Monash_regression_data(dsid, path='./data/Monash', on_disk=True, mode='c', Xdtype='float32', ydtype=None, split_data=True, force_download=False, 
                                verbose=False, timeout=4):
 
@@ -2405,7 +2405,7 @@ def get_Monash_regression_data(dsid, path='./data/Monash', on_disk=True, mode='c
 
 get_regression_data = get_Monash_regression_data
 
-# %% ../../nbs/012_data.external.ipynb 19
+# %% ../../nbs/012_data.external.ipynb 20
 def get_forecasting_list():
     return sorted([
         "Sunspots", "Weather"
@@ -2413,7 +2413,7 @@ def get_forecasting_list():
 
 forecasting_time_series = get_forecasting_list()
 
-# %% ../../nbs/012_data.external.ipynb 20
+# %% ../../nbs/012_data.external.ipynb 21
 def get_forecasting_time_series(dsid, path='./data/forecasting/', force_download=False, verbose=True, **kwargs):
     
     dsid_list = [fd for fd in forecasting_time_series if fd.lower() == dsid.lower()]
@@ -2484,7 +2484,7 @@ def get_forecasting_time_series(dsid, path='./data/forecasting/', force_download
         warnings.warn(f"Cannot download {dsid} dataset")
         return
 
-# %% ../../nbs/012_data.external.ipynb 23
+# %% ../../nbs/012_data.external.ipynb 24
 Monash_forecasting_list = ['m1_yearly_dataset',
                            'm1_quarterly_dataset',
                            'm1_monthly_dataset',
@@ -2540,7 +2540,7 @@ Monash_forecasting_list = ['m1_yearly_dataset',
 
 forecasting_list = Monash_forecasting_list
 
-# %% ../../nbs/012_data.external.ipynb 24
+# %% ../../nbs/012_data.external.ipynb 25
 ## Original code available at: https://github.com/rakshitha123/TSForecasting
 # This repository contains the implementations related to the experiments of a set of publicly available datasets that are used in 
 # the time series forecasting research space.
@@ -2677,7 +2677,7 @@ def convert_tsf_to_dataframe(full_file_path_and_name, replace_missing_vals_with 
 
         return loaded_data, frequency, forecast_horizon, contain_missing_values, contain_equal_length
 
-# %% ../../nbs/012_data.external.ipynb 25
+# %% ../../nbs/012_data.external.ipynb 26
 def get_Monash_forecasting_data(dsid, path='./data/forecasting/', force_download=False, remove_from_disk=False, verbose=True):
 
     pv(f'Dataset: {dsid}', verbose)

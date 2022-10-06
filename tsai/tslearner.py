@@ -73,7 +73,7 @@ class TSClassifier(Learner):
         if train_metrics and hasattr(self, "recorder"):
             self.recorder.train_metrics = True
 
-# %% ../nbs/052d_tslearner.ipynb 7
+# %% ../nbs/052d_tslearner.ipynb 8
 class TSRegressor(Learner):
     def __init__(self, X, y=None, splits=None, tfms=None, inplace=True, sel_vars=None, sel_steps=None, weights=None, partial_n=None, train_metrics=False,
                  bs=[64, 128], batch_size=None, batch_tfms=None, shuffle_train=True, drop_last=True, num_workers=0, do_setup=True, device=None,
@@ -130,7 +130,7 @@ class TSRegressor(Learner):
         if train_metrics and hasattr(self, "recorder"):
             self.recorder.train_metrics = True
 
-# %% ../nbs/052d_tslearner.ipynb 10
+# %% ../nbs/052d_tslearner.ipynb 11
 class TSForecaster(Learner):
     def __init__(self, X, y=None, splits=None, tfms=None, inplace=True, sel_vars=None, sel_steps=None, weights=None, partial_n=None, train_metrics=False,
                  bs=[64, 128], batch_size=None, batch_tfms=None, shuffle_train=True, drop_last=True, num_workers=0, do_setup=True, device=None,

@@ -57,7 +57,7 @@ class MixUp1d(MixHandler1d):
                 
 MixUp1D = MixUp1d
 
-# %% ../../nbs/018_data.mixed_augmentation.ipynb 7
+# %% ../../nbs/018_data.mixed_augmentation.ipynb 8
 class CutMix1d(MixHandler1d):
     "Implementation of `https://arxiv.org/abs/1905.04899`"
 
@@ -87,7 +87,7 @@ class CutMix1d(MixHandler1d):
         x2 = torch.clamp(cx + half_cut_seq_len, 0, seq_len)
         return x1, x2
 
-# %% ../../nbs/018_data.mixed_augmentation.ipynb 8
+# %% ../../nbs/018_data.mixed_augmentation.ipynb 9
 class IntraClassCutMix1d(Callback):
     "Implementation of CutMix applied to examples of the same class"
     run_valid = False

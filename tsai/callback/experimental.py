@@ -32,7 +32,7 @@ def gambler_loss(reward=2):
         return - doubling_rate.mean()
     return 
 
-# %% ../../nbs/060_callback.experimental.ipynb 8
+# %% ../../nbs/060_callback.experimental.ipynb 9
 class UBDAug(Callback):
     r"""A callback to implement the uncertainty-based data augmentation."""
     
@@ -77,7 +77,7 @@ class UBDAug(Callback):
 
     def __repr__(self): return f'UBDAug({[get_tfm_name(t) for t in self.batch_tfms]})'
 
-# %% ../../nbs/060_callback.experimental.ipynb 11
+# %% ../../nbs/060_callback.experimental.ipynb 13
 class BatchLossFilter(Callback):
     """ Callback that selects the hardest samples in every batch representing a percentage of the total loss"""
 
@@ -110,7 +110,7 @@ class BatchLossFilter(Callback):
     def after_fit(self):
         if hasattr(self.learn.loss_func, 'reduction'):  setattr(self.learn.loss_func, 'reduction', self.red)
 
-# %% ../../nbs/060_callback.experimental.ipynb 13
+# %% ../../nbs/060_callback.experimental.ipynb 15
 class RandomWeightLossWrapper(Callback):
 
     def before_fit(self):
@@ -136,7 +136,7 @@ class RandomWeightLossWrapper(Callback):
         if hasattr(self.crit, 'reduction'): setattr(self.crit, 'reduction', self.red)
         self.learn.loss_func = self.crit
 
-# %% ../../nbs/060_callback.experimental.ipynb 15
+# %% ../../nbs/060_callback.experimental.ipynb 17
 class BatchMasker(Callback):
     """ Callback that applies a random mask to each sample in a training batch
 
@@ -170,7 +170,7 @@ class BatchMasker(Callback):
         # mean_per_seq = (torch.max(torch.ones(1, device=mask.device), torch.sum(mask, dim=-1).unsqueeze(-1)) / mask.shape[-1])
         # self.learn.xb = (self.xb[0].masked_fill(mask, 0) / (1 - mean_per_seq), )
 
-# %% ../../nbs/060_callback.experimental.ipynb 17
+# %% ../../nbs/060_callback.experimental.ipynb 19
 class SamplerWithReplacement(Callback):
     """ Callback that modify the sampler to select a percentage of samples and/ or sequence steps with replacement from each training batch"""
 

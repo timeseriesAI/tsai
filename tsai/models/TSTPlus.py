@@ -303,7 +303,7 @@ class TSTPlus(nn.Sequential):
         plt.plot(-F.relu(-self.backbone.W_pos.data).mean(1).cpu())
         plt.show()
 
-# %% ../../nbs/108c_models.TSTPlus.ipynb 25
+# %% ../../nbs/108c_models.TSTPlus.ipynb 26
 @delegates(TSTPlus.__init__)
 class MultiTSTPlus(nn.Sequential):
     _arch = TSTPlus
@@ -341,7 +341,7 @@ class MultiTSTPlus(nn.Sequential):
         super().__init__(layers)
         self.to(self.device)
 
-# %% ../../nbs/108c_models.TSTPlus.ipynb 26
+# %% ../../nbs/108c_models.TSTPlus.ipynb 27
 class _Splitter(Module):
     def __init__(self, feat_list, branches):
         self.feat_list, self.branches = feat_list, branches

@@ -250,7 +250,7 @@ class MiniRocketHead(nn.Sequential):
         super().__init__(OrderedDict(
             [('backbone', nn.Sequential()), ('head', head)]))
 
-# %% ../../nbs/111d_models.MINIROCKETPlus_Pytorch.ipynb 11
+# %% ../../nbs/111d_models.MINIROCKETPlus_Pytorch.ipynb 13
 class InceptionRocketFeaturesPlus(nn.Module):
     fitting = False
 
@@ -298,7 +298,7 @@ class InceptionRocketFeaturesPlus(nn.Module):
         num_features_per_kernel_size = num_features_per_kernel * combs
         return num_features_per_kernel_size
 
-# %% ../../nbs/111d_models.MINIROCKETPlus_Pytorch.ipynb 12
+# %% ../../nbs/111d_models.MINIROCKETPlus_Pytorch.ipynb 14
 class InceptionRocketPlus(nn.Sequential):
 
     def __init__(self, c_in, c_out, seq_len, num_features=10_000, max_dilations_per_kernel=32, kernel_sizes=[3, 5, 7, 9],

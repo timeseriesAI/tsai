@@ -198,13 +198,13 @@ def split_Xy(X, y=None, splits=None):
 df2xy = df2Xy
 split_xy = split_Xy
 
-# %% ../../nbs/011_data.preparation.ipynb 22
+# %% ../../nbs/011_data.preparation.ipynb 24
 def df2np3d(df, groupby, data_cols=None):
     """Transforms a df (with the same number of rows per group in groupby) to a 3d ndarray"""
     if data_cols is None: data_cols = df.columns
     return np.stack([x[data_cols].values for _, x in df.groupby(groupby)]).transpose(0, 2, 1)
 
-# %% ../../nbs/011_data.preparation.ipynb 24
+# %% ../../nbs/011_data.preparation.ipynb 26
 def add_missing_value_cols(df, cols=None, dtype=float, fill_value=None):
     if cols is None: cols = df.columns
     elif not is_listy(cols): cols = [cols]
@@ -214,7 +214,7 @@ def add_missing_value_cols(df, cols=None, dtype=float, fill_value=None):
             df[col].fillna(fill_value)
     return df
 
-# %% ../../nbs/011_data.preparation.ipynb 26
+# %% ../../nbs/011_data.preparation.ipynb 28
 def add_missing_timestamps(df, datetime_col, groupby=None, fill_value=np.nan, range_by_group=True, freq=None):
     """Fills missing timestamps in a dataframe to a desired frequency
     Args:
@@ -253,7 +253,7 @@ def add_missing_timestamps(df, datetime_col, groupby=None, fill_value=np.nan, ra
         df = df.reset_index().reset_index(drop=True)
     return df
 
-# %% ../../nbs/011_data.preparation.ipynb 40
+# %% ../../nbs/011_data.preparation.ipynb 42
 def time_encoding(series, freq, max_val=None):
     """Transforms a pandas series of dtype datetime64 (of any freq) or DatetimeIndex into 2 float arrays
     
@@ -288,7 +288,7 @@ def time_encoding(series, freq, max_val=None):
     cos = np.cos(series.values / max_val * 2 * np.pi)
     return sin, cos
 
-# %% ../../nbs/011_data.preparation.ipynb 44
+# %% ../../nbs/011_data.preparation.ipynb 46
 def forward_gaps(o, normalize=True):
     """Number of sequence steps since previous real value along the last dimension of 3D arrays or tensors"""
 
@@ -356,7 +356,7 @@ def get_gaps(o : torch.Tensor, forward : bool = True, backward : bool = True,
         gaps = np.concatenate(_gaps, 1)
     return gaps
 
-# %% ../../nbs/011_data.preparation.ipynb 46
+# %% ../../nbs/011_data.preparation.ipynb 48
 def add_delta_timestamp_cols(df, cols=None, groupby=None, forward=True, backward=True, nearest=True, normalize=True):
     if cols is None: cols = df.columns
     elif not is_listy(cols): cols = [cols]
@@ -383,7 +383,7 @@ def add_delta_timestamp_cols(df, cols=None, groupby=None, forward=True, backward
         df[[f'{col}_dt_nearest' for col in cols]] = df[[f'{col}_dt_nearest' for col in cols]]
     return df
 
-# %% ../../nbs/011_data.preparation.ipynb 52
+# %% ../../nbs/011_data.preparation.ipynb 54
 # # SlidingWindow vectorization is based on "Fast and Robust Sliding Window Vectorization with NumPy" by Syafiq Kamarul Azman
 # # https://towardsdatascience.com/fast-and-robust-sliding-window-vectorization-with-numpy-3ad950ed62f5
 
@@ -536,7 +536,7 @@ def SlidingWindow(window_len:int, stride:Union[None, int]=1, start:int=0, pad_re
 
 SlidingWindowSplitter = SlidingWindow
 
-# %% ../../nbs/011_data.preparation.ipynb 87
+# %% ../../nbs/011_data.preparation.ipynb 90
 def SlidingWindowPanel(window_len:int, unique_id_cols:list, stride:Union[None, int]=1, start:int=0,
                        pad_remainder:bool=False, padding:str="post", padding_value:float=np.nan, add_padding_feature:bool=True,
                        get_x:Union[None, int, list]=None,  get_y:Union[None, int, list]=None, y_func:Optional[callable]=None,
@@ -633,7 +633,7 @@ def SlidingWindowPanel(window_len:int, unique_id_cols:list, stride:Union[None, i
 
 SlidingWindowPanelSplitter = SlidingWindowPanel
 
-# %% ../../nbs/011_data.preparation.ipynb 94
+# %% ../../nbs/011_data.preparation.ipynb 97
 def identify_padding(float_mask, value=-1):
     """Identifies padded subsequences in a mask of type float
     

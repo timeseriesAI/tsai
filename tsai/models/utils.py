@@ -239,14 +239,14 @@ def build_tabular_model(arch, dls, layers=None, emb_szs=None, n_out=None, y_rang
 
 create_tabular_model = build_tabular_model
 
-# %% ../../nbs/100b_models.utils.ipynb 17
+# %% ../../nbs/100b_models.utils.ipynb 18
 def get_clones(module, N):
     return nn.ModuleList([deepcopy(module) for i in range(N)])
 
-# %% ../../nbs/100b_models.utils.ipynb 19
+# %% ../../nbs/100b_models.utils.ipynb 20
 def split_model(m): return m.backbone, m.head
 
-# %% ../../nbs/100b_models.utils.ipynb 20
+# %% ../../nbs/100b_models.utils.ipynb 21
 @torch.no_grad()
 def output_size_calculator(mod, c_in, seq_len=None):
     assert isinstance(mod, nn.Module)
@@ -268,13 +268,13 @@ def output_size_calculator(mod, c_in, seq_len=None):
     else: 
         return c_out, None
 
-# %% ../../nbs/100b_models.utils.ipynb 22
+# %% ../../nbs/100b_models.utils.ipynb 23
 def change_model_head(model, custom_head, **kwargs):
     r"""Replaces a model's head by a custom head as long as the model has a head, head_nf, c_out and seq_len attributes"""
     model.head = custom_head(model.head_nf, model.c_out, model.seq_len, **kwargs)
     return model
 
-# %% ../../nbs/100b_models.utils.ipynb 23
+# %% ../../nbs/100b_models.utils.ipynb 24
 def naive_forecaster(o, split, horizon=1):
     if is_listy(horizon):
         _f = []

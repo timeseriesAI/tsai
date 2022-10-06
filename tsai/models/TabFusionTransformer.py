@@ -279,7 +279,7 @@ class TabFusionTransformer(Sequential):
 
         super().__init__(OrderedDict([('backbone', backbone), ('head', head)]))
 
-# %% ../../nbs/122_models.TabFusionTransformer.ipynb 6
+# %% ../../nbs/122_models.TabFusionTransformer.ipynb 7
 class TSTabFusionTransformer(nn.Module):
     def __init__(self, c_in, c_out, seq_len, classes, cont_names, 
                  d_model=32, n_layers=6, n_heads=8, d_k=None, d_v=None, d_ff=None, res_attention=True, attention_act='gelu', res_dropout=0., 

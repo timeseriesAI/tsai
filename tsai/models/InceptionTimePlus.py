@@ -140,7 +140,7 @@ InceptionTimePlus47x47 = named_partial('InceptionTimePlus47x47', InceptionTimePl
 InceptionTimePlus62x62 = named_partial('InceptionTimePlus62x62', InceptionTimePlus, nf=62, depth=9)
 InceptionTimeXLPlus = named_partial('InceptionTimeXLPlus', InceptionTimePlus, nf=64, depth=12)
 
-# %% ../../nbs/102b_models.InceptionTimePlus.ipynb 12
+# %% ../../nbs/102b_models.InceptionTimePlus.ipynb 13
 @delegates(InceptionTimePlus.__init__)
 class MultiInceptionTimePlus(nn.Sequential):
     """Class that allows you to create a model with multiple branches of InceptionTimePlus."""
@@ -176,7 +176,7 @@ class MultiInceptionTimePlus(nn.Sequential):
         layers = OrderedDict([('backbone', nn.Sequential(backbone)), ('head', nn.Sequential(head))])
         super().__init__(layers)
 
-# %% ../../nbs/102b_models.InceptionTimePlus.ipynb 13
+# %% ../../nbs/102b_models.InceptionTimePlus.ipynb 14
 class _Splitter(Module):
     def __init__(self, feat_list, branches):
         self.feat_list, self.branches = feat_list, branches
