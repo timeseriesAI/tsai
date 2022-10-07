@@ -1,3 +1,8 @@
+import platform, os
+if platform.system()=='Darwin':
+    # workaround "OMP: Error #15: Initializing libiomp5.dylib, but found libomp.dylib already initialized"
+    os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
+
 import numpy as np
 from numpy import array
 import pandas as pd
@@ -7,7 +12,6 @@ from functools import partial
 import math
 import random
 import gc
-import os
 import sys
 from numbers import Integral
 from pathlib import Path
@@ -194,12 +198,12 @@ def beep(inp=1, duration=.1, n=1):
         time.sleep(duration / .1)
 
 def create_scripts(nb_name=None, max_elapsed=60, wait=2):
-    from nbdev.export import notebook2script
+    from nbdev import nbdev_export
     if nb_name is not None: wait = 0
     try: save_nb(nb_name)
     except: save_nb(wait=wait)
     time.sleep(0.5)
-    notebook2script(nb_name)
+    nbdev_export(nb_name)
     if nb_name is None: output = all_last_saved(max_elapsed=max_elapsed)
     else: output = py_last_saved(nb_name=nb_name, max_elapsed=max_elapsed)
     beep(output)
@@ -295,10 +299,8 @@ def import_file_as_module(filepath, return_path=False):
     else: return module
 
 def my_setup(*pkgs):
-    import warnings
     warnings.filterwarnings("ignore")
     try: 
-        import platform
         print(f'os              : {platform.platform()}')
     except: 
         pass

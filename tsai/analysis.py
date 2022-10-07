@@ -3,11 +3,11 @@
 __all__ = []
 
 # Cell
+from .imports import *
 import sklearn.metrics as skm
 from sklearn.model_selection import train_test_split
 from fastai.learner import *
 from fastai.interpret import *
-from .imports import *
 from .utils import *
 from .data.preprocessing import *
 from .data.core import *

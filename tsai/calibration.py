@@ -3,8 +3,8 @@
 __all__ = ['ModelWithTemperature', 'TemperatureSetter', 'ECELoss', 'plot_calibration_curve']
 
 # Cell
-from sklearn.calibration import calibration_curve
 from .imports import *
+from sklearn.calibration import calibration_curve
 from .data.core import *
 
 # Cell

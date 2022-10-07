@@ -3,6 +3,7 @@
 __all__ = ['get_nb_name', 'get_colab_nb_name', 'get_nb_path', 'nb_name_to_py', 'get_script_path', 'nb2py']
 
 # Cell
+from .imports import os, time, is_colab, maybe_mount_gdrive, save_nb, to_local_time
 import runpy
 import re
 import requests
@@ -10,7 +11,6 @@ from urllib.parse import unquote
 import shutil
 from fastcore.script import Param,call_parse, store_false, store_true
 import nbformat
-from .imports import os, time, is_colab, maybe_mount_gdrive, save_nb, to_local_time
 
 # Cell
 """

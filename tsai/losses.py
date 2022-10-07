@@ -3,8 +3,8 @@
 __all__ = ['HuberLoss', 'LogCoshLoss', 'MaskedLossWrapper', 'CenterLoss', 'CenterPlusLoss', 'FocalLoss', 'TweedieLoss']
 
 # Cell
-from fastai.losses import *
 from .imports import *
+from fastai.losses import *
 
 # Cell
 ## Available in Pytorch 1.9

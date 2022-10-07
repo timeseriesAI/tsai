@@ -3,10 +3,10 @@
 __all__ = ['ROCKET', 'create_rocket_features', 'get_rocket_features']
 
 # Cell
+from ..imports import *
 import sklearn
 from sklearn.linear_model import RidgeClassifierCV, RidgeCV
 from sklearn.metrics import make_scorer
-from ..imports import *
 from ..data.external import *
 from .layers import *
 warnings.filterwarnings("ignore", category=FutureWarning)

@@ -48,13 +48,14 @@ nb_path: "nbs/103d_models.gMLP.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="gMLP" class="doc_header"><code>class</code> <code>gMLP</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/gMLP.py#L55" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>gMLP</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>patch_size</code></strong>=<em><code>1</code></em>, <strong><code>d_model</code></strong>=<em><code>256</code></em>, <strong><code>d_ffn</code></strong>=<em><code>512</code></em>, <strong><code>depth</code></strong>=<em><code>6</code></em>) :: <code>_gMLPBackbone</code></p>
+<h2 id="gMLP" class="doc_header"><code>class</code> <code>gMLP</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/gMLP.py#L55" class="source_link" style="float:right">[source]</a></h2>
+<blockquote>
+<p><code>gMLP</code>(<strong><code>c_in</code></strong>, <strong><code>c_out</code></strong>, <strong><code>seq_len</code></strong>, <strong><code>patch_size</code></strong>=<em><code>1</code></em>, <strong><code>d_model</code></strong>=<em><code>256</code></em>, <strong><code>d_ffn</code></strong>=<em><code>512</code></em>, <strong><code>depth</code></strong>=<em><code>6</code></em>) :: <code>_gMLPBackbone</code></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
 <p>Modules can also contain other Modules, allowing to nest them in
 a tree structure. You can assign the submodules as regular attributes::</p>
-
 <pre><code>import torch.nn as nn
 import torch.nn.functional as F
 

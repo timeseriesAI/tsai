@@ -13,6 +13,7 @@ __all__ = ['prepare_idxs', 'prepare_sel_vars_and_steps', 'apply_sliding_window',
 #nbdev_comment from __future__ import annotations
 from ..imports import *
 from ..utils import *
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # Cell
 def prepare_idxs(o, shape=None):

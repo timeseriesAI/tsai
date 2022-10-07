@@ -48,7 +48,9 @@ nb_path: "nbs/111_models.ROCKET.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RocketClassifier" class="doc_header"><code>class</code> <code>RocketClassifier</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/ROCKET.py#L15" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RocketClassifier</code>() :: <code>Pipeline</code></p>
+<h2 id="RocketClassifier" class="doc_header"><code>class</code> <code>RocketClassifier</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/ROCKET.py#L15" class="source_link" style="float:right">[source]</a></h2>
+<blockquote>
+<p><code>RocketClassifier</code>() :: <code>Pipeline</code></p>
 </blockquote>
 <p>Time series classification using ROCKET features and a linear classifier</p>
 
@@ -81,7 +83,9 @@ nb_path: "nbs/111_models.ROCKET.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="load_rocket" class="doc_header"><code>load_rocket</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/ROCKET.py#L53" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_rocket</code>(<strong><code>fname</code></strong>=<em><code>'Rocket'</code></em>, <strong><code>path</code></strong>=<em><code>'./models'</code></em>)</p>
+<h4 id="load_rocket" class="doc_header"><code>load_rocket</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/ROCKET.py#L53" class="source_link" style="float:right">[source]</a></h4>
+<blockquote>
+<p><code>load_rocket</code>(<strong><code>fname</code></strong>=<em><code>'Rocket'</code></em>, <strong><code>path</code></strong>=<em><code>'./models'</code></em>)</p>
 </blockquote>
 
 </div>
@@ -113,7 +117,9 @@ nb_path: "nbs/111_models.ROCKET.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RocketRegressor" class="doc_header"><code>class</code> <code>RocketRegressor</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/ROCKET.py#L61" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RocketRegressor</code>() :: <code>Pipeline</code></p>
+<h2 id="RocketRegressor" class="doc_header"><code>class</code> <code>RocketRegressor</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/models/ROCKET.py#L61" class="source_link" style="float:right">[source]</a></h2>
+<blockquote>
+<p><code>RocketRegressor</code>() :: <code>Pipeline</code></p>
 </blockquote>
 <p>Time series regression using ROCKET features and a linear regressor</p>
 
@@ -142,9 +148,9 @@ nb_path: "nbs/111_models.ROCKET.ipynb"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Univariate classification with sklearn-type API</span>
-<span class="n">dsid</span> <span class="o">=</span> <span class="s1">'OliveOil'</span>
-<span class="n">fname</span> <span class="o">=</span> <span class="s1">'RocketClassifier'</span>
-<span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">Xdtype</span><span class="o">=</span><span class="s1">'float64'</span><span class="p">)</span>
+<span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;OliveOil&#39;</span>
+<span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;RocketClassifier&#39;</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">Xdtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
 <span class="bp">cls</span> <span class="o">=</span> <span class="n">RocketClassifier</span><span class="p">()</span>
 <span class="bp">cls</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
 <span class="bp">cls</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
@@ -182,9 +188,9 @@ nb_path: "nbs/111_models.ROCKET.ipynb"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Multivariate classification with sklearn-type API</span>
-<span class="n">dsid</span> <span class="o">=</span> <span class="s1">'NATOPS'</span>
-<span class="n">fname</span> <span class="o">=</span> <span class="s1">'RocketClassifier'</span>
-<span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">Xdtype</span><span class="o">=</span><span class="s1">'float64'</span><span class="p">)</span>
+<span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;NATOPS&#39;</span>
+<span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;RocketClassifier&#39;</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">get_UCR_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">Xdtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
 <span class="bp">cls</span> <span class="o">=</span> <span class="n">RocketClassifier</span><span class="p">()</span>
 <span class="bp">cls</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
 <span class="bp">cls</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
@@ -223,9 +229,9 @@ nb_path: "nbs/111_models.ROCKET.ipynb"
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Univariate regression with sklearn-type API</span>
 <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">mean_squared_error</span>
-<span class="n">dsid</span> <span class="o">=</span> <span class="s1">'Covid3Month'</span>
-<span class="n">fname</span> <span class="o">=</span> <span class="s1">'RocketRegressor'</span>
-<span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">get_Monash_regression_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">Xdtype</span><span class="o">=</span><span class="s1">'float64'</span><span class="p">)</span>
+<span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;Covid3Month&#39;</span>
+<span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;RocketRegressor&#39;</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">get_Monash_regression_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">Xdtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
 <span class="k">if</span> <span class="n">X_train</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> 
     <span class="n">rmse_scorer</span> <span class="o">=</span> <span class="n">make_scorer</span><span class="p">(</span><span class="n">mean_squared_error</span><span class="p">,</span> <span class="n">greater_is_better</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">reg</span> <span class="o">=</span> <span class="n">RocketRegressor</span><span class="p">(</span><span class="n">scoring</span><span class="o">=</span><span class="n">rmse_scorer</span><span class="p">)</span>
@@ -267,9 +273,9 @@ nb_path: "nbs/111_models.ROCKET.ipynb"
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Multivariate regression with sklearn-type API</span>
 <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">mean_squared_error</span>
-<span class="n">dsid</span> <span class="o">=</span> <span class="s1">'AppliancesEnergy'</span>
-<span class="n">fname</span> <span class="o">=</span> <span class="s1">'RocketRegressor'</span>
-<span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">get_Monash_regression_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">Xdtype</span><span class="o">=</span><span class="s1">'float64'</span><span class="p">)</span>
+<span class="n">dsid</span> <span class="o">=</span> <span class="s1">&#39;AppliancesEnergy&#39;</span>
+<span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;RocketRegressor&#39;</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">get_Monash_regression_data</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">Xdtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
 <span class="k">if</span> <span class="n">X_train</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> 
     <span class="n">rmse_scorer</span> <span class="o">=</span> <span class="n">make_scorer</span><span class="p">(</span><span class="n">mean_squared_error</span><span class="p">,</span> <span class="n">greater_is_better</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">reg</span> <span class="o">=</span> <span class="n">RocketRegressor</span><span class="p">(</span><span class="n">scoring</span><span class="o">=</span><span class="n">rmse_scorer</span><span class="p">)</span>

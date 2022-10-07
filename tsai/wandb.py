@@ -3,8 +3,8 @@
 __all__ = ['wandb_agent', 'get_wandb_agent', 'run_wandb_agent']
 
 # Cell
-from fastcore.script import *
 from .imports import *
+from fastcore.script import *
 from .utils import *
 from .export import *
 

@@ -13,11 +13,11 @@ __all__ = ['TSIdentity', 'TSShuffle_HLs', 'TSShuffleSteps', 'TSGaussianNoise', '
            'get_tfm_name']
 
 # Cell
+from ..imports import *
 from scipy.interpolate import CubicSpline
 from scipy.ndimage import convolve1d
 from fastcore.transform import compose_tfms
 from fastai.vision.augment import RandTransform
-from ..imports import *
 from ..utils import *
 from .core import *
 

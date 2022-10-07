@@ -5,11 +5,11 @@ __all__ = ['RandomSplitter', 'check_overlap', 'check_splits_overlap', 'leakage_f
            'combine_split_data', 'get_splits_len']
 
 # Cell
+from ..imports import *
 from imblearn.over_sampling import RandomOverSampler
 from matplotlib.patches import Patch
 from matplotlib.colors import LinearSegmentedColormap
 from sklearn.model_selection import train_test_split, KFold, StratifiedKFold
-from ..imports import *
 from ..utils import *
 
 # Cell

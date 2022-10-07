@@ -3,11 +3,11 @@
 __all__ = ['run_optuna_study']
 
 # Cell
+from .imports import *
 from pathlib import Path
 from fastcore.script import *
 import joblib
 from importlib import import_module
-from .imports import *
 import warnings
 warnings.filterwarnings("ignore")
 

@@ -23,13 +23,13 @@ __all__ = ['is_nparray', 'is_tensor', 'is_zarr', 'is_dask', 'is_memmap', 'is_sli
            'yaml2dict', 'str2list', 'str2index', 'get_cont_cols', 'get_cat_cols', 'alphabet', 'ALPHABET', 'get_mapping',
            'map_array', 'log_tfm', 'to_sincos_time', 'plot_feature_dist', 'rolling_moving_average', 'ffill_sequence',
            'bfill_sequence', 'fbfill_sequence', 'dummify', 'shuffle_along_axis', 'analyze_feature', 'analyze_array',
-           'get_relpath', 'split_in_chunks', 'save_object', 'load_object', 'get_idxs_to_keep']
+           'get_relpath', 'split_in_chunks', 'save_object', 'load_object', 'get_idxs_to_keep', 'zerofy']
 
 # Cell
+from .imports import *
 from scipy.stats import ttest_ind, ks_2samp, pearsonr, spearmanr, normaltest, linregress
 import joblib
 import string
-from .imports import *
 
 # Cell
 def is_nparray(o): return isinstance(o, np.ndarray)
@@ -1411,3 +1411,25 @@ def get_idxs_to_keep(o, cond, crit='all', invert=False, axis=(1,2), keepdims=Fal
             idxs_to_keep = np.any(idxs_to_keep, axis=axis, keepdims=keepdims)
         if invert: idxs_to_keep = ~idxs_to_keep
         return idxs_to_keep
+
+# Cell
+def zerofy(a, stride, keep=False):
+    "Create copies of an array setting individual/ group values to zero "
+    if keep:
+        a_copy = a.copy()[None]
+    a = a[None]
+    add_steps = np.int32(np.ceil(a.shape[2] / stride) * stride - a.shape[2])
+    if add_steps > 0:
+        a = np.concatenate([np.zeros((a.shape[0], a.shape[1], add_steps)), a], -1)
+    a = a.repeat(a.shape[1] * a.shape[2] / stride, 0)
+    a0 = np.arange(a.shape[0])[:, None]
+    a1 = np.repeat(np.arange(a.shape[1]), a.shape[0] // a.shape[1])[:, None]
+    a2 = np.lib.stride_tricks.sliding_window_view(np.arange(a.shape[-1]), stride, 0)[::stride]
+    a2 = np.repeat(a2[None], stride * a.shape[0] / a.shape[2], axis=0).reshape(-1, stride)
+    a[a0, a1, a2] = 0
+    if add_steps > 0:
+        a = a[..., add_steps:]
+    if keep:
+        return np.concatenate([a_copy, a])
+    else:
+        return a

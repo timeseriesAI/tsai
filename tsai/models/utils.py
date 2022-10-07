@@ -7,6 +7,7 @@ __all__ = ['apply_idxs', 'SeqTokenizer', 'SeqEmbed', 'get_embed_size', 'get_laye
            'split_model', 'output_size_calculator', 'change_model_head', 'naive_forecaster', 'true_forecaster']
 
 # Cell
+from ..imports import *
 from copy import deepcopy
 from fastai.layers import flatten_model, params, apply_init
 from fastai.learner import Learner
@@ -14,7 +15,6 @@ from fastai.data.transforms import get_c
 from fastai.tabular.model import *
 from fastai.callback.schedule import *
 from fastai.vision.models.xresnet import *
-from ..imports import *
 from .layers import *
 
 # Cell

@@ -9,6 +9,7 @@ __all__ = ['NumpyTensor', 'ToNumpyTensor', 'TSTensor', 'ToTSTensor', 'show_tuple
            'get_time_per_batch', 'get_dl_percent_per_epoch']
 
 # Cell
+from ..imports import *
 from sklearn.model_selection import StratifiedKFold
 from types import MethodType
 from matplotlib.ticker import PercentFormatter
@@ -22,7 +23,6 @@ from fastai.data.load import DataLoader
 from fastai.data.block import CategoryBlock, DataBlock
 from fastai.losses import MSELossFlat, CrossEntropyLossFlat, BCEWithLogitsLossFlat
 from fastai.vision.data import get_grid
-from ..imports import *
 from ..utils import *
 
 # Cell

@@ -3,8 +3,8 @@
 __all__ = ['ResBlockPlus', 'ResNetPlus']
 
 # Cell
-from fastai.layers import *
 from ..imports import *
+from fastai.layers import *
 from .layers import *
 from .utils import *
 

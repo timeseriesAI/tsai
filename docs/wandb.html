@@ -51,22 +51,22 @@ nb_path: "nbs/201_wandb.ipynb"
 
 <span class="c1"># @call_parse</span>
 <span class="c1"># def run_sweep(</span>
-<span class="c1">#     sweep:     Param("Path to YAML file with the sweep config", str) = None,</span>
-<span class="c1">#     program:   Param("Path to Python training script", str) = None,</span>
-<span class="c1">#     launch:    Param("Launch wanbd agent.", store_false) = True,</span>
-<span class="c1">#     count:     Param("Number of runs to execute", int) = None,</span>
-<span class="c1">#     entity:    Param("username or team name where you're sending runs", str) = None,</span>
-<span class="c1">#     project:   Param("The name of the project where you're sending the new run.", str) = None,</span>
-<span class="c1">#     sweep_id:  Param("Sweep ID. This option omits `sweep`", str) = None,</span>
-<span class="c1">#     relogin:   Param("Relogin to wandb.", store_true) = False,</span>
-<span class="c1">#     login_key: Param("Login key for wandb", str) = None,</span>
+<span class="c1">#     sweep:     Param(&quot;Path to YAML file with the sweep config&quot;, str) = None,</span>
+<span class="c1">#     program:   Param(&quot;Path to Python training script&quot;, str) = None,</span>
+<span class="c1">#     launch:    Param(&quot;Launch wanbd agent.&quot;, store_false) = True,</span>
+<span class="c1">#     count:     Param(&quot;Number of runs to execute&quot;, int) = None,</span>
+<span class="c1">#     entity:    Param(&quot;username or team name where you&#39;re sending runs&quot;, str) = None,</span>
+<span class="c1">#     project:   Param(&quot;The name of the project where you&#39;re sending the new run.&quot;, str) = None,</span>
+<span class="c1">#     sweep_id:  Param(&quot;Sweep ID. This option omits `sweep`&quot;, str) = None,</span>
+<span class="c1">#     relogin:   Param(&quot;Relogin to wandb.&quot;, store_true) = False,</span>
+<span class="c1">#     login_key: Param(&quot;Login key for wandb&quot;, str) = None,</span>
 <span class="c1"># ):</span>
 
 <span class="c1">#     # import wandb</span>
 <span class="c1">#     try:</span>
 <span class="c1">#         import wandb</span>
 <span class="c1">#     except ImportError:</span>
-<span class="c1">#         raise ImportError('You need to install wandb to run sweeps!')</span>
+<span class="c1">#         raise ImportError(&#39;You need to install wandb to run sweeps!&#39;)</span>
 
 <span class="c1">#     # Login to W&amp;B</span>
 <span class="c1">#     if relogin:</span>
@@ -77,43 +77,43 @@ nb_path: "nbs/201_wandb.ipynb"
 <span class="c1">#     # Sweep id</span>
 <span class="c1">#     if not sweep_id:</span>
 <span class="c1">#         # Load the sweep config</span>
-<span class="c1">#         assert os.path.isfile(sweep), f"can't find file {sweep}"</span>
+<span class="c1">#         assert os.path.isfile(sweep), f&quot;can&#39;t find file {sweep}&quot;</span>
 <span class="c1">#         if isinstance(sweep, str):</span>
 <span class="c1">#             sweep = yaml2dict(sweep)</span>
 <span class="c1">#         if program is None:</span>
-<span class="c1">#             program = sweep["program"]</span>
+<span class="c1">#             program = sweep[&quot;program&quot;]</span>
 <span class="c1">#         # Initialize the sweep</span>
-<span class="c1">#         print('Initializing sweep...')</span>
+<span class="c1">#         print(&#39;Initializing sweep...&#39;)</span>
 <span class="c1">#         sweep_id = wandb.sweep(sweep=sweep, entity=entity, project=project)</span>
-<span class="c1">#         print('...sweep initialized')</span>
+<span class="c1">#         print(&#39;...sweep initialized&#39;)</span>
 
 <span class="c1">#     # Load your training script</span>
-<span class="c1">#     print('Loading training script...')</span>
-<span class="c1">#     assert program is not None, "you need to pass either a sweep or program path"</span>
+<span class="c1">#     print(&#39;Loading training script...&#39;)</span>
+<span class="c1">#     assert program is not None, &quot;you need to pass either a sweep or program path&quot;</span>
 <span class="c1">#     while True: </span>
-<span class="c1">#         if program[0] in "/ .": program = program.split(program[0], 1)[1]</span>
+<span class="c1">#         if program[0] in &quot;/ .&quot;: program = program.split(program[0], 1)[1]</span>
 <span class="c1">#         else: break</span>
-<span class="c1">#     if '/' in program and program.rsplit('/', 1)[0] not in sys.path: sys.path.append(program.rsplit('/', 1)[0])</span>
-<span class="c1"># #     assert os.path.isfile(program), f"can't find file program = {program}"</span>
+<span class="c1">#     if &#39;/&#39; in program and program.rsplit(&#39;/&#39;, 1)[0] not in sys.path: sys.path.append(program.rsplit(&#39;/&#39;, 1)[0])</span>
+<span class="c1"># #     assert os.path.isfile(program), f&quot;can&#39;t find file program = {program}&quot;</span>
 <span class="c1">#     train_script, file_path = import_file_as_module(program, True)</span>
-<span class="c1">#     assert hasattr(train_script, "train")</span>
+<span class="c1">#     assert hasattr(train_script, &quot;train&quot;)</span>
 <span class="c1">#     train_fn = train_script.train</span>
-<span class="c1">#     print('...training script loaded')</span>
+<span class="c1">#     print(&#39;...training script loaded&#39;)</span>
 
 <span class="c1">#     # Launch agent</span>
 <span class="c1">#     if launch:</span>
-<span class="c1">#         print('\nRun additional sweep agents with:\n')</span>
+<span class="c1">#         print(&#39;\nRun additional sweep agents with:\n&#39;)</span>
 <span class="c1">#     else:</span>
-<span class="c1">#         print('\nRun sweep agent with:\n')</span>
-<span class="c1">#     print('    from a notebook:')</span>
-<span class="c1">#     print('        import wandb')</span>
-<span class="c1">#     print(f'        from {file_path} import train')</span>
-<span class="c1">#     print(f"        wandb.agent('{sweep_id}', function=train, count=None)\n")</span>
-<span class="c1">#     print('    from a terminal:')</span>
+<span class="c1">#         print(&#39;\nRun sweep agent with:\n&#39;)</span>
+<span class="c1">#     print(&#39;    from a notebook:&#39;)</span>
+<span class="c1">#     print(&#39;        import wandb&#39;)</span>
+<span class="c1">#     print(f&#39;        from {file_path} import train&#39;)</span>
+<span class="c1">#     print(f&quot;        wandb.agent(&#39;{sweep_id}&#39;, function=train, count=None)\n&quot;)</span>
+<span class="c1">#     print(&#39;    from a terminal:&#39;)</span>
 <span class="c1">#     print(</span>
-<span class="c1">#         f"        wandb agent {os.environ['WANDB_ENTITY']}/{os.environ['WANDB_PROJECT']}/{sweep_id}\n")</span>
+<span class="c1">#         f&quot;        wandb agent {os.environ[&#39;WANDB_ENTITY&#39;]}/{os.environ[&#39;WANDB_PROJECT&#39;]}/{sweep_id}\n&quot;)</span>
 <span class="c1">#     if launch:</span>
-<span class="c1">#         print('Running agent...')</span>
+<span class="c1">#         print(&#39;Running agent...&#39;)</span>
 <span class="c1">#         try: </span>
 <span class="c1">#             wandb.agent(sweep_id, function=train_fn, count=count)</span>
 <span class="c1">#         except KeyboardInterrupt:</span>
@@ -139,7 +139,9 @@ nb_path: "nbs/201_wandb.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="wandb_agent" class="doc_header"><code>wandb_agent</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/wandb.py#L12" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>wandb_agent</code>(<strong><code>script_path</code></strong>, <strong><code>sweep</code></strong>, <strong><code>entity</code></strong>=<em><code>None</code></em>, <strong><code>project</code></strong>=<em><code>None</code></em>, <strong><code>count</code></strong>=<em><code>None</code></em>, <strong><code>run</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="wandb_agent" class="doc_header"><code>wandb_agent</code><a href="https://github.com/timeseriesAI/tsai/tree/main/tsai/wandb.py#L12" class="source_link" style="float:right">[source]</a></h4>
+<blockquote>
+<p><code>wandb_agent</code>(<strong><code>script_path</code></strong>, <strong><code>sweep</code></strong>, <strong><code>entity</code></strong>=<em><code>None</code></em>, <strong><code>project</code></strong>=<em><code>None</code></em>, <strong><code>count</code></strong>=<em><code>None</code></em>, <strong><code>run</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 
 </div>
