@@ -9,21 +9,21 @@ __all__ = ['is_nparray', 'is_tensor', 'is_zarr', 'is_dask', 'is_memmap', 'is_sli
            'test_ge', 'test_lt', 'test_le', 'stack', 'stack_pad', 'pad_sequences', 'match_seq_len', 'random_shuffle',
            'cat2int', 'cycle_dl', 'cycle_dl_to_device', 'cycle_dl_estimate', 'cache_data', 'memmap2cache',
            'cache_memmap', 'get_func_defaults', 'get_idx_from_df_col_vals', 'get_sublist_idxs', 'flatten_list',
-           'display_pd_df', 'ttest', 'kstest', 'tscore', 'ttest_tensor', 'pcc', 'scc', 'a', 'b', 'remove_fn', 'npsave',
-           'np_save', 'permute_2D', 'random_normal', 'random_half_normal', 'random_normal_tensor',
-           'random_half_normal_tensor', 'default_dpi', 'get_plot_fig', 'fig2buf', 'plot_scatter', 'get_idxs',
-           'apply_cmap', 'torch_tile', 'to_tsfresh_df', 'pcorr', 'scorr', 'torch_diff', 'get_outliers_IQR',
-           'clip_outliers', 'get_percentile', 'torch_clamp', 'get_robustscale_params', 'torch_slice_by_dim',
-           'torch_nanmean', 'torch_nanstd', 'concat', 'reduce_memory_usage', 'cls_name', 'roll2d', 'roll3d',
-           'random_roll2d', 'random_roll3d', 'rotate_axis0', 'rotate_axis1', 'rotate_axis2', 'chunks_calculator',
-           'is_memory_shared', 'assign_in_chunks', 'create_array', 'create_empty_array', 'np_save_compressed',
-           'np_load_compressed', 'np2memmap', 'torch_mean_groupby', 'torch_flip', 'torch_nan_to_num',
-           'torch_masked_to_num', 'mpl_trend', 'int2digits', 'array2digits', 'sincos_encoding', 'linear_encoding',
-           'encode_positions', 'sort_generator', 'get_subset_dict', 'create_dir', 'remove_dir', 'named_partial',
-           'yaml2dict', 'str2list', 'str2index', 'get_cont_cols', 'get_cat_cols', 'alphabet', 'ALPHABET', 'get_mapping',
-           'map_array', 'log_tfm', 'to_sincos_time', 'plot_feature_dist', 'rolling_moving_average', 'ffill_sequence',
-           'bfill_sequence', 'fbfill_sequence', 'dummify', 'shuffle_along_axis', 'analyze_feature', 'analyze_array',
-           'get_relpath', 'split_in_chunks', 'save_object', 'load_object', 'get_idxs_to_keep', 'zerofy']
+           'display_pd_df', 'ttest', 'kstest', 'tscore', 'pcc', 'scc', 'a', 'b', 'remove_fn', 'npsave', 'np_save',
+           'permute_2D', 'random_normal', 'random_half_normal', 'random_normal_tensor', 'random_half_normal_tensor',
+           'default_dpi', 'get_plot_fig', 'fig2buf', 'plot_scatter', 'get_idxs', 'apply_cmap', 'torch_tile',
+           'to_tsfresh_df', 'pcorr', 'scorr', 'torch_diff', 'get_outliers_IQR', 'clip_outliers', 'get_percentile',
+           'torch_clamp', 'get_robustscale_params', 'torch_slice_by_dim', 'torch_nanmean', 'torch_nanstd', 'concat',
+           'reduce_memory_usage', 'cls_name', 'roll2d', 'roll3d', 'random_roll2d', 'random_roll3d', 'rotate_axis0',
+           'rotate_axis1', 'rotate_axis2', 'chunks_calculator', 'is_memory_shared', 'assign_in_chunks', 'create_array',
+           'create_empty_array', 'np_save_compressed', 'np_load_compressed', 'np2memmap', 'torch_mean_groupby',
+           'torch_flip', 'torch_nan_to_num', 'torch_masked_to_num', 'mpl_trend', 'int2digits', 'array2digits',
+           'sincos_encoding', 'linear_encoding', 'encode_positions', 'sort_generator', 'get_subset_dict', 'create_dir',
+           'remove_dir', 'named_partial', 'yaml2dict', 'str2list', 'str2index', 'get_cont_cols', 'get_cat_cols',
+           'alphabet', 'ALPHABET', 'get_mapping', 'map_array', 'log_tfm', 'to_sincos_time', 'plot_feature_dist',
+           'rolling_moving_average', 'ffill_sequence', 'bfill_sequence', 'fbfill_sequence', 'dummify',
+           'shuffle_along_axis', 'analyze_feature', 'analyze_array', 'get_relpath', 'split_in_chunks', 'save_object',
+           'load_object', 'get_idxs_to_keep', 'zerofy']
 
 # Cell
 from .imports import *
@@ -528,17 +528,6 @@ def kstest(data1, data2, alternative='two-sided', mode='auto', by_axis=None):
 def tscore(o):
     if o.std() == 0: return 0
     else: return np.sqrt(len(o)) * o.mean() / o.std()
-
-# Cell
-def ttest_tensor(a, b):
-    "differentiable pytorch function equivalent to scipy.stats.ttest_ind with equal_var=False"
-    # calculate standard errors
-    se1, se2 = torch.std(a)/np.sqrt(len(a)), torch.std(b)/np.sqrt(len(b))
-    # standard error on the difference between the samples
-    sed = torch.sqrt(se1**2.0 + se2**2.0)
-    # calculate the t statistic
-    t_stat = (torch.mean(a) - torch.mean(b)) / sed
-    return t_stat
 
 # Cell
 def pcc(a, b):
