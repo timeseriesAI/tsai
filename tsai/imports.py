@@ -1,3 +1,8 @@
+import platform, os
+if platform.system()=='Darwin':
+    # workaround "OMP: Error #15: Initializing libiomp5.dylib, but found libomp.dylib already initialized"
+    os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
+
 import numpy as np
 from numpy import array
 import pandas as pd
@@ -7,7 +12,6 @@ from functools import partial
 import math
 import random
 import gc
-import os
 import sys
 from numbers import Integral
 from pathlib import Path
@@ -82,43 +86,43 @@ def to_local_time(t, time_format='%Y-%m-%d %H:%M:%S'):
 
 def _save_nb():
     """Save and checkpoints current jupyter notebook."""
-    
+
     from IPython.display import HTML, Javascript
     if is_lab():
         script = """
         this.nextElementSibling.focus();
         this.dispatchEvent(new KeyboardEvent('keydown', {key:'s', keyCode: 83, metaKey: true}));
         """
-        display(HTML(('<img src onerror="{}" style="display:none">' 
+        display(HTML(('<img src onerror="{}" style="display:none">'
                       '<input style="width:0;height:0;border:0">').format(script)))
     else:
         display(Javascript('IPython.notebook.save_checkpoint();'))
-        
+
 def save_nb(nb_name=None, attempts=1, verbose=True, wait=2):
     """
     Save and checkpoints current jupyter notebook. 1 attempt per second.
     """
 
     if nb_name is None:
-        if is_colab(): 
-            if verbose: 
+        if is_colab():
+            if verbose:
                 print('cannot save the notebook in Google Colab. Save it manually.')
         else:
             _save_nb()
     else:
         saved = False
         current_time = time.time()
-        if is_colab(): 
+        if is_colab():
             if verbose: print(f'cannot save the notebook in Google Colab. Last saved {to_local_time(os.path.getmtime(nb_name))}.')
-        else: 
+        else:
             for i in range(attempts):
-                _save_nb() 
+                _save_nb()
                 # confirm it's saved. This takes come variable time.
                 for j in range(20):
                     time.sleep(.5)
                     saved_time = os.path.getmtime(nb_name)
                     if  saved_time >= current_time: break
-                if saved_time >= current_time: 
+                if saved_time >= current_time:
                     saved = True
                     break
         assert saved, f"{nb_name} couldn't be saved."
@@ -168,9 +172,9 @@ def py_last_saved(nb_name, max_elapsed=1):
     print('\n')
     lib_path = Path(os.getcwd()).parent
     folder = Path(lib_path / lib_name)
-    if nb_name == "index.ipynb": 
+    if nb_name == "index.ipynb":
         script_name = nb_name
-    else: 
+    else:
         script_name = str(folder/".".join([str(nb_name).split("_", 1)[1:][0].replace(".ipynb", "").replace(".", "/"), "py"]))
     elapsed_time = time.time() - os.path.getmtime(script_name)
     if elapsed_time < max_elapsed:
@@ -189,27 +193,27 @@ def beep(inp=1, duration=.1, n=1):
     rate = 10000
     mult = 1.6 * inp if inp else .08
     wave = np.sin(mult*np.arange(rate*duration))
-    for i in range(n): 
+    for i in range(n):
         display(Audio(wave, rate=10000, autoplay=True))
         time.sleep(duration / .1)
 
 def create_scripts(nb_name=None, max_elapsed=60, wait=2):
-    from nbdev import nbdev_export
+    from nbdev.export import notebook2script
     if nb_name is not None: wait = 0
     try: save_nb(nb_name)
     except: save_nb(wait=wait)
     time.sleep(0.5)
-    nbdev_export(nb_name)
+    notebook2script(nb_name)
     if nb_name is None: output = all_last_saved(max_elapsed=max_elapsed)
     else: output = py_last_saved(nb_name=nb_name, max_elapsed=max_elapsed)
     beep(output)
     return output
 
 class Timer:
-    def __init__(self, verbose=True, return_seconds=True, instance=None): 
+    def __init__(self, verbose=True, return_seconds=True, instance=None):
         self.verbose, self.return_seconds, self.instance = verbose, return_seconds, instance
-        
-    def start(self, verbose=None, return_seconds=None, instance=None): 
+
+    def start(self, verbose=None, return_seconds=None, instance=None):
         if verbose is not None:
             self.verbose = verbose
         if return_seconds is not None:
@@ -243,9 +247,9 @@ class Timer:
         self.n += 1
         assert hasattr(self, "start_dt0"), "You need to first use timer.start()"
         elapsed = end_dt - self.start_dt
-        if self.all_elapsed == 0: 
+        if self.all_elapsed == 0:
             self.all_elapsed = elapsed
-        else: 
+        else:
             self.all_elapsed += elapsed
         total_elapsed = end_dt - self.start_dt0
         if self.return_seconds:
@@ -264,7 +268,7 @@ class Timer:
                 else:
                     print(f'Elapsed time ({self.n:3}): {elapsed}')
                     print(f'Total time              : {self.all_elapsed}')
-            else: 
+            else:
                 if self.instance is not None:
                     print(f'Total time         ({self.instance:3}): {total_elapsed}')
                 else:
@@ -279,55 +283,53 @@ def import_file_as_module(filepath, return_path=False):
     import importlib
     filepath = Path(filepath)
     sys.path.append("..")
-    if str(filepath.parent) != ".": 
+    if str(filepath.parent) != ".":
         sys.path.append(str(filepath.parent))
         mod_path = ".".join([str(filepath.parent).replace("/", "."), filepath.stem])
         package, name = mod_path.rsplit(".", 1)
-    else: 
+    else:
         mod_path = filepath.stem
         name, package = mod_path, None
-    try: 
+    try:
         module = importlib.import_module(mod_path)
-    except: 
+    except:
         module = importlib.import_module(name, package)
-    if return_path: 
+    if return_path:
         return module, mod_path
     else: return module
 
 def my_setup(*pkgs):
-    import warnings
     warnings.filterwarnings("ignore")
-    try: 
-        import platform
+    try:
         print(f'os              : {platform.platform()}')
-    except: 
+    except:
         pass
-    try: 
+    try:
         from platform import python_version
         print(f'python          : {python_version()}')
-    except: 
+    except:
         pass
-    try: 
+    try:
         import tsai
         print(f'tsai            : {tsai.__version__}')
-    except: 
+    except:
         print(f'tsai            : N/A')
-    try: 
+    try:
         import fastai
         print(f'fastai          : {fastai.__version__}')
-    except: 
+    except:
         print(f'fastai          : N/A')
-    try: 
+    try:
         import fastcore
         print(f'fastcore        : {fastcore.__version__}')
-    except: 
+    except:
         print(f'fastcore        : N/A')
-    
-    if pkgs: 
+
+    if pkgs:
         for pkg in pkgs:
             try: print(f'{pkg.__name__:15} : {pkg.__version__}')
-            except: pass 
-    try: 
+            except: pass
+    try:
         import torch
         print(f'torch           : {torch.__version__}')
         try:
@@ -358,6 +360,6 @@ def my_setup(*pkgs):
         print(f'GPU memory      : {get_gpu_memory()} GB')
     except:
         print(f'GPU memory      : N/A')
-        
-        
+
+
 computer_setup = my_setup
