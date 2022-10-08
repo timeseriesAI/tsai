@@ -170,3 +170,5 @@ pythonenv*/
 token
 _docs/
 _proc/
+_docs/
+sidebar.yml

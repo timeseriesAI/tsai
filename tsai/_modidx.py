@@ -2414,6 +2414,6 @@ d = { 'settings': { 'branch': 'main',
                             'tsai.utils.totensor': ('utils.html#totensor', 'tsai/utils.py'),
                             'tsai.utils.tscore': ('utils.html#tscore', 'tsai/utils.py'),
                             'tsai.utils.ttest': ('utils.html#ttest', 'tsai/utils.py'),
-                            'tsai.utils.ttest_tensor': ('utils.html#ttest_tensor', 'tsai/utils.py'),
-                            'tsai.utils.yaml2dict': ('utils.html#yaml2dict', 'tsai/utils.py')},
+                            'tsai.utils.yaml2dict': ('utils.html#yaml2dict', 'tsai/utils.py'),
+                            'tsai.utils.zerofy': ('utils.html#zerofy', 'tsai/utils.py')},
             'tsai.wandb': {'tsai.wandb.wandb_agent': ('wandb.html#wandb_agent', 'tsai/wandb.py')}}}

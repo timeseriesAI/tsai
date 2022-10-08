@@ -29,6 +29,7 @@ if cfg.get('pip_requirements'): requirements += cfg.get('pip_requirements','').s
 min_python = cfg['min_python']
 lic = licenses.get(cfg['license'].lower(), (cfg['license'], None))
 dev_requirements = (cfg.get('dev_requirements') or '').split()
+extra_requirements = (cfg.get('extra_requirements') or '').split()
 
 setuptools.setup(
     name = cfg['lib_name'],
@@ -42,7 +43,7 @@ setuptools.setup(
     packages = setuptools.find_packages(),
     include_package_data = True,
     install_requires = requirements,
-    extras_require={ 'dev': dev_requirements },
+    extras_require={ 'dev': dev_requirements, 'extras': extra_requirements },
     dependency_links = cfg.get('dep_links','').split(),
     python_requires  = '>=' + cfg['min_python'],
     long_description = open('README.md').read(),
