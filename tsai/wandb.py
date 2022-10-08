@@ -9,7 +9,7 @@ from fastcore.script import *
 from .utils import *
 from .export import *
 
-# %% ../nbs/201_wandb.ipynb 5
+# %% ../nbs/201_wandb.ipynb 3
 def wandb_agent(script_path, sweep, entity=None, project=None, count=None, run=True):
     try: import wandb
     except ImportError: raise ImportError('You need to install wandb to run sweeps!')
