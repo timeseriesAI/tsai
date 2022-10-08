@@ -3,7 +3,7 @@
 d = { 'settings': { 'branch': 'main',
                 'doc_baseurl': '/',
                 'doc_host': 'https://timeseriesAI.github.io/tsai',
-                'git_url': 'https://github.com/timeseriesAI/tsai/tree/main/',
+                'git_url': 'https://github.com/timeseriesAI/tsai/',
                 'lib_path': 'tsai'},
   'syms': { 'tsai.all': {},
             'tsai.analysis': { 'tsai.analysis.Learner.feature_importance': ('analysis.html#learner.feature_importance', 'tsai/analysis.py'),
