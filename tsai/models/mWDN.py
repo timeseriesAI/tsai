@@ -40,7 +40,7 @@ class WaveBlock(Module):
         lp_out = self.pool(lp_1)
         all_out = torch.cat((hp_out, lp_out), dim=-1)
         return lp_out, all_out
-
+    
     def create_W(self, P, is_l, is_comp=False):
         if is_l: filter_list = self.l_filter
         else: filter_list = self.h_filter
@@ -62,9 +62,9 @@ class mWDN(Module):
         self.levels=levels
         self.blocks = nn.ModuleList()
         if wavelet is not None:
-            try:
+            try: 
                 import pywt
-            except ImportError:
+            except ImportError: 
                 print("You need to either install pywt to run mWDN or leave wavelet=None")
         for i in range(levels): self.blocks.append(WaveBlock(c_in, c_out, seq_len // 2 ** i, wavelet=wavelet))
         self._model = build_model(base_arch, c_in, c_out, seq_len=seq_len, **kwargs)
@@ -75,7 +75,7 @@ class mWDN(Module):
             if i == 0: out = out_ if i == 0 else torch.cat((out, out_), dim=-1)
         out = self._model(out)
         return out
-
+    
 
 class mWDNBlocks(Module):
     def __init__(self, c_in, c_out, seq_len, levels=3, wavelet=None):
@@ -88,7 +88,7 @@ class mWDNBlocks(Module):
             x, out_ =  self.blocks[i](x)
             if i == 0: out = out_ if i == 0 else torch.cat((out, out_), dim=-1)
         return out
-
+    
 
 class mWDNPlus(nn.Sequential):
     def __init__(self, c_in, c_out, seq_len, levels=3, wavelet=None, base_model=None, base_arch=InceptionTimePlus, **kwargs):

@@ -10,7 +10,7 @@ from .layers import *
 # %% ../../nbs/102_models.InceptionTime.ipynb 3
 # This is an unofficial PyTorch implementation by Ignacio Oguiza - timeseriesAI@gmail.com based on:
 
-# Fawaz, H. I., Lucas, B., Forestier, G., Pelletier, C., Schmidt, D. F., Weber, J., ... & Petitjean, F. (2019).
+# Fawaz, H. I., Lucas, B., Forestier, G., Pelletier, C., Schmidt, D. F., Weber, J., ... & Petitjean, F. (2019). 
 # InceptionTime: Finding AlexNet for Time Series Classification. arXiv preprint arXiv:1909.04939.
 # Official InceptionTime tensorflow implementation: https://github.com/hfawaz/InceptionTime
 
@@ -40,12 +40,12 @@ class InceptionBlock(Module):
         self.inception, self.shortcut = nn.ModuleList(), nn.ModuleList()
         for d in range(depth):
             self.inception.append(InceptionModule(ni if d == 0 else nf * 4, nf, **kwargs))
-            if self.residual and d % 3 == 2:
+            if self.residual and d % 3 == 2: 
                 n_in, n_out = ni if d == 2 else nf * 4, nf * 4
                 self.shortcut.append(BN1d(n_in) if n_in == n_out else ConvBlock(n_in, n_out, 1, act=None))
         self.add = Add()
         self.act = nn.ReLU()
-
+        
     def forward(self, x):
         res = x
         for d, l in enumerate(range(self.depth)):
@@ -53,7 +53,7 @@ class InceptionBlock(Module):
             if self.residual and d % 3 == 2: res = x = self.act(self.add(x, self.shortcut[d//3](res)))
         return x
 
-
+    
 @delegates(InceptionModule.__init__)
 class InceptionTime(Module):
     def __init__(self, c_in, c_out, seq_len=None, nf=32, nb_filters=None, **kwargs):
