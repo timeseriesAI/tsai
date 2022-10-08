@@ -11,7 +11,7 @@ from .layers import *
 from .utils import *
 
 # %% ../../nbs/113_models.TCN.ipynb 4
-# This is an unofficial PyTorch implementation by Ignacio Oguiza - oguiza@gmail.com based on:
+# This is an unofficial PyTorch implementation by Ignacio Oguiza - timeseriesAI@gmail.com based on:
 
 # Bai, S., Kolter, J. Z., & Koltun, V. (2018). An empirical evaluation of generic convolutional and recurrent networks for sequence modeling. arXiv preprint arXiv:1803.01271.
 # Official TCN PyTorch implementation: https://github.com/locuslab/TCN
@@ -27,7 +27,7 @@ class TemporalBlock(Module):
         self.chomp2 = Chomp1d(padding)
         self.relu2 = nn.ReLU()
         self.dropout2 = nn.Dropout(dropout)
-        self.net = nn.Sequential(self.conv1, self.chomp1, self.relu1, self.dropout1, 
+        self.net = nn.Sequential(self.conv1, self.chomp1, self.relu1, self.dropout1,
                                  self.conv2, self.chomp2, self.relu2, self.dropout2)
         self.downsample = nn.Conv1d(ni,nf,1) if ni != nf else None
         self.relu = nn.ReLU()

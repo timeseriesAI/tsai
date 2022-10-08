@@ -6,14 +6,19 @@ format:
     theme: cosmo
     css: styles.css
     toc: true
+    toc-depth: 4
 
 website:
+  reader-mode: true
   twitter-card: true
   open-graph: true
   repo-actions: [issue]
   navbar:
     background: primary
     search: true
+    right:
+      - icon: github
+        href: "https://github.com/timeseriesAI/tsai"
   sidebar:
     style: floating
 

@@ -10,7 +10,7 @@ from .layers import *
 from .utils import *
 
 # %% ../../nbs/109_models.OmniScaleCNN.ipynb 3
-#This is an unofficial PyTorch implementation by Ignacio Oguiza - oguiza@gmail.com based on:
+#This is an unofficial PyTorch implementation by Ignacio Oguiza - timeseriesAI@gmail.com based on:
 # Rußwurm, M., & Körner, M. (2019). Self-attention for raw optical satellite time series classification. arXiv preprint arXiv:1910.10536.
 # Official implementation: https://github.com/dl4sits/BreizhCrops/blob/master/breizhcrops/models/OmniScaleCNN.py
 
