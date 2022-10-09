@@ -3,13 +3,13 @@
 # %% auto 0
 __all__ = ['ResBlockPlus', 'ResNetPlus']
 
-# %% ../../nbs/101b_models.ResNetPlus.ipynb 2
+# %% ../../nbs/101b_models.ResNetPlus.ipynb 3
 from ..imports import *
 from fastai.layers import *
 from .layers import *
 from .utils import *
 
-# %% ../../nbs/101b_models.ResNetPlus.ipynb 3
+# %% ../../nbs/101b_models.ResNetPlus.ipynb 4
 class ResBlockPlus(Module):
     def __init__(self, ni, nf, ks=[7, 5, 3], coord=False, separable=False, bn_1st=True, zero_norm=False, sa=False, se=None, act=nn.ReLU, act_kwargs={}):
         self.convblock1 = ConvBlock(

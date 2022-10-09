@@ -3,11 +3,11 @@
 # %% auto 0
 __all__ = ['SinCosPosEncoding', 'PositionalEncoding', 'Coord2dPosEncoding', 'Coord1dPosEncoding']
 
-# %% ../../nbs/100c_models.positional_encoders.ipynb 3
+# %% ../../nbs/100c_models.positional_encoders.ipynb 4
 from ..imports import *
 from ..utils import *
 
-# %% ../../nbs/100c_models.positional_encoders.ipynb 5
+# %% ../../nbs/100c_models.positional_encoders.ipynb 6
 def PositionalEncoding(q_len, d_model, normalize=True):
     pe = torch.zeros(q_len, d_model)
     position = torch.arange(0, q_len).unsqueeze(1)
@@ -21,7 +21,7 @@ def PositionalEncoding(q_len, d_model, normalize=True):
 
 SinCosPosEncoding = PositionalEncoding
 
-# %% ../../nbs/100c_models.positional_encoders.ipynb 7
+# %% ../../nbs/100c_models.positional_encoders.ipynb 8
 def Coord2dPosEncoding(q_len, d_model, exponential=False, normalize=True, eps=1e-3, verbose=False):
     x = .5 if exponential else 1
     i = 0
@@ -37,7 +37,7 @@ def Coord2dPosEncoding(q_len, d_model, exponential=False, normalize=True, eps=1e
         cpe = cpe / (cpe.std() * 10) 
     return cpe
 
-# %% ../../nbs/100c_models.positional_encoders.ipynb 9
+# %% ../../nbs/100c_models.positional_encoders.ipynb 10
 def Coord1dPosEncoding(q_len, exponential=False, normalize=True):
     cpe = (2 * (torch.linspace(0, 1, q_len).reshape(-1, 1)**(.5 if exponential else 1)) - 1)
     if normalize:

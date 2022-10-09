@@ -3,14 +3,14 @@
 # %% auto 0
 __all__ = ['MixedDataLoader', 'MixedDataLoaders', 'get_mixed_dls']
 
-# %% ../../nbs/022_data.mixed.ipynb 2
+# %% ../../nbs/022_data.mixed.ipynb 3
 from packaging import version
 from torch.utils.data.dataloader import _MultiProcessingDataLoaderIter, _SingleProcessDataLoaderIter, _DatasetKind
 from fastai.data.load import _FakeLoader
 from fastai.tabular.core import *
 from ..imports import *
 
-# %% ../../nbs/022_data.mixed.ipynb 3
+# %% ../../nbs/022_data.mixed.ipynb 4
 # This implementation of a mixed dataloader is based on a great implementation created by Zach Mueller in this fastai thread:
 # https://forums.fast.ai/t/combining-tabular-images-in-fastai2-and-should-work-with-almost-any-other-type/73197
 
@@ -159,7 +159,7 @@ class MixedDataLoader():
 class MixedDataLoaders(DataLoaders):
     pass
 
-# %% ../../nbs/022_data.mixed.ipynb 4
+# %% ../../nbs/022_data.mixed.ipynb 5
 def get_mixed_dls(*dls, device=None, shuffle_train=None, shuffle_valid=None, **kwargs):
     _mixed_train_dls = []
     _mixed_valid_dls = []

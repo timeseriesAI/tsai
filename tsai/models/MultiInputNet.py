@@ -3,12 +3,12 @@
 # %% auto 0
 __all__ = ['MultiInputNet']
 
-# %% ../../nbs/130_models.MultiInputNet.ipynb 2
+# %% ../../nbs/130_models.MultiInputNet.ipynb 3
 from ..imports import *
 from .layers import *
 from .utils import *
 
-# %% ../../nbs/130_models.MultiInputNet.ipynb 3
+# %% ../../nbs/130_models.MultiInputNet.ipynb 4
 class MultiInputNet(Module):
     
     def __init__(self, *models, c_out=None, reshape_fn=None, multi_output=False, custom_head=None, device=None, **kwargs):

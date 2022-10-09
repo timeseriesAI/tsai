@@ -3,13 +3,13 @@
 # %% auto 0
 __all__ = ['TSSequencer', 'TSSequencerPlus']
 
-# %% ../../nbs/125_models.TSSequencerPlus.ipynb 2
+# %% ../../nbs/125_models.TSSequencerPlus.ipynb 3
 from ..imports import *
 from .utils import *
 from .layers import *
 from typing import Callable
 
-# %% ../../nbs/125_models.TSSequencerPlus.ipynb 3
+# %% ../../nbs/125_models.TSSequencerPlus.ipynb 4
 class _TSSequencerEncoderLayer(nn.Module):
     def __init__(self, d_model:int, q_len:int=None, lstm_dropout:float=0., dropout:float=0, drop_path_rate:float=0., 
                  mlp_ratio:int=1, lstm_bias:bool=True, act:str='gelu', pre_norm:bool=False):
@@ -33,7 +33,7 @@ class _TSSequencerEncoderLayer(nn.Module):
             x = self.ff_norm(self.drop_path(self.pwff(x)) + x)
         return x
 
-# %% ../../nbs/125_models.TSSequencerPlus.ipynb 4
+# %% ../../nbs/125_models.TSSequencerPlus.ipynb 5
 class _TSSequencerEncoder(nn.Module):
     def __init__(self, d_model, depth:int=6, q_len:int=None, lstm_dropout:float=0., dropout:float=0, drop_path_rate:float=0., 
                  mlp_ratio:int=1, lstm_bias:bool=True, act:str='gelu', pre_norm:bool=False):
@@ -52,7 +52,7 @@ class _TSSequencerEncoder(nn.Module):
         x = self.norm(x)
         return x
 
-# %% ../../nbs/125_models.TSSequencerPlus.ipynb 5
+# %% ../../nbs/125_models.TSSequencerPlus.ipynb 6
 class _TSSequencerBackbone(Module):
     def __init__(self, c_in:int, seq_len:int, depth:int=6, d_model:int=128, act:str='gelu', 
                  lstm_bias:bool=True, lstm_dropout:float=0., dropout:float=0., drop_path_rate:float=0., mlp_ratio:int=1, 
@@ -139,7 +139,7 @@ class _TSSequencerBackbone(Module):
         x = x.transpose(1,2)
         return x
 
-# %% ../../nbs/125_models.TSSequencerPlus.ipynb 6
+# %% ../../nbs/125_models.TSSequencerPlus.ipynb 7
 class TSSequencerPlus(nn.Sequential):
     r"""Time Series Sequencer model based on:
 

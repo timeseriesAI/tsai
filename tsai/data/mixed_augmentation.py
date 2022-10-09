@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['MixUp1D', 'MixHandler1d', 'MixUp1d', 'CutMix1d', 'IntraClassCutMix1d']
 
-# %% ../../nbs/018_data.mixed_augmentation.ipynb 2
+# %% ../../nbs/018_data.mixed_augmentation.ipynb 3
 from torch.distributions.beta import Beta
 from fastai.callback.core import Callback
 from fastai.layers import NoneReduce
@@ -11,12 +11,12 @@ from ..imports import *
 from ..utils import *
 warnings.filterwarnings("ignore", category=UserWarning)
 
-# %% ../../nbs/018_data.mixed_augmentation.ipynb 3
+# %% ../../nbs/018_data.mixed_augmentation.ipynb 4
 def _reduce_loss(loss, reduction='mean'):
     "Reduce the loss based on `reduction`"
     return loss.mean() if reduction == 'mean' else loss.sum() if reduction == 'sum' else loss
 
-# %% ../../nbs/018_data.mixed_augmentation.ipynb 4
+# %% ../../nbs/018_data.mixed_augmentation.ipynb 5
 class MixHandler1d(Callback):
     "A handler class for implementing mixed sample data augmentation"
     run_valid = False
@@ -38,7 +38,7 @@ class MixHandler1d(Callback):
         with NoneReduce(self.old_lf) as lf: loss = torch.lerp(lf(pred, *self.yb1), lf(pred, *yb), self.lam)
         return _reduce_loss(loss, getattr(self.old_lf, 'reduction', 'mean'))
 
-# %% ../../nbs/018_data.mixed_augmentation.ipynb 5
+# %% ../../nbs/018_data.mixed_augmentation.ipynb 6
 class MixUp1d(MixHandler1d):
     "Implementation of https://arxiv.org/abs/1710.09412"
 
@@ -57,7 +57,7 @@ class MixUp1d(MixHandler1d):
                 
 MixUp1D = MixUp1d
 
-# %% ../../nbs/018_data.mixed_augmentation.ipynb 8
+# %% ../../nbs/018_data.mixed_augmentation.ipynb 9
 class CutMix1d(MixHandler1d):
     "Implementation of `https://arxiv.org/abs/1905.04899`"
 
@@ -87,7 +87,7 @@ class CutMix1d(MixHandler1d):
         x2 = torch.clamp(cx + half_cut_seq_len, 0, seq_len)
         return x1, x2
 
-# %% ../../nbs/018_data.mixed_augmentation.ipynb 9
+# %% ../../nbs/018_data.mixed_augmentation.ipynb 10
 class IntraClassCutMix1d(Callback):
     "Implementation of CutMix applied to examples of the same class"
     run_valid = False

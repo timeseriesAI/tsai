@@ -3,14 +3,14 @@
 # %% auto 0
 __all__ = ['XCM']
 
-# %% ../../nbs/114_models.XCM.ipynb 2
+# %% ../../nbs/114_models.XCM.ipynb 3
 from ..imports import *
 from ..utils import *
 from .layers import *
 from .utils import *
 from .explainability import *
 
-# %% ../../nbs/114_models.XCM.ipynb 3
+# %% ../../nbs/114_models.XCM.ipynb 4
 # This is an unofficial PyTorch implementation of XVM created by Ignacio Oguiza - timeseriesAU@gmail.com based on:
 
 # Fauvel, K., Lin, T., Masson, V., Fromont, É., & Termier, A. (2020). XCM: An Explainable Convolutional Neural Network 

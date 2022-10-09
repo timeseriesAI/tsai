@@ -4,13 +4,13 @@
 __all__ = ['xresnet1d18', 'xresnet1d34', 'xresnet1d50', 'xresnet1d101', 'xresnet1d152', 'xresnet1d18_deep', 'xresnet1d34_deep',
            'xresnet1d50_deep', 'xresnet1d18_deeper', 'xresnet1d34_deeper', 'xresnet1d50_deeper']
 
-# %% ../../nbs/112_models.XResNet1d.ipynb 2
+# %% ../../nbs/112_models.XResNet1d.ipynb 3
 from fastai.vision.models.xresnet import *
 from ..imports import *
 from .layers import *
 from .utils import *
 
-# %% ../../nbs/112_models.XResNet1d.ipynb 3
+# %% ../../nbs/112_models.XResNet1d.ipynb 4
 @delegates(ResBlock)
 def xresnet1d18 (c_in, c_out, act=nn.ReLU, **kwargs): return xresnet18(c_in=c_in, n_out=c_out, act_cls=act, ndim=1, **kwargs)
 @delegates(ResBlock)

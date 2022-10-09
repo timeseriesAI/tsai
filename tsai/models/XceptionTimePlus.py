@@ -3,12 +3,12 @@
 # %% auto 0
 __all__ = ['XceptionModulePlus', 'XceptionBlockPlus', 'XceptionTimePlus']
 
-# %% ../../nbs/106b_models.XceptionTimePlus.ipynb 2
+# %% ../../nbs/106b_models.XceptionTimePlus.ipynb 3
 from ..imports import *
 from .layers import *
 from .utils import *
 
-# %% ../../nbs/106b_models.XceptionTimePlus.ipynb 3
+# %% ../../nbs/106b_models.XceptionTimePlus.ipynb 4
 # This is an unofficial PyTorch implementation developed by Ignacio Oguiza - timeseriesAI@gmail.com modified on:
 # Rahimian, E., Zabihi, S., Atashzar, S. F., Asif, A., & Mohammadi, A. (2019). 
 # XceptionTime: A Novel Deep Architecture based on Depthwise Separable Convolutions for Hand Gesture Classification. arXiv preprint arXiv:1911.03803.

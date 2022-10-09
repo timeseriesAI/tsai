@@ -3,13 +3,13 @@
 # %% auto 0
 __all__ = ['TabModel', 'TabBackbone', 'TabHead']
 
-# %% ../../nbs/120_models.TabModel.ipynb 2
+# %% ../../nbs/120_models.TabModel.ipynb 3
 from ..imports import *
 # from tsai.data.tabular import *
 from .layers import *
 from .utils import *
 
-# %% ../../nbs/120_models.TabModel.ipynb 3
+# %% ../../nbs/120_models.TabModel.ipynb 4
 class TabModel(Sequential): # Sequential accepts multiple inputs
     "Basic model for tabular data."
     def __init__(self, emb_szs, n_cont, c_out, layers=None, fc_dropout=None, embed_p=0., y_range=None, use_bn=True, bn_final=False, bn_cont=True,

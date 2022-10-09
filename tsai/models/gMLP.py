@@ -3,11 +3,11 @@
 # %% auto 0
 __all__ = ['gMLP']
 
-# %% ../../nbs/103d_models.gMLP.ipynb 2
+# %% ../../nbs/103d_models.gMLP.ipynb 3
 from ..imports import *
 from .layers import *
 
-# %% ../../nbs/103d_models.gMLP.ipynb 3
+# %% ../../nbs/103d_models.gMLP.ipynb 4
 class _SpatialGatingUnit(nn.Module):
     def __init__(self, d_ffn, seq_len):
         super().__init__()

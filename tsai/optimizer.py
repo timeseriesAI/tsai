@@ -3,9 +3,9 @@
 # %% auto 0
 __all__ = ['wrap_optimizer']
 
-# %% ../nbs/053_optimizer.ipynb 2
+# %% ../nbs/053_optimizer.ipynb 3
 from functools import partial
 from fastai.optimizer import *
 
-# %% ../nbs/053_optimizer.ipynb 3
+# %% ../nbs/053_optimizer.ipynb 4
 def wrap_optimizer(opt, **kwargs): return partial(OptimWrapper, opt=opt, **kwargs)

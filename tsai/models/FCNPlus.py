@@ -3,12 +3,12 @@
 # %% auto 0
 __all__ = ['FCNPlus']
 
-# %% ../../nbs/103c_models.FCNPlus.ipynb 2
+# %% ../../nbs/103c_models.FCNPlus.ipynb 3
 from ..imports import *
 from fastai.layers import *
 from .layers import *
 
-# %% ../../nbs/103c_models.FCNPlus.ipynb 3
+# %% ../../nbs/103c_models.FCNPlus.ipynb 4
 class FCNPlus(nn.Sequential):
     def __init__(self, c_in, c_out, layers=[128, 256, 128], kss=[7, 5, 3], coord=False, separable=False, use_bn=False, fc_dropout=0.,
                  zero_norm=False, act=nn.ReLU, act_kwargs={}, residual=False):

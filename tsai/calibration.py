@@ -3,12 +3,12 @@
 # %% auto 0
 __all__ = ['ModelWithTemperature', 'TemperatureSetter', 'ECELoss', 'plot_calibration_curve']
 
-# %% ../nbs/052c_calibration.ipynb 2
+# %% ../nbs/052c_calibration.ipynb 3
 from .imports import *
 from sklearn.calibration import calibration_curve
 from .data.core import *
 
-# %% ../nbs/052c_calibration.ipynb 3
+# %% ../nbs/052c_calibration.ipynb 4
 class ModelWithTemperature(nn.Module):
     """ A decorator which wraps a model with temperature scaling """
 
@@ -103,7 +103,7 @@ class ECELoss(nn.Module):
                 ece += torch.abs(avg_confidence_in_bin - accuracy_in_bin) * prop_in_bin
         return ece
 
-# %% ../nbs/052c_calibration.ipynb 4
+# %% ../nbs/052c_calibration.ipynb 5
 def plot_calibration_curve(labels, logits, cal_logits=None, figsize=(6,6), n_bins=10, strategy='uniform'):
     y_true = labels.cpu().numpy()
     pos_probas = F.softmax(logits, dim=1)[:, 1].detach().cpu().numpy()
@@ -132,7 +132,7 @@ def plot_calibration_curve(labels, logits, cal_logits=None, figsize=(6,6), n_bin
     plt.legend(loc='best')
     plt.show()
 
-# %% ../nbs/052c_calibration.ipynb 5
+# %% ../nbs/052c_calibration.ipynb 6
 @patch
 def calibrate_model(self:Learner, X=None, y=None, lr=1e-2, max_iter=10_000, line_search_fn=None, n_bins=10, strategy='uniform', 
                     show_plot=True, figsize=(6,6), verbose=True):

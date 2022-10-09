@@ -5,12 +5,12 @@ __all__ = ['XResNet1dPlus', 'xresnet1d18plus', 'xresnet1d34plus', 'xresnet1d50pl
            'xresnet1d18_deepplus', 'xresnet1d34_deepplus', 'xresnet1d50_deepplus', 'xresnet1d18_deeperplus',
            'xresnet1d34_deeperplus', 'xresnet1d50_deeperplus']
 
-# %% ../../nbs/112b_models.XResNet1dPlus.ipynb 2
+# %% ../../nbs/112b_models.XResNet1dPlus.ipynb 3
 from ..imports import *
 from .layers import *
 from .utils import *
 
-# %% ../../nbs/112b_models.XResNet1dPlus.ipynb 3
+# %% ../../nbs/112b_models.XResNet1dPlus.ipynb 4
 class XResNet1dPlus(nn.Sequential):
     @delegates(ResBlock1dPlus)
     def __init__(self, block, expansion, layers, fc_dropout=0.0, c_in=3, n_out=1000, stem_szs=(32,32,64),
@@ -47,11 +47,11 @@ class XResNet1dPlus(nn.Sequential):
         if isinstance(self, (nn.Conv1d,nn.Conv2d,nn.Conv3d,nn.Linear)): nn.init.kaiming_normal_(self.weight)
         for l in m.children(): self._init_cnn(l)
 
-# %% ../../nbs/112b_models.XResNet1dPlus.ipynb 4
+# %% ../../nbs/112b_models.XResNet1dPlus.ipynb 5
 def _xresnetplus(expansion, layers, **kwargs):
     return XResNet1dPlus(ResBlock1dPlus, expansion, layers, **kwargs)
 
-# %% ../../nbs/112b_models.XResNet1dPlus.ipynb 5
+# %% ../../nbs/112b_models.XResNet1dPlus.ipynb 6
 @delegates(ResBlock)
 def xresnet1d18plus (c_in, c_out, act=nn.ReLU, **kwargs): return _xresnetplus(1, [2, 2,  2, 2], c_in=c_in, n_out=c_out, act_cls=act, **kwargs)
 @delegates(ResBlock)

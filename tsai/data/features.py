@@ -3,14 +3,14 @@
 # %% auto 0
 __all__ = ['get_ts_features']
 
-# %% ../../nbs/020_data.features.ipynb 2
+# %% ../../nbs/020_data.features.ipynb 3
 from ..imports import *
 from ..utils import *
 from .external import *
 from .core import *
 from .tabular import *
 
-# %% ../../nbs/020_data.features.ipynb 4
+# %% ../../nbs/020_data.features.ipynb 5
 def get_ts_features(X:Union[np.ndarray, torch.Tensor], y:Union[None, np.ndarray, torch.Tensor]=None, features:Union[str, dict]='min', 
                     n_jobs:Optional[int]=None, **kwargs):
     """

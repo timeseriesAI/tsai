@@ -5,21 +5,21 @@ __all__ = ['recall_at_specificity', 'lift', 'lift_at_specificity', 'top_k_lift',
            'MatthewsCorrCoefBinary', 'get_task_metrics', 'accuracy_multi', 'metrics_multi_common', 'precision_multi',
            'recall_multi', 'specificity_multi', 'balanced_accuracy_multi', 'Fbeta_multi', 'F1_multi', 'mae', 'mape']
 
-# %% ../nbs/051_metrics.ipynb 2
+# %% ../nbs/051_metrics.ipynb 3
 import sklearn.metrics as skm
 from fastai.metrics import * 
 from .imports import *
 
-# %% ../nbs/051_metrics.ipynb 3
+# %% ../nbs/051_metrics.ipynb 4
 mk_class('ActivationType', **{o:o.lower() for o in ['No', 'Sigmoid', 'Softmax', 'BinarySoftmax']},
          doc="All possible activation classes for `AccumMetric")
 
-# %% ../nbs/051_metrics.ipynb 4
+# %% ../nbs/051_metrics.ipynb 5
 def MatthewsCorrCoefBinary(sample_weight=None):
     "Matthews correlation coefficient for single-label classification problems"
     return AccumMetric(skm.matthews_corrcoef, dim_argmax=-1, activation=ActivationType.BinarySoftmax, thresh=.5, sample_weight=sample_weight)
 
-# %% ../nbs/051_metrics.ipynb 5
+# %% ../nbs/051_metrics.ipynb 6
 def get_task_metrics(dls, binary_metrics=None, multi_class_metrics=None, regression_metrics=None, verbose=True): 
     if dls.c == 2: 
         pv('binary-classification task', verbose)
@@ -31,7 +31,7 @@ def get_task_metrics(dls, binary_metrics=None, multi_class_metrics=None, regress
         pv('regression task', verbose)
         return regression_metrics
 
-# %% ../nbs/051_metrics.ipynb 7
+# %% ../nbs/051_metrics.ipynb 8
 def accuracy_multi(inp, targ, thresh=0.5, sigmoid=True, by_sample=False):
     "Computes accuracy when `inp` and `targ` are the same size."
     if sigmoid: inp = inp.sigmoid()
@@ -145,19 +145,19 @@ def Fbeta_multi(inp, targ, beta=1.0, thresh=0.5, sigmoid=True):
 def F1_multi(*args, **kwargs):
     return Fbeta_multi(*args, **kwargs)  # beta defaults to 1.0
 
-# %% ../nbs/051_metrics.ipynb 8
+# %% ../nbs/051_metrics.ipynb 9
 def mae(inp,targ):
     "Mean absolute error between `inp` and `targ`."
     inp,targ = flatten_check(inp,targ)
     return torch.abs(inp - targ).mean()
 
-# %% ../nbs/051_metrics.ipynb 9
+# %% ../nbs/051_metrics.ipynb 10
 def mape(inp,targ):
     "Mean absolute percentage error between `inp` and `targ`."
     inp,targ = flatten_check(inp, targ)
     return (torch.abs(inp - targ) / torch.clamp_min(targ, 1e-8)).mean()
 
-# %% ../nbs/051_metrics.ipynb 10
+# %% ../nbs/051_metrics.ipynb 11
 def _recall_at_specificity(inp, targ, specificity=.95, axis=-1):
     inp0 = inp[(targ == 0).data]
     inp1 = inp[(targ == 1).data]
@@ -167,7 +167,7 @@ def _recall_at_specificity(inp, targ, specificity=.95, axis=-1):
 recall_at_specificity = AccumMetric(_recall_at_specificity, specificity=.95, activation=ActivationType.BinarySoftmax, 
                                     flatten=False, name='recall_at_specificity')
 
-# %% ../nbs/051_metrics.ipynb 11
+# %% ../nbs/051_metrics.ipynb 12
 def _lift(inp, targ, axis=-1):
     "Calculates lift as precision / average rate"
     return targ[(torch.argmax(inp, -1) == 1).data].mean() / targ.mean()
@@ -191,7 +191,7 @@ def _top_k_lift(inp, targ, k=0.01):
 
 top_k_lift = AccumMetric(_top_k_lift, k=.01, activation=ActivationType.BinarySoftmax, flatten=False, name='top_k_lift')
 
-# %% ../nbs/051_metrics.ipynb 12
+# %% ../nbs/051_metrics.ipynb 13
 def _mean_per_class_accuracy(y_true, y_pred, *, labels=None, sample_weight=None, normalize=None):
     cm = skm.confusion_matrix(y_true, y_pred, labels=labels, sample_weight=sample_weight, normalize=normalize)
     return (cm.diagonal() / cm.sum(1)).mean()

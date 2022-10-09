@@ -3,11 +3,11 @@
 # %% auto 0
 __all__ = ['FCN']
 
-# %% ../../nbs/103b_models.FCN.ipynb 2
+# %% ../../nbs/103b_models.FCN.ipynb 3
 from ..imports import *
 from .layers import *
 
-# %% ../../nbs/103b_models.FCN.ipynb 3
+# %% ../../nbs/103b_models.FCN.ipynb 4
 class FCN(Module):
     def __init__(self, c_in, c_out, layers=[128, 256, 128], kss=[7, 5, 3]):
         assert len(layers) == len(kss)

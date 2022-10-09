@@ -3,12 +3,12 @@
 # %% auto 0
 __all__ = ['RNN', 'LSTM', 'GRU']
 
-# %% ../../nbs/105_models.RNN.ipynb 2
+# %% ../../nbs/105_models.RNN.ipynb 3
 from ..imports import *
 from .layers import *
 from .utils import *
 
-# %% ../../nbs/105_models.RNN.ipynb 3
+# %% ../../nbs/105_models.RNN.ipynb 4
 class _RNN_Base(Module):
     def __init__(self, c_in, c_out, hidden_size=100, n_layers=1, bias=True, rnn_dropout=0, bidirectional=False, fc_dropout=0.):
         self.rnn = self._cell(c_in, hidden_size, num_layers=n_layers, bias=bias, batch_first=True, dropout=rnn_dropout, bidirectional=bidirectional)

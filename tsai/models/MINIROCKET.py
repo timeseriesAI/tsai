@@ -4,7 +4,7 @@
 __all__ = ['MiniRocketClassifier', 'load_minirocket', 'MiniRocketRegressor', 'MiniRocketVotingClassifier', 'get_minirocket_preds',
            'MiniRocketVotingRegressor']
 
-# %% ../../nbs/111b_models.MINIROCKET.ipynb 2
+# %% ../../nbs/111b_models.MINIROCKET.ipynb 3
 import sklearn
 from sklearn.metrics import make_scorer
 from sklearn.linear_model import RidgeCV, RidgeClassifierCV
@@ -15,7 +15,7 @@ from ..data.external import *
 from .layers import *
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
-# %% ../../nbs/111b_models.MINIROCKET.ipynb 3
+# %% ../../nbs/111b_models.MINIROCKET.ipynb 4
 class MiniRocketClassifier(sklearn.pipeline.Pipeline):
     """Time series classification using MINIROCKET features and a linear classifier"""
     def __init__(self, num_features=10_000, max_dilations_per_kernel=32, random_state=None,
@@ -55,7 +55,7 @@ class MiniRocketClassifier(sklearn.pipeline.Pipeline):
         with open(f'{filename}.pkl', 'wb') as output:
             pickle.dump(self, output, pickle.HIGHEST_PROTOCOL)
 
-# %% ../../nbs/111b_models.MINIROCKET.ipynb 4
+# %% ../../nbs/111b_models.MINIROCKET.ipynb 5
 def load_minirocket(fname, path='./models'):
     path = Path(path)
     filename = path/fname
@@ -63,7 +63,7 @@ def load_minirocket(fname, path='./models'):
         output = pickle.load(input)
     return output
 
-# %% ../../nbs/111b_models.MINIROCKET.ipynb 5
+# %% ../../nbs/111b_models.MINIROCKET.ipynb 6
 class MiniRocketRegressor(sklearn.pipeline.Pipeline):
     """Time series regression using MINIROCKET features and a linear regressor"""
     def __init__(self, num_features=10000, max_dilations_per_kernel=32, random_state=None,
@@ -99,7 +99,7 @@ class MiniRocketRegressor(sklearn.pipeline.Pipeline):
         with open(f'{filename}.pkl', 'wb') as output:
             pickle.dump(self, output, pickle.HIGHEST_PROTOCOL)
 
-# %% ../../nbs/111b_models.MINIROCKET.ipynb 6
+# %% ../../nbs/111b_models.MINIROCKET.ipynb 7
 def load_minirocket(fname, path='./models'):
     path = Path(path)
     filename = path/fname
@@ -107,7 +107,7 @@ def load_minirocket(fname, path='./models'):
         output = pickle.load(input)
     return output
 
-# %% ../../nbs/111b_models.MINIROCKET.ipynb 7
+# %% ../../nbs/111b_models.MINIROCKET.ipynb 8
 class MiniRocketVotingClassifier(VotingClassifier):
     """Time series classification ensemble using MINIROCKET features, a linear classifier and majority voting"""
     def __init__(self, n_estimators=5, weights=None, n_jobs=-1, num_features=10_000, max_dilations_per_kernel=32, random_state=None, 
@@ -137,7 +137,7 @@ class MiniRocketVotingClassifier(VotingClassifier):
         with open(f'{filename}.pkl', 'wb') as output:
             pickle.dump(self, output, pickle.HIGHEST_PROTOCOL)
 
-# %% ../../nbs/111b_models.MINIROCKET.ipynb 8
+# %% ../../nbs/111b_models.MINIROCKET.ipynb 9
 def get_minirocket_preds(X, fname, path='./models', model=None):
     if X.ndim == 1: X = X[np.newaxis][np.newaxis]
     elif X.ndim == 2: X = X[np.newaxis]
@@ -145,7 +145,7 @@ def get_minirocket_preds(X, fname, path='./models', model=None):
         model = load_minirocket(fname=fname, path=path)
     return model.predict(X)
 
-# %% ../../nbs/111b_models.MINIROCKET.ipynb 9
+# %% ../../nbs/111b_models.MINIROCKET.ipynb 10
 class MiniRocketVotingRegressor(VotingRegressor):
     """Time series regression ensemble using MINIROCKET features, a linear regressor and a voting regressor"""
     def __init__(self, n_estimators=5, weights=None, n_jobs=-1, num_features=10_000, max_dilations_per_kernel=32, random_state=None,

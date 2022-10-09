@@ -4,12 +4,12 @@
 __all__ = ['SampaddingConv1D_BN', 'build_layer_with_layer_parameter', 'OmniScaleCNN', 'get_Prime_number_in_a_range',
            'get_out_channel_number', 'generate_layer_parameter_list']
 
-# %% ../../nbs/109_models.OmniScaleCNN.ipynb 2
+# %% ../../nbs/109_models.OmniScaleCNN.ipynb 3
 from ..imports import *
 from .layers import *
 from .utils import *
 
-# %% ../../nbs/109_models.OmniScaleCNN.ipynb 3
+# %% ../../nbs/109_models.OmniScaleCNN.ipynb 4
 #This is an unofficial PyTorch implementation by Ignacio Oguiza - timeseriesAI@gmail.com based on:
 # Rußwurm, M., & Körner, M. (2019). Self-attention for raw optical satellite time series classification. arXiv preprint arXiv:1910.10536.
 # Official implementation: https://github.com/dl4sits/BreizhCrops/blob/master/breizhcrops/models/OmniScaleCNN.py

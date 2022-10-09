@@ -3,12 +3,12 @@
 # %% auto 0
 __all__ = []
 
-# %% ../nbs/052a_inference.ipynb 2
+# %% ../nbs/052a_inference.ipynb 3
 from fastai.learner import load_learner
 from fastai.learner import Learner
 from fastcore.basics import patch
 
-# %% ../nbs/052a_inference.ipynb 3
+# %% ../nbs/052a_inference.ipynb 4
 @patch
 def get_X_preds(self: Learner, X, y=None, bs=64, with_input=False, with_decoded=True, with_loss=False):
     if with_loss and y is None:

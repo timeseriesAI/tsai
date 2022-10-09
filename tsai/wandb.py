@@ -3,13 +3,13 @@
 # %% auto 0
 __all__ = ['get_wandb_agent', 'run_wandb_agent', 'wandb_agent']
 
-# %% ../nbs/201_wandb.ipynb 2
+# %% ../nbs/201_wandb.ipynb 3
 from .imports import *
 from fastcore.script import *
 from .utils import *
 from .export import *
 
-# %% ../nbs/201_wandb.ipynb 3
+# %% ../nbs/201_wandb.ipynb 4
 def wandb_agent(script_path, sweep, entity=None, project=None, count=None, run=True):
     try: import wandb
     except ImportError: raise ImportError('You need to install wandb to run sweeps!')

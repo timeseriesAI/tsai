@@ -12,7 +12,7 @@ __all__ = ['TSMagScaleByVar', 'TSRandomZoomIn', 'TSSubsampleSteps', 'TSRandomRot
            'TSVerticalFlip', 'TSResize', 'TSRandomSize', 'TSRandomLowRes', 'TSDownUpScale', 'TSRandomDownUpScale',
            'TSRandomConv', 'TSRandom2Value', 'TSMask2Value', 'RandAugment', 'TestTfm', 'get_tfm_name']
 
-# %% ../../nbs/017_data.transforms.ipynb 2
+# %% ../../nbs/017_data.transforms.ipynb 3
 from ..imports import *
 from scipy.interpolate import CubicSpline
 from scipy.ndimage import convolve1d
@@ -21,7 +21,7 @@ from fastai.vision.augment import RandTransform
 from ..utils import *
 from .core import *
 
-# %% ../../nbs/017_data.transforms.ipynb 5
+# %% ../../nbs/017_data.transforms.ipynb 6
 class TSIdentity(RandTransform):
     "Applies the identity tfm to a `TSTensor` batch"
     order = 90
@@ -30,7 +30,7 @@ class TSIdentity(RandTransform):
         super().__init__(**kwargs)
     def encodes(self, o: TSTensor): return o
 
-# %% ../../nbs/017_data.transforms.ipynb 7
+# %% ../../nbs/017_data.transforms.ipynb 8
 # partial(TSShuffle_HLs, ex=0), 
 class TSShuffle_HLs(RandTransform):
     "Randomly shuffles HIs/LOs of an OHLC `TSTensor` batch"
@@ -52,7 +52,7 @@ class TSShuffle_HLs(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/017_data.transforms.ipynb 9
+# %% ../../nbs/017_data.transforms.ipynb 10
 # partial(TSShuffleSteps, ex=0), 
 class TSShuffleSteps(RandTransform):
     "Randomly shuffles consecutive sequence datapoints in batch"
@@ -73,7 +73,7 @@ class TSShuffleSteps(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/017_data.transforms.ipynb 11
+# %% ../../nbs/017_data.transforms.ipynb 12
 class TSGaussianNoise(RandTransform):
     "Applies additive or multiplicative gaussian noise"
     order = 90
@@ -92,7 +92,7 @@ class TSGaussianNoise(RandTransform):
         output[..., self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/017_data.transforms.ipynb 13
+# %% ../../nbs/017_data.transforms.ipynb 14
 class TSMagAddNoise(RandTransform):
     "Applies additive noise on the y-axis for each step of a `TSTensor` batch"
     order = 90
@@ -119,7 +119,7 @@ class TSMagMulNoise(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/017_data.transforms.ipynb 15
+# %% ../../nbs/017_data.transforms.ipynb 16
 def random_curve_generator(o, magnitude=0.1, order=4, noise=None):
     seq_len = o.shape[-1]
     f = CubicSpline(np.linspace(-seq_len, 2 * seq_len - 1, 3 * (order - 1) + 1, dtype=int), 
@@ -156,7 +156,7 @@ def random_cum_linear_generator(o, magnitude=0.1):
     x /= x[-1]
     return np.clip(x, 0, 1) * (seq_len - 1)
 
-# %% ../../nbs/017_data.transforms.ipynb 16
+# %% ../../nbs/017_data.transforms.ipynb 17
 class TSTimeNoise(RandTransform):
     "Applies noise to each step in the x-axis of a `TSTensor` batch based on smooth random curve"
     order = 90
@@ -170,7 +170,7 @@ class TSTimeNoise(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/017_data.transforms.ipynb 18
+# %% ../../nbs/017_data.transforms.ipynb 19
 class TSMagWarp(RandTransform):
     "Applies warping to the y-axis of a `TSTensor` batch based on a smooth random curve"
     order = 90
@@ -184,7 +184,7 @@ class TSMagWarp(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/017_data.transforms.ipynb 20
+# %% ../../nbs/017_data.transforms.ipynb 21
 class TSTimeWarp(RandTransform):
     "Applies time warping to the x-axis of a `TSTensor` batch based on a smooth random curve"
     order = 90
@@ -198,7 +198,7 @@ class TSTimeWarp(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/017_data.transforms.ipynb 22
+# %% ../../nbs/017_data.transforms.ipynb 23
 class TSWindowWarp(RandTransform):
     """Applies window slicing to the x-axis of a `TSTensor` batch based on a random linear curve based on
     https://halshs.archives-ouvertes.fr/halshs-01357973/document"""
@@ -213,7 +213,7 @@ class TSWindowWarp(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/017_data.transforms.ipynb 24
+# %% ../../nbs/017_data.transforms.ipynb 25
 class TSMagScale(RandTransform):
     "Applies scaling to the y-axis of a `TSTensor` batch based on a scalar"
     order = 90
@@ -246,7 +246,7 @@ class TSMagScalePerVar(RandTransform):
     
 TSMagScaleByVar = TSMagScalePerVar
 
-# %% ../../nbs/017_data.transforms.ipynb 26
+# %% ../../nbs/017_data.transforms.ipynb 27
 class TSRandomResizedCrop(RandTransform):
     "Randomly amplifies a sequence focusing on a random section of the steps"
     order = 90
@@ -286,7 +286,7 @@ class TSRandomResizedCrop(RandTransform):
     
 TSRandomZoomIn = TSRandomResizedCrop
 
-# %% ../../nbs/017_data.transforms.ipynb 28
+# %% ../../nbs/017_data.transforms.ipynb 29
 class TSWindowSlicing(RandTransform):
     "Randomly extracts an resize a ts slice based on https://halshs.archives-ouvertes.fr/halshs-01357973/document"
     order = 90
@@ -302,7 +302,7 @@ class TSWindowSlicing(RandTransform):
         start = np.random.randint(0, seq_len - win_len)
         return F.interpolate(o[..., start : start + win_len], size=seq_len, mode=self.mode, align_corners=None if self.mode in ['nearest', 'area'] else False)
 
-# %% ../../nbs/017_data.transforms.ipynb 30
+# %% ../../nbs/017_data.transforms.ipynb 31
 class TSRandomZoomOut(RandTransform):
     "Randomly compresses a sequence on the x-axis"
     order = 90
@@ -323,7 +323,7 @@ class TSRandomZoomOut(RandTransform):
         output[..., start:start + win_len] = o.new(interp)
         return output
 
-# %% ../../nbs/017_data.transforms.ipynb 32
+# %% ../../nbs/017_data.transforms.ipynb 33
 class TSRandomTimeScale(RandTransform):
     "Randomly amplifies/ compresses a sequence on the x-axis keeping the same length"
     order = 90
@@ -336,7 +336,7 @@ class TSRandomTimeScale(RandTransform):
         if np.random.rand() <= 0.5: return TSRandomZoomIn(magnitude=self.magnitude, ex=self.ex, mode=self.mode)(o, split_idx=0)
         else: return TSRandomZoomOut(magnitude=self.magnitude, ex=self.ex, mode=self.mode)(o, split_idx=0)
 
-# %% ../../nbs/017_data.transforms.ipynb 34
+# %% ../../nbs/017_data.transforms.ipynb 35
 class TSRandomTimeStep(RandTransform):
     "Compresses a sequence on the x-axis by randomly selecting sequence steps and interpolating to previous size"
     order = 90
@@ -354,7 +354,7 @@ class TSRandomTimeStep(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/017_data.transforms.ipynb 36
+# %% ../../nbs/017_data.transforms.ipynb 37
 class TSResampleSteps(RandTransform):
     "Transform that randomly selects and sorts sequence steps (with replacement) maintaining the sequence length"
 
@@ -378,7 +378,7 @@ class TSResampleSteps(RandTransform):
     
 TSSubsampleSteps = TSResampleSteps
 
-# %% ../../nbs/017_data.transforms.ipynb 38
+# %% ../../nbs/017_data.transforms.ipynb 39
 class TSBlur(RandTransform):
     "Blurs a sequence applying a filter of type [1, 0, 1]"
     order = 90
@@ -397,7 +397,7 @@ class TSBlur(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/017_data.transforms.ipynb 40
+# %% ../../nbs/017_data.transforms.ipynb 41
 class TSSmooth(RandTransform):
     "Smoothens a sequence applying a filter of type [1, 5, 1]"
     order = 90
@@ -417,7 +417,7 @@ class TSSmooth(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/017_data.transforms.ipynb 42
+# %% ../../nbs/017_data.transforms.ipynb 43
 def maddest(d, axis=None): 
     #Mean Absolute Deviation
     return np.mean(np.absolute(d - np.mean(d, axis=axis)), axis=axis)
@@ -456,7 +456,7 @@ class TSFreqDenoise(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/017_data.transforms.ipynb 45
+# %% ../../nbs/017_data.transforms.ipynb 46
 class TSRandomFreqNoise(RandTransform):
     "Applys random noise using a wavelet decomposition method"
     order = 90
@@ -477,7 +477,7 @@ class TSRandomFreqNoise(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/017_data.transforms.ipynb 47
+# %% ../../nbs/017_data.transforms.ipynb 48
 class TSRandomResizedLookBack(RandTransform):
     "Selects a random number of sequence steps starting from the end and return an output of the same shape"
     order = 90
@@ -493,7 +493,7 @@ class TSRandomResizedLookBack(RandTransform):
         output = o.clone()[..., int(round(lambd * seq_len)):]
         return F.interpolate(output, size=seq_len, mode=self.mode, align_corners=None if self.mode in ['nearest', 'area'] else False)
 
-# %% ../../nbs/017_data.transforms.ipynb 49
+# %% ../../nbs/017_data.transforms.ipynb 50
 class TSRandomLookBackOut(RandTransform):
     "Selects a random number of sequence steps starting from the end and set them to zero"
     order = 90
@@ -509,7 +509,7 @@ class TSRandomLookBackOut(RandTransform):
         output[..., :int(round(lambd * seq_len))] = 0 
         return output
 
-# %% ../../nbs/017_data.transforms.ipynb 51
+# %% ../../nbs/017_data.transforms.ipynb 52
 class TSVarOut(RandTransform):
     "Set the value of a random number of variables to zero"
     order = 90
@@ -533,7 +533,7 @@ class TSVarOut(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/017_data.transforms.ipynb 53
+# %% ../../nbs/017_data.transforms.ipynb 54
 class TSCutOut(RandTransform):
     "Sets a random section of the sequence to zero"
     order = 90
@@ -555,7 +555,7 @@ class TSCutOut(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/017_data.transforms.ipynb 55
+# %% ../../nbs/017_data.transforms.ipynb 56
 class TSTimeStepOut(RandTransform):
     "Sets random sequence steps to zero"
     order = 90
@@ -572,7 +572,7 @@ class TSTimeStepOut(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/017_data.transforms.ipynb 57
+# %% ../../nbs/017_data.transforms.ipynb 58
 class TSRandomCropPad(RandTransform):
     "Crops a section of the sequence of a random length"
     order = 90
@@ -592,7 +592,7 @@ class TSRandomCropPad(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/017_data.transforms.ipynb 59
+# %% ../../nbs/017_data.transforms.ipynb 60
 class TSMaskOut(RandTransform):
     """Applies a random mask"""
     order = 90
@@ -610,7 +610,7 @@ class TSMaskOut(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/017_data.transforms.ipynb 61
+# %% ../../nbs/017_data.transforms.ipynb 62
 class TSInputDropout(RandTransform):
     """Applies input dropout with required_grad=False"""
     order = 90
@@ -626,7 +626,7 @@ class TSInputDropout(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/017_data.transforms.ipynb 63
+# %% ../../nbs/017_data.transforms.ipynb 64
 class TSTranslateX(RandTransform):
     "Moves a selected sequence window a random number of steps"
     order = 90
@@ -650,7 +650,7 @@ class TSTranslateX(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/017_data.transforms.ipynb 65
+# %% ../../nbs/017_data.transforms.ipynb 66
 class TSRandomShift(RandTransform):
     "Shifts and splits a sequence"
     order = 90
@@ -664,7 +664,7 @@ class TSRandomShift(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/017_data.transforms.ipynb 67
+# %% ../../nbs/017_data.transforms.ipynb 68
 class TSHorizontalFlip(RandTransform):
     "Flips the sequence along the x-axis"
     order = 90
@@ -677,7 +677,7 @@ class TSHorizontalFlip(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/017_data.transforms.ipynb 69
+# %% ../../nbs/017_data.transforms.ipynb 70
 class TSRandomTrend(RandTransform):
     "Randomly rotates the sequence along the z-axis"
     order = 90
@@ -698,7 +698,7 @@ class TSRandomTrend(RandTransform):
     
 TSRandomRotate = TSRandomTrend
 
-# %% ../../nbs/017_data.transforms.ipynb 71
+# %% ../../nbs/017_data.transforms.ipynb 72
 class TSVerticalFlip(RandTransform):
     "Applies a negative value to the time sequence"
     order = 90
@@ -709,7 +709,7 @@ class TSVerticalFlip(RandTransform):
         if not self.magnitude or self.magnitude <= 0: return o
         return - o
 
-# %% ../../nbs/017_data.transforms.ipynb 73
+# %% ../../nbs/017_data.transforms.ipynb 74
 class TSResize(RandTransform):
     "Resizes the sequence length of a time series"
     order = 90
@@ -723,7 +723,7 @@ class TSResize(RandTransform):
         output = F.interpolate(o, size=size, mode=self.mode, align_corners=None if self.mode in ['nearest', 'area'] else False)
         return output
 
-# %% ../../nbs/017_data.transforms.ipynb 75
+# %% ../../nbs/017_data.transforms.ipynb 76
 class TSRandomSize(RandTransform):
     "Randomly resizes the sequence length of a time series"
     order = 90
@@ -736,7 +736,7 @@ class TSRandomSize(RandTransform):
         size_perc = 1 + random_half_normal() * self.magnitude * (-1 if random.random() > .5 else 1)
         return F.interpolate(o, size=int(size_perc * o.shape[-1]), mode=self.mode, align_corners=None if self.mode in ['nearest', 'area'] else False)
 
-# %% ../../nbs/017_data.transforms.ipynb 77
+# %% ../../nbs/017_data.transforms.ipynb 78
 class TSRandomLowRes(RandTransform):
     "Randomly resizes the sequence length of a time series to a lower resolution"
     order = 90
@@ -749,7 +749,7 @@ class TSRandomLowRes(RandTransform):
         size_perc = 1 - (np.random.rand() * (1 - self.magnitude))
         return F.interpolate(o, size=int(size_perc * o.shape[-1]), mode=self.mode, align_corners=None if self.mode in ['nearest', 'area'] else False)
 
-# %% ../../nbs/017_data.transforms.ipynb 78
+# %% ../../nbs/017_data.transforms.ipynb 79
 class TSDownUpScale(RandTransform):
     "Downscales a time series and upscales it again to previous sequence length"
     order = 90
@@ -764,7 +764,7 @@ class TSDownUpScale(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/017_data.transforms.ipynb 80
+# %% ../../nbs/017_data.transforms.ipynb 81
 class TSRandomDownUpScale(RandTransform):
     "Randomly downscales a time series and upscales it again to previous sequence length"
     order = 90
@@ -780,7 +780,7 @@ class TSRandomDownUpScale(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/017_data.transforms.ipynb 82
+# %% ../../nbs/017_data.transforms.ipynb 83
 class TSRandomConv(RandTransform):
     """Applies a convolution with a random kernel and random weights with required_grad=False"""
     order = 90
@@ -800,7 +800,7 @@ class TSRandomConv(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/017_data.transforms.ipynb 84
+# %% ../../nbs/017_data.transforms.ipynb 85
 class TSRandom2Value(RandTransform):
     "Randomly sets selected variables of type `TSTensor` to predefined value (default: np.nan)"
     order = 90
@@ -820,7 +820,7 @@ class TSRandom2Value(RandTransform):
             mask[:, np.isin(np.arange(o.shape[1]), self.sel_vars, invert=True)] = False
         return o.masked_fill(mask, self.value)
 
-# %% ../../nbs/017_data.transforms.ipynb 87
+# %% ../../nbs/017_data.transforms.ipynb 88
 class TSMask2Value(RandTransform):
     "Randomly sets selected variables of type `TSTensor` to predefined value (default: np.nan)"
     order = 90
@@ -836,7 +836,7 @@ class TSMask2Value(RandTransform):
             mask[:, self.sel_vars] = False
         return o.masked_fill(mask, self.value)
 
-# %% ../../nbs/017_data.transforms.ipynb 89
+# %% ../../nbs/017_data.transforms.ipynb 90
 all_TS_randaugs = [
     
     TSIdentity, 
@@ -886,7 +886,7 @@ all_TS_randaugs = [
     (TSMaskOut, 0.01, 0.2),
 ]
 
-# %% ../../nbs/017_data.transforms.ipynb 90
+# %% ../../nbs/017_data.transforms.ipynb 91
 class RandAugment(RandTransform):
     order = 90
     def __init__(self, tfms:list, N:int=1, M:int=3, **kwargs):
@@ -913,7 +913,7 @@ class RandAugment(RandTransform):
         output = compose_tfms(o, tfms_, split_idx=self.split_idx)
         return output
 
-# %% ../../nbs/017_data.transforms.ipynb 92
+# %% ../../nbs/017_data.transforms.ipynb 93
 class TestTfm(RandTransform):
     "Utility class to test the output of selected tfms during training"
     def __init__(self, tfm, magnitude=1., ex=None, **kwargs): 
@@ -927,7 +927,7 @@ class TestTfm(RandTransform):
         self.shape.append(o.shape)
         return output
 
-# %% ../../nbs/017_data.transforms.ipynb 93
+# %% ../../nbs/017_data.transforms.ipynb 94
 def get_tfm_name(tfm):
     if isinstance(tfm, tuple): tfm = tfm[0]
     if hasattr(tfm, "func"): tfm = tfm.func

@@ -9,7 +9,7 @@ __all__ = ['UTSC_datasets', 'UCR_univariate_list', 'MTSC_datasets', 'UCR_multiva
            'get_Monash_regression_list', 'get_Monash_regression_data', 'get_forecasting_list',
            'get_forecasting_time_series', 'convert_tsf_to_dataframe', 'get_Monash_forecasting_data']
 
-# %% ../../nbs/012_data.external.ipynb 2
+# %% ../../nbs/012_data.external.ipynb 3
 from tqdm import tqdm
 import zipfile
 import tempfile
@@ -21,7 +21,7 @@ from ..imports import *
 from ..utils import *
 from .validation import *
 
-# %% ../../nbs/012_data.external.ipynb 3
+# %% ../../nbs/012_data.external.ipynb 4
 # This code was adapted from https://github.com/ChangWeiTan/TSRegression.
 # It's used to load time series examples to demonstrate tsai's functionality.
 # Copyright for above source is below.
@@ -1213,7 +1213,7 @@ def _ts2dfV2(full_file_path_and_name, return_separate_X_and_y=True, replace_miss
     else:
         raise _TsFileParseException("empty file")
 
-# %% ../../nbs/012_data.external.ipynb 4
+# %% ../../nbs/012_data.external.ipynb 5
 # This code was adapted from sktime. 
 # It's used to load time series examples to demonstrate tsai's functionality.
 # Copyright for above source is below.
@@ -1386,7 +1386,7 @@ def _from_multi_index_to_3d_numpy(
 
     return X_3d
 
-# %% ../../nbs/012_data.external.ipynb 5
+# %% ../../nbs/012_data.external.ipynb 6
 def _ts2df(
     full_file_path_and_name:str, # The full pathname of the .ts file to read.
     replace_missing_vals_with:str="NaN", # The value that missing values in the text file should be replaced with prior to parsing.
@@ -2069,7 +2069,7 @@ def _ts2df(
     else:
         raise _TsFileParseException("empty file")
 
-# %% ../../nbs/012_data.external.ipynb 6
+# %% ../../nbs/012_data.external.ipynb 7
 def decompress_from_url(url, target_dir=None, verbose=False):
     # Download
     try:
@@ -2098,7 +2098,7 @@ def decompress_from_url(url, target_dir=None, verbose=False):
         if verbose:
             sys.stderr.write("Could not download url. Please, check url.\n")
 
-# %% ../../nbs/012_data.external.ipynb 7
+# %% ../../nbs/012_data.external.ipynb 8
 def download_data(url, fname=None, c_key='archive', force_download=False, timeout=4, verbose=False):
     "Download `url` to `fname`."
     from fastai.data.external import URLs
@@ -2108,7 +2108,7 @@ def download_data(url, fname=None, c_key='archive', force_download=False, timeou
     if not fname.exists() or force_download: download_url(url, dest=fname, timeout=timeout, show_progress=verbose)
     return fname
 
-# %% ../../nbs/012_data.external.ipynb 8
+# %% ../../nbs/012_data.external.ipynb 9
 def get_UCR_univariate_list():
     return [
         'ACSF1', 'Adiac', 'AllGestureWiimoteX', 'AllGestureWiimoteY',
@@ -2153,7 +2153,7 @@ test_eq(len(get_UCR_univariate_list()), 128)
 UTSC_datasets = get_UCR_univariate_list()
 UCR_univariate_list = get_UCR_univariate_list()
 
-# %% ../../nbs/012_data.external.ipynb 9
+# %% ../../nbs/012_data.external.ipynb 10
 def get_UCR_multivariate_list():
     return [
         'ArticularyWordRecognition', 'AtrialFibrillation', 'BasicMotions',
@@ -2175,7 +2175,7 @@ classification_list = UCR_list
 TSC_datasets = classification_datasets = UCR_list
 len(UCR_list)
 
-# %% ../../nbs/012_data.external.ipynb 10
+# %% ../../nbs/012_data.external.ipynb 11
 def get_UCR_data(dsid, path='.', parent_dir='data/UCR', on_disk=True, mode='c', Xdtype='float32', ydtype=None, return_split=True, split_data=True, 
                  force_download=False, verbose=False):
     dsid_list = [ds for ds in UCR_list if ds.lower() == dsid.lower()]
@@ -2262,7 +2262,7 @@ def get_UCR_data(dsid, path='.', parent_dir='data/UCR', on_disk=True, mode='c', 
     
 get_classification_data = get_UCR_data
 
-# %% ../../nbs/012_data.external.ipynb 15
+# %% ../../nbs/012_data.external.ipynb 16
 def check_data(X, y=None, splits=None, show_plot=True):
     try: X_is_nan = np.isnan(X).sum()
     except: X_is_nan = 'could not be checked'
@@ -2291,7 +2291,7 @@ def check_data(X, y=None, splits=None, show_plot=True):
         print(f'splits - n_splits: {len(_splits)} shape: {_splits}  overlap: {overlap}')
         if show_plot: plot_splits(splits)
 
-# %% ../../nbs/012_data.external.ipynb 17
+# %% ../../nbs/012_data.external.ipynb 18
 def get_Monash_regression_list():
     return sorted([
         "AustraliaRainfall", "HouseholdPowerConsumption1",
@@ -2308,7 +2308,7 @@ regression_list = Monash_regression_list
 TSR_datasets = regression_datasets = regression_list
 len(Monash_regression_list)
 
-# %% ../../nbs/012_data.external.ipynb 18
+# %% ../../nbs/012_data.external.ipynb 19
 def get_Monash_regression_data(dsid, path='./data/Monash', on_disk=True, mode='c', Xdtype='float32', ydtype=None, split_data=True, force_download=False, 
                                verbose=False, timeout=4):
 
@@ -2405,7 +2405,7 @@ def get_Monash_regression_data(dsid, path='./data/Monash', on_disk=True, mode='c
 
 get_regression_data = get_Monash_regression_data
 
-# %% ../../nbs/012_data.external.ipynb 20
+# %% ../../nbs/012_data.external.ipynb 21
 def get_forecasting_list():
     return sorted([
         "Sunspots", "Weather"
@@ -2413,7 +2413,7 @@ def get_forecasting_list():
 
 forecasting_time_series = get_forecasting_list()
 
-# %% ../../nbs/012_data.external.ipynb 21
+# %% ../../nbs/012_data.external.ipynb 22
 def get_forecasting_time_series(dsid, path='./data/forecasting/', force_download=False, verbose=True, **kwargs):
     
     dsid_list = [fd for fd in forecasting_time_series if fd.lower() == dsid.lower()]
@@ -2484,7 +2484,7 @@ def get_forecasting_time_series(dsid, path='./data/forecasting/', force_download
         warnings.warn(f"Cannot download {dsid} dataset")
         return
 
-# %% ../../nbs/012_data.external.ipynb 24
+# %% ../../nbs/012_data.external.ipynb 25
 Monash_forecasting_list = ['m1_yearly_dataset',
                            'm1_quarterly_dataset',
                            'm1_monthly_dataset',
@@ -2540,7 +2540,7 @@ Monash_forecasting_list = ['m1_yearly_dataset',
 
 forecasting_list = Monash_forecasting_list
 
-# %% ../../nbs/012_data.external.ipynb 25
+# %% ../../nbs/012_data.external.ipynb 26
 ## Original code available at: https://github.com/rakshitha123/TSForecasting
 # This repository contains the implementations related to the experiments of a set of publicly available datasets that are used in 
 # the time series forecasting research space.
@@ -2677,7 +2677,7 @@ def convert_tsf_to_dataframe(full_file_path_and_name, replace_missing_vals_with 
 
         return loaded_data, frequency, forecast_horizon, contain_missing_values, contain_equal_length
 
-# %% ../../nbs/012_data.external.ipynb 26
+# %% ../../nbs/012_data.external.ipynb 27
 def get_Monash_forecasting_data(dsid, path='./data/forecasting/', force_download=False, remove_from_disk=False, verbose=True):
 
     pv(f'Dataset: {dsid}', verbose)

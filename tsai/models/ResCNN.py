@@ -3,12 +3,12 @@
 # %% auto 0
 __all__ = ['ResCNN']
 
-# %% ../../nbs/104_models.ResCNN.ipynb 2
+# %% ../../nbs/104_models.ResCNN.ipynb 3
 from ..imports import *
 from ..utils import *
 from .layers import *
 
-# %% ../../nbs/104_models.ResCNN.ipynb 4
+# %% ../../nbs/104_models.ResCNN.ipynb 5
 class _ResCNNBlock(Module):
     def __init__(self, ni, nf, kss=[7, 5, 3], coord=False, separable=False, zero_norm=False):
         self.convblock1 = ConvBlock(ni, nf, kss[0], coord=coord, separable=separable)

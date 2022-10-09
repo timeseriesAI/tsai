@@ -3,11 +3,11 @@
 # %% auto 0
 __all__ = ['RNN_FCNPlus', 'LSTM_FCNPlus', 'GRU_FCNPlus', 'MRNN_FCNPlus', 'MLSTM_FCNPlus', 'MGRU_FCNPlus']
 
-# %% ../../nbs/107b_models.RNN_FCNPlus.ipynb 2
+# %% ../../nbs/107b_models.RNN_FCNPlus.ipynb 3
 from ..imports import *
 from .layers import *
 
-# %% ../../nbs/107b_models.RNN_FCNPlus.ipynb 3
+# %% ../../nbs/107b_models.RNN_FCNPlus.ipynb 4
 class _RNN_FCN_BasePlus(nn.Sequential):
     def __init__(self, c_in, c_out, seq_len=None, hidden_size=100, rnn_layers=1, bias=True, cell_dropout=0, rnn_dropout=0.8, bidirectional=False, shuffle=True, 
                  fc_dropout=0., conv_layers=[128, 256, 128], kss=[7, 5, 3], se=0, custom_head=None):

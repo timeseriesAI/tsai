@@ -3,13 +3,13 @@
 # %% auto 0
 __all__ = ['TransformerModel']
 
-# %% ../../nbs/108_models.TransformerModel.ipynb 2
+# %% ../../nbs/108_models.TransformerModel.ipynb 3
 from ..imports import *
 from .layers import *
 from .utils import *
 from torch.nn.modules.transformer import TransformerEncoder, TransformerEncoderLayer
 
-# %% ../../nbs/108_models.TransformerModel.ipynb 3
+# %% ../../nbs/108_models.TransformerModel.ipynb 4
 class TransformerModel(Module):
     def __init__(self, c_in, c_out, d_model=64, n_head=1, d_ffn=128, dropout=0.1, activation="relu", n_layers=1):
         """

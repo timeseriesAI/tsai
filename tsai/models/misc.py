@@ -3,12 +3,12 @@
 # %% auto 0
 __all__ = ['InputWrapper', 'ResidualWrapper', 'RecursiveWrapper']
 
-# %% ../../nbs/140_models.misc.ipynb 2
+# %% ../../nbs/140_models.misc.ipynb 3
 from ..imports import *
 from .layers import *
 from .utils import *
 
-# %% ../../nbs/140_models.misc.ipynb 3
+# %% ../../nbs/140_models.misc.ipynb 4
 class InputWrapper(Module):
     def __init__(self, arch, c_in, c_out, seq_len, new_c_in=None, new_seq_len=None, **kwargs):
 
@@ -30,7 +30,7 @@ class InputWrapper(Module):
         if self.new_shape: x = self.new_shape_fn(x) 
         return self.model(x)
 
-# %% ../../nbs/140_models.misc.ipynb 6
+# %% ../../nbs/140_models.misc.ipynb 7
 class ResidualWrapper(Module):
     def __init__(self, model):
         self.model = model
@@ -38,7 +38,7 @@ class ResidualWrapper(Module):
     def forward(self, x):
         return x[..., -1] + self.model(x)
 
-# %% ../../nbs/140_models.misc.ipynb 8
+# %% ../../nbs/140_models.misc.ipynb 9
 class RecursiveWrapper(Module):
     def __init__(self, model, n_steps, anchored=False):
         self.model, self.n_steps, self.anchored = model, n_steps, anchored

@@ -3,12 +3,12 @@
 # %% auto 0
 __all__ = ['ResBlock', 'ResNet']
 
-# %% ../../nbs/101_models.ResNet.ipynb 2
+# %% ../../nbs/101_models.ResNet.ipynb 3
 from ..imports import *
 from .layers import *
 from .utils import *
 
-# %% ../../nbs/101_models.ResNet.ipynb 3
+# %% ../../nbs/101_models.ResNet.ipynb 4
 class ResBlock(Module):
     def __init__(self, ni, nf, kss=[7, 5, 3]):
         self.convblock1 = ConvBlock(ni, nf, kss[0])

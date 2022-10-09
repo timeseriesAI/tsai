@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['RocketClassifier', 'load_rocket', 'RocketRegressor']
 
-# %% ../../nbs/111_models.ROCKET.ipynb 2
+# %% ../../nbs/111_models.ROCKET.ipynb 3
 import sklearn
 from sklearn.linear_model import RidgeClassifierCV, RidgeCV
 from sklearn.metrics import make_scorer
@@ -12,7 +12,7 @@ from ..data.external import *
 from .layers import *
 warnings.filterwarnings("ignore", category=FutureWarning)
 
-# %% ../../nbs/111_models.ROCKET.ipynb 3
+# %% ../../nbs/111_models.ROCKET.ipynb 4
 class RocketClassifier(sklearn.pipeline.Pipeline):
     """Time series classification using ROCKET features and a linear classifier"""
     
@@ -51,7 +51,7 @@ class RocketClassifier(sklearn.pipeline.Pipeline):
         with open(f'{filename}.pkl', 'wb') as output:
             pickle.dump(self, output, pickle.HIGHEST_PROTOCOL)
 
-# %% ../../nbs/111_models.ROCKET.ipynb 4
+# %% ../../nbs/111_models.ROCKET.ipynb 5
 def load_rocket(fname='Rocket', path='./models'):
     path = Path(path)
     filename = path/fname
@@ -59,7 +59,7 @@ def load_rocket(fname='Rocket', path='./models'):
         output = pickle.load(input)
     return output
 
-# %% ../../nbs/111_models.ROCKET.ipynb 5
+# %% ../../nbs/111_models.ROCKET.ipynb 6
 class RocketRegressor(sklearn.pipeline.Pipeline):
     """Time series regression using ROCKET features and a linear regressor"""
     

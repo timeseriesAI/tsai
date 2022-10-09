@@ -3,11 +3,11 @@
 # %% auto 0
 __all__ = ['HuberLoss', 'LogCoshLoss', 'MaskedLossWrapper', 'CenterLoss', 'CenterPlusLoss', 'FocalLoss', 'TweedieLoss']
 
-# %% ../nbs/050_losses.ipynb 2
+# %% ../nbs/050_losses.ipynb 3
 from .imports import *
 from fastai.losses import *
 
-# %% ../nbs/050_losses.ipynb 3
+# %% ../nbs/050_losses.ipynb 4
 ## Available in Pytorch 1.9
 class HuberLoss(nn.Module):
     """Huber loss 
@@ -37,7 +37,7 @@ class HuberLoss(nn.Module):
         else: 
             return loss
 
-# %% ../nbs/050_losses.ipynb 4
+# %% ../nbs/050_losses.ipynb 5
 class LogCoshLoss(nn.Module):
     def __init__(self, reduction='mean', delta=1.0):
         assert reduction in ['mean', 'sum', 'none'], "You must set reduction to 'mean', 'sum' or 'none'"
@@ -53,7 +53,7 @@ class LogCoshLoss(nn.Module):
         else: 
             return loss
 
-# %% ../nbs/050_losses.ipynb 6
+# %% ../nbs/050_losses.ipynb 7
 class MaskedLossWrapper(Module):
     def __init__(self, crit):
         self.loss = crit
@@ -65,7 +65,7 @@ class MaskedLossWrapper(Module):
         inp, targ = inp[~mask], targ[~mask]
         return self.loss(inp, targ)
 
-# %% ../nbs/050_losses.ipynb 8
+# %% ../nbs/050_losses.ipynb 9
 class CenterLoss(Module):
     r"""
     Code in Pytorch has been slightly modified from: https://github.com/KaiyangZhou/pytorch-center-loss/blob/master/center_loss.py
@@ -112,7 +112,7 @@ class CenterPlusLoss(Module):
         return self.loss(x, labels) + self.λ * self.centerloss(x, labels)
     def __repr__(self): return f"CenterPlusLoss(loss={self.loss}, c_out={self.c_out}, λ={self.λ})"
 
-# %% ../nbs/050_losses.ipynb 11
+# %% ../nbs/050_losses.ipynb 12
 class FocalLoss(Module):
     """ Weighted, multiclass focal loss"""
 
@@ -139,7 +139,7 @@ class FocalLoss(Module):
             loss = loss.sum()
         return loss
 
-# %% ../nbs/050_losses.ipynb 13
+# %% ../nbs/050_losses.ipynb 14
 class TweedieLoss(Module):
     def __init__(self, p=1.5, eps=1e-8):
         """
