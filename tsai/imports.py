@@ -137,36 +137,6 @@ def maybe_mount_gdrive():
     else:
         print("You cannot mount google drive because you are not using Colab")
 
-def all_last_saved(max_elapsed=60):
-    from time import strftime
-    from fastai.data.transforms import get_files
-    print('\n')
-    lib_path = Path(os.getcwd()).parent
-    folder = lib_path / lib_name
-    print('Checking folder:', folder)
-    counter = 0
-    elapsed = 0
-    current_time = time.time()
-    for fp in get_files(folder):
-        fp = str(fp)
-        fn = fp.split('/')[-1]
-        if not fn.endswith(".py") or fn.startswith("_") or fn.startswith(".") or fn in ['imports.py', 'all.py', 'basics.py']: # add files without a notebook
-            continue
-        elapsed_time = current_time - os.path.getmtime(fp)
-        if elapsed_time > max_elapsed:
-            print(f"{fn:30} saved {elapsed_time:10.0f} s ago ***")
-            counter += 1
-        elapsed += elapsed_time
-    if counter == 0:
-        print('Correct conversion! 😃')
-        output = 1
-    else:
-        print('Incorrect conversion! 😔')
-        output = 0
-    print(f'Total time elapsed {elapsed:.3f} s')
-    print(strftime("%A %d/%m/%y %T %Z"))
-    return output
-
 def py_last_saved(nb_name, max_elapsed=1):
     from time import strftime
     print('\n')
@@ -197,17 +167,12 @@ def beep(inp=1, duration=.1, n=1):
         display(Audio(wave, rate=10000, autoplay=True))
         time.sleep(duration / .1)
 
-def create_scripts(nb_name=None, max_elapsed=60, wait=2):
-    from nbdev import nbdev_export
-    if nb_name is not None: wait = 0
-    try: save_nb(nb_name)
-    except: save_nb(wait=wait)
-    time.sleep(0.5)
-    nbdev_export(nb_name)
-    if nb_name is None: output = all_last_saved(max_elapsed=max_elapsed)
-    else: output = py_last_saved(nb_name=nb_name, max_elapsed=max_elapsed)
+def create_scripts(nb_name, max_elapsed=60, wait=2):
+    from nbdev.export import nb_export
+    save_nb(nb_name, wait=wait)
+    nb_export(nb_name)
+    output = py_last_saved(nb_name, max_elapsed)
     beep(output)
-    return output
 
 class Timer:
     def __init__(self, verbose=True, return_seconds=True, instance=None):

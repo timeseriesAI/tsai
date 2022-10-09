@@ -3,13 +3,13 @@
 # %% auto 0
 __all__ = ['TSiT', 'TSiTPlus']
 
-# %% ../../nbs/124_models.TSiTPlus.ipynb 2
+# %% ../../nbs/124_models.TSiTPlus.ipynb 3
 from ..imports import *
 from .utils import *
 from .layers import *
 from typing import Callable
 
-# %% ../../nbs/124_models.TSiTPlus.ipynb 3
+# %% ../../nbs/124_models.TSiTPlus.ipynb 4
 class _TSiTEncoderLayer(nn.Module):
     def __init__(self, d_model:int, n_heads:int, q_len:int=None, attn_dropout:float=0., dropout:float=0, drop_path_rate:float=0., 
                  mlp_ratio:int=1, lsa:bool=False, qkv_bias:bool=True, act:str='gelu', pre_norm:bool=False):
@@ -40,7 +40,7 @@ class _TSiTEncoderLayer(nn.Module):
             x = self.ff_norm(self.drop_path(self.pwff(x)) + x)
         return x
 
-# %% ../../nbs/124_models.TSiTPlus.ipynb 4
+# %% ../../nbs/124_models.TSiTPlus.ipynb 5
 class _TSiTEncoder(nn.Module):
     def __init__(self, d_model, n_heads, depth:int=6, q_len:int=None, attn_dropout:float=0., dropout:float=0, drop_path_rate:float=0., 
                  mlp_ratio:int=1, lsa:bool=False, qkv_bias:bool=True, act:str='gelu', pre_norm:bool=False):
@@ -59,7 +59,7 @@ class _TSiTEncoder(nn.Module):
         x = self.norm(x)
         return x
 
-# %% ../../nbs/124_models.TSiTPlus.ipynb 5
+# %% ../../nbs/124_models.TSiTPlus.ipynb 6
 class _TSiTBackbone(Module):
     def __init__(self, c_in:int, seq_len:int, depth:int=6, d_model:int=128, n_heads:int=16, act:str='gelu', 
                  lsa:bool=False, qkv_bias:bool=True, attn_dropout:float=0., dropout:float=0., drop_path_rate:float=0., mlp_ratio:int=1, 
@@ -145,7 +145,7 @@ class _TSiTBackbone(Module):
         x = x.transpose(1,2)
         return x
 
-# %% ../../nbs/124_models.TSiTPlus.ipynb 6
+# %% ../../nbs/124_models.TSiTPlus.ipynb 7
 class TSiTPlus(nn.Sequential):
     r"""Time series transformer model based on ViT (Vision Transformer):
 

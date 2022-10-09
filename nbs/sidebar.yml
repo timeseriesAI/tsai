@@ -98,15 +98,7 @@ website:
         contents:
         - 200_optuna.ipynb
         - 201_wandb.ipynb
-      - section: Inference
-        contents:
-        - 052a_inference.ipynb
-      - section: Analysis
-        contents:
-        - 052b_analysis.ipynb
-      - section: Explainability
-        contents:
-        - 100d_models.explainability.ipynb
-      - section: Utilities
-        contents:
-        - 001_utils.ipynb
+      - 052a_inference.ipynb
+      - 052b_analysis.ipynb
+      - 100d_models.explainability.ipynb
+      - 001_utils.ipynb

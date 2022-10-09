@@ -3,11 +3,11 @@
 # %% auto 0
 __all__ = ['InceptionModule', 'InceptionBlock', 'InceptionTime']
 
-# %% ../../nbs/102_models.InceptionTime.ipynb 2
+# %% ../../nbs/102_models.InceptionTime.ipynb 3
 from ..imports import *
 from .layers import *
 
-# %% ../../nbs/102_models.InceptionTime.ipynb 3
+# %% ../../nbs/102_models.InceptionTime.ipynb 4
 # This is an unofficial PyTorch implementation by Ignacio Oguiza - timeseriesAI@gmail.com based on:
 
 # Fawaz, H. I., Lucas, B., Forestier, G., Pelletier, C., Schmidt, D. F., Weber, J., ... & Petitjean, F. (2019). 

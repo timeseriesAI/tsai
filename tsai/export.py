@@ -11,7 +11,6 @@ import requests
 from urllib.parse import unquote
 import shutil
 from fastcore.script import Param,call_parse, store_false, store_true
-import nbformat
 
 # %% ../nbs/000_export.ipynb 5
 """
@@ -195,6 +194,11 @@ def nb2py(nb:      Param("absolute or relative full path to the notebook you wan
           verbose: Param("controls verbosity", store_false)=True,
          ):
     "Converts a notebook to a python script in a predefined folder."
+    
+    try: 
+        import nbformat
+    except ImportError: 
+        raise ImportError('You need to install nbformat to run nb2py')
     
     # make sure drive is mounted when using Colab
     if is_colab(): maybe_mount_gdrive()

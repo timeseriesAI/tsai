@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['TSClassifier', 'TSRegressor', 'TSForecaster']
 
-# %% ../nbs/052d_tslearner.ipynb 2
+# %% ../nbs/052d_tslearner.ipynb 3
 from fastai.learner import Learner
 from fastai.optimizer import Adam
 from fastai.metrics import accuracy
@@ -16,7 +16,7 @@ from .models.InceptionTimePlus import *
 from .models.utils import *
 from .metrics import *
 
-# %% ../nbs/052d_tslearner.ipynb 4
+# %% ../nbs/052d_tslearner.ipynb 5
 class TSClassifier(Learner):
     def __init__(self, X, y=None, splits=None, tfms=None, inplace=True, sel_vars=None, sel_steps=None, weights=None, partial_n=None, train_metrics=False,
                  bs=[64, 128], batch_size=None, batch_tfms=None, shuffle_train=True, drop_last=True, num_workers=0, do_setup=True, device=None,
@@ -73,7 +73,7 @@ class TSClassifier(Learner):
         if train_metrics and hasattr(self, "recorder"):
             self.recorder.train_metrics = True
 
-# %% ../nbs/052d_tslearner.ipynb 8
+# %% ../nbs/052d_tslearner.ipynb 9
 class TSRegressor(Learner):
     def __init__(self, X, y=None, splits=None, tfms=None, inplace=True, sel_vars=None, sel_steps=None, weights=None, partial_n=None, train_metrics=False,
                  bs=[64, 128], batch_size=None, batch_tfms=None, shuffle_train=True, drop_last=True, num_workers=0, do_setup=True, device=None,
@@ -130,7 +130,7 @@ class TSRegressor(Learner):
         if train_metrics and hasattr(self, "recorder"):
             self.recorder.train_metrics = True
 
-# %% ../nbs/052d_tslearner.ipynb 11
+# %% ../nbs/052d_tslearner.ipynb 12
 class TSForecaster(Learner):
     def __init__(self, X, y=None, splits=None, tfms=None, inplace=True, sel_vars=None, sel_steps=None, weights=None, partial_n=None, train_metrics=False,
                  bs=[64, 128], batch_size=None, batch_tfms=None, shuffle_train=True, drop_last=True, num_workers=0, do_setup=True, device=None,
