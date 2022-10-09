@@ -2,6 +2,55 @@
 
 <!-- do not remove -->
 
+## 0.3.2
+### Breaking Changes
+
+- replaced TSOneHot preprocessor by TSOneHotEncode using a different API ([#502](https://github.com/timeseriesAI/tsai/issues/502))
+
+- replaced MultiEmbedding n_embeds, embed_dims and padding_idxs by n_cat_embeds, cat_embed_dims and cat_padding_idxs ([#497](https://github.com/timeseriesAI/tsai/issues/497))
+
+### New Features
+
+- added GaussianNoise transform ([#514](https://github.com/timeseriesAI/tsai/issues/514))
+
+- added TSSequencer model based on Sequencer: Deep LSTM for Image Classification paper ([#508](https://github.com/timeseriesAI/tsai/issues/508))
+
+- added TSPosition to be able to pass any steps list that will be concatenated to the input ([#504](https://github.com/timeseriesAI/tsai/issues/504))
+
+- added TSPosition preprocessor to allow the concatenation of a custom position sequence ([#503](https://github.com/timeseriesAI/tsai/issues/503))
+
+- added TSOneHot class to encode a variable on the fly ([#501](https://github.com/timeseriesAI/tsai/issues/501))
+
+- added token_size and tokenizer arguments to tsai ([#496](https://github.com/timeseriesAI/tsai/issues/496))
+
+- SmeLU activation function not found ([#495](https://github.com/timeseriesAI/tsai/issues/495))
+
+- added example on how to perform inference, partial fit and fine tuning ([#491](https://github.com/timeseriesAI/tsai/issues/491))
+
+- added get_time_per_batch and get_dl_percent_per_epoch ([#489](https://github.com/timeseriesAI/tsai/issues/489))
+
+- added TSDropVars used to removed batch variables no longer needed ([#488](https://github.com/timeseriesAI/tsai/issues/488))
+
+- added SmeLU activation function ([#458](https://github.com/timeseriesAI/tsai/issues/458))
+
+- Feature request: gMLP and GatedTabTransformer. ([#354](https://github.com/timeseriesAI/tsai/issues/354))
+
+- Pay Attention to MLPs - gMLP ([paper](https://arxiv.org/abs/2105.08050), [implementation](https://github.com/lucidrains/g-mlp-pytorch))
+
+- The GatedTabTransformer ([paper](https://arxiv.org/abs/2201.00199), [implementation](https://github.com/radi-cho/GatedTabTransformer));
+
+
+### Bugs Squashed
+
+- after_batch tfms set to empty Pipeline when using dl.new() ([#516](https://github.com/timeseriesAI/tsai/issues/516))
+
+- 00b_How_to_use_numpy_arrays_in_fastai: AttributeError: attribute 'device' of 'torch._C._TensorBase' objects is not writable ([#500](https://github.com/timeseriesAI/tsai/issues/500))
+
+- getting regression data returns _check_X() argument error ([#430](https://github.com/timeseriesAI/tsai/issues/430))
+
+- I wonder why only 'Nor' is displayed in dls.show_batch(sharvey=True). ([#416](https://github.com/timeseriesAI/tsai/issues/416))
+
+
 ## 0.3.1
 
 ### New Features
@@ -61,7 +110,7 @@ trying to install the package from source does not work for on Windows 10; it fa
 ### Bugs Squashed
 
 - Separate core from non-core dependencies in tsai - pip install tsai[extras]([#389](https://github.com/timeseriesAI/tsai/issues/318)). This is an important change that:
-   - reduces the time to ```pip install tsai``` 
+   - reduces the time to ```pip install tsai```
    - avoid errors during installation
    - reduces the time to load tsai using ```from tsai.all import *```
 
@@ -259,7 +308,7 @@ trying to install the package from source does not work for on Windows 10; it fa
 ## 0.2.19
 
 ### New Features
-* Models: 
+* Models:
     - implement src_key_padding_mask in TST & TSTPlus ([#79](https://github.com/timeseriesAI/tsai/issues/79))
 
 ### Bugs Squashed
@@ -294,11 +343,11 @@ trying to install the package from source does not work for on Windows 10; it fa
     * updated get_X_preds to work with multilabel datasets
 * Miscellaneous:
     * added rotate_axis utility functions
-    
-### Bug Fixes:   
+
+### Bug Fixes:
 * Callbacks:
     * fixed and issue with inconsistency in show_preds in MVP
-* Models: 
+* Models:
     * Fixed an issue in InceptionTimePlus with stochastic depth regularization (stoch_depth parameter)
     * Fixed issue with get_X_preds (different predictions when executed multiple times)
     * fixed stoch_depth issue in InceptionTimePlus
@@ -313,7 +362,7 @@ trying to install the package from source does not work for on Windows 10; it fa
 ## 0.2.17
 
 ### Bug Fixes:
-* Models: 
+* Models:
     * Fixed an issue in TST and TSTPlus related to encoder layer creation.
     * Fixed issue in TSStandardize when passing tensor with nan values
 
@@ -324,11 +373,11 @@ trying to install the package from source does not work for on Windows 10; it fa
 * Data:
     * Added a Nan2Value batch transform that removes any nan value in the tensor by zero or median.
     * Faster dataloader when suffle == True.
-    * Added TSUndindowedDataset and TSUnwindowedDatasets, which apply window slicing online to prepare time series data. 
-    * Added TSMetaDataset and TSMetaDatasets, which allow you to use one or multiple X (and y) arrays as input. In this way, you won't need to merge all data into a single array. This will allow you to work with larger than memory datasets. 
+    * Added TSUndindowedDataset and TSUnwindowedDatasets, which apply window slicing online to prepare time series data.
+    * Added TSMetaDataset and TSMetaDatasets, which allow you to use one or multiple X (and y) arrays as input. In this way, you won't need to merge all data into a single array. This will allow you to work with larger than memory datasets.
     * Added a new tutorial notebook that demonstrates both multi-class and multi-label classification using tsai.
     * Upgraded df2Xy to accept y_func that allows calculation of different types of targets
-* Callbacks: 
+* Callbacks:
     * MVP is now much faster as masks are now created directly as cuda tensors. This has increased speed by 2.5x in some tests.
 
 ### Breaking changes:
@@ -338,8 +387,8 @@ trying to install the package from source does not work for on Windows 10; it fa
 
 ### Updates
 * Learner:
-    * Updated 3 new learner APIs: TSClassifier, TSRegressor, TSForecaster. 
-    
+    * Updated 3 new learner APIs: TSClassifier, TSRegressor, TSForecaster.
+
 * ShowGraph callback:
     * Callback optionally plots all metrics at the end of training.
 
@@ -347,25 +396,25 @@ trying to install the package from source does not work for on Windows 10; it fa
 ## 0.2.16
 
 ### Bug Fixes
-* Data: 
+* Data:
     * Updated df2xy function to fix a bug.
 
 ### Updates
 * Tutorial notebooks:
     * Updated 04 (regression) to use the recently released Monash, UEA & UCR Time Series Extrinsic Regression Repository (2020).
-    
+
 ## New features:
 * Models:
     * Added new pooling layers and 3 new heads: attentional_pool_head, universal_pool_head, gwa_pool_head
-    
-    
-    
+
+
+
 ## 0.2.15
 
 ### New Features
 * General:
     * Added 3 new sklearn-type APIs: TSClassifier, TSRegressor and TSForecaster.
-    
+
 * Data:
     * External: added a new function get_forecasting_data to access some forecasting datasets.
     * Modified TimeSplitter to also allow passing testing_size.
@@ -373,23 +422,23 @@ trying to install the package from source does not work for on Windows 10; it fa
     * Preprocessing: added a new class (Preprocess) to be able to preprocess data before creating the datasets/ dataloaders. This is mainly to test different target preprocessing techniques.
     * Utils added Nan2Value batch transform to remove any nan values in the dataset.
     * Added a new utility function to easy the creation of a single TSDataLoader when no splits are used (for example with unlabeled datasets).
-    * Added a new function to quickly create empty arrays on disk or in memory (create_empty_array). 
-    
-* Models: 
-    * TST: Added option to visualize self-attention maps. 
-    * Added 3 new SOTA models: MiniRocketClassifier and MiniRocketRegressor for datasets <10k samples, and MiniRocket (Pytorch) which supports any dataset size. 
+    * Added a new function to quickly create empty arrays on disk or in memory (create_empty_array).
+
+* Models:
+    * TST: Added option to visualize self-attention maps.
+    * Added 3 new SOTA models: MiniRocketClassifier and MiniRocketRegressor for datasets <10k samples, and MiniRocket (Pytorch) which supports any dataset size.
     * Added a simple function to create a naive forecast.
-    * Added future_mask to TSBERT to be able to train forecasting models. 
+    * Added future_mask to TSBERT to be able to train forecasting models.
     * Added option to pass any custom mask to TSBERT.
-    
+
 * Training:
     * PredictionDynamics callback: allows you to visualize predictions during training.
-    
-* Tutorial notebooks: 
+
+* Tutorial notebooks:
     * New notebook demonstrating the new PredictionDynamics callback.
-    
+
 ### Bug Fixes
-* Models: 
+* Models:
     * Fixed bug that prevented models to freeze or unfreeze. Now all models that end with Plus can take predefined weights and learn.freeze()/ learn.unfreeze() will work as expected.
 
 ## 0.2.14
@@ -397,9 +446,9 @@ trying to install the package from source does not work for on Windows 10; it fa
 ### New Features
 * Data:
     * External: added a new function get_Monash_data to get extrinsic regression data.
-* Models: 
-    * Added show_batch functionality to TSBERT. 
-    
+* Models:
+    * Added show_batch functionality to TSBERT.
+
 
 ## 0.2.13
 
@@ -408,33 +457,33 @@ trying to install the package from source does not work for on Windows 10; it fa
 * Data:
     * Validation: added split visualization (show_plot=True by default).
     * Data preprocessing: add option to TSStandardize or TSNormalize by_step.
-    * Featurize time series: added tsfresh library to allow the creation of features from time series.     
-* Models: 
+    * Featurize time series: added tsfresh library to allow the creation of features from time series.
+* Models:
     * Updated ROCKET to speed up feature creation and allow usage of large datasets.
     * Added change_model_head utility function to ease the process of changing an instantiated models head.
     * conv_lin_3d_head function to allow generation of 3d output tensors. This may be useful for multivariate, multi-horizon direct (non-recursive) time series forecasting, multi-output regression tasks, etc.
     * Updated TST (Time series transformer) to allow the use of residual attention (based on He, R., Ravula, A., Kanagal, B., & Ainslie, J. (2020). Realformer: Transformer Likes Informed Attention. arXiv preprint arXiv:2012.11747.)
-    * provided new functionality to transfer model's weights (useful when using pre-trained models). 
+    * provided new functionality to transfer model's weights (useful when using pre-trained models).
     * updated build_ts_model to be able to use pretrained model weights.
 * Training:
     * TSBERT: a new callback has been added to be able to train a model in a self-supervised manner (similar to BERT).
-* Tutorial notebooks: 
+* Tutorial notebooks:
     * I've added a new tutorial notebook to demonstrate how to apply TSBERT (self-supervised method for time series).
 
 ### Bug Fixes
-* Data: 
+* Data:
     * ROCKET: fixed a bug in `create_rocket_features`.
 
-    
+
 
 ## 0.2.12
 
 ### New Features
 
-* Data: 
+* Data:
     * core: `get_subset_dl` and `get_subset_dls`convenience function have been added.
-    * data preparation: `SlidingWindow` and `SlidingWindowPanel` functions are now vectorized, and are at least an order of magnitude faster. 
-* Models: 
+    * data preparation: `SlidingWindow` and `SlidingWindowPanel` functions are now vectorized, and are at least an order of magnitude faster.
+* Models:
     * `XCM`: An Explainable Convolutional Neural Network for Multivariate Time Series Classification have been added. Official code not released yet. This is a stete-of-the-art time series model that combines Conv1d and Conv2d and has good explainability.
 * Training:
     * learner: `ts_learner` and `tsimage_learner` convenience functions have been added, as well as a `get_X_preds` methods to facilitate the generation of predictions.
@@ -444,10 +493,10 @@ trying to install the package from source does not work for on Windows 10; it fa
 
 ### New Features
 
-* Data: 
+* Data:
     * data preparation: a new `SlidingWindowPanel` function has been added to help prepare the input from panel data. `SlidingWindow` has also been enhanced.
     * new preprocessors: TSRobustScaler, TSClipOutliers, TSDiff, TSLog, TSLogReturn
-* Models: 
+* Models:
     * `MLP` and `TCN` (Temporal Convolutional Network) have been added.
 * Training:
     * Callback: Uncertainty-based data augmentation
@@ -466,13 +515,13 @@ trying to install the package from source does not work for on Windows 10; it fa
 
 `tsai` 0.2.0 is a major update to the tsai library. These are the major changes made to the library:
 
-* New tutorial nbs have been added to demonstrate the use of new functionality like: 
+* New tutorial nbs have been added to demonstrate the use of new functionality like:
     * Time series **data preparation**
     * Intro to **time series regression**
     * TS archs comparison
     * **TS to image** classification
     * TS classification with **transformers**
-    
+
 ### New Features
 * More ts data transforms have been added, including ts to images.
 * New callbacks, like the state of the art noisy_student that will allow you to use unlabeled data.
