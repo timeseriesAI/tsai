@@ -1,8 +1,9 @@
 name: tsai
 channels:
-- timeseriesai
 - fastai
 - pytorch
+- fastchan
+- conda-forge
 - defaults
 dependencies:
 - fastai>=2.7.9
