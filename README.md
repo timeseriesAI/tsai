@@ -5,6 +5,8 @@ tsai
 
 ![CI](https://github.com/timeseriesai/tsai/workflows/CI/badge.svg)
 [![PyPI](https://img.shields.io/pypi/v/tsai?color=blue&label=pypi%20version.png)](https://pypi.org/project/tsai/#description)
+[![Conda (channel
+only)](https://img.shields.io/conda/vn/timeseriesai/tsai?color=brightgreen&label=conda%20version.png)](https://anaconda.org/timeseriesai/tsai)
 [![DOI](https://zenodo.org/badge/211822289.svg)](https://zenodo.org/badge/latestdoi/211822289)
 ![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
 
@@ -51,9 +53,12 @@ classification, regression, forecasting, imputation…
   <a href="https://colab.research.google.com/github/timeseriesAI/tsai/blob/master/tutorial_nbs/12_Experiment_tracking_with_W%26B.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 
 - `tsai` just got easier to use with the new sklearn-like APIs:
-  `TSClassifier`, `TSRegressor`, and `TSForecaster`!! See
-  [this](https://timeseriesai.github.io/tsai/tslearner.html) for more
-  info.
+  [`TSClassifier`](https://timeseriesAI.github.io/tslearner.html#tsclassifier),
+  [`TSRegressor`](https://timeseriesAI.github.io/tslearner.html#tsregressor),
+  and
+  [`TSForecaster`](https://timeseriesAI.github.io/tslearner.html#tsforecaster)!!
+  See [this](https://timeseriesai.github.io/tsai/tslearner.html) for
+  more info.
 
 - New tutorial notebook on how to **train your model with
   larger-than-memory datasets in less time achieving up to 100% GPU
@@ -94,23 +99,20 @@ classification, regression, forecasting, imputation…
 
 ## Installation
 
+### Pip install
+
 You can install the **latest stable** version from pip using:
 
 ``` python
 pip install tsai
 ```
 
-Or you can install the **cutting edge** version of this library from
-github by doing:
+If you plan to develop tsai yourself, or want to be on the cutting edge,
+you can use an editable install. First install PyTorch, and then:
 
 ``` python
-pip install git+https://github.com/timeseriesAI/tsai.git
-```
-
-Once the install is complete just run:
-
-``` python
-from tsai.all import *
+git clone https://github.com/timeseriesAI/tsai
+pip install -e "tsai[dev]"
 ```
 
 Note: starting with tsai 0.3.0 tsai will only install hard dependencies.
@@ -122,6 +124,15 @@ with all its dependencies you can do it by running:
 
 ``` python
 pip install tsai[extras]
+```
+
+### Conda install
+
+You can also install tsai using conda (note that if you replace conda
+with mamba the install process will be much faster and more reliable):
+
+``` python
+conda install -c timeseriesai tsai
 ```
 
 ## Documentation
