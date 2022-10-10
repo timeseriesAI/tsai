@@ -168,9 +168,12 @@ def beep(inp=1, duration=.1, n=1):
         time.sleep(duration / .1)
 
 def create_scripts(nb_name, max_elapsed=60, wait=2):
+    "Function that saves, exports to .py, cleans a notebook and checks it's been correctly converted"
     from nbdev.export import nb_export
+    from nbdev.clean import nbdev_clean
     save_nb(nb_name, wait=wait)
-    nb_export(nb_name)
+    full_nb_name = str(Path.cwd()/nb_name)
+    nb_export(full_nb_name)
     output = py_last_saved(nb_name, max_elapsed)
     beep(output)
 
