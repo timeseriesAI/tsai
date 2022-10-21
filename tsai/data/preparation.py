@@ -388,40 +388,34 @@ def add_delta_timestamp_cols(df, cols=None, groupby=None, forward=True, backward
 # # SlidingWindow vectorization is based on "Fast and Robust Sliding Window Vectorization with NumPy" by Syafiq Kamarul Azman
 # # https://towardsdatascience.com/fast-and-robust-sliding-window-vectorization-with-numpy-3ad950ed62f5
 
-def SlidingWindow(window_len:int, stride:Union[None, int]=1, start:int=0, pad_remainder:bool=False, padding:str="post", padding_value:float=np.nan,
-                  add_padding_feature:bool=True, get_x:Union[None, int, list]=None, get_y:Union[None, int, list]=None, y_func:Optional[callable]=None,
-                  output_processor:Optional[callable]=None, copy:bool=False, horizon:Union[int, list]=1, seq_first:bool=True, sort_by:Optional[list]=None,
-                  ascending:bool=True, check_leakage:bool=True):
+def SlidingWindow(
+  window_len:int, #length of lookback window
+  stride:Union[None, int]=1, # n datapoints the window is moved ahead along the sequence. Default: 1. If None, stride=window_len (no overlap)
+  start:int=0, # determines the step where the first window is applied: 0 (default) or a given step (int). Previous steps will be discarded.
+  pad_remainder:bool=False, #allows to pad remainder subsequences when the sliding window is applied and get_y == [] (unlabeled data).
+  padding:str="post", #'pre' or 'post' (optional, defaults to 'pre'): pad either before or after each sequence. If pad_remainder == False, it indicates the starting point to create the sequence ('pre' from the end, and 'post' from the beginning)
+  padding_value:float=np.nan, #value (float) that will be used for padding. Default: np.nan       
+  add_padding_feature:bool=True, #add an additional feature indicating whether each timestep is padded (1) or not (0).
+  get_x:Union[None, int, list]=None, # indices of columns that contain the independent variable (xs). If None, all data will be used as x.
+  get_y:Union[None, int, list]=None, # indices of columns that contain the target (ys). If None, all data will be used as y. [] means no y data is created (unlabeled data).
+  y_func:Optional[callable]=None, # optional function to calculate the ys based on the get_y col/s and each y sub-window. y_func must be a function applied to axis=1!
+  output_processor:Optional[callable]=None, # optional function to process the final output (X (and y if available)). This is useful when some values need to be removed.The function should take X and y (even if it's None) as arguments.
+  copy:bool=False, # copy the original object to avoid changes in it.
+  horizon:Union[int, list]=1, #number of future datapoints to predict (y). If get_y is [] horizon will be set to 0.
+                            # * 0 for last step in each sub-window.
+                            # * n > 0 for a range of n future steps (1 to n).
+                            # * n < 0 for a range of n past steps (-n + 1 to 0).
+                            # * list : for those exact timesteps.
+  seq_first:bool=True, # True if input shape (seq_len, n_vars), False if input shape (n_vars, seq_len)
+  sort_by:Optional[list]=None, # column/s used for sorting the array in ascending order
+  ascending:bool=True, # used in sorting
+  check_leakage:bool=True, # checks if there's leakage in the output between X and y
+):
 
     """
     Applies a sliding window to a 1d or 2d input (np.ndarray, torch.Tensor or pd.DataFrame)
-    Args:
-        window_len          = length of lookback window
-        stride              = n datapoints the window is moved ahead along the sequence. Default: 1. If None, stride=window_len (no overlap)
-        start               = determines the step where the first window is applied: 0 (default) or a given step (int). Previous steps will be discarded.
-        pad_remainder       = allows to pad remainder subsequences when the sliding window is applied and get_y == [] (unlabeled data).
-        padding             = 'pre' or 'post' (optional, defaults to 'pre'): pad either before or after each sequence. If pad_remainder == False, it indicates
-                              the starting point to create the sequence ('pre' from the end, and 'post' from the beginning)
-        padding_value       = value (float) that will be used for padding. Default: np.nan
-        add_padding_feature = add an additional feature indicating whether each timestep is padded (1) or not (0).
-        horizon             = number of future datapoints to predict (y). If get_y is [] horizon will be set to 0.
-                            * 0 for last step in each sub-window.
-                            * n > 0 for a range of n future steps (1 to n).
-                            * n < 0 for a range of n past steps (-n + 1 to 0).
-                            * list : for those exact timesteps.
-        get_x               = indices of columns that contain the independent variable (xs). If None, all data will be used as x.
-        get_y               = indices of columns that contain the target (ys). If None, all data will be used as y.
-                              [] means no y data is created (unlabeled data).
-        y_func              = optional function to calculate the ys based on the get_y col/s and each y sub-window. y_func must be a function applied to axis=1!
-        output_processor    = optional function to process the final output (X (and y if available)). This is useful when some values need to be removed.
-                              The function should take X and y (even if it's None) as arguments.
-        copy                = copy the original object to avoid changes in it.
-        seq_first           = True if input shape (seq_len, n_vars), False if input shape (n_vars, seq_len)
-        sort_by             = column/s used for sorting the array in ascending order
-        ascending           = used in sorting
-        check_leakage       = checks if there's leakage in the output between X and y
-    Input:
-        You can use np.ndarray, pd.DataFrame or torch.Tensor as input
+    \nInput:\n
+        You can use np.ndarray, pd.DataFrame or torch.Tensor as input\n
         shape: (seq_len, ) or (seq_len, n_vars) if seq_first=True else (n_vars, seq_len)
     """
 
