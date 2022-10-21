@@ -19,7 +19,8 @@ class _RNN_Backbone(Module):
             n_cat_embeds = listify(n_cat_embeds)
             if cat_embed_dims is None:  
                 cat_embed_dims = [emb_sz_rule(s) for s in n_cat_embeds]
-            self.to_cat_embed = MultiEmbedding(c_in, n_cat_embeds, cat_embed_dims=cat_embed_dims, cat_padding_idxs=cat_padding_idxs, cat_pos=cat_pos)
+            self.to_cat_embed = MultiEmbedding(c_in, n_cat_embeds, cat_embed_dims=cat_embed_dims, cat_padding_idxs=cat_padding_idxs, 
+                                               cat_pos=cat_pos)
             c_in = c_in + sum(cat_embed_dims) - len(n_cat_embeds)
         else:
             self.to_cat_embed = nn.Identity()
@@ -37,7 +38,8 @@ class _RNN_Backbone(Module):
         if len(set(hidden_size)) == 1: 
             hidden_size = hidden_size[0]
             if n_layers == 1: rnn_dropout = 0
-            rnn_layers.append(cell(c_in, hidden_size, num_layers=n_layers, bias=bias, batch_first=True, dropout=rnn_dropout, bidirectional=bidirectional))
+            rnn_layers.append(cell(c_in, hidden_size, num_layers=n_layers, bias=bias, batch_first=True, dropout=rnn_dropout, 
+                                   bidirectional=bidirectional))
             rnn_layers.append(LSTMOutput()) # this selects just the output, and discards h_n, and c_n
         else: 
             for i in range(len(hidden_size)):
@@ -45,7 +47,8 @@ class _RNN_Backbone(Module):
                 hs = hidden_size[i] 
                 rnn_layers.append(cell(input_size, hs, num_layers=1, bias=bias, batch_first=True, bidirectional=bidirectional))
                 rnn_layers.append(LSTMOutput()) # this selects just the output, and discards h_n, and c_n
-                if rnn_dropout and i < len(hidden_size) - 1: rnn_layers.append(nn.Dropout(rnn_dropout)) # add dropout to all layers except last
+                if rnn_dropout and i < len(hidden_size) - 1: 
+                    rnn_layers.append(nn.Dropout(rnn_dropout)) # add dropout to all layers except last
         self.rnn = nn.Sequential(*rnn_layers)
         self.transpose = Transpose(-1, -2, contiguous=True)
         if init_weights: self.apply(self._weights_init) 
@@ -78,7 +81,8 @@ class _RNN_Backbone(Module):
 # %% ../../nbs/105_models.RNNPlus.ipynb 5
 class _RNNPlus_Base(nn.Sequential):
     def __init__(self, c_in, c_out, seq_len=None, hidden_size=[100], n_layers=1, bias=True, rnn_dropout=0, bidirectional=False,
-                 n_cat_embeds=None, cat_embed_dims=None, cat_padding_idxs=None, cat_pos=None, feature_extractor=None, fc_dropout=0., last_step=True, bn=False, 
+                 n_cat_embeds=None, cat_embed_dims=None, cat_padding_idxs=None, cat_pos=None, feature_extractor=None, fc_dropout=0., 
+                 last_step=True, bn=False, 
                  custom_head=None, y_range=None, init_weights=True):
 
         if not last_step: assert seq_len, 'you need to pass a seq_len value'
@@ -86,7 +90,8 @@ class _RNNPlus_Base(nn.Sequential):
         # Backbone
         hidden_size = listify(hidden_size)
         backbone = _RNN_Backbone(self._cell, c_in, c_out, seq_len=seq_len, hidden_size=hidden_size, n_layers=n_layers, 
-                                 n_cat_embeds=n_cat_embeds, cat_embed_dims=cat_embed_dims, cat_padding_idxs=cat_padding_idxs, cat_pos=cat_pos, feature_extractor=feature_extractor,
+                                 n_cat_embeds=n_cat_embeds, cat_embed_dims=cat_embed_dims, cat_padding_idxs=cat_padding_idxs, 
+                                 cat_pos=cat_pos, feature_extractor=feature_extractor,
                                  bias=bias, rnn_dropout=rnn_dropout,  bidirectional=bidirectional, init_weights=init_weights)
 
         # Head

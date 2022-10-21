@@ -78,7 +78,7 @@ class Pad1d(nn.ConstantPad1d):
         super().__init__(padding, value)
 
         
-@delegates(nn.Conv1d)
+# @delegates(nn.Conv1d.__init__)
 class SameConv1d(Module):
     "Conv1d with padding='same'"
     def __init__(self, ni, nf, ks=3, stride=1, dilation=1, **kwargs):
@@ -108,7 +108,7 @@ class Pad2d(nn.ConstantPad2d):
         super().__init__(padding, value)
 
 
-@delegates(nn.Conv2d)
+# @delegates(nn.Conv2d.__init__)
 class Conv2dSame(Module):
     "Conv2d with padding='same'"
     def __init__(self, ni, nf, ks=(3, 3), stride=(1, 1), dilation=(1, 1), **kwargs):
@@ -126,7 +126,7 @@ class Conv2dSame(Module):
         return self.conv2d_same(self.pad(self.padding)(x))
     
     
-@delegates(nn.Conv2d)
+# @delegates(nn.Conv2d.__init__)
 def Conv2d(ni, nf, kernel_size=None, ks=None, stride=1, padding='same', dilation=1, init='auto', bias_std=0.01, **kwargs):
     "conv1d layer with padding='same', 'valid', or any integer (defaults to 'same')"
     assert not (kernel_size and ks), 'use kernel_size or ks but not both simultaneously'
@@ -148,7 +148,7 @@ class CausalConv1d(torch.nn.Conv1d):
         return super(CausalConv1d, self).forward(F.pad(input, (self.__padding, 0)))
 
 # %% ../../nbs/100_models.layers.ipynb 12
-@delegates(nn.Conv1d)
+# @delegates(nn.Conv1d.__init__)
 def Conv1d(ni, nf, kernel_size=None, ks=None, stride=1, padding='same', dilation=1, init='auto', bias_std=0.01, **kwargs):
     "conv1d layer with padding='same', 'causal', 'valid', or any integer (defaults to 'same')"
     assert not (kernel_size and ks), 'use kernel_size or ks but not both simultaneously'
@@ -230,7 +230,7 @@ SepConv = named_partial('SepConv', ConvBlock, norm=None, act=None, separable=Tru
 # %% ../../nbs/100_models.layers.ipynb 24
 class ResBlock1dPlus(Module):
     "Resnet block from `ni` to `nh` with `stride`"
-    @delegates(ConvLayer.__init__)
+#     @delegates(ConvLayer.__init__)
     def __init__(self, expansion, ni, nf, coord=False, stride=1, groups=1, reduction=None, nh1=None, nh2=None, dw=False, g2=1,
                  sa=False, sym=False, norm='Batch', zero_norm=True, act_cls=defaults.activation, ks=3,
                  pool=AvgPool, pool_first=True, **kwargs):

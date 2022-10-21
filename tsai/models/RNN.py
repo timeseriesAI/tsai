@@ -11,8 +11,9 @@ from .utils import *
 # %% ../../nbs/105_models.RNN.ipynb 4
 class _RNN_Base(Module):
     def __init__(self, c_in, c_out, hidden_size=100, n_layers=1, bias=True, rnn_dropout=0, bidirectional=False, fc_dropout=0.):
-        self.rnn = self._cell(c_in, hidden_size, num_layers=n_layers, bias=bias, batch_first=True, dropout=rnn_dropout, bidirectional=bidirectional)
-        self.dropout = nn.Dropout(fc_dropout) if fc_dropout else noop
+        self.rnn = self._cell(c_in, hidden_size, num_layers=n_layers, bias=bias, batch_first=True, dropout=rnn_dropout, 
+                              bidirectional=bidirectional)
+        self.dropout = nn.Dropout(fc_dropout) if fc_dropout else nn.Identity()
         self.fc = nn.Linear(hidden_size * (1 + bidirectional), c_out)
 
     def forward(self, x): 

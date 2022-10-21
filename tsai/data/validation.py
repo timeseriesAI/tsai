@@ -276,11 +276,11 @@ def get_splits(o, n_splits:int=1, valid_size:float=0.2, test_size:float=0., trai
 def get_walk_forward_splits(
     o, # 3D object with shape [samples x features x steps] containing the time series we need to split
     n_splits=1, # # of splits
-    train_size=None, # optional: training size. None when using and anchored strategy.
-    valid_size=0.2, # validation set size
-    test_size=0., # test set size
+    train_size=None, # optional: training set size as an int or a float. None when using and anchored strategy.
+    valid_size=0.2, # validation set size as an int or a float
+    test_size=0., # test set size as an int or a float
     anchored = False, # starting point for train set remains the same for all splits
-    gap = 0., # # of samples to exclude from the end of each train set before the validation set.
+    gap = 0., # # of samples to exclude from the end of each train set before the validation set. Entered as an int or a float
     test_after_valid = True, # flag to indicate if validation and test will be samples randomly or sequentially
     random_state = None, # integer that can be used to generate reproducible results
     show_plot=True, # plots the splits created

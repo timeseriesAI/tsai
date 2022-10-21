@@ -207,7 +207,7 @@ def count_parameters(model, trainable=True):
     else: return sum(p.numel() for p in model.parameters())
 
 # %% ../../nbs/100b_models.utils.ipynb 15
-@delegates(XResNet.__init__)
+# @delegates(XResNet.__init__)
 def build_tsimage_model(arch, c_in=None, c_out=None, dls=None, pretrained=False, device=None, verbose=False, init=None, arch_config={}, **kwargs):
     device = ifnone(device, default_device())
     if dls is not None:
@@ -221,7 +221,7 @@ def build_tsimage_model(arch, c_in=None, c_out=None, dls=None, pretrained=False,
     return model
 
 # %% ../../nbs/100b_models.utils.ipynb 16
-@delegates(TabularModel.__init__)
+# @delegates(TabularModel.__init__)
 def build_tabular_model(arch, dls, layers=None, emb_szs=None, n_out=None, y_range=None, device=None, arch_config={}, **kwargs):
     if device is None: device = default_device()
     if layers is None: layers = [200,100]

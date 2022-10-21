@@ -3,6 +3,11 @@ if platform.system()=='Darwin':
     # workaround "OMP: Error #15: Initializing libiomp5.dylib, but found libomp.dylib already initialized"
     os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from torch import Tensor    
+
 import numpy as np
 from numpy import array
 import pandas as pd
@@ -21,11 +26,6 @@ import importlib
 import warnings
 from warnings import warn
 import psutil
-
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-from torch import Tensor
 
 import fastcore
 from fastcore.imports import *
