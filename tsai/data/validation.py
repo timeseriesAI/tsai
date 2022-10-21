@@ -2,8 +2,8 @@
 
 # %% auto 0
 __all__ = ['TimeSplitter', 'RandomSplitter', 'check_overlap', 'check_splits_overlap', 'leakage_finder', 'balance_idx',
-           'TrainValidTestSplitter', 'plot_splits', 'get_splits', 'TSSplitter', 'get_predefined_splits',
-           'combine_split_data', 'get_splits_len']
+           'TrainValidTestSplitter', 'plot_splits', 'get_splits', 'get_walk_forward_splits', 'TSSplitter',
+           'get_predefined_splits', 'combine_split_data', 'get_splits_len']
 
 # %% ../../nbs/010_data.validation.ipynb 3
 from ..imports import *
@@ -273,6 +273,95 @@ def get_splits(o, n_splits:int=1, valid_size:float=0.2, test_size:float=0., trai
     return splits
 
 # %% ../../nbs/010_data.validation.ipynb 17
+def get_walk_forward_splits(
+    o, # 3D object with shape [samples x features x steps] containing the time series we need to split
+    n_splits=1, # # of splits
+    train_size=None, # optional: training size. None when using and anchored strategy.
+    valid_size=0.2, # validation set size
+    test_size=0., # test set size
+    anchored = False, # starting point for train set remains the same for all splits
+    gap = 0., # # of samples to exclude from the end of each train set before the validation set.
+    test_after_valid = True, # flag to indicate if validation and test will be samples randomly or sequentially
+    random_state = None, # integer that can be used to generate reproducible results
+    show_plot=True, # plots the splits created
+):
+
+    if anchored:
+        train_size = None
+    elif isinstance(train_size, float): 
+        train_size = np.int32(np.floor(len(o) * train_size))
+    if isinstance(valid_size, float): 
+        valid_size = np.int32(np.floor(len(o) * valid_size))
+    if isinstance(test_size, float): 
+        test_size = np.int32(np.floor(len(o) * test_size))
+    if isinstance(gap, float): 
+        gap = np.int32(np.floor(len(o) * gap))
+
+    if train_size is not None:
+        assert train_size + (valid_size + test_size + gap) * n_splits <= len(o), "reduce train_size, valid_size, test_size, gap or n_splits"
+    else:
+        assert (valid_size + test_size + gap) * n_splits < len(o), "reduce valid_size, test_size, gap or n_splits"
+
+    if not test_after_valid:
+        assert valid_size == test_size
+
+    train_idxs = []
+    valid_idxs = []
+    test_idxs = []
+
+    end = 0
+    all_idxs = np.arange(len(o))
+    for n in range(n_splits):
+        if valid_size > 0 and test_size > 0:
+            if test_after_valid:
+                test_idxs.append(L(all_idxs[-test_size:].tolist()))
+                all_idxs = all_idxs[:-test_size]
+                valid_idxs.append(L(all_idxs[-valid_size:].tolist()))
+                all_idxs = all_idxs[:-valid_size]
+                if gap > 0:
+                    all_idxs = all_idxs[:-gap]
+                if anchored:
+                    train_idxs.append(L(all_idxs.tolist()))
+                else:
+                    train_idxs.append(L(all_idxs[-train_size:].tolist()))
+            else:
+                valid_test_idxs = all_idxs[-test_size - valid_size:]
+                np.random.seed(random_state)
+                valid_test_idxs = np.random.permutation(valid_test_idxs)
+                valid_idxs.append(L(valid_test_idxs[:valid_size]))
+                test_idxs.append(L(valid_test_idxs[valid_size:]))
+                all_idxs = all_idxs[:-test_size - valid_size]
+                if gap > 0:
+                    all_idxs = all_idxs[:-gap]
+                if anchored:
+                    train_idxs.append(L(all_idxs.tolist()))
+                else:
+                    train_idxs.append(L(all_idxs[-train_size:].tolist()))
+        elif valid_size > 0:
+            valid_idxs.append(L(all_idxs[-valid_size:].tolist()))
+            all_idxs = all_idxs[:-valid_size]
+            test_idxs.append(L([]))
+            if gap > 0:
+                all_idxs = all_idxs[:-gap]
+            if anchored:
+                train_idxs.append(L(all_idxs.tolist()))
+            else:
+                train_idxs.append(L(all_idxs[-train_size:].tolist()))
+
+    splits = []
+    for n in range(n_splits):
+        if valid_size > 0 and test_size > 0:
+            splits.append((L(train_idxs[n]), L(valid_idxs[n]), L(test_idxs[n])))
+        elif valid_size > 0:
+            splits.append((L(train_idxs[n]), L(valid_idxs[n])))
+        else:
+            splits.append((L(train_idxs[n]),))
+    splits = tuple(splits)[::-1]
+    if show_plot:
+        plot_splits(splits)
+    return splits
+
+# %% ../../nbs/010_data.validation.ipynb 19
 def TSSplitter(valid_size:Union[int, float]=0.2, test_size:Union[int, float]=0., show_plot:bool=True):
     "Create function that splits `items` between train/val with `valid_size` without shuffling data."
     def _inner(o):
@@ -294,7 +383,7 @@ def TSSplitter(valid_size:Union[int, float]=0.2, test_size:Union[int, float]=0.,
 
 TimeSplitter = TSSplitter
 
-# %% ../../nbs/010_data.validation.ipynb 34
+# %% ../../nbs/010_data.validation.ipynb 36
 def get_predefined_splits(*xs):
     '''xs is a list with X_train, X_valid, ...'''
     splits_ = []
@@ -311,7 +400,7 @@ def combine_split_data(xs, ys=None):
     if ys is None: return concat(*xs), None, splits
     else: return concat(*xs), concat(*ys), splits
 
-# %% ../../nbs/010_data.validation.ipynb 35
+# %% ../../nbs/010_data.validation.ipynb 37
 def get_splits_len(splits):
     _len = []
     for split in splits: 
