@@ -812,7 +812,7 @@ class TSRandom2Value(RandTransform):
     def encodes(self, o:TSTensor):
         if not self.magnitude or self.magnitude <= 0 or self.magnitude >= 1: return o
         if self.static:
-            vals = torch.rand(*o.shape[:-1], device=o.device)
+            vals = torch.rand(*o.shape[:-1], device=o.device).unsqueeze(-1)
         else:
             vals = torch.rand(*o.shape, device=o.device)
         mask = vals > (1 - self.magnitude)
