@@ -802,10 +802,12 @@ class TSRandomConv(RandTransform):
 
 # %% ../../nbs/017_data.transforms.ipynb 85
 class TSRandom2Value(RandTransform):
-    "Randomly sets selected variables or steps to predefined value"
+    "Randomly sets selected variables of type `TSTensor` to predefined value (default: np.nan)"
     order = 90
     def __init__(self, magnitude=0.1, sel_vars=None, sel_steps=None, static=False, value=np.nan, **kwargs):
         assert not (sel_steps is not None and static), "you must choose either static or sel_steps"
+        if is_listy(sel_vars) and is_listy(sel_steps):
+            sel_vars = np.asarray(sel_vars)[:, None]
         self.sel_vars, self.sel_steps = sel_vars, sel_steps
         if sel_vars is None:
             self._sel_vars = slice(None)
@@ -848,7 +850,7 @@ class TSRandom2Value(RandTransform):
         mask = vals > (1 - self.magnitude)
         return o.masked_fill(mask, self.value)
 
-# %% ../../nbs/017_data.transforms.ipynb 89
+# %% ../../nbs/017_data.transforms.ipynb 96
 class TSMask2Value(RandTransform):
     "Randomly sets selected variables of type `TSTensor` to predefined value (default: np.nan)"
     order = 90
@@ -864,7 +866,7 @@ class TSMask2Value(RandTransform):
             mask[:, self.sel_vars] = False
         return o.masked_fill(mask, self.value)
 
-# %% ../../nbs/017_data.transforms.ipynb 91
+# %% ../../nbs/017_data.transforms.ipynb 98
 all_TS_randaugs = [
     
     TSIdentity, 
@@ -914,7 +916,7 @@ all_TS_randaugs = [
     (TSMaskOut, 0.01, 0.2),
 ]
 
-# %% ../../nbs/017_data.transforms.ipynb 92
+# %% ../../nbs/017_data.transforms.ipynb 99
 class RandAugment(RandTransform):
     order = 90
     def __init__(self, tfms:list, N:int=1, M:int=3, **kwargs):
@@ -941,7 +943,7 @@ class RandAugment(RandTransform):
         output = compose_tfms(o, tfms_, split_idx=self.split_idx)
         return output
 
-# %% ../../nbs/017_data.transforms.ipynb 94
+# %% ../../nbs/017_data.transforms.ipynb 101
 class TestTfm(RandTransform):
     "Utility class to test the output of selected tfms during training"
     def __init__(self, tfm, magnitude=1., ex=None, **kwargs): 
@@ -955,7 +957,7 @@ class TestTfm(RandTransform):
         self.shape.append(o.shape)
         return output
 
-# %% ../../nbs/017_data.transforms.ipynb 95
+# %% ../../nbs/017_data.transforms.ipynb 102
 def get_tfm_name(tfm):
     if isinstance(tfm, tuple): tfm = tfm[0]
     if hasattr(tfm, "func"): tfm = tfm.func
