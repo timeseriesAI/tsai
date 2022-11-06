@@ -802,25 +802,53 @@ class TSRandomConv(RandTransform):
 
 # %% ../../nbs/017_data.transforms.ipynb 85
 class TSRandom2Value(RandTransform):
-    "Randomly sets selected variables of type `TSTensor` to predefined value (default: np.nan)"
+    "Randomly sets selected variables or steps to predefined value"
     order = 90
-    def __init__(self, magnitude=0.1, sel_vars=None, static=False, value=np.nan, mask_fn=None, **kwargs):
-        self.sel_vars = sel_vars
+    def __init__(self, magnitude=0.1, sel_vars=None, sel_steps=None, static=False, value=np.nan, **kwargs):
+        assert not (sel_steps is not None and static), "you must choose either static or sel_steps"
+        self.sel_vars, self.sel_steps = sel_vars, sel_steps
+        if sel_vars is None:
+            self._sel_vars = slice(None)
+        else:
+            self._sel_vars = sel_vars
+        if sel_steps is None or static:
+            self._sel_steps = slice(None)
+        else:
+            self._sel_steps = sel_steps
         self.magnitude, self.static, self.value = magnitude , static, value
         super().__init__(**kwargs)
 
     def encodes(self, o:TSTensor):
-        if not self.magnitude or self.magnitude <= 0 or self.magnitude >= 1: return o
+        if not self.magnitude or self.magnitude <= 0 or self.magnitude > 1: return o
         if self.static:
-            vals = torch.rand(*o.shape[:-1], device=o.device).unsqueeze(-1)
+            if self.sel_vars is not None:
+                if self.magnitude == 1:
+                    o[:, self._sel_vars] = o[:, self._sel_vars].fill_(self.value)
+                    return o
+                else:
+                    vals = torch.zeros_like(o)
+                    vals[:, self._sel_vars] = torch.rand(*vals[:, self._sel_vars, 0].shape, device=o.device).unsqueeze(-1)
+            else:
+                if self.magnitude == 1:
+                    return o.fill_(self.value) 
+                else:
+                    vals = torch.rand(*o.shape[:-1], device=o.device).unsqueeze(-1)
+        elif self.sel_vars is not None or self.sel_steps is not None:
+            if self.magnitude == 1:
+                o[:, self._sel_vars, self._sel_steps] = o[:, self._sel_vars, self._sel_steps].fill_(self.value)
+                return o
+            else:
+                vals = torch.zeros_like(o)
+                vals[:, self._sel_vars, self._sel_steps] = torch.rand(*vals[:, self._sel_vars, self._sel_steps].shape, device=o.device)
         else:
-            vals = torch.rand(*o.shape, device=o.device)
+            if self.magnitude == 1:
+                return o.fill_(self.value) 
+            else:
+                vals = torch.rand_like(o)
         mask = vals > (1 - self.magnitude)
-        if self.sel_vars is not None:
-            mask[:, np.isin(np.arange(o.shape[1]), self.sel_vars, invert=True)] = False
         return o.masked_fill(mask, self.value)
 
-# %% ../../nbs/017_data.transforms.ipynb 88
+# %% ../../nbs/017_data.transforms.ipynb 89
 class TSMask2Value(RandTransform):
     "Randomly sets selected variables of type `TSTensor` to predefined value (default: np.nan)"
     order = 90
@@ -836,7 +864,7 @@ class TSMask2Value(RandTransform):
             mask[:, self.sel_vars] = False
         return o.masked_fill(mask, self.value)
 
-# %% ../../nbs/017_data.transforms.ipynb 90
+# %% ../../nbs/017_data.transforms.ipynb 91
 all_TS_randaugs = [
     
     TSIdentity, 
@@ -886,7 +914,7 @@ all_TS_randaugs = [
     (TSMaskOut, 0.01, 0.2),
 ]
 
-# %% ../../nbs/017_data.transforms.ipynb 91
+# %% ../../nbs/017_data.transforms.ipynb 92
 class RandAugment(RandTransform):
     order = 90
     def __init__(self, tfms:list, N:int=1, M:int=3, **kwargs):
@@ -913,7 +941,7 @@ class RandAugment(RandTransform):
         output = compose_tfms(o, tfms_, split_idx=self.split_idx)
         return output
 
-# %% ../../nbs/017_data.transforms.ipynb 93
+# %% ../../nbs/017_data.transforms.ipynb 94
 class TestTfm(RandTransform):
     "Utility class to test the output of selected tfms during training"
     def __init__(self, tfm, magnitude=1., ex=None, **kwargs): 
@@ -927,7 +955,7 @@ class TestTfm(RandTransform):
         self.shape.append(o.shape)
         return output
 
-# %% ../../nbs/017_data.transforms.ipynb 94
+# %% ../../nbs/017_data.transforms.ipynb 95
 def get_tfm_name(tfm):
     if isinstance(tfm, tuple): tfm = tfm[0]
     if hasattr(tfm, "func"): tfm = tfm.func
