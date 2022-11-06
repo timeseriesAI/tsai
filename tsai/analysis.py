@@ -138,7 +138,7 @@ def feature_importance(self:Learner,
     sel_classes:(str, list)=None, # classes for which the analysis will be made
     key_metric_idx:int=0, # Optional position of the metric used. If None or no metric is available, the loss will be used.
     show_chart:bool=True, # Flag to indicate if a chart showing permutation feature importance will be plotted.
-    figsize:tuple=(10, 5), # Size of the chart.
+    figsize:tuple=None, # Size of the chart.
     title:str=None, # Optional string that will be used as the chart title. If None 'Permutation Feature Importance'.
     return_df:bool=True, # Flag to indicate if the dataframe with feature importance will be returned.
     save_df_path:Path=None, # Path where dataframe containing the permutation feature importance results will be saved.
@@ -147,14 +147,16 @@ def feature_importance(self:Learner,
     ):
     r"""Calculates feature importance as the drop in the model's validation loss or metric when a feature value is randomly shuffled"""
     
+    global output, metric
+    
     assert method in ['permutation', 'ablation']
 
     # X, y
     if X is None:
-        X = self.dls.valid.dataset.tls[0].items
-        if hasattr(self.dls.valid.dataset.tls[0], '_splits'): X = X[self.dls.valid.dataset.tls[0]._splits]
+        X = self.dls.train.dataset.tls[0].items
+        if hasattr(self.dls.train.dataset.tls[0], '_splits'): X = X[self.dls.train.dataset.tls[0]._splits]
     if y is None:
-        y = self.dls.valid.dataset.tls[1].items
+        y = self.dls.train.dataset.tls[1].items
     if partial_n is not None:
         _, rand_idxs, *_ = train_test_split(np.arange(len(y)), y, test_size=partial_n, random_state=random_state, stratify=y)
         X = X.oindex[rand_idxs] if hasattr(X, 'oindex') else X[rand_idxs]
@@ -219,7 +221,7 @@ def feature_importance(self:Learner,
             else:
                 output = self.get_X_preds(X, y)
                 if self.dls.c == 2:
-                    try: value = metric(output[1], output[0][:, 1]).item()
+                    try: value = metric(output[0][:, 1], output[1]).item()
                     except: value = metric(output[0], output[1]).item()
                 else:
                     value = metric(output[0], output[1]).item()
@@ -256,7 +258,9 @@ def feature_importance(self:Learner,
         neg_value_change = value_change.copy()
         pos_value_change[pos_value_change < 0] = 0
         neg_value_change[neg_value_change > 0] = 0
-        plt.figure(figsize=(10, .5*len(value_change)))
+        if figsize is None:
+            figsize=(10, .5*len(value_change))
+        plt.figure(figsize=figsize)
         plt.barh(np.arange(len(value_change))[::-1], pos_value_change, color='lime', edgecolor='black')
         plt.barh(np.arange(len(value_change))[::-1], neg_value_change, color='red', edgecolor='black')
         plt.axvline(0, color='black')
@@ -304,10 +308,10 @@ def step_importance(
     
     # X, y
     if X is None:
-        X = self.dls.valid.dataset.tls[0].items
-        if hasattr(self.dls.valid.dataset.tls[0], '_splits'): X = X[self.dls.valid.dataset.tls[0]._splits]
+        X = self.dls.train.dataset.tls[0].items
+        if hasattr(self.dls.train.dataset.tls[0], '_splits'): X = X[self.dls.train.dataset.tls[0]._splits]
     if y is None:
-        y = self.dls.valid.dataset.tls[1].items
+        y = self.dls.train.dataset.tls[1].items
     if partial_n is not None:
         _, rand_idxs, *_ = train_test_split(np.arange(len(y)), y, test_size=partial_n, random_state=random_state, stratify=y)
         X = X.oindex[rand_idxs] if hasattr(X, 'oindex') else X[rand_idxs]
@@ -319,7 +323,6 @@ def step_importance(
         X, y = X[filt], y[filt]
     pv(f'X.shape: {X.shape}', verbose)
     pv(f'y.shape: {y.shape}', verbose)
-    
 
     # Metrics
     metrics = [mn for mn in self.recorder.metric_names if mn not in ['epoch', 'train_loss', 'valid_loss', 'time']]
@@ -335,7 +338,7 @@ def step_importance(
     # Selected steps
     sel_step_idxs = L(np.arange(X.shape[-1]).tolist())[self.dls.sel_steps]
     if n_steps != 1:
-        sel_step_idxs = [listify(sel_step_idxs[::-1][n:n+n_steps][::-1]) for n in range(0, len(sel_step_idxs), n_steps)][::-1]        
+        sel_step_idxs = [listify(sel_step_idxs[::-1][n:n+n_steps][::-1]) for n in range(0, len(sel_step_idxs), n_steps)][::-1]     
     g = list(zip(np.arange(len(sel_step_idxs)+2), [0] + sel_step_idxs))
 
     # Loop
@@ -361,7 +364,7 @@ def step_importance(
             else:
                 output = self.get_X_preds(X, y)
                 if self.dls.c == 2:
-                    try: value = metric(output[1], output[0][:, 1]).item()
+                    try: value = metric(output[0][:, 1], output[1]).item()
                     except: value = metric(output[0], output[1]).item()
                 else:
                     value = metric(output[0], output[1]).item()
@@ -408,7 +411,7 @@ def step_importance(
         neg_value_change = value_change.copy()
         pos_value_change[pos_value_change < 0] = 0
         neg_value_change[neg_value_change > 0] = 0
-        plt.figure(figsize=(10, .5*len(value_change)))
+        plt.figure(figsize=figsize)
         plt.bar(np.arange(len(value_change)), pos_value_change, color='lime', edgecolor='black')
         plt.bar(np.arange(len(value_change)), neg_value_change, color='red', edgecolor='black')
         plt.axhline(0, color='black')
@@ -429,4 +432,4 @@ def step_importance(
         df.to_csv(f'{save_df_path}', index=False)
         pv(f'Step importance df saved to {save_df_path}', verbose)
     if return_df: 
-        return df 
+        return df
