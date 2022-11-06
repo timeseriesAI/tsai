@@ -570,16 +570,16 @@ class TSLinearPosition(Transform):
 
 # %% ../../nbs/016_data.preprocessing.ipynb 48
 class TSMissingness(Transform):
-    """Concatenates data missingness for selected features along the sequence as additional variables"""
+    "Concatenates data missingness for selected features along the sequence as additional variables"
 
     order = 90
-    def __init__(self, feature_idxs=None, magnitude=None, **kwargs):
-        self.feature_idxs = listify(feature_idxs)
+    def __init__(self, sel_vars=None, feature_idxs=None, magnitude=None, **kwargs):
+        self.sel_vars = sel_vars or feature_idxs
         super().__init__(**kwargs)
 
     def encodes(self, o: TSTensor):
-        if self.feature_idxs:
-            missingness = o[:, self.feature_idxs].isnan()
+        if self.sel_vars is not None:
+            missingness = o[:, self.sel_vars].isnan()
         else:
             missingness = o.isnan()
         return torch.cat([o, missingness], 1)
@@ -589,14 +589,16 @@ class TSPositionGaps(Transform):
     """Concatenates gaps for selected features along the sequence as additional variables"""
 
     order = 90
-    def __init__(self, feature_idxs=None, magnitude=None, forward=True, backward=False, nearest=False, normalize=True, **kwargs):
-        self.feature_idxs = listify(feature_idxs)
+    def __init__(self, sel_vars=None, feature_idxs=None, magnitude=None, forward=True, backward=False, 
+                 nearest=False, normalize=True, **kwargs):
+        sel_vars = sel_vars or feature_idxs
+        self.sel_vars = listify(sel_vars)
         self.gap_fn = partial(get_gaps, forward=forward, backward=backward, nearest=nearest, normalize=normalize)
         super().__init__(**kwargs)
 
     def encodes(self, o: TSTensor):
-        if self.feature_idxs:
-            gaps = self.gap_fn(o[:, self.feature_idxs])
+        if self.sel_vars:
+            gaps = self.gap_fn(o[:, self.sel_vars])
         else:
             gaps = self.gap_fn(o)
         return torch.cat([o, gaps], 1)
@@ -609,19 +611,20 @@ class TSRollingMean(Transform):
        If nan values are found, they will be filled forward and backward"""
 
     order = 90
-    def __init__(self, feature_idxs=None, magnitude=None, window=2, replace=False, **kwargs):
-        self.feature_idxs = listify(feature_idxs)
+    def __init__(self, sel_vars=None, feature_idxs=None, magnitude=None, window=2, replace=False, **kwargs):
+        sel_vars = sel_vars or feature_idxs
+        self.sel_vars = listify(sel_vars)
         self.rolling_mean_fn = partial(rolling_moving_average, window=window)
         self.replace = replace
         super().__init__(**kwargs)
 
     def encodes(self, o: TSTensor):
-        if self.feature_idxs:
-            if torch.isnan(o[:, self.feature_idxs]).any():
-                o[:, self.feature_idxs] = fbfill_sequence(o[:, self.feature_idxs])
-            rolling_mean = self.rolling_mean_fn(o[:, self.feature_idxs])
+        if self.sel_vars:
+            if torch.isnan(o[:, self.sel_vars]).any():
+                o[:, self.sel_vars] = fbfill_sequence(o[:, self.sel_vars])
+            rolling_mean = self.rolling_mean_fn(o[:, self.sel_vars])
             if self.replace: 
-                o[:, self.feature_idxs] = rolling_mean
+                o[:, self.sel_vars] = rolling_mean
                 return o
         else:
             if torch.isnan(o).any():
