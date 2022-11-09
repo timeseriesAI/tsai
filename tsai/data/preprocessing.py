@@ -574,7 +574,8 @@ class TSMissingness(Transform):
 
     order = 90
     def __init__(self, sel_vars=None, feature_idxs=None, magnitude=None, **kwargs):
-        self.sel_vars = sel_vars or feature_idxs
+        sel_vars = sel_vars or feature_idxs
+        self.sel_vars = listify(sel_vars)
         super().__init__(**kwargs)
 
     def encodes(self, o: TSTensor):
