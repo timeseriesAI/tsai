@@ -140,18 +140,22 @@ def _find_nb() -> Union[Tuple[dict, PurePath], Tuple[None, None]]:
             pass  # There may be stale entries in the runtime directory
     return None, None
 
-def get_nb_name() -> str:
+def get_nb_name(d=None) -> str:
     """ Returns the short name of the notebook w/o the .ipynb extension,
         or raises a FileNotFoundError exception if it cannot be determined.
     """
-    try: 
-        _, path = _find_nb()
-        if path:
-            return path.name
-        else:
+    try:
+        nb_name = d['__vsc_ipynb_file__']
+        return nb_name # VSCode
+    except:
+        try: 
+            _, path = _find_nb()
+            if path:
+                return path.name
+            else:
+                return
+        except: 
             return
-    except: 
-        return
 
 def get_colab_nb_name():
     d = requests.get('http://172.28.0.2:9000/api/sessions').json()[0]

@@ -21,7 +21,8 @@ import sys
 from numbers import Integral
 from pathlib import Path
 import time
-from IPython.display import display
+from time import strftime
+from IPython.display import HTML, Javascript, display, Audio
 import importlib
 import warnings
 from warnings import warn
@@ -68,14 +69,13 @@ def is_installed(
     "Determines if a module is installed without importing it"
     return importlib.util.find_spec(module_name) is not None
 
-# class ExtraDependencies:
-#     sktime = is_installed("sktime")
-#     tsfresh = is_installed("tsfresh")
-#     pywt = is_installed("pywt")
-
 def is_lab():
     import re
     return any(re.search('jupyter-lab', x) for x in psutil.Process().parent().cmdline())
+
+def is_nb():
+    from IPython.core import getipython
+    return get_ipython().__class__.__name__ == 'ZMQInteractiveShell'
 
 def is_colab():
     from IPython.core import getipython
@@ -87,7 +87,6 @@ def to_local_time(t, time_format='%Y-%m-%d %H:%M:%S'):
 def _save_nb():
     """Save and checkpoints current jupyter notebook."""
 
-    from IPython.display import HTML, Javascript
     if is_lab():
         script = """
         this.nextElementSibling.focus();
@@ -102,32 +101,30 @@ def save_nb(nb_name=None, attempts=1, verbose=True, wait=2):
     """
     Save and checkpoints current jupyter notebook. 1 attempt per second.
     """
-
+    if is_colab():
+        if verbose:
+            print('cannot save the notebook in Google Colab. You should save it manually 👋')
+        return
     if nb_name is None:
-        if is_colab():
-            if verbose:
-                print('cannot save the notebook in Google Colab. Save it manually.')
-        else:
-            _save_nb()
+        _save_nb()
     else:
         saved = False
         current_time = time.time()
-        if is_colab():
-            if verbose: print(f'cannot save the notebook in Google Colab. Last saved {to_local_time(os.path.getmtime(nb_name))}.')
-        else:
-            for i in range(attempts):
-                _save_nb()
-                # confirm it's saved. This takes come variable time.
-                for j in range(20):
-                    time.sleep(.5)
-                    saved_time = os.path.getmtime(nb_name)
-                    if  saved_time >= current_time: break
-                if saved_time >= current_time:
-                    saved = True
-                    break
-        assert saved, f"{nb_name} couldn't be saved."
+        for i in range(attempts):
+            _save_nb()
+            # confirm it's saved. This takes come variable time.
+            for j in range(20):
+                time.sleep(.5)
+                saved_time = os.path.getmtime(nb_name)
+                if  saved_time >= current_time: break
+            if saved_time >= current_time:
+                saved = True
+                break
         if verbose:
-            print(f'{nb_name} saved at {to_local_time(saved_time)}.')
+            if saved:
+                print(f'{nb_name} saved at {to_local_time(saved_time)}')
+            else:
+                print(f"{nb_name} couldn't be saved automatically. You should save it manually 👋")
     time.sleep(wait)
 
 def maybe_mount_gdrive():
@@ -138,44 +135,49 @@ def maybe_mount_gdrive():
         print("You cannot mount google drive because you are not using Colab")
 
 def py_last_saved(nb_name, max_elapsed=1):
-    from time import strftime
-    print('\n')
-    lib_path = Path(os.getcwd()).parent
-    folder = Path(lib_path / lib_name)
-    if nb_name == "index.ipynb":
-        script_name = nb_name
-    else:
-        script_name = str(folder/".".join([str(nb_name).split("_", 1)[1:][0].replace(".ipynb", "").replace(".", "/"), "py"]))
-    elapsed_time = time.time() - os.path.getmtime(script_name)
-    if elapsed_time < max_elapsed:
-        print('Correct conversion! 😃')
-        output = 1
-    else:
-        print(f"{script_name:30} saved {elapsed_time:10.0f} s ago ***")
-        print('Incorrect conversion! 😔')
+    if nb_name is None:
+        print("Couldn't get nb_name")
         output = 0
-    print(f'Total time elapsed {elapsed_time:.3f} s')
-    print(strftime("%A %d/%m/%y %T %Z"))
+    else:
+        lib_path = Path(os.getcwd()).parent
+        folder = Path(lib_path / lib_name)
+        if nb_name == "index.ipynb":
+            script_name = nb_name
+        else:
+            script_name = str(folder/".".join([str(nb_name).split("_", 1)[1:][0].replace(".ipynb", "").replace(".", "/"), "py"]))
+        elapsed_time = time.time() - os.path.getmtime(script_name)
+        if elapsed_time < max_elapsed:
+            print('Correct notebook to script conversion! 😃')
+            output = 1
+        else:
+            print(f"{script_name:30} saved {elapsed_time:10.0f} s ago ***")
+            print('Incorrect notebook to script conversion! 😔')
+            output = 0
+#         print(f'Total time elapsed {elapsed_time:.3f} s')
+        print(strftime("%A %d/%m/%y %T %Z"))
     return output
 
 def beep(inp=1, duration=.1, n=1):
-    from IPython.display import Audio
     rate = 10000
     mult = 1.6 * inp if inp else .08
     wave = np.sin(mult*np.arange(rate*duration))
     for i in range(n):
         display(Audio(wave, rate=10000, autoplay=True))
         time.sleep(duration / .1)
-
+    
 def create_scripts(nb_name, max_elapsed=60, wait=2):
-    "Function that saves, exports to .py, cleans a notebook and checks it's been correctly converted"
+    "Function that saves a notebook, converts it to .py and checks it's been correctly converted"
     from nbdev.export import nb_export
-    from nbdev.clean import nbdev_clean
     save_nb(nb_name, wait=wait)
-    full_nb_name = str(Path.cwd()/nb_name)
-    nb_export(full_nb_name)
-    output = py_last_saved(nb_name, max_elapsed)
-    beep(output)
+    if nb_name is not None:
+        path = Path.cwd()
+        nb_name = Path(nb_name).name
+        full_nb_name = str(path/nb_name)
+        nb_export(full_nb_name)
+        output = py_last_saved(nb_name, max_elapsed)
+        beep(output)
+    else:
+        nb_export()
 
 class Timer:
     def __init__(self, verbose=True, return_seconds=True, instance=None):
@@ -246,9 +248,6 @@ class Timer:
 timer = Timer()
 
 def import_file_as_module(filepath, return_path=False):
-    from pathlib import Path
-    import sys
-    import importlib
     filepath = Path(filepath)
     sys.path.append("..")
     if str(filepath.parent) != ".":
