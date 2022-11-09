@@ -174,3 +174,4 @@ _docs/
 sidebar.yml
 token
 token
+*.pkg
