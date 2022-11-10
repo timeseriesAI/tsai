@@ -508,54 +508,28 @@ _batch_tfms = ('after_item','before_batch','after_batch')
 class NumpyDataLoader(TfmdDL):
     idxs = None
     do_item = noops # create batch returns indices
-    def __init__(self, dataset, bs=64, shuffle=False, drop_last=False, num_workers=0, verbose=False, do_setup=True, batch_tfms=None, 
+    def __init__(self, dataset, bs=64, shuffle=False, drop_last=False, num_workers=0, verbose=False, do_setup=True, 
                  sort=False, weights=None, partial_n=None, sampler=None, **kwargs):
 
+        if num_workers is None: num_workers = min(16, defaults.cpus)
         if sampler is not None and shuffle:
             raise ValueError('sampler option is mutually exclusive with shuffle')
-        if num_workers is None: num_workers = min(16, defaults.cpus)
+        
         for nm in _batch_tfms:
-            if nm == 'after_batch':
-                if batch_tfms is not None: kwargs[nm] = Pipeline(batch_tfms if is_listy(batch_tfms) else [batch_tfms])
-                else: kwargs[nm] = Pipeline(kwargs.get(nm,None))
+            if nm == 'after_batch' and kwargs.get('batch_tfms',None) is not None: kwargs[nm] = Pipeline(listify(kwargs.get('batch_tfms')))
             else: kwargs[nm] = Pipeline(kwargs.get(nm,None))
         bs = min(bs, len(dataset))
         if is_listy(partial_n): partial_n = partial_n[0]
         if isinstance(partial_n, float): partial_n = int(round(partial_n * len(dataset)))
         if partial_n is not None: bs = min(bs, partial_n)
         if weights is not None: weights = weights / weights.sum()
-        self.weights, self.partial_n, self.sampler, self.sort = weights, partial_n, sampler, sort
-        super().__init__(dataset, bs=bs, shuffle=shuffle, drop_last=drop_last, num_workers=num_workers, **kwargs)
-        if do_setup:
-            for nm in _batch_tfms:
-                pv(f"Setting up {nm}: {kwargs[nm]}", verbose)
-                kwargs[nm].setup(self)
-    
-    @delegates(DataLoader.new)
-    def new(self, dataset=None, cls=None, **kwargs):
-        if dataset is None: dataset = self.dataset
-        if cls is None: cls = type(self)
-        cur_kwargs = dict(dataset=dataset, weights=self.weights, partial_n=self.partial_n, sampler=self.sampler,
-                          num_workers=self.fake_l.num_workers, pin_memory=self.pin_memory, timeout=self.timeout,
-                          bs=self.bs, shuffle=self.shuffle, drop_last=self.drop_last, indexed=self.indexed, device=self.device)
-        for n in self._methods:
-            o = getattr(self, n)
-            if not isinstance(o, MethodType): cur_kwargs[n] = o
-        all_kwargs = merge(cur_kwargs, kwargs)
-        new_dl = cls(**all_kwargs)
-        setattr(self, "after_batch", new_dl.after_batch) # self.after_batch is set to an empty Pipeline (?)
-        if not hasattr(new_dl, '_n_inp') and hasattr(self, '_n_inp'): 
-            new_dl._n_inp = self._n_inp
-        if not hasattr(new_dl, '_types') and hasattr(self, '_types'): 
-            new_dl._types = self._types
-        return new_dl
+        self.weights, self.partial_n, self.sampler, self.sort, self.do_setup = weights, partial_n, sampler, sort, do_setup
+        super().__init__(dataset, bs=bs, shuffle=shuffle, drop_last=drop_last, num_workers=num_workers, verbose=verbose, do_setup=do_setup, **kwargs)
     
     def new_dl(self, X, y=None, bs=64):
         assert X.ndim == 3, "You must pass an X with 3 dimensions [batch_size x n_vars x seq_len]"
-        if y is not None and not is_array(y) and not is_listy(y): y = [y]
-        new_dloader = self.new(self.dataset.add_dataset(X, y=y), bs=min(bs, len(X)))
-        self.after_batch = new_dloader.after_batch
-        return new_dloader
+        if y is not None and not is_listy(y): y = [y]
+        return self.new(self.dataset.add_dataset(X, y=y), bs=min(bs, len(X)))
 
     def create_batch(self, b):
         if self.shuffle or self.sampler is not None:
