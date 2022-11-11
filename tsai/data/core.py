@@ -277,7 +277,11 @@ class NoTfmLists(TfmdLists):
         if hasattr(self.items, 'oindex'): return self.items.oindex[self._splits[it]]
         else: return self.items[self._splits[it]]
     def __len__(self): return len(self._splits)
-    def __repr__(self): return f"{self.__class__.__name__}: {self.items.__class__.__name__}{(len(self), *self.items.shape[1:])}"
+    def __repr__(self): 
+        if self.items:
+            return f"{self.__class__.__name__}: {self.items.__class__.__name__}{(len(self), *self.items.shape[1:])}"
+        else:
+            return f"{self.__class__.__name__}: {self.items.__class__.__name__}"
     def _new(self, items, split_idx=None, **kwargs):
         split_idx = ifnone(split_idx, self.split_idx)
         return type(self)(items, split_idx=split_idx, do_setup=False, types=self.types, **kwargs)
@@ -528,8 +532,10 @@ class NumpyDataLoader(TfmdDL):
     
     def new_dl(self, X, y=None, bs=64):
         assert X.ndim == 3, "You must pass an X with 3 dimensions [batch_size x n_vars x seq_len]"
-        if y is not None and not is_listy(y): y = [y]
-        return self.new(self.dataset.add_dataset(X, y=y), bs=min(bs, len(X)))
+        if y is not None: 
+            y = listify(y)
+        ds = self.dataset.add_dataset(X, y=y)
+        return self.new(ds, bs=min(bs, len(X)))
 
     def create_batch(self, b):
         if self.shuffle or self.sampler is not None:
