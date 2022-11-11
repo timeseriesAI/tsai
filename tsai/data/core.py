@@ -278,10 +278,10 @@ class NoTfmLists(TfmdLists):
         else: return self.items[self._splits[it]]
     def __len__(self): return len(self._splits)
     def __repr__(self): 
-        if self.items:
+        if hasattr(self.items, "shape"):
             return f"{self.__class__.__name__}: {self.items.__class__.__name__}{(len(self), *self.items.shape[1:])}"
         else:
-            return f"{self.__class__.__name__}: {self.items.__class__.__name__}"
+            return f"{self.__class__.__name__}: {self.items.__class__.__name__}(0)"
     def _new(self, items, split_idx=None, **kwargs):
         split_idx = ifnone(split_idx, self.split_idx)
         return type(self)(items, split_idx=split_idx, do_setup=False, types=self.types, **kwargs)
