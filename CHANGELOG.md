@@ -2,6 +2,36 @@
 
 <!-- do not remove -->
 
+## 0.3.4
+
+### New Features
+
+- compatibility with Pytorch 1.13 ([#619](https://github.com/timeseriesAI/tsai/issues/619))
+
+- added sel_vars to get_robustscale_params ([#610](https://github.com/timeseriesAI/tsai/issues/610))
+
+- added sel_steps to TSRandom2Value ([#607](https://github.com/timeseriesAI/tsai/issues/607))
+
+- new walk forward cross-validation in tsai ([#582](https://github.com/timeseriesAI/tsai/issues/582))
+
+
+### Bugs Squashed
+
+- fixed issue when printing an empty dataset wo transforms NoTfmLists ([#622](https://github.com/timeseriesAI/tsai/issues/622))
+
+- fixed minor issue in get_robustscaler params with sel_vars ([#615](https://github.com/timeseriesAI/tsai/issues/615))
+
+- fixed issue when using tsai in dev with VSCode ([#614](https://github.com/timeseriesAI/tsai/issues/614))
+
+- issue when using lists as sel_vars and sel_steps in TSRandom2Value ([#612](https://github.com/timeseriesAI/tsai/issues/612))
+
+- fixed issue with feature_importance and step_importance when using metrics ([#609](https://github.com/timeseriesAI/tsai/issues/609))
+
+- renamed data processing tfms feature_idxs as sel_vars for consistency ([#608](https://github.com/timeseriesAI/tsai/issues/608))
+
+- fixed issue when importing 'GatedTabTransformer' ([#536](https://github.com/timeseriesAI/tsai/issues/536))
+
+
 ## 0.3.2
 ### Breaking Changes
 
