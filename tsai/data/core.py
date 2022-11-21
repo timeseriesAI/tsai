@@ -117,7 +117,7 @@ class ToFloat(Transform):
     vectorized=True
     loss_func=MSELossFlat()
     def encodes(self, o:torch.Tensor): return o.float()
-    def encodes(self, o): return o.astype(np.float32)
+    def encodes(self, o): return np.asarray(o, dtype=np.float32)
     def decodes(self, o): 
         if o.ndim==0: return TitledFloat(o) 
         else: 
@@ -127,7 +127,7 @@ class ToFloat(Transform):
 class ToInt(Transform):
     "Transforms an object dtype to int"
     def encodes(self, o:torch.Tensor): return o.long()
-    def encodes(self, o): return o.astype(np.float32).astype(np.int64)
+    def encodes(self, o): return np.asarray(o).astype(np.float32).astype(np.int64)
     def decodes(self, o): 
         if o.ndim==0: return TitledFloat(o) 
         else: 
@@ -531,9 +531,10 @@ class NumpyDataLoader(TfmdDL):
         super().__init__(dataset, bs=bs, shuffle=shuffle, drop_last=drop_last, num_workers=num_workers, verbose=verbose, do_setup=do_setup, **kwargs)
     
     def new_dl(self, X, y=None, bs=64):
-        assert X.ndim == 3, "You must pass an X with 3 dimensions [batch_size x n_vars x seq_len]"
+        assert X.ndim == 3, "You must pass an X iterable with 3 dimensions [batch_size x n_vars x seq_len]"
         if y is not None: 
-            y = listify(y)
+            y = np.asarray(y)
+            assert y.ndim > 0, "You must pass a y iterable with at least 1 dimension"
         ds = self.dataset.add_dataset(X, y=y)
         return self.new(ds, bs=min(bs, len(X)))
 
