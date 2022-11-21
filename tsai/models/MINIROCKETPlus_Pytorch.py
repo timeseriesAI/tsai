@@ -193,7 +193,7 @@ class Flatten(nn.Module):
 class MiniRocketPlus(nn.Sequential):
 
     def __init__(self, c_in, c_out, seq_len, num_features=10_000, max_dilations_per_kernel=32, kernel_size=9, max_num_channels=None, max_num_kernels=84,
-                 bn=True, fc_dropout=0, add_lsaz=False):
+                 bn=True, fc_dropout=0, add_lsaz=False, custom_head=None):
 
         # Backbone
         backbone = MiniRocketFeaturesPlus(c_in, seq_len, num_features=num_features, max_dilations_per_kernel=max_dilations_per_kernel,
@@ -212,7 +212,8 @@ class MiniRocketPlus(nn.Sequential):
         nn.init.constant_(linear.weight.data, 0)
         nn.init.constant_(linear.bias.data, 0)
         layers += [linear]
-        head = nn.Sequential(*layers)
+        if custom_head is not None: head = custom_head(self.head_nf, c_out, 1) # custom head passed as a partial func with all its kwargs
+        else: head = nn.Sequential(*layers)
 
         super().__init__(OrderedDict([('backbone', backbone), ('head', head)]))
 

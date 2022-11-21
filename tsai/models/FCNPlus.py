@@ -11,7 +11,7 @@ from .layers import *
 # %% ../../nbs/103c_models.FCNPlus.ipynb 4
 class FCNPlus(nn.Sequential):
     def __init__(self, c_in, c_out, layers=[128, 256, 128], kss=[7, 5, 3], coord=False, separable=False, use_bn=False, fc_dropout=0.,
-                 zero_norm=False, act=nn.ReLU, act_kwargs={}, residual=False):
+                 zero_norm=False, act=nn.ReLU, act_kwargs={}, residual=False, custom_head=None):
         assert len(layers) == len(kss)
         backbone = _FCNBlockPlus(c_in, layers=layers, kss=kss, coord=coord, separable=separable,
                                  zero_norm=zero_norm, act=act, act_kwargs=act_kwargs, residual=residual)
@@ -20,7 +20,8 @@ class FCNPlus(nn.Sequential):
         if use_bn: head_layers += [nn.BatchNorm1d(layers[-1])]
         if fc_dropout != 0: head_layers += [nn.Dropout(fc_dropout)]
         head_layers += [nn.Linear(layers[-1], c_out)]
-        head = nn.Sequential(*head_layers)
+        if custom_head: head = custom_head(self.head_nf, c_out) # custom head passed as a partial func with all its kwargs
+        else: head = nn.Sequential(*head_layers)
         super().__init__(OrderedDict([('backbone', backbone), ('head', head)]))
 
 
