@@ -6,7 +6,7 @@ if platform.system()=='Darwin':
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torch import Tensor    
+from torch import Tensor
 
 import numpy as np
 from numpy import array
@@ -27,6 +27,7 @@ import importlib
 import warnings
 from warnings import warn
 import psutil
+import sklearn.metrics as skm
 
 import fastcore
 from fastcore.imports import *
@@ -164,7 +165,7 @@ def beep(inp=1, duration=.1, n=1):
     for i in range(n):
         display(Audio(wave, rate=10000, autoplay=True))
         time.sleep(duration / .1)
-    
+
 def create_scripts(nb_name, max_elapsed=60, wait=2):
     "Function that saves a notebook, converts it to .py and checks it's been correctly converted"
     from nbdev.export import nb_export
