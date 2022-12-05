@@ -193,7 +193,11 @@ class TSMultiLabelClassification(Categorize):
             diff_str = "', '".join(diff)
             raise KeyError(f"Labels '{diff_str}' were not included in the training dataset")
         return TensorMultiCategory(one_hot([self.vocab.o2i[o_] for o_ in o], self.c).float())
-    def decodes(self, o): return MultiCategory([self.vocab[o_] for o_ in one_hot_decode(o, None)])
+    def decodes(self, o): 
+        if o.ndim == 2:
+            return MultiCategory([self.vocab[o_] for o_ in o])
+        else:
+            return MultiCategory(self.vocab[o])
 
 # %% ../../nbs/013_data.core.ipynb 30
 class NumpyTensorBlock():
@@ -684,6 +688,7 @@ class NumpyDataLoader(TfmdDL):
     @property
     def c(self):
         if len(self.dataset) == 0: return 0
+        if self.d: return 1
         elif hasattr(self, "vocab"):
             return len(self.vocab)
         else:
