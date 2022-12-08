@@ -12,9 +12,9 @@ __all__ = ['lin_zero_init', 'Conv', 'ConvBN', 'CoordConv', 'SepConv', 'BN1d', 'I
            'DropPath', 'Sharpen', 'Sequential', 'TimeDistributed', 'Temp_Scale', 'Vector_Scale', 'Matrix_Scale',
            'get_calibrator', 'LogitAdjustmentLayer', 'PPV', 'PPAuc', 'MaxPPVPool1d', 'AdaptiveWeightedAvgPool1d',
            'GAP1d', 'GACP1d', 'GAWP1d', 'GlobalWeightedAveragePool1d', 'gwa_pool_head', 'AttentionalPool1d', 'GAttP1d',
-           'attentional_pool_head', 'PoolingLayer', 'GEGLU', 'ReGLU', 'get_act_fn', 'create_pool_head', 'max_pool_head',
-           'create_pool_plus_head', 'create_conv_head', 'create_mlp_head', 'create_fc_head', 'create_rnn_head',
-           'imputation_head', 'create_conv_lin_nd_head', 'create_lin_nd_head', 'create_conv_3d_head',
+           'attentional_pool_head', 'PoolingLayer', 'GEGLU', 'ReGLU', 'get_act_fn', 'RevIN', 'create_pool_head',
+           'max_pool_head', 'create_pool_plus_head', 'create_conv_head', 'create_mlp_head', 'create_fc_head',
+           'create_rnn_head', 'imputation_head', 'create_conv_lin_nd_head', 'create_lin_nd_head', 'create_conv_3d_head',
            'universal_pool_head', 'SqueezeExciteBlock', 'GaussianNoise', 'PositionwiseFeedForward', 'TokenLayer',
            'ScaledDotProductAttention', 'MultiheadAttention', 'MultiConv1d', 'LSTMOutput', 'emb_sz_rule', 'TSEmbedding',
            'MultiEmbedding']
@@ -693,6 +693,43 @@ def get_act_fn(act, **act_kwargs):
     return pytorch_acts[idx](**act_kwargs)
 
 # %% ../../nbs/100_models.layers.ipynb 64
+class RevIN(nn.Module):
+    """ Reversible Instance Normalization layer published in
+    
+        Kim, T., Kim, J., Tae, Y., Park, C., Choi, J. H., & Choo, J. (2021, September). 
+        Reversible instance normalization for accurate time-series forecasting against distribution shift. 
+        In International Conference on Learning Representations.
+        Original code: https://github.com/ts-kim/RevIN
+    """
+    def __init__(self, 
+        c_in,    # #features (aka variables or channels)
+        dim=2,   # int or tuple of dimensions used to calculate mean and std
+        eps=1e-5 # epsilon - parameter added for numerical stability
+        ):
+        super().__init__()
+        self.c_in, self.dim, self.eps = c_in, dim, eps
+        self.weight = nn.Parameter(torch.ones(1, c_in, 1))
+        self.bias   = nn.Parameter(torch.zeros(1, c_in, 1))
+
+    def forward(self, x, norm=True):
+        """Args:
+        
+        x: rank 3 tensor with shape [batch size x features x sequence length]
+        norm: boolean (True to normalize data and False to reverse normalization)
+        """
+        # Normalize
+        if norm:
+            self._get_statistics(x)
+            return x.sub_(self.mean).div_(self.std + self.eps).mul_(self.weight).add_(self.bias)
+        # Reverse normalization
+        else:
+            return x.sub_(self.bias).div_(self.weight + self.eps).mul_(self.std).add_(self.mean)
+
+    def _get_statistics(self, x):
+        self.mean = torch.mean(x, dim=self.dim, keepdim=True).detach()
+        self.std  = torch.std (x, dim=self.dim, keepdim=True, unbiased=False).detach()
+
+# %% ../../nbs/100_models.layers.ipynb 66
 def create_pool_head(n_in, c_out, seq_len=None, concat_pool=False, fc_dropout=0., bn=False, y_range=None, **kwargs):
     if kwargs: print(f'{kwargs}  not being used')
     if concat_pool: n_in*=2
@@ -707,7 +744,7 @@ setattr(average_pool_head, "__name__", "average_pool_head")
 concat_pool_head = partial(pool_head, concat_pool=True)
 setattr(concat_pool_head, "__name__", "concat_pool_head")
 
-# %% ../../nbs/100_models.layers.ipynb 66
+# %% ../../nbs/100_models.layers.ipynb 68
 def max_pool_head(n_in, c_out, seq_len, fc_dropout=0., bn=False, y_range=None, **kwargs):
     if kwargs: print(f'{kwargs}  not being used')
     layers = [nn.MaxPool1d(seq_len, **kwargs), Flatten()]
@@ -715,7 +752,7 @@ def max_pool_head(n_in, c_out, seq_len, fc_dropout=0., bn=False, y_range=None, *
     if y_range: layers += [SigmoidRange(*y_range)]
     return nn.Sequential(*layers)
 
-# %% ../../nbs/100_models.layers.ipynb 68
+# %% ../../nbs/100_models.layers.ipynb 70
 def create_pool_plus_head(*args, lin_ftrs=None, fc_dropout=0., concat_pool=True, bn_final=False, lin_first=False, y_range=None):
     nf = args[0]
     c_out = args[1]
@@ -736,7 +773,7 @@ def create_pool_plus_head(*args, lin_ftrs=None, fc_dropout=0., concat_pool=True,
 
 pool_plus_head = create_pool_plus_head
 
-# %% ../../nbs/100_models.layers.ipynb 70
+# %% ../../nbs/100_models.layers.ipynb 72
 def create_conv_head(*args, adaptive_size=None, y_range=None):
     nf = args[0]
     c_out = args[1]
@@ -752,7 +789,7 @@ def create_conv_head(*args, adaptive_size=None, y_range=None):
 
 conv_head = create_conv_head
 
-# %% ../../nbs/100_models.layers.ipynb 72
+# %% ../../nbs/100_models.layers.ipynb 74
 def create_mlp_head(nf, c_out, seq_len=None, flatten=True, fc_dropout=0., bn=False, lin_first=False, y_range=None):
     if flatten: nf *= seq_len
     layers = [Flatten()] if flatten else []
@@ -762,7 +799,7 @@ def create_mlp_head(nf, c_out, seq_len=None, flatten=True, fc_dropout=0., bn=Fal
 
 mlp_head = create_mlp_head
 
-# %% ../../nbs/100_models.layers.ipynb 74
+# %% ../../nbs/100_models.layers.ipynb 76
 def create_fc_head(nf, c_out, seq_len=None, flatten=True, lin_ftrs=None, y_range=None, fc_dropout=0., bn=False, bn_final=False, act=nn.ReLU(inplace=True)):
     if flatten: nf *= seq_len
     layers = [Flatten()] if flatten else []
@@ -775,7 +812,7 @@ def create_fc_head(nf, c_out, seq_len=None, flatten=True, lin_ftrs=None, y_range
 
 fc_head = create_fc_head
 
-# %% ../../nbs/100_models.layers.ipynb 76
+# %% ../../nbs/100_models.layers.ipynb 78
 def create_rnn_head(*args, fc_dropout=0., bn=False, y_range=None):
     nf = args[0]
     c_out = args[1]
@@ -786,7 +823,7 @@ def create_rnn_head(*args, fc_dropout=0., bn=False, y_range=None):
 
 rnn_head = create_rnn_head
 
-# %% ../../nbs/100_models.layers.ipynb 78
+# %% ../../nbs/100_models.layers.ipynb 80
 def imputation_head(c_in, c_out, seq_len=None, ks=1, y_range=None, fc_dropout=0.):
     layers = [nn.Dropout(fc_dropout), nn.Conv1d(c_in, c_out, ks)]
     if y_range is not None: 
@@ -794,7 +831,7 @@ def imputation_head(c_in, c_out, seq_len=None, ks=1, y_range=None, fc_dropout=0.
         layers += [SigmoidRange(*y_range)]
     return nn.Sequential(*layers)
 
-# %% ../../nbs/100_models.layers.ipynb 80
+# %% ../../nbs/100_models.layers.ipynb 82
 class create_conv_lin_nd_head(nn.Sequential):
     "Module to create a nd output head"
 
@@ -828,7 +865,7 @@ conv_lin_nd_head = create_conv_lin_nd_head
 conv_lin_3d_head = create_conv_lin_nd_head # included for compatibility
 create_conv_lin_3d_head = create_conv_lin_nd_head # included for compatibility
 
-# %% ../../nbs/100_models.layers.ipynb 85
+# %% ../../nbs/100_models.layers.ipynb 87
 class create_lin_nd_head(nn.Sequential):
     "Module to create a nd output head with linear layers"
 
@@ -856,7 +893,7 @@ lin_nd_head = create_lin_nd_head
 lin_3d_head = create_lin_nd_head # included for compatiblity
 create_lin_3d_head = create_lin_nd_head # included for compatiblity
 
-# %% ../../nbs/100_models.layers.ipynb 90
+# %% ../../nbs/100_models.layers.ipynb 92
 class create_conv_3d_head(nn.Sequential):
     "Module to create a nd output head with a convolutional layer"
     def __init__(self, n_in, n_out, seq_len, d, use_bn=False, **kwargs):
@@ -869,17 +906,17 @@ class create_conv_3d_head(nn.Sequential):
         
 conv_3d_head = create_conv_3d_head
 
-# %% ../../nbs/100_models.layers.ipynb 93
+# %% ../../nbs/100_models.layers.ipynb 95
 def universal_pool_head(n_in, c_out, seq_len, mult=2, pool_n_layers=2, pool_ln=True, pool_dropout=0.5, pool_act=nn.ReLU(),
                         zero_init=True, bn=True, fc_dropout=0.):
     return nn.Sequential(AdaptiveWeightedAvgPool1d(n_in, seq_len, n_layers=pool_n_layers, mult=mult, ln=pool_ln, dropout=pool_dropout, act=pool_act), 
                          Flatten(), LinBnDrop(n_in, c_out, p=fc_dropout, bn=bn))
 
-# %% ../../nbs/100_models.layers.ipynb 95
+# %% ../../nbs/100_models.layers.ipynb 97
 heads = [mlp_head, fc_head, average_pool_head, max_pool_head, concat_pool_head, pool_plus_head, conv_head, rnn_head, 
          conv_lin_nd_head, lin_nd_head, conv_3d_head, attentional_pool_head, universal_pool_head, gwa_pool_head]
 
-# %% ../../nbs/100_models.layers.ipynb 97
+# %% ../../nbs/100_models.layers.ipynb 99
 class SqueezeExciteBlock(Module):
     def __init__(self, ni, reduction=16):
         self.avg_pool = GAP1d(1)
@@ -890,7 +927,7 @@ class SqueezeExciteBlock(Module):
         y = self.fc(y).unsqueeze(2)
         return x * y.expand_as(x)
 
-# %% ../../nbs/100_models.layers.ipynb 99
+# %% ../../nbs/100_models.layers.ipynb 101
 class GaussianNoise(Module):
     """Gaussian noise regularizer.
 
@@ -915,7 +952,7 @@ class GaussianNoise(Module):
             x = x + sampled_noise
         return x 
 
-# %% ../../nbs/100_models.layers.ipynb 103
+# %% ../../nbs/100_models.layers.ipynb 105
 class PositionwiseFeedForward(nn.Sequential):
     def __init__(self, dim, dropout=0., act='reglu', mlp_ratio=1):
         act_mult = 2 if act.lower() in ["geglu", "reglu"] else 1
@@ -930,7 +967,7 @@ class TokenLayer(Module):
     def forward(self, x): return x[..., 0] if self.token is not None else x.mean(-1)
     def __repr__(self): return f"{self.__class__.__name__}()"
 
-# %% ../../nbs/100_models.layers.ipynb 105
+# %% ../../nbs/100_models.layers.ipynb 107
 class ScaledDotProductAttention(Module):
     r"""Scaled Dot-Product Attention module (Attention is all you need by Vaswani et al., 2017) with optional residual attention from previous layer 
     (Realformer: Transformer likes residual attention by He et al, 2020) and locality self sttention (Vision Transformer for Small-Size Datasets 
@@ -986,7 +1023,7 @@ class ScaledDotProductAttention(Module):
         if self.res_attention: return output, attn_weights, attn_scores
         else: return output, attn_weights
 
-# %% ../../nbs/100_models.layers.ipynb 107
+# %% ../../nbs/100_models.layers.ipynb 109
 class MultiheadAttention(Module):
     def __init__(self, d_model, n_heads, d_k=None, d_v=None, res_attention=False, attn_dropout=0., proj_dropout=0., qkv_bias=True, lsa=False):
         """Multi Head Attention Layer
@@ -1040,7 +1077,7 @@ class MultiheadAttention(Module):
         if self.res_attention: return output, attn_weights, attn_scores
         else: return output, attn_weights 
 
-# %% ../../nbs/100_models.layers.ipynb 114
+# %% ../../nbs/100_models.layers.ipynb 116
 class MultiConv1d(Module):
     """Module that applies multiple convolutions with different kernel sizes"""
 
@@ -1068,17 +1105,17 @@ class MultiConv1d(Module):
         x = torch.cat(output, dim=self.dim)
         return x
 
-# %% ../../nbs/100_models.layers.ipynb 116
+# %% ../../nbs/100_models.layers.ipynb 118
 class LSTMOutput(Module):
     def forward(self, x): return x[0]
     def __repr__(self): return f'{self.__class__.__name__}()'
 
-# %% ../../nbs/100_models.layers.ipynb 118
+# %% ../../nbs/100_models.layers.ipynb 120
 def emb_sz_rule(n_cat):
     "Rule of thumb to pick embedding size corresponding to `n_cat` (original from fastai)"
     return min(600, round(1.6 * n_cat**0.56))
 
-# %% ../../nbs/100_models.layers.ipynb 120
+# %% ../../nbs/100_models.layers.ipynb 122
 class TSEmbedding(nn.Embedding):
     "Embedding layer with truncated normal initialization adapted from fastai"
     def __init__(self, ni, nf, std=0.01, padding_idx=None):
@@ -1087,7 +1124,7 @@ class TSEmbedding(nn.Embedding):
         if padding_idx is not None:
             nn.init.zeros_(self.weight.data[padding_idx])
 
-# %% ../../nbs/100_models.layers.ipynb 121
+# %% ../../nbs/100_models.layers.ipynb 123
 class MultiEmbedding(Module):
     def __init__(self, c_in, n_cat_embeds, cat_embed_dims=None, cat_pos=None, std=0.01, cat_padding_idxs=None):
         cat_n_embeds = listify(n_cat_embeds)
