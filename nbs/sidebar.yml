@@ -5,100 +5,100 @@ website:
       - 900_tutorials.ipynb
       - section: Data
         contents:
-        - 013_data.core.ipynb
-        - 012_data.external.ipynb
-        - 011_data.preparation.ipynb
-        - 010_data.validation.ipynb
-        - 016_data.preprocessing.ipynb
-        - 014_data.unwindowed.ipynb
-        - 017_data.transforms.ipynb
-        - 018_data.mixed_augmentation.ipynb
-        - 019_data.image.ipynb
-        - 020_data.features.ipynb
-        - 021_data.tabular.ipynb
-        - 022_data.mixed.ipynb
-        - 015_data.metadatasets.ipynb
+        - 006_data.core.ipynb
+        - 005_data.external.ipynb
+        - 004_data.preparation.ipynb
+        - 003_data.validation.ipynb
+        - 009_data.preprocessing.ipynb
+        - 007_data.unwindowed.ipynb
+        - 010_data.transforms.ipynb
+        - 011_data.mixed_augmentation.ipynb
+        - 012_data.image.ipynb
+        - 013_data.features.ipynb
+        - 014_data.tabular.ipynb
+        - 015_data.mixed.ipynb
+        - 008_data.metadatasets.ipynb
       - section: Models
         contents:
-        - 100_models.layers.ipynb
-        - 100b_models.utils.ipynb
+        - 029_models.layers.ipynb
+        - 030_models.utils.ipynb
         - section: MLPs
           contents:
-          - 103_models.MLP.ipynb
-          - 103d_models.gMLP.ipynb
+          - 037_models.MLP.ipynb
+          - 040_models.gMLP.ipynb
         - section: RNNs
           contents:
-          - 105_models.RNN.ipynb
-          - 105_models.RNNPlus.ipynb
-          - 125_models.TSSequencerPlus.ipynb
+          - 042_models.RNN.ipynb
+          - 043_models.RNNPlus.ipynb
+          - 069_models.TSSequencerPlus.ipynb
         - section: CNNs
           contents:
-          - 103b_models.FCN.ipynb
-          - 103c_models.FCNPlus.ipynb
-          - 101_models.ResNet.ipynb
-          - 101b_models.ResNetPlus.ipynb
-          - 112_models.XResNet1d.ipynb
-          - 112b_models.XResNet1dPlus.ipynb
-          - 104_models.ResCNN.ipynb
-          - 113_models.TCN.ipynb
-          - 102_models.InceptionTime.ipynb
-          - 102b_models.InceptionTimePlus.ipynb
-          - 106_models.XceptionTime.ipynb
-          - 106b_models.XceptionTimePlus.ipynb
-          - 109_models.OmniScaleCNN.ipynb
-          - 114_models.XCM.ipynb
-          - 114b_models.XCMPlus.ipynb
+          - 038_models.FCN.ipynb
+          - 039_models.FCNPlus.ipynb
+          - 033_models.ResNet.ipynb
+          - 034_models.ResNetPlus.ipynb
+          - 058_models.XResNet1d.ipynb
+          - 059_models.XResNet1dPlus.ipynb
+          - 041_models.ResCNN.ipynb
+          - 060_models.TCN.ipynb
+          - 035_models.InceptionTime.ipynb
+          - 036_models.InceptionTimePlus.ipynb
+          - 044_models.XceptionTime.ipynb
+          - 045_models.XceptionTimePlus.ipynb
+          - 051_models.OmniScaleCNN.ipynb
+          - 061_models.XCM.ipynb
+          - 062_models.XCMPlus.ipynb
         - section: RNN-CNNs
           contents:
-          - 107_models.RNN_FCN.ipynb
-          - 107b_models.RNN_FCNPlus.ipynb
+          - 046_models.RNN_FCN.ipynb
+          - 047_models.RNN_FCNPlus.ipynb
         - section: Wavelet-based NNs
           contents:
-          - 110_models.mWDN.ipynb
+          - 052_models.mWDN.ipynb
         - section: Transformers
           contents:
-          - 100c_models.positional_encoders.ipynb
-          - 108_models.TransformerModel.ipynb
-          - 108b_models.TST.ipynb
-          - 108c_models.TSTPlus.ipynb
-          - 123_models.TSPerceiver.ipynb
-          - 124_models.TSiTPlus.ipynb
+          - 031_models.positional_encoders.ipynb
+          - 048_models.TransformerModel.ipynb
+          - 049_models.TST.ipynb
+          - 050_models.TSTPlus.ipynb
+          - 067_models.TSPerceiver.ipynb
+          - 068_models.TSiTPlus.ipynb
         - section: ROCKETs
           contents:
-          - 111_models.ROCKET.ipynb
-          - 111a_models.ROCKET_Pytorch.ipynb
-          - 111b_models.MINIROCKET.ipynb
-          - 111c_models.MINIROCKET_Pytorch.ipynb
-          - 111d_models.MINIROCKETPlus_Pytorch.ipynb
+          - 053_models.ROCKET.ipynb
+          - 054_models.ROCKET_Pytorch.ipynb
+          - 055_models.MINIROCKET.ipynb
+          - 056_models.MINIROCKET_Pytorch.ipynb
+          - 057_models.MINIROCKETPlus_Pytorch.ipynb
         - section: Tabular models
           contents:
-          - 120_models.TabModel.ipynb
-          - 121_models.TabTransformer.ipynb
-          - 121b_models.GatedTabTransformer.ipynb
-          - 122_models.TabFusionTransformer.ipynb
+          - 063_models.TabModel.ipynb
+          - 064_models.TabTransformer.ipynb
+          - 065_models.GatedTabTransformer.ipynb
+          - 066_models.TabFusionTransformer.ipynb
         - section: Miscellaneous
           contents:
-          - 130_models.MultiInputNet.ipynb
-          - 140_models.misc.ipynb
+          - 070_models.MultiInputNet.ipynb
+          - 071_models.misc.ipynb
       - section: Training
         contents:
-        - 052_learner.ipynb
-        - 052d_tslearner.ipynb
-        - 053_optimizer.ipynb
-        - 051_metrics.ipynb
+        - 018_learner.ipynb
+        - 022_tslearner.ipynb
+        - 023_optimizer.ipynb
+        - 017_metrics.ipynb
         - section: Callbacks
           contents:
-          - 060_callback.core.ipynb
-          - 064_callback.PredictionDynamics.ipynb
-          - 061_callback.noisy_student.ipynb
-          - 063_callback.MVP.ipynb
-          - 060_callback.experimental.ipynb
-        - 052c_calibration.ipynb
+          - 024_callback.core.ipynb
+          - 028_callback.PredictionDynamics.ipynb
+          - 026_callback.noisy_student.ipynb
+          - 027_callback.MVP.ipynb
+          - 025_callback.experimental.ipynb
+        - 021_calibration.ipynb
       - section: HPO & experiment tracking
         contents:
-        - 200_optuna.ipynb
-        - 201_wandb.ipynb
-      - 052a_inference.ipynb
-      - 052b_analysis.ipynb
-      - 100d_models.explainability.ipynb
-      - 001_utils.ipynb
+        - 072_optuna.ipynb
+        - 073_wandb.ipynb
+      - 019_inference.ipynb
+      - 020_analysis.ipynb
+      - 032_models.explainability.ipynb
+      - 002_utils.ipynb
