@@ -2,7 +2,7 @@ website:
   sidebar:
     contents:
       - index.ipynb
-      - 900_tutorials.ipynb
+      - 074_tutorials.ipynb
       - section: Data
         contents:
         - 006_data.core.ipynb
