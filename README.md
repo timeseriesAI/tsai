@@ -5,9 +5,11 @@ tsai
 
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/timeseriesAI/tsai/0f983db3a3cb87a66af1008df573ddfb622c8c48/images/20221211_tsai_logo.svg" width="30%"/>
+<img src="https://github.com/timeseriesAI/tsai/blob/main/nbs/multimedia/tsai_logo.svg" width="30%">
 
 </div>
+
+<br /> <br />
 
 ![CI](https://github.com/timeseriesai/tsai/workflows/CI/badge.svg)
 [![PyPI](https://img.shields.io/pypi/v/tsai?color=blue&label=pypi%20version.png)](https://pypi.org/project/tsai/#description)
