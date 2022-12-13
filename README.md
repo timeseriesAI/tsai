@@ -5,7 +5,7 @@ tsai
 
 <div align="center">
 
-<img src=https://github.com/timeseriesAI/tsai/blob/main/nbs/multimedia/tsai_logo.svg?raw=true" width="50%">
+<img src="https://github.com/timeseriesAI/tsai/blob/main/nbs/multimedia/tsai_logo.svg?raw=true" width="50%">
 
 </div>
 
