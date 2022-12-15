@@ -326,6 +326,8 @@ class TSDropFeatByKey(Transform):
     sel_vars, # int or slice or list of ints or array of ints representing the variables to drop
     sel_steps=None, # int or slice or list of ints or array of ints representing the steps to drop
     ):
+        if isinstance(p, np.ndarray):
+            p = torch.from_numpy(p)
         if not isinstance(sel_vars, slice):
             if isinstance(sel_vars, Integral): sel_vars = [sel_vars]
             sel_vars = np.asarray(sel_vars)
@@ -352,6 +354,7 @@ class TSDropFeatByKey(Transform):
                 self._idxs = [slice(None), 0, np.arange(p.shape[-1]), slice(None), np.arange(p.shape[-1])]
 
     def encodes(self, o:TSTensor):
+        self.p = self.p.to(o.device)
         o_slice = o[:, self.sel_vars, self.sel_steps]
         if self.p.shape[-1] == 1:
             p = self.p[torch.round(o[:, self.key_var, self.sel_steps]).long()][self._idxs].permute(0, 2, 1)
