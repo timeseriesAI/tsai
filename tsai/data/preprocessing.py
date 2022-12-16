@@ -319,13 +319,16 @@ class TSCatEncode(Transform):
 class TSDropFeatByKey(Transform):
     """Randomly drops selected features at selected steps based 
     with a given probability per feature, step and a key variable"""
+    parameters, order = 'p', 90
     
     def __init__(self, 
     key_var, # int representing the variable that contains the key information
     p, # array of shape (n_keys, n_features, n_steps) representing the probabilities of dropping a feature at a given step for a given key
     sel_vars, # int or slice or list of ints or array of ints representing the variables to drop
     sel_steps=None, # int or slice or list of ints or array of ints representing the steps to drop
+    **kwargs,
     ):
+        super().__init__(**kwargs)
         if isinstance(p, np.ndarray):
             p = torch.from_numpy(p)
         if not isinstance(sel_vars, slice):
@@ -354,7 +357,6 @@ class TSDropFeatByKey(Transform):
                 self._idxs = [slice(None), 0, np.arange(p.shape[-1]), slice(None), np.arange(p.shape[-1])]
 
     def encodes(self, o:TSTensor):
-        self.p = self.p.to(o.device)
         o_slice = o[:, self.sel_vars, self.sel_steps]
         o_values = o[:, self.key_var, self.sel_steps]
         o_values = torch.nan_to_num(o_values)
