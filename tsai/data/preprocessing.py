@@ -356,10 +356,13 @@ class TSDropFeatByKey(Transform):
     def encodes(self, o:TSTensor):
         self.p = self.p.to(o.device)
         o_slice = o[:, self.sel_vars, self.sel_steps]
+        o_values = o[:, self.key_var, self.sel_steps]
+        o_values = torch.nan_to_num(o_values)
+        o_values = torch.round(o_values).long()
         if self.p.shape[-1] == 1:
-            p = self.p[torch.round(o[:, self.key_var, self.sel_steps]).long()][self._idxs].permute(0, 2, 1)
+            p = self.p[o_values][self._idxs].permute(0, 2, 1)
         else:
-            p = self.p[torch.round(o[:, self.key_var, self.sel_steps]).long()][self._idxs].permute(1, 2, 0)
+            p = self.p[o_values][self._idxs].permute(1, 2, 0)
         mask = torch.rand_like(o_slice) < p
         o_slice[mask] = np.nan
         o[:, self.sel_vars, self.sel_steps] = o_slice
