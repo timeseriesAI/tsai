@@ -46,21 +46,31 @@ class TSClassifier(Learner):
             else: loss_func = CrossEntropyLossFlat()
         
         # Model
-        if init is True:
-            init = nn.init.kaiming_normal_
-        if arch is None:
-            arch = InceptionTimePlus
-        elif isinstance(arch, str): arch = get_arch(arch)
-        # if 'xresnet' in arch.__name__.lower() and not '1d' in arch.__name__.lower():
-        #     model = build_tsimage_model(arch, dls=dls, pretrained=pretrained, init=init, device=device, verbose=verbose, arch_config=arch_config)
-        # elif 'tabularmodel' in arch.__name__.lower():
-        #     model = build_tabular_model(arch, dls=dls, device=device, arch_config=arch_config)
-        # else:
-        #     model = build_ts_model(arch, dls=dls, device=device, verbose=verbose, pretrained=pretrained, weights_path=weights_path,
-        #                            exclude_head=exclude_head, cut=cut, init=init, arch_config=arch_config)
-        model = build_ts_model(arch, dls=dls, device=device, verbose=verbose, pretrained=pretrained, weights_path=weights_path,
-                                exclude_head=exclude_head, cut=cut, init=init, arch_config=arch_config)
-        setattr(model, "__name__", arch.__name__)
+        if isinstance(arch, nn.Module): 
+            model = arch
+            if arch_config: 
+                warnings.warn("You have passed arch_config to a model that is already intantiated. It will not have any effect.", UserWarning)
+            if init is not None: 
+                warnings.warn("You have passed init to a model that is already intantiated. It will not have any effect.", UserWarning)
+        else:
+            if init is True:
+                init = nn.init.kaiming_normal_
+            if arch is None:
+                arch = InceptionTimePlus
+            elif isinstance(arch, str): arch = get_arch(arch)
+            # if 'xresnet' in arch.__name__.lower() and not '1d' in arch.__name__.lower():
+            #     model = build_tsimage_model(arch, dls=dls, pretrained=pretrained, init=init, device=device, verbose=verbose, arch_config=arch_config)
+            # elif 'tabularmodel' in arch.__name__.lower():
+            #     model = build_tabular_model(arch, dls=dls, device=device, arch_config=arch_config)
+            # else:
+            #     model = build_ts_model(arch, dls=dls, device=device, verbose=verbose, pretrained=pretrained, weights_path=weights_path,
+            #                            exclude_head=exclude_head, cut=cut, init=init, arch_config=arch_config)
+            model = build_ts_model(arch, dls=dls, device=device, verbose=verbose, pretrained=pretrained, weights_path=weights_path,
+                                    exclude_head=exclude_head, cut=cut, init=init, arch_config=arch_config)
+        try:
+            setattr(model, "__name__", arch.__name__)
+        except:
+            setattr(model, "__name__", arch.__class__.__name__)
         try:
             model[0], model[1]
             splitter = ts_splitter
@@ -103,21 +113,31 @@ class TSRegressor(Learner):
             else: loss_func = MSELossFlat()
                 
         # Model
-        if init is True:
-            init = nn.init.kaiming_normal_
-        if arch is None:
-            arch = InceptionTimePlus
-        elif isinstance(arch, str): arch = get_arch(arch)
-        # if 'xresnet' in arch.__name__.lower() and not '1d' in arch.__name__.lower():
-        #     model = build_tsimage_model(arch, dls=dls, pretrained=pretrained, init=init, device=device, verbose=verbose, arch_config=arch_config)
-        # elif 'tabularmodel' in arch.__name__.lower():
-        #     model = build_tabular_model(arch, dls=dls, device=device, arch_config=arch_config)
-        # else:
-        #     model = build_ts_model(arch, dls=dls, device=device, verbose=verbose, pretrained=pretrained, weights_path=weights_path,
-        #                        exclude_head=exclude_head, cut=cut, init=init, arch_config=arch_config)
-        model = build_ts_model(arch, dls=dls, device=device, verbose=verbose, pretrained=pretrained, weights_path=weights_path,
-                               exclude_head=exclude_head, cut=cut, init=init, arch_config=arch_config)
-        setattr(model, "__name__", arch.__name__)
+        if isinstance(arch, nn.Module): 
+            model = arch
+            if arch_config: 
+                warnings.warn("You have passed arch_config to a model that is already intantiated. It will not have any effect.", UserWarning)
+            if init is not None: 
+                warnings.warn("You have passed init to a model that is already intantiated. It will not have any effect.", UserWarning)
+        else:
+            if init is True:
+                init = nn.init.kaiming_normal_
+            if arch is None:
+                arch = InceptionTimePlus
+            elif isinstance(arch, str): arch = get_arch(arch)
+            # if 'xresnet' in arch.__name__.lower() and not '1d' in arch.__name__.lower():
+            #     model = build_tsimage_model(arch, dls=dls, pretrained=pretrained, init=init, device=device, verbose=verbose, arch_config=arch_config)
+            # elif 'tabularmodel' in arch.__name__.lower():
+            #     model = build_tabular_model(arch, dls=dls, device=device, arch_config=arch_config)
+            # else:
+            #     model = build_ts_model(arch, dls=dls, device=device, verbose=verbose, pretrained=pretrained, weights_path=weights_path,
+            #                        exclude_head=exclude_head, cut=cut, init=init, arch_config=arch_config)
+            model = build_ts_model(arch, dls=dls, device=device, verbose=verbose, pretrained=pretrained, weights_path=weights_path,
+                                exclude_head=exclude_head, cut=cut, init=init, arch_config=arch_config)
+        try:
+            setattr(model, "__name__", arch.__name__)
+        except:
+            setattr(model, "__name__", arch.__class__.__name__)
         try:
             model[0], model[1]
             splitter = ts_splitter
@@ -160,21 +180,31 @@ class TSForecaster(Learner):
             else: loss_func = MSELossFlat()
         
         # Model
-        if init is True:
-            init = nn.init.kaiming_normal_
-        if arch is None:
-            arch = InceptionTimePlus
-        elif isinstance(arch, str): arch = get_arch(arch)
-        # if 'xresnet' in arch.__name__.lower() and not '1d' in arch.__name__.lower():
-        #     model = build_tsimage_model(arch, dls=dls, pretrained=pretrained, init=init, device=device, verbose=verbose, arch_config=arch_config)
-        # elif 'tabularmodel' in arch.__name__.lower():
-        #     model = build_tabular_model(arch, dls=dls, device=device, arch_config=arch_config)
-        # else:
-        #     model = build_ts_model(arch, dls=dls, device=device, verbose=verbose, pretrained=pretrained, weights_path=weights_path,
-        #                        exclude_head=exclude_head, cut=cut, init=init, arch_config=arch_config)
-        model = build_ts_model(arch, dls=dls, device=device, verbose=verbose, pretrained=pretrained, weights_path=weights_path,
-                               exclude_head=exclude_head, cut=cut, init=init, arch_config=arch_config)
-        setattr(model, "__name__", arch.__name__)
+        if isinstance(arch, nn.Module): 
+            model = arch
+            if arch_config: 
+                warnings.warn("You have passed arch_config to a model that is already intantiated. It will not have any effect.", UserWarning)
+            if init is not None: 
+                warnings.warn("You have passed init to a model that is already intantiated. It will not have any effect.", UserWarning)
+        else:
+            if init is True:
+                init = nn.init.kaiming_normal_
+            if arch is None:
+                arch = InceptionTimePlus
+            elif isinstance(arch, str): arch = get_arch(arch)
+            # if 'xresnet' in arch.__name__.lower() and not '1d' in arch.__name__.lower():
+            #     model = build_tsimage_model(arch, dls=dls, pretrained=pretrained, init=init, device=device, verbose=verbose, arch_config=arch_config)
+            # elif 'tabularmodel' in arch.__name__.lower():
+            #     model = build_tabular_model(arch, dls=dls, device=device, arch_config=arch_config)
+            # else:
+            #     model = build_ts_model(arch, dls=dls, device=device, verbose=verbose, pretrained=pretrained, weights_path=weights_path,
+            #                        exclude_head=exclude_head, cut=cut, init=init, arch_config=arch_config)
+            model = build_ts_model(arch, dls=dls, device=device, verbose=verbose, pretrained=pretrained, weights_path=weights_path,
+                                exclude_head=exclude_head, cut=cut, init=init, arch_config=arch_config)
+        try:
+            setattr(model, "__name__", arch.__name__)
+        except:
+            setattr(model, "__name__", arch.__class__.__name__)
         try:
             model[0], model[1]
             splitter = ts_splitter

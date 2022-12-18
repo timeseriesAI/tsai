@@ -5,6 +5,7 @@ __all__ = ['load_learner_all', 'all_archs_names', 'load_all', 'get_arch', 'ts_le
 
 # %% ../nbs/018_learner.ipynb 3
 import pickle
+import warnings
 from fastai.callback.core import CancelBatchException
 from fastai.learner import Learner, load_learner, Recorder
 from fastai.callback.schedule import *
@@ -497,7 +498,10 @@ def ts_learner(dls, arch=None, c_in=None, c_out=None, seq_len=None, d=None, spli
                model_dir='models', wd=None, wd_bn_bias=False, train_bn=True, moms=(0.95,0.85,0.95), train_metrics=False, 
                **kwargs)->Learner:
 
-    if isinstance(arch, nn.Module): model = arch
+    if isinstance(arch, nn.Module): 
+        model = arch
+        if kwargs: 
+            warnings.warn("You have passed kwargs to a model that is already intantiated. They will not have any effect.", UserWarning)
     else:
         if arch is None: arch = InceptionTimePlus
         elif isinstance(arch, str): arch = get_arch(arch)
