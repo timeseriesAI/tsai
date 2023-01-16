@@ -325,7 +325,7 @@ class NumpyDatasets(Datasets):
                 self.tfms, lts = [None] * len(items), [NoTfmLists] * len(items)
             else:
                 self.tfms = _remove_brackets(tfms)
-                ts = [NoTfmLists if t is None else TSTfmdLists if getattr(t, 'vectorized', None) else TfmdLists for t in self.tfms]
+                lts = [NoTfmLists if t is None else TSTfmdLists if getattr(t, 'vectorized', None) else TfmdLists for t in self.tfms]
 
             self.tls = L(lt(item, t, **kwargs) for lt,item,t in zip(lts, items, self.tfms))
             if len(self.tls) > 0 and len(self.tls[0]) > 0:
