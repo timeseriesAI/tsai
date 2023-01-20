@@ -26,9 +26,6 @@ class TSClassifier(Learner):
 
         #Splits
         if splits is None: splits = TSSplitter()(X)
-            
-        # Item tfms
-        if tfms is None: tfms = [None, TSClassification()]
 
         # Batch size
         if batch_size is not None:
@@ -93,9 +90,6 @@ class TSRegressor(Learner):
 
         #Splits
         if splits is None: splits = TSSplitter()(X)
-            
-        # Item tfms
-        if tfms is None: tfms = [None, TSRegression()]
 
         # Batch size
         if batch_size is not None:
@@ -160,9 +154,6 @@ class TSForecaster(Learner):
 
         #Splits
         if splits is None: splits = TSSplitter()(X)
-            
-        # Item tfms
-        if tfms is None: tfms = [None, TSForecasting()]
 
         # Batch size
         if batch_size is not None:
