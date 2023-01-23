@@ -262,9 +262,37 @@ class TSDataset():
     def __len__(self): return len(self.X) if self.split is None else len(self.split)
 
 # %% ../../nbs/006_data.core.ipynb 34
-def _flatten_list(l):
-    if not is_listy(l) or len(l) == 0: return l
-    return [item for sublist in l for item in listify(sublist)]
+def _flatten_list(
+    o # (list, tuple or numpy.ndarray) A (nested) array or list that needs to be flattened
+):
+    "Flatten nested python objects"
+    
+    if o is None: return L([])
+    elif isinstance(o, (list, tuple, L)) and len(o) == 0: return L([])
+    elif isinstance(o, np.ndarray):
+        o = o.ravel()
+        return L(o.tolist()) if o.size < 1_000_000 else o
+    elif isinstance(o, Integral): 
+        o = np.asarray([o])
+        return L(o.tolist()) if o.size < 1_000_000 else o
+    elif isinstance(o[0], Integral): 
+        o = np.asarray(o)
+        return L(o.tolist()) if o.size < 1_000_000 else o
+    if not hasattr(o, "__iter__"): o = [o]
+    o = [oi for oi in o if hasattr(oi, "__len__") and len(oi) > 0]
+    if len(o) == 0: return L([])
+    elif len(o) == 1 and not isinstance(o[0], Integral): o = o[0]
+    if isinstance(o, np.ndarray):
+        o = o.ravel()
+    elif isinstance(o, (list, tuple, L)):
+        if len(o) == 1:
+            o = np.asarray(o[0])
+        elif all([hasattr(oi, "__array__") for oi in o]):
+            o = np.concatenate(o, axis=0)
+        elif isinstance(o[0], Integral): o = np.asarray(o)
+        else:
+            o = np.asarray([item for sublist in o for item in sublist])
+    return L(o.tolist()) if o.size < 1_000_000 else o
 
 def _remove_brackets(l):
     return [li if (not li or not is_listy(li) or len(li) > 1) else li[0] for li in l]
@@ -272,7 +300,7 @@ def _remove_brackets(l):
 class NoTfmLists(TfmdLists):
     def __init__(self, items, tfms=None, splits=None, split_idx=None, types=None, do_setup=False, **kwargs):
         self.splits = ifnone(splits, L(np.arange(len(items)).tolist(),[]))
-        self._splits = np.asarray(_flatten_list(self.splits))
+        self._splits = _flatten_list(self.splits)
         store_attr('items,types,split_idx')
         self.tfms = Pipeline(split_idx=split_idx)
     def subset(self, i, **kwargs): return type(self)(self.items, splits=self.splits[i], split_idx=i, do_setup=False, types=self.types, 
@@ -338,12 +366,11 @@ class NumpyDatasets(Datasets):
             self.ptls = L([typ(stack(tl[:])) for i,(tl,typ) in enumerate(zip(self.tls,self.typs))]) if inplace and len(tls[0]) != 0 else tls
 
         self.n_inp = 1
-        if 'splits' in kwargs:
-            split_idxs = kwargs['splits']
-            try: split_idxs = flatten_list(split_idxs)
-            except: pass
-        else: split_idxs = L(np.arange(len(self.tls[0])).tolist())
-        self.split_idxs = L(split_idxs)
+        if kwargs.get('splits', None) is not None:
+            split_idxs = _flatten_list(kwargs['splits'])
+        else: 
+            split_idxs = _flatten_list(np.arange(len(self)))
+        self.split_idxs = split_idxs
 
     def __getitem__(self, it):
         if self.inplace:
@@ -383,7 +410,7 @@ def tscoll_repr(c, max_n=10):
 @delegates(NumpyDatasets.__init__)
 class TSDatasets(NumpyDatasets):
     """A dataset that creates tuples from X (and optionally y) and applies `item_tfms`"""
-    typs = TSTensor,tensor
+    typs = TSTensor, torch.as_tensor
     def __init__(self, X=None, y=None, items=None, sel_vars=None, sel_steps=None, tfms=None, tls=None, n_inp=None, dl_type=None, 
                  inplace=True, **kwargs):
 
@@ -411,38 +438,43 @@ class TSDatasets(NumpyDatasets):
         if y is not None:
             if not hasattr(y, '__array__'):  y = np.asarray(y)
             elif hasattr(y, "iloc"): y = toarray(y)
-
         if tls is None:
             items = tuple((X,)) if y is None else tuple((X, y))
-
             if tfms is None:
                 self.tfms, lts = [None] * len(items), [NoTfmLists] * len(items)
             else:
                 self.tfms = _remove_brackets(tfms)
                 lts = [NoTfmLists if t is None else TSTfmdLists if getattr(t, 'vectorized', None) else TfmdLists for t in self.tfms]
-
             self.tls = L(lt(item, t, **kwargs) for lt,item,t in zip(lts, items, self.tfms))
             if len(self.tls) > 0 and len(self.tls[0]) > 0:
-                self.typs = [type(tl[0]) if isinstance(tl[0], torch.Tensor) else self.typs[i] for i,tl in enumerate(self.tls)]
-            self.ptls = L([typ(stack(tl[:]))[...,self.sel_vars, self.sel_steps] if (i==0 and self.multi_index) else typ(stack(tl[:])) \
-                            for i,(tl,typ) in enumerate(zip(self.tls,self.typs))]) if inplace else self.tls
+                self.typs = [type(tl.items[0]) if isinstance(tl.items[0], torch.Tensor) else self.typs[i] for i,tl in enumerate(self.tls)]
+            if tfms is None or tfms == [None] * len(self.tls):
+                for tl,typ in zip(self.tls, self.typs):
+                    tl.items = typ(tl.items)
+                self.ptls = self.tls
+                self.no_tfm = True
+            else:
+                self.ptls = L([typ(stack(tl[:]))[...,self.sel_vars, self.sel_steps] if (i==0 and self.multi_index) else typ(stack(tl[:])) \
+                    for i,(tl,typ) in enumerate(zip(self.tls,self.typs))]) if inplace else self.tls
+                self.no_tfm = False
         else:
             self.tls = tls
             if len(self.tls) > 0 and len(self.tls[0]) > 0:
                 self.typs = [type(tl[0]) if isinstance(tl[0], torch.Tensor) else self.typs[i] for i,tl in enumerate(self.tls)]
             self.ptls = L([typ(stack(tl[:]))[...,self.sel_vars, self.sel_steps] if (i==0 and self.multi_index) else typ(stack(tl[:])) \
-                            for i,(tl,typ) in enumerate(zip(self.tls,self.typs))]) if inplace and len(tls[0]) != 0 else tls
-
+                for i,(tl,typ) in enumerate(zip(self.tls,self.typs))]) if inplace and len(tls[0]) != 0 else tls
+            self.no_tfm = False
+            
         self.n_inp = 1
-        if 'splits' in kwargs:
-            split_idxs = kwargs['splits']
-            try: split_idxs = flatten_list(split_idxs)
-            except: pass
-        else: split_idxs = L(np.arange(len(self.tls[0])).tolist())
-        self.split_idxs = L(split_idxs)
+        if kwargs.get('splits', None) is not None:
+            split_idxs = _flatten_list(kwargs['splits'])
+        else: 
+            dtype = np.int16 if np.can_cast(len(self.tls[0].items), np.int16) else np.int32 if np.can_cast(len(self.tls[0].items), np.int32) else np.int64
+            split_idxs = _flatten_list(np.arange(len(self), dtype=dtype))
+        self.split_idxs = split_idxs
 
     def __getitem__(self, it):
-        if self.inplace:
+        if self.inplace or self.no_tfm:
             return tuple([ptl[it] for ptl in self.ptls])
         else:
             return tuple([typ(stack(ptl[it]))[...,self.sel_vars, self.sel_steps] if (i==0 and self.multi_index) else typ(stack(ptl[it])) \
@@ -454,7 +486,11 @@ class TSDatasets(NumpyDatasets):
                               sel_vars=self.sel_vars, sel_steps=self.sel_steps, splits=None if self.splits is None else self.splits[i], 
                               split_idx=i)
         else:
-            splits = None if self.splits is None else L(np.arange(len(i)).tolist())
+            if self.splits is None:
+                splits = None  
+            else:
+                min_dtype = np.min_scalar_type(len(i))
+                splits = np.arange(len(i), dtype=min_dtype)
             return type(self)(*self[i], inplace=True, tfms=None, 
                               sel_vars=self.sel_vars, sel_steps=self.sel_steps, splits=splits, split_idx=ifnone(self.split_idx, 1))
     
@@ -553,7 +589,8 @@ class NumpyDataLoader(TfmdDL):
                 b = slice(b[0], b[0] + self.bs)
                 
             self.idxs = b
-        if hasattr(self, "split_idxs"): self.input_idxs = self.split_idxs[b]
+        if hasattr(self, "split_idxs"): 
+            self.input_idxs = self.split_idxs[b]
         else: self.input_idxs = self.idxs
         return self.dataset[b]
 
