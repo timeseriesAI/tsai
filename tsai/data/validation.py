@@ -365,14 +365,21 @@ def get_walk_forward_splits(
 def TSSplitter(valid_size:Union[int, float]=0.2, test_size:Union[int, float]=0., show_plot:bool=True):
     "Create function that splits `items` between train/val with `valid_size` without shuffling data."
     def _inner(o):
-        valid_cut = valid_size if isinstance(valid_size, Integral) else int(round(valid_size * len(o)))
+        valid_cut = valid_size if isinstance(valid_size, Integral) else round(valid_size * len(o))
         if test_size: 
-            test_cut = test_size if isinstance(test_size, Integral) else int(round(test_size * len(o)))
-        idx = np.arange(len(o))
+            test_cut = test_size if isinstance(test_size, Integral) else round(test_size * len(o))
+        dtype = np.int16 if np.can_cast(len(o), np.int16) else np.int32 if np.can_cast(len(o), np.int32) else np.int64
+        idx = np.arange(len(o), dtype=dtype)
         if test_size: 
-            splits = L(idx[:-valid_cut - test_cut].tolist()), L(idx[-valid_cut - test_cut: - test_cut].tolist()), L(idx[-test_cut:].tolist())
+            if len(o) > 1_000_000:
+                splits = L(idx[:-valid_cut - test_cut], idx[-valid_cut - test_cut: - test_cut], idx[-test_cut:])
+            else:
+                splits = L(idx[:-valid_cut - test_cut].tolist()), L(idx[-valid_cut - test_cut: - test_cut].tolist()), L(idx[-test_cut:].tolist())
         else: 
-            splits = L(idx[:-valid_cut].tolist()), L(idx[-valid_cut:].tolist())
+            if len(o) > 1_000_000:
+                splits = L(idx[:-valid_cut], idx[-valid_cut:])
+            else:
+                splits = L(idx[:-valid_cut].tolist()), L(idx[-valid_cut:].tolist())
         if show_plot: 
             if len(o) > 1_000_000:
                 warnings.warn('the splits are too large to be plotted')

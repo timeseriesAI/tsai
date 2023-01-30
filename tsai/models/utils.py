@@ -167,6 +167,11 @@ def build_ts_model(arch, c_in=None, c_out=None, seq_len=None, d=None, dls=None, 
     elif 'rocket' in arch.__name__.lower():
         pv(f'arch: {arch.__name__}(c_in={c_in} seq_len={seq_len} device={device}, arch_config={arch_config}, kwargs={kwargs})', verbose)
         model = (arch(c_in=c_in, seq_len=seq_len, **arch_config, **kwargs)).to(device=device)
+    elif 'ltsf_' in arch.__name__.lower() or 'patchtst' in arch.__name__.lower():
+        if isinstance(d, tuple): pred_dim = d[-1]
+        else: pred_dim = d
+        pv(f'arch: {arch.__name__}(c_in={c_in} seq_len={seq_len} pred_dim={pred_dim}, device={device}, arch_config={arch_config}, kwargs={kwargs})', verbose)
+        model = (arch(c_in=c_in, c_out=c_out, seq_len=seq_len, pred_dim=pred_dim, **arch_config, **kwargs)).to(device=device)
     else:
         pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} device={device}, arch_config={arch_config}, kwargs={kwargs})', verbose)
         model = arch(c_in, c_out, **arch_config, **kwargs).to(device=device)

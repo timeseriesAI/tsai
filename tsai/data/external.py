@@ -2416,13 +2416,13 @@ forecasting_time_series = get_forecasting_list()
 # %% ../../nbs/005_data.external.ipynb 22
 def get_forecasting_time_series(dsid, path='./data/forecasting/', force_download=False, verbose=True, **kwargs):
     
-    dsid_list = [fd for fd in forecasting_time_series if fd.lower() == dsid.lower()]
+    dsid_list = [fd for fd in forecasting_time_series if dsid.lower() in fd.lower()]
     assert len(dsid_list) > 0, f'{dsid} is not a forecasting dataset'
     dsid = dsid_list[0]
     if dsid == 'Weather': full_tgt_dir = Path(path)/f'{dsid}.csv.zip'
     else: full_tgt_dir = Path(path)/f'{dsid}.csv'
     pv(f'Dataset: {dsid}', verbose)
-    if dsid == 'Sunspots': url = "https://storage.googleapis.com/laurencemoroney-blog.appspot.com/Sunspots.csv"
+    if 'sunspot' in dsid.lower(): url = 'https://raw.githubusercontent.com/jbrownlee/Datasets/master/monthly-sunspots.csv'
     elif dsid == 'Weather': url = 'https://storage.googleapis.com/tensorflow/tf-keras-datasets/jena_climate_2009_2016.csv.zip'
 
     try: 
@@ -2433,9 +2433,12 @@ def get_forecasting_time_series(dsid, path='./data/forecasting/', force_download
         download_data(url, full_tgt_dir, force_download=force_download, **kwargs)
         pv(f"...data downloaded. Path = {full_tgt_dir}", verbose)
 
-        if dsid == 'Sunspots': 
-            df = pd.read_csv(full_tgt_dir, parse_dates=['Date'], index_col=['Date'])
-            return df['Monthly Mean Total Sunspot Number'].asfreq('1M').to_frame()
+        if 'sunspot' in dsid.lower(): # accepts sunspot, Sunspot, sunspots, Sunspots etc.
+            df = pd.read_csv(full_tgt_dir)
+            dates = pd.date_range(start=df["Month"].min(), end=pd.to_datetime(df["Month"].max()) + pd.Timedelta(days=30), freq='1M')
+            df["Month"] = dates
+            df.set_index('Month', inplace=True)
+            return df
 
         elif dsid == 'Weather':
             # This code comes from a great Keras time-series tutorial notebook (https://www.tensorflow.org/tutorials/structured_data/time_series)
@@ -2467,7 +2470,7 @@ def get_forecasting_time_series(dsid, path='./data/forecasting/', force_download
             df['max Wx'] = max_wv*np.cos(wd_rad)
             df['max Wy'] = max_wv*np.sin(wd_rad)
 
-            timestamp_s = date_time.map(datetime.timestamp)
+            timestamp_s = date_time.map(datetime.datetime.timestamp)
             day = 24*60*60
             year = (365.2425)*day
 
