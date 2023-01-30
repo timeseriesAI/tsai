@@ -5,7 +5,7 @@ from __future__ import annotations
 from ..imports import *
 import re
 import sklearn
-from fastcore.transform import Transform, Pipeline
+from fastcore.transform import Transform, ItemTransform, Pipeline
 from fastai.data.transforms import Categorize
 from fastai.data.load import DataLoader
 from fastai.tabular.core import df_shrink_dtypes, make_date
@@ -16,11 +16,12 @@ from .preparation import *
 # %% auto 0
 __all__ = ['Nan2Value', 'TSRandomStandardize', 'default_date_attr', 'StandardScaler', 'RobustScaler', 'Normalizer', 'BoxCox',
            'YeoJohnshon', 'Quantile', 'ToNumpyCategory', 'OneHot', 'TSNan2Value', 'TSStandardize', 'TSNormalize',
-           'TSCatEncode', 'TSDropFeatByKey', 'TSClipOutliers', 'TSClip', 'TSSelfMissingness', 'TSRobustScale',
-           'get_stats_with_uncertainty', 'get_random_stats', 'TSGaussianStandardize', 'TSDiff', 'TSLog',
-           'TSCyclicalPosition', 'TSLinearPosition', 'TSMissingness', 'TSPositionGaps', 'TSRollingMean', 'TSLogReturn',
-           'TSAdd', 'TSClipByVar', 'TSDropVars', 'TSOneHotEncode', 'TSPosition', 'TSShrinkDataFrame', 'TSOneHotEncoder',
-           'TSCategoricalEncoder', 'TSDateTimeEncoder', 'TSMissingnessEncoder', 'Preprocessor', 'ReLabeler']
+           'TSStandardizeTuple', 'TSCatEncode', 'TSDropFeatByKey', 'TSClipOutliers', 'TSClip', 'TSSelfMissingness',
+           'TSRobustScale', 'get_stats_with_uncertainty', 'get_random_stats', 'TSGaussianStandardize', 'TSDiff',
+           'TSLog', 'TSCyclicalPosition', 'TSLinearPosition', 'TSMissingness', 'TSPositionGaps', 'TSRollingMean',
+           'TSLogReturn', 'TSAdd', 'TSClipByVar', 'TSDropVars', 'TSOneHotEncode', 'TSPosition', 'TSShrinkDataFrame',
+           'TSOneHotEncoder', 'TSCategoricalEncoder', 'TSDateTimeEncoder', 'TSMissingnessEncoder', 'Preprocessor',
+           'ReLabeler']
 
 # %% ../../nbs/009_data.preprocessing.ipynb 6
 class ToNumpyCategory(Transform):
@@ -298,6 +299,27 @@ class TSNormalize(Transform):
     def __repr__(self): return f'{self.__class__.__name__}(by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step})'
 
 # %% ../../nbs/009_data.preprocessing.ipynb 28
+class TSStandardizeTuple(ItemTransform):
+    "Standardizes both X and y"
+    parameters, order = L('x_mean', 'x_std', 'y_mean', 'y_std'), 90
+    
+    def __init__(self, x_mean, x_std, y_mean=None, y_std=None, eps=1e-5): 
+        self.x_mean, self.x_std = torch.as_tensor(x_mean).float(), torch.as_tensor(x_std + eps).float()
+        self.y_mean = self.x_mean if y_mean is None else torch.as_tensor(y_mean).float()
+        self.y_std = self.x_std if y_std is None else torch.as_tensor(y_std + eps).float()
+        
+    def encodes(self, xy): 
+        x, y = xy
+        x = (x - self.x_mean) / self.x_std
+        y = (y - self.y_mean) / self.y_std
+        return (x, y)
+    def decodes(self, xy): 
+        x, y = xy
+        x = x * self.x_std + self.x_mean
+        y = y * self.y_std + self.y_mean
+        return (x, y)
+
+# %% ../../nbs/009_data.preprocessing.ipynb 30
 class TSCatEncode(Transform):
     "Encodes a variable based on a categorical array"
     def __init__(self, a, sel_var):
@@ -315,7 +337,7 @@ class TSCatEncode(Transform):
         o[:, self.sel_var] = o_val
         return o
 
-# %% ../../nbs/009_data.preprocessing.ipynb 31
+# %% ../../nbs/009_data.preprocessing.ipynb 33
 class TSDropFeatByKey(Transform):
     """Randomly drops selected features at selected steps based 
     with a given probability per feature, step and a key variable"""
@@ -370,7 +392,7 @@ class TSDropFeatByKey(Transform):
         o[:, self.sel_vars, self.sel_steps] = o_slice
         return o
 
-# %% ../../nbs/009_data.preprocessing.ipynb 33
+# %% ../../nbs/009_data.preprocessing.ipynb 35
 class TSClipOutliers(Transform):
     "Clip outliers batch of type `TSTensor` based on the IQR"
     parameters, order = L('min', 'max'), 90
@@ -413,7 +435,7 @@ class TSClipOutliers(Transform):
     
     def __repr__(self): return f'{self.__class__.__name__}(by_sample={self.by_sample}, by_var={self.by_var})'
 
-# %% ../../nbs/009_data.preprocessing.ipynb 35
+# %% ../../nbs/009_data.preprocessing.ipynb 37
 class TSClip(Transform):
     "Clip  batch of type `TSTensor`"
     parameters, order = L('min', 'max'), 90
@@ -426,7 +448,7 @@ class TSClip(Transform):
         return torch.clamp(o, self.min, self.max)
     def __repr__(self): return f'{self.__class__.__name__}(min={self.min}, max={self.max})'
 
-# %% ../../nbs/009_data.preprocessing.ipynb 37
+# %% ../../nbs/009_data.preprocessing.ipynb 39
 class TSSelfMissingness(Transform):
     "Applies missingness from samples in a batch to random samples in the batch for selected variables"
     order = 90
@@ -443,7 +465,7 @@ class TSSelfMissingness(Transform):
             o.masked_fill_(mask, np.nan)
         return o
 
-# %% ../../nbs/009_data.preprocessing.ipynb 39
+# %% ../../nbs/009_data.preprocessing.ipynb 41
 class TSRobustScale(Transform):
     r"""This Scaler removes the median and scales the data according to the quantile range (defaults to IQR: Interquartile Range)"""
     parameters, order = L('median', 'iqr'), 90
@@ -487,7 +509,7 @@ class TSRobustScale(Transform):
 
     def __repr__(self): return f'{self.__class__.__name__}(quantile_range={self.quantile_range}, use_single_batch={self.use_single_batch})'
 
-# %% ../../nbs/009_data.preprocessing.ipynb 42
+# %% ../../nbs/009_data.preprocessing.ipynb 44
 def get_stats_with_uncertainty(o, sel_vars=None, sel_vars_zero_mean_unit_var=False, bs=64, n_trials=None, axis=(0,2)):
     o_dtype = o.dtype
     if n_trials is None: n_trials = len(o) // bs
@@ -555,7 +577,7 @@ class TSGaussianStandardize(Transform):
     
 TSRandomStandardize = TSGaussianStandardize
 
-# %% ../../nbs/009_data.preprocessing.ipynb 45
+# %% ../../nbs/009_data.preprocessing.ipynb 47
 class TSDiff(Transform):
     "Differences batch of type `TSTensor`"
     order = 90
@@ -568,7 +590,7 @@ class TSDiff(Transform):
     
     def __repr__(self): return f'{self.__class__.__name__}(lag={self.lag}, pad={self.pad})'
 
-# %% ../../nbs/009_data.preprocessing.ipynb 47
+# %% ../../nbs/009_data.preprocessing.ipynb 49
 class TSLog(Transform):
     "Log transforms batch of type `TSTensor` + 1. Accepts positive and negative numbers"
     order = 90
@@ -589,7 +611,7 @@ class TSLog(Transform):
         return output
     def __repr__(self): return f'{self.__class__.__name__}()'
 
-# %% ../../nbs/009_data.preprocessing.ipynb 49
+# %% ../../nbs/009_data.preprocessing.ipynb 51
 class TSCyclicalPosition(Transform):
     "Concatenates the position along the sequence as 2 additional variables (sine and cosine)"
     order = 90
@@ -618,7 +640,7 @@ class TSCyclicalPosition(Transform):
                 output = torch.cat([o, sin, cos], 1)
             return output
 
-# %% ../../nbs/009_data.preprocessing.ipynb 52
+# %% ../../nbs/009_data.preprocessing.ipynb 54
 class TSLinearPosition(Transform):
     "Concatenates the position along the sequence as 1 additional variable"
 
@@ -653,7 +675,7 @@ class TSLinearPosition(Transform):
             return output
         return output
 
-# %% ../../nbs/009_data.preprocessing.ipynb 55
+# %% ../../nbs/009_data.preprocessing.ipynb 57
 class TSMissingness(Transform):
     "Concatenates data missingness for selected features along the sequence as additional variables"
 
@@ -670,7 +692,7 @@ class TSMissingness(Transform):
             missingness = o.isnan()
         return torch.cat([o, missingness], 1)
 
-# %% ../../nbs/009_data.preprocessing.ipynb 57
+# %% ../../nbs/009_data.preprocessing.ipynb 59
 class TSPositionGaps(Transform):
     """Concatenates gaps for selected features along the sequence as additional variables"""
 
@@ -689,7 +711,7 @@ class TSPositionGaps(Transform):
             gaps = self.gap_fn(o)
         return torch.cat([o, gaps], 1)
 
-# %% ../../nbs/009_data.preprocessing.ipynb 59
+# %% ../../nbs/009_data.preprocessing.ipynb 61
 class TSRollingMean(Transform):
     """Calculates the rolling mean for all/ selected features alongside the sequence
     
@@ -719,7 +741,7 @@ class TSRollingMean(Transform):
             if self.replace: return rolling_mean
         return torch.cat([o, rolling_mean], 1)
 
-# %% ../../nbs/009_data.preprocessing.ipynb 61
+# %% ../../nbs/009_data.preprocessing.ipynb 63
 class TSLogReturn(Transform):
     "Calculates log-return of batch of type `TSTensor`. For positive values only"
     order = 90
@@ -732,7 +754,7 @@ class TSLogReturn(Transform):
 
     def __repr__(self): return f'{self.__class__.__name__}(lag={self.lag}, pad={self.pad})'
 
-# %% ../../nbs/009_data.preprocessing.ipynb 63
+# %% ../../nbs/009_data.preprocessing.ipynb 65
 class TSAdd(Transform):
     "Add a defined amount to each batch of type `TSTensor`."
     order = 90
@@ -744,7 +766,7 @@ class TSAdd(Transform):
         return torch.add(o, self.add)
     def __repr__(self): return f'{self.__class__.__name__}(lag={self.lag}, pad={self.pad})'
 
-# %% ../../nbs/009_data.preprocessing.ipynb 65
+# %% ../../nbs/009_data.preprocessing.ipynb 67
 class TSClipByVar(Transform):
     """Clip  batch of type `TSTensor` by variable
     
@@ -761,7 +783,7 @@ class TSClipByVar(Transform):
             o[:, v] = torch.clamp(o[:, v], m, M)
         return o
 
-# %% ../../nbs/009_data.preprocessing.ipynb 67
+# %% ../../nbs/009_data.preprocessing.ipynb 69
 class TSDropVars(Transform):
     "Drops selected variable from the input"
     order = 90
@@ -773,7 +795,7 @@ class TSDropVars(Transform):
         exc_vars = np.isin(np.arange(o.shape[1]), self.drop_vars, invert=True)
         return o[:, exc_vars]
 
-# %% ../../nbs/009_data.preprocessing.ipynb 69
+# %% ../../nbs/009_data.preprocessing.ipynb 71
 class TSOneHotEncode(Transform):
     order = 90
     def __init__(self,
@@ -808,7 +830,7 @@ class TSOneHotEncode(Transform):
             output = torch.cat([o, ohe_var], 1)
         return output
 
-# %% ../../nbs/009_data.preprocessing.ipynb 75
+# %% ../../nbs/009_data.preprocessing.ipynb 77
 class TSPosition(Transform):
     order = 90
     def __init__(self,
@@ -824,7 +846,7 @@ class TSPosition(Transform):
         steps = self.steps.expand(bs, -1, -1).to(device=o.device, dtype=o.dtype)
         return torch.cat([o, steps], 1)
 
-# %% ../../nbs/009_data.preprocessing.ipynb 78
+# %% ../../nbs/009_data.preprocessing.ipynb 80
 from sklearn.base import BaseEstimator, TransformerMixin
 from fastai.data.transforms import CategoryMap
 from joblib import dump, load
@@ -866,7 +888,7 @@ class TSShrinkDataFrame(BaseEstimator, TransformerMixin):
             print(f"Reduced by {100 * (start_memory - end_memory) / start_memory} % ")
         return X
 
-# %% ../../nbs/009_data.preprocessing.ipynb 80
+# %% ../../nbs/009_data.preprocessing.ipynb 82
 class TSOneHotEncoder(BaseEstimator, TransformerMixin):
 
     def __init__(self, columns=None, drop=True, add_na=True, dtype=np.int64):
@@ -899,7 +921,7 @@ class TSOneHotEncoder(BaseEstimator, TransformerMixin):
         if self.drop: X = X.drop(self.columns, axis=1)
         return X
 
-# %% ../../nbs/009_data.preprocessing.ipynb 82
+# %% ../../nbs/009_data.preprocessing.ipynb 84
 class TSCategoricalEncoder(BaseEstimator, TransformerMixin):
 
     def __init__(self, columns=None, add_na=True, prefix=None, suffix=None, verbose=True):
@@ -943,7 +965,7 @@ class TSCategoricalEncoder(BaseEstimator, TransformerMixin):
             pv(f'...{new_col} decoded', self.verbose)
         return X
 
-# %% ../../nbs/009_data.preprocessing.ipynb 86
+# %% ../../nbs/009_data.preprocessing.ipynb 88
 default_date_attr = ['Year', 'Month', 'Week', 'Day', 'Dayofweek', 'Dayofyear', 'Is_month_end', 'Is_month_start', 
                      'Is_quarter_end', 'Is_quarter_start', 'Is_year_end', 'Is_year_start']
 
@@ -976,7 +998,7 @@ class TSDateTimeEncoder(BaseEstimator, TransformerMixin):
             if self.drop: X = X.drop(self.datetime_columns, axis=1)
         return X
 
-# %% ../../nbs/009_data.preprocessing.ipynb 89
+# %% ../../nbs/009_data.preprocessing.ipynb 91
 class TSMissingnessEncoder(BaseEstimator, TransformerMixin):
 
     def __init__(self, columns=None):
@@ -998,7 +1020,7 @@ class TSMissingnessEncoder(BaseEstimator, TransformerMixin):
         X.drop(self.missing_columns, axis=1, inplace=True)
         return X
 
-# %% ../../nbs/009_data.preprocessing.ipynb 92
+# %% ../../nbs/009_data.preprocessing.ipynb 94
 class Preprocessor():
     def __init__(self, preprocessor, **kwargs): 
         self.preprocessor = preprocessor(**kwargs)
@@ -1040,7 +1062,7 @@ setattr(YeoJohnshon, '__name__', 'YeoJohnshon')
 Quantile = partial(sklearn.preprocessing.QuantileTransformer, n_quantiles=1_000, output_distribution='normal', random_state=0)
 setattr(Quantile, '__name__', 'Quantile')
 
-# %% ../../nbs/009_data.preprocessing.ipynb 100
+# %% ../../nbs/009_data.preprocessing.ipynb 102
 def ReLabeler(cm):
     r"""Changes the labels in a dataset based on a dictionary (class mapping) 
         Args:

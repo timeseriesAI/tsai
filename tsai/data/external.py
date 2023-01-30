@@ -4,10 +4,11 @@
 __all__ = ['UTSC_datasets', 'UCR_univariate_list', 'MTSC_datasets', 'UCR_multivariate_list', 'UCR_list', 'classification_list',
            'TSC_datasets', 'classification_datasets', 'get_classification_data', 'Monash_regression_list',
            'regression_list', 'TSR_datasets', 'regression_datasets', 'get_regression_data', 'forecasting_time_series',
-           'Monash_forecasting_list', 'forecasting_list', 'get_forecasting_data', 'decompress_from_url',
-           'download_data', 'get_UCR_univariate_list', 'get_UCR_multivariate_list', 'get_UCR_data', 'check_data',
-           'get_Monash_regression_list', 'get_Monash_regression_data', 'get_forecasting_list',
-           'get_forecasting_time_series', 'convert_tsf_to_dataframe', 'get_Monash_forecasting_data']
+           'Monash_forecasting_list', 'decompress_from_url', 'download_data', 'get_UCR_univariate_list',
+           'get_UCR_multivariate_list', 'get_UCR_data', 'check_data', 'get_Monash_regression_list',
+           'get_Monash_regression_data', 'get_forecasting_list', 'get_forecasting_time_series',
+           'convert_tsf_to_dataframe', 'get_Monash_forecasting_data', 'get_fcst_horizon', 'preprocess_Monash_df',
+           'unzip_file', 'download_all_long_term_forecasting_data']
 
 # %% ../../nbs/005_data.external.ipynb 3
 from tqdm import tqdm
@@ -2414,7 +2415,13 @@ def get_forecasting_list():
 forecasting_time_series = get_forecasting_list()
 
 # %% ../../nbs/005_data.external.ipynb 22
-def get_forecasting_time_series(dsid, path='./data/forecasting/', force_download=False, verbose=True, **kwargs):
+def get_forecasting_time_series(
+    dsid, 
+    path='./data/forecasting/', 
+    force_download=False, 
+    verbose=True, 
+    **kwargs
+):
     
     dsid_list = [fd for fd in forecasting_time_series if dsid.lower() in fd.lower()]
     assert len(dsid_list) > 0, f'{dsid} is not a forecasting dataset'
@@ -2431,7 +2438,7 @@ def get_forecasting_time_series(dsid, path='./data/forecasting/', force_download
             try: os.remove(full_tgt_dir)
             except OSError: pass
         download_data(url, full_tgt_dir, force_download=force_download, **kwargs)
-        pv(f"...data downloaded. Path = {full_tgt_dir}", verbose)
+        pv(f"...done. Path = {full_tgt_dir}", verbose)
 
         if 'sunspot' in dsid.lower(): # accepts sunspot, Sunspot, sunspots, Sunspots etc.
             df = pd.read_csv(full_tgt_dir)
@@ -2488,60 +2495,70 @@ def get_forecasting_time_series(dsid, path='./data/forecasting/', force_download
         return
 
 # %% ../../nbs/005_data.external.ipynb 25
-Monash_forecasting_list = ['m1_yearly_dataset',
-                           'm1_quarterly_dataset',
-                           'm1_monthly_dataset',
-                           'm3_yearly_dataset',
-                           'm3_quarterly_dataset',
-                           'm3_monthly_dataset',
-                           'm3_other_dataset',
-                           'm4_yearly_dataset',
-                           'm4_quarterly_dataset',
-                           'm4_monthly_dataset',
-                           'm4_weekly_dataset',
-                           'm4_daily_dataset',
-                           'm4_hourly_dataset',
-                           'tourism_yearly_dataset',
-                           'tourism_quarterly_dataset',
-                           'tourism_monthly_dataset',
-                           'nn5_daily_dataset_with_missing_values',
-                           'nn5_daily_dataset_without_missing_values',
-                           'nn5_weekly_dataset',
-                           'cif_2016_dataset',
-                           'kaggle_web_traffic_dataset_with_missing_values',
-                           'kaggle_web_traffic_dataset_without_missing_values',
-                           'kaggle_web_traffic_weekly_dataset',
-                           'solar_10_minutes_dataset',
-                           'solar_weekly_dataset',
-                           'electricity_hourly_dataset',
-                           'electricity_weekly_dataset',
-                           'london_smart_meters_dataset_with_missing_values',
-                           'london_smart_meters_dataset_without_missing_values',
-                           'wind_farms_minutely_dataset_with_missing_values',
-                           'wind_farms_minutely_dataset_without_missing_values',
-                           'car_parts_dataset_with_missing_values',
-                           'car_parts_dataset_without_missing_values',
-                           'dominick_dataset',
-                           'fred_md_dataset',
-                           'traffic_hourly_dataset',
-                           'traffic_weekly_dataset',
-                           'pedestrian_counts_dataset',
-                           'hospital_dataset',
-                           'covid_deaths_dataset',
-                           'kdd_cup_2018_dataset_with_missing_values',
-                           'kdd_cup_2018_dataset_without_missing_values',
-                           'weather_dataset',
-                           'sunspot_dataset_with_missing_values',
-                           'sunspot_dataset_without_missing_values',
-                           'saugeenday_dataset',
-                           'us_births_dataset',
-                           'elecdemand_dataset',
-                           'solar_4_seconds_dataset',
-                           'wind_4_seconds_dataset',
-                           'Sunspots', 'Weather']
+Monash_forecasting_list = [
+    'm1_yearly_dataset',
+    'm1_quarterly_dataset',
+    'm1_monthly_dataset',
+    'm3_yearly_dataset',
+    'm3_quarterly_dataset',
+    'm3_monthly_dataset',
+    'm3_other_dataset',
+    'm4_yearly_dataset',
+    'm4_quarterly_dataset',
+    'm4_monthly_dataset',
+    'm4_weekly_dataset',
+    'm4_daily_dataset',
+    'm4_hourly_dataset',
+    'tourism_yearly_dataset',
+    'tourism_quarterly_dataset',
+    'tourism_monthly_dataset',
+    'nn5_daily_dataset_with_missing_values',
+    'nn5_daily_dataset_without_missing_values',
+    'nn5_weekly_dataset',
+    'cif_2016_dataset',
+    'kaggle_web_traffic_dataset_with_missing_values',
+    'kaggle_web_traffic_dataset_without_missing_values',
+    'kaggle_web_traffic_weekly_dataset',
+    'solar_10_minutes_dataset',
+    'solar_weekly_dataset',
+    'electricity_hourly_dataset',
+    'electricity_weekly_dataset',
+    'london_smart_meters_dataset_with_missing_values',
+    'london_smart_meters_dataset_without_missing_values',
+    'wind_farms_minutely_dataset_with_missing_values',
+    'wind_farms_minutely_dataset_without_missing_values',
+    'car_parts_dataset_with_missing_values',
+    'car_parts_dataset_without_missing_values',
+    'dominick_dataset',
+    'fred_md_dataset',
+    'traffic_hourly_dataset',
+    'traffic_weekly_dataset',
+    'pedestrian_counts_dataset',
+    'hospital_dataset',
+    'covid_deaths_dataset',
+    'kdd_cup_2018_dataset_with_missing_values',
+    'kdd_cup_2018_dataset_without_missing_values',
+    'weather_dataset',
+    'sunspot_dataset_with_missing_values',
+    'sunspot_dataset_without_missing_values',
+    'saugeenday_dataset',
+    'us_births_dataset',
+    'australian_electricity_demand_dataset',
+    'solar_4_seconds_dataset', 'solar_power', #aka
+    'wind_4_seconds_dataset', 'wind_power', #aka
+    'rideshare_dataset_with_missing_values',
+    'rideshare_dataset_without_missing_values',
+    'temperature_rain_dataset_with_missing_values',
+    'temperature_rain_dataset_without_missing_values', 
+    'bitcoin_dataset_without_missing_values', 
+    'bitcoin_dataset_with_missing_values', 
+    'vehicle_trips_dataset_without_missing_values', 
+    'vehicle_trips_dataset_with_missing_values'
+]
 
+# forecasting_list = Monash_forecasting_list
 
-forecasting_list = Monash_forecasting_list
+len(Monash_forecasting_list)
 
 # %% ../../nbs/005_data.external.ipynb 26
 ## Original code available at: https://github.com/rakshitha123/TSForecasting
@@ -2681,63 +2698,132 @@ def convert_tsf_to_dataframe(full_file_path_and_name, replace_missing_vals_with 
         return loaded_data, frequency, forecast_horizon, contain_missing_values, contain_equal_length
 
 # %% ../../nbs/005_data.external.ipynb 27
-def get_Monash_forecasting_data(dsid, path='./data/forecasting/', force_download=False, remove_from_disk=False, verbose=True):
+def get_Monash_forecasting_data(dsid, path='./data/forecasting/', force_download=False, remove_from_disk=False, 
+                                add_timestamp=True, verbose=True):
 
     pv(f'Dataset: {dsid}', verbose)
     dsid = dsid.lower()
     assert dsid in Monash_forecasting_list, f'{dsid} not available in Monash_forecasting_list'
 
-    if dsid == 'm1_yearly_dataset': url = 'https://zenodo.org/record/4656193/files/m1_yearly_dataset.zip'
-    elif dsid == 'm1_quarterly_dataset': url = 'https://zenodo.org/record/4656154/files/m1_quarterly_dataset.zip'
-    elif dsid == 'm1_monthly_dataset': url = 'https://zenodo.org/record/4656159/files/m1_monthly_dataset.zip'
-    elif dsid == 'm3_yearly_dataset': url = 'https://zenodo.org/record/4656222/files/m3_yearly_dataset.zip'
-    elif dsid == 'm3_quarterly_dataset': url = 'https://zenodo.org/record/4656262/files/m3_quarterly_dataset.zip'
-    elif dsid == 'm3_monthly_dataset': url = 'https://zenodo.org/record/4656298/files/m3_monthly_dataset.zip'
-    elif dsid == 'm3_other_dataset': url = 'https://zenodo.org/record/4656335/files/m3_other_dataset.zip'
-    elif dsid == 'm4_yearly_dataset': url = 'https://zenodo.org/record/4656379/files/m4_yearly_dataset.zip'
-    elif dsid == 'm4_quarterly_dataset': url = 'https://zenodo.org/record/4656410/files/m4_quarterly_dataset.zip'
-    elif dsid == 'm4_monthly_dataset': url = 'https://zenodo.org/record/4656480/files/m4_monthly_dataset.zip'
-    elif dsid == 'm4_weekly_dataset': url = 'https://zenodo.org/record/4656522/files/m4_weekly_dataset.zip'
-    elif dsid == 'm4_daily_dataset': url = 'https://zenodo.org/record/4656548/files/m4_daily_dataset.zip'
-    elif dsid == 'm4_hourly_dataset': url = 'https://zenodo.org/record/4656589/files/m4_hourly_dataset.zip'
-    elif dsid == 'tourism_yearly_dataset': url = 'https://zenodo.org/record/4656103/files/tourism_yearly_dataset.zip'
-    elif dsid == 'tourism_quarterly_dataset': url = 'https://zenodo.org/record/4656093/files/tourism_quarterly_dataset.zip'
-    elif dsid == 'tourism_monthly_dataset': url = 'https://zenodo.org/record/4656096/files/tourism_monthly_dataset.zip'
-    elif dsid == 'nn5_daily_dataset_with_missing_values': url = 'https://zenodo.org/record/4656110/files/nn5_daily_dataset_with_missing_values.zip'
-    elif dsid == 'nn5_daily_dataset_without_missing_values': url = 'https://zenodo.org/record/4656117/files/nn5_daily_dataset_without_missing_values.zip'
-    elif dsid == 'nn5_weekly_dataset': url = 'https://zenodo.org/record/4656125/files/nn5_weekly_dataset.zip'
-    elif dsid == 'cif_2016_dataset': url = 'https://zenodo.org/record/4656042/files/cif_2016_dataset.zip'
-    elif dsid == 'kaggle_web_traffic_dataset_with_missing_values': url = 'https://zenodo.org/record/4656080/files/kaggle_web_traffic_dataset_with_missing_values.zip'
-    elif dsid == 'kaggle_web_traffic_dataset_without_missing_values': url = 'https://zenodo.org/record/4656075/files/kaggle_web_traffic_dataset_without_missing_values.zip'
-    elif dsid == 'kaggle_web_traffic_weekly': url = 'https://zenodo.org/record/4656664/files/kaggle_web_traffic_weekly_dataset.zip'
-    elif dsid == 'solar_10_minutes_dataset': url = 'https://zenodo.org/record/4656144/files/solar_10_minutes_dataset.zip'
-    elif dsid == 'solar_weekly_dataset': url = 'https://zenodo.org/record/4656151/files/solar_weekly_dataset.zip'
-    elif dsid == 'electricity_hourly_dataset': url = 'https://zenodo.org/record/4656140/files/electricity_hourly_dataset.zip'
-    elif dsid == 'electricity_weekly_dataset': url = 'https://zenodo.org/record/4656141/files/electricity_weekly_dataset.zip'
-    elif dsid == 'london_smart_meters_dataset_with_missing_values': url = 'https://zenodo.org/record/4656072/files/london_smart_meters_dataset_with_missing_values.zip'
-    elif dsid == 'london_smart_meters_dataset_without_missing_values': url = 'https://zenodo.org/record/4656091/files/london_smart_meters_dataset_without_missing_values.zip'
-    elif dsid == 'wind_farms_minutely_dataset_with_missing_values': url = 'https://zenodo.org/record/4654909/files/wind_farms_minutely_dataset_with_missing_values.zip'
-    elif dsid == 'wind_farms_minutely_dataset_without_missing_values': url = 'https://zenodo.org/record/4654858/files/wind_farms_minutely_dataset_without_missing_values.zip'
-    elif dsid == 'car_parts_dataset_with_missing_values': url = 'https://zenodo.org/record/4656022/files/car_parts_dataset_with_missing_values.zip'
-    elif dsid == 'car_parts_dataset_without_missing_values': url = 'https://zenodo.org/record/4656021/files/car_parts_dataset_without_missing_values.zip'
-    elif dsid == 'dominick_dataset': url = 'https://zenodo.org/record/4654802/files/dominick_dataset.zip'
-    elif dsid == 'fred_md_dataset': url = 'https://zenodo.org/record/4654833/files/fred_md_dataset.zip'
-    elif dsid == 'traffic_hourly_dataset': url = 'https://zenodo.org/record/4656132/files/traffic_hourly_dataset.zip'
-    elif dsid == 'traffic_weekly_dataset': url = 'https://zenodo.org/record/4656135/files/traffic_weekly_dataset.zip'
-    elif dsid == 'pedestrian_counts_dataset': url = 'https://zenodo.org/record/4656626/files/pedestrian_counts_dataset.zip'
-    elif dsid == 'hospital_dataset': url = 'https://zenodo.org/record/4656014/files/hospital_dataset.zip'
-    elif dsid == 'covid_deaths_dataset': url = 'https://zenodo.org/record/4656009/files/covid_deaths_dataset.zip'
-    elif dsid == 'kdd_cup_2018_dataset_with_missing_values': url = 'https://zenodo.org/record/4656719/files/kdd_cup_2018_dataset_with_missing_values.zip'
-    elif dsid == 'kdd_cup_2018_dataset_without_missing_values': url = 'https://zenodo.org/record/4656756/files/kdd_cup_2018_dataset_without_missing_values.zip'
-    elif dsid == 'weather_dataset': url = 'https://zenodo.org/record/4654822/files/weather_dataset.zip'
-    elif dsid == 'sunspot_dataset_with_missing_values': url = 'https://zenodo.org/record/4654773/files/sunspot_dataset_with_missing_values.zip'
-    elif dsid == 'sunspot_dataset_without_missing_values': url = 'https://zenodo.org/record/4654722/files/sunspot_dataset_without_missing_values.zip'
-    elif dsid == 'saugeenday_dataset': url = 'https://zenodo.org/record/4656058/files/saugeenday_dataset.zip'
-    elif dsid == 'us_births_dataset': url = 'https://zenodo.org/record/4656049/files/us_births_dataset.zip'
-    elif dsid == 'elecdemand_dataset': url = 'https://zenodo.org/record/4656069/files/elecdemand_dataset.zip'
-    elif dsid == 'solar_4_seconds_dataset': url = 'https://zenodo.org/record/4656027/files/solar_4_seconds_dataset.zip'
-    elif dsid == 'wind_4_seconds_dataset': url = 'https://zenodo.org/record/4656032/files/wind_4_seconds_dataset.zip'
-
+    if dsid == 'm1_yearly_dataset': 
+        url = 'https://zenodo.org/record/4656193/files/m1_yearly_dataset.zip'
+    elif dsid == 'm1_quarterly_dataset': 
+        url = 'https://zenodo.org/record/4656154/files/m1_quarterly_dataset.zip'
+    elif dsid == 'm1_monthly_dataset': 
+        url = 'https://zenodo.org/record/4656159/files/m1_monthly_dataset.zip'
+    elif dsid == 'm3_yearly_dataset': 
+        url = 'https://zenodo.org/record/4656222/files/m3_yearly_dataset.zip'
+    elif dsid == 'm3_quarterly_dataset': 
+        url = 'https://zenodo.org/record/4656262/files/m3_quarterly_dataset.zip'
+    elif dsid == 'm3_monthly_dataset': 
+        url = 'https://zenodo.org/record/4656298/files/m3_monthly_dataset.zip'
+    elif dsid == 'm3_other_dataset': 
+        url = 'https://zenodo.org/record/4656335/files/m3_other_dataset.zip'
+    elif dsid == 'm4_yearly_dataset': 
+        url = 'https://zenodo.org/record/4656379/files/m4_yearly_dataset.zip'
+    elif dsid == 'm4_quarterly_dataset': 
+        url = 'https://zenodo.org/record/4656410/files/m4_quarterly_dataset.zip'
+    elif dsid == 'm4_monthly_dataset': 
+        url = 'https://zenodo.org/record/4656480/files/m4_monthly_dataset.zip'
+    elif dsid == 'm4_weekly_dataset': 
+        url = 'https://zenodo.org/record/4656522/files/m4_weekly_dataset.zip'
+    elif dsid == 'm4_daily_dataset': 
+        url = 'https://zenodo.org/record/4656548/files/m4_daily_dataset.zip'
+    elif dsid == 'm4_hourly_dataset': 
+        url = 'https://zenodo.org/record/4656589/files/m4_hourly_dataset.zip'
+    elif dsid == 'tourism_yearly_dataset': 
+        url = 'https://zenodo.org/record/4656103/files/tourism_yearly_dataset.zip'
+    elif dsid == 'tourism_quarterly_dataset': 
+        url = 'https://zenodo.org/record/4656093/files/tourism_quarterly_dataset.zip'
+    elif dsid == 'tourism_monthly_dataset': 
+        url = 'https://zenodo.org/record/4656096/files/tourism_monthly_dataset.zip'
+    elif dsid == 'nn5_daily_dataset_with_missing_values': 
+        url = 'https://zenodo.org/record/4656110/files/nn5_daily_dataset_with_missing_values.zip'
+    elif dsid == 'nn5_daily_dataset_without_missing_values': 
+        url = 'https://zenodo.org/record/4656117/files/nn5_daily_dataset_without_missing_values.zip'
+    elif dsid == 'nn5_weekly_dataset': 
+        url = 'https://zenodo.org/record/4656125/files/nn5_weekly_dataset.zip'
+    elif dsid == 'cif_2016_dataset': 
+        url = 'https://zenodo.org/record/4656042/files/cif_2016_dataset.zip'
+    elif dsid == 'kaggle_web_traffic_dataset_with_missing_values': 
+        url = 'https://zenodo.org/record/4656080/files/kaggle_web_traffic_dataset_with_missing_values.zip'
+    elif dsid == 'kaggle_web_traffic_dataset_without_missing_values': 
+        url = 'https://zenodo.org/record/4656075/files/kaggle_web_traffic_dataset_without_missing_values.zip'
+    elif dsid == 'kaggle_web_traffic_weekly': 
+        url = 'https://zenodo.org/record/4656664/files/kaggle_web_traffic_weekly_dataset.zip'
+    elif dsid == 'solar_10_minutes_dataset': 
+        url = 'https://zenodo.org/record/4656144/files/solar_10_minutes_dataset.zip'
+    elif dsid == 'solar_weekly_dataset': 
+        url = 'https://zenodo.org/record/4656151/files/solar_weekly_dataset.zip'
+    elif dsid == 'electricity_hourly_dataset': 
+        url = 'https://zenodo.org/record/4656140/files/electricity_hourly_dataset.zip'
+    elif dsid == 'electricity_weekly_dataset': 
+        url = 'https://zenodo.org/record/4656141/files/electricity_weekly_dataset.zip'
+    elif dsid == 'london_smart_meters_dataset_with_missing_values': 
+        url = 'https://zenodo.org/record/4656072/files/london_smart_meters_dataset_with_missing_values.zip'
+    elif dsid == 'london_smart_meters_dataset_without_missing_values': 
+        url = 'https://zenodo.org/record/4656091/files/london_smart_meters_dataset_without_missing_values.zip'
+    elif dsid == 'wind_farms_minutely_dataset_with_missing_values': 
+        url = 'https://zenodo.org/record/4654909/files/wind_farms_minutely_dataset_with_missing_values.zip'
+    elif dsid == 'wind_farms_minutely_dataset_without_missing_values': 
+        url = 'https://zenodo.org/record/4654858/files/wind_farms_minutely_dataset_without_missing_values.zip'
+    elif dsid == 'car_parts_dataset_with_missing_values': 
+        url = 'https://zenodo.org/record/4656022/files/car_parts_dataset_with_missing_values.zip'
+    elif dsid == 'car_parts_dataset_without_missing_values': 
+        url = 'https://zenodo.org/record/4656021/files/car_parts_dataset_without_missing_values.zip'
+    elif dsid == 'dominick_dataset': 
+        url = 'https://zenodo.org/record/4654802/files/dominick_dataset.zip'
+    elif dsid == 'fred_md_dataset': 
+        url = 'https://zenodo.org/record/4654833/files/fred_md_dataset.zip'
+    elif dsid == 'traffic_hourly_dataset': 
+        url = 'https://zenodo.org/record/4656132/files/traffic_hourly_dataset.zip'
+    elif dsid == 'traffic_weekly_dataset': 
+        url = 'https://zenodo.org/record/4656135/files/traffic_weekly_dataset.zip'
+    elif dsid == 'pedestrian_counts_dataset': 
+        url = 'https://zenodo.org/record/4656626/files/pedestrian_counts_dataset.zip'
+    elif dsid == 'hospital_dataset': 
+        url = 'https://zenodo.org/record/4656014/files/hospital_dataset.zip'
+    elif dsid == 'covid_deaths_dataset': 
+        url = 'https://zenodo.org/record/4656009/files/covid_deaths_dataset.zip'
+    elif dsid == 'kdd_cup_2018_dataset_with_missing_values': 
+        url = 'https://zenodo.org/record/4656719/files/kdd_cup_2018_dataset_with_missing_values.zip'
+    elif dsid == 'kdd_cup_2018_dataset_without_missing_values': 
+        url = 'https://zenodo.org/record/4656756/files/kdd_cup_2018_dataset_without_missing_values.zip'
+    elif dsid == 'weather_dataset': 
+        url = 'https://zenodo.org/record/4654822/files/weather_dataset.zip'
+    elif dsid == 'sunspot_dataset_with_missing_values': 
+        url = 'https://zenodo.org/record/4654773/files/sunspot_dataset_with_missing_values.zip'
+    elif dsid == 'sunspot_dataset_without_missing_values': 
+        url = 'https://zenodo.org/record/4654722/files/sunspot_dataset_without_missing_values.zip'
+    elif dsid == 'saugeenday_dataset': 
+        url = 'https://zenodo.org/record/4656058/files/saugeenday_dataset.zip'
+    elif dsid == 'us_births_dataset': 
+        url = 'https://zenodo.org/record/4656049/files/us_births_dataset.zip'
+    elif dsid == 'australian_electricity_demand_dataset': 
+        url = 'https://zenodo.org/record/4659727/files/australian_electricity_demand_dataset.zip'
+    elif dsid == 'solar_4_seconds_dataset' or dsid == 'solar_power': 
+        dsid = 'solar_4_seconds_dataset'
+        url = 'https://zenodo.org/record/4656027/files/solar_4_seconds_dataset.zip'
+    elif dsid == 'wind_4_seconds_dataset' or dsid == 'wind_power':
+        dsid = 'wind_4_seconds_dataset'
+        url = 'https://zenodo.org/record/4656032/files/wind_4_seconds_dataset.zip'
+    elif dsid == 'rideshare_dataset_with_missing_values': 
+        url = 'https://zenodo.org/record/5122114/files/rideshare_dataset_with_missing_values.zip'
+    elif dsid == 'rideshare_dataset_without_missing_values': 
+        url = 'https://zenodo.org/record/5122232/files/rideshare_dataset_without_missing_values.zip'
+    elif dsid == 'temperature_rain_dataset_with_missing_values':
+        url = 'https://zenodo.org/record/5129073/files/temperature_rain_dataset_with_missing_values.zip'
+    elif dsid == 'temperature_rain_dataset_without_missing_values': 
+        url = 'https://zenodo.org/record/5129091/files/temperature_rain_dataset_without_missing_values.zip'
+    elif dsid == 'bitcoin_dataset_without_missing_values': 
+        url = 'https://zenodo.org/record/5122101/files/bitcoin_dataset_without_missing_values.zip'
+    elif dsid == 'bitcoin_dataset_with_missing_values': 
+        url = 'https://zenodo.org/record/5121965/files/bitcoin_dataset_with_missing_values.zip'
+    elif dsid == 'vehicle_trips_dataset_without_missing_values': 
+        url = 'https://zenodo.org/record/5122537/files/vehicle_trips_dataset_without_missing_values.zip'
+    elif dsid == 'vehicle_trips_dataset_with_missing_values': 
+        url = 'https://zenodo.org/record/5122535/files/vehicle_trips_dataset_with_missing_values.zip'
+        
     path = Path(path)
     full_path = path/f'{dsid}.tsf'
     if not full_path.exists() or force_download: 
@@ -2745,16 +2831,100 @@ def get_Monash_forecasting_data(dsid, path='./data/forecasting/', force_download
             decompress_from_url(url, target_dir=path, verbose=verbose)
         except Exception as inst:
             print(inst)
-    pv("converting dataframe to numpy array...", verbose)
-    data, frequency, forecast_horizon, contain_missing_values, contain_equal_length = convert_tsf_to_dataframe(full_path)
-    X = to3d(stack_pad(data['series_value']))
-    pv("...dataframe converted to numpy array", verbose)
-    pv(f'\nX.shape: {X.shape}', verbose)  
-    pv(f'freq: {frequency}', verbose)  
-    pv(f'forecast_horizon: {forecast_horizon}', verbose)  
-    pv(f'contain_missing_values: {contain_missing_values}', verbose)  
-    pv(f'contain_equal_length: {contain_equal_length}', verbose=verbose)
-    if remove_from_disk: os.remove(full_path)
-    return X
+    
+    pv("converting data to dataframe...", verbose)
+    df, frequency, forecast_horizon, contain_missing_values, contain_equal_length = convert_tsf_to_dataframe(full_path)
+    pv("...done", verbose)
+    if forecast_horizon is None:
+        forecast_horizon = get_fcst_horizon(frequency, dsid)
+    df.frequency = frequency
+    df.forecast_horizon = forecast_horizon
+    df.contain_missing_values = contain_missing_values
+    df.contain_equal_length = contain_equal_length
+    pv(f'\nfreq                   : {frequency}', verbose)  
+    pv(f'forecast_horizon       : {forecast_horizon}', verbose)  
+    pv(f'contain_missing_values : {contain_missing_values}', verbose)  
+    pv(f'contain_equal_length   : {contain_equal_length}', verbose=verbose)
+    if remove_from_disk: os.remove(full_path)    
+    if not add_timestamp:
+        pv(f'data.shape: {df.shape}', verbose)
+        return df
+    
+    pv("\nexploding dataframe...", verbose)
+    df = preprocess_Monash_df(df, frequency)
+    pv("...done\n", verbose)
+    df.frequency = frequency
+    df.forecast_horizon = forecast_horizon
+    df.contain_missing_values = contain_missing_values
+    df.contain_equal_length = contain_equal_length
+    pv(f'\ndata.shape: {df.shape}', verbose)  
+    return df
 
-get_forecasting_data = get_Monash_forecasting_data
+# get_forecasting_data = get_Monash_forecasting_data
+
+# %% ../../nbs/005_data.external.ipynb 28
+def get_fcst_horizon(frequency, dsid):
+    if frequency == "4_seconds": return 
+    elif frequency == "10_minutes": return 1008
+    elif frequency == "half_hourly": return 336
+    elif frequency == "hourly": return 168
+    elif frequency == 'daily': return 30
+    elif frequency == "weekly": 
+        if dsid == "solar_weekly_dataset": return 5
+        else: return 8
+    elif frequency == "monthly": return 12
+    elif frequency == "quarterly": return 
+    elif frequency == "yearly": return 
+    else: return 
+
+# %% ../../nbs/005_data.external.ipynb 29
+def preprocess_Monash_df(df, frequency):
+    # Use the explode function to split the list of values into separate rows
+    df = df.explode('series_value').reset_index(drop=True)
+
+    df['series_name'] = df['series_name'].astype('category')
+    df['series_value'] = pd.to_numeric(df['series_value'], downcast='float', errors='coerce')
+
+    if "start_timestamp" in df.columns:
+        if frequency == "4_seconds": freq = '4S'
+        elif frequency == "10_minutes": freq = '10min'
+        elif frequency == "half_hourly": freq = '30min'
+        elif frequency == "hourly": freq = 'H'
+        elif frequency == 'daily': freq = 'D'
+        elif frequency == "weekly": freq = 'W'
+        elif frequency == "monthly": freq = 'MS'
+        elif frequency == "quarterly": freq = 'QS'
+        elif frequency == "yearly": freq = 'YS'
+        else: freq = frequency
+            
+        timestamp = df.groupby('series_name')['start_timestamp'].apply(lambda x: pd.date_range(start=x.values[0], 
+                                                                                               periods=len(x), 
+                                                                                               freq=freq))
+        df['start_timestamp'] = timestamp.explode().values
+        df.rename(columns={'start_timestamp':'timestamp'}, inplace=True)
+    return df
+
+# %% ../../nbs/005_data.external.ipynb 31
+def unzip_file(file, target_dir):
+    with zipfile.ZipFile(file, 'r') as zip_ref:
+        zip_ref.extractall(target_dir)
+
+
+def download_all_long_term_forecasting_data(
+    target_dir='./data/long_forecasting/',
+    force_download=False,
+    remove_zip=False,
+    c_key='archive',
+    timeout=4,
+    verbose=True,
+):
+    url = 'https://cloud.tsinghua.edu.cn/d/e1ccfff39ad541908bae/files/?p=%2Fall_six_datasets.zip&dl=1'
+    target_dir = Path(target_dir)
+    fname = target_dir/"datasets.zip"
+    if fname.exists():
+        fname.unlink()
+    download_data(url, fname=fname, c_key=c_key,
+                  force_download=force_download, timeout=timeout, verbose=verbose)
+    unzip_file(fname, target_dir)
+    if remove_zip:
+        os.remove(fname)
