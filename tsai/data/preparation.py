@@ -689,65 +689,42 @@ def basic_data_preparation_fn(
     return df[cols]
 
 # %% ../../nbs/004_data.preparation.ipynb 102
-def _prepare_forecasting_data(
-    df:pd.DataFrame, # dataframe containing a sorted time series for a single entity or subject
-    fcst_history:int, # # historical steps used as input.
-    fcst_horizon:int=None, # # steps forecasted into the future. 
-    x_vars:str|list=None, # features used as input
-    y_vars:str|list=None,  # features used as output
-    dtype:str=None, # data type
-)->tuple(np.ndarray, np.ndarray):
-    "Applies a sliding window over a dataframe"
-    
-    # Prepare dataframe
-    x_vars, y_vars = feat2list(x_vars), feat2list(y_vars)
-    if not x_vars or x_vars == list(df.columns):
-        x_np = df.to_numpy(dtype=dtype)
-    else:
-        x_np = df[x_vars].to_numpy(dtype=dtype)
-    if y_vars == x_vars:
-        y_np = x_np
-    elif not y_vars or y_vars == list(df.columns):
-        y_np = df.to_numpy(dtype=dtype)
-    else:
-        y_np = df[y_vars].to_numpy(dtype=dtype)
-    
-    # Prepare X, y
-    X = sliding_window_view(x_np[:len(x_np) - fcst_horizon], fcst_history, axis=0) # returns view
-    y = sliding_window_view(y_np[fcst_history:], fcst_horizon, axis=0) # returns view
-    return X, y
-
-
 def prepare_forecasting_data(
     df:pd.DataFrame, # dataframe containing a sorted time series for a single entity or subject
     fcst_history:int, # # historical steps used as input.
-    fcst_horizon:int=None, # # steps forecasted into the future. 
+    fcst_horizon:int=1, # # steps forecasted into the future. 
     x_vars:str|list=None, # features used as input
     y_vars:str|list=None,  # features used as output
     dtype:str=None, # data type
     unique_id_cols:str|list=None, # unique identifier column/s used in panel data
 )->tuple(np.ndarray, np.ndarray):
-        
-    if unique_id_cols is not None:
-        if x_vars is None and x_vars is None:
-            output = df.groupby(unique_id_cols).apply(lambda x: _prepare_forecasting_data(x, 
-                                                                                          fcst_history=fcst_history, 
-                                                                                          fcst_horizon=fcst_horizon))
+
+    def _prepare_forecasting_data(df, x_vars, y_vars):
+        x_np = df.to_numpy(dtype=dtype) if x_vars is None else df[x_vars].to_numpy(dtype=dtype)
+        y_np = x_np if x_vars == y_vars else df.to_numpy(dtype=dtype) if y_vars is None else df[y_vars].to_numpy(dtype=dtype)
+        X = sliding_window_view(x_np[:len(x_np) - fcst_horizon], fcst_history, axis=0)
+        y = sliding_window_view(y_np[fcst_history:], fcst_horizon, axis=0)
+        return X, y
+    
+    x_vars = None if (x_vars is None or feat2list(x_vars) == list(df.columns)) else feat2list(x_vars)
+    y_vars = None if (y_vars is None or feat2list(y_vars) == list(df.columns)) else feat2list(y_vars)
+    if unique_id_cols:
+        grouped = df.groupby(unique_id_cols)
+        if x_vars is None and y_vars is None:
+            output = grouped.apply(lambda x: _prepare_forecasting_data(x, x_vars=None, y_vars=None))
         elif x_vars == y_vars:
-            output = df.groupby(unique_id_cols)[x_vars].apply(lambda x: _prepare_forecasting_data(x, 
-                                                                                                 fcst_history=fcst_history, 
-                                                                                                  fcst_horizon=fcst_horizon))
+            output = grouped[x_vars].apply(lambda x: _prepare_forecasting_data(x, x_vars=None, y_vars=None))
         else:
-            output = df.groupby(unique_id_cols).apply(lambda x: _prepare_forecasting_data(x, 
-                                                                                          fcst_history=fcst_history, 
-                                                                                          fcst_horizon=fcst_horizon, 
-                                                                                          x_vars=x_vars, 
-                                                                                          y_vars=y_vars))
+            output = grouped.apply(lambda x: _prepare_forecasting_data(x, x_vars, y_vars))
         output = output.reset_index(drop=True)
         X, y = zip(*output)
         X = np.concatenate(X, 0)
         y = np.concatenate(y, 0)
     else:
-        X, y = _prepare_forecasting_data(df, fcst_history=fcst_history, fcst_horizon=fcst_horizon, x_vars=x_vars, y_vars=y_vars)
-        
+        if x_vars is None and y_vars is None:
+            X, y = _prepare_forecasting_data(df, x_vars=None, y_vars=None)
+        elif x_vars == y_vars:
+            X, y = _prepare_forecasting_data(df[x_vars], x_vars=None, y_vars=None)
+        else:
+            X, y = _prepare_forecasting_data(df[x_vars], x_vars=x_vars, y_vars=y_vars)
     return X, y
