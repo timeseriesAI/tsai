@@ -12,7 +12,7 @@ __all__ = ['df2xy', 'split_xy', 'SlidingWindowSplitter', 'SlidingWindowPanelSpli
            'prepare_sel_vars_and_steps', 'apply_sliding_window', 'df2Xy', 'split_Xy', 'df2np3d',
            'add_missing_value_cols', 'add_missing_timestamps', 'time_encoding', 'forward_gaps', 'backward_gaps',
            'nearest_gaps', 'get_gaps', 'add_delta_timestamp_cols', 'SlidingWindow', 'SlidingWindowPanel',
-           'identify_padding', 'basic_data_preparation_fn', 'prepare_forecasting_data', 'reorder_dataframe_cols']
+           'identify_padding', 'basic_data_preparation_fn', 'prepare_forecasting_data']
 
 # %% ../../nbs/004_data.preparation.ipynb 4
 def prepare_idxs(o, shape=None):
@@ -54,8 +54,8 @@ def apply_sliding_window(
     data, # and array-like object with the input data 
     window_len:int|list, # sliding window length. When using a list, use negative numbers and 0.
     horizon:int|list=0, # horizon
-    x_vars:int|list|None=None, # indices of the independent variables
-    y_vars:int|list|None=None, # indices of the dependent variables (target). [] means no y will be created. None means all variables.
+    x_vars:int|list=None, # indices of the independent variables
+    y_vars:int|list=None, # indices of the dependent variables (target). [] means no y will be created. None means all variables.
     ):
     "Applies a sliding window on an array-like input to generate a 3d X (and optionally y)"
   
@@ -690,132 +690,64 @@ def basic_data_preparation_fn(
 
 # %% ../../nbs/004_data.preparation.ipynb 102
 def _prepare_forecasting_data(
-    df, # dataframe containing a sorted time series for a single entity or subject
-    fcst_history, # # historical steps used as input.
-    fcst_horizon=None, # # steps forecasted into the future. 
-    x_feat=None, # features used as input
-    y_feat=None,  # features used as output
-    dtype=None, # data type
-):
+    df:pd.DataFrame, # dataframe containing a sorted time series for a single entity or subject
+    fcst_history:int, # # historical steps used as input.
+    fcst_horizon:int=None, # # steps forecasted into the future. 
+    x_vars:str|list=None, # features used as input
+    y_vars:str|list=None,  # features used as output
+    dtype:str=None, # data type
+)->tuple(np.ndarray, np.ndarray):
     "Applies a sliding window over a dataframe"
     
-    is_df = isinstance(df, pd.core.frame.DataFrame)
-    if is_df:
-        cols = list(df.columns)
-    
     # Prepare dataframe
-    if dtype is not None:
-        if is_df:
-            dtypes = df.dtypes
-            for c in cols:
-                df[c] = df[c].astype(dtype, copy=False)
-        else:
-            old_dtype = df.dtype
-            df = df.astype(dtype, copy=False)
-    
-    # Prepare X
-    if is_df:
-        x_feat = cols if x_feat is None else feat2list(x_feat)
-        reorder_dataframe_cols(df, x_feat, copy=False)
-        x_np = df.values[:len(df) - fcst_horizon, :len(x_feat)]
+    x_vars, y_vars = feat2list(x_vars), feat2list(y_vars)
+    if not x_vars or x_vars == list(df.columns):
+        x_np = df.to_numpy(dtype=dtype)
     else:
-        x_np = df.values[:len(df) - fcst_horizon]
-    X = sliding_window_view(x_np, fcst_history, axis=0) # returns view
-    if not is_df:
-        X = X[:, None]
-    
-    # Prepare y
-    if is_df:
-        y_feat = cols if y_feat is None else feat2list(y_feat)
-        if y_feat != x_feat:
-            reorder_dataframe_cols(df, y_feat, copy=False)
-        y_np = df.values[fcst_history:, :len(y_feat)]
+        x_np = df[x_vars].to_numpy(dtype=dtype)
+    if y_vars == x_vars:
+        y_np = x_np
+    elif not y_vars or y_vars == list(df.columns):
+        y_np = df.to_numpy(dtype=dtype)
     else:
-        y_np = df.values[fcst_history:]
-    y = sliding_window_view(y_np, fcst_horizon, axis=0) # may return a copy
-    if not is_df:
-        y = y[:, None]
+        y_np = df[y_vars].to_numpy(dtype=dtype)
     
-    # Reset dataframe
-    if is_df:
-        reorder_dataframe_cols(df, cols, copy=False)
-        if dtype is not None:
-            for c,t in zip(cols, dtypes):
-                df[c] = df[c].astype(t, copy=False)
-    elif dtype is not None:
-        df = df.astype(old_dtype, copy=False)
+    # Prepare X, y
+    X = sliding_window_view(x_np[:len(x_np) - fcst_horizon], fcst_history, axis=0) # returns view
+    y = sliding_window_view(y_np[fcst_history:], fcst_horizon, axis=0) # returns view
     return X, y
 
 
 def prepare_forecasting_data(
-    df,                  # dataframe containing a sorted time series for a single entity or subject
-    fcst_history,        # # past steps used as input
-    fcst_horizon,        # # future steps in the target 
-    x_feat=None,         # features used as input
-    y_feat=None,         # features used as output
-    x_known=False,       # flag to indicate if the input contains known features (with values known in the future)
-    dtype=None,          # data type
-    unique_id_cols=None, # unique identifier columns used in panel data
-):
-    
-    is_df = isinstance(df, pd.core.frame.DataFrame)
-    if is_df:
-        cols = list(df.columns)
-    
-    # Prepare dataframe
-    if dtype is not None:
-        if is_df:
-            dtypes = df.dtypes
-            for c in cols:
-                df[c] = df[c].astype(dtype, copy=False)
-        else:
-            old_dtype = df.dtype
-            df = df.astype(dtype, copy=False)
-            
-    
-    if x_known:
-        fcst_history += fcst_horizon
+    df:pd.DataFrame, # dataframe containing a sorted time series for a single entity or subject
+    fcst_history:int, # # historical steps used as input.
+    fcst_horizon:int=None, # # steps forecasted into the future. 
+    x_vars:str|list=None, # features used as input
+    y_vars:str|list=None,  # features used as output
+    dtype:str=None, # data type
+    unique_id_cols:str|list=None, # unique identifier column/s used in panel data
+)->tuple(np.ndarray, np.ndarray):
+        
     if unique_id_cols is not None:
-        if x_feat is None and x_feat is None:
+        if x_vars is None and x_vars is None:
             output = df.groupby(unique_id_cols).apply(lambda x: _prepare_forecasting_data(x, 
                                                                                           fcst_history=fcst_history, 
                                                                                           fcst_horizon=fcst_horizon))
-        elif x_feat == y_feat:
-            output = df.groupby(unique_id_cols)[x_feat].apply(lambda x: _prepare_forecasting_data(x, 
+        elif x_vars == y_vars:
+            output = df.groupby(unique_id_cols)[x_vars].apply(lambda x: _prepare_forecasting_data(x, 
                                                                                                  fcst_history=fcst_history, 
                                                                                                   fcst_horizon=fcst_horizon))
         else:
-            output = df.groupby(unique_id_cols)[x_feat].apply(lambda x: _prepare_forecasting_data(x, 
-                                                                                                  fcst_history=fcst_history, 
-                                                                                                  fcst_horizon=fcst_horizon, 
-                                                                                                  x_feat=x_feat, 
-                                                                                                  y_feat=y_feat))
+            output = df.groupby(unique_id_cols).apply(lambda x: _prepare_forecasting_data(x, 
+                                                                                          fcst_history=fcst_history, 
+                                                                                          fcst_horizon=fcst_horizon, 
+                                                                                          x_vars=x_vars, 
+                                                                                          y_vars=y_vars))
         output = output.reset_index(drop=True)
         X, y = zip(*output)
         X = np.concatenate(X, 0)
         y = np.concatenate(y, 0)
-    
     else:
-        X, y = _prepare_forecasting_data(df, fcst_history=fcst_history, fcst_horizon=fcst_horizon, x_feat=x_feat, y_feat=y_feat)
+        X, y = _prepare_forecasting_data(df, fcst_history=fcst_history, fcst_horizon=fcst_horizon, x_vars=x_vars, y_vars=y_vars)
         
-    # Reset dataframe
-    if is_df:
-        reorder_dataframe_cols(df, cols, copy=False)
-        if dtype is not None:
-            for c,t in zip(cols, dtypes):
-                df[c] = df[c].astype(t, copy=False)
-    elif dtype is not None:
-        df = df.astype(old_dtype, copy=False)
     return X, y
-
-
-def reorder_dataframe_cols(df, new_cols, copy=False):
-    if isinstance(new_cols, str): new_cols = [new_cols]
-    new_cols = list(new_cols)
-    cols = list(df.columns)
-    if copy:
-        return df[new_cols]
-    new_col_idxs = [cols.index(c) for c in new_cols] + [cols.index(c) for c in cols if c not in new_cols]
-    np.concatenate([df.values[:, i][:, None] for i in new_col_idxs], 1, df.values)
-    df.columns = df.columns[new_col_idxs]
-    return df

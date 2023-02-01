@@ -191,7 +191,7 @@ def get_size(
     decimals   = 2,     # Number of decimals in the output
 ):
     if hasattr(o, "base") and o.base is not None: # if it's a view
-        return get_size(o.base)
+        return get_size(o.base, return_str=return_str, decimals=decimals)
     if isinstance(o, np.ndarray):
         size = o.nbytes
     elif isinstance(o, torch.Tensor):
