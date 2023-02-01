@@ -153,27 +153,27 @@ def build_ts_model(arch, c_in=None, c_out=None, seq_len=None, d=None, dls=None, 
             kwargs['custom_head'] = partial(lin_nd_head, d=d)
         elif not isinstance(kwargs['custom_head'], nn.Module):
             kwargs['custom_head'] = partial(kwargs['custom_head'], d=d)
-    if sum([1 for v in ['RNN_FCN', 'LSTM_FCN', 'RNNPlus', 'LSTMPlus', 'GRUPlus', 'InceptionTime', 'TSiT', 'Sequencer',
+    if 'ltsf_' in arch.__name__.lower() or 'patchtst' in arch.__name__.lower():
+        if isinstance(d, (tuple, list)): pred_dim = d[-1]
+        else: pred_dim = d
+        pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} seq_len={seq_len} pred_dim={pred_dim} arch_config={arch_config}, kwargs={kwargs})', verbose)
+        model = (arch(c_in=c_in, c_out=c_out, seq_len=seq_len, pred_dim=pred_dim, **arch_config, **kwargs)).to(device=device)
+    elif sum([1 for v in ['RNN_FCN', 'LSTM_FCN', 'RNNPlus', 'LSTMPlus', 'GRUPlus', 'InceptionTime', 'TSiT', 'Sequencer',
                         'GRU_FCN', 'OmniScaleCNN', 'mWDN', 'TST', 'XCM', 'MLP', 'MiniRocket', 'InceptionRocket']
             if v in arch.__name__]):
-        pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} seq_len={seq_len} device={device}, arch_config={arch_config}, kwargs={kwargs})', verbose)
+        pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} seq_len={seq_len} arch_config={arch_config} kwargs={kwargs})', verbose)
         model = arch(c_in, c_out, seq_len=seq_len, **arch_config, **kwargs).to(device=device)
     elif 'xresnet' in arch.__name__ and not '1d' in arch.__name__:
-        pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} device={device}, arch_config={arch_config}, kwargs={kwargs})', verbose)
+        pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} arch_config={arch_config} kwargs={kwargs})', verbose)
         model = (arch(c_in=c_in, n_out=c_out, **arch_config, **kwargs)).to(device=device)
     elif 'minirockethead' in arch.__name__.lower():
-        pv(f'arch: {arch.__name__}(c_in={c_in} seq_len={seq_len} device={device}, arch_config={arch_config}, kwargs={kwargs})', verbose)
+        pv(f'arch: {arch.__name__}(c_in={c_in} seq_len={seq_len} arch_config={arch_config} kwargs={kwargs})', verbose)
         model = (arch(c_in, c_out, seq_len=1, **arch_config, **kwargs)).to(device=device)
     elif 'rocket' in arch.__name__.lower():
-        pv(f'arch: {arch.__name__}(c_in={c_in} seq_len={seq_len} device={device}, arch_config={arch_config}, kwargs={kwargs})', verbose)
+        pv(f'arch: {arch.__name__}(c_in={c_in} seq_len={seq_len} arch_config={arch_config} kwargs={kwargs})', verbose)
         model = (arch(c_in=c_in, seq_len=seq_len, **arch_config, **kwargs)).to(device=device)
-    elif 'ltsf_' in arch.__name__.lower() or 'patchtst' in arch.__name__.lower():
-        if isinstance(d, tuple): pred_dim = d[-1]
-        else: pred_dim = d
-        pv(f'arch: {arch.__name__}(c_in={c_in} seq_len={seq_len} pred_dim={pred_dim}, device={device}, arch_config={arch_config}, kwargs={kwargs})', verbose)
-        model = (arch(c_in=c_in, c_out=c_out, seq_len=seq_len, pred_dim=pred_dim, **arch_config, **kwargs)).to(device=device)
     else:
-        pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} device={device}, arch_config={arch_config}, kwargs={kwargs})', verbose)
+        pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} arch_config={arch_config} kwargs={kwargs})', verbose)
         model = arch(c_in, c_out, **arch_config, **kwargs).to(device=device)
 
     try:
