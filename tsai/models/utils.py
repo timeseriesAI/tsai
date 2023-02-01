@@ -148,7 +148,7 @@ def build_ts_model(arch, c_in=None, c_out=None, seq_len=None, d=None, dls=None, 
         c_out = ifnone(c_out, dls.c)
         seq_len = ifnone(seq_len, dls.len)
         d = ifnone(d, dls.d)
-    if d: 
+    if d and not 'patchtst' in arch.__name__.lower(): 
         if 'custom_head' not in kwargs.keys(): 
             kwargs['custom_head'] = partial(lin_nd_head, d=d)
         elif not isinstance(kwargs['custom_head'], nn.Module):
