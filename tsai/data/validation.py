@@ -461,24 +461,24 @@ def calculate_fcst_stats(
     fcst_history, # # historical steps used as input.
     fcst_horizon, # # steps forecasted into the future. 
     splits, # splits that will be used to train the model. splits[0] is the train split:
-    x_feat=None, # features used as input
-    y_feat=None,  # features used as output
+    x_vars=None, # features used as input
+    y_vars=None,  # features used as output
 ):
     "Calculates the training stats required in a forecasting task"
-    x_feat = list(df.columns) if x_feat is None else feat2list(x_feat)
-    y_feat = list(df.columns) if y_feat is None else feat2list(y_feat)
+    x_vars = list(df.columns) if x_vars is None else feat2list(x_vars)
+    y_vars = list(df.columns) if y_vars is None else feat2list(y_vars)
     if fcst_history == 1:
         train_idxs = splits[0]
     else:
         dtype = smallest_dtype(max(splits[0]) + fcst_history)
         train_idxs = np.sort(np.unique((np.asarray(splits[0], dtype=dtype).reshape(-1,1) + \
                                         np.arange(fcst_history, dtype=dtype).reshape(1, -1)).flatten()))
-    mean = df.reset_index().loc[train_idxs, x_feat].mean().values.reshape(1, -1, 1)
-    std  = df.reset_index().loc[train_idxs, x_feat].std().values.reshape(1, -1, 1)
-    if x_feat == y_feat:
+    mean = df.reset_index().loc[train_idxs, x_vars].mean().values.reshape(1, -1, 1)
+    std  = df.reset_index().loc[train_idxs, x_vars].std().values.reshape(1, -1, 1)
+    if x_vars == y_vars:
         return (mean, std)
-    y_mean = df.reset_index().loc[train_idxs, y_feat].mean().values.reshape(1, -1, 1)
-    y_std  = df.reset_index().loc[train_idxs, y_feat].std().values.reshape(1, -1, 1)
+    y_mean = df.reset_index().loc[train_idxs, y_vars].mean().values.reshape(1, -1, 1)
+    y_std  = df.reset_index().loc[train_idxs, y_vars].std().values.reshape(1, -1, 1)
     return (mean, std), (y_mean, y_std)
 
 # %% ../../nbs/003_data.validation.ipynb 43
