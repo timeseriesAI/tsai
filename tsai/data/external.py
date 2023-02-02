@@ -4,11 +4,12 @@
 __all__ = ['UTSC_datasets', 'UCR_univariate_list', 'MTSC_datasets', 'UCR_multivariate_list', 'UCR_list', 'classification_list',
            'TSC_datasets', 'classification_datasets', 'get_classification_data', 'Monash_regression_list',
            'regression_list', 'TSR_datasets', 'regression_datasets', 'get_regression_data', 'forecasting_time_series',
-           'Monash_forecasting_list', 'decompress_from_url', 'download_data', 'get_UCR_univariate_list',
-           'get_UCR_multivariate_list', 'get_UCR_data', 'check_data', 'get_Monash_regression_list',
-           'get_Monash_regression_data', 'get_forecasting_list', 'get_forecasting_time_series',
-           'convert_tsf_to_dataframe', 'get_Monash_forecasting_data', 'get_fcst_horizon', 'preprocess_Monash_df',
-           'unzip_file', 'download_all_long_term_forecasting_data']
+           'Monash_forecasting_list', 'long_term_forecasting_list', 'decompress_from_url', 'download_data',
+           'get_UCR_univariate_list', 'get_UCR_multivariate_list', 'get_UCR_data', 'check_data',
+           'get_Monash_regression_list', 'get_Monash_regression_data', 'get_forecasting_list',
+           'get_forecasting_time_series', 'convert_tsf_to_dataframe', 'get_Monash_forecasting_data', 'get_fcst_horizon',
+           'preprocess_Monash_df', 'unzip_file', 'download_all_long_term_forecasting_data',
+           'get_long_term_forecasting_data', 'get_long_term_forecasting_splits']
 
 # %% ../../nbs/005_data.external.ipynb 3
 from tqdm import tqdm
@@ -18,9 +19,11 @@ try: from urllib import urlretrieve
 except ImportError: from urllib.request import urlretrieve
 import shutil
 from distutils.util import strtobool
+from fastai.tabular.core import make_date
 from ..imports import *
 from ..utils import *
 from .validation import *
+from .preparation import prepare_forecasting_data
 
 # %% ../../nbs/005_data.external.ipynb 4
 # This code was adapted from https://github.com/ChangWeiTan/TSRegression.
@@ -2928,3 +2931,163 @@ def download_all_long_term_forecasting_data(
     unzip_file(fname, target_dir)
     if remove_zip:
         os.remove(fname)
+
+# %% ../../nbs/005_data.external.ipynb 32
+def get_long_term_forecasting_data(
+    dsid, # ID of the dataset to be used for long-term forecasting.
+    target_dir='./data/long_forecasting/', # Directory where the long-term forecasting data will be saved.
+    task='M', # 'M' for multivariate, 'S' for univariate and 'MS' for multivariate input with univariate output
+    fcst_horizon=None, # # historical steps used as input. If None, the default is applied.
+    fcst_history=None, # # steps forecasted into the future. If None, the minimum default is applied.
+    train_size=None, # # int or float indicating the size of the training set. If None, the default is applied.
+    valid_size=None, # # int or float indicating the size of the training set. If None, the default is applied.
+    test_size=None,  # # int or float indicating the size of the test set. If None, the default is applied.
+    preprocess=True, # Flag that indicates whether if the data is preprocessed before saving.
+    force_download=False, # Flag that indicates if the data should be downloaded again even if directory exists.
+    remove_zip=False, # Flag that indicates if the zip file should be removed after extracting the data.
+    return_df=True, # Flag that indicates whether a dataframe (True) or X and and y arrays (False) are returned.
+    show_plot=True, # plot the splits
+    dtype=np.float32, 
+    verbose=True, # Flag tto indicate the verbosity.
+    **kwargs, # Additional keyword arguments to be passed to the function.
+):
+    "Downloads (and preprocess) a pandas dataframe with the requested long-term forecasting dataset"
+
+    # Check if the dsid is valid
+    valid_dsids = ["ETTh1", "ETTh2", "ETTm1", "ETTm2", "electricity", "exchange_rate", "traffic", "weather", "ILI"]
+    assert dsid in valid_dsids, f"{dsid} is not a valid dsid. Please provide one of the following: {valid_dsids}"
+    valid_tasks = ['M', 'MS', 'S']
+    assert task in valid_tasks, f"{task} is not a valid task. Please provide one of the following: {valid_tasks}"
+
+    target_dir = Path(target_dir)
+    path = target_dir/f"{dsid}.csv"
+    if force_download and path.exists():
+        path.unlink()
+
+    if not path.exists():
+        if dsid in ["ETTh1", "ETTh2", "ETTm1", "ETTm2"]:
+            src_path = target_dir/f"all_six_datasets/ETT-small/{dsid}.csv"
+        elif dsid in ["electricity", "exchange_rate", "traffic", "weather"]:
+            src_path = target_dir/f"all_six_datasets/{dsid}/{dsid}.csv"
+        elif dsid == "ILI":
+            src_path = target_dir/f"all_six_datasets/illness/national_illness.csv"
+        
+        # Download the data if the source file doesn't exist
+        if force_download  or not src_path.exists():
+            download_all_long_term_forecasting_data(
+                target_dir=target_dir, remove_zip=remove_zip, **kwargs)
+        # Rename the file
+        src_path.rename(path)
+
+    if path.exists():
+        df = pd.read_csv(path)
+
+        if preprocess:
+            # Format the datetime column
+            make_date(df, "date")
+            
+            # Sort the dataframe by datetime
+            df.sort_values("date", inplace=True)
+
+            if dsid == "weather": # weather is the only long-term fcst dataset with missing timestamps
+                # Remove duplicates (if any)
+                dup_rows = df.duplicated(["date"], keep='last')
+                if dup_rows.sum():
+                    df = df[~dup_rows]
+
+                # Add missing timestamps
+                dates = pd.date_range(
+                    start=df["date"].min(), end=df["date"].max(), freq='10Min')
+                df = df.set_index('date').reindex(
+                    dates).reset_index().rename(columns={"index": "date"})
+                df = df.ffill()
+
+            assert not df.duplicated(["date"], keep='last').sum()
+            assert len(np.unique(np.diff(df["date"]).astype(int))) == 1
+        
+        if return_df:
+            return df
+        else:
+            # Prepare X and y
+            x_vars = df.columns[1:] if task in ["M", "MS"] else "OT"
+            y_vars = df.columns[1:] if task == "M" else "OT"
+            if fcst_history is None:
+                fcst_history = 104 if dsid == "ILI" else 336
+            if fcst_horizon is None:
+                fcst_horizon = 24 if dsid == "ILI" else 96
+            x_vars, y_vars = feat2list(x_vars), feat2list(y_vars)
+            X, y = prepare_forecasting_data(df, fcst_history, fcst_horizon, x_vars=x_vars, y_vars=y_vars, dtype=dtype)
+
+            # Prepare splits
+            splits = get_long_term_forecasting_splits(df, fcst_history=fcst_history, fcst_horizon=fcst_horizon, dsid=dsid, 
+                                                      train_size=train_size, valid_size=valid_size, test_size=test_size, 
+                                                      show_plot=show_plot)
+            
+            # Calculate stats
+            stats = calculate_fcst_stats(df, fcst_history=fcst_history, fcst_horizon=fcst_horizon, 
+                                         splits=splits, x_vars=x_vars, y_vars=y_vars)     
+            return X, y, splits, stats
+    else:
+        if verbose:
+            print(f"Could not download {dsid} data")
+        return
+
+# %% ../../nbs/005_data.external.ipynb 33
+def get_long_term_forecasting_splits(
+    df, # dataframe containing a sorted time series for a single entity or subject
+    fcst_history,   # # historical steps used as input.
+    fcst_horizon,   # # steps forecasted into the future. 
+    dsid=None,      # dataset name
+    train_size=0.7, # int or float indicating the size of the training set
+    valid_size=None, # int or float indicating the size of the training set
+    test_size=0.2,  # int or float indicating the size of the test set
+    show_plot=True, # plot the splits
+):
+    "Returns the train, valid and test splits for long-range time series datasets"
+    
+    if dsid in ["ETTh1", "ETTh2"]:
+        border1s = [0, 12 * 30 * 24 - fcst_history, 12 * 30 * 24 + 4 * 30 * 24 - fcst_history]
+        border2s = [12 * 30 * 24, 12 * 30 * 24 + 4 * 30 * 24, 12 * 30 * 24 + 8 * 30 * 24]
+    elif dsid in ["ETTm1", "ETTm2"]:
+        border1s = [0, 12 * 30 * 24 * 4 - fcst_history, 12 * 30 * 24 * 4 + 4 * 30 * 24 * 4 - fcst_history]
+        border2s = [12 * 30 * 24 * 4, 12 * 30 * 24 * 4 + 4 * 30 * 24 * 4, 12 * 30 * 24 * 4 + 8 * 30 * 24 * 4]
+    else:
+        if train_size is None:
+            train_size = .7 # default 0.7
+        if test_size is None:
+            test_size = .2 # default 0.2
+        num_train = train_size if isinstance(train_size, Integral) else int(len(df) * train_size)
+        num_test = test_size if isinstance(test_size, Integral) else int(len(df) * test_size)
+        if valid_size is None:
+            num_vali = len(df) - num_train - num_test
+        else:
+            num_vali = test_size if isinstance(valid_size, Integral) else int(len(df) * valid_size)  
+        assert num_train + num_test + num_vali <= len(df)
+        border1s = [0, num_train - fcst_history, len(df) - num_test - fcst_history]
+        border2s = [num_train, num_train + num_vali, len(df)]
+
+    train_split = L(np.arange(border1s[0], border2s[0] - fcst_horizon - fcst_history + 1).tolist())
+    valid_split = L(np.arange(border1s[1], border2s[1] - fcst_horizon - fcst_history + 1).tolist())
+    test_split = L(np.arange(border1s[2], border2s[2] - fcst_horizon - fcst_history + 1).tolist())   
+    splits = train_split, valid_split, test_split
+    if show_plot:
+        if test_size and valid_size != 0:
+            plot_splits(splits)
+        elif test_size:
+            plot_splits((splits[0], splits[2]))
+        else:
+            plot_splits(splits[:2])
+    return splits
+
+# %% ../../nbs/005_data.external.ipynb 34
+long_term_forecasting_list = [
+    "ETTh1",
+    "ETTh2",
+    "ETTm1",
+    "ETTm2",
+    "electricity",
+    "exchange_rate",
+    "traffic",
+    "weather",
+    "ILI"
+]
