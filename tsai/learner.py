@@ -337,6 +337,9 @@ def get_arch(arch_name):
     elif arch_name == "MGRU_FCNPlus":  
         from tsai.models.RNN_FCNPlus import MGRU_FCNPlus
         arch = MGRU_FCNPlus
+    elif arch_name == "PatchTST":  
+        from tsai.models.PatchTST import PatchTST
+        arch = ROCKET
     elif arch_name == "ROCKET":  
         from tsai.models.ROCKET import ROCKET
         arch = ROCKET

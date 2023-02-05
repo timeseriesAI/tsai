@@ -41,4 +41,5 @@ from .TSPerceiver import *
 from .TSiTPlus import *
 from .TSSequencerPlus import *
 from .MultiInputNet import *
+from .PatchTST import *
 from .misc import *
