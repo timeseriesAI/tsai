@@ -1,3 +1,4 @@
+from __future__ import annotations
 import platform, os
 if platform.system()=='Darwin':
     # workaround "OMP: Error #15: Initializing libiomp5.dylib, but found libomp.dylib already initialized"

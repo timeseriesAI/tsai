@@ -3,7 +3,8 @@
 # %% auto 0
 __all__ = ['TimeSplitter', 'RandomSplitter', 'check_overlap', 'check_splits_overlap', 'leakage_finder', 'balance_idx',
            'TrainValidTestSplitter', 'plot_splits', 'get_splits', 'get_walk_forward_splits', 'TSSplitter',
-           'get_predefined_splits', 'combine_split_data', 'get_splits_len']
+           'get_predefined_splits', 'combine_split_data', 'get_splits_len', 'get_usable_idxs', 'get_df_usable_idxs',
+           'calculate_fcst_stats', 'get_forecasting_splits']
 
 # %% ../../nbs/003_data.validation.ipynb 3
 from ..imports import *
@@ -185,6 +186,8 @@ def plot_splits(splits):
                 v[i, s] = 1 + j
         else: v[i, split] = 1 + i
     vals = np.unique(v)
+    if 2 in vals and 3 not in vals:
+        vals = [v + 1 if v == 2 else v for v in vals]
     plt.figure(figsize=(16, len(_splits)/2))
     if len(vals) == 1:
         v = np.ones((len(_splits), _max + 1))
@@ -192,14 +195,14 @@ def plot_splits(splits):
         legend_elements = [Patch(facecolor='blue', label='Train')]
         plt.legend(handles=legend_elements, bbox_to_anchor=(1.05, 1), loc='upper left')
     else: 
-        colors = L(['gainsboro', 'blue', 'limegreen', 'red'])[vals]
+        colors = L(['gainsboro', 'blue', 'orange', 'limegreen'])[vals]
         cmap = LinearSegmentedColormap.from_list('', colors)
         plt.pcolormesh(v, cmap=cmap)
         legend_elements = L([
             Patch(facecolor='gainsboro', label='None'),
             Patch(facecolor='blue', label='Train'),
-            Patch(facecolor='limegreen', label='Valid'),
-            Patch(facecolor='red', label='Test')])[vals]
+            Patch(facecolor='orange', label='Valid'),
+            Patch(facecolor='limegreen', label='Test')])[vals]
         plt.legend(handles=legend_elements, bbox_to_anchor=(1.05, 1), loc='upper left')
     plt.title('Split distribution')
     plt.yticks(ticks=np.arange(.5, len(_splits)+.5, 1.0), labels=np.arange(1, len(_splits)+1, 1.0).astype(int))
@@ -362,29 +365,35 @@ def get_walk_forward_splits(
     return splits
 
 # %% ../../nbs/003_data.validation.ipynb 19
-def TSSplitter(valid_size:Union[int, float]=0.2, test_size:Union[int, float]=0., show_plot:bool=True):
+def TSSplitter(
+    valid_size=0.2, # int or float indicating the validation set size
+    test_size=0., # int or float indicating the test set size
+    fcst_horizon=0, # int that indicates the number of time steps removed at the end of train (and validation)
+    show_plot=True, # flag that indicates if a plot showing the splits will be created
+):
     "Create function that splits `items` between train/val with `valid_size` without shuffling data."
+    
+    if fcst_horizon: 
+        fcst_horizon = fcst_horizon - 1
+        
     def _inner(o):
         valid_cut = valid_size if isinstance(valid_size, Integral) else round(valid_size * len(o))
         if test_size: 
             test_cut = test_size if isinstance(test_size, Integral) else round(test_size * len(o))
-        dtype = np.int16 if np.can_cast(len(o), np.int16) else np.int32 if np.can_cast(len(o), np.int32) else np.int64
-        idx = np.arange(len(o), dtype=dtype)
+        else:
+            test_cut = 0
+        idx = np.arange(len(o))
         if test_size: 
-            if len(o) > 1_000_000:
-                splits = L(idx[:-valid_cut - test_cut], idx[-valid_cut - test_cut: - test_cut], idx[-test_cut:])
-            else:
-                splits = L(idx[:-valid_cut - test_cut].tolist()), L(idx[-valid_cut - test_cut: - test_cut].tolist()), L(idx[-test_cut:].tolist())
+            splits = (L(idx[:-valid_cut - test_cut - fcst_horizon].tolist()), 
+                      L(idx[-valid_cut - test_cut: - test_cut - fcst_horizon].tolist()),
+                      L(idx[-test_cut:].tolist()))
         else: 
-            if len(o) > 1_000_000:
-                splits = L(idx[:-valid_cut], idx[-valid_cut:])
-            else:
-                splits = L(idx[:-valid_cut].tolist()), L(idx[-valid_cut:].tolist())
+            splits = (L(idx[:-valid_cut - fcst_horizon].tolist()), L(idx[-valid_cut:].tolist()))
         if show_plot: 
             if len(o) > 1_000_000:
                 warnings.warn('the splits are too large to be plotted')
             else: 
-                plot_splits(splits)
+                plot_splits(splits) if test_size else plot_splits(splits[:2])
         return splits
     return _inner
 
@@ -414,3 +423,193 @@ def get_splits_len(splits):
         if isinstance(split[0], (list, L, tuple)):  _len.append([len(s) for s in split])
         else: _len.append(len(split))
     return _len
+
+# %% ../../nbs/003_data.validation.ipynb 41
+def get_usable_idxs(df, fcst_history, fcst_horizon, stride=1):
+    if len(df) < fcst_history + fcst_horizon:
+        return []
+    usable_idxs = df[fcst_history - 1:len(df) - fcst_horizon].index.values
+    if stride != 1:
+        usable_idxs = usable_idxs[::-stride][::-1]
+    return usable_idxs
+
+
+def get_df_usable_idxs(
+    df,                         # dataframe containing a sorted time series
+    fcst_history,               # # historical steps used as input (size of the sliding window for the input)
+    fcst_horizon,               # # steps forecasted into the future (size of the sliding window for the target)
+    stride=1,                   # int or tuple of 2 int containing the strides of the sliding windows (input and target)
+    unique_id_cols=None,        # str indicating the column/s with the unique identifier/s for each entity
+):
+    dtype = smallest_dtype(len(df))
+    if unique_id_cols is not None:
+        usable_df_idxs = np.sort(np.concatenate(df
+                                                .reset_index(drop=True)
+                                                .groupby(unique_id_cols)
+                                                .apply(lambda x: get_usable_idxs(x, 
+                                                                                 fcst_history=fcst_history, 
+                                                                                 fcst_horizon=fcst_horizon, 
+                                                                                 stride=stride
+                                                                                )).values, dtype=dtype))
+    else:
+        usable_df_idxs = np.sort(get_usable_idxs(df, fcst_history, fcst_horizon, stride).astype(dtype=dtype))
+    return usable_df_idxs
+
+# %% ../../nbs/003_data.validation.ipynb 42
+def calculate_fcst_stats(
+    df, # dataframe containing a sorted time series for a single entity or subject
+    fcst_history, # # historical steps used as input.
+    fcst_horizon, # # steps forecasted into the future. 
+    splits, # splits that will be used to train the model. splits[0] is the train split:
+    x_vars=None, # features used as input
+    y_vars=None,  # features used as output
+):
+    "Calculates the training stats required in a forecasting task"
+    x_vars = list(df.columns) if x_vars is None else feat2list(x_vars)
+    y_vars = list(df.columns) if y_vars is None else feat2list(y_vars)
+    if fcst_history == 1:
+        train_idxs = splits[0]
+    else:
+        dtype = smallest_dtype(max(splits[0]) + fcst_history)
+        train_idxs = np.sort(np.unique((np.asarray(splits[0], dtype=dtype).reshape(-1,1) + \
+                                        np.arange(fcst_history, dtype=dtype).reshape(1, -1)).flatten()))
+    mean = df.reset_index().loc[train_idxs, x_vars].mean().values.reshape(1, -1, 1)
+    std  = df.reset_index().loc[train_idxs, x_vars].std().values.reshape(1, -1, 1)
+    if x_vars == y_vars:
+        return (mean, std)
+    y_mean = df.reset_index().loc[train_idxs, y_vars].mean().values.reshape(1, -1, 1)
+    y_std  = df.reset_index().loc[train_idxs, y_vars].std().values.reshape(1, -1, 1)
+    return (mean, std), (y_mean, y_std)
+
+# %% ../../nbs/003_data.validation.ipynb 43
+def get_forecasting_splits(
+    df,                         # dataframe containing a sorted time series
+    fcst_history,               # # historical steps used as input (size of the sliding window for the input)
+    fcst_horizon,               # # steps forecasted into the future (size of the sliding window for the target)
+    stride=1,                   # int or tuple of 2 int containing the strides of the sliding windows (input and target)
+    valid_size=0.,              # int or float indicating the size of the training set (based on datetimes)
+    test_size=0.2,              # int or float indicating the size of the test set (based on datetimes)
+    valid_cutoff_datetime=None, # first prediction datetime of validation dataset
+    test_cutoff_datetime=None,  # first prediction datetime of test dataset
+    datetime_col=None,          # str indicating the column with the datetime values
+    use_index=False,            # flag to indicate if the datetime is in the index
+    unique_id_cols=None,        # str indicating the column/s with the unique identifier/s for each entity
+    show_plot=True,             # flag to indicate if splits should be plotted
+):
+
+    if unique_id_cols or valid_cutoff_datetime is not None or test_cutoff_datetime is not None:
+        assert datetime_col is not None or use_index, \
+        "you need to pass a datetime_col or set use_index=False to be able to access datetime"
+    
+    if valid_cutoff_datetime is not None or test_cutoff_datetime is not None:
+        valid_size = 0
+        test_size = 0
+        
+    use_valid = valid_cutoff_datetime is not None or valid_size != 0
+    use_test = test_cutoff_datetime is not None or test_size != 0
+    
+    if valid_cutoff_datetime is not None: 
+        valid_cutoff_datetime = np.datetime64(valid_cutoff_datetime)
+    if test_cutoff_datetime is not None: 
+        test_cutoff_datetime = np.datetime64(test_cutoff_datetime)
+
+    if use_index:
+        datetime_col = 'index' if df.index.name is None else df.index.name
+        df = df.reset_index(drop=False)[feat2list(datetime_col) + feat2list(unique_id_cols)]
+    elif datetime_col is not None:
+        df = df[feat2list(datetime_col) + feat2list(unique_id_cols)]
+    else:
+        df = df.reset_index(drop=True)
+        if unique_id_cols is not None: 
+            df = df[feat2list(unique_id_cols)]
+    
+    usable_df_idxs = get_df_usable_idxs(df, fcst_history, fcst_horizon, stride=stride, unique_id_cols=unique_id_cols)
+    usable_np_idxs = usable_df_idxs - (fcst_history - 1)
+
+    if datetime_col is not None:
+        usable_steps = pd.to_datetime(df.loc[usable_df_idxs, datetime_col])
+        cat = usable_steps.astype('category').cat
+        usable_step_codes = cat.codes.values
+    else:
+        usable_step_codes = np.arange(len(usable_df_idxs))
+
+    # test indices
+    if test_cutoff_datetime is not None:
+        test_start = np.argmax(cat.categories >= test_cutoff_datetime)
+        test_idxs = usable_np_idxs[usable_step_codes >= test_start]
+    elif test_size:
+        if test_size < 1:
+            test_size = round(len(usable_step_codes) * test_size)
+        test_start = np.sort(usable_step_codes)[- test_size]
+        test_idxs = usable_np_idxs[usable_step_codes >= test_start]
+    else:
+        test_idxs = np.array([])
+    test_size = len(test_idxs)
+    
+    # valid indices
+    if valid_cutoff_datetime is not None:
+        valid_start =  np.argmax(cat.categories >= valid_cutoff_datetime)
+        if test_cutoff_datetime is not None:
+            valid_end = test_start - (fcst_horizon - 1) // stride
+            assert valid_start <= valid_end, "you need to modify valid_size and/or test_size due to lack of data"
+            valid_idxs = usable_np_idxs[(usable_step_codes >= valid_start) & (usable_step_codes < valid_end)]
+        else:
+            valid_idxs = usable_np_idxs[(usable_step_codes >= valid_start)]
+    elif valid_size:
+        if valid_size < 1:
+            valid_size = round(len(usable_step_codes) * valid_size)
+        if test_size:
+            valid_end = test_start - (fcst_horizon - 1) // stride
+            remaining_usable_step_codes = usable_step_codes[usable_step_codes < valid_end]
+            valid_start = np.sort(remaining_usable_step_codes)[- valid_size]
+            assert 0 < valid_start <= valid_end <= test_start, "you need to modify valid_size and/or test_size due to lack of data"
+            valid_idxs = usable_np_idxs[(usable_step_codes >= valid_start) & (usable_step_codes < valid_end)]
+        else:
+            valid_start = np.sort(usable_step_codes)[- valid_size]
+            valid_idxs = usable_np_idxs[usable_step_codes >= valid_start]
+    else:
+        valid_idxs = np.array([])
+    valid_size = len(valid_idxs)
+
+    # train indices
+    if use_valid:
+        train_end = valid_start - (fcst_horizon - 1) // stride
+        assert train_end > 0, "you need to modify valid_size due to lack of data"
+        train_idxs = usable_np_idxs[usable_step_codes < train_end]
+    elif use_test:
+        train_end = test_start - (fcst_horizon - 1) // stride
+        assert train_end > 0, "you need to modify test_size due to lack of data"
+        train_idxs = usable_np_idxs[usable_step_codes < train_end]
+    else:
+        train_idxs = usable_np_idxs
+    train_size = len(train_idxs)
+    
+#     if datetime_col is not None:
+#         print('train start:', cat.categories[0])
+#         print('train end  :', cat.categories[train_end - 1])
+#         if use_valid:
+#             print('valid start:', cat.categories[valid_start])
+#             print('valid end  :', cat.categories[valid_end - 1])
+#         if use_test:
+#             print('test start :', cat.categories[test_start])
+#             print('test end   :', cat.categories[-1])
+        
+    if len(df) < 1_000_000:
+        train_idxs = L(train_idxs.tolist())
+        if len(valid_idxs):
+            valid_idxs = L(valid_idxs.tolist())
+        if len(test_idxs):
+            test_idxs = L(test_idxs.tolist())
+
+    splits = [train_idxs]
+    if valid_size:
+        splits += [valid_idxs]
+    if test_size:
+        splits += [test_idxs]
+
+    if show_plot:
+        if len(df) > 1_000_000:
+            warnings.warn('the splits are too large to be plotted')
+        else:
+            plot_splits(splits)
+    return tuple(splits)
