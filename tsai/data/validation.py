@@ -645,10 +645,5 @@ def get_long_term_forecasting_splits(
     test_split = L(np.arange(border1s[2], border2s[2] - fcst_horizon - fcst_history + 1).tolist())   
     splits = train_split, valid_split, test_split
     if show_plot:
-        if test_size and valid_size != 0:
-            plot_splits(splits)
-        elif test_size:
-            plot_splits((splits[0], splits[2]))
-        else:
-            plot_splits(splits[:2])
+        plot_splits(splits)
     return splits
