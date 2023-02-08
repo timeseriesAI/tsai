@@ -4,7 +4,7 @@
 __all__ = ['TimeSplitter', 'RandomSplitter', 'check_overlap', 'check_splits_overlap', 'leakage_finder', 'balance_idx',
            'TrainValidTestSplitter', 'plot_splits', 'get_splits', 'get_walk_forward_splits', 'TSSplitter',
            'get_predefined_splits', 'combine_split_data', 'get_splits_len', 'get_usable_idxs', 'get_df_usable_idxs',
-           'calculate_fcst_stats', 'get_forecasting_splits']
+           'calculate_fcst_stats', 'get_forecasting_splits', 'get_long_term_forecasting_splits']
 
 # %% ../../nbs/003_data.validation.ipynb 3
 from ..imports import *
@@ -613,3 +613,42 @@ def get_forecasting_splits(
         else:
             plot_splits(splits)
     return tuple(splits)
+
+# %% ../../nbs/003_data.validation.ipynb 48
+def get_long_term_forecasting_splits(
+    df, # dataframe containing a sorted time series for a single entity or subject
+    fcst_history,   # # historical steps used as input.
+    fcst_horizon,   # # steps forecasted into the future. 
+    dsid=None,      # dataset name
+    show_plot=True, # plot the splits
+):
+    "Returns the train, valid and test splits for long-range time series datasets"
+    
+    if dsid in ["ETTh1", "ETTh2"]:
+        border1s = [0, 12 * 30 * 24 - fcst_history, 12 * 30 * 24 + 4 * 30 * 24 - fcst_history]
+        border2s = [12 * 30 * 24, 12 * 30 * 24 + 4 * 30 * 24, 12 * 30 * 24 + 8 * 30 * 24]
+    elif dsid in ["ETTm1", "ETTm2"]:
+        border1s = [0, 12 * 30 * 24 * 4 - fcst_history, 12 * 30 * 24 * 4 + 4 * 30 * 24 * 4 - fcst_history]
+        border2s = [12 * 30 * 24 * 4, 12 * 30 * 24 * 4 + 4 * 30 * 24 * 4, 12 * 30 * 24 * 4 + 8 * 30 * 24 * 4]
+    else:
+        train_size = .7 # default 0.7
+        test_size = .2 # default 0.2        
+        num_train = int(len(df) * train_size)
+        num_test = int(len(df) * test_size)
+        num_vali = len(df) - num_train - num_test
+        assert num_train + num_test + num_vali <= len(df)
+        border1s = [0, num_train - fcst_history, len(df) - num_test - fcst_history]
+        border2s = [num_train, num_train + num_vali, len(df)]
+
+    train_split = L(np.arange(border1s[0], border2s[0] - fcst_horizon - fcst_history + 1).tolist())
+    valid_split = L(np.arange(border1s[1], border2s[1] - fcst_horizon - fcst_history + 1).tolist())
+    test_split = L(np.arange(border1s[2], border2s[2] - fcst_horizon - fcst_history + 1).tolist())   
+    splits = train_split, valid_split, test_split
+    if show_plot:
+        if test_size and valid_size != 0:
+            plot_splits(splits)
+        elif test_size:
+            plot_splits((splits[0], splits[2]))
+        else:
+            plot_splits(splits[:2])
+    return splits

@@ -658,7 +658,7 @@ def basic_data_preparation_fn(
     add_missing_datetimes=True, # flaf to indicate if missing datetimes should be added
     freq='1D', # str to indicate the frequency used in the datetime info. Used in case missing timestamps exists
     method=None, # str indicating the method used to fill data for missing timestamps: None, 'bfill', 'ffill'
-    sort_by=None, # str or list of str to indicate if how to sort data. If use_index=True the indes will be used to sort the dataframe.
+    sort_by=None, # str or list of str to indicate if how to sort data. If use_index=True the index will be used to sort the dataframe.
     ):
 
     cols = df.columns

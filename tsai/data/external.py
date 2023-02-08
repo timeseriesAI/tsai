@@ -9,7 +9,7 @@ __all__ = ['UTSC_datasets', 'UCR_univariate_list', 'MTSC_datasets', 'UCR_multiva
            'get_Monash_regression_list', 'get_Monash_regression_data', 'get_forecasting_list',
            'get_forecasting_time_series', 'convert_tsf_to_dataframe', 'get_Monash_forecasting_data', 'get_fcst_horizon',
            'preprocess_Monash_df', 'unzip_file', 'download_all_long_term_forecasting_data',
-           'get_long_term_forecasting_data', 'get_long_term_forecasting_splits']
+           'get_long_term_forecasting_data']
 
 # %% ../../nbs/005_data.external.ipynb 3
 from tqdm import tqdm
@@ -2939,9 +2939,6 @@ def get_long_term_forecasting_data(
     task='M', # 'M' for multivariate, 'S' for univariate and 'MS' for multivariate input with univariate output
     fcst_horizon=None, # # historical steps used as input. If None, the default is applied.
     fcst_history=None, # # steps forecasted into the future. If None, the minimum default is applied.
-    train_size=None, # # int or float indicating the size of the training set. If None, the default is applied.
-    valid_size=None, # # int or float indicating the size of the training set. If None, the default is applied.
-    test_size=None,  # # int or float indicating the size of the test set. If None, the default is applied.
     preprocess=True, # Flag that indicates whether if the data is preprocessed before saving.
     force_download=False, # Flag that indicates if the data should be downloaded again even if directory exists.
     remove_zip=False, # Flag that indicates if the zip file should be removed after extracting the data.
@@ -3019,9 +3016,7 @@ def get_long_term_forecasting_data(
             X, y = prepare_forecasting_data(df, fcst_history, fcst_horizon, x_vars=x_vars, y_vars=y_vars, dtype=dtype)
 
             # Prepare splits
-            splits = get_long_term_forecasting_splits(df, fcst_history=fcst_history, fcst_horizon=fcst_horizon, dsid=dsid, 
-                                                      train_size=train_size, valid_size=valid_size, test_size=test_size, 
-                                                      show_plot=show_plot)
+            splits = get_long_term_forecasting_splits(df, fcst_history=fcst_history, fcst_horizon=fcst_horizon, dsid=dsid, show_plot=show_plot)
             
             # Calculate stats
             stats = calculate_fcst_stats(df, fcst_history=fcst_history, fcst_horizon=fcst_horizon, 
@@ -3033,53 +3028,6 @@ def get_long_term_forecasting_data(
         return
 
 # %% ../../nbs/005_data.external.ipynb 33
-def get_long_term_forecasting_splits(
-    df, # dataframe containing a sorted time series for a single entity or subject
-    fcst_history,   # # historical steps used as input.
-    fcst_horizon,   # # steps forecasted into the future. 
-    dsid=None,      # dataset name
-    train_size=0.7, # int or float indicating the size of the training set
-    valid_size=None, # int or float indicating the size of the training set
-    test_size=0.2,  # int or float indicating the size of the test set
-    show_plot=True, # plot the splits
-):
-    "Returns the train, valid and test splits for long-range time series datasets"
-    
-    if dsid in ["ETTh1", "ETTh2"]:
-        border1s = [0, 12 * 30 * 24 - fcst_history, 12 * 30 * 24 + 4 * 30 * 24 - fcst_history]
-        border2s = [12 * 30 * 24, 12 * 30 * 24 + 4 * 30 * 24, 12 * 30 * 24 + 8 * 30 * 24]
-    elif dsid in ["ETTm1", "ETTm2"]:
-        border1s = [0, 12 * 30 * 24 * 4 - fcst_history, 12 * 30 * 24 * 4 + 4 * 30 * 24 * 4 - fcst_history]
-        border2s = [12 * 30 * 24 * 4, 12 * 30 * 24 * 4 + 4 * 30 * 24 * 4, 12 * 30 * 24 * 4 + 8 * 30 * 24 * 4]
-    else:
-        if train_size is None:
-            train_size = .7 # default 0.7
-        if test_size is None:
-            test_size = .2 # default 0.2
-        num_train = train_size if isinstance(train_size, Integral) else int(len(df) * train_size)
-        num_test = test_size if isinstance(test_size, Integral) else int(len(df) * test_size)
-        if valid_size is None:
-            num_vali = len(df) - num_train - num_test
-        else:
-            num_vali = test_size if isinstance(valid_size, Integral) else int(len(df) * valid_size)  
-        assert num_train + num_test + num_vali <= len(df)
-        border1s = [0, num_train - fcst_history, len(df) - num_test - fcst_history]
-        border2s = [num_train, num_train + num_vali, len(df)]
-
-    train_split = L(np.arange(border1s[0], border2s[0] - fcst_horizon - fcst_history + 1).tolist())
-    valid_split = L(np.arange(border1s[1], border2s[1] - fcst_horizon - fcst_history + 1).tolist())
-    test_split = L(np.arange(border1s[2], border2s[2] - fcst_horizon - fcst_history + 1).tolist())   
-    splits = train_split, valid_split, test_split
-    if show_plot:
-        if test_size and valid_size != 0:
-            plot_splits(splits)
-        elif test_size:
-            plot_splits((splits[0], splits[2]))
-        else:
-            plot_splits(splits[:2])
-    return splits
-
-# %% ../../nbs/005_data.external.ipynb 34
 long_term_forecasting_list = [
     "ETTh1",
     "ETTh2",
