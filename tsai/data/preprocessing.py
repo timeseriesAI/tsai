@@ -300,7 +300,7 @@ class TSNormalize(Transform):
 
 # %% ../../nbs/009_data.preprocessing.ipynb 28
 class TSStandardizeTuple(ItemTransform):
-    "Standardizes both X and y"
+    "Standardizes X (and y if provided)"
     parameters, order = L('x_mean', 'x_std', 'y_mean', 'y_std'), 90
     
     def __init__(self, x_mean, x_std, y_mean=None, y_std=None, eps=1e-5): 
@@ -309,15 +309,25 @@ class TSStandardizeTuple(ItemTransform):
         self.y_std = self.x_std if y_std is None else torch.as_tensor(y_std + eps).float()
         
     def encodes(self, xy): 
-        x, y = xy
-        x = (x - self.x_mean) / self.x_std
-        y = (y - self.y_mean) / self.y_std
-        return (x, y)
+        if len(xy) == 2:
+            x, y = xy
+            x = (x - self.x_mean) / self.x_std
+            y = (y - self.y_mean) / self.y_std
+            return (x, y)
+        elif len(xy) == 1:
+            x = xy[0]
+            x = (x - self.x_mean) / self.x_std
+            return (x, )
     def decodes(self, xy): 
-        x, y = xy
-        x = x * self.x_std + self.x_mean
-        y = y * self.y_std + self.y_mean
-        return (x, y)
+        if len(xy) == 2:
+            x, y = xy
+            x = x * self.x_std + self.x_mean
+            y = y * self.y_std + self.y_mean
+            return (x, y)
+        elif len(xy) == 1:
+            x = xy[0]
+            x = x * self.x_std + self.x_mean
+            return (x, )
 
 # %% ../../nbs/009_data.preprocessing.ipynb 30
 class TSCatEncode(Transform):
