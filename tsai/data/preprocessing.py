@@ -523,7 +523,7 @@ class TSRobustScale(Transform):
 def get_stats_with_uncertainty(o, sel_vars=None, sel_vars_zero_mean_unit_var=False, bs=64, n_trials=None, axis=(0,2)):
     o_dtype = o.dtype
     if n_trials is None: n_trials = len(o) // bs
-    random_idxs = np.random.choice(len(o), n_trials * bs, n_trials * bs > len(o))
+    random_idxs = random_choice(len(o), n_trials * bs, n_trials * bs > len(o))
     oi_mean = []
     oi_std = []
     start = 0

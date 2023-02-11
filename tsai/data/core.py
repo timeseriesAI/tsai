@@ -608,12 +608,12 @@ class NumpyDataLoader(TfmdDL):
             if self.partial_n is not None: idxs = idxs[:n]
             return idxs
         if self.weights is not None:
-            return np.random.choice(self.n, n, p=self.weights)
+            return random_choice(self.n, n, p=self.weights)
         idxs = Inf.count if self.indexed else Inf.nones
         if self.n is not None:
             idxs = np.arange(self.n)
             if self.partial_n is not None:
-                idxs = np.random.choice(idxs, n, False)
+                idxs = random_choice(idxs, n, False)
         if self.shuffle: idxs = self.shuffle_fn(idxs)
         return idxs
 
