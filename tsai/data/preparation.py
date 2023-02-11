@@ -12,7 +12,7 @@ __all__ = ['df2xy', 'split_xy', 'SlidingWindowSplitter', 'SlidingWindowPanelSpli
            'prepare_sel_vars_and_steps', 'apply_sliding_window', 'df2Xy', 'split_Xy', 'df2np3d',
            'add_missing_value_cols', 'add_missing_timestamps', 'time_encoding', 'forward_gaps', 'backward_gaps',
            'nearest_gaps', 'get_gaps', 'add_delta_timestamp_cols', 'SlidingWindow', 'SlidingWindowPanel',
-           'identify_padding', 'basic_data_preparation_fn', 'prepare_forecasting_data']
+           'identify_padding', 'basic_data_preparation_fn', 'check_safe_conversion', 'prepare_forecasting_data']
 
 # %% ../../nbs/004_data.preparation.ipynb 4
 def prepare_idxs(o, shape=None):
@@ -689,6 +689,50 @@ def basic_data_preparation_fn(
     return df[cols]
 
 # %% ../../nbs/004_data.preparation.ipynb 102
+def check_safe_conversion(o, dtype='float32', cols=None):
+    "Checks if the conversion to float is safe"
+    
+    def _check_safe_conversion(o, dtype='float32'):
+
+        if isinstance(o, (Integral, float)):
+            o_min = o_max = o
+        elif isinstance(o, pd.Series):
+            o_min = o.min()
+            o_max = o.max()
+        else:
+            o_min = np.asarray(o).min()
+            o_max = np.asarray(o).max()
+        
+        dtype = np.dtype(dtype)
+        if dtype == 'float16':
+            return -2**11 <= o_min and o_max <= 2**11
+        elif dtype == 'float32':
+            return -2**24 <= o_min and o_max <= 2**24
+        elif dtype == 'float64':
+            return -2**53 <= o_min and o_max <= 2**53
+        elif dtype == 'int8':
+            return np.iinfo(np.int8).min <= o_min and o_max <= np.iinfo(np.int8).max
+        elif dtype == 'int16':
+            return np.iinfo(np.int16).min <= o_min and o_max <= np.iinfo(np.int16).max
+        elif dtype == 'int32':
+            print(np.iinfo(np.int32).min, o_min, o_max, np.iinfo(np.int32).max)
+            return np.iinfo(np.int32).min <= o_min and o_max <= np.iinfo(np.int32).max
+        elif dtype == 'int64':
+            return np.iinfo(np.int64).min <= o_min and o_max <= np.iinfo(np.int64).max
+        else:
+            raise ValueError("Unsupported data type")
+    
+    if isinstance(o, pd.DataFrame):
+        cols = o.columns if cols is None else cols
+        checks = [_check_safe_conversion(o[c], dtype=dtype) for c in cols]
+        if all(checks): return True
+        warnings.warn(f"Unsafe conversion to {dtype}: {dict(zip(cols, checks))}")
+        return False
+    else:
+        return _check_safe_conversion(o, dtype=dtype)
+    
+
+# %% ../../nbs/004_data.preparation.ipynb 104
 def prepare_forecasting_data(
     df:pd.DataFrame, # dataframe containing a sorted time series for a single entity or subject
     fcst_history:int, # # historical steps used as input.
@@ -708,6 +752,10 @@ def prepare_forecasting_data(
     
     x_vars = None if (x_vars is None or feat2list(x_vars) == list(df.columns)) else feat2list(x_vars)
     y_vars = None if (y_vars is None or feat2list(y_vars) == list(df.columns)) else feat2list(y_vars)
+    if dtype is not None:
+        assert check_safe_conversion(df, dtype=dtype, cols=x_vars)
+        if y_vars != x_vars:
+            assert check_safe_conversion(df, dtype=dtype, cols=y_vars)
     if unique_id_cols:
         grouped = df.groupby(unique_id_cols)
         if x_vars is None and y_vars is None:

@@ -4,7 +4,9 @@
 from __future__ import annotations
 from ..imports import *
 import re
+from joblib import dump, load
 import sklearn
+from sklearn.base import BaseEstimator, TransformerMixin
 from fastcore.transform import Transform, ItemTransform, Pipeline
 from fastai.data.transforms import Categorize
 from fastai.data.load import DataLoader
@@ -857,45 +859,61 @@ class TSPosition(Transform):
         return torch.cat([o, steps], 1)
 
 # %% ../../nbs/009_data.preprocessing.ipynb 80
-from sklearn.base import BaseEstimator, TransformerMixin
-from fastai.data.transforms import CategoryMap
-from joblib import dump, load
-
-
 class TSShrinkDataFrame(BaseEstimator, TransformerMixin):
 
     def __init__(self, columns=None, skip=[], obj2cat=True, int2uint=False, verbose=True):
         self.columns, self.skip, self.obj2cat, self.int2uint, self.verbose = listify(columns), skip, obj2cat, int2uint, verbose
         
     def fit(self, X:pd.DataFrame, y=None, **fit_params):
-        assert isinstance(X, pd.DataFrame)
-        self.old_dtypes = X.dtypes            
-        if not self.columns: self.columns = X.columns
-        self.dt = df_shrink_dtypes(X[self.columns], self.skip, obj2cat=self.obj2cat, int2uint=self.int2uint)
+        if isinstance(X, pd.Series): 
+            X = X.to_frame()
+        assert isinstance(X, pd.DataFrame), "X must be a pd.DataFrame or pd.Series"
+        self.old_dtypes = X.dtypes          
+        if self.columns:
+            self.dt = df_shrink_dtypes(X[self.columns], self.skip, obj2cat=self.obj2cat, int2uint=self.int2uint)
+        else:
+            self.dt = df_shrink_dtypes(X, self.skip, obj2cat=self.obj2cat, int2uint=self.int2uint)
         return self
         
     def transform(self, X:pd.DataFrame, y=None, **transform_params):
-        assert isinstance(X, pd.DataFrame)
+        if isinstance(X, pd.Series): 
+            col_name = X.name
+            X = X.to_frame()
+        else:
+            col_name = None
+        assert isinstance(X, pd.DataFrame), "X must be a pd.DataFrame or pd.Series"
         if self.verbose:
-            start_memory = X.memory_usage().sum() / 1024**2
-            print(f"Memory usage of dataframe is {start_memory} MB")
-        X[self.columns] = X[self.columns].astype(self.dt)
+            start_memory = X.memory_usage().sum()
+            print(f"Initial memory usage: {bytes2str(start_memory):10}")
+        if self.columns:
+            X.loc[:, self.columns] = X[self.columns].astype(self.dt)
+        else:
+            X = X.astype(self.dt)
         if self.verbose:
-            end_memory = X.memory_usage().sum() / 1024**2
-            print(f"Memory usage of dataframe after reduction {end_memory} MB")
-            print(f"Reduced by {100 * (start_memory - end_memory) / start_memory} % ")
+            end_memory = X.memory_usage().sum()
+            print(f"Final memory usage  : {bytes2str(end_memory):10}")
+            print(f"Reduced by {(start_memory - end_memory) / start_memory:.1%}")
+        if col_name is not None:
+            X = X[col_name]
         return X
          
     def inverse_transform(self, X):
-        assert isinstance(X, pd.DataFrame)
+        if isinstance(X, pd.Series): 
+            col_name = X.name
+            X = X.to_frame()
+        else:
+            col_name = None
+        assert isinstance(X, pd.DataFrame), "X must be a pd.DataFrame or pd.Series"
         if self.verbose:
-            start_memory = X.memory_usage().sum() / 1024**2
-            print(f"Memory usage of dataframe is {start_memory} MB")
+            start_memory = X.memory_usage().sum()
+            print(f"Memory usage of dataframe is {bytes2str(start_memory):10}")
         X = X.astype(self.old_dtypes)
         if self.verbose:
-            end_memory = X.memory_usage().sum() / 1024**2
-            print(f"Memory usage of dataframe after reduction {end_memory} MB")
-            print(f"Reduced by {100 * (start_memory - end_memory) / start_memory} % ")
+            end_memory = X.memory_usage().sum()
+            print(f"Memory usage of dataframe after reduction {bytes2str(end_memory):10}")
+            print(f"Reduced by {(start_memory - end_memory) / start_memory:.1%}")
+        if col_name is not None:
+            X = X[col_name]
         return X
 
 # %% ../../nbs/009_data.preprocessing.ipynb 82
@@ -933,47 +951,86 @@ class TSOneHotEncoder(BaseEstimator, TransformerMixin):
 
 # %% ../../nbs/009_data.preprocessing.ipynb 84
 class TSCategoricalEncoder(BaseEstimator, TransformerMixin):
-
-    def __init__(self, columns=None, add_na=True, prefix=None, suffix=None, verbose=True):
+    def __init__(self, columns=None, add_na=True, sort=True, inplace=True, prefix=None, suffix=None, drop=False):
         self.columns = listify(columns)
         self.add_na = add_na
         self.prefix = prefix
         self.suffix = suffix
-        self.verbose = verbose
+        self.sort = sort
+        self.inplace = inplace
+        self.drop = drop
+        self.categories = []
+        self.dtypes = []
 
-    def fit(self, X:pd.DataFrame, y=None, **fit_params):
-        assert isinstance(X, pd.DataFrame)
-        if not self.columns: self.columns = X.columns
-        self.cat_tfms = []
+    def fit(self, X, idxs=None):
+        assert isinstance(X, (pd.DataFrame, pd.Series))
+        if not self.columns:
+            if isinstance(X, pd.DataFrame):
+                self.columns = X.columns
+            else:
+                self.columns = X.name
+        if idxs is None:
+            idxs = slice(None)
         for column in self.columns:
-            self.cat_tfms.append(CategoryMap(X[column], add_na=self.add_na))
+            self.dtypes.append(X[column].dtype)
+            categories = X.loc[idxs, column].dropna().unique()
+            if self.sort:
+                categories = np.sort(categories)
+            categories = pd.CategoricalDtype(categories=categories, ordered=True)
+            self.categories.append(categories)
         return self
 
-    def transform(self, X:pd.DataFrame, y=None, **transform_params):
-        assert isinstance(X, pd.DataFrame)
-        for cat_tfm, column in zip(self.cat_tfms, self.columns):
-            new_col = column
-            if self.prefix is not None:
-                new_col = self.prefix + str(new_col)
-            if self.suffix is not None: 
-                new_col = str(new_col) + self.suffix
-            pv(f'encoding {column}...', self.verbose)
-            X[new_col] = cat_tfm.map_objs(X[column])
-            pv(f'...{column} encoded', self.verbose)
-        return X
+    def transform(self, X):
+        assert isinstance(X, (pd.DataFrame, pd.Series))
+        if self.inplace:
+            df = X
+        else:
+            df = X.copy()
+        if isinstance(X, pd.DataFrame):
+            columns = X.columns
+        else:
+            columns = X.name
+        for column, categories in zip(self.columns, self.categories):
+            if column not in columns:
+                continue
+            if isinstance(X, pd.DataFrame):
+                name = []
+                if self.prefix: name += [self.prefix]
+                name += column
+                if self.suffix: name += [self.suffix]
+                new_col = '_'.join(name)
+                if self.drop:
+                    df.loc[:, column] = df.loc[:, column].astype(categories).cat.codes + self.add_na
+                    df.rename(columns={column: new_col}, inplace=True)
+                else:
+                    df.loc[:, new_col] = df.loc[:, column].astype(categories).cat.codes + self.add_na
+            else:
+                df = df.astype(categories).cat.codes + self.add_na
+        return df
 
-    def inverse_transform(self, X:pd.DataFrame):
-        assert isinstance(X, pd.DataFrame)
-        for cat_tfm, column in zip(self.cat_tfms, self.columns):
-            new_col = column
-            if self.prefix is not None:
-                new_col = self.prefix + str(new_col)
-            if self.suffix is not None: 
-                new_col = str(new_col) + self.suffix
-            pv(f'decoding {new_col}...', self.verbose)
-            X[new_col] = cat_tfm.map_ids(X[new_col])
-            pv(f'...{new_col} decoded', self.verbose)
-        return X
+    def inverse_transform(self, X):
+        assert isinstance(X, (pd.DataFrame, pd.Series))
+        if self.inplace:
+            df = X
+        else:
+            df = X.copy()
+        if isinstance(X, pd.DataFrame):
+            columns = X.columns
+        else:
+            columns = X.name
+        for column, categories, dtype in zip(self.columns, self.categories, self.dtypes):
+            if column not in columns:
+                continue
+            if isinstance(X, pd.DataFrame):
+                name = []
+                if self.prefix: name += [self.prefix]
+                name += column
+                if self.suffix: name += [self.suffix]
+                new_col = '_'.join(name)
+                df.loc[:, new_col] = categories.categories[df.loc[:, new_col].astype(dtype=dtype) - self.add_na]
+            else:
+                df = pd.Series(categories.categories[df.astype(dtype=dtype) - self.add_na], name=df.name, index=df.index)
+        return df
 
 # %% ../../nbs/009_data.preprocessing.ipynb 88
 default_date_attr = ['Year', 'Month', 'Week', 'Day', 'Dayofweek', 'Dayofyear', 'Is_month_end', 'Is_month_start', 

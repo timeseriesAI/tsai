@@ -12,6 +12,7 @@ from imblearn.over_sampling import RandomOverSampler
 from matplotlib.patches import Patch
 from matplotlib.colors import LinearSegmentedColormap
 from sklearn.model_selection import train_test_split, KFold, StratifiedKFold
+from fastcore.xtras import is_listy
 from ..utils import *
 
 # %% ../../nbs/003_data.validation.ipynb 4
@@ -26,21 +27,16 @@ def RandomSplitter(valid_pct=0.2, seed=None):
 
 # %% ../../nbs/003_data.validation.ipynb 5
 def check_overlap(a, b, c=None):
-    a = toarray(a)
-    b = toarray(b)
-    overlap_ab = np.isin(a, b)
-    if c is None:
-        if isinstance(overlap_ab[0], (list, L, np.ndarray, torch.Tensor)):  overlap_ab = overlap_ab[0] 
-        if not any(overlap_ab): return False
-        else: return a[overlap_ab].tolist()
-    else:
-        c = toarray(c)
-        overlap_ac = np.isin(a, c)
-        if isinstance(overlap_ac[0], (list, L, np.ndarray, torch.Tensor)):  overlap_ac = overlap_ac[0] 
-        overlap_bc = np.isin(b, c)
-        if isinstance(overlap_bc[0], (list, L, np.ndarray, torch.Tensor)):  overlap_bc = overlap_bc[0] 
-        if not any(overlap_ab) and not any(overlap_ac) and not any(overlap_bc): return False
-        else: return a[overlap_ab].tolist(), a[overlap_ac].tolist(), b[overlap_bc].tolist()
+    "Checks if there's overlap between array-like objects"
+    a = np.asarray(a).flatten()
+    b = np.asarray(b).flatten()
+    c = np.asarray(c).flatten() if c is not None else c
+    ab = np.isin(a, b)
+    ac = np.isin(a, c) if c is not None else np.array([False])
+    bc = np.isin(b, c) if c is not None else np.array([False])
+    if ab.sum() + ac.sum() + bc.sum() == 0: return False
+    if c is None: return L(a[ab].tolist())
+    return L(a[ab].tolist()), L(a[ac].tolist()), L(b[bc].tolist())
 
 def check_splits_overlap(splits):
     return [check_overlap(*_splits) for _splits in splits] if is_listy(splits[0][0]) else check_overlap(*splits)
@@ -463,16 +459,23 @@ def calculate_fcst_stats(
     splits, # splits that will be used to train the model. splits[0] is the train split:
     x_vars=None, # features used as input
     y_vars=None,  # features used as output
+    subset_size=None, # int or float to determne the number of train samples used to calculate the mean and std
 ):
     "Calculates the training stats required in a forecasting task"
     x_vars = list(df.columns) if x_vars is None else feat2list(x_vars)
     y_vars = list(df.columns) if y_vars is None else feat2list(y_vars)
+    split = splits[0] if is_listy(splits[0]) else splits
     if fcst_history == 1:
-        train_idxs = splits[0]
+        train_idxs = split
     else:
-        dtype = smallest_dtype(max(splits[0]) + fcst_history)
-        train_idxs = np.sort(np.unique((np.asarray(splits[0], dtype=dtype).reshape(-1,1) + \
-                                        np.arange(fcst_history, dtype=dtype).reshape(1, -1)).flatten()))
+        
+        if subset_size is None:
+            idxs = split
+        else:
+            subset = int(subset_size) if isinstance(subset_size, Integral) else int(subset_size * len(split))
+            idxs = random_choice(idxs, subset, replace=False)
+        dtype = smallest_dtype(max(split) + fcst_history)
+        train_idxs = np.unique((np.asarray(idxs, dtype=dtype).reshape(-1,1) + np.arange(fcst_history, dtype=dtype).reshape(1, -1)).flatten())
     mean = df.reset_index().loc[train_idxs, x_vars].mean().values.reshape(1, -1, 1)
     std  = df.reset_index().loc[train_idxs, x_vars].std().values.reshape(1, -1, 1)
     if x_vars == y_vars:
@@ -532,6 +535,7 @@ def get_forecasting_splits(
         usable_step_codes = cat.codes.values
     else:
         usable_step_codes = np.arange(len(usable_df_idxs))
+        
 
     # test indices
     if test_cutoff_datetime is not None:
@@ -539,7 +543,11 @@ def get_forecasting_splits(
         test_idxs = usable_np_idxs[usable_step_codes >= test_start]
     elif test_size:
         if test_size < 1:
-            test_size = round(len(usable_step_codes) * test_size)
+            if unique_id_cols is None:
+                n_usable_steps = len(usable_step_codes) - (fcst_horizon - 1) * (int(valid_size > 0) + int(test_size > 0))
+            else:
+                n_usable_steps = len(usable_step_codes)
+            test_size = round(n_usable_steps * test_size)
         test_start = np.sort(usable_step_codes)[- test_size]
         test_idxs = usable_np_idxs[usable_step_codes >= test_start]
     else:
@@ -557,7 +565,11 @@ def get_forecasting_splits(
             valid_idxs = usable_np_idxs[(usable_step_codes >= valid_start)]
     elif valid_size:
         if valid_size < 1:
-            valid_size = round(len(usable_step_codes) * valid_size)
+            if unique_id_cols is None:
+                n_usable_steps = len(usable_step_codes) - (fcst_horizon - 1) * (int(valid_size > 0) + int(test_size > 0))
+            else:
+                n_usable_steps = len(usable_step_codes)
+            valid_size = round(n_usable_steps * valid_size)
         if test_size:
             valid_end = test_start - (fcst_horizon - 1) // stride
             remaining_usable_step_codes = usable_step_codes[usable_step_codes < valid_end]
@@ -583,17 +595,8 @@ def get_forecasting_splits(
     else:
         train_idxs = usable_np_idxs
     train_size = len(train_idxs)
+
     
-#     if datetime_col is not None:
-#         print('train start:', cat.categories[0])
-#         print('train end  :', cat.categories[train_end - 1])
-#         if use_valid:
-#             print('valid start:', cat.categories[valid_start])
-#             print('valid end  :', cat.categories[valid_end - 1])
-#         if use_test:
-#             print('test start :', cat.categories[test_start])
-#             print('test end   :', cat.categories[-1])
-        
     if len(df) < 1_000_000:
         train_idxs = L(train_idxs.tolist())
         if len(valid_idxs):
