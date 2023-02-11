@@ -255,7 +255,7 @@ def get_splits(o, n_splits:int=1, valid_size:float=0.2, test_size:float=0., trai
                     n_train_samples = train_size  
                 elif train_size > 0 and train_size < 1: 
                     n_train_samples = int(len(splits[i][0]) * train_size)
-                splits[i][0] = L(np.random.choice(splits[i][0], n_train_samples, False).tolist())
+                splits[i][0] = L(random_choice(splits[i][0], n_train_samples, False).tolist())
                 if train_only:
                     if valid_size != 0: splits[i][1] = splits[i][0]
                     if test_size != 0: splits[i][2] = splits[i][0]
@@ -267,7 +267,7 @@ def get_splits(o, n_splits:int=1, valid_size:float=0.2, test_size:float=0., trai
                 n_train_samples = train_size  
             elif train_size > 0 and train_size < 1: 
                 n_train_samples = int(len(splits[0]) * train_size)
-            splits[0] = L(np.random.choice(splits[0], n_train_samples, False).tolist())
+            splits[0] = L(random_choice(splits[0], n_train_samples, False).tolist())
             if train_only:
                 if valid_size != 0: splits[1] = splits[0]
                 if test_size != 0: splits[2] = splits[0]

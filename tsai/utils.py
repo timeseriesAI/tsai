@@ -2,10 +2,10 @@
 
 # %% auto 0
 __all__ = ['bytes2size', 'memmap2cache', 'cache_memmap', 'a', 'b', 'np_save', 'create_empty_array', 'alphabet', 'ALPHABET',
-           'is_nparray', 'is_tensor', 'is_zarr', 'is_dask', 'is_memmap', 'is_slice', 'totensor', 'toarray', 'toL',
-           'to3dtensor', 'to2dtensor', 'to1dtensor', 'to3darray', 'to2darray', 'to1darray', 'to3d', 'to2d', 'to1d',
-           'to2dPlus', 'to3dPlus', 'to2dPlusTensor', 'to2dPlusArray', 'to3dPlusTensor', 'to3dPlusArray', 'todtype',
-           'bytes2str', 'get_size', 'get_dir_size', 'get_file_size', 'is_np_view', 'is_file', 'is_dir',
+           'random_choice', 'is_nparray', 'is_tensor', 'is_zarr', 'is_dask', 'is_memmap', 'is_slice', 'totensor',
+           'toarray', 'toL', 'to3dtensor', 'to2dtensor', 'to1dtensor', 'to3darray', 'to2darray', 'to1darray', 'to3d',
+           'to2d', 'to1d', 'to2dPlus', 'to3dPlus', 'to2dPlusTensor', 'to2dPlusArray', 'to3dPlusTensor', 'to3dPlusArray',
+           'todtype', 'bytes2str', 'get_size', 'get_dir_size', 'get_file_size', 'is_np_view', 'is_file', 'is_dir',
            'delete_all_in_dir', 'reverse_dict', 'is_tuple', 'itemify', 'isnone', 'exists', 'ifelse', 'is_not_close',
            'test_not_close', 'test_type', 'test_ok', 'test_not_ok', 'test_error', 'test_eq_nan', 'assert_fn', 'test_gt',
            'test_ge', 'test_lt', 'test_le', 'stack', 'stack_pad', 'pad_sequences', 'match_seq_len', 'random_shuffle',
@@ -28,12 +28,25 @@ __all__ = ['bytes2size', 'memmap2cache', 'cache_memmap', 'a', 'b', 'np_save', 'c
 
 # %% ../nbs/002_utils.ipynb 3
 from .imports import *
+from numpy.random import default_rng
 from scipy.stats import ttest_ind, ks_2samp, pearsonr, spearmanr, normaltest, linregress
 import joblib
 import string
 warnings.filterwarnings("ignore", category=FutureWarning)
 
 # %% ../nbs/002_utils.ipynb 4
+def random_choice(a, size=None, replace=True, p=None):
+    "Same as np.random.choice but with a default random generator which is faster"
+    if p is not None:
+        return np.random.choice(a, size=size, replace=replace, p=p)
+    
+    rng = default_rng()
+    if not isinstance(a, int):
+        a = np.asarray(a)
+        return a[rng.choice(len(a), size=size, replace=replace)]
+    return rng.choice(a, size=size, replace=replace)
+
+# %% ../nbs/002_utils.ipynb 6
 def is_nparray(o): return isinstance(o, np.ndarray)
 def is_tensor(o): return isinstance(o, torch.Tensor)
 def is_zarr(o): return hasattr(o, 'oindex')
@@ -41,7 +54,7 @@ def is_dask(o): return hasattr(o, 'compute')
 def is_memmap(o): return isinstance(o, np.memmap)
 def is_slice(o): return isinstance(o, slice)
 
-# %% ../nbs/002_utils.ipynb 6
+# %% ../nbs/002_utils.ipynb 8
 def totensor(o):
     if isinstance(o, torch.Tensor): return o
     elif isinstance(o, np.ndarray):  return torch.from_numpy(o)
@@ -170,7 +183,7 @@ def todtype(dtype):
         return o
     return _to_type
 
-# %% ../nbs/002_utils.ipynb 9
+# %% ../nbs/002_utils.ipynb 11
 def bytes2str(
     size_bytes : int, # Number of bytes 
     decimals=2 # Number of decimals in the output
@@ -240,20 +253,20 @@ def get_file_size(
         return bytes2str(fsize, decimals=decimals)
     return fsize
 
-# %% ../nbs/002_utils.ipynb 11
+# %% ../nbs/002_utils.ipynb 13
 def is_np_view(
     o# a numpy array
 ):
     return hasattr(o, "base") and o.base is not None
 
-# %% ../nbs/002_utils.ipynb 13
+# %% ../nbs/002_utils.ipynb 15
 def is_file(path):
     return os.path.isfile(path)
 
 def is_dir(path):
     return os.path.isdir(path)
 
-# %% ../nbs/002_utils.ipynb 15
+# %% ../nbs/002_utils.ipynb 17
 def delete_all_in_dir(tgt_dir, exception=None):
     import shutil
     if exception is not None and len(L(exception)) > 1: exception = tuple(exception)
@@ -263,21 +276,21 @@ def delete_all_in_dir(tgt_dir, exception=None):
         if os.path.isfile(file_path) or os.path.islink(file_path): os.unlink(file_path)
         elif os.path.isdir(file_path): shutil.rmtree(file_path)
 
-# %% ../nbs/002_utils.ipynb 16
+# %% ../nbs/002_utils.ipynb 18
 def reverse_dict(dictionary): 
     return {v: k for k, v in dictionary.items()}
 
-# %% ../nbs/002_utils.ipynb 17
+# %% ../nbs/002_utils.ipynb 19
 def is_tuple(o): return isinstance(o, tuple)
 
-# %% ../nbs/002_utils.ipynb 18
+# %% ../nbs/002_utils.ipynb 20
 def itemify(*o, tup_id=None): 
     o = [o_ for o_ in L(*o) if o_ is not None]
     items = L(o).zip()
     if tup_id is not None: return L([item[tup_id] for item in items])
     else: return items
 
-# %% ../nbs/002_utils.ipynb 20
+# %% ../nbs/002_utils.ipynb 22
 def isnone(o):
     return o is None
 
@@ -287,7 +300,7 @@ def ifelse(a, b, c):
     "`b` if `a` is True else `c`"
     return b if a else c
 
-# %% ../nbs/002_utils.ipynb 22
+# %% ../nbs/002_utils.ipynb 24
 def is_not_close(a, b, eps=1e-5):
     "Is `a` within `eps` of `b`"
     if hasattr(a, '__array__') or hasattr(b, '__array__'):
@@ -335,11 +348,11 @@ def test_eq_nan(a,b):
     mask_b = torch.isnan(b) if isinstance(b, torch.Tensor) else np.isnan(b)
     test(a[~mask_a],b[~mask_b],equals, '==')
 
-# %% ../nbs/002_utils.ipynb 23
+# %% ../nbs/002_utils.ipynb 25
 def assert_fn(*args, **kwargs): assert False, 'assertion test'
 test_error('assertion test', assert_fn, 35, a=3)
 
-# %% ../nbs/002_utils.ipynb 24
+# %% ../nbs/002_utils.ipynb 26
 def test_gt(a,b):
     "`test` that `a>b`"
     test(a,b,gt,'>')
@@ -356,7 +369,7 @@ def test_le(a,b):
     "`test` that `a>b`"
     test(a,b,le,'<=')
 
-# %% ../nbs/002_utils.ipynb 27
+# %% ../nbs/002_utils.ipynb 29
 def stack(o, axis=0, retain=True):
     if hasattr(o, '__array__'): return o
     if isinstance(o[0], torch.Tensor):
@@ -387,7 +400,7 @@ def stack_pad(o, padding_value=np.nan):
             result = result.reshape(*o_shape, row_length)
     return result
 
-# %% ../nbs/002_utils.ipynb 31
+# %% ../nbs/002_utils.ipynb 33
 def pad_sequences(
     o, # Iterable object
     maxlen:int=None, # Optional max length of the output. If None, max length of the longest individual sequence.
@@ -417,19 +430,19 @@ def pad_sequences(
             result[i, :, :values.shape[-1]] = values        
     return result
 
-# %% ../nbs/002_utils.ipynb 40
+# %% ../nbs/002_utils.ipynb 42
 def match_seq_len(*arrays):
     max_len = stack([x.shape[-1] for x in arrays]).max()
     return [np.pad(x, pad_width=((0,0), (0,0), (max_len - x.shape[-1], 0)), mode='constant', constant_values=0) for x in arrays]
 
-# %% ../nbs/002_utils.ipynb 42
+# %% ../nbs/002_utils.ipynb 44
 def random_shuffle(o, random_state=None):
     import sklearn
     res = sklearn.utils.shuffle(o, random_state=random_state)
     if isinstance(o, L): return L(list(res))
     return res
 
-# %% ../nbs/002_utils.ipynb 44
+# %% ../nbs/002_utils.ipynb 46
 def cat2int(o):
     from fastai.data.transforms import Categorize
     from fastai.data.core import TfmdLists
@@ -437,7 +450,7 @@ def cat2int(o):
     cat.setup(o)
     return stack(TfmdLists(o, cat)[:])
 
-# %% ../nbs/002_utils.ipynb 47
+# %% ../nbs/002_utils.ipynb 49
 def cycle_dl(dl, show_progress_bar=True):
     try:
         if show_progress_bar:
@@ -468,7 +481,7 @@ def cycle_dl_estimate(dl, iters=10):
     t = timer.stop()
     return (t/iters * len(dl)).total_seconds()
 
-# %% ../nbs/002_utils.ipynb 48
+# %% ../nbs/002_utils.ipynb 50
 def cache_data(o, slice_len=10_000, verbose=False):
     start = 0
     n_loops = (len(o) - 1) // slice_len + 1
@@ -483,28 +496,28 @@ def cache_data(o, slice_len=10_000, verbose=False):
 memmap2cache =  cache_data
 cache_memmap = cache_data
 
-# %% ../nbs/002_utils.ipynb 49
+# %% ../nbs/002_utils.ipynb 51
 def get_func_defaults(f): 
     import inspect
     fa = inspect.getfullargspec(f)
     if fa.defaults is None: return dict(zip(fa.args, [''] * (len(fa.args))))
     else: return dict(zip(fa.args, [''] * (len(fa.args) - len(fa.defaults)) + list(fa.defaults)))
 
-# %% ../nbs/002_utils.ipynb 50
+# %% ../nbs/002_utils.ipynb 52
 def get_idx_from_df_col_vals(df, col, val_list):
     return [df[df[col] == val].index[0] for val in val_list]
 
-# %% ../nbs/002_utils.ipynb 51
+# %% ../nbs/002_utils.ipynb 53
 def get_sublist_idxs(aList, bList):
     "Get idxs that when applied to aList will return bList. aList must contain all values in bList"
     sorted_aList = aList[np.argsort(aList)]
     return np.argsort(aList)[np.searchsorted(sorted_aList, bList)]
 
-# %% ../nbs/002_utils.ipynb 53
+# %% ../nbs/002_utils.ipynb 55
 def flatten_list(l):
     return [item for sublist in l for item in sublist]
 
-# %% ../nbs/002_utils.ipynb 54
+# %% ../nbs/002_utils.ipynb 56
 def display_pd_df(df, max_rows:Union[bool, int]=False, max_columns:Union[bool, int]=False):
     if max_rows:
         old_max_rows = pd.get_option('display.max_rows')
@@ -518,7 +531,7 @@ def display_pd_df(df, max_rows:Union[bool, int]=False, max_columns:Union[bool, i
     if max_rows: pd.set_option('display.max_rows', old_max_rows)
     if max_columns: pd.set_option('display.max_columns', old_max_columns)
 
-# %% ../nbs/002_utils.ipynb 56
+# %% ../nbs/002_utils.ipynb 58
 def ttest(data1, data2, equal_var=False):
     "Calculates t-statistic and p-value based on 2 sample distributions"
     t_stat, p_value = ttest_ind(data1, data2, equal_var=equal_var)
@@ -552,7 +565,7 @@ def tscore(o):
     if o.std() == 0: return 0
     else: return np.sqrt(len(o)) * o.mean() / o.std()
 
-# %% ../nbs/002_utils.ipynb 62
+# %% ../nbs/002_utils.ipynb 64
 def pcc(a, b):
     return pearsonr(a, b)[0]
 
@@ -563,7 +576,7 @@ a = np.random.normal(0.5, 1, 100)
 b = np.random.normal(0.15, .5, 100)
 pcc(a, b), scc(a, b)
 
-# %% ../nbs/002_utils.ipynb 63
+# %% ../nbs/002_utils.ipynb 65
 def remove_fn(fn, verbose=False):
     "Removes a file (fn) if exists"
     try: 
@@ -573,7 +586,7 @@ def remove_fn(fn, verbose=False):
         pv(f'{fn} does not exist', verbose)
         pass
 
-# %% ../nbs/002_utils.ipynb 64
+# %% ../nbs/002_utils.ipynb 66
 def npsave(array_fn, array, verbose=True):
     remove_fn(array_fn, verbose)
     pv(f'saving {array_fn}...', verbose)
@@ -582,14 +595,14 @@ def npsave(array_fn, array, verbose=True):
     
 np_save = npsave
 
-# %% ../nbs/002_utils.ipynb 66
+# %% ../nbs/002_utils.ipynb 68
 def permute_2D(array, axis=None):
     "Permute rows or columns in an array. This can be used, for example, in feature permutation"
     if axis == 0: return array[np.random.randn(*array.shape).argsort(axis=0), np.arange(array.shape[-1])[None, :]] 
     elif axis == 1 or axis == -1: return array[np.arange(len(array))[:,None], np.random.randn(*array.shape).argsort(axis=1)] 
     return array[np.random.randn(*array.shape).argsort(axis=0), np.random.randn(*array.shape).argsort(axis=1)] 
 
-# %% ../nbs/002_utils.ipynb 68
+# %% ../nbs/002_utils.ipynb 70
 def random_normal():
     "Returns a number between -1 and 1 with a normal distribution"
     while True:
@@ -612,7 +625,7 @@ def random_half_normal_tensor(shape=1, device=None):
     "Returns a tensor of a predefined shape between 0 and 1 with a half-normal distribution"
     return abs(torch.empty(shape, device=device).normal_(mean=0, std=1/3)).clamp_(0, 1)
 
-# %% ../nbs/002_utils.ipynb 69
+# %% ../nbs/002_utils.ipynb 71
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 
 def default_dpi():
@@ -638,7 +651,7 @@ def fig2buf(fig):
     fig.canvas.draw()
     return np.asarray(canvas.buffer_rgba())[..., :3]
 
-# %% ../nbs/002_utils.ipynb 71
+# %% ../nbs/002_utils.ipynb 73
 def plot_scatter(x, y, deg=1):
     linreg = linregress(x, y)
     plt.scatter(x, y, label=f'R2:{linreg.rvalue:.2f}', color='lime', edgecolor='black', alpha=.5)
@@ -646,17 +659,17 @@ def plot_scatter(x, y, deg=1):
     plt.legend(loc='best')
     plt.show()
 
-# %% ../nbs/002_utils.ipynb 73
+# %% ../nbs/002_utils.ipynb 75
 def get_idxs(o, aList): return array([o.tolist().index(v) for v in aList])
 
-# %% ../nbs/002_utils.ipynb 75
+# %% ../nbs/002_utils.ipynb 77
 def apply_cmap(o, cmap):
     o = toarray(o)
     out = plt.get_cmap(cmap)(o)[..., :3]
     out = tensor(out).squeeze(1)
     return out.permute(0, 3, 1, 2)
 
-# %% ../nbs/002_utils.ipynb 77
+# %% ../nbs/002_utils.ipynb 79
 def torch_tile(a, n_tile, dim=0):
     if ismin_torch("1.10") and dim == 0:
         if isinstance(n_tile, tuple): 
@@ -669,7 +682,7 @@ def torch_tile(a, n_tile, dim=0):
     order_index = torch.cat([init_dim * torch.arange(n_tile) + i for i in range(init_dim)]).to(device=a.device)
     return torch.index_select(a, dim, order_index)
 
-# %% ../nbs/002_utils.ipynb 79
+# %% ../nbs/002_utils.ipynb 81
 def to_tsfresh_df(ts):
     r"""Prepares a time series (Tensor/ np.ndarray) to be used as a tsfresh dataset to allow feature extraction"""
     ts = to3d(ts)
@@ -687,7 +700,7 @@ def to_tsfresh_df(ts):
     df.reset_index(drop=True, inplace=True)
     return df
 
-# %% ../nbs/002_utils.ipynb 81
+# %% ../nbs/002_utils.ipynb 83
 def pcorr(a, b): 
     return pearsonr(a, b)
 
@@ -695,7 +708,7 @@ def scorr(a, b):
     corr = spearmanr(a, b)
     return corr[0], corr[1]
 
-# %% ../nbs/002_utils.ipynb 82
+# %% ../nbs/002_utils.ipynb 84
 def torch_diff(t, lag=1, pad=True, append=0):
     import torch.nn.functional as F
     diff = t[..., lag:] - t[..., :-lag]
@@ -704,7 +717,7 @@ def torch_diff(t, lag=1, pad=True, append=0):
     else: 
         return diff
 
-# %% ../nbs/002_utils.ipynb 84
+# %% ../nbs/002_utils.ipynb 86
 def get_outliers_IQR(o, axis=None, quantile_range=(25.0, 75.0)):
     if isinstance(o, torch.Tensor):
         Q1 = torch.nanquantile(o, quantile_range[0]/100, axis=axis, keepdims=axis is not None)
@@ -734,7 +747,7 @@ def torch_clamp(o, min=None, max=None):
     if max is not None: o = torch.min(o, max)
     return o
 
-# %% ../nbs/002_utils.ipynb 86
+# %% ../nbs/002_utils.ipynb 88
 def get_robustscale_params(o, sel_vars=None, not_sel_vars=None, by_var=True, percentiles=(25, 75), eps=1e-6):
     "Calculates median and inter-quartile range required to robust scaler inputs"
     assert o.ndim == 3
@@ -762,14 +775,14 @@ def get_robustscale_params(o, sel_vars=None, not_sel_vars=None, by_var=True, per
     return median, IQR
 
 
-# %% ../nbs/002_utils.ipynb 88
+# %% ../nbs/002_utils.ipynb 90
 def torch_slice_by_dim(t, index, dim=-1, **kwargs):
     if not isinstance(index, torch.Tensor): index = torch.Tensor(index)
     assert t.ndim == index.ndim, "t and index must have the same ndim"
     index = index.long()
     return torch.gather(t, dim, index, **kwargs)
 
-# %% ../nbs/002_utils.ipynb 90
+# %% ../nbs/002_utils.ipynb 92
 def torch_nanmean(o, dim=None, keepdim=False):
     """There's currently no torch.nanmean function"""
     mask = torch.isnan(o)
@@ -793,7 +806,7 @@ def torch_nanstd(o, dim=None, keepdim=False):
     else:
         return torch.std(o, dim=dim, keepdim=keepdim) if dim is not None else torch.std(o)
 
-# %% ../nbs/002_utils.ipynb 92
+# %% ../nbs/002_utils.ipynb 94
 def concat(*ls, dim=0):
     "Concatenate tensors, arrays, lists, or tuples by a dimension"
     if not len(ls): return []
@@ -804,7 +817,7 @@ def concat(*ls, dim=0):
         res = np.concatenate(ls, axis=dim).tolist()
         return retain_type(res, typ=type(it))
 
-# %% ../nbs/002_utils.ipynb 93
+# %% ../nbs/002_utils.ipynb 95
 def reduce_memory_usage(df):
     
     start_memory = df.memory_usage().sum() / 1024**2
@@ -842,10 +855,10 @@ def reduce_memory_usage(df):
     print(f"Reduced by {100 * (start_memory - end_memory) / start_memory} % ")
     return df
 
-# %% ../nbs/002_utils.ipynb 94
+# %% ../nbs/002_utils.ipynb 96
 def cls_name(o): return o.__class__.__name__
 
-# %% ../nbs/002_utils.ipynb 96
+# %% ../nbs/002_utils.ipynb 98
 def roll2d(o, roll1: Union[None, list, int] = None, roll2: Union[None, list, int] = None):
     """Rolls a 2D object on the indicated axis
     This solution is based on https://stackoverflow.com/questions/20360675/roll-rows-of-a-matrix-independently
@@ -889,9 +902,9 @@ def random_roll2d(o, axis=(), replace=False):
     assert o.ndim == 2, "roll2D can only be applied to 2d objects"
     axis1, axis2 = np.ogrid[:o.shape[0], :o.shape[1]]
     if 0 in axis:
-        axis1 = np.random.choice(np.arange(o.shape[0]), o.shape[0], replace).reshape(-1, 1)
+        axis1 = random_choice(np.arange(o.shape[0]), o.shape[0], replace).reshape(-1, 1)
     if 1 in axis:
-        axis2 = np.random.choice(np.arange(o.shape[1]), o.shape[1], replace).reshape(1, -1)
+        axis2 = random_choice(np.arange(o.shape[1]), o.shape[1], replace).reshape(1, -1)
     return o[axis1, axis2]
 
 
@@ -903,11 +916,11 @@ def random_roll3d(o, axis=(), replace=False):
     assert o.ndim == 3, "random_roll3d can only be applied to 3d objects"
     axis1, axis2, axis3 = np.ogrid[:o.shape[0], :o.shape[1], :o.shape[2]]
     if 0 in axis:
-        axis1 = np.random.choice(np.arange(o.shape[0]), o.shape[0], replace).reshape(-1, 1, 1)
+        axis1 = random_choice(np.arange(o.shape[0]), o.shape[0], replace).reshape(-1, 1, 1)
     if 1 in axis:
-        axis2 = np.random.choice(np.arange(o.shape[1]), o.shape[1], replace).reshape(1, -1, 1)
+        axis2 = random_choice(np.arange(o.shape[1]), o.shape[1], replace).reshape(1, -1, 1)
     if 2 in axis:
-        axis3 = np.random.choice(np.arange(o.shape[2]), o.shape[2], replace).reshape(1, 1, -1)
+        axis3 = random_choice(np.arange(o.shape[2]), o.shape[2], replace).reshape(1, 1, -1)
     return o[axis1, axis2, axis3]
 
 def rotate_axis0(o, steps=1):
@@ -919,7 +932,7 @@ def rotate_axis1(o, steps=1):
 def rotate_axis2(o, steps=1):
     return o[:, :, np.arange(o.shape[2]) - steps]
 
-# %% ../nbs/002_utils.ipynb 101
+# %% ../nbs/002_utils.ipynb 103
 def chunks_calculator(shape, dtype='float32', n_bytes=1024**3):
     """Function to calculate chunks for a given size of n_bytes (default = 1024**3 == 1GB). 
     It guarantees > 50% of the chunk will be filled"""
@@ -934,13 +947,13 @@ def chunks_calculator(shape, dtype='float32', n_bytes=1024**3):
         n += np.ceil(remainder / n_chunks).astype(int)
     return (n, -1, -1)
 
-# %% ../nbs/002_utils.ipynb 103
+# %% ../nbs/002_utils.ipynb 105
 def is_memory_shared(a, b):
     "Check if 2 array-like objects share memory"
     assert is_array(a) and is_array(b)
     return np.shares_memory(a, b)
 
-# %% ../nbs/002_utils.ipynb 105
+# %% ../nbs/002_utils.ipynb 107
 def assign_in_chunks(a, b, chunksize='auto', inplace=True, verbose=True):
     """Assigns values in b to an array-like object a using chunks to avoid memory overload.
     The resulting a retains it's dtype and share it's memory.
@@ -971,7 +984,7 @@ def assign_in_chunks(a, b, chunksize='auto', inplace=True, verbose=True):
                     a[start:end] = b[start:end]
     if not inplace: return a
 
-# %% ../nbs/002_utils.ipynb 108
+# %% ../nbs/002_utils.ipynb 110
 def create_array(shape, fname=None, path='./data', on_disk=True, dtype='float32', mode='r+', fill_value='rand', chunksize='auto', verbose=True, **kwargs):
     """
     mode:
@@ -1006,7 +1019,7 @@ def create_array(shape, fname=None, path='./data', on_disk=True, dtype='float32'
 
 create_empty_array = partial(create_array, fill_value=0)
 
-# %% ../nbs/002_utils.ipynb 111
+# %% ../nbs/002_utils.ipynb 113
 import gzip
 
 def np_save_compressed(arr, fname=None, path='./data', verbose=False, **kwargs):
@@ -1030,7 +1043,7 @@ def np_load_compressed(fname=None, path='./data', **kwargs):
     f.close()
     return arr
 
-# %% ../nbs/002_utils.ipynb 113
+# %% ../nbs/002_utils.ipynb 115
 def np2memmap(arr, fname=None, path='./data', dtype='float32', mode='c', **kwargs):
     """ Function that turns an ndarray into a memmap ndarray
     mode:
@@ -1049,7 +1062,7 @@ def np2memmap(arr, fname=None, path='./data', dtype='float32', mode='c', **kwarg
     arr = np.load(filename, mmap_mode=mode)
     return arr
 
-# %% ../nbs/002_utils.ipynb 115
+# %% ../nbs/002_utils.ipynb 117
 def torch_mean_groupby(o, idxs):
     """Computes torch mean along axis 0 grouped by the idxs. 
     Need to ensure that idxs have the same order as o"""
@@ -1059,14 +1072,14 @@ def torch_mean_groupby(o, idxs):
     vs = torch.split_with_sizes(o, tuple(vals))
     return torch.cat([v.mean(0).unsqueeze(0) for k,v in zip(idxs, vs)])
 
-# %% ../nbs/002_utils.ipynb 117
+# %% ../nbs/002_utils.ipynb 119
 def torch_flip(t, dims=-1):
     if dims == -1: return t[..., np.arange(t.shape[dims])[::-1].copy()]
     elif dims == 0: return t[np.arange(t.shape[dims])[::-1].copy()]
     elif dims == 1: return t[:, np.arange(t.shape[dims])[::-1].copy()]
     elif dims == 2: return t[:, :, np.arange(t.shape[dims])[::-1].copy()]
 
-# %% ../nbs/002_utils.ipynb 119
+# %% ../nbs/002_utils.ipynb 121
 def torch_nan_to_num(o, num=0, inplace=False):
     if ismin_torch("1.8") and not inplace: 
         return torch.nan_to_num(o, num)
@@ -1079,11 +1092,11 @@ def torch_masked_to_num(o, mask, num=0, inplace=False):
     else: 
         return o.masked_fill(mask, num)
 
-# %% ../nbs/002_utils.ipynb 123
+# %% ../nbs/002_utils.ipynb 125
 def mpl_trend(x, y, deg=1): 
     return np.poly1d(np.polyfit(x, y, deg))(x)
 
-# %% ../nbs/002_utils.ipynb 125
+# %% ../nbs/002_utils.ipynb 127
 def int2digits(o, n_digits=None, normalize=True):
     if n_digits is not None:
         iterable = '0' * (n_digits - len(str(abs(o)))) + str(abs(o))
@@ -1102,7 +1115,7 @@ def array2digits(o, n_digits=None, normalize=True):
         output = output / 10
     return output
 
-# %% ../nbs/002_utils.ipynb 127
+# %% ../nbs/002_utils.ipynb 129
 def sincos_encoding(seq_len, device=None, to_np=False):
     if to_np:
         sin = np.sin(np.arange(seq_len) / seq_len * 2 * np.pi)
@@ -1113,7 +1126,7 @@ def sincos_encoding(seq_len, device=None, to_np=False):
         cos = torch.cos(torch.arange(seq_len, device=device) / seq_len * 2 * np.pi)
     return sin, cos
 
-# %% ../nbs/002_utils.ipynb 129
+# %% ../nbs/002_utils.ipynb 131
 def linear_encoding(seq_len, device=None, to_np=False, lin_range=(-1,1)):
     if to_np:
         enc =  np.linspace(lin_range[0], lin_range[1], seq_len)
@@ -1122,7 +1135,7 @@ def linear_encoding(seq_len, device=None, to_np=False, lin_range=(-1,1)):
         enc = torch.linspace(lin_range[0], lin_range[1], seq_len, device=device)
     return enc
 
-# %% ../nbs/002_utils.ipynb 131
+# %% ../nbs/002_utils.ipynb 133
 def encode_positions(pos_arr, min_val=None, max_val=None, linear=False, lin_range=(-1,1)):
     """ Encodes an array with positions using a linear or sincos methods
     """
@@ -1139,17 +1152,17 @@ def encode_positions(pos_arr, min_val=None, max_val=None, linear=False, lin_rang
         cos = np.cos((pos_arr - min_val)/(max_val - min_val) * 2 * np.pi)
         return sin, cos
 
-# %% ../nbs/002_utils.ipynb 134
+# %% ../nbs/002_utils.ipynb 136
 def sort_generator(generator, bs):
     g = list(generator)
     for i in range(len(g)//bs + 1): g[bs*i:bs*(i+1)] = np.sort(g[bs*i:bs*(i+1)])
     return (i for i in g)
 
-# %% ../nbs/002_utils.ipynb 136
+# %% ../nbs/002_utils.ipynb 138
 def get_subset_dict(d, keys):
     return dict((k,d[k]) for k in listify(keys) if k in d)
 
-# %% ../nbs/002_utils.ipynb 138
+# %% ../nbs/002_utils.ipynb 140
 def create_dir(directory, verbose=True): 
     if not is_listy(directory): directory = [directory]
     for d in directory:
@@ -1175,7 +1188,7 @@ def remove_dir(directory, verbose=True):
             assert not d.exists(), f"a problem has occurred while deleting {d}"
             if verbose: print(f"{d} directory removed.")
 
-# %% ../nbs/002_utils.ipynb 143
+# %% ../nbs/002_utils.ipynb 145
 class named_partial(object):
     """Create a partial function with a __name__"""
     
@@ -1187,14 +1200,14 @@ class named_partial(object):
     def __repr__(self):
         return self.__name__
 
-# %% ../nbs/002_utils.ipynb 145
+# %% ../nbs/002_utils.ipynb 147
 def yaml2dict(fname):
     import yaml
     with maybe_open(fname, 'r') as f:
         dictionary = yaml.safe_load(f)
     return AttrDict(dictionary)
 
-# %% ../nbs/002_utils.ipynb 148
+# %% ../nbs/002_utils.ipynb 150
 def str2list(o):
     if o is None: return []
     elif o is not None and not isinstance(o, (list, L)):
@@ -1216,11 +1229,11 @@ def get_cat_cols(df):
     cont_cols = df._get_numeric_data().columns.tolist()
     return [col for col in cols if col not in cont_cols]
 
-# %% ../nbs/002_utils.ipynb 149
+# %% ../nbs/002_utils.ipynb 151
 alphabet = L(list(string.ascii_lowercase))
 ALPHABET = L(list(string.ascii_uppercase))
 
-# %% ../nbs/002_utils.ipynb 150
+# %% ../nbs/002_utils.ipynb 152
 def get_mapping(arr, dim=1, return_counts=False):
     maps = [L(np.unique(np.take(arr, i, dim)).tolist()) for i in range(arr.shape[dim])]
     if return_counts:
@@ -1233,7 +1246,7 @@ def map_array(arr, dim=1):
     if dim == 1: out = out.T
     return out
 
-# %% ../nbs/002_utils.ipynb 153
+# %% ../nbs/002_utils.ipynb 155
 def log_tfm(o, inplace=False):
     "Log transforms an array-like object with positive and/or negative values"
     if isinstance(o, torch.Tensor):
@@ -1253,13 +1266,13 @@ def log_tfm(o, inplace=False):
         output[output < 0] = neg_o
         return output
 
-# %% ../nbs/002_utils.ipynb 156
+# %% ../nbs/002_utils.ipynb 158
 def to_sincos_time(arr, max_value):
     sin = np.sin(arr / max_value * 2 * np.pi)
     cos = np.cos(arr / max_value * 2 * np.pi)
     return sin, cos
 
-# %% ../nbs/002_utils.ipynb 158
+# %% ../nbs/002_utils.ipynb 160
 def plot_feature_dist(X, percentiles=[0,0.1,0.5,1,5,10,25,50,75,90,95,99,99.5,99.9,100]):
     for i in range(X.shape[1]):
         ys = []
@@ -1271,7 +1284,7 @@ def plot_feature_dist(X, percentiles=[0,0.1,0.5,1,5,10,25,50,75,90,95,99,99.5,99
         plt.title(f"var_{i}")
         plt.show()
 
-# %% ../nbs/002_utils.ipynb 160
+# %% ../nbs/002_utils.ipynb 162
 def rolling_moving_average(o, window=2):
     if isinstance(o, torch.Tensor):
         cunsum = torch.cumsum(o, axis=-1) # nancumsum not available (can't be used with missing data!)
@@ -1284,7 +1297,7 @@ def rolling_moving_average(o, window=2):
         count = np.minimum(np.ones_like(o).cumsum(-1), window)
         return (cunsum - lag_cunsum) / count
 
-# %% ../nbs/002_utils.ipynb 162
+# %% ../nbs/002_utils.ipynb 164
 def ffill_sequence(o):
     """Forward fills an array-like object alongside sequence dimension"""
     if isinstance(o, torch.Tensor):
@@ -1315,7 +1328,7 @@ def fbfill_sequence(o):
     o = bfill_sequence(o)
     return o
 
-# %% ../nbs/002_utils.ipynb 167
+# %% ../nbs/002_utils.ipynb 169
 def dummify(o:Union[np.ndarray, torch.Tensor], by_var:bool=True, inplace:bool=False, skip:Optional[list]=None, random_state=None):
     """Shuffles an array-like object along all dimensions or dimension 1 (variables) if by_var is True."""
     if not inplace: 
@@ -1331,7 +1344,7 @@ def dummify(o:Union[np.ndarray, torch.Tensor], by_var:bool=True, inplace:bool=Fa
     if not inplace: 
         return o_dummy
 
-# %% ../nbs/002_utils.ipynb 170
+# %% ../nbs/002_utils.ipynb 172
 def shuffle_along_axis(o, axis=-1, random_state=None):
     if isinstance(o, torch.Tensor): size = o.numel()
     else: size = np.size(o)
@@ -1340,7 +1353,7 @@ def shuffle_along_axis(o, axis=-1, random_state=None):
         o = np.take_along_axis(o, idx, axis=ax)
     return o
 
-# %% ../nbs/002_utils.ipynb 172
+# %% ../nbs/002_utils.ipynb 174
 def analyze_feature(feature, bins=100, density=False, feature_name=None, clip_outliers_plot=False, quantile_range=(25.0, 75.0), 
            percentiles=[1, 25, 50, 75, 99], text_len=12, figsize=(10,6)):
     non_nan_feature = feature[~np.isnan(feature)]
@@ -1381,7 +1394,7 @@ def analyze_array(o, bins=100, density=False, feature_names=None, clip_outliers_
     else:
         analyze_feature(o.flatten(), feature_name=feature_names)        
 
-# %% ../nbs/002_utils.ipynb 175
+# %% ../nbs/002_utils.ipynb 177
 def get_relpath(path):
     current_path = os.getcwd()
     if is_listy(path):
@@ -1392,7 +1405,7 @@ def get_relpath(path):
     else:
         return os.path.relpath(path, current_path)
 
-# %% ../nbs/002_utils.ipynb 176
+# %% ../nbs/002_utils.ipynb 178
 def split_in_chunks(o, chunksize, start=0, shuffle=False, drop_last=False):
     stop = ((len(o) - start)//chunksize*chunksize) if drop_last else None
     chunk_list = []
@@ -1401,7 +1414,7 @@ def split_in_chunks(o, chunksize, start=0, shuffle=False, drop_last=False):
     if shuffle: random.shuffle(chunk_list)
     return chunk_list
 
-# %% ../nbs/002_utils.ipynb 178
+# %% ../nbs/002_utils.ipynb 180
 def save_object(o, file_path, verbose=True):
     file_path = Path(file_path)
     if not file_path.suffix == '.pkl':
@@ -1416,7 +1429,7 @@ def load_object(file_path):
         file_path = file_path.parent / (file_path.name + '.pkl')
     return joblib.load(file_path)
 
-# %% ../nbs/002_utils.ipynb 181
+# %% ../nbs/002_utils.ipynb 183
 def get_idxs_to_keep(o, cond, crit='all', invert=False, axis=(1,2), keepdims=False):
     idxs_to_keep = cond(o)
     if isinstance(o, torch.Tensor):
@@ -1436,7 +1449,7 @@ def get_idxs_to_keep(o, cond, crit='all', invert=False, axis=(1,2), keepdims=Fal
         if invert: idxs_to_keep = ~idxs_to_keep
         return idxs_to_keep
 
-# %% ../nbs/002_utils.ipynb 183
+# %% ../nbs/002_utils.ipynb 185
 def zerofy(a, stride, keep=False):
     "Create copies of an array setting individual/ group values to zero "
     if keep:
@@ -1458,13 +1471,13 @@ def zerofy(a, stride, keep=False):
     else: 
         return a
 
-# %% ../nbs/002_utils.ipynb 185
+# %% ../nbs/002_utils.ipynb 187
 def feat2list(o):
     if o is None: return []
     elif isinstance(o, str): return [o]
     return list(o)
 
-# %% ../nbs/002_utils.ipynb 187
+# %% ../nbs/002_utils.ipynb 189
 def smallest_dtype(num, use_unsigned=False):
     if use_unsigned:
         int_dtypes = ['uint8', 'uint16', 'uint32', 'uint64']
