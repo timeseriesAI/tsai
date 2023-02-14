@@ -16,6 +16,7 @@ from .ResCNN import *
 from .ResNet import *
 from .ResNetPlus import *
 from .RNN import *
+from .RNNAttention import *
 from .RNNPlus import *
 from .RNN_FCN import *
 from .RNN_FCNPlus import *
