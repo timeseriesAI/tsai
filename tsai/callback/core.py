@@ -287,7 +287,7 @@ class BatchSubsampler(Callback):
                 sample_pct = np.random.rand() * (self.sample_pct[1] - self.sample_pct[0]) + self.sample_pct[0]
             else:
                 sample_pct = self.sample_pct
-            idxs = np.random.choice(B, round(B * sample_pct), True)
+            idxs = random_choice(B, round(B * sample_pct), True)
             self.learn.xb = tuple(xbi[idxs] for xbi in self.learn.xb)
             self.learn.yb = tuple(ybi[idxs] for ybi in self.learn.yb)
 
@@ -298,9 +298,9 @@ class BatchSubsampler(Callback):
             else:
                 step_pct = self.step_pct
             if self.step_pct != 1 and self.same_seq_len:
-                idxs = np.sort(np.tile(np.random.choice(S, round(S * step_pct), True), math.ceil(1 / step_pct))[:S])
+                idxs = np.sort(np.tile(random_choice(S, round(S * step_pct), True), math.ceil(1 / step_pct))[:S])
             else:
-                idxs = np.sort(np.random.choice(S, round(S * step_pct), True))
+                idxs = np.sort(random_choice(S, round(S * step_pct), True))
             self.learn.xb = tuple(xbi[...,idxs] for xbi in self.learn.xb)
             if self.update_y:
                 self.learn.yb = tuple(ybi[...,idxs] for ybi in self.learn.yb)
