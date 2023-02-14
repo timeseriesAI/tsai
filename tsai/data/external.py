@@ -2984,7 +2984,7 @@ def get_long_term_forecasting_data(
             make_date(df, "date")
             
             # Sort the dataframe by datetime
-            df.sort_values("date", inplace=True)
+            df.sort_values("date", kind='stable', inplace=True)
 
             if dsid == "weather": # weather is the only long-term fcst dataset with missing timestamps
                 # Remove duplicates (if any)

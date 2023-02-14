@@ -860,22 +860,52 @@ class TSPosition(Transform):
 
 # %% ../../nbs/009_data.preprocessing.ipynb 80
 class TSShrinkDataFrame(BaseEstimator, TransformerMixin):
+    """A transformer to shrink dataframe or series memory usage"""
 
-    def __init__(self, columns=None, skip=[], obj2cat=True, int2uint=False, verbose=True):
-        self.columns, self.skip, self.obj2cat, self.int2uint, self.verbose = listify(columns), skip, obj2cat, int2uint, verbose
+    def __init__(self, 
+        columns=None, # List[str], optional. Columns to shrink, all columns by default.
+        skip=None, # List[str], optional. Columns to skip, None by default.
+        obj2cat=True, # bool, optional. Convert object columns to category, True by default.
+        int2uint=False, # bool, optional. Convert int columns to uint, False by default.
+        verbose=True # bool, optional. Print memory usage info. True by default.
+        ):
+        self.columns, self.skip, self.obj2cat, self.int2uint, self.verbose = listify(columns), listify(skip), obj2cat, int2uint, verbose
         
-    def fit(self, X:pd.DataFrame, y=None, **fit_params):
+    def fit(self, X, **kwargs):
+        """
+        Fit the shrinker to a dataframe or pd.Series
+
+        Parameters:
+        -----------
+        X: pd.DataFrame or pd.Series. Data to fit the shrinker to
+        kwargs: dict, optional. Used for compatibility. {} by default
+        
+        Returns:
+        --------
+        self
+        """
         if isinstance(X, pd.Series): 
             X = X.to_frame()
-        assert isinstance(X, pd.DataFrame), "X must be a pd.DataFrame or pd.Series"
-        self.old_dtypes = X.dtypes          
+        assert isinstance(X, pd.DataFrame), "X must be a pd.DataFrame or pd.Series" 
         if self.columns:
             self.dt = df_shrink_dtypes(X[self.columns], self.skip, obj2cat=self.obj2cat, int2uint=self.int2uint)
         else:
             self.dt = df_shrink_dtypes(X, self.skip, obj2cat=self.obj2cat, int2uint=self.int2uint)
         return self
         
-    def transform(self, X:pd.DataFrame, y=None, **transform_params):
+    def transform(self, X, **kwargs):
+        """
+        Shrink the memory usage of a dataframe or pd.Series
+
+        Parameters:
+        -----------
+        X: pd.DataFrame. or pd.Series. Data to shrink
+        kwargs: dict, optional. Used for compatibility. {} by default
+
+        Returns:
+        --------
+        X_shrunk: pd.DataFrame or pd.Series. The shrunk data
+        """
         if isinstance(X, pd.Series): 
             col_name = X.name
             X = X.to_frame()
@@ -891,29 +921,15 @@ class TSShrinkDataFrame(BaseEstimator, TransformerMixin):
             X = X.astype(self.dt)
         if self.verbose:
             end_memory = X.memory_usage().sum()
-            print(f"Final memory usage  : {bytes2str(end_memory):10}")
-            print(f"Reduced by {(start_memory - end_memory) / start_memory:.1%}")
+            print(f"Final memory usage  : {bytes2str(end_memory):10} ({(end_memory - start_memory) / start_memory:.1%})")
         if col_name is not None:
             X = X[col_name]
         return X
          
     def inverse_transform(self, X):
-        if isinstance(X, pd.Series): 
-            col_name = X.name
-            X = X.to_frame()
-        else:
-            col_name = None
-        assert isinstance(X, pd.DataFrame), "X must be a pd.DataFrame or pd.Series"
-        if self.verbose:
-            start_memory = X.memory_usage().sum()
-            print(f"Memory usage of dataframe is {bytes2str(start_memory):10}")
-        X = X.astype(self.old_dtypes)
-        if self.verbose:
-            end_memory = X.memory_usage().sum()
-            print(f"Memory usage of dataframe after reduction {bytes2str(end_memory):10}")
-            print(f"Reduced by {(start_memory - end_memory) / start_memory:.1%}")
-        if col_name is not None:
-            X = X[col_name]
+        """
+        Built for compatibility. Does nothing.
+        """
         return X
 
 # %% ../../nbs/009_data.preprocessing.ipynb 82
@@ -951,7 +967,18 @@ class TSOneHotEncoder(BaseEstimator, TransformerMixin):
 
 # %% ../../nbs/009_data.preprocessing.ipynb 84
 class TSCategoricalEncoder(BaseEstimator, TransformerMixin):
-    def __init__(self, columns=None, add_na=True, sort=True, inplace=True, prefix=None, suffix=None, drop=False):
+    """A transformer to encode categorical columns"""
+
+    def __init__(self,
+        columns=None, # List[str], optional. Columns to encode, all columns by default.
+        add_na=True, # bool, optional. Add a NaN category, True by default.
+        sort=True, # bool, optional. Sort categories by frequency, True by default.
+        categories=None, # dict, optional. The custom mapping of categories. None by default.
+        inplace=True, # bool, optional. Modify input DataFrame, True by default.
+        prefix=None, # str, optional. Prefix for created column names. None by default.
+        suffix=None, # str, optional. Suffix for created column names. None by default.
+        drop=False # bool, optional. Drop original columns, False by default.
+        ):
         self.columns = listify(columns)
         self.add_na = add_na
         self.prefix = prefix
@@ -959,10 +986,23 @@ class TSCategoricalEncoder(BaseEstimator, TransformerMixin):
         self.sort = sort
         self.inplace = inplace
         self.drop = drop
-        self.categories = []
-        self.dtypes = []
+        self.categories = categories
 
-    def fit(self, X, idxs=None):
+
+    def fit(self, X, idxs=None, **kwargs):
+        """
+        Fit the encoder to a dataframe or pd.Series
+
+        Parameters:
+        -----------
+        X: pd.DataFrame or pd.Series. Data to fit the encoder to
+        idxs: Optional[List[int]] indices of the data to fit the encoder to
+        kwargs: dict, optional. Used for compatibility. {} by default
+        
+        Returns:
+        --------
+        self
+        """
         assert isinstance(X, (pd.DataFrame, pd.Series))
         if not self.columns:
             if isinstance(X, pd.DataFrame):
@@ -971,21 +1011,38 @@ class TSCategoricalEncoder(BaseEstimator, TransformerMixin):
                 self.columns = X.name
         if idxs is None:
             idxs = slice(None)
-        for column in self.columns:
-            self.dtypes.append(X[column].dtype)
-            categories = X.loc[idxs, column].dropna().unique()
-            if self.sort:
-                categories = np.sort(categories)
-            categories = pd.CategoricalDtype(categories=categories, ordered=True)
-            self.categories.append(categories)
+        if self.categories is None:
+            _categories = []
+            for column in self.columns:
+                if isinstance(X, pd.DataFrame) and hasattr(X[column], "cat"):
+                    categories = X[column].cat.categories
+                elif hasattr(X, "cat"):
+                    categories = X.cat.categories
+                else:
+                    categories = X.loc[idxs, column].dropna().unique() if isinstance(X, pd.DataFrame) else X[idxs].dropna().unique()
+                    if self.sort:
+                        categories = np.sort(categories)
+                categories = pd.CategoricalDtype(categories=categories, ordered=True)
+                _categories.append(categories)
+            
+                self.categories = _categories
+            del _categories; gc.collect()
         return self
 
-    def transform(self, X):
+    def transform(self, X, **kwargs):
+        """
+        Encode the categorical columns of a dataframe
+
+        Parameters:
+        -----------
+        X: pd.DataFrame or pd.Series. Data to encode
+        kwargs: dict, optional. Used for compatibility. {} by default
+
+        Returns:
+        --------
+        X_encoded: pd.DataFrame. The encoded data
+        """
         assert isinstance(X, (pd.DataFrame, pd.Series))
-        if self.inplace:
-            df = X
-        else:
-            df = X.copy()
         if isinstance(X, pd.DataFrame):
             columns = X.columns
         else:
@@ -996,43 +1053,54 @@ class TSCategoricalEncoder(BaseEstimator, TransformerMixin):
             if isinstance(X, pd.DataFrame):
                 name = []
                 if self.prefix: name += [self.prefix]
-                name += column
+                name += [column]
                 if self.suffix: name += [self.suffix]
                 new_col = '_'.join(name)
                 if self.drop:
-                    df.loc[:, column] = df.loc[:, column].astype(categories).cat.codes + self.add_na
-                    df.rename(columns={column: new_col}, inplace=True)
+                    X.loc[:, column] = X.loc[:, column].astype(categories).cat.codes + self.add_na
+                    X.rename(columns={column: new_col}, inplace=True)
                 else:
-                    df.loc[:, new_col] = df.loc[:, column].astype(categories).cat.codes + self.add_na
+                    X.loc[:, new_col] = X.loc[:, column].astype(categories).cat.codes + self.add_na
             else:
-                df = df.astype(categories).cat.codes + self.add_na
-        return df
+                X = X.astype(categories).cat.codes + self.add_na
+        return X
 
-    def inverse_transform(self, X):
+    def inverse_transform(self, X, **kwargs):
+        """
+        Return the original values of encoded columns of a dataframe
+
+        Parameters:
+        -----------
+        X: pd.DataFrame or pd.Series. Encoded data to decode
+        kwargs: dict, optional. Used for compatibility. {} by default
+
+        Returns:
+        --------
+        X_decoded: pd.DataFrame. The encoded data
+        """
         assert isinstance(X, (pd.DataFrame, pd.Series))
-        if self.inplace:
-            df = X
-        else:
-            df = X.copy()
         if isinstance(X, pd.DataFrame):
             columns = X.columns
-        else:
-            columns = X.name
-        for column, categories, dtype in zip(self.columns, self.categories, self.dtypes):
-            if column not in columns:
-                continue
-            if isinstance(X, pd.DataFrame):
+            for column, categories in zip(self.columns, self.categories):
+                if column not in columns:
+                    continue
                 name = []
                 if self.prefix: name += [self.prefix]
-                name += column
+                name += [column]
                 if self.suffix: name += [self.suffix]
                 new_col = '_'.join(name)
-                df.loc[:, new_col] = categories.categories[df.loc[:, new_col].astype(dtype=dtype) - self.add_na]
+                if self.add_na:
+                    X.loc[:, new_col] = np.array(['#na#'] + list(categories.categories))[X.loc[:, new_col]]
+                else:
+                    X.loc[:, new_col] = categories.categories[X.loc[:, new_col]]
+        else:
+            if self.add_na:
+                X = pd.Series(np.array(['#na#'] + list(self.categories[0].categories))[X], name=X.name, index=X.index)
             else:
-                df = pd.Series(categories.categories[df.astype(dtype=dtype) - self.add_na], name=df.name, index=df.index)
-        return df
+                X = pd.Series(self.categories[0].categories[X], name=X.name, index=X.index)
+        return X
 
-# %% ../../nbs/009_data.preprocessing.ipynb 88
+# %% ../../nbs/009_data.preprocessing.ipynb 90
 default_date_attr = ['Year', 'Month', 'Week', 'Day', 'Dayofweek', 'Dayofyear', 'Is_month_end', 'Is_month_start', 
                      'Is_quarter_end', 'Is_quarter_start', 'Is_year_end', 'Is_year_start']
 
@@ -1065,7 +1133,7 @@ class TSDateTimeEncoder(BaseEstimator, TransformerMixin):
             if self.drop: X = X.drop(self.datetime_columns, axis=1)
         return X
 
-# %% ../../nbs/009_data.preprocessing.ipynb 91
+# %% ../../nbs/009_data.preprocessing.ipynb 93
 class TSMissingnessEncoder(BaseEstimator, TransformerMixin):
 
     def __init__(self, columns=None):
@@ -1087,7 +1155,7 @@ class TSMissingnessEncoder(BaseEstimator, TransformerMixin):
         X.drop(self.missing_columns, axis=1, inplace=True)
         return X
 
-# %% ../../nbs/009_data.preprocessing.ipynb 94
+# %% ../../nbs/009_data.preprocessing.ipynb 96
 class Preprocessor():
     def __init__(self, preprocessor, **kwargs): 
         self.preprocessor = preprocessor(**kwargs)
@@ -1129,7 +1197,7 @@ setattr(YeoJohnshon, '__name__', 'YeoJohnshon')
 Quantile = partial(sklearn.preprocessing.QuantileTransformer, n_quantiles=1_000, output_distribution='normal', random_state=0)
 setattr(Quantile, '__name__', 'Quantile')
 
-# %% ../../nbs/009_data.preprocessing.ipynb 102
+# %% ../../nbs/009_data.preprocessing.ipynb 104
 def ReLabeler(cm):
     r"""Changes the labels in a dataset based on a dictionary (class mapping) 
         Args:
