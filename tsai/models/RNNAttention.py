@@ -133,7 +133,7 @@ class _RNNAttention_Base(Module):
                  encoder_layers:int=3, n_heads:int=16, d_k:Optional[int]=None, d_v:Optional[int]=None,  
                  d_ff:int=256, encoder_dropout:float=0.1, act:str="gelu", fc_dropout:float=0., 
                  y_range:Optional[tuple]=None, verbose:bool=False, **kwargs):
-        r"""TST (Time Series Transformer) is a Transformer that takes continuous time series as inputs.
+        r"""RNNAttention is a model based on RNN and TST (Time Series Transformer). TST is a Transformer that takes continuous time series as inputs.
         As mentioned in the paper, the input must be standardized by_var based on the entire training set.
         Args:
             c_in: the number of features (aka variables, dimensions, channels) in the time series dataset.
