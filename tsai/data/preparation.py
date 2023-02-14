@@ -2,6 +2,7 @@
 
 # %% ../../nbs/004_data.preparation.ipynb 3
 from __future__ import annotations
+from numpy.lib.stride_tricks import sliding_window_view
 from ..imports import *
 from ..utils import *
 warnings.simplefilter(action='ignore', category=FutureWarning)
@@ -11,7 +12,7 @@ __all__ = ['df2xy', 'split_xy', 'SlidingWindowSplitter', 'SlidingWindowPanelSpli
            'prepare_sel_vars_and_steps', 'apply_sliding_window', 'df2Xy', 'split_Xy', 'df2np3d',
            'add_missing_value_cols', 'add_missing_timestamps', 'time_encoding', 'forward_gaps', 'backward_gaps',
            'nearest_gaps', 'get_gaps', 'add_delta_timestamp_cols', 'SlidingWindow', 'SlidingWindowPanel',
-           'identify_padding']
+           'identify_padding', 'basic_data_preparation_fn', 'check_safe_conversion', 'prepare_forecasting_data']
 
 # %% ../../nbs/004_data.preparation.ipynb 4
 def prepare_idxs(o, shape=None):
@@ -53,8 +54,8 @@ def apply_sliding_window(
     data, # and array-like object with the input data 
     window_len:int|list, # sliding window length. When using a list, use negative numbers and 0.
     horizon:int|list=0, # horizon
-    x_vars:int|list|None=None, # indices of the independent variables
-    y_vars:int|list|None=None, # indices of the dependent variables (target). [] means no y will be created. None means all variables.
+    x_vars:int|list=None, # indices of the independent variables
+    y_vars:int|list=None, # indices of the dependent variables (target). [] means no y will be created. None means all variables.
     ):
     "Applies a sliding window on an array-like input to generate a 3d X (and optionally y)"
   
@@ -66,7 +67,7 @@ def apply_sliding_window(
     else:
         x_steps = None
         
-    X_data_windowed = np.lib.stride_tricks.sliding_window_view(data, window_len, axis=0)
+    X_data_windowed = sliding_window_view(data, window_len, axis=0)
 
     # X
     sel_x_vars, sel_x_steps = prepare_sel_vars_and_steps(x_vars, x_steps)
@@ -84,7 +85,7 @@ def apply_sliding_window(
         if isinstance(horizon, Integral) and horizon == 0:
             y = data[-len(X):, y_vars]
         else:
-            y_data_windowed = np.lib.stride_tricks.sliding_window_view(data, np.max(horizon) + 1, axis=0)[-len(X):]
+            y_data_windowed = sliding_window_view(data, np.max(horizon) + 1, axis=0)[-len(X):]
             y_vars, y_steps = prepare_sel_vars_and_steps(y_vars, horizon)
             y = np.squeeze(y_data_windowed[:, y_vars, y_steps])
     return X, y
@@ -646,3 +647,132 @@ def identify_padding(float_mask, value=-1):
         padding = padding[padding != 0]
         for idx,pad in zip(padded_idxs, padding): float_mask[idx, :, -pad:] = value
     return float_mask
+
+# %% ../../nbs/004_data.preparation.ipynb 100
+def basic_data_preparation_fn(
+    df, # dataframe to preprocess
+    drop_duplicates=True, # flag to indicate if rows with duplicate datetime info should be removed
+    datetime_col=None, # str indicating the name of the column/s that contains the datetime info
+    use_index=False, # flag to indicate if the datetime info is in the index
+    keep='last', # str to indicate what data should be kept in case of duplicate rows
+    add_missing_datetimes=True, # flaf to indicate if missing datetimes should be added
+    freq='1D', # str to indicate the frequency used in the datetime info. Used in case missing timestamps exists
+    method=None, # str indicating the method used to fill data for missing timestamps: None, 'bfill', 'ffill'
+    sort_by=None, # str or list of str to indicate if how to sort data. If use_index=True the index will be used to sort the dataframe.
+    ):
+
+    cols = df.columns
+    if drop_duplicates:
+        assert datetime_col is not None or use_index, "you need to either pass a datetime_col or set use_index=True"
+        # Remove duplicates (if any)
+        if use_index:
+            dup_rows = df.index.duplicated(keep=keep)
+        else:
+            dup_rows = df[datetime_col].duplicated(keep=keep)
+        if dup_rows.sum():
+            df = df[~dup_rows].copy()
+    
+    if use_index:
+        df.sort_index(inplace=True)
+    if sort_by is not None:
+        df.sort_values(sort_by, inplace=True)
+        
+    if add_missing_datetimes:
+        if not use_index:
+            # We'll set the timestamp column as index
+            df.set_index(datetime_col, drop=True, inplace=True)
+        # Add missing timestamps (if any) between start and end datetimes and forward-fill data
+        df = df.asfreq(freq=freq, method=method)
+        if not use_index:
+            df.reset_index(drop=False, inplace=True)
+    
+    return df[cols]
+
+# %% ../../nbs/004_data.preparation.ipynb 102
+def check_safe_conversion(o, dtype='float32', cols=None):
+    "Checks if the conversion to float is safe"
+    
+    def _check_safe_conversion(o, dtype='float32'):
+
+        if isinstance(o, (Integral, float)):
+            o_min = o_max = o
+        elif isinstance(o, pd.Series):
+            o_min = o.min()
+            o_max = o.max()
+        else:
+            o_min = np.asarray(o).min()
+            o_max = np.asarray(o).max()
+        
+        dtype = np.dtype(dtype)
+        if dtype == 'float16':
+            return -2**11 <= o_min and o_max <= 2**11
+        elif dtype == 'float32':
+            return -2**24 <= o_min and o_max <= 2**24
+        elif dtype == 'float64':
+            return -2**53 <= o_min and o_max <= 2**53
+        elif dtype == 'int8':
+            return np.iinfo(np.int8).min <= o_min and o_max <= np.iinfo(np.int8).max
+        elif dtype == 'int16':
+            return np.iinfo(np.int16).min <= o_min and o_max <= np.iinfo(np.int16).max
+        elif dtype == 'int32':
+            print(np.iinfo(np.int32).min, o_min, o_max, np.iinfo(np.int32).max)
+            return np.iinfo(np.int32).min <= o_min and o_max <= np.iinfo(np.int32).max
+        elif dtype == 'int64':
+            return np.iinfo(np.int64).min <= o_min and o_max <= np.iinfo(np.int64).max
+        else:
+            raise ValueError("Unsupported data type")
+    
+    if isinstance(o, pd.DataFrame):
+        cols = o.columns if cols is None else cols
+        checks = [_check_safe_conversion(o[c], dtype=dtype) for c in cols]
+        if all(checks): return True
+        warnings.warn(f"Unsafe conversion to {dtype}: {dict(zip(cols, checks))}")
+        return False
+    else:
+        return _check_safe_conversion(o, dtype=dtype)
+    
+
+# %% ../../nbs/004_data.preparation.ipynb 104
+def prepare_forecasting_data(
+    df:pd.DataFrame, # dataframe containing a sorted time series for a single entity or subject
+    fcst_history:int, # # historical steps used as input.
+    fcst_horizon:int=1, # # steps forecasted into the future. 
+    x_vars:str|list=None, # features used as input
+    y_vars:str|list=None,  # features used as output
+    dtype:str=None, # data type
+    unique_id_cols:str|list=None, # unique identifier column/s used in panel data
+)->tuple(np.ndarray, np.ndarray):
+
+    def _prepare_forecasting_data(df, x_vars, y_vars):
+        x_np = df.to_numpy(dtype=dtype) if x_vars is None else df[x_vars].to_numpy(dtype=dtype)
+        y_np = x_np if x_vars == y_vars else df.to_numpy(dtype=dtype) if y_vars is None else df[y_vars].to_numpy(dtype=dtype)
+        X = sliding_window_view(x_np[:len(x_np) - fcst_horizon], fcst_history, axis=0)
+        y = sliding_window_view(y_np[fcst_history:], fcst_horizon, axis=0)
+        return X, y
+    
+    x_vars = None if (x_vars is None or feat2list(x_vars) == list(df.columns)) else feat2list(x_vars)
+    y_vars = None if (y_vars is None or feat2list(y_vars) == list(df.columns)) else feat2list(y_vars)
+    if dtype is not None:
+        assert check_safe_conversion(df, dtype=dtype, cols=x_vars)
+        if y_vars != x_vars:
+            assert check_safe_conversion(df, dtype=dtype, cols=y_vars)
+    if unique_id_cols:
+        grouped = df.groupby(unique_id_cols)
+        if x_vars is None and y_vars is None:
+            output = grouped.apply(lambda x: _prepare_forecasting_data(x, x_vars=None, y_vars=None))
+        elif x_vars == y_vars:
+            output = grouped[x_vars].apply(lambda x: _prepare_forecasting_data(x, x_vars=None, y_vars=None))
+        else:
+            output = grouped.apply(lambda x: _prepare_forecasting_data(x, x_vars, y_vars))
+        output = output.reset_index(drop=True)
+        X, y = zip(*output)
+        X = np.concatenate(X, 0)
+        y = np.concatenate(y, 0)
+    else:
+        if x_vars is None and y_vars is None:
+            X, y = _prepare_forecasting_data(df, x_vars=None, y_vars=None)
+        elif x_vars == y_vars:
+            X, y = _prepare_forecasting_data(df[x_vars], x_vars=None, y_vars=None)
+        else:
+            X, y = _prepare_forecasting_data(df[x_vars], x_vars=x_vars, y_vars=y_vars)
+    return X, y

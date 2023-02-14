@@ -5,30 +5,103 @@ __all__ = ['lin_zero_init', 'Conv', 'ConvBN', 'CoordConv', 'SepConv', 'BN1d', 'I
            'pytorch_acts', 'pytorch_act_names', 'pool_head', 'average_pool_head', 'concat_pool_head', 'pool_plus_head',
            'conv_head', 'mlp_head', 'fc_head', 'rnn_head', 'conv_lin_nd_head', 'conv_lin_3d_head',
            'create_conv_lin_3d_head', 'lin_nd_head', 'lin_3d_head', 'create_lin_3d_head', 'conv_3d_head', 'heads',
-           'init_lin_zero', 'SwishBeta', 'SmeLU', 'Chomp1d', 'same_padding1d', 'Pad1d', 'SameConv1d', 'same_padding2d',
-           'Pad2d', 'Conv2dSame', 'Conv2d', 'CausalConv1d', 'Conv1d', 'SeparableConv1d', 'AddCoords1d', 'ConvBlock',
-           'ResBlock1dPlus', 'SEModule1d', 'Norm', 'LinLnDrop', 'LambdaPlus', 'Squeeze', 'Unsqueeze', 'Add', 'Concat',
-           'Permute', 'Transpose', 'View', 'Reshape', 'Max', 'LastStep', 'SoftMax', 'Clamp', 'Clip', 'ReZero',
-           'DropPath', 'Sharpen', 'Sequential', 'TimeDistributed', 'Temp_Scale', 'Vector_Scale', 'Matrix_Scale',
-           'get_calibrator', 'LogitAdjustmentLayer', 'PPV', 'PPAuc', 'MaxPPVPool1d', 'AdaptiveWeightedAvgPool1d',
-           'GAP1d', 'GACP1d', 'GAWP1d', 'GlobalWeightedAveragePool1d', 'gwa_pool_head', 'AttentionalPool1d', 'GAttP1d',
-           'attentional_pool_head', 'PoolingLayer', 'GEGLU', 'ReGLU', 'get_act_fn', 'RevIN', 'create_pool_head',
-           'max_pool_head', 'create_pool_plus_head', 'create_conv_head', 'create_mlp_head', 'create_fc_head',
-           'create_rnn_head', 'imputation_head', 'create_conv_lin_nd_head', 'create_lin_nd_head', 'create_conv_3d_head',
-           'universal_pool_head', 'SqueezeExciteBlock', 'GaussianNoise', 'PositionwiseFeedForward', 'TokenLayer',
-           'ScaledDotProductAttention', 'MultiheadAttention', 'MultiConv1d', 'LSTMOutput', 'emb_sz_rule', 'TSEmbedding',
-           'MultiEmbedding']
+           'test_module_to_torchscript', 'init_lin_zero', 'SwishBeta', 'SmeLU', 'Chomp1d', 'same_padding1d', 'Pad1d',
+           'SameConv1d', 'same_padding2d', 'Pad2d', 'Conv2dSame', 'Conv2d', 'CausalConv1d', 'Conv1d', 'SeparableConv1d',
+           'AddCoords1d', 'ConvBlock', 'ResBlock1dPlus', 'SEModule1d', 'Norm', 'LinLnDrop', 'LambdaPlus', 'Squeeze',
+           'Unsqueeze', 'Add', 'Concat', 'Unfold', 'Permute', 'Transpose', 'View', 'Reshape', 'Max', 'LastStep',
+           'SoftMax', 'Clamp', 'Clip', 'ReZero', 'DropPath', 'Sharpen', 'Sequential', 'TimeDistributed', 'Temp_Scale',
+           'Vector_Scale', 'Matrix_Scale', 'get_calibrator', 'LogitAdjustmentLayer', 'PPV', 'PPAuc', 'MaxPPVPool1d',
+           'AdaptiveWeightedAvgPool1d', 'GAP1d', 'GACP1d', 'GAWP1d', 'GlobalWeightedAveragePool1d', 'gwa_pool_head',
+           'AttentionalPool1d', 'GAttP1d', 'attentional_pool_head', 'PoolingLayer', 'GEGLU', 'ReGLU', 'get_act_fn',
+           'RevIN', 'create_pool_head', 'max_pool_head', 'create_pool_plus_head', 'create_conv_head', 'create_mlp_head',
+           'create_fc_head', 'create_rnn_head', 'imputation_head', 'create_conv_lin_nd_head', 'create_lin_nd_head',
+           'create_conv_3d_head', 'universal_pool_head', 'SqueezeExciteBlock', 'GaussianNoise',
+           'PositionwiseFeedForward', 'TokenLayer', 'ScaledDotProductAttention', 'MultiheadAttention', 'MultiConv1d',
+           'LSTMOutput', 'emb_sz_rule', 'TSEmbedding', 'MultiEmbedding']
 
 # %% ../../nbs/029_models.layers.ipynb 3
+from torch.jit import TracerWarning
+import warnings
 from torch.nn.utils import weight_norm, spectral_norm
 from torch.nn.init import normal_
 from fastcore.basics import snake2camel
+from fastcore.test import test_eq
 from fastai.layers import *
 from fastai.losses import *
 from ..imports import *
 from ..utils import *
 
+warnings.filterwarnings("ignore", category=TracerWarning)
+
 # %% ../../nbs/029_models.layers.ipynb 4
+def test_module_to_torchscript(
+    m:torch.nn.Module, # The PyTorch module to be tested.
+    inputs:Tensor, # A tensor or tuple of tensors representing the inputs to the model.
+    trace:bool=True, #  If `True`, attempts to trace the model. Defaults to `True`.
+    script:bool=True, # If `True`, attempts to script the model. Defaults to `True`.
+    serialize:bool=True, # If `True`, saves and loads the traced/scripted module to ensure it can be serialized. Defaults to `True`.
+    verbose:bool=True, # If `True`, prints detailed information about the tracing and scripting process. Defaults to `True`.
+):
+    "Tests if a PyTorch module can be correctly traced or scripted and serialized"
+    
+    m = m.eval()
+    m_name = m.__class__.__name__
+
+    # Ensure inputs are in a tuple or list format
+    inp_is_tuple = isinstance(inputs, (tuple, list))
+
+    # Get the model's output
+    output = m(*inputs) if inp_is_tuple else m(inputs)
+    output_shapes = output.shape if not isinstance(output, (tuple, list)) else [o.shape for o in output]
+    if verbose:
+        print(f"output.shape: {output_shapes}")
+
+    # Try tracing the model
+    if trace:
+        if verbose:
+            print("Tracing...")
+        try:
+            traced_m = torch.jit.trace(m, inputs)
+            if serialize:
+                file_path = Path(f"test_traced_{m_name}.pt")
+                torch.jit.save(traced_m, file_path)
+                traced_mod = torch.jit.load(file_path)
+                file_path.unlink()
+            traced_output = traced_m(*inputs) if inp_is_tuple else traced_m(inputs)
+            torch.testing.assert_close(traced_output, output)
+            if verbose:
+                print(f"...{m_name} has been successfully traced 😃\n")
+            return True
+        except Exception as e:
+            if verbose:
+                print(f"{m_name} cannot be traced 😔")
+                print(e)
+                print("\n")
+
+    # Try scripting the model
+    if script:
+        if verbose:
+            print("Scripting...")
+        try:
+            scripted_m = torch.jit.script(m)
+            if serialize:
+                file_path = Path(f"test_scripted_{m_name}.pt")
+                torch.jit.save(scripted_m, file_path)
+                scripted_mod = torch.jit.load(file_path)
+                file_path.unlink()
+            scripted_output = scripted_m(*inputs) if inp_is_tuple else scripted_m(inputs)
+            torch.testing.assert_close(scripted_output, output)
+            if verbose:
+                print(f"...{m_name} has been successfully scripted 😃\n")
+            return True
+        except Exception as e:
+            if verbose:
+                print(f"{m_name} cannot be scripted 😔")
+                print(e)
+
+    return False
+
+# %% ../../nbs/029_models.layers.ipynb 6
 def init_lin_zero(m):
     if isinstance(m, (nn.Linear)): 
         if getattr(m, 'bias', None) is not None: nn.init.constant_(m.bias, 0)
@@ -37,14 +110,14 @@ def init_lin_zero(m):
         
 lin_zero_init = init_lin_zero
 
-# %% ../../nbs/029_models.layers.ipynb 5
+# %% ../../nbs/029_models.layers.ipynb 7
 class SwishBeta(Module):
     def __multiinit__(self, beta=1.): 
         self.sigmoid = torch.sigmoid
         self.beta = nn.Parameter(torch.Tensor(1).fill_(beta))
     def forward(self, x): return x.mul(self.sigmoid(x*self.beta))
 
-# %% ../../nbs/029_models.layers.ipynb 6
+# %% ../../nbs/029_models.layers.ipynb 8
 class SmeLU(nn.Module):
     "Smooth ReLU activation function based on https://arxiv.org/pdf/2202.06499.pdf"
 
@@ -57,7 +130,7 @@ class SmeLU(nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         return torch.where(torch.abs(x) <= self.beta, ((x + self.beta) ** 2) / (4. * self.beta), F.relu(x))
 
-# %% ../../nbs/029_models.layers.ipynb 7
+# %% ../../nbs/029_models.layers.ipynb 9
 class Chomp1d(nn.Module):
     def __init__(self, chomp_size):
         super(Chomp1d, self).__init__()
@@ -66,7 +139,7 @@ class Chomp1d(nn.Module):
     def forward(self, x):
         return x[:, :, :-self.chomp_size].contiguous()
 
-# %% ../../nbs/029_models.layers.ipynb 8
+# %% ../../nbs/029_models.layers.ipynb 10
 def same_padding1d(seq_len, ks, stride=1, dilation=1):
     "Same padding formula as used in Tensorflow"
     p = (seq_len - 1) * stride + (ks - 1) * dilation + 1 - seq_len
@@ -92,7 +165,7 @@ class SameConv1d(Module):
         self.padding = same_padding1d(x.shape[-1], self.ks, dilation=self.dilation) #stride=self.stride not used in padding calculation!
         return self.conv1d_same(self.pad(self.padding)(x))
 
-# %% ../../nbs/029_models.layers.ipynb 9
+# %% ../../nbs/029_models.layers.ipynb 11
 def same_padding2d(H, W, ks, stride=(1, 1), dilation=(1, 1)):
     "Same padding formula as used in Tensorflow"
     if isinstance(ks, Integral): ks = (ks, ks)
@@ -139,7 +212,7 @@ def Conv2d(ni, nf, kernel_size=None, ks=None, stride=1, padding='same', dilation
     init_linear(conv, None, init=init, bias_std=bias_std)
     return conv
 
-# %% ../../nbs/029_models.layers.ipynb 11
+# %% ../../nbs/029_models.layers.ipynb 13
 class CausalConv1d(torch.nn.Conv1d):
     def __init__(self, ni, nf, ks, stride=1, dilation=1, groups=1, bias=True):
         super(CausalConv1d, self).__init__(ni, nf, kernel_size=ks, stride=stride, padding=0, dilation=dilation, groups=groups, bias=bias)
@@ -147,7 +220,7 @@ class CausalConv1d(torch.nn.Conv1d):
     def forward(self, input):
         return super(CausalConv1d, self).forward(F.pad(input, (self.__padding, 0)))
 
-# %% ../../nbs/029_models.layers.ipynb 12
+# %% ../../nbs/029_models.layers.ipynb 14
 # @delegates(nn.Conv1d.__init__)
 def Conv1d(ni, nf, kernel_size=None, ks=None, stride=1, padding='same', dilation=1, init='auto', bias_std=0.01, **kwargs):
     "conv1d layer with padding='same', 'causal', 'valid', or any integer (defaults to 'same')"
@@ -165,7 +238,7 @@ def Conv1d(ni, nf, kernel_size=None, ks=None, stride=1, padding='same', dilation
     init_linear(conv, None, init=init, bias_std=bias_std)
     return conv
 
-# %% ../../nbs/029_models.layers.ipynb 19
+# %% ../../nbs/029_models.layers.ipynb 21
 class SeparableConv1d(Module):
     def __init__(self, ni, nf, ks, stride=1, padding='same', dilation=1, bias=True, bias_std=0.01):
         self.depthwise_conv = Conv1d(ni, ni, ks, stride=stride, padding=padding, dilation=dilation, groups=ni, bias=bias)
@@ -183,7 +256,7 @@ class SeparableConv1d(Module):
         x = self.pointwise_conv(x)
         return x
 
-# %% ../../nbs/029_models.layers.ipynb 21
+# %% ../../nbs/029_models.layers.ipynb 23
 class AddCoords1d(Module):
     """Add coordinates to ease position identification without modifying mean and std"""
     def forward(self, x):
@@ -193,7 +266,7 @@ class AddCoords1d(Module):
         x = torch.cat([x, cc], dim=1)
         return x
 
-# %% ../../nbs/029_models.layers.ipynb 23
+# %% ../../nbs/029_models.layers.ipynb 25
 class ConvBlock(nn.Sequential):
     "Create a sequence of conv1d (`ni` to `nf`), activation (if `act_cls`) and `norm_type` layers."
     def __init__(self, ni, nf, kernel_size=None, ks=3, stride=1, padding='same', bias=None, bias_std=0.01, norm='Batch', zero_norm=False, bn_1st=True,
@@ -227,7 +300,7 @@ ConvBN = named_partial('ConvBN', ConvBlock, norm='Batch', act=None)
 CoordConv = named_partial('CoordConv', ConvBlock, norm=None, act=None, coord=True)
 SepConv = named_partial('SepConv', ConvBlock, norm=None, act=None, separable=True)
 
-# %% ../../nbs/029_models.layers.ipynb 24
+# %% ../../nbs/029_models.layers.ipynb 26
 class ResBlock1dPlus(Module):
     "Resnet block from `ni` to `nh` with `stride`"
 #     @delegates(ConvLayer.__init__)
@@ -256,7 +329,7 @@ class ResBlock1dPlus(Module):
 
     def forward(self, x): return self.act(self.convpath(x) + self.idpath(x))
 
-# %% ../../nbs/029_models.layers.ipynb 25
+# %% ../../nbs/029_models.layers.ipynb 27
 def SEModule1d(ni, reduction=16, act=nn.ReLU, act_kwargs={}):
     "Squeeze and excitation module for 1d"
     nf = math.ceil(ni//reduction/8)*8
@@ -265,7 +338,7 @@ def SEModule1d(ni, reduction=16, act=nn.ReLU, act_kwargs={}):
                         ConvBlock(ni, nf, ks=1, norm=None, act=act, act_kwargs=act_kwargs),
                         ConvBlock(nf, ni, ks=1, norm=None, act=nn.Sigmoid), ProdLayer())
 
-# %% ../../nbs/029_models.layers.ipynb 27
+# %% ../../nbs/029_models.layers.ipynb 29
 def Norm(nf, ndim=1, norm='Batch', zero_norm=False, init=True, **kwargs):
     "Norm layer with `nf` features and `ndim` with auto init."
     assert 1 <= ndim <= 3
@@ -278,7 +351,7 @@ def Norm(nf, ndim=1, norm='Batch', zero_norm=False, init=True, **kwargs):
 BN1d = partial(Norm, ndim=1, norm='Batch')
 IN1d = partial(Norm, ndim=1, norm='Instance')
 
-# %% ../../nbs/029_models.layers.ipynb 31
+# %% ../../nbs/029_models.layers.ipynb 33
 class LinLnDrop(nn.Sequential):
     "Module grouping `LayerNorm1d`, `Dropout` and `Linear` layers"
     def __init__(self, n_in, n_out, ln=True, p=0., act=None, lin_first=False):
@@ -289,12 +362,12 @@ class LinLnDrop(nn.Sequential):
         layers = lin+layers if lin_first else layers+lin
         super().__init__(*layers)
 
-# %% ../../nbs/029_models.layers.ipynb 33
+# %% ../../nbs/029_models.layers.ipynb 35
 class LambdaPlus(Module):
     def __init__(self, func, *args, **kwargs): self.func,self.args,self.kwargs=func,args,kwargs
     def forward(self, x): return self.func(x, *self.args, **self.kwargs)
 
-# %% ../../nbs/029_models.layers.ipynb 34
+# %% ../../nbs/029_models.layers.ipynb 36
 class Squeeze(Module):
     def __init__(self, dim=-1): self.dim = dim
     def forward(self, x): return x.squeeze(dim=self.dim)
@@ -318,9 +391,15 @@ class Concat(Module):
     def __repr__(self): return f'{self.__class__.__name__}(dim={self.dim})'
 
 
+class Unfold(Module):
+    def __init__(self, dim, size, step=1): self.dim, self.size, self.step =  dim, size, step
+    def forward(self, x:Tensor) -> Tensor: return x.unfold(dimension=self.dim, size=self.size, step=self.step)
+    def __repr__(self): return f"{self.__class__.__name__}(dim={self.dim}, size={self.size}, step={self.step})"
+    
+    
 class Permute(Module):
     def __init__(self, *dims): self.dims = dims
-    def forward(self, x): return x.permute(self.dims)
+    def forward(self, x:Tensor) -> Tensor: return x.permute(self.dims)
     def __repr__(self): return f"{self.__class__.__name__}(dims={', '.join([str(d) for d in self.dims])})"
     
     
@@ -397,7 +476,7 @@ class ReZero(Module):
     
 Noop = nn.Sequential()
 
-# %% ../../nbs/029_models.layers.ipynb 36
+# %% ../../nbs/029_models.layers.ipynb 38
 class DropPath(nn.Module):
     """Drop paths (Stochastic Depth) per sample (when applied in main path of residual blocks).
 
@@ -419,7 +498,7 @@ class DropPath(nn.Module):
 #         output = x.div(random_tensor.mean()) * random_tensor # divide by the actual mean to mantain the input mean?
         return output
 
-# %% ../../nbs/029_models.layers.ipynb 38
+# %% ../../nbs/029_models.layers.ipynb 40
 class Sharpen(Module):
     "This is used to increase confidence in predictions - MixMatch paper"
     def __init__(self, T=.5): self.T = T
@@ -427,7 +506,7 @@ class Sharpen(Module):
         x = x**(1. / self.T)
         return x / x.sum(dim=1, keepdims=True)
 
-# %% ../../nbs/029_models.layers.ipynb 40
+# %% ../../nbs/029_models.layers.ipynb 42
 class Sequential(nn.Sequential):
     """Class that allows you to pass one or multiple inputs"""
     def forward(self, *x):
@@ -435,7 +514,7 @@ class Sequential(nn.Sequential):
             x = module(*x) if isinstance(x, (list, tuple, L)) else module(x)
         return x
 
-# %% ../../nbs/029_models.layers.ipynb 41
+# %% ../../nbs/029_models.layers.ipynb 43
 class TimeDistributed(nn.Module):
     def __init__(self, module, batch_first=False):
         super(TimeDistributed, self).__init__()
@@ -460,7 +539,7 @@ class TimeDistributed(nn.Module):
 
         return y
 
-# %% ../../nbs/029_models.layers.ipynb 42
+# %% ../../nbs/029_models.layers.ipynb 44
 class Temp_Scale(Module):
     "Used to perform Temperature Scaling (dirichlet=False) or Single-parameter Dirichlet calibration (dirichlet=True)"
     def __init__(self, temp=1., dirichlet=False):
@@ -510,7 +589,7 @@ def get_calibrator(calibrator=None, n_classes=1, **kwargs):
     elif calibrator.lower() == 'dmatrix': return Matrix_Scale(n_classes=n_classes, dirichlet=True, **kwargs)
     else: assert False, f'please, select a correct calibrator instead of {calibrator}'
 
-# %% ../../nbs/029_models.layers.ipynb 47
+# %% ../../nbs/029_models.layers.ipynb 49
 class LogitAdjustmentLayer(Module):
     "Logit Adjustment for imbalanced datasets"
     def __init__(self, class_priors):
@@ -520,7 +599,7 @@ class LogitAdjustmentLayer(Module):
     
 LogitAdjLayer = LogitAdjustmentLayer
 
-# %% ../../nbs/029_models.layers.ipynb 49
+# %% ../../nbs/029_models.layers.ipynb 51
 class PPV(Module):
     def __init__(self, dim=-1): 
         self.dim = dim
@@ -545,7 +624,7 @@ class MaxPPVPool1d(Module):
         _ppv = torch.gt(x, 0).sum(dim=-1).float() / x.shape[-1]
         return torch.cat((_max, _ppv), dim=-1).unsqueeze(2)
 
-# %% ../../nbs/029_models.layers.ipynb 51
+# %% ../../nbs/029_models.layers.ipynb 53
 class AdaptiveWeightedAvgPool1d(Module):
     '''Global Pooling layer that performs a weighted average along the temporal axis
     
@@ -570,7 +649,7 @@ class AdaptiveWeightedAvgPool1d(Module):
         wap = self.softmax(wap)
         return torch.mul(x, wap).sum(-1)
 
-# %% ../../nbs/029_models.layers.ipynb 52
+# %% ../../nbs/029_models.layers.ipynb 54
 class GAP1d(Module):
     "Global Adaptive Pooling + Flatten"
     def __init__(self, output_size=1):
@@ -597,7 +676,7 @@ class GAWP1d(Module):
     def forward(self, x):
         return self.flatten(self.gacp(x))
 
-# %% ../../nbs/029_models.layers.ipynb 53
+# %% ../../nbs/029_models.layers.ipynb 55
 class GlobalWeightedAveragePool1d(Module):
     """ Global Weighted Average Pooling layer 
     
@@ -618,7 +697,7 @@ GWAP1d = GlobalWeightedAveragePool1d
 def gwa_pool_head(n_in, c_out, seq_len, bn=True, fc_dropout=0.):
     return nn.Sequential(GlobalWeightedAveragePool1d(n_in, seq_len), Flatten(), LinBnDrop(n_in, c_out, p=fc_dropout, bn=bn))
 
-# %% ../../nbs/029_models.layers.ipynb 55
+# %% ../../nbs/029_models.layers.ipynb 57
 class AttentionalPool1d(Module):
     """Global Adaptive Pooling layer inspired by Attentional Pooling for Action Recognition https://arxiv.org/abs/1711.01467"""
     def __init__(self, n_in, c_out, bn=False): 
@@ -638,7 +717,7 @@ class GAttP1d(nn.Sequential):
 def attentional_pool_head(n_in, c_out, seq_len=None, bn=True, **kwargs):
     return nn.Sequential(AttentionalPool1d(n_in, c_out, bn=bn, **kwargs), Flatten())
 
-# %% ../../nbs/029_models.layers.ipynb 58
+# %% ../../nbs/029_models.layers.ipynb 60
 class PoolingLayer(Module):
     def __init__(self, method='cls', seq_len=None, token=True, seq_last=True): 
         method = method.lower()
@@ -669,7 +748,7 @@ class PoolingLayer(Module):
     
     def __repr__(self): return f"{self.__class__.__name__}(method={self.method}, token={self.token}, seq_last={self.seq_last})"
 
-# %% ../../nbs/029_models.layers.ipynb 61
+# %% ../../nbs/029_models.layers.ipynb 63
 class GEGLU(Module):
     def forward(self, x):
         x, gates = x.chunk(2, dim=-1)
@@ -680,7 +759,7 @@ class ReGLU(Module):
         x, gates = x.chunk(2, dim=-1)
         return x * F.relu(gates)
 
-# %% ../../nbs/029_models.layers.ipynb 62
+# %% ../../nbs/029_models.layers.ipynb 64
 pytorch_acts = [nn.ELU, nn.LeakyReLU, nn.PReLU, nn.ReLU, nn.ReLU6, nn.SELU, nn.CELU, nn.GELU, nn.Sigmoid, Mish, nn.Softplus,
 nn.Tanh, nn.Softmax, GEGLU, ReGLU, SmeLU]
 pytorch_act_names = [a.__name__.lower() for a in pytorch_acts]
@@ -692,44 +771,133 @@ def get_act_fn(act, **act_kwargs):
     idx = pytorch_act_names.index(act.lower())
     return pytorch_acts[idx](**act_kwargs)
 
-# %% ../../nbs/029_models.layers.ipynb 64
+# %% ../../nbs/029_models.layers.ipynb 66
 class RevIN(nn.Module):
-    """ Reversible Instance Normalization layer published in
-    
+    """ Reversible Instance Normalization layer adapted from
+
         Kim, T., Kim, J., Tae, Y., Park, C., Choi, J. H., & Choo, J. (2021, September). 
         Reversible instance normalization for accurate time-series forecasting against distribution shift. 
         In International Conference on Learning Representations.
         Original code: https://github.com/ts-kim/RevIN
     """
-    def __init__(self, 
-        c_in,    # #features (aka variables or channels)
-        dim=2,   # int or tuple of dimensions used to calculate mean and std
-        eps=1e-5 # epsilon - parameter added for numerical stability
-        ):
+
+    def __init__(self,
+         c_in:int,    # #features (aka variables or channels)
+         affine:bool=True,  # flag to incidate if RevIN has learnable weight and bias
+         subtract_last:bool=False,
+         dim:int=2,   # int or tuple of dimensions used to calculate mean and std
+         eps:float=1e-5  # epsilon - parameter added for numerical stability
+         ):
         super().__init__()
-        self.c_in, self.dim, self.eps = c_in, dim, eps
-        self.weight = nn.Parameter(torch.ones(1, c_in, 1))
-        self.bias   = nn.Parameter(torch.zeros(1, c_in, 1))
-
-    def forward(self, x, norm=True):
+        self.c_in, self.affine, self.subtract_last, self.dim, self.eps = c_in, affine, subtract_last, dim, eps
+        if self.affine:
+            self.weight = nn.Parameter(torch.ones(1, c_in, 1))
+            self.bias = nn.Parameter(torch.zeros(1, c_in, 1))
+    
+    def forward(self, x:Tensor, mode:Tensor):
         """Args:
-        
-        x: rank 3 tensor with shape [batch size x features x sequence length]
-        norm: boolean (True to normalize data and False to reverse normalization)
+
+            x: rank 3 tensor with shape [batch size x c_in x sequence length]
+            mode: torch.tensor(True) to normalize data and torch.tensor(False) to reverse normalization
         """
+        
         # Normalize
-        if norm:
-            self._get_statistics(x)
-            return x.sub_(self.mean).div_(self.std).mul_(self.weight).add_(self.bias)
-        # Reverse normalization
+        if mode: return self.normalize(x)
+        
+        # Denormalize
+        else: return self.denormalize(x)
+           
+    def normalize(self, x):
+        if self.subtract_last:
+            self.sub = x[..., -1].unsqueeze(-1).detach()
         else:
-            return x.sub_(self.bias).div_(self.weight).mul_(self.std).add_(self.mean)
+            self.sub = torch.mean(x, dim=-1, keepdim=True).detach()
+        self.std = torch.std(x, dim=-1, keepdim=True, unbiased=False).detach() + self.eps
+        if self.affine:
+            x = x.sub(self.sub)
+            x = x.div(self.std)
+            x = x.mul(self.weight)
+            x = x.add(self.bias)
+            return x
+        else:
+            x = x.sub(self.sub)
+            x = x.div(self.std)
+            return x
+        
+    def denormalize(self, x):
+        if self.affine:
+            x = x.sub(self.bias)
+            x = x.div(self.weight)
+            x = x.mul(self.std)
+            x = x.add(self.sub)
+            return x
+        else:
+            x = x.mul(self.std)
+            x = x.add(self.sub)
+            return x
 
-    def _get_statistics(self, x):
-        self.mean = torch.mean(x, dim=self.dim, keepdim=True).detach()
-        self.std  = torch.clip(torch.std (x, dim=self.dim, keepdim=True, unbiased=False).detach(), self.eps, None)
+# %% ../../nbs/029_models.layers.ipynb 67
+class RevIN(nn.Module):
+    """ Reversible Instance Normalization layer adapted from
 
-# %% ../../nbs/029_models.layers.ipynb 66
+        Kim, T., Kim, J., Tae, Y., Park, C., Choi, J. H., & Choo, J. (2021, September). 
+        Reversible instance normalization for accurate time-series forecasting against distribution shift. 
+        In International Conference on Learning Representations.
+        Original code: https://github.com/ts-kim/RevIN
+    """
+
+    def __init__(self,
+         c_in:int,    # #features (aka variables or channels)
+         affine:bool=True,  # flag to incidate if RevIN has learnable weight and bias
+         subtract_last:bool=False,
+         dim:int=2,   # int or tuple of dimensions used to calculate mean and std
+         eps:float=1e-5  # epsilon - parameter added for numerical stability
+         ):
+        super().__init__()
+        self.c_in, self.affine, self.subtract_last, self.dim, self.eps = c_in, affine, subtract_last, dim, eps
+        self.weight = nn.Parameter(torch.ones(1, c_in, 1))
+        self.bias = nn.Parameter(torch.zeros(1, c_in, 1))
+        self.sub, self.std, self.mul, self.add = torch.zeros(1), torch.ones(1), torch.ones(1), torch.zeros(1)
+    
+    def forward(self, x:Tensor, mode:Tensor):
+        """Args:
+
+            x: rank 3 tensor with shape [batch size x c_in x sequence length]
+            mode: torch.tensor(True) to normalize data and torch.tensor(False) to reverse normalization
+        """
+        
+        # Normalize
+        if mode: 
+            if self.subtract_last:
+                self.sub = x[..., -1].unsqueeze(-1).detach()
+            else:
+                self.sub = torch.mean(x, dim=-1, keepdim=True).detach()
+            self.std = torch.std(x, dim=-1, keepdim=True, unbiased=False).detach() + self.eps
+            if self.affine:
+                x = x.sub(self.sub)
+                x = x.div(self.std)
+                x = x.mul(self.weight)
+                x = x.add(self.bias)
+                return x
+            else:
+                x = x.sub(self.sub)
+                x = x.div(self.std)
+                return x
+        
+        # Denormalize
+        else: 
+            if self.affine:
+                x = x.sub(self.bias)
+                x = x.div(self.weight)
+                x = x.mul(self.std)
+                x = x.add(self.sub)
+                return x
+            else:
+                x = x.mul(self.std)
+                x = x.add(self.sub)
+                return x
+
+# %% ../../nbs/029_models.layers.ipynb 70
 def create_pool_head(n_in, c_out, seq_len=None, concat_pool=False, fc_dropout=0., bn=False, y_range=None, **kwargs):
     if kwargs: print(f'{kwargs}  not being used')
     if concat_pool: n_in*=2
@@ -744,7 +912,7 @@ setattr(average_pool_head, "__name__", "average_pool_head")
 concat_pool_head = partial(pool_head, concat_pool=True)
 setattr(concat_pool_head, "__name__", "concat_pool_head")
 
-# %% ../../nbs/029_models.layers.ipynb 68
+# %% ../../nbs/029_models.layers.ipynb 72
 def max_pool_head(n_in, c_out, seq_len, fc_dropout=0., bn=False, y_range=None, **kwargs):
     if kwargs: print(f'{kwargs}  not being used')
     layers = [nn.MaxPool1d(seq_len, **kwargs), Flatten()]
@@ -752,7 +920,7 @@ def max_pool_head(n_in, c_out, seq_len, fc_dropout=0., bn=False, y_range=None, *
     if y_range: layers += [SigmoidRange(*y_range)]
     return nn.Sequential(*layers)
 
-# %% ../../nbs/029_models.layers.ipynb 70
+# %% ../../nbs/029_models.layers.ipynb 74
 def create_pool_plus_head(*args, lin_ftrs=None, fc_dropout=0., concat_pool=True, bn_final=False, lin_first=False, y_range=None):
     nf = args[0]
     c_out = args[1]
@@ -773,7 +941,7 @@ def create_pool_plus_head(*args, lin_ftrs=None, fc_dropout=0., concat_pool=True,
 
 pool_plus_head = create_pool_plus_head
 
-# %% ../../nbs/029_models.layers.ipynb 72
+# %% ../../nbs/029_models.layers.ipynb 76
 def create_conv_head(*args, adaptive_size=None, y_range=None):
     nf = args[0]
     c_out = args[1]
@@ -789,7 +957,7 @@ def create_conv_head(*args, adaptive_size=None, y_range=None):
 
 conv_head = create_conv_head
 
-# %% ../../nbs/029_models.layers.ipynb 74
+# %% ../../nbs/029_models.layers.ipynb 78
 def create_mlp_head(nf, c_out, seq_len=None, flatten=True, fc_dropout=0., bn=False, lin_first=False, y_range=None):
     if flatten: nf *= seq_len
     layers = [Flatten()] if flatten else []
@@ -799,7 +967,7 @@ def create_mlp_head(nf, c_out, seq_len=None, flatten=True, fc_dropout=0., bn=Fal
 
 mlp_head = create_mlp_head
 
-# %% ../../nbs/029_models.layers.ipynb 76
+# %% ../../nbs/029_models.layers.ipynb 80
 def create_fc_head(nf, c_out, seq_len=None, flatten=True, lin_ftrs=None, y_range=None, fc_dropout=0., bn=False, bn_final=False, act=nn.ReLU(inplace=True)):
     if flatten: nf *= seq_len
     layers = [Flatten()] if flatten else []
@@ -812,7 +980,7 @@ def create_fc_head(nf, c_out, seq_len=None, flatten=True, lin_ftrs=None, y_range
 
 fc_head = create_fc_head
 
-# %% ../../nbs/029_models.layers.ipynb 78
+# %% ../../nbs/029_models.layers.ipynb 82
 def create_rnn_head(*args, fc_dropout=0., bn=False, y_range=None):
     nf = args[0]
     c_out = args[1]
@@ -823,7 +991,7 @@ def create_rnn_head(*args, fc_dropout=0., bn=False, y_range=None):
 
 rnn_head = create_rnn_head
 
-# %% ../../nbs/029_models.layers.ipynb 80
+# %% ../../nbs/029_models.layers.ipynb 84
 def imputation_head(c_in, c_out, seq_len=None, ks=1, y_range=None, fc_dropout=0.):
     layers = [nn.Dropout(fc_dropout), nn.Conv1d(c_in, c_out, ks)]
     if y_range is not None: 
@@ -831,7 +999,7 @@ def imputation_head(c_in, c_out, seq_len=None, ks=1, y_range=None, fc_dropout=0.
         layers += [SigmoidRange(*y_range)]
     return nn.Sequential(*layers)
 
-# %% ../../nbs/029_models.layers.ipynb 82
+# %% ../../nbs/029_models.layers.ipynb 86
 class create_conv_lin_nd_head(nn.Sequential):
     "Module to create a nd output head"
 
@@ -865,7 +1033,7 @@ conv_lin_nd_head = create_conv_lin_nd_head
 conv_lin_3d_head = create_conv_lin_nd_head # included for compatibility
 create_conv_lin_3d_head = create_conv_lin_nd_head # included for compatibility
 
-# %% ../../nbs/029_models.layers.ipynb 87
+# %% ../../nbs/029_models.layers.ipynb 91
 class create_lin_nd_head(nn.Sequential):
     "Module to create a nd output head with linear layers"
 
@@ -893,7 +1061,7 @@ lin_nd_head = create_lin_nd_head
 lin_3d_head = create_lin_nd_head # included for compatiblity
 create_lin_3d_head = create_lin_nd_head # included for compatiblity
 
-# %% ../../nbs/029_models.layers.ipynb 92
+# %% ../../nbs/029_models.layers.ipynb 96
 class create_conv_3d_head(nn.Sequential):
     "Module to create a nd output head with a convolutional layer"
     def __init__(self, n_in, n_out, seq_len, d, use_bn=False, **kwargs):
@@ -906,17 +1074,17 @@ class create_conv_3d_head(nn.Sequential):
         
 conv_3d_head = create_conv_3d_head
 
-# %% ../../nbs/029_models.layers.ipynb 95
+# %% ../../nbs/029_models.layers.ipynb 99
 def universal_pool_head(n_in, c_out, seq_len, mult=2, pool_n_layers=2, pool_ln=True, pool_dropout=0.5, pool_act=nn.ReLU(),
                         zero_init=True, bn=True, fc_dropout=0.):
     return nn.Sequential(AdaptiveWeightedAvgPool1d(n_in, seq_len, n_layers=pool_n_layers, mult=mult, ln=pool_ln, dropout=pool_dropout, act=pool_act), 
                          Flatten(), LinBnDrop(n_in, c_out, p=fc_dropout, bn=bn))
 
-# %% ../../nbs/029_models.layers.ipynb 97
+# %% ../../nbs/029_models.layers.ipynb 101
 heads = [mlp_head, fc_head, average_pool_head, max_pool_head, concat_pool_head, pool_plus_head, conv_head, rnn_head, 
          conv_lin_nd_head, lin_nd_head, conv_3d_head, attentional_pool_head, universal_pool_head, gwa_pool_head]
 
-# %% ../../nbs/029_models.layers.ipynb 99
+# %% ../../nbs/029_models.layers.ipynb 103
 class SqueezeExciteBlock(Module):
     def __init__(self, ni, reduction=16):
         self.avg_pool = GAP1d(1)
@@ -927,7 +1095,7 @@ class SqueezeExciteBlock(Module):
         y = self.fc(y).unsqueeze(2)
         return x * y.expand_as(x)
 
-# %% ../../nbs/029_models.layers.ipynb 101
+# %% ../../nbs/029_models.layers.ipynb 105
 class GaussianNoise(Module):
     """Gaussian noise regularizer.
 
@@ -952,7 +1120,7 @@ class GaussianNoise(Module):
             x = x + sampled_noise
         return x 
 
-# %% ../../nbs/029_models.layers.ipynb 105
+# %% ../../nbs/029_models.layers.ipynb 109
 class PositionwiseFeedForward(nn.Sequential):
     def __init__(self, dim, dropout=0., act='reglu', mlp_ratio=1):
         act_mult = 2 if act.lower() in ["geglu", "reglu"] else 1
@@ -967,7 +1135,7 @@ class TokenLayer(Module):
     def forward(self, x): return x[..., 0] if self.token is not None else x.mean(-1)
     def __repr__(self): return f"{self.__class__.__name__}()"
 
-# %% ../../nbs/029_models.layers.ipynb 107
+# %% ../../nbs/029_models.layers.ipynb 111
 class ScaledDotProductAttention(Module):
     r"""Scaled Dot-Product Attention module (Attention is all you need by Vaswani et al., 2017) with optional residual attention from previous layer 
     (Realformer: Transformer likes residual attention by He et al, 2020) and locality self sttention (Vision Transformer for Small-Size Datasets 
@@ -1023,7 +1191,7 @@ class ScaledDotProductAttention(Module):
         if self.res_attention: return output, attn_weights, attn_scores
         else: return output, attn_weights
 
-# %% ../../nbs/029_models.layers.ipynb 109
+# %% ../../nbs/029_models.layers.ipynb 113
 class MultiheadAttention(Module):
     def __init__(self, d_model, n_heads, d_k=None, d_v=None, res_attention=False, attn_dropout=0., proj_dropout=0., qkv_bias=True, lsa=False):
         """Multi Head Attention Layer
@@ -1077,7 +1245,7 @@ class MultiheadAttention(Module):
         if self.res_attention: return output, attn_weights, attn_scores
         else: return output, attn_weights 
 
-# %% ../../nbs/029_models.layers.ipynb 116
+# %% ../../nbs/029_models.layers.ipynb 120
 class MultiConv1d(Module):
     """Module that applies multiple convolutions with different kernel sizes"""
 
@@ -1105,17 +1273,17 @@ class MultiConv1d(Module):
         x = torch.cat(output, dim=self.dim)
         return x
 
-# %% ../../nbs/029_models.layers.ipynb 118
+# %% ../../nbs/029_models.layers.ipynb 122
 class LSTMOutput(Module):
     def forward(self, x): return x[0]
     def __repr__(self): return f'{self.__class__.__name__}()'
 
-# %% ../../nbs/029_models.layers.ipynb 120
+# %% ../../nbs/029_models.layers.ipynb 124
 def emb_sz_rule(n_cat):
     "Rule of thumb to pick embedding size corresponding to `n_cat` (original from fastai)"
     return min(600, round(1.6 * n_cat**0.56))
 
-# %% ../../nbs/029_models.layers.ipynb 122
+# %% ../../nbs/029_models.layers.ipynb 126
 class TSEmbedding(nn.Embedding):
     "Embedding layer with truncated normal initialization adapted from fastai"
     def __init__(self, ni, nf, std=0.01, padding_idx=None):
@@ -1124,7 +1292,7 @@ class TSEmbedding(nn.Embedding):
         if padding_idx is not None:
             nn.init.zeros_(self.weight.data[padding_idx])
 
-# %% ../../nbs/029_models.layers.ipynb 123
+# %% ../../nbs/029_models.layers.ipynb 127
 class MultiEmbedding(Module):
     def __init__(self, c_in, n_cat_embeds, cat_embed_dims=None, cat_pos=None, std=0.01, cat_padding_idxs=None):
         cat_n_embeds = listify(n_cat_embeds)
