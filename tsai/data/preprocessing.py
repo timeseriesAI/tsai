@@ -7,6 +7,7 @@ import re
 from joblib import dump, load
 import sklearn
 from sklearn.base import BaseEstimator, TransformerMixin
+from pandas._libs.tslibs.timestamps import Timestamp
 from fastcore.transform import Transform, ItemTransform, Pipeline
 from fastai.data.transforms import Categorize
 from fastai.data.load import DataLoader
@@ -16,14 +17,15 @@ from .core import *
 from .preparation import *
 
 # %% auto 0
-__all__ = ['Nan2Value', 'TSRandomStandardize', 'default_date_attr', 'StandardScaler', 'RobustScaler', 'Normalizer', 'BoxCox',
-           'YeoJohnshon', 'Quantile', 'ToNumpyCategory', 'OneHot', 'TSNan2Value', 'TSStandardize', 'TSNormalize',
-           'TSStandardizeTuple', 'TSCatEncode', 'TSDropFeatByKey', 'TSClipOutliers', 'TSClip', 'TSSelfMissingness',
-           'TSRobustScale', 'get_stats_with_uncertainty', 'get_random_stats', 'TSGaussianStandardize', 'TSDiff',
-           'TSLog', 'TSCyclicalPosition', 'TSLinearPosition', 'TSMissingness', 'TSPositionGaps', 'TSRollingMean',
-           'TSLogReturn', 'TSAdd', 'TSClipByVar', 'TSDropVars', 'TSOneHotEncode', 'TSPosition', 'TSShrinkDataFrame',
-           'TSOneHotEncoder', 'TSCategoricalEncoder', 'TSDateTimeEncoder', 'TSMissingnessEncoder', 'Preprocessor',
-           'ReLabeler']
+__all__ = ['Nan2Value', 'TSRandomStandardize', 'default_date_attr', 'PD_TIME_UNITS', 'StandardScaler', 'RobustScaler',
+           'Normalizer', 'BoxCox', 'YeoJohnshon', 'Quantile', 'ToNumpyCategory', 'OneHot', 'TSNan2Value',
+           'TSStandardize', 'TSNormalize', 'TSStandardizeTuple', 'TSCatEncode', 'TSDropFeatByKey', 'TSClipOutliers',
+           'TSClip', 'TSSelfMissingness', 'TSRobustScale', 'get_stats_with_uncertainty', 'get_random_stats',
+           'TSGaussianStandardize', 'TSDiff', 'TSLog', 'TSCyclicalPosition', 'TSLinearPosition', 'TSMissingness',
+           'TSPositionGaps', 'TSRollingMean', 'TSLogReturn', 'TSAdd', 'TSClipByVar', 'TSDropVars', 'TSOneHotEncode',
+           'TSPosition', 'TSShrinkDataFrame', 'TSOneHotEncoder', 'TSCategoricalEncoder', 'TSDateTimeEncoder',
+           'TSMissingnessEncoder', 'TSSortByColumns', 'TSSelectColumns', 'TSStepsSinceStart', 'TSStandardScaler',
+           'TSAddMissingTimestamps', 'TSDropDuplicates', 'TSFillMissing', 'Preprocessor', 'ReLabeler']
 
 # %% ../../nbs/009_data.preprocessing.ipynb 6
 class ToNumpyCategory(Transform):
@@ -871,19 +873,7 @@ class TSShrinkDataFrame(BaseEstimator, TransformerMixin):
         ):
         self.columns, self.skip, self.obj2cat, self.int2uint, self.verbose = listify(columns), listify(skip), obj2cat, int2uint, verbose
         
-    def fit(self, X, **kwargs):
-        """
-        Fit the shrinker to a dataframe or pd.Series
-
-        Parameters:
-        -----------
-        X: pd.DataFrame or pd.Series. Data to fit the shrinker to
-        kwargs: dict, optional. Used for compatibility. {} by default
-        
-        Returns:
-        --------
-        self
-        """
+    def fit(self, X:pd.DataFrame, **kwargs):
         if isinstance(X, pd.Series): 
             X = X.to_frame()
         assert isinstance(X, pd.DataFrame), "X must be a pd.DataFrame or pd.Series" 
@@ -893,19 +883,7 @@ class TSShrinkDataFrame(BaseEstimator, TransformerMixin):
             self.dt = df_shrink_dtypes(X, self.skip, obj2cat=self.obj2cat, int2uint=self.int2uint)
         return self
         
-    def transform(self, X, **kwargs):
-        """
-        Shrink the memory usage of a dataframe or pd.Series
-
-        Parameters:
-        -----------
-        X: pd.DataFrame. or pd.Series. Data to shrink
-        kwargs: dict, optional. Used for compatibility. {} by default
-
-        Returns:
-        --------
-        X_shrunk: pd.DataFrame or pd.Series. The shrunk data
-        """
+    def transform(self, X:pd.DataFrame, **kwargs):
         if isinstance(X, pd.Series): 
             col_name = X.name
             X = X.to_frame()
@@ -927,42 +905,60 @@ class TSShrinkDataFrame(BaseEstimator, TransformerMixin):
         return X
          
     def inverse_transform(self, X):
-        """
-        Built for compatibility. Does nothing.
-        """
         return X
 
 # %% ../../nbs/009_data.preprocessing.ipynb 82
 class TSOneHotEncoder(BaseEstimator, TransformerMixin):
+    "Encode categorical variables using one-hot encoding"
 
-    def __init__(self, columns=None, drop=True, add_na=True, dtype=np.int64):
+    def __init__(
+        self,
+        columns=None,  # (str or List[str], optional): Column name(s) to encode. If None, all columns will be encoded. Defaults to None.
+        drop=True,  # (bool, optional): Whether to drop the original columns after encoding. Defaults to True.
+        add_na=True,  # (bool, optional): Whether to add a 'NaN' category for missing values. Defaults to True.
+        dtype=np.int8,  # (type, optional): Data type of the encoded output. Defaults to np.int64.
+    ):
         self.columns = listify(columns)
         self.drop, self.add_na, self.dtype = drop, add_na, dtype
-        
 
-    def fit(self, X:pd.DataFrame, y=None, **fit_params):
+    def fit(self, X:pd.DataFrame, **kwargs):
         assert isinstance(X, pd.DataFrame)
         if not self.columns: self.columns = X.columns
         handle_unknown = "ignore" if self.add_na else "error"
         self.ohe_tfm = sklearn.preprocessing.OneHotEncoder(handle_unknown=handle_unknown)
+        self.dtypes = [X[c].dtype for c in self.columns]
         if len(self.columns) == 1:
             self.ohe_tfm.fit(X[self.columns].to_numpy().reshape(-1, 1))
-        else: 
+        else:
             self.ohe_tfm.fit(X[self.columns])
         return self
 
-    def transform(self, X:pd.DataFrame, y=None, **transform_params):
+    def transform(self, X:pd.DataFrame, **kwargs):
         assert isinstance(X, pd.DataFrame)
         if len(self.columns) == 1:
             output = self.ohe_tfm.transform(X[self.columns].to_numpy().reshape(-1, 1)).toarray().astype(self.dtype)
-        else: 
+        else:
             output = self.ohe_tfm.transform(X[self.columns]).toarray().astype(self.dtype)
         new_cols = []
-        for i,col in enumerate(self.columns): 
+        for i,col in enumerate(self.columns):
             for cats in self.ohe_tfm.categories_[i]:
                 new_cols.append(f"{str(col)}_{str(cats)}")
         X[new_cols] = output
+        self.new_cols = new_cols
         if self.drop: X = X.drop(self.columns, axis=1)
+        return X
+
+    def inverse_transform(self, X:pd.DataFrame, **kwargs):
+        if len(self.new_cols) == 1:
+            output = self.ohe_tfm.inverse_transform(X[self.new_cols].to_numpy().reshape(-1, 1))
+        else:
+            output = self.ohe_tfm.inverse_transform(X[self.new_cols])
+        for i,(col,d) in enumerate(zip(self.columns, self.dtypes)):
+            X[col] = output[:, i]
+            if hasattr(d, "categories"):
+                X[col] = X[col].astype('category')
+        if self.drop:
+            X = X.drop(self.new_cols, axis=1)
         return X
 
 # %% ../../nbs/009_data.preprocessing.ipynb 84
@@ -973,7 +969,7 @@ class TSCategoricalEncoder(BaseEstimator, TransformerMixin):
         columns=None, # List[str], optional. Columns to encode, all columns by default.
         add_na=True, # bool, optional. Add a NaN category, True by default.
         sort=True, # bool, optional. Sort categories by frequency, True by default.
-        categories=None, # dict, optional. The custom mapping of categories. None by default.
+        categories='auto', # dict, optional. The custom mapping of categories. 'auto' by default.
         inplace=True, # bool, optional. Modify input DataFrame, True by default.
         prefix=None, # str, optional. Prefix for created column names. None by default.
         suffix=None, # str, optional. Suffix for created column names. None by default.
@@ -986,23 +982,13 @@ class TSCategoricalEncoder(BaseEstimator, TransformerMixin):
         self.sort = sort
         self.inplace = inplace
         self.drop = drop
-        self.categories = categories
+        if categories is None or categories == 'auto': self.categories = None
+        else:
+            assert is_listy(categories) and len(categories) > 0, "you must pass a list or list of lists of categories"
+            self.categories = self.to_categorical(categories)
 
 
     def fit(self, X, idxs=None, **kwargs):
-        """
-        Fit the encoder to a dataframe or pd.Series
-
-        Parameters:
-        -----------
-        X: pd.DataFrame or pd.Series. Data to fit the encoder to
-        idxs: Optional[List[int]] indices of the data to fit the encoder to
-        kwargs: dict, optional. Used for compatibility. {} by default
-        
-        Returns:
-        --------
-        self
-        """
         assert isinstance(X, (pd.DataFrame, pd.Series))
         if not self.columns:
             if isinstance(X, pd.DataFrame):
@@ -1024,24 +1010,11 @@ class TSCategoricalEncoder(BaseEstimator, TransformerMixin):
                         categories = np.sort(categories)
                 categories = pd.CategoricalDtype(categories=categories, ordered=True)
                 _categories.append(categories)
-            
-                self.categories = _categories
-            del _categories; gc.collect()
+            self.categories = _categories
+        assert len(self.categories) == len(self.columns)
         return self
 
     def transform(self, X, **kwargs):
-        """
-        Encode the categorical columns of a dataframe
-
-        Parameters:
-        -----------
-        X: pd.DataFrame or pd.Series. Data to encode
-        kwargs: dict, optional. Used for compatibility. {} by default
-
-        Returns:
-        --------
-        X_encoded: pd.DataFrame. The encoded data
-        """
         assert isinstance(X, (pd.DataFrame, pd.Series))
         if isinstance(X, pd.DataFrame):
             columns = X.columns
@@ -1066,18 +1039,6 @@ class TSCategoricalEncoder(BaseEstimator, TransformerMixin):
         return X
 
     def inverse_transform(self, X, **kwargs):
-        """
-        Return the original values of encoded columns of a dataframe
-
-        Parameters:
-        -----------
-        X: pd.DataFrame or pd.Series. Encoded data to decode
-        kwargs: dict, optional. Used for compatibility. {} by default
-
-        Returns:
-        --------
-        X_decoded: pd.DataFrame. The encoded data
-        """
         assert isinstance(X, (pd.DataFrame, pd.Series))
         if isinstance(X, pd.DataFrame):
             columns = X.columns
@@ -1099,6 +1060,12 @@ class TSCategoricalEncoder(BaseEstimator, TransformerMixin):
             else:
                 X = pd.Series(self.categories[0].categories[X], name=X.name, index=X.index)
         return X
+
+    def to_categorical(self, categories):
+        if is_listy(categories[0]):
+            return [pd.CategoricalDtype(categories=np.sort(c) if self.sort else c, ordered=True) for c in categories]
+        else:
+            return pd.CategoricalDtype(categories=np.sort(categories) if self.sort else categories, ordered=True)
 
 # %% ../../nbs/009_data.preprocessing.ipynb 90
 default_date_attr = ['Year', 'Month', 'Week', 'Day', 'Dayofweek', 'Dayofyear', 'Is_month_end', 'Is_month_start', 
@@ -1155,7 +1122,300 @@ class TSMissingnessEncoder(BaseEstimator, TransformerMixin):
         X.drop(self.missing_columns, axis=1, inplace=True)
         return X
 
-# %% ../../nbs/009_data.preprocessing.ipynb 96
+# %% ../../nbs/009_data.preprocessing.ipynb 95
+class TSSortByColumns(TransformerMixin, BaseEstimator):
+    "Transforms a dataframe by sorting by columns."
+
+    def __init__(self, 
+        columns, # Columns to sort by
+        ascending=True, # Ascending or descending
+        inplace=True, # Perform operation in place
+        kind='stable', # Type of sort to use
+        na_position='last', # Where to place NaNs
+        ignore_index=False, # Do not preserve index
+        key=None, # Function to apply to values before sorting
+        ):
+        self.columns, self.ascending, self.inplace, self.kind, self.na_position, self.ignore_index, self.key = \
+        listify(columns), ascending, inplace, kind, na_position, ignore_index, key
+    
+    def fit(self, X, **kwargs):
+        assert isinstance(X, (pd.DataFrame, pd.Series))
+        return self
+        
+    def transform(self, X, **kwargs):
+        assert isinstance(X, (pd.DataFrame, pd.Series))
+        if self.inplace:
+            X.sort_values(self.columns, axis=0, ascending=self.ascending, inplace=True, kind=self.kind, 
+                          na_position=self.na_position, ignore_index=self.ignore_index, key=self.key)
+        else:
+            X = X.sort_values(self.columns, axis=0, ascending=self.ascending, inplace=False, kind=self.kind, 
+                              na_position=self.na_position, ignore_index=self.ignore_index, key=self.key)
+        return X
+
+    def inverse_transform(self, X, **kwargs):
+        return X
+
+# %% ../../nbs/009_data.preprocessing.ipynb 97
+class TSSelectColumns(TransformerMixin, BaseEstimator):
+    "Transform used to selec columns"
+
+    def __init__(self, 
+        columns # str or List[str]. Selected columns.
+        ):
+        self.columns = listify(columns)
+    
+    def fit(self, X, **kwargs):
+        assert isinstance(X, (pd.DataFrame, pd.Series))
+        return self
+        
+    def transform(self, X, idxs=None, **kwargs):
+        assert isinstance(X, (pd.DataFrame, pd.Series))
+        if idxs is not None:
+            return X.loc[idxs, self.columns]
+        return X[self.columns]
+
+    def inverse_transform(self, X, **kwargs):
+        return X
+
+# %% ../../nbs/009_data.preprocessing.ipynb 99
+PD_TIME_UNITS = dict([
+    ("Y", "year"), 
+    ("M", "month"), 
+    ("W", "week"), 
+    ("D", "day"), 
+    ("h", "hour"), 
+    ("m", "minute"), 
+    ("s", "second"), 
+    ("ms", "millisecond"), 
+    ("us", "microsecond"), 
+    ("ns", "nanosecond"), 
+    ("ps", "picosecond"), 
+    ("fs", "femtosecond"), 
+    ("as", "attosecond")
+])
+
+class TSStepsSinceStart(BaseEstimator, TransformerMixin):
+    "Add a column indicating the number of steps since the start in each row"
+
+    def __init__(self,
+        datetime_col, # (str or List[str]): Column name(s) containing datetime values.
+        datetime_unit="D", #(str, optional): Time unit of the datetime values. Defaults to 'D'.
+        start_datetime=None, #(str or pd.Timestamp, optional): The start datetime value. If None, the minimum value of the datetime_col is used. Defaults to None.
+        drop=False, # (bool, optional): Whether to drop the datetime_col column after computing time steps. Defaults to False.
+        dtype=None, # (type, optional): Data type of the time steps. Defaults to None.
+):
+
+        self.datetime_col = listify(datetime_col)[0]
+        self.datetime_div = np.timedelta64(1, datetime_unit)
+        datetime_value = PD_TIME_UNITS[datetime_unit]
+        self.drop = drop
+        self.dtype = dtype
+        self.new_col = f"{datetime_value}s_since_start"
+        self.datetime_unit = datetime_unit
+        if start_datetime is None:
+            self.start_datetime = None  
+        elif isinstance(start_datetime, Timestamp):
+            self.start_datetime = start_datetime
+        else:
+            self.start_datetime = Timestamp(start_datetime)
+
+    def fit(self, X, **kwargs):
+        assert isinstance(X, (pd.DataFrame, pd.Series))
+        if self.start_datetime is None:
+            self.start_datetime = X[self.datetime_col].min()
+        self.ori_dtype = X[self.datetime_col].dtypes
+        return self
+
+    def transform(self, X, **kwargs):
+        assert isinstance(X, (pd.DataFrame, pd.Series))
+        time_deltas = (pd.to_timedelta(X[self.datetime_col] - self.start_datetime) / self.datetime_div).astype(dtype=self.dtype)
+        if self.drop: 
+            X[self.datetime_col] = time_deltas
+            X.rename(columns={self.datetime_col:self.new_col}, inplace=True)
+        else:
+            X[self.new_col] = time_deltas
+        return X
+
+    def inverse_transform(self, X, **kwargs):
+        assert isinstance(X, (pd.DataFrame, pd.Series))
+        datetimes  = pd.to_datetime(X[self.new_col] * self.datetime_div + self.start_datetime).astype(dtype=self.ori_dtype)
+        if self.drop: 
+            X[self.new_col] = datetimes
+            X.rename(columns={self.new_col:self.datetime_col}, inplace=True)
+        else:
+            X[self.datetime_col] = datetimes
+        return X
+
+# %% ../../nbs/009_data.preprocessing.ipynb 101
+class TSStandardScaler(TransformerMixin, BaseEstimator):
+    "Scale the values of specified columns in the input DataFrame to have a mean of 0 and standard deviation of 1."
+
+    def __init__(self,
+        columns=None, # Column name(s) to be transformed. If None, all columns are transformed. Defaults to None.
+        mean=None, # Mean value for each column. If None, the mean value of each column is calculated during the fit method. Defaults to None.
+        std=None, # Stdev value for each column. If None, the standard deviation value of each column is calculated during the fit method. Defaults to None.
+        eps=1e-6, # A small value to avoid division by zero. Defaults to 1e-6.
+    ):
+        self.columns = listify(columns)
+        self.mean = mean
+        self.std = std
+        self.eps = np.array(eps, dtype='float32')
+    
+    def fit(self, X, idxs=None, **kwargs):
+        assert isinstance(X, (pd.DataFrame, pd.Series))
+        if not self.columns:
+            if isinstance(X, pd.DataFrame):
+                self.columns = X.columns
+            else:
+                self.columns = X.name
+        if idxs is None:
+            idxs = slice(None)
+        if self.mean is None:
+            self.mean = []
+            for c in self.columns:
+                self.mean.append(X.loc[idxs, c].mean())
+        else:
+            assert len(self.mean) == len(self.columns)
+        if self.std is None:
+            self.std = []
+            for c in self.columns:
+                self.std.append(X.loc[idxs, c].std())
+        else:
+            assert len(self.std) == len(self.columns)
+        return self
+
+    def transform(self, X, **kwargs):
+        assert isinstance(X, (pd.DataFrame, pd.Series))
+        for c, m, s in zip(self.columns, self.mean, self.std):
+            X[c] = (X[c] - m) / (s + self.eps)
+        return X
+
+    def inverse_transform(self, X, **kwargs):
+        assert isinstance(X, (pd.DataFrame, pd.Series))
+        for c, m, s in zip(self.columns, self.mean, self.std):
+            X[c] = X[c] * (s + self.eps)  + m
+        return X
+
+# %% ../../nbs/009_data.preprocessing.ipynb 104
+class TSAddMissingTimestamps(TransformerMixin, BaseEstimator):
+    def __init__(self, datetime_col=None, use_index=False, unique_id_cols=None, fill_value=np.nan, range_by_group=True, 
+                 start_date=None, end_date=None, freq=None):
+        assert datetime_col is not None or use_index
+        self.func = partial(add_missing_timestamps, datetime_col=datetime_col, use_index=use_index, unique_id_cols=unique_id_cols, 
+                            fill_value=fill_value, range_by_group=range_by_group, start_date=start_date, end_date=end_date, 
+                            freq=freq)
+    
+    def fit(self, X, **kwargs):
+        assert isinstance(X, (pd.DataFrame, pd.Series))
+        return self
+        
+    def transform(self, X, **kwargs):
+        assert isinstance(X, (pd.DataFrame, pd.Series))
+        X = self.func(X)
+        return X
+
+    def inverse_transform(self, X, **kwargs):
+        return X
+
+# %% ../../nbs/009_data.preprocessing.ipynb 108
+class TSDropDuplicates(TransformerMixin, BaseEstimator):
+    "Drop rows with duplicated values in a set of columns, optionally including a datetime column or index"
+
+    def __init__(self,
+        datetime_col=None, #(str or List[str], optional): Name(s) of column(s) containing datetime values. If None, the index is used if use_index=True.
+        use_index=False, #(bool, optional): Whether to include the index in the set of columns for checking duplicates. Defaults to False.
+        unique_id_cols=None, #(str or List[str], optional): Name(s) of column(s) to be included in the set of columns for checking duplicates. Defaults to None.
+        keep='last', #(str, optional): Which duplicated values to keep. Choose from {'first', 'last', False}. Defaults to 'last'.
+        reset_index=False, #(bool, optional): Whether to reset the index after dropping duplicates. Ignored if use_index=False. Defaults to False.
+    ):
+        assert datetime_col is not None or use_index, "you need to either pass a datetime_col or set use_index=True"
+    
+        self.datetime_col, self.use_index, self.unique_id_cols, self.keep, self.reset_index =  \
+        listify(datetime_col), use_index, listify(unique_id_cols), keep, reset_index
+    
+    def fit(self, X, **kwargs):
+        assert isinstance(X, (pd.DataFrame, pd.Series))
+        return self
+        
+    def transform(self, X, **kwargs):
+        assert isinstance(X, (pd.DataFrame, pd.Series))
+        if self.use_index:
+            cols = [X.index.name or 'index'] + self.unique_id_cols
+            idxs_to_drop = X.reset_index().duplicated(subset=cols, keep=self.keep)
+        else:
+            cols = self.datetime_col + self.unique_id_cols
+            idxs_to_drop = X.duplicated(subset=cols, keep=self.keep)
+        if idxs_to_drop.sum():
+            X.drop(index=idxs_to_drop[idxs_to_drop].index, inplace=True)
+            if not self.use_index and self.reset_index:
+                X.reset_index(drop=True, inplace=True)
+        return X
+
+    def inverse_transform(self, X, **kwargs):
+        return X
+
+# %% ../../nbs/009_data.preprocessing.ipynb 110
+class TSFillMissing(TransformerMixin, BaseEstimator):
+    "Fill missing values in specified columns using the specified method and/ or value."
+
+    def __init__(self,
+        columns=None, #(str or List[str], optional): Column name(s) to be transformed. If None, all columns are transformed. Defaults to None.
+        unique_id_cols=None, #(str or List[str], optional): Col name(s) with unique ids for each row. If None, uses all rows at once. Defaults to None .
+        method=None, #(str, optional): The method to use for filling missing values, e.g. 'ffill', 'bfill'. If None, `value` is used. Defaults to None.
+        value=None, #(scalar or dict or Series, optional): The value to use for filling missing values. If None, `method` is used. Defaults to None.
+    ):
+
+        self.columns = listify(columns)
+        self.unique_id_cols = unique_id_cols
+        self.method = method
+        self.value = value
+    
+    def fit(self, X, **kwargs):
+        assert isinstance(X, (pd.DataFrame, pd.Series))
+        if not self.columns:
+            if isinstance(X, pd.DataFrame):
+                self.columns = X.columns
+            else:
+                self.columns = X.name
+        return self
+        
+    def transform(self, X, **kwargs):
+        assert isinstance(X, (pd.DataFrame, pd.Series))
+        if self.method is not None:
+            for c in self.columns:
+                if self.unique_id_cols is not None:
+                    X[c] = X.groupby(self.unique_id_cols)[c].fillna(method=self.method)
+                else:
+                    X[c].fillna(method=self.method, inplace=True)
+        if self.value is not None:
+            for c in self.columns:
+                X[c].fillna(value=self.value, inplace=True)
+        return X
+
+    def inverse_transform(self, X, **kwargs):
+        return X
+
+# %% ../../nbs/009_data.preprocessing.ipynb 112
+class TSMissingnessEncoder(BaseEstimator, TransformerMixin):
+
+    def __init__(self, columns=None):
+        self.columns = listify(columns)
+
+    def fit(self, X:pd.DataFrame, y=None, **fit_params):
+        assert isinstance(X, pd.DataFrame)
+        if not self.columns: self.columns = X.columns
+        self.missing_columns = [f"{cn}_missing" for cn in self.columns]
+        return self
+
+    def transform(self, X:pd.DataFrame, y=None, **transform_params):
+        assert isinstance(X, pd.DataFrame)
+        X[self.missing_columns] = X[self.columns].isnull().astype(np.int16)
+        return X
+
+    def inverse_transform(self, X):
+        return X
+
+# %% ../../nbs/009_data.preprocessing.ipynb 116
 class Preprocessor():
     def __init__(self, preprocessor, **kwargs): 
         self.preprocessor = preprocessor(**kwargs)
@@ -1197,7 +1457,7 @@ setattr(YeoJohnshon, '__name__', 'YeoJohnshon')
 Quantile = partial(sklearn.preprocessing.QuantileTransformer, n_quantiles=1_000, output_distribution='normal', random_state=0)
 setattr(Quantile, '__name__', 'Quantile')
 
-# %% ../../nbs/009_data.preprocessing.ipynb 104
+# %% ../../nbs/009_data.preprocessing.ipynb 124
 def ReLabeler(cm):
     r"""Changes the labels in a dataset based on a dictionary (class mapping) 
         Args:

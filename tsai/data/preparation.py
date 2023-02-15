@@ -217,57 +217,63 @@ def add_missing_value_cols(df, cols=None, dtype=float, fill_value=None):
     return df
 
 # %% ../../nbs/004_data.preparation.ipynb 28
-def add_missing_timestamps(df, datetime_col=None, use_index=False, groupby=None, fill_value=np.nan, range_by_group=True, 
-                           start_date=None, end_date=None, freq=None):
-    """Fills missing timestamps in a dataframe to a desired frequency
-    Args:
-        df:                      pandas DataFrame
-        datetime_col:            column that contains the datetime data (without duplicates within groups)
-        use_index:               indiates if the index contains the datetime data
-        groupby:                 column used to identify unique_ids
-        fill_value:              values that will be insert where missing dates exist. Default:np.nan
-        range_by_group:          if True, dates will be filled between min and max dates for each group. Otherwise, between the min and max dates in the df.
-        start_date:              start date to fill in missing dates
-        end_date:                end date to fill in missing dates
-        freq:                    frequence used to fillin the missing datetime
-    """
-    assert datetime_col is not None or use_index
+def add_missing_timestamps(
+    df, # pandas DataFrame
+    datetime_col=None, # column that contains the datetime data (without duplicates within groups)
+    use_index=False, # indicates if the index contains the datetime data
+    unique_id_cols=None, # column used to identify unique_ids
+    groupby=None, # same as unique_id_cols. Will be deprecated. Kept for compatiblity.
+    fill_value=np.nan, # values that will be insert where missing dates exist. Default:np.nan
+    range_by_group=True, # if True, dates will be filled between min and max dates for each group. Otherwise, between the min and max dates in the df.
+    start_date=None, # start date to fill in missing dates (same for all unique_ids)
+    end_date=None, # end date to fill in missing dates (same for all unique_ids)
+    freq=None, # frequency used to fill in the missing datetime
+    ):
+
+    assert datetime_col is not None or use_index, "you need to either pass a datetime_col or set use_index=True"
+    unique_id_cols = groupby or unique_id_cols
     if use_index:
         datetime_col = df.index.name or 'index'
-        df = df.reset_index()
+        df.reset_index(inplace=True)
     if is_listy(datetime_col): 
         assert len(datetime_col) == 1, 'you can only pass a single datetime_col'
         datetime_col = datetime_col[0]
-    if groupby is not None:
-        if is_listy(groupby): 
-            assert len(groupby) == 1, 'you can only pass a single groupby'
-            groupby = groupby[0]
-        keys = df[groupby].unique()
+    if unique_id_cols is not None:
+        if is_listy(unique_id_cols): 
+            assert len(unique_id_cols) == 1, 'you can only pass a single unique_id_cols'
+            unique_id_cols = unique_id_cols[0]
+        keys = df[unique_id_cols].unique()
         if range_by_group:
             # Fills missing dates between min and max for each unique id
-            min_dates = df.groupby(groupby)[datetime_col].min()
-            max_dates = df.groupby(groupby)[datetime_col].max()
+            min_dates = df.groupby(unique_id_cols)[datetime_col].min()
+            max_dates = df.groupby(unique_id_cols)[datetime_col].max()
             idx_tuples = flatten_list([[(d, key) for d in pd.date_range(min_date, max_date, freq=freq)] for min_date, max_date, key in \
                                        zip(min_dates, max_dates, keys)])
-            multi_idx = pd.MultiIndex.from_tuples(idx_tuples, names=[datetime_col, groupby])
-            df = df.set_index([datetime_col, groupby]).reindex(multi_idx, fill_value=np.nan).reset_index()
+            multi_idx = pd.MultiIndex.from_tuples(idx_tuples, names=[datetime_col, unique_id_cols])
+            df.set_index([datetime_col, unique_id_cols], inplace=True)
+            df = df.reindex(multi_idx, fill_value=fill_value, copy=False)
+            df.reset_index(inplace=True)
         else:
             # Fills missing dates between min and max - same for all unique ids
             start_date = start_date or df[datetime_col].min()
             end_date = end_date or df[datetime_col].max()
             dates = pd.date_range(start_date, end_date, freq=freq)
-            multi_idx = pd.MultiIndex.from_product((dates, keys), names=[datetime_col, groupby])
-            df = df.set_index([datetime_col, groupby]).reindex(multi_idx, fill_value=np.nan)
-            df = df.reset_index().sort_values(by=[groupby, datetime_col], kind='stable').reset_index(drop=True)
+            multi_idx = pd.MultiIndex.from_product((dates, keys), names=[datetime_col, unique_id_cols])
+            df.set_index([datetime_col, unique_id_cols], inplace=True)
+            df = df.reindex(multi_idx, fill_value=fill_value, copy=False)
+            df.sort_values(by=[unique_id_cols, datetime_col], inplace=True)
+            # df.reset_index(drop=True, inplace=True)
+            df.reset_index(inplace=True)
     else: 
         start_date = start_date or df[datetime_col].min()
         end_date = end_date or df[datetime_col].max()
         dates = pd.date_range(start_date, end_date, freq=freq)
         index = pd.Index(dates, name=datetime_col)
-        df = df.set_index([datetime_col]).reindex(index, fill_value=fill_value)
-        df = df.reset_index().reset_index(drop=True)
+        df.set_index([datetime_col], inplace=True)
+        df = df.reindex(index, fill_value=fill_value, copy=False)
+        df.reset_index(inplace=True)
     if use_index:
-        df = df.set_index(datetime_col)
+        df.set_index(datetime_col, inplace=True)
     return df
 
 # %% ../../nbs/004_data.preparation.ipynb 42
