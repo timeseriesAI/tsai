@@ -137,7 +137,7 @@ def df2Xy(df, sample_col=None, feat_col=None, data_cols=None, target_col=None, s
     if target_col is not None: 
         if any([t for t in target_col if t in data_cols]): print(f"Are you sure you want to include {target_col} in X?")
     if sort_cols:
-        df.sort_values(sort_cols, ascending=ascending, inplace=True)
+        df.sort_values(sort_cols, ascending=ascending, kind='stable', inplace=True)
 
     # X
     X = df.loc[:, data_cols].values
@@ -217,20 +217,27 @@ def add_missing_value_cols(df, cols=None, dtype=float, fill_value=None):
     return df
 
 # %% ../../nbs/004_data.preparation.ipynb 28
-def add_missing_timestamps(df, datetime_col, groupby=None, fill_value=np.nan, range_by_group=True, freq=None):
+def add_missing_timestamps(df, datetime_col=None, use_index=False, groupby=None, fill_value=np.nan, range_by_group=True, 
+                           start_date=None, end_date=None, freq=None):
     """Fills missing timestamps in a dataframe to a desired frequency
     Args:
         df:                      pandas DataFrame
         datetime_col:            column that contains the datetime data (without duplicates within groups)
+        use_index:               indiates if the index contains the datetime data
         groupby:                 column used to identify unique_ids
         fill_value:              values that will be insert where missing dates exist. Default:np.nan
         range_by_group:          if True, dates will be filled between min and max dates for each group. Otherwise, between the min and max dates in the df.
+        start_date:              start date to fill in missing dates
+        end_date:                end date to fill in missing dates
         freq:                    frequence used to fillin the missing datetime
     """
+    assert datetime_col is not None or use_index
+    if use_index:
+        datetime_col = df.index.name or 'index'
+        df = df.reset_index()
     if is_listy(datetime_col): 
         assert len(datetime_col) == 1, 'you can only pass a single datetime_col'
         datetime_col = datetime_col[0]
-    dates = pd.date_range(df[datetime_col].min(), df[datetime_col].max(), freq=freq)
     if groupby is not None:
         if is_listy(groupby): 
             assert len(groupby) == 1, 'you can only pass a single groupby'
@@ -246,13 +253,21 @@ def add_missing_timestamps(df, datetime_col, groupby=None, fill_value=np.nan, ra
             df = df.set_index([datetime_col, groupby]).reindex(multi_idx, fill_value=np.nan).reset_index()
         else:
             # Fills missing dates between min and max - same for all unique ids
+            start_date = start_date or df[datetime_col].min()
+            end_date = end_date or df[datetime_col].max()
+            dates = pd.date_range(start_date, end_date, freq=freq)
             multi_idx = pd.MultiIndex.from_product((dates, keys), names=[datetime_col, groupby])
             df = df.set_index([datetime_col, groupby]).reindex(multi_idx, fill_value=np.nan)
-            df = df.reset_index().sort_values(by=[groupby, datetime_col]).reset_index(drop=True)
+            df = df.reset_index().sort_values(by=[groupby, datetime_col], kind='stable').reset_index(drop=True)
     else: 
+        start_date = start_date or df[datetime_col].min()
+        end_date = end_date or df[datetime_col].max()
+        dates = pd.date_range(start_date, end_date, freq=freq)
         index = pd.Index(dates, name=datetime_col)
         df = df.set_index([datetime_col]).reindex(index, fill_value=fill_value)
         df = df.reset_index().reset_index(drop=True)
+    if use_index:
+        df = df.set_index(datetime_col)
     return df
 
 # %% ../../nbs/004_data.preparation.ipynb 42
@@ -441,7 +456,7 @@ def SlidingWindow(
             else: o = o.copy()
         if not seq_first: o = o.T
         if isinstance(o, pd.DataFrame):
-            if sort_by is not None: o.sort_values(by=sort_by, axis=0, ascending=ascending, inplace=True, ignore_index=True)
+            if sort_by is not None: o.sort_values(by=sort_by, axis=0, ascending=ascending, kind='stable', inplace=True, ignore_index=True)
             if get_x is None: X = o.values
             elif isinstance(_get_x, str) or (is_listy(_get_x) and isinstance(_get_x[0], str)): X = o.loc[:, _get_x].values
             else: X = o.iloc[:, _get_x].values
@@ -588,7 +603,7 @@ def SlidingWindowPanel(window_len:int, unique_id_cols:list, stride:Union[None, i
 
         if copy:
             o = o.copy()
-        o.sort_values(by=sort_by, axis=0, ascending=ascending, inplace=True, ignore_index=True, kind="mergesort")
+        o.sort_values(by=sort_by, axis=0, ascending=ascending, kind='stable', inplace=True, ignore_index=True)
         unique_id_values = o[unique_id_cols].drop_duplicates().values
         _x = []
         _y = []
@@ -675,7 +690,7 @@ def basic_data_preparation_fn(
     if use_index:
         df.sort_index(inplace=True)
     if sort_by is not None:
-        df.sort_values(sort_by, inplace=True)
+        df.sort_values(sort_by, kind='stable', inplace=True)
         
     if add_missing_datetimes:
         if not use_index:

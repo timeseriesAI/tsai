@@ -273,7 +273,7 @@ def feature_importance(self:Learner,
         plt.show()
 
     # Save feature importance
-    df = df.sort_values(metric_name, ascending=sign < 0).reset_index(drop=True)
+    df = df.sort_values(metric_name, ascending=sign < 0, kind='stable').reset_index(drop=True)
     if save_df_path:
         if save_df_path.split('.')[-1] != 'csv': save_df_path = f'{save_df_path}.csv'
         df.to_csv(f'{save_df_path}', index=False)
@@ -426,7 +426,7 @@ def step_importance(
         plt.show()
 
     # Save step importance
-    df = df.sort_values(metric_name, ascending=sign < 0).reset_index(drop=True)
+    df = df.sort_values(metric_name, ascending=sign < 0, kind='stable').reset_index(drop=True)
     if save_df_path:
         if save_df_path.split('.')[-1] != 'csv': save_df_path = f'{save_df_path}.csv'
         df.to_csv(f'{save_df_path}', index=False)
