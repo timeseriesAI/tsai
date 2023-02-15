@@ -39,55 +39,48 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 # %% ../nbs/002_utils.ipynb 4
 rng = default_rng()
 def random_choice(
-    a, # 1-D array-like or int
-    size=None, # int or tuple of ints, optional
-    replace=True, # bool, optional. Allow or disallow the same element to be drawn multiple times.
+    a, # 1-D array-like or int. The values from which to draw the samples.
+    size=None, # int or tuple of ints, optional. The shape of the output.
+    replace=True, # bool, optional. Whether or not to allow the same value to be drawn multiple times.
     p=None, # 1-D array-like, optional. The probabilities associated with each entry in a.
     axis=0, # int, optional. The axis along which the samples are drawn.
     shuffle=True, # bool, optional. Whether or not to shuffle the samples before returning them.
-    dtype=np.int64, # data type of the output.
+    dtype=None, # data type of the output.
     seed=None, # int or None, optional. Seed for the random number generator.
 ):
-    "Same as np.random.choice but with a faster random generator, dtype and seed"   
-    if seed is None: 
-        return rng.choice(a, size=size, replace=replace, p=p, axis=axis, shuffle=shuffle).astype(dtype=dtype, copy=False)
-    seed_rng = default_rng(seed)
-    return seed_rng.choice(a, size=size, replace=replace, p=p, axis=axis, shuffle=shuffle).astype(dtype=dtype, copy=False)
+    "Same as np.random.choice but with a faster random generator, dtype and seed"
+    rand_gen = default_rng(seed) if seed is not None else rng
+    result = rand_gen.choice(a, size=size, replace=replace, p=p, axis=axis, shuffle=shuffle)
+    if dtype is None:
+        return result
+    return result.astype(dtype=dtype, copy=False)
 
 
 def random_randint(
     low, # int, lower endpoint of interval (inclusive)
     high=None, # int, upper endpoint of interval (exclusive), or None for a single-argument form of low.
     size=None, # int or tuple of ints, optional. Output shape.
-    dtype=np.int64, # data type of the output.
+    dtype=int, # data type of the output.
     endpoint=False, # bool, optional. If True, `high` is an inclusive endpoint. If False, the range is open on the right.
     seed=None,  # int or None, optional. Seed for the random number generator.
 ):
     "Same as np.random.randint but with a faster random generator and seed"
-    if seed is None:
-        return rng.integers(low, high, size=size, dtype=dtype, endpoint=endpoint)
-    seed_rng = default_rng(seed)
-    return seed_rng.integers(low, high, size=size, dtype=dtype, endpoint=endpoint)
+    rand_gen = default_rng(seed) if seed is not None else rng
+    return rand_gen.integers(low, high, size=size, dtype=dtype, endpoint=endpoint)
 
 
 def random_rand(
-    *d,  # int or tuple of ints, optional. Output shape.
-    dtype=np.float64,  # data type of the output.
+    *d, # int or tuple of ints, optional. The dimensions of the returned array, must be non-negative.
+    dtype=None, # data type of the output.
     out=None, # ndarray, optional. Alternative output array in which to place the result.
-    seed=None  # int or None, optional. Seed for the random number generator.
+    seed=None # int or None, optional. Seed for the random number generator.
 ):
     "Same as np.random.rand but with a faster random generator, dtype and seed"
-    if seed is None:
-        if out is None:
-            return rng.random(d, dtype=dtype)
-        else:
-            rng.random(d, dtype=dtype, out=out)
-            return
-    seed_rng = default_rng(seed)
+    rand_gen = rng if seed is None else default_rng(seed)
     if out is None:
-        return seed_rng.random(d, dtype=dtype)
-    seed_rng.random(d, dtype=dtype, out=out)
-    return
+        return rand_gen.random(d, dtype=dtype)
+    else:
+        rand_gen.random(d, dtype=dtype, out=out)
 
 # %% ../nbs/002_utils.ipynb 8
 def is_nparray(o): return isinstance(o, np.ndarray)
