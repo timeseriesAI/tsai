@@ -21,19 +21,20 @@ __all__ = ['rng', 'bytes2size', 'b2s', 'memmap2cache', 'cache_memmap', 'a', 'b',
            'np_save_compressed', 'np_load_compressed', 'np2memmap', 'torch_mean_groupby', 'torch_flip',
            'torch_nan_to_num', 'torch_masked_to_num', 'mpl_trend', 'int2digits', 'array2digits', 'sincos_encoding',
            'linear_encoding', 'encode_positions', 'sort_generator', 'get_subset_dict', 'create_dir', 'remove_dir',
-           'named_partial', 'yaml2dict', 'str2list', 'str2index', 'get_cont_cols', 'get_cat_cols', 'get_mapping',
-           'map_array', 'log_tfm', 'to_sincos_time', 'plot_feature_dist', 'rolling_moving_average', 'ffill_sequence',
-           'bfill_sequence', 'fbfill_sequence', 'dummify', 'shuffle_along_axis', 'analyze_feature', 'analyze_array',
-           'get_relpath', 'split_in_chunks', 'save_object', 'load_object', 'get_idxs_to_keep', 'zerofy', 'feat2list',
-           'smallest_dtype']
+           'named_partial', 'dict2attrdict', 'dict2yaml', 'yaml2dict', 'get_config', 'str2list', 'str2index',
+           'get_cont_cols', 'get_cat_cols', 'get_mapping', 'map_array', 'log_tfm', 'to_sincos_time',
+           'plot_feature_dist', 'rolling_moving_average', 'ffill_sequence', 'bfill_sequence', 'fbfill_sequence',
+           'dummify', 'shuffle_along_axis', 'analyze_feature', 'analyze_array', 'get_relpath', 'split_in_chunks',
+           'save_object', 'load_object', 'get_idxs_to_keep', 'zerofy', 'feat2list', 'smallest_dtype']
 
 # %% ../nbs/002_utils.ipynb 3
 from .imports import *
+import joblib
+import string
+import yaml
 from numbers import Integral
 from numpy.random import default_rng
 from scipy.stats import ttest_ind, ks_2samp, pearsonr, spearmanr, normaltest, linregress
-import joblib
-import string
 warnings.filterwarnings("ignore", category=FutureWarning)
 
 # %% ../nbs/002_utils.ipynb 4
@@ -1237,14 +1238,54 @@ class named_partial(object):
     def __repr__(self):
         return self.__name__
 
-# %% ../nbs/002_utils.ipynb 149
-def yaml2dict(fname):
-    import yaml
-    with maybe_open(fname, 'r') as f:
-        dictionary = yaml.safe_load(f)
-    return AttrDict(dictionary)
+# %% ../nbs/002_utils.ipynb 150
+def dict2attrdict(
+    d: dict,  # a dict
+):
+    "Recursively converts a dict into an AttrDict."
+    d = AttrDict(d)
+    for k,v in d.items():
+        if isinstance(v, dict):
+            d[k] = dict2attrdict(d[k])
+    return d
 
 # %% ../nbs/002_utils.ipynb 152
+def dict2yaml(
+    d, # a dict
+    file_path, # a path to a yaml file
+    sort_keys=False, # if True, sort the keys
+):
+    "Converts a dict to a yaml file."
+    file_path = Path(file_path)
+    if not file_path.suffix == '.yaml':
+        file_path = file_path.with_suffix(".yaml")
+    file_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(file_path, "w") as outfile:
+        yaml.dump(d, outfile, default_flow_style=False, sort_keys=sort_keys)
+
+
+def yaml2dict(
+    file_path # a path to a yaml file
+):
+    "Converts a yaml file to a dict."
+    file_path = Path(file_path)
+    if not file_path.suffix == '.yaml':
+        file_path = file_path.with_suffix(".yaml")
+    with open(file_path, "r") as infile:
+        d = yaml.load(infile, Loader=yaml.FullLoader)
+    return dict2attrdict(d)
+
+
+def get_config(file_path):
+    file_path = Path(file_path)
+    if not file_path.suffix == '.yaml':
+        file_path = file_path.with_suffix(".yaml")
+    cfg = yaml2dict(file_path)
+    config = cfg.get("config") or config
+    config = dict2attrdict(config)
+    return config
+
+# %% ../nbs/002_utils.ipynb 155
 def str2list(o):
     if o is None: return []
     elif o is not None and not isinstance(o, (list, L)):
@@ -1266,11 +1307,11 @@ def get_cat_cols(df):
     cont_cols = df._get_numeric_data().columns.tolist()
     return [col for col in cols if col not in cont_cols]
 
-# %% ../nbs/002_utils.ipynb 153
+# %% ../nbs/002_utils.ipynb 156
 alphabet = L(list(string.ascii_lowercase))
 ALPHABET = L(list(string.ascii_uppercase))
 
-# %% ../nbs/002_utils.ipynb 154
+# %% ../nbs/002_utils.ipynb 157
 def get_mapping(arr, dim=1, return_counts=False):
     maps = [L(np.unique(np.take(arr, i, dim)).tolist()) for i in range(arr.shape[dim])]
     if return_counts:
@@ -1283,7 +1324,7 @@ def map_array(arr, dim=1):
     if dim == 1: out = out.T
     return out
 
-# %% ../nbs/002_utils.ipynb 157
+# %% ../nbs/002_utils.ipynb 160
 def log_tfm(o, inplace=False):
     "Log transforms an array-like object with positive and/or negative values"
     if isinstance(o, torch.Tensor):
@@ -1303,13 +1344,13 @@ def log_tfm(o, inplace=False):
         output[output < 0] = neg_o
         return output
 
-# %% ../nbs/002_utils.ipynb 160
+# %% ../nbs/002_utils.ipynb 163
 def to_sincos_time(arr, max_value):
     sin = np.sin(arr / max_value * 2 * np.pi)
     cos = np.cos(arr / max_value * 2 * np.pi)
     return sin, cos
 
-# %% ../nbs/002_utils.ipynb 162
+# %% ../nbs/002_utils.ipynb 165
 def plot_feature_dist(X, percentiles=[0,0.1,0.5,1,5,10,25,50,75,90,95,99,99.5,99.9,100]):
     for i in range(X.shape[1]):
         ys = []
@@ -1321,7 +1362,7 @@ def plot_feature_dist(X, percentiles=[0,0.1,0.5,1,5,10,25,50,75,90,95,99,99.5,99
         plt.title(f"var_{i}")
         plt.show()
 
-# %% ../nbs/002_utils.ipynb 164
+# %% ../nbs/002_utils.ipynb 167
 def rolling_moving_average(o, window=2):
     if isinstance(o, torch.Tensor):
         cunsum = torch.cumsum(o, axis=-1) # nancumsum not available (can't be used with missing data!)
@@ -1334,7 +1375,7 @@ def rolling_moving_average(o, window=2):
         count = np.minimum(np.ones_like(o).cumsum(-1), window)
         return (cunsum - lag_cunsum) / count
 
-# %% ../nbs/002_utils.ipynb 166
+# %% ../nbs/002_utils.ipynb 169
 def ffill_sequence(o):
     """Forward fills an array-like object alongside sequence dimension"""
     if isinstance(o, torch.Tensor):
@@ -1365,7 +1406,7 @@ def fbfill_sequence(o):
     o = bfill_sequence(o)
     return o
 
-# %% ../nbs/002_utils.ipynb 171
+# %% ../nbs/002_utils.ipynb 174
 def dummify(o:Union[np.ndarray, torch.Tensor], by_var:bool=True, inplace:bool=False, skip:Optional[list]=None, random_state=None):
     """Shuffles an array-like object along all dimensions or dimension 1 (variables) if by_var is True."""
     if not inplace: 
@@ -1381,7 +1422,7 @@ def dummify(o:Union[np.ndarray, torch.Tensor], by_var:bool=True, inplace:bool=Fa
     if not inplace: 
         return o_dummy
 
-# %% ../nbs/002_utils.ipynb 174
+# %% ../nbs/002_utils.ipynb 177
 def shuffle_along_axis(o, axis=-1, random_state=None):
     if isinstance(o, torch.Tensor): size = o.numel()
     else: size = np.size(o)
@@ -1390,7 +1431,7 @@ def shuffle_along_axis(o, axis=-1, random_state=None):
         o = np.take_along_axis(o, idx, axis=ax)
     return o
 
-# %% ../nbs/002_utils.ipynb 176
+# %% ../nbs/002_utils.ipynb 179
 def analyze_feature(feature, bins=100, density=False, feature_name=None, clip_outliers_plot=False, quantile_range=(25.0, 75.0), 
            percentiles=[1, 25, 50, 75, 99], text_len=12, figsize=(10,6)):
     non_nan_feature = feature[~np.isnan(feature)]
@@ -1431,7 +1472,7 @@ def analyze_array(o, bins=100, density=False, feature_names=None, clip_outliers_
     else:
         analyze_feature(o.flatten(), feature_name=feature_names)        
 
-# %% ../nbs/002_utils.ipynb 179
+# %% ../nbs/002_utils.ipynb 182
 def get_relpath(path):
     current_path = os.getcwd()
     if is_listy(path):
@@ -1442,7 +1483,7 @@ def get_relpath(path):
     else:
         return os.path.relpath(path, current_path)
 
-# %% ../nbs/002_utils.ipynb 180
+# %% ../nbs/002_utils.ipynb 183
 def split_in_chunks(o, chunksize, start=0, shuffle=False, drop_last=False):
     stop = ((len(o) - start)//chunksize*chunksize) if drop_last else None
     chunk_list = []
@@ -1451,7 +1492,7 @@ def split_in_chunks(o, chunksize, start=0, shuffle=False, drop_last=False):
     if shuffle: random.shuffle(chunk_list)
     return chunk_list
 
-# %% ../nbs/002_utils.ipynb 182
+# %% ../nbs/002_utils.ipynb 185
 def save_object(o, file_path, verbose=True):
     file_path = Path(file_path)
     if not file_path.suffix == '.pkl':
@@ -1466,7 +1507,7 @@ def load_object(file_path):
         file_path = file_path.parent / (file_path.name + '.pkl')
     return joblib.load(file_path)
 
-# %% ../nbs/002_utils.ipynb 185
+# %% ../nbs/002_utils.ipynb 188
 def get_idxs_to_keep(o, cond, crit='all', invert=False, axis=(1,2), keepdims=False):
     idxs_to_keep = cond(o)
     if isinstance(o, torch.Tensor):
@@ -1486,7 +1527,7 @@ def get_idxs_to_keep(o, cond, crit='all', invert=False, axis=(1,2), keepdims=Fal
         if invert: idxs_to_keep = ~idxs_to_keep
         return idxs_to_keep
 
-# %% ../nbs/002_utils.ipynb 187
+# %% ../nbs/002_utils.ipynb 190
 def zerofy(a, stride, keep=False):
     "Create copies of an array setting individual/ group values to zero "
     if keep:
@@ -1508,13 +1549,13 @@ def zerofy(a, stride, keep=False):
     else: 
         return a
 
-# %% ../nbs/002_utils.ipynb 189
+# %% ../nbs/002_utils.ipynb 192
 def feat2list(o):
     if o is None: return []
     elif isinstance(o, str): return [o]
     return list(o)
 
-# %% ../nbs/002_utils.ipynb 191
+# %% ../nbs/002_utils.ipynb 194
 def smallest_dtype(num, use_unsigned=False):
     "Find the smallest dtype that can safely hold `num`"
     if use_unsigned:
