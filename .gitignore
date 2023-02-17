@@ -149,7 +149,7 @@ old/*
 *.ts
 *.tsf
 *.arff
-#*.pth
+# *.pth
 *.pkl
 *.txt
 *.jpg
