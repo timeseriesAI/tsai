@@ -873,7 +873,7 @@ class TSShrinkDataFrame(BaseEstimator, TransformerMixin):
         ):
         self.columns, self.skip, self.obj2cat, self.int2uint, self.verbose = listify(columns), listify(skip), obj2cat, int2uint, verbose
         
-    def fit(self, X:pd.DataFrame, **kwargs):
+    def fit(self, X, y=None, **fit_params):
         if isinstance(X, pd.Series): 
             X = X.to_frame()
         assert isinstance(X, pd.DataFrame), "X must be a pd.DataFrame or pd.Series" 
@@ -883,7 +883,7 @@ class TSShrinkDataFrame(BaseEstimator, TransformerMixin):
             self.dt = df_shrink_dtypes(X, self.skip, obj2cat=self.obj2cat, int2uint=self.int2uint)
         return self
         
-    def transform(self, X:pd.DataFrame, **kwargs):
+    def transform(self, X, **kwargs):
         if isinstance(X, pd.Series): 
             col_name = X.name
             X = X.to_frame()
@@ -904,7 +904,7 @@ class TSShrinkDataFrame(BaseEstimator, TransformerMixin):
             X = X[col_name]
         return X
          
-    def inverse_transform(self, X):
+    def inverse_transform(self, X, **kwargs):
         return X
 
 # %% ../../nbs/009_data.preprocessing.ipynb 82
@@ -921,7 +921,7 @@ class TSOneHotEncoder(BaseEstimator, TransformerMixin):
         self.columns = listify(columns)
         self.drop, self.add_na, self.dtype = drop, add_na, dtype
 
-    def fit(self, X:pd.DataFrame, **kwargs):
+    def fit(self, X, y=None, **fit_params):
         assert isinstance(X, pd.DataFrame)
         if not self.columns: self.columns = X.columns
         handle_unknown = "ignore" if self.add_na else "error"
@@ -933,7 +933,7 @@ class TSOneHotEncoder(BaseEstimator, TransformerMixin):
             self.ohe_tfm.fit(X[self.columns])
         return self
 
-    def transform(self, X:pd.DataFrame, **kwargs):
+    def transform(self, X, **kwargs):
         assert isinstance(X, pd.DataFrame)
         if len(self.columns) == 1:
             output = self.ohe_tfm.transform(X[self.columns].to_numpy().reshape(-1, 1)).toarray().astype(self.dtype)
@@ -948,7 +948,7 @@ class TSOneHotEncoder(BaseEstimator, TransformerMixin):
         if self.drop: X = X.drop(self.columns, axis=1)
         return X
 
-    def inverse_transform(self, X:pd.DataFrame, **kwargs):
+    def inverse_transform(self, X, **kwargs):
         if len(self.new_cols) == 1:
             output = self.ohe_tfm.inverse_transform(X[self.new_cols].to_numpy().reshape(-1, 1))
         else:
@@ -988,15 +988,15 @@ class TSCategoricalEncoder(BaseEstimator, TransformerMixin):
             self.categories = self.to_categorical(categories)
 
 
-    def fit(self, X, idxs=None, **kwargs):
+    def fit(self, X, y=None, **fit_params):
         assert isinstance(X, (pd.DataFrame, pd.Series))
         if not self.columns:
             if isinstance(X, pd.DataFrame):
                 self.columns = X.columns
             else:
                 self.columns = X.name
-        if idxs is None:
-            idxs = slice(None)
+        
+        idxs = fit_params.get("idxs", slice(None))
         if self.categories is None:
             _categories = []
             for column in self.columns:
@@ -1077,7 +1077,7 @@ class TSDateTimeEncoder(BaseEstimator, TransformerMixin):
         self.datetime_columns = listify(datetime_columns)
         self.prefix, self.drop, self.time, self.attr = prefix, drop, time ,attr
         
-    def fit(self, X:pd.DataFrame, y=None, **fit_params):
+    def fit(self, X, y=None, **fit_params):
         assert isinstance(X, pd.DataFrame)
         if self.time: self.attr = self.attr + ['Hour', 'Minute', 'Second']
         if not self.datetime_columns:
@@ -1087,7 +1087,7 @@ class TSDateTimeEncoder(BaseEstimator, TransformerMixin):
             self.prefixes.append(re.sub('[Dd]ate$', '', dt_column) if self.prefix is None else self.prefix)
         return self
         
-    def transform(self, X:pd.DataFrame, y=None, **transform_params):
+    def transform(self, X, **kwargs):
         assert isinstance(X, pd.DataFrame)
         
         for dt_column,prefix in zip(self.datetime_columns,self.prefixes): 
@@ -1106,18 +1106,18 @@ class TSMissingnessEncoder(BaseEstimator, TransformerMixin):
     def __init__(self, columns=None):
         self.columns = listify(columns)
         
-    def fit(self, X:pd.DataFrame, y=None, **fit_params):
+    def fit(self, X, y=None, **fit_params):
         assert isinstance(X, pd.DataFrame)
         if not self.columns: self.columns = X.columns
         self.missing_columns = [f"{cn}_missing" for cn in self.columns]
         return self
         
-    def transform(self, X:pd.DataFrame, y=None, **transform_params):
+    def transform(self, X, **kwargs):
         assert isinstance(X, pd.DataFrame)
         X[self.missing_columns] = X[self.columns].isnull().astype(int)
         return X
          
-    def inverse_transform(self, X):
+    def inverse_transform(self, X, **kwargs):
         assert isinstance(X, pd.DataFrame)
         X.drop(self.missing_columns, axis=1, inplace=True)
         return X
@@ -1138,7 +1138,7 @@ class TSSortByColumns(TransformerMixin, BaseEstimator):
         self.columns, self.ascending, self.inplace, self.kind, self.na_position, self.ignore_index, self.key = \
         listify(columns), ascending, inplace, kind, na_position, ignore_index, key
     
-    def fit(self, X, **kwargs):
+    def fit(self, X, y=None, **fit_params):
         assert isinstance(X, (pd.DataFrame, pd.Series))
         return self
         
@@ -1164,7 +1164,7 @@ class TSSelectColumns(TransformerMixin, BaseEstimator):
         ):
         self.columns = listify(columns)
     
-    def fit(self, X, **kwargs):
+    def fit(self, X, y=None, **fit_params):
         assert isinstance(X, (pd.DataFrame, pd.Series))
         return self
         
@@ -1219,7 +1219,7 @@ class TSStepsSinceStart(BaseEstimator, TransformerMixin):
         else:
             self.start_datetime = Timestamp(start_datetime)
 
-    def fit(self, X, **kwargs):
+    def fit(self, X, y=None, **fit_params):
         assert isinstance(X, (pd.DataFrame, pd.Series))
         if self.start_datetime is None:
             self.start_datetime = X[self.datetime_col].min()
@@ -1261,15 +1261,14 @@ class TSStandardScaler(TransformerMixin, BaseEstimator):
         self.std = std
         self.eps = np.array(eps, dtype='float32')
     
-    def fit(self, X, idxs=None, **kwargs):
+    def fit(self, X, y=None, **fit_params):
         assert isinstance(X, (pd.DataFrame, pd.Series))
         if not self.columns:
             if isinstance(X, pd.DataFrame):
                 self.columns = X.columns
             else:
                 self.columns = X.name
-        if idxs is None:
-            idxs = slice(None)
+        idxs = fit_params.get("idxs", slice(None))
         if self.mean is None:
             self.mean = []
             for c in self.columns:
@@ -1305,7 +1304,7 @@ class TSAddMissingTimestamps(TransformerMixin, BaseEstimator):
                             fill_value=fill_value, range_by_group=range_by_group, start_date=start_date, end_date=end_date, 
                             freq=freq)
     
-    def fit(self, X, **kwargs):
+    def fit(self, X, y=None, **fit_params):
         assert isinstance(X, (pd.DataFrame, pd.Series))
         return self
         
@@ -1333,7 +1332,7 @@ class TSDropDuplicates(TransformerMixin, BaseEstimator):
         self.datetime_col, self.use_index, self.unique_id_cols, self.keep, self.reset_index =  \
         listify(datetime_col), use_index, listify(unique_id_cols), keep, reset_index
     
-    def fit(self, X, **kwargs):
+    def fit(self, X, y=None, **fit_params):
         assert isinstance(X, (pd.DataFrame, pd.Series))
         return self
         
@@ -1370,7 +1369,7 @@ class TSFillMissing(TransformerMixin, BaseEstimator):
         self.method = method
         self.value = value
     
-    def fit(self, X, **kwargs):
+    def fit(self, X, y=None, **fit_params):
         assert isinstance(X, (pd.DataFrame, pd.Series))
         if not self.columns:
             if isinstance(X, pd.DataFrame):
@@ -1386,10 +1385,10 @@ class TSFillMissing(TransformerMixin, BaseEstimator):
                 if self.unique_id_cols is not None:
                     X[c] = X.groupby(self.unique_id_cols)[c].fillna(method=self.method)
                 else:
-                    X[c].fillna(method=self.method, inplace=True)
+                    X[c] = X[c].fillna(method=self.method)
         if self.value is not None:
             for c in self.columns:
-                X[c].fillna(value=self.value, inplace=True)
+                X[c] = X[c].fillna(value=self.value)
         return X
 
     def inverse_transform(self, X, **kwargs):
@@ -1401,7 +1400,7 @@ class TSMissingnessEncoder(BaseEstimator, TransformerMixin):
     def __init__(self, columns=None):
         self.columns = listify(columns)
 
-    def fit(self, X:pd.DataFrame, y=None, **fit_params):
+    def fit(self, X, y=None, **fit_params):
         assert isinstance(X, pd.DataFrame)
         if not self.columns: self.columns = X.columns
         self.missing_columns = [f"{cn}_missing" for cn in self.columns]
