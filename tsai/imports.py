@@ -46,8 +46,6 @@ from fastai.torch_core import *
 
 import datetime
 
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
-
 from configparser import ConfigParser
 config = ConfigParser(delimiters=['='])
 config.read('../settings.ini')
@@ -267,6 +265,23 @@ def import_file_as_module(filepath, return_path=False):
         return module, mod_path
     else: return module
 
+def _has_mps():
+    "Check if MPS is available - modified from fastai"
+    return nested_attr(torch, 'backends.mps.is_available', noop)()
+
+def default_device(use=-1):
+    "Return or set default device; `use_cuda`: -1 - CUDA/mps if available; True - error if not available; False - CPU"
+    if use == -1: use = defaults.use_cuda
+    else: defaults.use_cuda=use
+    if use is None:
+        if torch.cuda.is_available() or _has_mps(): use = True
+    if use:
+        if torch.cuda.is_available(): return torch.device(torch.cuda.current_device())
+        if _has_mps(): return torch.device('mps')
+    return torch.device('cpu')
+
+device = default_device()
+
 def my_setup(*pkgs):
     warnings.filterwarnings("ignore")
     try:
@@ -311,7 +326,7 @@ def my_setup(*pkgs):
                 gpu_text = 'gpu' if device_count == 1 else 'gpus'
                 print(f'device          : {device_count} {gpu_text} ({[torch.cuda.get_device_name(i) for i in range(device_count)]})')
             else:
-                print(f'device          : {device}')
+                print(f'device          : {DEFAULT_DEVICE}')
     except: pass
     try:
         print(f'cpu cores       : {psutil.cpu_count(logical=False)}')
