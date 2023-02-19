@@ -263,37 +263,58 @@ class TSDataset():
     def __len__(self): return len(self.X) if self.split is None else len(self.split)
 
 # %% ../../nbs/006_data.core.ipynb 39
-def _flatten_list(
-    o # (list, tuple or numpy.ndarray) A (nested) array or list that needs to be flattened
-):
-    "Flatten nested python objects"
+# def _flatten_list(
+#     o # (list, tuple or numpy.ndarray) A (nested) array or list that needs to be flattened
+# ):
+#     "Flatten nested python objects"
     
-    if o is None: return L([])
-    elif isinstance(o, (list, tuple, L)) and len(o) == 0: return L([])
-    elif isinstance(o, np.ndarray):
-        o = o.ravel()
-        return L(o.tolist()) if o.size < 1_000_000 else o
-    elif isinstance(o, Integral): 
-        o = np.asarray([o])
-        return L(o.tolist()) if o.size < 1_000_000 else o
-    elif isinstance(o[0], Integral): 
-        o = np.asarray(o)
-        return L(o.tolist()) if o.size < 1_000_000 else o
-    if not hasattr(o, "__iter__"): o = [o]
-    o = [oi for oi in o if hasattr(oi, "__len__") and len(oi) > 0]
-    if len(o) == 0: return L([])
-    elif len(o) == 1 and not isinstance(o[0], Integral): o = o[0]
-    if isinstance(o, np.ndarray):
-        o = o.ravel()
-    elif isinstance(o, (list, tuple, L)):
-        if len(o) == 1:
-            o = np.asarray(o[0])
-        elif all([hasattr(oi, "__array__") for oi in o]):
-            o = np.concatenate(o, axis=0)
-        elif isinstance(o[0], Integral): o = np.asarray(o)
-        else:
-            o = np.asarray([item for sublist in o for item in sublist])
-    return L(o.tolist()) if o.size < 1_000_000 else o
+#     if o is None: return L([])
+#     elif isinstance(o, (list, tuple, L)) and len(o) == 0: return L([])
+#     elif isinstance(o, np.ndarray):
+#         o = o.ravel()
+#         return L(o.tolist()) if o.size < 1_000_000 else o
+#     elif isinstance(o, Integral): 
+#         o = np.asarray([o])
+#         return L(o.tolist()) if o.size < 1_000_000 else o
+#     elif isinstance(o[0], Integral): 
+#         o = np.asarray(o)
+#         return L(o.tolist()) if o.size < 1_000_000 else o
+#     if not hasattr(o, "__iter__"): o = [o]
+#     o = [oi for oi in o if hasattr(oi, "__len__") and len(oi) > 0]
+#     if len(o) == 0: return L([])
+#     elif len(o) == 1 and not isinstance(o[0], Integral): o = o[0]
+#     if isinstance(o, np.ndarray):
+#         o = o.ravel()
+#     elif isinstance(o, (list, tuple, L)):
+#         if len(o) == 1:
+#             o = np.asarray(o[0])
+#         elif all([hasattr(oi, "__array__") for oi in o]):
+#             o = np.concatenate(o, axis=0)
+#         elif isinstance(o[0], Integral): o = np.asarray(o)
+#         else:
+#             o = np.asarray([item for sublist in o for item in sublist])
+#     output = L(o.tolist()) if o.size < 1_000_000 else o
+#     print('output', output)
+#     return output
+
+def _flatten_list(lst):
+    def __flatten_list(lst):
+        if lst is None: return L([])
+        if not hasattr(lst, "__iter__"): lst = [lst]
+        flattened = []
+        for item in lst:
+            if isinstance(item, (list, tuple, L)):
+                flattened += __flatten_list(item)
+            elif isinstance(item, np.ndarray):
+                flattened += __flatten_list(item.ravel())
+            else:
+                flattened.append(item)
+        output = L(flattened)
+        return output
+    output = __flatten_list(lst)
+    if len(output) == 0: return output
+    dtype = smallest_dtype(np.max(output))
+    return np.asarray(output).astype(dtype)
 
 def _remove_brackets(l):
     return [li if (not li or not is_listy(li) or len(li) > 1) else li[0] for li in l]
@@ -643,7 +664,8 @@ class NumpyDataLoader(TfmdDL):
         return b
 
     def __len__(self):
-        if self.partial_n is None: return super().__len__()
+        if self.n == 0: return 0
+        elif self.partial_n is None: return super().__len__()
         return self.partial_n//self.bs + (0 if self.drop_last or self.partial_n%self.bs==0 else 1)
     
     @delegates(plt.subplots)
@@ -1009,13 +1031,22 @@ def get_best_dls_params(dls, n_iters=10, num_workers=[0, 1, 2, 4, 8], pin_memory
 def get_ts_dls(X, y=None, splits=None, sel_vars=None, sel_steps=None, tfms=None, inplace=True,
                path='.', bs=64, batch_tfms=None, num_workers=0, device=None, shuffle_train=True, drop_last=True, 
                weights=None, partial_n=None, sampler=None, sort=False, **kwargs):
-    if splits is None: splits = (L(np.arange(len(X)).tolist()), L([]))
+    if splits is None: 
+        if len(X) < 1e6: splits = (L(np.arange(len(X)).tolist()), L([0]))
+        else: 
+            _dtype = smallest_dtype(len(X))
+            splits = (np.arange(len(X), dtype=_dtype), L([0]))
+    elif isinstance(splits, (tuple, list, L)) and len(splits) == 1:
+        splits = (splits[0], L([0]))
+    elif len(splits) >= 2 and not splits[1]:
+        splits = (splits[0], L([0]))
+    assert len(splits) >= 2, 'splits must be a tuple or list of length >=2'
+    assert len(splits[0]) > 0, 'splits[0] must be a non-empty list'
     create_dir(path, verbose=False)
     dsets = TSDatasets(X, y, splits=splits, sel_vars=sel_vars, sel_steps=sel_steps, tfms=tfms, inplace=inplace)
     if weights is not None:
-        assert len(X) == len(weights)
-        if splits is not None: 
-            weights = [weights[split] if i == 0 else None for i,split in enumerate(splits)] # weights only applied to train set
+        assert len(X) == len(weights), 'len(X) != len(weights)'
+        weights = [weights[split] if i == 0 else None for i,split in enumerate(splits)] # weights only applied to train set
     dls   = TSDataLoaders.from_dsets(dsets.train, dsets.valid, path=path, bs=bs, batch_tfms=batch_tfms, num_workers=num_workers,
                                      device=device, shuffle_train=shuffle_train, drop_last=drop_last, weights=weights, 
                                      partial_n=partial_n, sampler=sampler, sort=sort, **kwargs)

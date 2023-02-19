@@ -18,14 +18,12 @@ from .metrics import *
 
 # %% ../nbs/022_tslearner.ipynb 5
 class TSClassifier(Learner):
-    def __init__(self, X, y=None, splits=None, tfms=None, inplace=True, sel_vars=None, sel_steps=None, weights=None, partial_n=None, train_metrics=False,
-                 bs=[64, 128], batch_size=None, batch_tfms=None, shuffle_train=True, drop_last=True, num_workers=0, do_setup=True, device=None,
+    def __init__(self, X, y=None, splits=None, tfms=None, inplace=True, sel_vars=None, sel_steps=None, weights=None, partial_n=None, 
+                 train_metrics=False, valid_metrics=True, bs=[64, 128], batch_size=None, batch_tfms=None, 
+                 shuffle_train=True, drop_last=True, num_workers=0, do_setup=True, device=None,
                  arch=None, arch_config={}, pretrained=False, weights_path=None, exclude_head=True, cut=-1, init=None,
                  loss_func=None, opt_func=Adam, lr=0.001, metrics=accuracy, cbs=None, wd=None, wd_bn_bias=False,
                  train_bn=True, moms=(0.95, 0.85, 0.95),  path='.', model_dir='models', splitter=trainable_params, verbose=False):
-
-        #Splits
-        if splits is None: splits = TSSplitter()(X)
 
         # Batch size
         if batch_size is not None:
@@ -73,17 +71,21 @@ class TSClassifier(Learner):
             splitter = ts_splitter
         except:
             pass
-
         super().__init__(dls, model, loss_func=loss_func, opt_func=opt_func, lr=lr, cbs=cbs, metrics=metrics, path=path, splitter=splitter,
                          model_dir=model_dir, wd=wd, wd_bn_bias=wd_bn_bias, train_bn=train_bn, moms=moms)
-        
-        if train_metrics and hasattr(self, "recorder"):
-            self.recorder.train_metrics = True
 
-# %% ../nbs/022_tslearner.ipynb 9
+        if hasattr(self, "recorder"):
+            self.recorder.train_metrics = train_metrics
+            if splits is None or not is_listy(splits[0]) or len(splits) == 1 or (len(splits) >= 2 and not splits[1]): 
+                self.recorder.valid_metrics = False
+            else:
+                self.recorder.valid_metrics = valid_metrics
+
+# %% ../nbs/022_tslearner.ipynb 10
 class TSRegressor(Learner):
-    def __init__(self, X, y=None, splits=None, tfms=None, inplace=True, sel_vars=None, sel_steps=None, weights=None, partial_n=None, train_metrics=False,
-                 bs=[64, 128], batch_size=None, batch_tfms=None, shuffle_train=True, drop_last=True, num_workers=0, do_setup=True, device=None,
+    def __init__(self, X, y=None, splits=None, tfms=None, inplace=True, sel_vars=None, sel_steps=None, weights=None, partial_n=None, 
+                 train_metrics=False, valid_metrics=True, bs=[64, 128], batch_size=None, batch_tfms=None, 
+                 shuffle_train=True, drop_last=True, num_workers=0, do_setup=True, device=None,
                  arch=None, arch_config={}, pretrained=False, weights_path=None, exclude_head=True, cut=-1, init=None,
                  loss_func=None, opt_func=Adam, lr=0.001, metrics=None, cbs=None, wd=None, wd_bn_bias=False,
                  train_bn=True, moms=(0.95, 0.85, 0.95),  path='.', model_dir='models', splitter=trainable_params, verbose=False):
@@ -141,13 +143,18 @@ class TSRegressor(Learner):
         super().__init__(dls, model, loss_func=loss_func, opt_func=opt_func, lr=lr, cbs=cbs, metrics=metrics, path=path, splitter=splitter,
                          model_dir=model_dir, wd=wd, wd_bn_bias=wd_bn_bias, train_bn=train_bn, moms=moms) 
         
-        if train_metrics and hasattr(self, "recorder"):
-            self.recorder.train_metrics = True
+        if hasattr(self, "recorder"):
+            self.recorder.train_metrics = train_metrics
+            if splits is None or not is_listy(splits[0]) or len(splits) == 1 or (len(splits) >= 2 and not splits[1]): 
+                self.recorder.valid_metrics = False
+            else:
+                self.recorder.valid_metrics = valid_metrics
 
-# %% ../nbs/022_tslearner.ipynb 12
+# %% ../nbs/022_tslearner.ipynb 13
 class TSForecaster(Learner):
-    def __init__(self, X, y=None, splits=None, tfms=None, inplace=True, sel_vars=None, sel_steps=None, weights=None, partial_n=None, train_metrics=False,
-                 bs=[64, 128], batch_size=None, batch_tfms=None, shuffle_train=True, drop_last=True, num_workers=0, do_setup=True, device=None,
+    def __init__(self, X, y=None, splits=None, tfms=None, inplace=True, sel_vars=None, sel_steps=None, weights=None, partial_n=None, 
+                 train_metrics=False, valid_metrics=True, bs=[64, 128], batch_size=None, batch_tfms=None, 
+                 shuffle_train=True, drop_last=True, num_workers=0, do_setup=True, device=None,
                  arch=None, arch_config={}, pretrained=False, weights_path=None, exclude_head=True, cut=-1, init=None,
                  loss_func=None, opt_func=Adam, lr=0.001, metrics=None, cbs=None, wd=None, wd_bn_bias=False,
                  train_bn=True, moms=(0.95, 0.85, 0.95),  path='.', model_dir='models', splitter=trainable_params, verbose=False):
@@ -205,5 +212,9 @@ class TSForecaster(Learner):
         super().__init__(dls, model, loss_func=loss_func, opt_func=opt_func, lr=lr, cbs=cbs, metrics=metrics, path=path, splitter=splitter,
                          model_dir=model_dir, wd=wd, wd_bn_bias=wd_bn_bias, train_bn=train_bn, moms=moms)
         
-        if train_metrics and hasattr(self, "recorder"):
-            self.recorder.train_metrics = True
+        if hasattr(self, "recorder"):
+            self.recorder.train_metrics = train_metrics
+            if splits is None or not is_listy(splits[0]) or len(splits) == 1 or (len(splits) >= 2 and not splits[1]): 
+                self.recorder.valid_metrics = False
+            else:
+                self.recorder.valid_metrics = valid_metrics

@@ -134,19 +134,36 @@ def plot_metrics(self: Recorder, nrows=None, ncols=None, figsize=None, final_los
     if n_values < 2:
         print('not enough values to plot a chart')
         return
+    
+    # Prepare results dataframe
+    train_metrics = self.train_metrics
+    valid_metrics = self.valid_metrics
     metrics = np.stack(self.values)
     names = self.metric_names[1:-1]
-    metric_names = [m.replace("valid_", "") for m in self.metric_names[1:-1] if 'loss' not in m and 'train' not in m]
+    if not train_metrics and not valid_metrics:
+        names = [n for n in names if "loss" in n]
+    elif not train_metrics:
+        names = [f"valid_{n}" if (not 'valid' in n and not 'loss' in n) else n for n in names]
+    elif not valid_metrics:
+        names = [f"train_{n}" if (not 'train' in n and not 'loss' in n) else n for n in names]
+    results = pd.DataFrame(metrics, columns=names)
+    
+    # Final losses
     if final_losses:
-        sel_idxs = int(round(n_values * perc))
+        sel_idxs = round(n_values * perc)
         if sel_idxs < 2:
-            final_losses = False 
+            final_losses = False
         else:
-            names = names + ['train_final_loss', 'valid_final_loss']
-            self.loss_idxs = L([i for i,n in enumerate(self.metric_names[1:-1]) if 'loss' in n])
-            metrics = np.concatenate([metrics, metrics[:, self.loss_idxs]], -1) 
+            results['train_final_loss'] = results['train_loss']
+            if valid_metrics: 
+                results['valid_final_loss'] = results['valid_loss']
 
-    n = int(1 + final_losses + len(self.metrics))
+    # set of metrics names
+    names = results.columns
+    metric_names = list(dict.fromkeys([n.replace('train_', '').replace('valid_', '') for n in results.columns]))
+     
+    # Plot
+    n = len(metric_names)
     if nrows is None and ncols is None:
         if n <= 3: 
             nrows = 1
@@ -158,20 +175,21 @@ def plot_metrics(self: Recorder, nrows=None, ncols=None, figsize=None, final_los
     figsize = figsize or (ncols * 6 + ncols - 1, nrows * 4 + nrows - 1)
     fig, axs = subplots(nrows, ncols, figsize=figsize, **kwargs)
     axs = axs.flatten()[:n]
-    for i,name in enumerate(names):
-        xs = np.arange(0, len(metrics))
+
+    for name in names:
+        xs = np.arange(0, len(results))
         if name in ['train_loss', 'valid_loss']: 
             ax_idx = 0
-            m = metrics[:,i]
+            m = results[name].values
             title = 'losses'
         elif name in ['train_final_loss', 'valid_final_loss']: 
             ax_idx = 1
-            m = metrics[-sel_idxs:,i]
+            m = results.loc[len(results) - sel_idxs:, name].values
             xs = xs[-sel_idxs:]
             title = 'final losses'
         else: 
-            ax_idx = metric_names.index(name.replace("valid_", "").replace("train_", "")) + 1 + final_losses
-            m = metrics[:,i]
+            ax_idx = metric_names.index(name.replace("valid_", "").replace("train_", "")) + final_losses
+            m = results[name].values
             title = name.replace("valid_", "").replace("train_", "")
         if 'train' in name:
             color = '#1f77b4'
@@ -498,8 +516,8 @@ def get_arch(arch_name):
 @delegates(build_ts_model)
 def ts_learner(dls, arch=None, c_in=None, c_out=None, seq_len=None, d=None, splitter=trainable_params,
                loss_func=None, opt_func=Adam, lr=defaults.lr, cbs=None, metrics=None, path=None,
-               model_dir='models', wd=None, wd_bn_bias=False, train_bn=True, moms=(0.95,0.85,0.95), train_metrics=False, 
-               **kwargs)->Learner:
+               model_dir='models', wd=None, wd_bn_bias=False, train_bn=True, moms=(0.95,0.85,0.95), 
+               train_metrics=False, valid_metrics=True, **kwargs)->Learner:
 
     if isinstance(arch, nn.Module): 
         model = arch
@@ -520,8 +538,9 @@ def ts_learner(dls, arch=None, c_in=None, c_out=None, seq_len=None, d=None, spli
                     loss_func=loss_func, opt_func=opt_func, lr=lr, cbs=cbs, metrics=metrics, path=path, splitter=splitter,
                     model_dir=model_dir, wd=wd, wd_bn_bias=wd_bn_bias, train_bn=train_bn, moms=moms, )
 
-    if train_metrics and hasattr(learn, "recorder"):
-        learn.recorder.train_metrics = True
+    if hasattr(learn, "recorder"):
+        learn.recorder.train_metrics = train_metrics
+        learn.recorder.valid_metrics = valid_metrics
     
     # keep track of args for loggers
     store_attr('arch', self=learn)
