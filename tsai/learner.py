@@ -540,8 +540,8 @@ def ts_learner(dls, arch=None, c_in=None, c_out=None, seq_len=None, d=None, spli
                     model_dir=model_dir, wd=wd, wd_bn_bias=wd_bn_bias, train_bn=train_bn, moms=moms, )
 
     if hasattr(learn, "recorder"):
-        learn.recorder.train_metrics = train_metrics
-        learn.recorder.valid_metrics = valid_metrics
+            learn.recorder.train_metrics = train_metrics
+            learn.recorder.valid_metrics = valid_metrics if len(dls.valid) > 0 else False
     
     # keep track of args for loggers
     store_attr('arch', self=learn)

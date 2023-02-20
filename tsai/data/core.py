@@ -1033,7 +1033,7 @@ def _check_splits(X, splits):
         if not isinstance(splits[0], (tuple, list, L, np.ndarray)):
             splits = (splits, L())
         elif len(splits) == 1:
-            splits = (splits, L())
+            splits = (splits[0], L())
         elif len(splits) >= 2 and splits[1] is None:
             splits = (splits[0], L())
     assert len(splits) >= 2, 'splits must be a tuple or list of length >=2'
