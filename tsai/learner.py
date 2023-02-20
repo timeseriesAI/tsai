@@ -196,12 +196,13 @@ def plot_metrics(self: Recorder, nrows=None, ncols=None, figsize=None, final_los
             label = 'train'
         else:
             color = '#ff7f0e'
-            label = 'valid'
+            label = 'valid' if (m != [None] * len(m)).all() else None
             axs[ax_idx].grid(color='gainsboro', linewidth=.5)
         axs[ax_idx].plot(xs, m, color=color, label=label)
         axs[ax_idx].set_xlim(xs[0], xs[-1])
         axs[ax_idx].legend(loc='best')
         axs[ax_idx].set_title(title)
+        axs[ax_idx].grid(color='gainsboro', linewidth=.5)
     plt.show()
     
     

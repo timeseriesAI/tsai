@@ -82,22 +82,23 @@ class ShowGraph(Callback):
         if self.epoch == 0:
             self.rec_start = len(rec.losses)
         iters = range_of(rec.losses)
+        all_losses = rec.losses if self.epoch == 0 else rec.losses[self.rec_start-1:]
         val_losses = np.stack(rec.values)[:, self.learn.recorder.loss_idxs[-1]].tolist()
-        x_bounds = (0, len(rec.losses) - 1)
-        if self.epoch == 0:
-            y_min = min((min(rec.losses), min(val_losses)))
-            y_max = max((max(rec.losses), max(val_losses)))
+        if rec.valid_metrics and val_losses[0] is not None:
+            all_losses = all_losses + val_losses
         else:
-            y_min = min((min(rec.losses[self.rec_start-1:]), min(val_losses)))
-            y_max = max((max(rec.losses[self.rec_start-1:]), max(val_losses)))
+            val_losses = [None] * len(iters)
+        y_min, y_max = min(all_losses), max(all_losses)
         margin = (y_max - y_min) * .05
+        x_bounds = (0, len(rec.losses) - 1)
         y_bounds = (y_min - margin, y_max + margin)
         self.update_graph([(iters, rec.losses), (self.nb_batches, val_losses)], x_bounds, y_bounds)
 
     def after_fit(self):
         if hasattr(self, 'graph_ax'):
             plt.close(self.graph_ax.figure)
-        if self.plot_metrics: self.learn.plot_metrics(final_losses=self.final_losses, perc=self.perc)
+        if self.plot_metrics: 
+            self.learn.plot_metrics(final_losses=self.final_losses, perc=self.perc)
 
     def update_graph(self, graphs, x_bounds=None, y_bounds=None, figsize=(6,4)):
         if not hasattr(self, 'graph_fig'):
@@ -106,6 +107,7 @@ class ShowGraph(Callback):
         self.graph_ax.clear()
         if len(self.names) < len(graphs): self.names += [''] * (len(graphs) - len(self.names))
         for g,n in zip(graphs,self.names): 
+            if (g[1] == [None] * len(g[1])): continue
             self.graph_ax.plot(*g, label=n)
         self.graph_ax.legend(loc='upper right')
         self.graph_ax.grid(color='gainsboro', linewidth=.5)

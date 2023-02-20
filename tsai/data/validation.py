@@ -604,11 +604,11 @@ def get_forecasting_splits(
         if len(test_idxs):
             test_idxs = L(test_idxs.tolist())
 
-    splits = [train_idxs]
+    splits = (train_idxs,)
     if valid_size:
-        splits += [valid_idxs]
+        splits += (valid_idxs,)
     if test_size:
-        splits += [test_idxs]
+        splits += (test_idxs,)
 
     if show_plot:
         if len(df) > 1_000_000:

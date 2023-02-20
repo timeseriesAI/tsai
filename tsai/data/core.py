@@ -584,7 +584,7 @@ class NumpyDataLoader(TfmdDL):
         for nm in _batch_tfms:
             if nm == 'after_batch' and kwargs.get('batch_tfms',None) is not None: kwargs[nm] = Pipeline(listify(kwargs.get('batch_tfms')))
             else: kwargs[nm] = Pipeline(kwargs.get(nm,None))
-        bs = min(bs, len(dataset))
+        bs = max(1, min(bs, len(dataset))) # bs cannot be 1
         if is_listy(partial_n): partial_n = partial_n[0]
         if isinstance(partial_n, float): partial_n = int(round(partial_n * len(dataset)))
         if partial_n is not None: bs = min(bs, partial_n)
@@ -1028,20 +1028,29 @@ def get_best_dls_params(dls, n_iters=10, num_workers=[0, 1, 2, 4, 8], pin_memory
     return dls
 
 # %% ../../nbs/006_data.core.ipynb 72
+def _check_splits(X, splits):
+    if splits is None:
+        _dtype = smallest_dtype(len(X))
+        if len(X) < 1e6: 
+            splits = (L(np.arange(len(X), dtype=_dtype).tolist()), L())
+        else: 
+            _dtype = smallest_dtype(len(X))
+            splits = (np.arange(len(X), dtype=_dtype), L())
+    elif isinstance(splits, (tuple, list, L, np.ndarray)):
+        if not isinstance(splits[0], (tuple, list, L, np.ndarray)):
+            splits = (splits, L())
+        elif len(splits) == 1:
+            splits = (splits, L())
+        elif len(splits) >= 2 and splits[1] is None:
+            splits = (splits[0], L())
+    assert len(splits) >= 2, 'splits must be a tuple or list of length >=2'
+    assert len(splits[0]) > 0, 'splits[0] must be a non-empty list'
+    return splits
+
 def get_ts_dls(X, y=None, splits=None, sel_vars=None, sel_steps=None, tfms=None, inplace=True,
                path='.', bs=64, batch_tfms=None, num_workers=0, device=None, shuffle_train=True, drop_last=True, 
                weights=None, partial_n=None, sampler=None, sort=False, **kwargs):
-    if splits is None: 
-        if len(X) < 1e6: splits = (L(np.arange(len(X)).tolist()), L([0]))
-        else: 
-            _dtype = smallest_dtype(len(X))
-            splits = (np.arange(len(X), dtype=_dtype), L([0]))
-    elif isinstance(splits, (tuple, list, L)) and len(splits) == 1:
-        splits = (splits[0], L([0]))
-    elif len(splits) >= 2 and not splits[1]:
-        splits = (splits[0], L([0]))
-    assert len(splits) >= 2, 'splits must be a tuple or list of length >=2'
-    assert len(splits[0]) > 0, 'splits[0] must be a non-empty list'
+    splits = _check_splits(X, splits)
     create_dir(path, verbose=False)
     dsets = TSDatasets(X, y, splits=splits, sel_vars=sel_vars, sel_steps=sel_steps, tfms=tfms, inplace=inplace)
     if weights is not None:
@@ -1052,11 +1061,23 @@ def get_ts_dls(X, y=None, splits=None, sel_vars=None, sel_steps=None, tfms=None,
                                      partial_n=partial_n, sampler=sampler, sort=sort, **kwargs)
     return dls
 
+get_tsimage_dls = get_ts_dls
+
+# %% ../../nbs/006_data.core.ipynb 74
+def _check_split(X, split):
+    if split is None:
+        _dtype = smallest_dtype(len(X))
+        if len(X) < 1e6: 
+            split = L(np.arange(len(X), dtype=_dtype).tolist())
+        else: 
+            _dtype = smallest_dtype(len(X))
+            split = np.arange(len(X), dtype=_dtype)
+    return (split, L())
+
 def get_ts_dl(X, y=None, split=None, sel_vars=None, sel_steps=None, tfms=None, inplace=True,
               path='.', bs=64, batch_tfms=None, num_workers=0, device=None, shuffle_train=True, drop_last=True, weights=None,
               partial_n=None, sampler=None, sort=False, **kwargs):
-    if split is None: split = L(np.arange(len(X)).tolist())
-    splits = (split, L([]))
+    splits = _check_split(X, split)
     create_dir(path, verbose=False)
     dsets = TSDatasets(X, y, splits=splits, sel_vars=sel_vars, sel_steps=sel_steps, tfms=tfms, inplace=inplace, **kwargs)
     if not is_listy(partial_n): partial_n = [partial_n]
@@ -1065,11 +1086,11 @@ def get_ts_dl(X, y=None, split=None, sel_vars=None, sel_steps=None, tfms=None, i
                                      partial_n=partial_n, sampler=sampler, sort=sort, **kwargs)
     return dls.train
 
-get_tsimage_dls = get_ts_dls
+
 
 def get_subset_dl(dl, idxs): return dl.new(dl.dataset.subset(idxs))
 
-# %% ../../nbs/006_data.core.ipynb 110
+# %% ../../nbs/006_data.core.ipynb 112
 def get_time_per_batch(dl, model=None, n_batches=None):
     try:
         timer.start(False)

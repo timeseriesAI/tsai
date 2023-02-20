@@ -90,8 +90,6 @@ class TSRegressor(Learner):
                  loss_func=None, opt_func=Adam, lr=0.001, metrics=None, cbs=None, wd=None, wd_bn_bias=False,
                  train_bn=True, moms=(0.95, 0.85, 0.95),  path='.', model_dir='models', splitter=trainable_params, verbose=False):
 
-        #Splits
-        if splits is None: splits = TSSplitter()(X)
 
         # Batch size
         if batch_size is not None:
@@ -158,9 +156,6 @@ class TSForecaster(Learner):
                  arch=None, arch_config={}, pretrained=False, weights_path=None, exclude_head=True, cut=-1, init=None,
                  loss_func=None, opt_func=Adam, lr=0.001, metrics=None, cbs=None, wd=None, wd_bn_bias=False,
                  train_bn=True, moms=(0.95, 0.85, 0.95),  path='.', model_dir='models', splitter=trainable_params, verbose=False):
-
-        #Splits
-        if splits is None: splits = TSSplitter()(X)
 
         # Batch size
         if batch_size is not None:
