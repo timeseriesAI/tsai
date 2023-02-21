@@ -19,7 +19,7 @@ from .metrics import *
 # %% ../nbs/022_tslearner.ipynb 5
 class TSClassifier(Learner):
     def __init__(self, X, y=None, splits=None, tfms=None, inplace=True, sel_vars=None, sel_steps=None, weights=None, partial_n=None, 
-                 train_metrics=False, valid_metrics=True, bs=[64, 128], batch_size=None, batch_tfms=None, 
+                 train_metrics=False, valid_metrics=True, bs=[64, 128], batch_size=None, batch_tfms=None, pipelines=None,
                  shuffle_train=True, drop_last=True, num_workers=0, do_setup=True, device=None,
                  arch=None, arch_config={}, pretrained=False, weights_path=None, exclude_head=True, cut=-1, init=None,
                  loss_func=None, opt_func=Adam, lr=0.001, metrics=accuracy, cbs=None, wd=None, wd_bn_bias=False,
@@ -71,6 +71,10 @@ class TSClassifier(Learner):
             splitter = ts_splitter
         except:
             pass
+        if pipelines is not None:
+            pipelines = listify(pipelines)
+        setattr(self, "pipelines", pipelines)
+        
         super().__init__(dls, model, loss_func=loss_func, opt_func=opt_func, lr=lr, cbs=cbs, metrics=metrics, path=path, splitter=splitter,
                          model_dir=model_dir, wd=wd, wd_bn_bias=wd_bn_bias, train_bn=train_bn, moms=moms)
 
@@ -84,7 +88,7 @@ class TSClassifier(Learner):
 # %% ../nbs/022_tslearner.ipynb 10
 class TSRegressor(Learner):
     def __init__(self, X, y=None, splits=None, tfms=None, inplace=True, sel_vars=None, sel_steps=None, weights=None, partial_n=None, 
-                 train_metrics=False, valid_metrics=True, bs=[64, 128], batch_size=None, batch_tfms=None, 
+                 train_metrics=False, valid_metrics=True, bs=[64, 128], batch_size=None, batch_tfms=None, pipelines=None,
                  shuffle_train=True, drop_last=True, num_workers=0, do_setup=True, device=None,
                  arch=None, arch_config={}, pretrained=False, weights_path=None, exclude_head=True, cut=-1, init=None,
                  loss_func=None, opt_func=Adam, lr=0.001, metrics=None, cbs=None, wd=None, wd_bn_bias=False,
@@ -137,6 +141,9 @@ class TSRegressor(Learner):
             splitter = ts_splitter
         except:
             pass
+        if pipelines is not None:
+            pipelines = listify(pipelines)
+        setattr(self, "pipelines", pipelines)
 
         super().__init__(dls, model, loss_func=loss_func, opt_func=opt_func, lr=lr, cbs=cbs, metrics=metrics, path=path, splitter=splitter,
                          model_dir=model_dir, wd=wd, wd_bn_bias=wd_bn_bias, train_bn=train_bn, moms=moms) 
@@ -151,7 +158,7 @@ class TSRegressor(Learner):
 # %% ../nbs/022_tslearner.ipynb 13
 class TSForecaster(Learner):
     def __init__(self, X, y=None, splits=None, tfms=None, inplace=True, sel_vars=None, sel_steps=None, weights=None, partial_n=None, 
-                 train_metrics=False, valid_metrics=True, bs=[64, 128], batch_size=None, batch_tfms=None, 
+                 train_metrics=False, valid_metrics=True, bs=[64, 128], batch_size=None, batch_tfms=None, pipelines=None,
                  shuffle_train=True, drop_last=True, num_workers=0, do_setup=True, device=None,
                  arch=None, arch_config={}, pretrained=False, weights_path=None, exclude_head=True, cut=-1, init=None,
                  loss_func=None, opt_func=Adam, lr=0.001, metrics=None, cbs=None, wd=None, wd_bn_bias=False,
@@ -203,6 +210,9 @@ class TSForecaster(Learner):
             splitter = ts_splitter
         except:
             pass
+        if pipelines is not None:
+            pipelines = listify(pipelines)
+        setattr(self, "pipelines", pipelines)
 
         super().__init__(dls, model, loss_func=loss_func, opt_func=opt_func, lr=lr, cbs=cbs, metrics=metrics, path=path, splitter=splitter,
                          model_dir=model_dir, wd=wd, wd_bn_bias=wd_bn_bias, train_bn=train_bn, moms=moms)

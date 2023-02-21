@@ -982,7 +982,8 @@ class TSCategoricalEncoder(BaseEstimator, TransformerMixin):
         self.sort = sort
         self.inplace = inplace
         self.drop = drop
-        if categories is None or categories == 'auto': self.categories = None
+        if categories is None or categories == 'auto': 
+            self.categories = None
         else:
             assert is_listy(categories) and len(categories) > 0, "you must pass a list or list of lists of categories"
             self.categories = self.to_categorical(categories)
@@ -1300,6 +1301,7 @@ class TSAddMissingTimestamps(TransformerMixin, BaseEstimator):
     def __init__(self, datetime_col=None, use_index=False, unique_id_cols=None, fill_value=np.nan, range_by_group=True, 
                  start_date=None, end_date=None, freq=None):
         assert datetime_col is not None or use_index
+        store_attr()
         self.func = partial(add_missing_timestamps, datetime_col=datetime_col, use_index=use_index, unique_id_cols=unique_id_cols, 
                             fill_value=fill_value, range_by_group=range_by_group, start_date=start_date, end_date=end_date, 
                             freq=freq)
@@ -1360,8 +1362,8 @@ class TSFillMissing(TransformerMixin, BaseEstimator):
     def __init__(self,
         columns=None, #(str or List[str], optional): Column name(s) to be transformed. If None, all columns are transformed. Defaults to None.
         unique_id_cols=None, #(str or List[str], optional): Col name(s) with unique ids for each row. If None, uses all rows at once. Defaults to None .
-        method=None, #(str, optional): The method to use for filling missing values, e.g. 'ffill', 'bfill'. If None, `value` is used. Defaults to None.
-        value=None, #(scalar or dict or Series, optional): The value to use for filling missing values. If None, `method` is used. Defaults to None.
+        method='ffill', #(str, optional): The method to use for filling missing values, e.g. 'ffill', 'bfill'. If None, `value` is used. Defaults to None.
+        value=0, #(scalar or dict or Series, optional): The value to use for filling missing values. If None, `method` is used. Defaults to None.
     ):
 
         self.columns = listify(columns)

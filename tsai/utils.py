@@ -25,7 +25,7 @@ __all__ = ['rng', 'bytes2size', 'b2s', 'memmap2cache', 'cache_memmap', 'a', 'b',
            'get_cont_cols', 'get_cat_cols', 'get_mapping', 'map_array', 'log_tfm', 'to_sincos_time',
            'plot_feature_dist', 'rolling_moving_average', 'ffill_sequence', 'bfill_sequence', 'fbfill_sequence',
            'dummify', 'shuffle_along_axis', 'analyze_feature', 'analyze_array', 'get_relpath', 'split_in_chunks',
-           'save_object', 'load_object', 'get_idxs_to_keep', 'zerofy', 'feat2list', 'smallest_dtype']
+           'save_object', 'load_object', 'get_idxs_to_keep', 'zerofy', 'feat2list', 'smallest_dtype', 'plot_forecast']
 
 # %% ../nbs/002_utils.ipynb 3
 from .imports import *
@@ -1281,7 +1281,7 @@ def get_config(file_path):
     if not file_path.suffix == '.yaml':
         file_path = file_path.with_suffix(".yaml")
     cfg = yaml2dict(file_path)
-    config = cfg.get("config") or config
+    config = cfg.get("config") or cfg
     config = dict2attrdict(config)
     return config
 
@@ -1579,3 +1579,61 @@ def smallest_dtype(num, use_unsigned=False):
         raise ValueError("No dtype found")
     else:
         raise ValueError("Input is not a number")
+
+# %% ../nbs/002_utils.ipynb 196
+def plot_forecast(X_true, y_true, y_pred, sel_vars=None, idx=None, figsize=(8, 4), n_samples=1):
+    
+    import matplotlib.pyplot as plt
+    import matplotlib.patches as mpatches
+    
+    def _plot_forecast(X_true, y_true, y_pred, sel_var=None, idx=None, figsize=(8, 4)):
+        if idx is None:
+            idx = np.random.randint(0, len(X_true))
+        if sel_var is None:
+            title = f'sample: {idx}'
+        else:
+            title = f'sample: {idx} sel_var: {sel_var}'
+        if sel_var is None: sel_var = slice(None)
+        pred = np.concatenate([X_true[idx, sel_var], y_true[idx, sel_var]], -1)
+        pred[..., :X_true.shape[-1]] = np.nan
+
+        true = np.concatenate([X_true[idx, sel_var], y_pred[idx, sel_var]], -1)
+        true_hist = true.copy()
+        true_fut = true.copy()
+        true_hist[..., X_true.shape[-1]:] = np.nan
+        true_fut[..., :X_true.shape[-1]] = np.nan
+
+        plt.figure(figsize=figsize)
+        plt.plot(pred.T, color='orange', lw=1, linestyle='--')
+        plt.plot(true_hist.T, color='purple', lw=1)
+        plt.plot(true_fut.T, color='purple', lw=1, linestyle='--')
+        plt.axvline(X_true.shape[-1] - 1, color='gray', lw=.5, linestyle='--')
+        
+        plt.title(title)
+        plt.xlim(0, X_true.shape[-1] + y_true.shape[-1])
+        pred_patch = mpatches.Patch(color='orange', label='pred')
+        true_patch = mpatches.Patch(color='purple', label='true')
+        plt.legend(handles=[true_patch, pred_patch], loc='best')
+        plt.show()
+        
+    assert X_true.shape[:-1] == y_true.shape[:-1] == y_pred.shape[:-1]
+    assert y_true.shape[-1] == y_pred.shape[-1]
+    
+    if idx is not None:
+        idx = listify(idx)
+        n_samples = len(idx)
+        iterator = idx
+    else:
+        iterator = random_randint(len(X_true), size=n_samples)
+    
+    if sel_vars is None:
+        for idx in iterator:
+            _plot_forecast(X_true, y_true, y_pred, sel_var=None, idx=idx, figsize=figsize)
+    else:
+        for idx in iterator:
+            if sel_vars is True:
+                sel_vars = np.arange(y_true.shape[1])
+            else:
+                sel_vars = listify(sel_vars)
+            for sel_var in sel_vars:
+                _plot_forecast(X_true, y_true, y_pred, sel_var=sel_var, idx=idx, figsize=figsize)

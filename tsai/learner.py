@@ -39,7 +39,26 @@ def one_batch(self:Learner, i, b):
     self._split(b_on_device)
     self._with_events(self._do_one_batch, 'batch', CancelBatchException)
 
-# %% ../nbs/018_learner.ipynb 8
+# %% ../nbs/018_learner.ipynb 7
+@patch
+def transform(self:Learner, df:pd.DataFrame):
+    "Applies sklearn-type pipeline transforms"
+    
+    if self.pipelines is None: return df
+    for pipeline in self.pipelines:
+        df = pipeline.transform(df)
+    return df
+
+
+@patch
+def inverse_transform(self:Learner, df:pd.DataFrame):
+    "Applies sklearn-type pipeline inverse transforms"
+    if self.pipelines is None: return df
+    for pipeline in self.pipelines:
+        df = pipeline.inverse_transform(df)
+    return df
+
+# %% ../nbs/018_learner.ipynb 9
 @patch
 def save_all(self:Learner, path='export', dls_fname='dls', model_fname='model', learner_fname='learner', verbose=False):
     path = Path(path)
@@ -125,7 +144,7 @@ def load_all(path='export', dls_fname='dls', model_fname='model', learner_fname=
 
 load_learner_all = load_all
 
-# %% ../nbs/018_learner.ipynb 9
+# %% ../nbs/018_learner.ipynb 10
 @patch
 @delegates(subplots)
 def plot_metrics(self: Recorder, nrows=None, ncols=None, figsize=None, final_losses=True, perc=.5, **kwargs):
@@ -211,7 +230,7 @@ def plot_metrics(self: Recorder, nrows=None, ncols=None, figsize=None, final_los
 def plot_metrics(self: Learner, **kwargs):
     self.recorder.plot_metrics(**kwargs)
 
-# %% ../nbs/018_learner.ipynb 10
+# %% ../nbs/018_learner.ipynb 11
 all_archs_names = ['FCN', 'FCNPlus', 'InceptionTime', 'InceptionTimePlus', 'InCoordTime', 'XCoordTime', 'InceptionTimePlus17x17', 'InceptionTimePlus32x32', 
                    'InceptionTimePlus47x47', 'InceptionTimePlus62x62', 'InceptionTimeXLPlus', 'MultiInceptionTimePlus', 'MiniRocketClassifier', 
                    'MiniRocketRegressor', 'MiniRocketVotingClassifier', 'MiniRocketVotingRegressor', 'MiniRocketFeaturesPlus', 'MiniRocketPlus', 
@@ -513,7 +532,7 @@ def get_arch(arch_name):
     assert arch.__name__ == arch_name
     return arch
 
-# %% ../nbs/018_learner.ipynb 12
+# %% ../nbs/018_learner.ipynb 13
 @delegates(build_ts_model)
 def ts_learner(dls, arch=None, c_in=None, c_out=None, seq_len=None, d=None, splitter=trainable_params,
                loss_func=None, opt_func=Adam, lr=defaults.lr, cbs=None, metrics=None, path=None,
@@ -548,7 +567,7 @@ def ts_learner(dls, arch=None, c_in=None, c_out=None, seq_len=None, d=None, spli
 
     return learn
 
-# %% ../nbs/018_learner.ipynb 13
+# %% ../nbs/018_learner.ipynb 14
 @delegates(build_tsimage_model)
 def tsimage_learner(dls, arch=None, pretrained=False,
                loss_func=None, opt_func=Adam, lr=defaults.lr, cbs=None, metrics=None, path=None,
@@ -569,6 +588,6 @@ def tsimage_learner(dls, arch=None, pretrained=False,
 
     return learn
 
-# %% ../nbs/018_learner.ipynb 14
+# %% ../nbs/018_learner.ipynb 15
 @patch
 def decoder(self:Learner, o): return L([self.dls.decodes(oi) for oi in o])

@@ -10,6 +10,7 @@ __all__ = ['TSCategorize', 'TSRegression', 'TSForecasting', 'get_tsimage_dls', '
            'get_time_per_batch', 'get_dl_percent_per_epoch']
 
 # %% ../../nbs/006_data.core.ipynb 3
+import warnings
 from ..imports import *
 from sklearn.model_selection import StratifiedKFold
 from types import MethodType
@@ -25,6 +26,8 @@ from fastai.data.block import CategoryBlock, DataBlock
 from fastai.losses import MSELossFlat, CrossEntropyLossFlat, BCEWithLogitsLossFlat
 from fastai.vision.data import get_grid
 from ..utils import *
+
+warnings.filterwarnings("ignore", category=UserWarning)
 
 # %% ../../nbs/006_data.core.ipynb 6
 class NumpyTensor(TensorBase):

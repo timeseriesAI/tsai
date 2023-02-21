@@ -63,7 +63,7 @@ class ShowGraph(Callback):
         store_attr()
 
     def before_fit(self):
-        self.run = not hasattr(self.learn, 'lr_finder') and not hasattr(self, "gather_preds")
+        self.run = not hasattr(self.learn, 'lr_finder') and not hasattr(self, "gather_preds") and not hasattr(self, "summary")
         if not(self.run): return
         self.nb_batches = []
         self.learn.recorder.loss_idxs = [i for i,n in enumerate(self.learn.recorder.metric_names[1:-1]) if 'loss' in n]
