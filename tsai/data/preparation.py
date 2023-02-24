@@ -5,6 +5,7 @@ from __future__ import annotations
 from numpy.lib.stride_tricks import sliding_window_view
 from ..imports import *
 from ..utils import *
+import datetime as dt
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # %% auto 0
@@ -12,7 +13,9 @@ __all__ = ['df2xy', 'split_xy', 'SlidingWindowSplitter', 'SlidingWindowPanelSpli
            'prepare_sel_vars_and_steps', 'apply_sliding_window', 'df2Xy', 'split_Xy', 'df2np3d',
            'add_missing_value_cols', 'add_missing_timestamps', 'time_encoding', 'forward_gaps', 'backward_gaps',
            'nearest_gaps', 'get_gaps', 'add_delta_timestamp_cols', 'SlidingWindow', 'SlidingWindowPanel',
-           'identify_padding', 'basic_data_preparation_fn', 'check_safe_conversion', 'prepare_forecasting_data']
+           'identify_padding', 'basic_data_preparation_fn', 'check_safe_conversion', 'prepare_forecasting_data',
+           'get_today', 'split_fcst_datetime', 'set_df_datetime', 'get_df_datetime_bounds', 'get_fcst_bounds',
+           'filter_df_by_datetime', 'get_fcst_data_from_df']
 
 # %% ../../nbs/004_data.preparation.ipynb 4
 def prepare_idxs(o, shape=None):
@@ -797,3 +800,166 @@ def prepare_forecasting_data(
         else:
             X, y = _prepare_forecasting_data(df[x_vars], x_vars=x_vars, y_vars=y_vars)
     return X, y
+
+# %% ../../nbs/004_data.preparation.ipynb 109
+def get_today(datetime_format="%Y-%m-%d"):
+    return dt.datetime.today().strftime(datetime_format)
+
+# %% ../../nbs/004_data.preparation.ipynb 111
+def split_fcst_datetime(
+    fcst_datetime,  # str or list of str with datetime
+):
+    "Define fcst start and end dates"
+    if not is_listy(fcst_datetime):
+        fcst_datetime = [fcst_datetime]
+    fcst_datetime_min, fcst_datetime_max = fcst_datetime[0], fcst_datetime[-1]
+    return fcst_datetime_min, fcst_datetime_max
+
+# %% ../../nbs/004_data.preparation.ipynb 113
+def set_df_datetime(df, datetime_col=None, use_index=False):
+    "Make sure datetime column or index is of the right date type."
+
+    assert datetime_col or use_index
+    if datetime_col is not None:
+        field_dtype = df[datetime_col].dtype
+    elif use_index:
+        field_dtype = df.index.dtype
+
+    if isinstance(field_dtype, pd.core.dtypes.dtypes.DatetimeTZDtype):
+        field_dtype = np.datetime64
+    if not np.issubdtype(field_dtype, np.datetime64):
+        if datetime_col is not None:
+            df[datetime_col] = pd.to_datetime(
+                df[datetime_col], infer_datetime_format=True
+            )
+        elif use_index:
+            df.index = pd.to_datetime(df.index, infer_datetime_format=True)
+
+# %% ../../nbs/004_data.preparation.ipynb 115
+def get_df_datetime_bounds(
+    df,  # dataframe containing forecasting data
+    datetime_col=None,  # str data column containing the datetime
+    use_index=False,  # bool flag to indicate if index should be used to get column
+    
+):
+    "Returns the start date and and dates used by the forecast"
+    set_df_datetime(df, datetime_col=datetime_col, use_index=use_index)
+    if datetime_col is not None:
+        min_datetime, max_datetime = df[datetime_col].min(), df[datetime_col].max()
+    else:
+        min_datetime, max_datetime = df.index.min(), df.index.max()
+    return min_datetime, max_datetime
+
+# %% ../../nbs/004_data.preparation.ipynb 117
+def get_fcst_bounds(
+    df,  # dataframe containing forecasting data
+    fcst_datetime,  # datetime for which a fcst is created. Optionally tuple of datatimes if the fcst is created for a range of dates.
+    fcst_history=None,  # # steps used as input
+    fcst_horizon=None,  # # predicted steps
+    freq="D",  # datetime units. May contain a letters only or a combination of ints + letters: eg. "7D"
+    datetime_format="%Y-%m-%d",  # format used to convert "today"
+    datetime_col=None,  # str data column containing the datetime
+    use_index=False,  # bool flag to indicate if index should be used to get column
+):
+    "Returns the start and end datetimes used by the forecast"
+    min_datetime, max_datetime = get_df_datetime_bounds(df, datetime_col=datetime_col, use_index=use_index)
+    min_datetime, max_datetime = pd.Timestamp(min_datetime, freq=freq), pd.Timestamp(max_datetime, freq=freq)
+    fcst_datetime_min, fcst_datetime_max = split_fcst_datetime(fcst_datetime)
+    if fcst_datetime_min is None and fcst_datetime_max is None:
+        start_datetime, end_datetime = min_datetime, max_datetime
+    else:
+        
+        if fcst_datetime_min == "today":
+            fcst_datetime_min = get_today(fcst_datetime_min, datetime_format=datetime_format)
+        if fcst_datetime_max == "today":
+            fcst_datetime_max = get_today(fcst_datetime_max, datetime_format=datetime_format)
+        
+        # end_datetime
+        if fcst_datetime_max is None:
+            fcst_dt = end_datetime = max_datetime
+        else:
+            fcst_dt = end_datetime = pd.Timestamp(fcst_datetime_max, freq=freq)
+            if fcst_horizon:
+                end_datetime = end_datetime + end_datetime.freq * fcst_horizon
+
+        # start_datetime
+        if fcst_datetime_min is None:
+            start_datetime = min_datetime
+        elif fcst_datetime_min == fcst_datetime_max:
+            start_datetime = fcst_dt
+            if fcst_history:
+                start_datetime -= start_datetime.freq * (fcst_history - 1)
+        else:
+            n_periods = int((fcst_dt - pd.Timestamp(fcst_datetime_min)) / fcst_dt.freq)
+            if fcst_history:
+                n_periods += fcst_history - 1
+            start_datetime = fcst_dt - n_periods * fcst_dt.freq
+    
+    return start_datetime, end_datetime
+
+# %% ../../nbs/004_data.preparation.ipynb 119
+def filter_df_by_datetime(
+    df,  # dataframe containing forecasting data
+    start_datetime=None, # lower datetime bound
+    end_datetime=None, # upper datetime bound
+    datetime_col=None,  # str data column containing the datetime
+    use_index=False,  # bool flag to indicate if index should be used to get column
+):
+    if use_index:
+        df.index = pd.to_datetime(df.index)
+        if start_datetime is not None and end_datetime is not None:
+            mask = (df.index >= start_datetime) & (df.index <= end_datetime)
+            mask = df.index <= end_datetime
+        elif start_datetime is not None:
+            mask = df.index >= start_datetime
+        else:
+            mask = df.index <= end_datetime
+    else:
+        df[datetime_col] = pd.to_datetime(df[datetime_col])
+        if start_datetime is not None and end_datetime is not None:
+            mask = (df[datetime_col] >= start_datetime) & (
+                df[datetime_col] <= end_datetime
+            )
+        elif start_datetime is not None:
+            mask = df[datetime_col] >= start_datetime
+        else:
+            mask = df[datetime_col] <= end_datetime
+    if (start_datetime is not None or end_datetime is not None) and mask.mean() != 1:
+        df = df.loc[mask]
+        if not use_index:
+            df.reset_index(drop=True, inplace=True)
+    return df
+
+# %% ../../nbs/004_data.preparation.ipynb 121
+def get_fcst_data_from_df(
+    df,  # dataframe containing forecasting data
+    fcst_datetime,  # datetime for which a fcst is created. Optionally tuple of datatimes if the fcst is created for a range of dates.
+    fcst_history=None,  # # steps used as input
+    fcst_horizon=None,  # # predicted steps
+    freq="D",  # datetime units. May contain a letters only or a combination of ints + letters: eg. "7D"
+    datetime_format="%Y-%m-%d",  # format used to convert "today"
+    datetime_col=None,  # str data column containing the datetime
+    use_index=False,  # bool flag to indicate if index should be used to get column
+):
+    """Get forecasting data from a dataframe"""
+    if fcst_datetime is None or fcst_datetime == [None]:
+        return df
+    assert datetime_col or use_index
+    start_datetime, end_datetime = get_fcst_bounds(
+        df, 
+        fcst_datetime,
+        fcst_history=fcst_history,
+        fcst_horizon=fcst_horizon,
+        freq=freq,
+        datetime_format=datetime_format,
+        datetime_col=datetime_col,
+        use_index=use_index,
+    )
+    df = filter_df_by_datetime(
+        df,
+        start_datetime=start_datetime,
+        end_datetime=end_datetime,
+        datetime_col=datetime_col,
+        use_index=use_index,
+    )
+    return df
