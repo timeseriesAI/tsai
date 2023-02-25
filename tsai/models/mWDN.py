@@ -10,7 +10,7 @@ from .InceptionTimePlus import *
 from .utils import build_model
 
 # %% ../../nbs/052_models.mWDN.ipynb 4
-# This is an unofficial PyTorch implementation by Ignacio Oguiza - timeseriesAI@gmail.com based on:
+# This is an unofficial PyTorch implementation by Ignacio Oguiza - oguiza@timeseriesAI.co based on:
 
 # Wang, J., Wang, Z., Li, J., & Wu, J. (2018, July). Multilevel wavelet decomposition network for interpretable time series analysis. In Proceedings of the 24th ACM SIGKDD International Conference on Knowledge Discovery & Data Mining (pp. 2437-2446).
 # No official implementation found

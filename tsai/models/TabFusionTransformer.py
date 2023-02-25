@@ -4,7 +4,7 @@
 __all__ = ['ifnone', 'Sequential', 'TabFusionBackbone', 'TabFusionTransformer', 'TSTabFusionTransformer']
 
 # %% ../../nbs/066_models.TabFusionTransformer.ipynb 4
-# This is a modified Pytorch implementation based on TabTransformer created by Ignacio Oguiza (timeseriesAI@gmail.com):
+# This is a modified Pytorch implementation based on TabTransformer created by Ignacio Oguiza (oguiza@timeseriesAI.co):
 # Huang, X., Khetan, A., Cvitkovic, M., & Karnin, Z. (2020). 
 # TabTransformer: Tabular Data Modeling Using Contextual Embeddings. 
 # arXiv preprint https://arxiv.org/pdf/2012.06678

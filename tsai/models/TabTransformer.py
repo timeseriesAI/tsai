@@ -4,7 +4,7 @@
 __all__ = ['ifnone', 'SharedEmbedding', 'FullEmbeddingDropout', 'TabTransformer']
 
 # %% ../../nbs/064_models.TabTransformer.ipynb 4
-# This is an unofficial TabTransformer implementation in Pytorch developed by Ignacio Oguiza - timeseriesAI@gmail.com based on:
+# This is an unofficial TabTransformer implementation in Pytorch developed by Ignacio Oguiza - oguiza@timeseriesAI.co based on:
 # Huang, X., Khetan, A., Cvitkovic, M., & Karnin, Z. (2020). 
 # TabTransformer: Tabular Data Modeling Using Contextual Embeddings. 
 # arXiv preprint https://arxiv.org/pdf/2012.06678

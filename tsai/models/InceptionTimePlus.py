@@ -14,7 +14,7 @@ from .layers import *
 from .utils import *
 
 # %% ../../nbs/036_models.InceptionTimePlus.ipynb 5
-# This is an unofficial PyTorch implementation by Ignacio Oguiza - timeseriesAI@gmail.com modified from:
+# This is an unofficial PyTorch implementation by Ignacio Oguiza - oguiza@timeseriesAI.co modified from:
 
 # Fawaz, H. I., Lucas, B., Forestier, G., Pelletier, C., Schmidt, D. F., Weber, J., ... & Petitjean, F. (2019). 
 # InceptionTime: Finding AlexNet for Time Series Classification. arXiv preprint arXiv:1909.04939.

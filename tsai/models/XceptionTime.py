@@ -9,7 +9,7 @@ from .layers import *
 from .utils import *
 
 # %% ../../nbs/044_models.XceptionTime.ipynb 4
-# This is an unofficial PyTorch implementation developed by Ignacio Oguiza - timeseriesAI@gmail.com based on:
+# This is an unofficial PyTorch implementation developed by Ignacio Oguiza - oguiza@timeseriesAI.co based on:
 # Rahimian, E., Zabihi, S., Atashzar, S. F., Asif, A., & Mohammadi, A. (2019). 
 # XceptionTime: A Novel Deep Architecture based on Depthwise Separable Convolutions for Hand Gesture Classification. arXiv preprint arXiv:1911.03803.
 # and 
