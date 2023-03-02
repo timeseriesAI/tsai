@@ -2,10 +2,14 @@
 
 # %% ../../nbs/004_data.preparation.ipynb 3
 from __future__ import annotations
+
+import datetime as dt
+
 from numpy.lib.stride_tricks import sliding_window_view
+
 from ..imports import *
 from ..utils import *
-import datetime as dt
+
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # %% auto 0
@@ -761,16 +765,18 @@ def prepare_forecasting_data(
     df:pd.DataFrame, # dataframe containing a sorted time series for a single entity or subject
     fcst_history:int, # # historical steps used as input.
     fcst_horizon:int=1, # # steps forecasted into the future. 
-    x_vars:str|list=None, # features used as input
-    y_vars:str|list=None,  # features used as output
+    x_vars:str|list=None, # features used as input. None means all columns. [] means no features.
+    y_vars:str|list=None,  # features used as output. None means all columns. [] means no features.
     dtype:str=None, # data type
     unique_id_cols:str|list=None, # unique identifier column/s used in panel data
 )->tuple(np.ndarray, np.ndarray):
 
     def _prepare_forecasting_data(df, x_vars, y_vars):
         x_np = df.to_numpy(dtype=dtype) if x_vars is None else df[x_vars].to_numpy(dtype=dtype)
-        y_np = x_np if x_vars == y_vars else df.to_numpy(dtype=dtype) if y_vars is None else df[y_vars].to_numpy(dtype=dtype)
         X = sliding_window_view(x_np[:len(x_np) - fcst_horizon], fcst_history, axis=0)
+        if y_vars == []: 
+            return X, []
+        y_np = x_np if x_vars == y_vars else df.to_numpy(dtype=dtype) if y_vars is None else df[y_vars].to_numpy(dtype=dtype)
         y = sliding_window_view(y_np[fcst_history:], fcst_horizon, axis=0)
         return X, y
     
@@ -778,7 +784,7 @@ def prepare_forecasting_data(
     y_vars = None if (y_vars is None or feat2list(y_vars) == list(df.columns)) else feat2list(y_vars)
     if dtype is not None:
         assert check_safe_conversion(df, dtype=dtype, cols=x_vars)
-        if y_vars != x_vars:
+        if y_vars != [] and y_vars != x_vars:
             assert check_safe_conversion(df, dtype=dtype, cols=y_vars)
     if unique_id_cols:
         grouped = df.groupby(unique_id_cols)
@@ -793,19 +799,21 @@ def prepare_forecasting_data(
         X = np.concatenate(X, 0)
         y = np.concatenate(y, 0)
     else:
-        if x_vars is None and y_vars is None:
-            X, y = _prepare_forecasting_data(df, x_vars=None, y_vars=None)
+        if x_vars is None:
+            X, y = _prepare_forecasting_data(df, x_vars=None, y_vars=y_vars)
         elif x_vars == y_vars:
             X, y = _prepare_forecasting_data(df[x_vars], x_vars=None, y_vars=None)
         else:
-            X, y = _prepare_forecasting_data(df[x_vars], x_vars=x_vars, y_vars=y_vars)
+            X, y = _prepare_forecasting_data(df, x_vars=x_vars, y_vars=y_vars)
+    if y == []:
+        y = None
     return X, y
 
-# %% ../../nbs/004_data.preparation.ipynb 109
+# %% ../../nbs/004_data.preparation.ipynb 110
 def get_today(datetime_format="%Y-%m-%d"):
     return dt.datetime.today().strftime(datetime_format)
 
-# %% ../../nbs/004_data.preparation.ipynb 111
+# %% ../../nbs/004_data.preparation.ipynb 112
 def split_fcst_datetime(
     fcst_datetime,  # str or list of str with datetime
 ):
@@ -815,7 +823,7 @@ def split_fcst_datetime(
     fcst_datetime_min, fcst_datetime_max = fcst_datetime[0], fcst_datetime[-1]
     return fcst_datetime_min, fcst_datetime_max
 
-# %% ../../nbs/004_data.preparation.ipynb 113
+# %% ../../nbs/004_data.preparation.ipynb 114
 def set_df_datetime(df, datetime_col=None, use_index=False):
     "Make sure datetime column or index is of the right date type."
 
@@ -835,7 +843,7 @@ def set_df_datetime(df, datetime_col=None, use_index=False):
         elif use_index:
             df.index = pd.to_datetime(df.index, infer_datetime_format=True)
 
-# %% ../../nbs/004_data.preparation.ipynb 115
+# %% ../../nbs/004_data.preparation.ipynb 116
 def get_df_datetime_bounds(
     df,  # dataframe containing forecasting data
     datetime_col=None,  # str data column containing the datetime
@@ -850,7 +858,7 @@ def get_df_datetime_bounds(
         min_datetime, max_datetime = df.index.min(), df.index.max()
     return min_datetime, max_datetime
 
-# %% ../../nbs/004_data.preparation.ipynb 117
+# %% ../../nbs/004_data.preparation.ipynb 118
 def get_fcst_bounds(
     df,  # dataframe containing forecasting data
     fcst_datetime,  # datetime for which a fcst is created. Optionally tuple of datatimes if the fcst is created for a range of dates.
@@ -897,7 +905,7 @@ def get_fcst_bounds(
     
     return start_datetime, end_datetime
 
-# %% ../../nbs/004_data.preparation.ipynb 119
+# %% ../../nbs/004_data.preparation.ipynb 120
 def filter_df_by_datetime(
     df,  # dataframe containing forecasting data
     start_datetime=None, # lower datetime bound
@@ -930,7 +938,7 @@ def filter_df_by_datetime(
             df.reset_index(drop=True, inplace=True)
     return df
 
-# %% ../../nbs/004_data.preparation.ipynb 121
+# %% ../../nbs/004_data.preparation.ipynb 122
 def get_fcst_data_from_df(
     df,  # dataframe containing forecasting data
     fcst_datetime,  # datetime for which a fcst is created. Optionally tuple of datatimes if the fcst is created for a range of dates.
