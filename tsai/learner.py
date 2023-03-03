@@ -537,8 +537,11 @@ def get_arch(arch_name):
 def ts_learner(dls, arch=None, c_in=None, c_out=None, seq_len=None, d=None, splitter=trainable_params,
                loss_func=None, opt_func=Adam, lr=defaults.lr, cbs=None, metrics=None, path=None,
                model_dir='models', wd=None, wd_bn_bias=False, train_bn=True, moms=(0.95,0.85,0.95), 
-               train_metrics=False, valid_metrics=True, **kwargs)->Learner:
+               train_metrics=False, valid_metrics=True, seed=None, **kwargs)->Learner:
 
+    if seed is not None:
+        set_seed(seed, reproducible=True)
+    
     if isinstance(arch, nn.Module): 
         model = arch
         if kwargs: 
