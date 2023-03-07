@@ -1506,6 +1506,7 @@ def get_relpath(path):
 # %% ../nbs/002_utils.ipynb 182
 def get_root():
     "Returns the root directory of the git repository."
+    import subprocess
     git_root = subprocess.check_output(["git", "rev-parse", "--show-toplevel"]).decode().strip()
     return git_root
 

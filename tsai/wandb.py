@@ -60,5 +60,9 @@ def get_sweep_config(config):
     if isinstance(config["sweep"], str):
         file_path = Path(config["sweep"])
         file_path = to_root_path(file_path)
-        return yaml2dict(file_path, attrdict=False)
-    return attrdict2dict(config.get("sweep"))
+        sweep = yaml2dict(file_path, attrdict=False)
+    else:
+        sweep = attrdict2dict(config["sweep"])
+    if hasattr(sweep, "sweep"):
+        sweep = sweep["sweep"]
+    return sweep
