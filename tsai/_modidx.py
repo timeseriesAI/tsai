@@ -2630,7 +2630,7 @@ d = { 'settings': { 'branch': 'main',
                             'tsai.utils.ttest': ('utils.html#ttest', 'tsai/utils.py'),
                             'tsai.utils.yaml2dict': ('utils.html#yaml2dict', 'tsai/utils.py'),
                             'tsai.utils.zerofy': ('utils.html#zerofy', 'tsai/utils.py')},
-            'tsai.wandb': { 'tsai.wandb.check_config_sweep': ('wandb.html#check_config_sweep', 'tsai/wandb.py'),
+            'tsai.wandb': { 'tsai.wandb._get_root': ('wandb.html#_get_root', 'tsai/wandb.py'),
                             'tsai.wandb.get_sweep_config': ('wandb.html#get_sweep_config', 'tsai/wandb.py'),
                             'tsai.wandb.update_run_config': ('wandb.html#update_run_config', 'tsai/wandb.py'),
                             'tsai.wandb.wandb_agent': ('wandb.html#wandb_agent', 'tsai/wandb.py')}}}
