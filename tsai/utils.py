@@ -24,8 +24,9 @@ __all__ = ['rng', 'bytes2size', 'b2s', 'memmap2cache', 'cache_memmap', 'a', 'b',
            'named_partial', 'attrdict2dict', 'dict2attrdict', 'dict2yaml', 'yaml2dict', 'get_config', 'str2list',
            'str2index', 'get_cont_cols', 'get_cat_cols', 'get_mapping', 'map_array', 'log_tfm', 'to_sincos_time',
            'plot_feature_dist', 'rolling_moving_average', 'ffill_sequence', 'bfill_sequence', 'fbfill_sequence',
-           'dummify', 'shuffle_along_axis', 'analyze_feature', 'analyze_array', 'get_relpath', 'split_in_chunks',
-           'save_object', 'load_object', 'get_idxs_to_keep', 'zerofy', 'feat2list', 'smallest_dtype', 'plot_forecast']
+           'dummify', 'shuffle_along_axis', 'analyze_feature', 'analyze_array', 'get_relpath', 'get_root',
+           'to_root_path', 'split_in_chunks', 'save_object', 'load_object', 'get_idxs_to_keep', 'zerofy', 'feat2list',
+           'smallest_dtype', 'plot_forecast']
 
 # %% ../nbs/002_utils.ipynb 3
 from .imports import *
@@ -1503,6 +1504,23 @@ def get_relpath(path):
         return os.path.relpath(path, current_path)
 
 # %% ../nbs/002_utils.ipynb 182
+def get_root():
+    "Returns the root directory of the git repository."
+    git_root = subprocess.check_output(["git", "rev-parse", "--show-toplevel"]).decode().strip()
+    return git_root
+
+
+def to_root_path(path):
+    "Converts a path to an absolute path from the root directory of the repository."
+    if path is None:
+        return path
+    path = Path(path)
+    if path.is_absolute():
+        return path
+    else:
+        return Path(get_root()) / path
+
+# %% ../nbs/002_utils.ipynb 183
 def split_in_chunks(o, chunksize, start=0, shuffle=False, drop_last=False):
     stop = ((len(o) - start)//chunksize*chunksize) if drop_last else None
     chunk_list = []
@@ -1511,7 +1529,7 @@ def split_in_chunks(o, chunksize, start=0, shuffle=False, drop_last=False):
     if shuffle: random.shuffle(chunk_list)
     return chunk_list
 
-# %% ../nbs/002_utils.ipynb 184
+# %% ../nbs/002_utils.ipynb 185
 def save_object(o, file_path, verbose=True):
     file_path = Path(file_path)
     if not file_path.suffix == '.pkl':
@@ -1526,7 +1544,7 @@ def load_object(file_path):
         file_path = file_path.parent / (file_path.name + '.pkl')
     return joblib.load(file_path)
 
-# %% ../nbs/002_utils.ipynb 187
+# %% ../nbs/002_utils.ipynb 188
 def get_idxs_to_keep(o, cond, crit='all', invert=False, axis=(1,2), keepdims=False):
     idxs_to_keep = cond(o)
     if isinstance(o, torch.Tensor):
@@ -1546,7 +1564,7 @@ def get_idxs_to_keep(o, cond, crit='all', invert=False, axis=(1,2), keepdims=Fal
         if invert: idxs_to_keep = ~idxs_to_keep
         return idxs_to_keep
 
-# %% ../nbs/002_utils.ipynb 189
+# %% ../nbs/002_utils.ipynb 190
 def zerofy(a, stride, keep=False):
     "Create copies of an array setting individual/ group values to zero "
     if keep:
@@ -1568,13 +1586,13 @@ def zerofy(a, stride, keep=False):
     else: 
         return a
 
-# %% ../nbs/002_utils.ipynb 191
+# %% ../nbs/002_utils.ipynb 192
 def feat2list(o):
     if o is None: return []
     elif isinstance(o, str): return [o]
     return list(o)
 
-# %% ../nbs/002_utils.ipynb 193
+# %% ../nbs/002_utils.ipynb 194
 def smallest_dtype(num, use_unsigned=False):
     "Find the smallest dtype that can safely hold `num`"
     if use_unsigned:
@@ -1599,7 +1617,7 @@ def smallest_dtype(num, use_unsigned=False):
     else:
         raise ValueError("Input is not a number")
 
-# %% ../nbs/002_utils.ipynb 195
+# %% ../nbs/002_utils.ipynb 196
 def plot_forecast(X_true, y_true, y_pred, sel_vars=None, idx=None, figsize=(8, 4), n_samples=1):
     
     import matplotlib.pyplot as plt

@@ -53,18 +53,12 @@ def update_run_config(config, new_config, verbose=False):
     return config_dict
 
 # %% ../nbs/073_wandb.ipynb 6
-def _get_root():
-    "Returns the root directory of the git repository."
-    import subprocess
-    return subprocess.check_output(["git", "rev-parse", "--show-toplevel"]).decode().strip()
-
 def get_sweep_config(config):
     "Get sweep config from `config`"
     if not hasattr(config, "sweep") or not config["sweep"]: 
         return {}
     if isinstance(config["sweep"], str):
         file_path = Path(config["sweep"])
-        if not file_path.is_absolute():
-            file_path = Path(_get_root()) / file_path
+        file_path = to_root_path(file_path)
         return yaml2dict(file_path, attrdict=False)
     return attrdict2dict(config.get("sweep"))
