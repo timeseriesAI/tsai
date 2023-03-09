@@ -1632,10 +1632,10 @@ def plot_forecast(X_true, y_true, y_pred, sel_vars=None, idx=None, figsize=(8, 4
         else:
             title = f'sample: {idx} sel_var: {sel_var}'
         if sel_var is None: sel_var = slice(None)
-        pred = np.concatenate([X_true[idx, sel_var], y_true[idx, sel_var]], -1)
+        pred = np.concatenate([X_true[idx, sel_var], y_pred[idx, sel_var]], -1)
         pred[..., :X_true.shape[-1]] = np.nan
 
-        true = np.concatenate([X_true[idx, sel_var], y_pred[idx, sel_var]], -1)
+        true = np.concatenate([X_true[idx, sel_var], y_true[idx, sel_var]], -1)
         true_hist = true.copy()
         true_fut = true.copy()
         true_hist[..., X_true.shape[-1]:] = np.nan
