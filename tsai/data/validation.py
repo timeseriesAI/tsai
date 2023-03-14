@@ -9,6 +9,7 @@ __all__ = ['TimeSplitter', 'RandomSplitter', 'check_overlap', 'check_splits_over
 # %% ../../nbs/003_data.validation.ipynb 3
 from ..imports import *
 from imblearn.over_sampling import RandomOverSampler
+from imblearn.under_sampling import RandomUnderSampler
 from matplotlib.patches import Patch
 from matplotlib.colors import LinearSegmentedColormap
 from sklearn.model_selection import train_test_split, KFold, StratifiedKFold
@@ -53,10 +54,14 @@ def leakage_finder(*splits, verbose=True):
                 overlaps += 1
     assert overlaps == 0, 'Please, review your splits!'
 
-def balance_idx(o, shuffle=False, random_state=None, verbose=False):
+def balance_idx(o, shuffle=False, strategy="oversample", random_state=None, verbose=False):
+    assert strategy in ["oversample", "undersample"]
     if isinstance(o, list): o = L(o)
     idx_ = np.arange(len(o)).reshape(-1, 1)
-    ros = RandomOverSampler(random_state=random_state)
+    if strategy == "oversample":
+        ros = RandomOverSampler(random_state=random_state)
+    elif strategy == "undersample":
+        ros = RandomUnderSampler(random_state=random_state)
     resampled_idxs, _ = ros.fit_resample(idx_, np.asarray(o))
     new_idx = L(resampled_idxs.reshape(-1,).tolist())
     if shuffle: new_idx = random_shuffle(new_idx)
@@ -64,7 +69,8 @@ def balance_idx(o, shuffle=False, random_state=None, verbose=False):
 
 # %% ../../nbs/003_data.validation.ipynb 12
 def TrainValidTestSplitter(n_splits:int=1, valid_size:Union[float, int]=0.2, test_size:Union[float, int]=0., train_only:bool=False,
-                           stratify:bool=True, balance:bool=False, shuffle:bool=True, random_state:Union[None, int]=None, verbose:bool=False, **kwargs):
+                           stratify:bool=True, balance:bool=False, strategy:str="oversample", shuffle:bool=True, 
+                           random_state:Union[None, int]=None, verbose:bool=False, **kwargs):
     "Split `items` into random train, valid (and test optional) subsets."
     
     if not shuffle and stratify and not train_only: 
@@ -93,7 +99,7 @@ def TrainValidTestSplitter(n_splits:int=1, valid_size:Union[float, int]=0.2, tes
             if vs == 0:
                 train, _ = RandomSplitter(0, seed=random_state)(o[train_valid])
                 train = toL(train)
-                if balance: train = train[balance_idx(o[train], random_state=random_state)]
+                if balance: train = train[balance_idx(o[train], random_state=random_state, strategy=strategy)]
                 if shuffle: train = random_shuffle(train, random_state)
                 train_ = L(L([train]) * n_splits) if n_splits > 1 else train
                 valid_ = L(L([train]) * n_splits) if n_splits > 1 else train
@@ -110,7 +116,7 @@ def TrainValidTestSplitter(n_splits:int=1, valid_size:Union[float, int]=0.2, tes
                 train_, valid_ = L([]), L([])
                 for train, valid in splits:
                     train, valid = toL(train), toL(valid)
-                    if balance: train = train[balance_idx(o[train], random_state=random_state)]
+                    if balance: train = train[balance_idx(o[train], random_state=random_state, strategy=strategy)]
                     if shuffle: 
                         train = random_shuffle(train, random_state)
                         valid = random_shuffle(valid, random_state)
@@ -122,7 +128,7 @@ def TrainValidTestSplitter(n_splits:int=1, valid_size:Union[float, int]=0.2, tes
                 train, valid = train_test_split(range(len(train_valid)), test_size=vs, random_state=random_state, 
                                                 stratify=o[train_valid] if stratify_ else None, shuffle=shuffle, **kwargs)
                 train, valid = toL(train), toL(valid)
-                if balance: train = train[balance_idx(o[train], random_state=random_state)]
+                if balance: train = train[balance_idx(o[train], random_state=random_state, strategy=strategy)]
                 if shuffle: 
                     train = random_shuffle(train, random_state)
                     valid = random_shuffle(valid, random_state)
@@ -131,7 +137,7 @@ def TrainValidTestSplitter(n_splits:int=1, valid_size:Union[float, int]=0.2, tes
             if vs == 0:
                 train, _ = RandomSplitter(0, seed=random_state)(o)
                 train = toL(train)
-                if balance: train = train[balance_idx(o[train], random_state=random_state)]
+                if balance: train = train[balance_idx(o[train], random_state=random_state, strategy=strategy)]
                 if shuffle: train = random_shuffle(train, random_state)
                 train_ = L(L([train]) * n_splits) if n_splits > 1 else train
                 valid_ = L(L([train]) * n_splits) if n_splits > 1 else train
@@ -145,7 +151,7 @@ def TrainValidTestSplitter(n_splits:int=1, valid_size:Union[float, int]=0.2, tes
                 train_, valid_ = L([]), L([])
                 for train, valid in splits:
                     train, valid = toL(train), toL(valid)
-                    if balance: train = train[balance_idx(o[train], random_state=random_state)]
+                    if balance: train = train[balance_idx(o[train], random_state=random_state, strategy=strategy)]
                     if shuffle: 
                         train = random_shuffle(train, random_state)
                         valid = random_shuffle(valid, random_state)
@@ -158,7 +164,7 @@ def TrainValidTestSplitter(n_splits:int=1, valid_size:Union[float, int]=0.2, tes
                 train, valid = train_test_split(range(len(o)), test_size=vs, random_state=random_state, stratify=o if stratify_ else None, 
                                                 shuffle=shuffle, **kwargs)
                 train, valid = toL(train), toL(valid)
-                if balance: train = train[balance_idx(o[train], random_state=random_state)]
+                if balance: train = train[balance_idx(o[train], random_state=random_state, strategy=strategy)]
                 return train, valid
     return _inner
 
@@ -207,7 +213,8 @@ def plot_splits(splits):
 
 # %% ../../nbs/003_data.validation.ipynb 14
 def get_splits(o, n_splits:int=1, valid_size:float=0.2, test_size:float=0., train_only:bool=False, train_size:Union[None, float, int]=None, balance:bool=False,
-               shuffle:bool=True, stratify:bool=True, check_splits:bool=True, random_state:Union[None, int]=None, show_plot:bool=True, verbose:bool=False):
+               strategy:str="oversample", shuffle:bool=True, stratify:bool=True, check_splits:bool=True, random_state:Union[None, int]=None, 
+               show_plot:bool=True, verbose:bool=False):
     '''Arguments: 
         o            : object to which splits will be applied, usually target.
         n_splits     : number of folds. Must be an int >= 1.
@@ -217,6 +224,7 @@ def get_splits(o, n_splits:int=1, valid_size:float=0.2, test_size:float=0., trai
         train_size   : size of the train set used. Default = None (the remainder after assigning both valid and test). 
                         Useful for to get learning curves with different train sizes or get a small batch to debug a neural net.
         balance      : whether to balance data so that train always contain the same number of items per class.
+        strategy     : strategy to balance data ("undersample" or "oversample"). Default = "oversample".
         shuffle      : whether to shuffle data before splitting into batches. Note that the samples within each split will be shuffle.
         stratify     : whether to create folds preserving the percentage of samples for each class.
         check_splits : whether to perform leakage and completion checks.
@@ -226,7 +234,7 @@ def get_splits(o, n_splits:int=1, valid_size:float=0.2, test_size:float=0., trai
     if n_splits == 1 and valid_size == 0. and  test_size == 0.: train_only = True
     if balance: stratify = True
     splits = TrainValidTestSplitter(n_splits, valid_size=valid_size, test_size=test_size, train_only=train_only, stratify=stratify, 
-                                      balance=balance, shuffle=shuffle, random_state=random_state, verbose=verbose)(o)
+                                    balance=balance, strategy=strategy, shuffle=shuffle, random_state=random_state, verbose=verbose)(o)
     if check_splits:
         if train_only or (n_splits == 1 and valid_size == 0): print('valid == train')
         elif n_splits > 1: 
