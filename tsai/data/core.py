@@ -432,8 +432,21 @@ class TSDatasets(NumpyDatasets):
     def __init__(self, X=None, y=None, items=None, sel_vars=None, sel_steps=None, tfms=None, tls=None, n_inp=None, dl_type=None, 
                  inplace=True, **kwargs):
 
+        # Prepare X (and y)
+        if X is not None:
+            if not hasattr(X, '__array__'): 
+                X = np.asarray(X)
+            X = to3d(X)
+        if y is not None:
+            if not hasattr(y, '__array__'):  
+                y = np.asarray(y)
+            elif hasattr(y, "iloc"): 
+                y = toarray(y)
+
+        # Prepare sel_vars and sel_steps
         self.multi_index = False
-        if sel_vars is None or (type(sel_vars) == slice and sel_vars == slice(None)): self.sel_vars = slice(None)
+        if sel_vars is None or (type(sel_vars) == slice and sel_vars == slice(None)):
+            self.sel_vars = slice(None)
         elif type(sel_vars) == slice: 
             self.sel_vars = sel_vars
             self.multi_index = True
@@ -441,7 +454,8 @@ class TSDatasets(NumpyDatasets):
             self.sel_vars = np.asarray(sel_vars)
             if sel_steps is not None and type(sel_steps) != slice: self.sel_vars = sel_vars[:, None]
             self.multi_index = True
-        if sel_steps is None or (type(sel_steps) == slice and sel_steps == slice(None)): self.sel_steps = slice(None)
+        if sel_steps is None or (type(sel_steps) == slice and sel_steps == slice(None)): 
+            self.sel_steps = slice(None)
         elif type(sel_steps) == slice: 
             self.sel_steps = sel_steps
             self.multi_index = True
@@ -450,12 +464,7 @@ class TSDatasets(NumpyDatasets):
             self.multi_index = True
         self.tfms, self.inplace = tfms, inplace
 
-        if X is not None:
-            if not hasattr(X, '__array__'): X = np.asarray(X)
-            X = to3d(X)
-        if y is not None:
-            if not hasattr(y, '__array__'):  y = np.asarray(y)
-            elif hasattr(y, "iloc"): y = toarray(y)
+        # Prepare tls (transform lists) and ptls (preprocessed transform lists)
         if tls is None:
             items = tuple((X,)) if y is None else tuple((X, y))
             if tfms is None:
@@ -466,7 +475,7 @@ class TSDatasets(NumpyDatasets):
             self.tls = L(lt(item, t, **kwargs) for lt,item,t in zip(lts, items, self.tfms))
             if len(self.tls) > 0 and len(self.tls[0]) > 0:
                 self.typs = [type(tl.items[0]) if isinstance(tl.items[0], torch.Tensor) else self.typs[i] for i,tl in enumerate(self.tls)]
-            if tfms is None or tfms == [None] * len(self.tls):
+            if self.inplace and (tfms is None or tfms == [None] * len(self.tls)):
                 for tl,typ in zip(self.tls, self.typs):
                     tl.items = typ(tl.items)
                 self.ptls = self.tls
@@ -497,7 +506,7 @@ class TSDatasets(NumpyDatasets):
         else:
             return tuple([typ(stack(ptl[it]))[...,self.sel_vars, self.sel_steps] if (i==0 and self.multi_index) else typ(stack(ptl[it])) \
                           for i,(ptl,typ) in enumerate(zip(self.ptls,self.typs))])
-
+    
     def subset(self, i):
         if is_indexer(i):
             return type(self)(tls=L([tl.subset(i) for tl in self.tls]), inplace=self.inplace, tfms=self.tfms,
@@ -519,7 +528,7 @@ class TSDatasets(NumpyDatasets):
     def new_empty(self): return type(self)(tls=[tl.new_empty() for tl in self.tls], sel_vars=self.sel_vars, sel_steps=self.sel_steps, 
                                            n_inp=self.n_inp, inplace=self.inplace)
 
-# %% ../../nbs/006_data.core.ipynb 50
+# %% ../../nbs/006_data.core.ipynb 51
 def add_ds(dsets, X, y=None, inplace=True):
     "Create test datasets from X (and y) using validation transforms of `dsets`"
     items = tuple((X,)) if y is None else tuple((X, y))
@@ -554,7 +563,7 @@ def add_test(self:NumpyDatasets, X, y=None, inplace=True):
 def add_unlabeled(self:NumpyDatasets, X, inplace=True):
     return add_ds(self, X, y=None, inplace=inplace)
 
-# %% ../../nbs/006_data.core.ipynb 66
+# %% ../../nbs/006_data.core.ipynb 67
 @patch
 def _one_pass(self:TfmdDL):
     b = self.do_batch([self.do_item(0)])
@@ -563,7 +572,7 @@ def _one_pass(self:TfmdDL):
     self._n_inp = 1 if not isinstance(its, (list,tuple)) or len(its)==1 else len(its)-1
     self._types = explode_types(its)
 
-# %% ../../nbs/006_data.core.ipynb 67
+# %% ../../nbs/006_data.core.ipynb 68
 _batch_tfms = ('after_item','before_batch','after_batch')
 
 @delegates(TfmdDL.__init__)
@@ -808,7 +817,7 @@ class TSDataLoader(NumpyDataLoader):
         if xb[0].ndim >= 4: return xb[0].shape[-2:]
         else: return xb[0].shape[-1]
 
-# %% ../../nbs/006_data.core.ipynb 68
+# %% ../../nbs/006_data.core.ipynb 69
 _batch_tfms = ('after_item','before_batch','after_batch')
 
 class NumpyDataLoaders(DataLoaders):
@@ -878,7 +887,7 @@ class TSDataLoaders(NumpyDataLoaders):
     _xblock = TSTensorBlock
     _dl_type = TSDataLoader
 
-# %% ../../nbs/006_data.core.ipynb 69
+# %% ../../nbs/006_data.core.ipynb 70
 class StratifiedSampler:
     "Sampler where batches preserve the percentage of samples for each class"
     
@@ -905,7 +914,7 @@ class StratifiedSampler:
     def __len__(self):
         return self.n
 
-# %% ../../nbs/006_data.core.ipynb 71
+# %% ../../nbs/006_data.core.ipynb 72
 def get_c(dls):
     if getattr(dls, 'c', False): return dls.c
     if getattr(getattr(dls.train, 'after_item', None), 'c', False): return dls.train.after_item.c
@@ -914,7 +923,7 @@ def get_c(dls):
     if len(vocab) > 0 and is_listy(vocab[-1]): vocab = vocab[-1]
     return len(vocab)
 
-# %% ../../nbs/006_data.core.ipynb 72
+# %% ../../nbs/006_data.core.ipynb 73
 def get_best_dl_params(dl, n_iters=10, num_workers=[0, 1, 2, 4, 8], pin_memory=[True, False], prefetch_factor=[2, 4, 8], return_best=True, 
                        verbose=True): 
 
@@ -1023,7 +1032,7 @@ def get_best_dls_params(dls, n_iters=10, num_workers=[0, 1, 2, 4, 8], pin_memory
         except KeyboardInterrupt: pass
     return dls
 
-# %% ../../nbs/006_data.core.ipynb 73
+# %% ../../nbs/006_data.core.ipynb 74
 def _check_splits(X, splits):
     if splits is None:
         _dtype = smallest_dtype(len(X))
@@ -1059,7 +1068,7 @@ def get_ts_dls(X, y=None, splits=None, sel_vars=None, sel_steps=None, tfms=None,
 
 get_tsimage_dls = get_ts_dls
 
-# %% ../../nbs/006_data.core.ipynb 75
+# %% ../../nbs/006_data.core.ipynb 76
 def _check_split(X, split):
     if split is None:
         _dtype = smallest_dtype(len(X))
@@ -1086,7 +1095,7 @@ def get_ts_dl(X, y=None, split=None, sel_vars=None, sel_steps=None, tfms=None, i
 
 def get_subset_dl(dl, idxs): return dl.new(dl.dataset.subset(idxs))
 
-# %% ../../nbs/006_data.core.ipynb 113
+# %% ../../nbs/006_data.core.ipynb 114
 def get_time_per_batch(dl, model=None, n_batches=None):
     try:
         timer.start(False)
