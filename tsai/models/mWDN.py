@@ -22,6 +22,10 @@ class WaveBlock(Module):
             self.h_filter = [-0.2304,0.7148,-0.6309,-0.028,0.187,0.0308,-0.0329,-0.0106]
             self.l_filter = [-0.0106,0.0329,0.0308,-0.187,-0.028,0.6309,0.7148,0.2304]
         else:
+            try: 
+                import pywt
+            except ImportError: 
+                print("You need to either install pywt to run mWDN or set wavelet=None")
             w = pywt.Wavelet(wavelet)
             self.h_filter = w.dec_hi
             self.l_filter = w.dec_lo
@@ -61,11 +65,6 @@ class mWDN(Module):
     def __init__(self, c_in, c_out, seq_len, levels=3, wavelet=None, base_arch=InceptionTimePlus, **kwargs):
         self.levels=levels
         self.blocks = nn.ModuleList()
-        if wavelet is not None:
-            try: 
-                import pywt
-            except ImportError: 
-                print("You need to either install pywt to run mWDN or leave wavelet=None")
         for i in range(levels): self.blocks.append(WaveBlock(c_in, c_out, seq_len // 2 ** i, wavelet=wavelet))
         self._model = build_model(base_arch, c_in, c_out, seq_len=seq_len, **kwargs)
 
