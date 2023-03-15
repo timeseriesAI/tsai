@@ -528,6 +528,9 @@ def get_arch(arch_name):
     elif arch_name == "mWDN":  
         from tsai.models.mWDN import mWDN
         arch = mWDN
+    elif arch_name == "mWDNPlus":  
+        from tsai.models.mWDN import mWDNPlus
+        arch = mWDNPlus
     else: print(f"please, confirm the name of the architecture ({arch_name})")
     assert arch.__name__ == arch_name
     return arch

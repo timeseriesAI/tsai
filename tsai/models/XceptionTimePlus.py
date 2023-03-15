@@ -71,7 +71,9 @@ class XceptionBlockPlus(Module):
     
 @delegates(XceptionBlockPlus.__init__)
 class XceptionTimePlus(nn.Sequential):
-    def __init__(self, c_in, c_out, nf=16, nb_filters=None, coord=False, norm='Batch', concat_pool=False, adaptive_size=50, custom_head=None, **kwargs):            
+    def __init__(self, c_in, c_out, seq_len=None, nf=16, nb_filters=None, coord=False, norm='Batch', concat_pool=False, adaptive_size=50, 
+                 custom_head=None, **kwargs):
+
         nf = ifnone(nf, nb_filters)
         # Backbone
         backbone = XceptionBlockPlus(c_in, nf, coord=coord, norm=norm, **kwargs)
@@ -84,7 +86,8 @@ class XceptionTimePlus(nn.Sequential):
         conv1x1_3 = ConvBlock(nf * 8 * mult, c_out, 1, coord=coord, norm=norm)
         gap2 = GAP1d(1)
         self.nf = nf * 32 * mult
-        if custom_head is not None: head = custom_head(self.nf , c_out) # custom head passed as a partial func with all its kwargs
+        self.seq_len = seq_len
+        if custom_head is not None: head = custom_head(self.nf, c_out, seq_len)
         else: head = nn.Sequential(gap1, conv1x1_1, conv1x1_2, conv1x1_3, gap2)
         
         super().__init__(OrderedDict([('backbone', backbone), ('head', head)]))
