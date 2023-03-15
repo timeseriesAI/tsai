@@ -15,7 +15,7 @@ class MLP(Module):
         layers, ps = L(layers), L(ps)
         if len(ps) <= 1: ps = ps * len(layers)
         assert len(layers) == len(ps), '#layers and #ps must match'
-        self.flatten = Reshape(-1)
+        self.flatten = Reshape()
         nf = [c_in * seq_len] + layers
         self.mlp = nn.ModuleList()
         for i in range(len(layers)): self.mlp.append(LinBnDrop(nf[i], nf[i+1], bn=use_bn, p=ps[i], act=get_act_fn(act), lin_first=lin_first))

@@ -415,13 +415,15 @@ class Transpose(Module):
     
 class View(Module):
     def __init__(self, *shape): self.shape = shape
-    def forward(self, x): return x.view(x.shape[0], *self.shape)
+    def forward(self, x): 
+        return x.view(x.shape[0], -1) if not self.shape else x.view(-1) if self.shape == (-1,) else x.view(x.shape[0], *self.shape)
     def __repr__(self): return f"{self.__class__.__name__}({', '.join(['bs'] + [str(s) for s in self.shape])})"
     
     
 class Reshape(Module):
     def __init__(self, *shape): self.shape = shape
-    def forward(self, x): return x.reshape(x.shape[0], *self.shape)
+    def forward(self, x):
+        return x.reshape(x.shape[0], -1) if not self.shape else x.reshape(-1) if self.shape == (-1,) else x.reshape(x.shape[0], *self.shape)
     def __repr__(self): return f"{self.__class__.__name__}({', '.join(['bs'] + [str(s) for s in self.shape])})"
     
     
@@ -654,7 +656,7 @@ class GAP1d(Module):
     "Global Adaptive Pooling + Flatten"
     def __init__(self, output_size=1):
         self.gap = nn.AdaptiveAvgPool1d(output_size)
-        self.flatten = Flatten()
+        self.flatten = Reshape()
     def forward(self, x):
         return self.flatten(self.gap(x))
     
@@ -663,7 +665,7 @@ class GACP1d(Module):
     "Global AdaptiveConcatPool + Flatten"
     def __init__(self, output_size=1):
         self.gacp = AdaptiveConcatPool1d(output_size)
-        self.flatten = Flatten()
+        self.flatten = Reshape()
     def forward(self, x):
         return self.flatten(self.gacp(x))
     
@@ -672,7 +674,7 @@ class GAWP1d(Module):
     "Global AdaptiveWeightedAvgPool1d + Flatten"
     def __init__(self, n_in, seq_len, n_layers=2, ln=False, dropout=0.5, act=nn.ReLU(), zero_init=False):
         self.gacp = AdaptiveWeightedAvgPool1d(n_in, seq_len, n_layers=n_layers, ln=ln, dropout=dropout, act=act, zero_init=zero_init)
-        self.flatten = Flatten()
+        self.flatten = Reshape()
     def forward(self, x):
         return self.flatten(self.gacp(x))
 
@@ -695,7 +697,7 @@ class GlobalWeightedAveragePool1d(Module):
 GWAP1d = GlobalWeightedAveragePool1d
 
 def gwa_pool_head(n_in, c_out, seq_len, bn=True, fc_dropout=0.):
-    return nn.Sequential(GlobalWeightedAveragePool1d(n_in, seq_len), Flatten(), LinBnDrop(n_in, c_out, p=fc_dropout, bn=bn))
+    return nn.Sequential(GlobalWeightedAveragePool1d(n_in, seq_len), Reshape(), LinBnDrop(n_in, c_out, p=fc_dropout, bn=bn))
 
 # %% ../../nbs/029_models.layers.ipynb 57
 class AttentionalPool1d(Module):
@@ -712,10 +714,10 @@ class AttentionalPool1d(Module):
     
 class GAttP1d(nn.Sequential):
     def __init__(self, n_in, c_out, bn=False):
-        super().__init__(AttentionalPool1d(n_in, c_out, bn=bn), Flatten())
+        super().__init__(AttentionalPool1d(n_in, c_out, bn=bn), Reshape())
         
 def attentional_pool_head(n_in, c_out, seq_len=None, bn=True, **kwargs):
-    return nn.Sequential(AttentionalPool1d(n_in, c_out, bn=bn, **kwargs), Flatten())
+    return nn.Sequential(AttentionalPool1d(n_in, c_out, bn=bn, **kwargs), Reshape())
 
 # %% ../../nbs/029_models.layers.ipynb 60
 class PoolingLayer(Module):
@@ -915,7 +917,7 @@ setattr(concat_pool_head, "__name__", "concat_pool_head")
 # %% ../../nbs/029_models.layers.ipynb 72
 def max_pool_head(n_in, c_out, seq_len, fc_dropout=0., bn=False, y_range=None, **kwargs):
     if kwargs: print(f'{kwargs}  not being used')
-    layers = [nn.MaxPool1d(seq_len, **kwargs), Flatten()]
+    layers = [nn.MaxPool1d(seq_len, **kwargs), Reshape()]
     layers += [LinBnDrop(n_in, c_out, bn=bn, p=fc_dropout)]
     if y_range: layers += [SigmoidRange(*y_range)]
     return nn.Sequential(*layers)
@@ -930,7 +932,7 @@ def create_pool_plus_head(*args, lin_ftrs=None, fc_dropout=0., concat_pool=True,
     if len(ps) == 1: ps = [ps[0]/2] * (len(lin_ftrs)-2) + ps
     actns = [nn.ReLU(inplace=True)] * (len(lin_ftrs)-2) + [None]
     pool = AdaptiveConcatPool1d() if concat_pool else nn.AdaptiveAvgPool1d(1)
-    layers = [pool, Flatten()]
+    layers = [pool, Reshape()]
     if lin_first: layers.append(nn.Dropout(ps.pop(0)))
     for ni,no,p,actn in zip(lin_ftrs[:-1], lin_ftrs[1:], ps, actns):
         layers += LinBnDrop(ni, no, bn=True, p=p, act=actn, lin_first=lin_first)
@@ -960,7 +962,7 @@ conv_head = create_conv_head
 # %% ../../nbs/029_models.layers.ipynb 78
 def create_mlp_head(nf, c_out, seq_len=None, flatten=True, fc_dropout=0., bn=False, lin_first=False, y_range=None):
     if flatten: nf *= seq_len
-    layers = [Flatten()] if flatten else []
+    layers = [Reshape()] if flatten else []
     layers += [LinBnDrop(nf, c_out, bn=bn, p=fc_dropout, lin_first=lin_first)]
     if y_range: layers += [SigmoidRange(*y_range)]
     return nn.Sequential(*layers)
@@ -970,7 +972,7 @@ mlp_head = create_mlp_head
 # %% ../../nbs/029_models.layers.ipynb 80
 def create_fc_head(nf, c_out, seq_len=None, flatten=True, lin_ftrs=None, y_range=None, fc_dropout=0., bn=False, bn_final=False, act=nn.ReLU(inplace=True)):
     if flatten: nf *= seq_len
-    layers = [Flatten()] if flatten else []
+    layers = [Reshape()] if flatten else []
     lin_ftrs = [nf, 512, c_out] if lin_ftrs is None else [nf] + lin_ftrs + [c_out]
     if not is_listy(fc_dropout): fc_dropout = [fc_dropout]*(len(lin_ftrs) - 1)
     actns = [act for _ in range(len(lin_ftrs) - 2)] + [None]
@@ -1051,7 +1053,7 @@ class create_lin_nd_head(nn.Sequential):
             fd = d
             shape = [d, n_out] if n_out > 1 else [d]
             
-        layers = [Flatten()]
+        layers = [Reshape()]
         layers += LinBnDrop(n_in * seq_len, n_out * fd, bn=use_bn, p=fc_dropout)
         layers += [Reshape(*shape)]
 
@@ -1078,7 +1080,7 @@ conv_3d_head = create_conv_3d_head
 def universal_pool_head(n_in, c_out, seq_len, mult=2, pool_n_layers=2, pool_ln=True, pool_dropout=0.5, pool_act=nn.ReLU(),
                         zero_init=True, bn=True, fc_dropout=0.):
     return nn.Sequential(AdaptiveWeightedAvgPool1d(n_in, seq_len, n_layers=pool_n_layers, mult=mult, ln=pool_ln, dropout=pool_dropout, act=pool_act), 
-                         Flatten(), LinBnDrop(n_in, c_out, p=fc_dropout, bn=bn))
+                         Reshape(), LinBnDrop(n_in, c_out, p=fc_dropout, bn=bn))
 
 # %% ../../nbs/029_models.layers.ipynb 101
 heads = [mlp_head, fc_head, average_pool_head, max_pool_head, concat_pool_head, pool_plus_head, conv_head, rnn_head, 
