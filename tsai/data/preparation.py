@@ -2,8 +2,14 @@
 
 # %% ../../nbs/004_data.preparation.ipynb 3
 from __future__ import annotations
+
+import datetime as dt
+
+from numpy.lib.stride_tricks import sliding_window_view
+
 from ..imports import *
 from ..utils import *
+
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # %% auto 0
@@ -11,7 +17,9 @@ __all__ = ['df2xy', 'split_xy', 'SlidingWindowSplitter', 'SlidingWindowPanelSpli
            'prepare_sel_vars_and_steps', 'apply_sliding_window', 'df2Xy', 'split_Xy', 'df2np3d',
            'add_missing_value_cols', 'add_missing_timestamps', 'time_encoding', 'forward_gaps', 'backward_gaps',
            'nearest_gaps', 'get_gaps', 'add_delta_timestamp_cols', 'SlidingWindow', 'SlidingWindowPanel',
-           'identify_padding']
+           'identify_padding', 'basic_data_preparation_fn', 'check_safe_conversion', 'prepare_forecasting_data',
+           'get_today', 'split_fcst_datetime', 'set_df_datetime', 'get_df_datetime_bounds', 'get_fcst_bounds',
+           'filter_df_by_datetime', 'get_fcst_data_from_df']
 
 # %% ../../nbs/004_data.preparation.ipynb 4
 def prepare_idxs(o, shape=None):
@@ -53,8 +61,8 @@ def apply_sliding_window(
     data, # and array-like object with the input data 
     window_len:int|list, # sliding window length. When using a list, use negative numbers and 0.
     horizon:int|list=0, # horizon
-    x_vars:int|list|None=None, # indices of the independent variables
-    y_vars:int|list|None=None, # indices of the dependent variables (target). [] means no y will be created. None means all variables.
+    x_vars:int|list=None, # indices of the independent variables
+    y_vars:int|list=None, # indices of the dependent variables (target). [] means no y will be created. None means all variables.
     ):
     "Applies a sliding window on an array-like input to generate a 3d X (and optionally y)"
   
@@ -66,7 +74,7 @@ def apply_sliding_window(
     else:
         x_steps = None
         
-    X_data_windowed = np.lib.stride_tricks.sliding_window_view(data, window_len, axis=0)
+    X_data_windowed = sliding_window_view(data, window_len, axis=0)
 
     # X
     sel_x_vars, sel_x_steps = prepare_sel_vars_and_steps(x_vars, x_steps)
@@ -84,7 +92,7 @@ def apply_sliding_window(
         if isinstance(horizon, Integral) and horizon == 0:
             y = data[-len(X):, y_vars]
         else:
-            y_data_windowed = np.lib.stride_tricks.sliding_window_view(data, np.max(horizon) + 1, axis=0)[-len(X):]
+            y_data_windowed = sliding_window_view(data, np.max(horizon) + 1, axis=0)[-len(X):]
             y_vars, y_steps = prepare_sel_vars_and_steps(y_vars, horizon)
             y = np.squeeze(y_data_windowed[:, y_vars, y_steps])
     return X, y
@@ -136,7 +144,7 @@ def df2Xy(df, sample_col=None, feat_col=None, data_cols=None, target_col=None, s
     if target_col is not None: 
         if any([t for t in target_col if t in data_cols]): print(f"Are you sure you want to include {target_col} in X?")
     if sort_cols:
-        df.sort_values(sort_cols, ascending=ascending, inplace=True)
+        df.sort_values(sort_cols, ascending=ascending, kind='stable', inplace=True)
 
     # X
     X = df.loc[:, data_cols].values
@@ -216,42 +224,63 @@ def add_missing_value_cols(df, cols=None, dtype=float, fill_value=None):
     return df
 
 # %% ../../nbs/004_data.preparation.ipynb 28
-def add_missing_timestamps(df, datetime_col, groupby=None, fill_value=np.nan, range_by_group=True, freq=None):
-    """Fills missing timestamps in a dataframe to a desired frequency
-    Args:
-        df:                      pandas DataFrame
-        datetime_col:            column that contains the datetime data (without duplicates within groups)
-        groupby:                 column used to identify unique_ids
-        fill_value:              values that will be insert where missing dates exist. Default:np.nan
-        range_by_group:          if True, dates will be filled between min and max dates for each group. Otherwise, between the min and max dates in the df.
-        freq:                    frequence used to fillin the missing datetime
-    """
+def add_missing_timestamps(
+    df, # pandas DataFrame
+    datetime_col=None, # column that contains the datetime data (without duplicates within groups)
+    use_index=False, # indicates if the index contains the datetime data
+    unique_id_cols=None, # column used to identify unique_ids
+    groupby=None, # same as unique_id_cols. Will be deprecated. Kept for compatiblity.
+    fill_value=np.nan, # values that will be insert where missing dates exist. Default:np.nan
+    range_by_group=True, # if True, dates will be filled between min and max dates for each group. Otherwise, between the min and max dates in the df.
+    start_date=None, # start date to fill in missing dates (same for all unique_ids)
+    end_date=None, # end date to fill in missing dates (same for all unique_ids)
+    freq=None, # frequency used to fill in the missing datetime
+    ):
+
+    assert datetime_col is not None or use_index, "you need to either pass a datetime_col or set use_index=True"
+    unique_id_cols = groupby or unique_id_cols
+    if use_index:
+        datetime_col = df.index.name or 'index'
+        df.reset_index(inplace=True)
     if is_listy(datetime_col): 
         assert len(datetime_col) == 1, 'you can only pass a single datetime_col'
         datetime_col = datetime_col[0]
-    dates = pd.date_range(df[datetime_col].min(), df[datetime_col].max(), freq=freq)
-    if groupby is not None:
-        if is_listy(groupby): 
-            assert len(groupby) == 1, 'you can only pass a single groupby'
-            groupby = groupby[0]
-        keys = df[groupby].unique()
+    if unique_id_cols is not None:
+        if is_listy(unique_id_cols): 
+            assert len(unique_id_cols) == 1, 'you can only pass a single unique_id_cols'
+            unique_id_cols = unique_id_cols[0]
+        keys = df[unique_id_cols].unique()
         if range_by_group:
             # Fills missing dates between min and max for each unique id
-            min_dates = df.groupby(groupby)[datetime_col].min()
-            max_dates = df.groupby(groupby)[datetime_col].max()
+            min_dates = df.groupby(unique_id_cols)[datetime_col].min()
+            max_dates = df.groupby(unique_id_cols)[datetime_col].max()
             idx_tuples = flatten_list([[(d, key) for d in pd.date_range(min_date, max_date, freq=freq)] for min_date, max_date, key in \
                                        zip(min_dates, max_dates, keys)])
-            multi_idx = pd.MultiIndex.from_tuples(idx_tuples, names=[datetime_col, groupby])
-            df = df.set_index([datetime_col, groupby]).reindex(multi_idx, fill_value=np.nan).reset_index()
+            multi_idx = pd.MultiIndex.from_tuples(idx_tuples, names=[datetime_col, unique_id_cols])
+            df.set_index([datetime_col, unique_id_cols], inplace=True)
+            df = df.reindex(multi_idx, fill_value=fill_value, copy=False)
+            df.reset_index(inplace=True)
         else:
             # Fills missing dates between min and max - same for all unique ids
-            multi_idx = pd.MultiIndex.from_product((dates, keys), names=[datetime_col, groupby])
-            df = df.set_index([datetime_col, groupby]).reindex(multi_idx, fill_value=np.nan)
-            df = df.reset_index().sort_values(by=[groupby, datetime_col]).reset_index(drop=True)
+            start_date = start_date or df[datetime_col].min()
+            end_date = end_date or df[datetime_col].max()
+            dates = pd.date_range(start_date, end_date, freq=freq)
+            multi_idx = pd.MultiIndex.from_product((dates, keys), names=[datetime_col, unique_id_cols])
+            df.set_index([datetime_col, unique_id_cols], inplace=True)
+            df = df.reindex(multi_idx, fill_value=fill_value, copy=False)
+            df.sort_values(by=[unique_id_cols, datetime_col], inplace=True)
+            # df.reset_index(drop=True, inplace=True)
+            df.reset_index(inplace=True)
     else: 
+        start_date = start_date or df[datetime_col].min()
+        end_date = end_date or df[datetime_col].max()
+        dates = pd.date_range(start_date, end_date, freq=freq)
         index = pd.Index(dates, name=datetime_col)
-        df = df.set_index([datetime_col]).reindex(index, fill_value=fill_value)
-        df = df.reset_index().reset_index(drop=True)
+        df.set_index([datetime_col], inplace=True)
+        df = df.reindex(index, fill_value=fill_value, copy=False)
+        df.reset_index(inplace=True)
+    if use_index:
+        df.set_index(datetime_col, inplace=True)
     return df
 
 # %% ../../nbs/004_data.preparation.ipynb 42
@@ -440,7 +469,7 @@ def SlidingWindow(
             else: o = o.copy()
         if not seq_first: o = o.T
         if isinstance(o, pd.DataFrame):
-            if sort_by is not None: o.sort_values(by=sort_by, axis=0, ascending=ascending, inplace=True, ignore_index=True)
+            if sort_by is not None: o.sort_values(by=sort_by, axis=0, ascending=ascending, kind='stable', inplace=True, ignore_index=True)
             if get_x is None: X = o.values
             elif isinstance(_get_x, str) or (is_listy(_get_x) and isinstance(_get_x[0], str)): X = o.loc[:, _get_x].values
             else: X = o.iloc[:, _get_x].values
@@ -587,7 +616,7 @@ def SlidingWindowPanel(window_len:int, unique_id_cols:list, stride:Union[None, i
 
         if copy:
             o = o.copy()
-        o.sort_values(by=sort_by, axis=0, ascending=ascending, inplace=True, ignore_index=True, kind="mergesort")
+        o.sort_values(by=sort_by, axis=0, ascending=ascending, kind='stable', inplace=True, ignore_index=True)
         unique_id_values = o[unique_id_cols].drop_duplicates().values
         _x = []
         _y = []
@@ -646,3 +675,299 @@ def identify_padding(float_mask, value=-1):
         padding = padding[padding != 0]
         for idx,pad in zip(padded_idxs, padding): float_mask[idx, :, -pad:] = value
     return float_mask
+
+# %% ../../nbs/004_data.preparation.ipynb 100
+def basic_data_preparation_fn(
+    df, # dataframe to preprocess
+    drop_duplicates=True, # flag to indicate if rows with duplicate datetime info should be removed
+    datetime_col=None, # str indicating the name of the column/s that contains the datetime info
+    use_index=False, # flag to indicate if the datetime info is in the index
+    keep='last', # str to indicate what data should be kept in case of duplicate rows
+    add_missing_datetimes=True, # flaf to indicate if missing datetimes should be added
+    freq='1D', # str to indicate the frequency used in the datetime info. Used in case missing timestamps exists
+    method=None, # str indicating the method used to fill data for missing timestamps: None, 'bfill', 'ffill'
+    sort_by=None, # str or list of str to indicate if how to sort data. If use_index=True the index will be used to sort the dataframe.
+    ):
+
+    cols = df.columns
+    if drop_duplicates:
+        assert datetime_col is not None or use_index, "you need to either pass a datetime_col or set use_index=True"
+        # Remove duplicates (if any)
+        if use_index:
+            dup_rows = df.index.duplicated(keep=keep)
+        else:
+            dup_rows = df[datetime_col].duplicated(keep=keep)
+        if dup_rows.sum():
+            df = df[~dup_rows].copy()
+    
+    if use_index:
+        df.sort_index(inplace=True)
+    if sort_by is not None:
+        df.sort_values(sort_by, kind='stable', inplace=True)
+        
+    if add_missing_datetimes:
+        if not use_index:
+            # We'll set the timestamp column as index
+            df.set_index(datetime_col, drop=True, inplace=True)
+        # Add missing timestamps (if any) between start and end datetimes and forward-fill data
+        df = df.asfreq(freq=freq, method=method)
+        if not use_index:
+            df.reset_index(drop=False, inplace=True)
+    
+    return df[cols]
+
+# %% ../../nbs/004_data.preparation.ipynb 102
+def check_safe_conversion(o, dtype='float32', cols=None):
+    "Checks if the conversion to float is safe"
+    
+    def _check_safe_conversion(o, dtype='float32'):
+
+        if isinstance(o, (Integral, float)):
+            o_min = o_max = o
+        elif isinstance(o, pd.Series):
+            o_min = o.min()
+            o_max = o.max()
+        else:
+            o_min = np.asarray(o).min()
+            o_max = np.asarray(o).max()
+        
+        dtype = np.dtype(dtype)
+        if dtype == 'float16':
+            return -2**11 <= o_min and o_max <= 2**11
+        elif dtype == 'float32':
+            return -2**24 <= o_min and o_max <= 2**24
+        elif dtype == 'float64':
+            return -2**53 <= o_min and o_max <= 2**53
+        elif dtype == 'int8':
+            return np.iinfo(np.int8).min <= o_min and o_max <= np.iinfo(np.int8).max
+        elif dtype == 'int16':
+            return np.iinfo(np.int16).min <= o_min and o_max <= np.iinfo(np.int16).max
+        elif dtype == 'int32':
+            print(np.iinfo(np.int32).min, o_min, o_max, np.iinfo(np.int32).max)
+            return np.iinfo(np.int32).min <= o_min and o_max <= np.iinfo(np.int32).max
+        elif dtype == 'int64':
+            return np.iinfo(np.int64).min <= o_min and o_max <= np.iinfo(np.int64).max
+        else:
+            raise ValueError("Unsupported data type")
+    
+    if isinstance(o, pd.DataFrame):
+        cols = o.columns if cols is None else cols
+        checks = [_check_safe_conversion(o[c], dtype=dtype) for c in cols]
+        if all(checks): return True
+        warnings.warn(f"Unsafe conversion to {dtype}: {dict(zip(cols, checks))}")
+        return False
+    else:
+        return _check_safe_conversion(o, dtype=dtype)
+    
+
+# %% ../../nbs/004_data.preparation.ipynb 104
+def prepare_forecasting_data(
+    df:pd.DataFrame, # dataframe containing a sorted time series for a single entity or subject
+    fcst_history:int, # # historical steps used as input.
+    fcst_horizon:int=1, # # steps forecasted into the future. 
+    x_vars:str|list=None, # features used as input. None means all columns. [] means no features.
+    y_vars:str|list=None,  # features used as output. None means all columns. [] means no features.
+    dtype:str=None, # data type
+    unique_id_cols:str|list=None, # unique identifier column/s used in panel data
+)->tuple(np.ndarray, np.ndarray):
+
+    def _prepare_forecasting_data(df, x_vars, y_vars):
+        x_np = df.to_numpy(dtype=dtype) if x_vars is None else df[x_vars].to_numpy(dtype=dtype)
+        X = sliding_window_view(x_np[:len(x_np) - fcst_horizon], fcst_history, axis=0)
+        if y_vars == []: 
+            return X, []
+        y_np = x_np if x_vars == y_vars else df.to_numpy(dtype=dtype) if y_vars is None else df[y_vars].to_numpy(dtype=dtype)
+        y = sliding_window_view(y_np[fcst_history:], fcst_horizon, axis=0)
+        return X, y
+    
+    x_vars = None if (x_vars is None or feat2list(x_vars) == list(df.columns)) else feat2list(x_vars)
+    y_vars = None if (y_vars is None or feat2list(y_vars) == list(df.columns)) else feat2list(y_vars)
+    if dtype is not None:
+        assert check_safe_conversion(df, dtype=dtype, cols=x_vars)
+        if y_vars != [] and y_vars != x_vars:
+            assert check_safe_conversion(df, dtype=dtype, cols=y_vars)
+    if unique_id_cols:
+        grouped = df.groupby(unique_id_cols)
+        if x_vars is None and y_vars is None:
+            output = grouped.apply(lambda x: _prepare_forecasting_data(x, x_vars=None, y_vars=None))
+        elif x_vars == y_vars:
+            output = grouped[x_vars].apply(lambda x: _prepare_forecasting_data(x, x_vars=None, y_vars=None))
+        else:
+            output = grouped.apply(lambda x: _prepare_forecasting_data(x, x_vars, y_vars))
+        output = output.reset_index(drop=True)
+        X, y = zip(*output)
+        X = np.concatenate(X, 0)
+        y = np.concatenate(y, 0)
+    else:
+        if x_vars is None:
+            X, y = _prepare_forecasting_data(df, x_vars=None, y_vars=y_vars)
+        elif x_vars == y_vars:
+            X, y = _prepare_forecasting_data(df[x_vars], x_vars=None, y_vars=None)
+        else:
+            X, y = _prepare_forecasting_data(df, x_vars=x_vars, y_vars=y_vars)
+    if y == []:
+        y = None
+    return X, y
+
+# %% ../../nbs/004_data.preparation.ipynb 110
+def get_today(datetime_format="%Y-%m-%d"):
+    return dt.datetime.today().strftime(datetime_format)
+
+# %% ../../nbs/004_data.preparation.ipynb 112
+def split_fcst_datetime(
+    fcst_datetime,  # str or list of str with datetime
+):
+    "Define fcst start and end dates"
+    if not is_listy(fcst_datetime):
+        fcst_datetime = [fcst_datetime]
+    fcst_datetime_min, fcst_datetime_max = fcst_datetime[0], fcst_datetime[-1]
+    return fcst_datetime_min, fcst_datetime_max
+
+# %% ../../nbs/004_data.preparation.ipynb 114
+def set_df_datetime(df, datetime_col=None, use_index=False):
+    "Make sure datetime column or index is of the right date type."
+
+    assert datetime_col or use_index
+    if datetime_col is not None:
+        field_dtype = df[datetime_col].dtype
+    elif use_index:
+        field_dtype = df.index.dtype
+
+    if isinstance(field_dtype, pd.core.dtypes.dtypes.DatetimeTZDtype):
+        field_dtype = np.datetime64
+    if not np.issubdtype(field_dtype, np.datetime64):
+        if datetime_col is not None:
+            df[datetime_col] = pd.to_datetime(
+                df[datetime_col], infer_datetime_format=True
+            )
+        elif use_index:
+            df.index = pd.to_datetime(df.index, infer_datetime_format=True)
+
+# %% ../../nbs/004_data.preparation.ipynb 116
+def get_df_datetime_bounds(
+    df,  # dataframe containing forecasting data
+    datetime_col=None,  # str data column containing the datetime
+    use_index=False,  # bool flag to indicate if index should be used to get column
+    
+):
+    "Returns the start date and and dates used by the forecast"
+    set_df_datetime(df, datetime_col=datetime_col, use_index=use_index)
+    if datetime_col is not None:
+        min_datetime, max_datetime = df[datetime_col].min(), df[datetime_col].max()
+    else:
+        min_datetime, max_datetime = df.index.min(), df.index.max()
+    return min_datetime, max_datetime
+
+# %% ../../nbs/004_data.preparation.ipynb 118
+def get_fcst_bounds(
+    df,  # dataframe containing forecasting data
+    fcst_datetime,  # datetime for which a fcst is created. Optionally tuple of datatimes if the fcst is created for a range of dates.
+    fcst_history=None,  # # steps used as input
+    fcst_horizon=None,  # # predicted steps
+    freq="D",  # datetime units. May contain a letters only or a combination of ints + letters: eg. "7D"
+    datetime_format="%Y-%m-%d",  # format used to convert "today"
+    datetime_col=None,  # str data column containing the datetime
+    use_index=False,  # bool flag to indicate if index should be used to get column
+):
+    "Returns the start and end datetimes used by the forecast"
+    min_datetime, max_datetime = get_df_datetime_bounds(df, datetime_col=datetime_col, use_index=use_index)
+    min_datetime, max_datetime = pd.Timestamp(min_datetime, freq=freq), pd.Timestamp(max_datetime, freq=freq)
+    fcst_datetime_min, fcst_datetime_max = split_fcst_datetime(fcst_datetime)
+    if fcst_datetime_min is None and fcst_datetime_max is None:
+        start_datetime, end_datetime = min_datetime, max_datetime
+    else:
+        
+        if fcst_datetime_min == "today":
+            fcst_datetime_min = get_today(fcst_datetime_min, datetime_format=datetime_format)
+        if fcst_datetime_max == "today":
+            fcst_datetime_max = get_today(fcst_datetime_max, datetime_format=datetime_format)
+        
+        # end_datetime
+        if fcst_datetime_max is None:
+            fcst_dt = end_datetime = max_datetime
+        else:
+            fcst_dt = end_datetime = pd.Timestamp(fcst_datetime_max, freq=freq)
+            if fcst_horizon:
+                end_datetime = end_datetime + end_datetime.freq * fcst_horizon
+
+        # start_datetime
+        if fcst_datetime_min is None:
+            start_datetime = min_datetime
+        elif fcst_datetime_min == fcst_datetime_max:
+            start_datetime = fcst_dt
+            if fcst_history:
+                start_datetime -= start_datetime.freq * (fcst_history - 1)
+        else:
+            n_periods = int((fcst_dt - pd.Timestamp(fcst_datetime_min)) / fcst_dt.freq)
+            if fcst_history:
+                n_periods += fcst_history - 1
+            start_datetime = fcst_dt - n_periods * fcst_dt.freq
+    
+    return start_datetime, end_datetime
+
+# %% ../../nbs/004_data.preparation.ipynb 120
+def filter_df_by_datetime(
+    df,  # dataframe containing forecasting data
+    start_datetime=None, # lower datetime bound
+    end_datetime=None, # upper datetime bound
+    datetime_col=None,  # str data column containing the datetime
+    use_index=False,  # bool flag to indicate if index should be used to get column
+):
+    if use_index:
+        df.index = pd.to_datetime(df.index)
+        if start_datetime is not None and end_datetime is not None:
+            mask = (df.index >= start_datetime) & (df.index <= end_datetime)
+            mask = df.index <= end_datetime
+        elif start_datetime is not None:
+            mask = df.index >= start_datetime
+        else:
+            mask = df.index <= end_datetime
+    else:
+        df[datetime_col] = pd.to_datetime(df[datetime_col])
+        if start_datetime is not None and end_datetime is not None:
+            mask = (df[datetime_col] >= start_datetime) & (
+                df[datetime_col] <= end_datetime
+            )
+        elif start_datetime is not None:
+            mask = df[datetime_col] >= start_datetime
+        else:
+            mask = df[datetime_col] <= end_datetime
+    if (start_datetime is not None or end_datetime is not None) and mask.mean() != 1:
+        df = df.loc[mask]
+        if not use_index:
+            df.reset_index(drop=True, inplace=True)
+    return df
+
+# %% ../../nbs/004_data.preparation.ipynb 122
+def get_fcst_data_from_df(
+    df,  # dataframe containing forecasting data
+    fcst_datetime,  # datetime for which a fcst is created. Optionally tuple of datatimes if the fcst is created for a range of dates.
+    fcst_history=None,  # # steps used as input
+    fcst_horizon=None,  # # predicted steps
+    freq="D",  # datetime units. May contain a letters only or a combination of ints + letters: eg. "7D"
+    datetime_format="%Y-%m-%d",  # format used to convert "today"
+    datetime_col=None,  # str data column containing the datetime
+    use_index=False,  # bool flag to indicate if index should be used to get column
+):
+    """Get forecasting data from a dataframe"""
+    if fcst_datetime is None or fcst_datetime == [None]:
+        return df
+    assert datetime_col or use_index
+    start_datetime, end_datetime = get_fcst_bounds(
+        df, 
+        fcst_datetime,
+        fcst_history=fcst_history,
+        fcst_horizon=fcst_horizon,
+        freq=freq,
+        datetime_format=datetime_format,
+        datetime_col=datetime_col,
+        use_index=use_index,
+    )
+    df = filter_df_by_datetime(
+        df,
+        start_datetime=start_datetime,
+        end_datetime=end_datetime,
+        datetime_col=datetime_col,
+        use_index=use_index,
+    )
+    return df

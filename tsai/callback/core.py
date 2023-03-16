@@ -59,8 +59,8 @@ class ShowGraph(Callback):
     "(Modified) Update a graph of training and validation loss"
     order,run_valid=65,False
     names = ['train', 'valid']
-    def __init__(self, plot_metrics:bool=True, final_losses:bool=True):
-        store_attr("plot_metrics,final_losses")
+    def __init__(self, plot_metrics:bool=True, final_losses:bool=True, perc:float=.5):
+        store_attr()
 
     def before_fit(self):
         self.run = not hasattr(self.learn, 'lr_finder') and not hasattr(self, "gather_preds")
@@ -82,22 +82,23 @@ class ShowGraph(Callback):
         if self.epoch == 0:
             self.rec_start = len(rec.losses)
         iters = range_of(rec.losses)
+        all_losses = rec.losses if self.epoch == 0 else rec.losses[self.rec_start-1:]
         val_losses = np.stack(rec.values)[:, self.learn.recorder.loss_idxs[-1]].tolist()
-        x_bounds = (0, len(rec.losses) - 1)
-        if self.epoch == 0:
-            y_min = min((min(rec.losses), min(val_losses)))
-            y_max = max((max(rec.losses), max(val_losses)))
+        if rec.valid_metrics and val_losses[0] is not None:
+            all_losses = all_losses + val_losses
         else:
-            y_min = min((min(rec.losses[self.rec_start-1:]), min(val_losses)))
-            y_max = max((max(rec.losses[self.rec_start-1:]), max(val_losses)))
+            val_losses = [None] * len(iters)
+        y_min, y_max = min(all_losses), max(all_losses)
         margin = (y_max - y_min) * .05
+        x_bounds = (0, len(rec.losses) - 1)
         y_bounds = (y_min - margin, y_max + margin)
         self.update_graph([(iters, rec.losses), (self.nb_batches, val_losses)], x_bounds, y_bounds)
 
     def after_fit(self):
         if hasattr(self, 'graph_ax'):
             plt.close(self.graph_ax.figure)
-        if self.plot_metrics: self.learn.plot_metrics(final_losses=self.final_losses)
+        if self.plot_metrics: 
+            self.learn.plot_metrics(final_losses=self.final_losses, perc=self.perc)
 
     def update_graph(self, graphs, x_bounds=None, y_bounds=None, figsize=(6,4)):
         if not hasattr(self, 'graph_fig'):
@@ -106,6 +107,7 @@ class ShowGraph(Callback):
         self.graph_ax.clear()
         if len(self.names) < len(graphs): self.names += [''] * (len(graphs) - len(self.names))
         for g,n in zip(graphs,self.names): 
+            if (g[1] == [None] * len(g[1])): continue
             self.graph_ax.plot(*g, label=n)
         self.graph_ax.legend(loc='upper right')
         self.graph_ax.grid(color='gainsboro', linewidth=.5)
@@ -287,7 +289,7 @@ class BatchSubsampler(Callback):
                 sample_pct = np.random.rand() * (self.sample_pct[1] - self.sample_pct[0]) + self.sample_pct[0]
             else:
                 sample_pct = self.sample_pct
-            idxs = np.random.choice(B, round(B * sample_pct), True)
+            idxs = random_choice(B, round(B * sample_pct), True)
             self.learn.xb = tuple(xbi[idxs] for xbi in self.learn.xb)
             self.learn.yb = tuple(ybi[idxs] for ybi in self.learn.yb)
 
@@ -298,9 +300,9 @@ class BatchSubsampler(Callback):
             else:
                 step_pct = self.step_pct
             if self.step_pct != 1 and self.same_seq_len:
-                idxs = np.sort(np.tile(np.random.choice(S, round(S * step_pct), True), math.ceil(1 / step_pct))[:S])
+                idxs = np.sort(np.tile(random_choice(S, round(S * step_pct), True), math.ceil(1 / step_pct))[:S])
             else:
-                idxs = np.sort(np.random.choice(S, round(S * step_pct), True))
+                idxs = np.sort(random_choice(S, round(S * step_pct), True))
             self.learn.xb = tuple(xbi[...,idxs] for xbi in self.learn.xb)
             if self.update_y:
                 self.learn.yb = tuple(ybi[...,idxs] for ybi in self.learn.yb)

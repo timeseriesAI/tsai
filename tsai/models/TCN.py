@@ -11,7 +11,7 @@ from .layers import *
 from .utils import *
 
 # %% ../../nbs/060_models.TCN.ipynb 4
-# This is an unofficial PyTorch implementation by Ignacio Oguiza - timeseriesAI@gmail.com based on:
+# This is an unofficial PyTorch implementation by Ignacio Oguiza - oguiza@timeseriesAI.co based on:
 
 # Bai, S., Kolter, J. Z., & Koltun, V. (2018). An empirical evaluation of generic convolutional and recurrent networks for sequence modeling. arXiv preprint arXiv:1803.01271.
 # Official TCN PyTorch implementation: https://github.com/locuslab/TCN

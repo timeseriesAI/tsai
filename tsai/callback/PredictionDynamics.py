@@ -42,7 +42,7 @@ class PredictionDynamics(Callback):
             self.binary = self.dls.c == 2
         if self.show_perc != 1:
             valid_size = len(self.dls.valid.dataset)
-            self.show_idxs = np.random.choice(valid_size, int(round(self.show_perc * valid_size)), replace=False)
+            self.show_idxs = random_choice(valid_size, int(round(self.show_perc * valid_size)), replace=False)
 
         # Prepare ground truth container
         self.y_true = []

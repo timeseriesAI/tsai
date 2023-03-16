@@ -82,7 +82,6 @@ class TSToPlot(Transform):
             canvas.draw()
             buf = np.asarray(canvas.buffer_rgba())[..., :3]
             output.append(tensor(buf / 255).permute(2,0,1)[None])
-            del ax.lines[:len(ax.lines)]
         return TSImage(torch.cat(output)).to(device=device)
 
 # %% ../../nbs/012_data.image.ipynb 8

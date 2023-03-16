@@ -2,9 +2,34 @@
 
 <!-- do not remove -->
 
-## 0.3.4
+## 0.3.5
+### Breaking Changes
+
+- removed default transforms from TSClassifier, TSRegressor and TSForecaster ([#665](https://github.com/timeseriesAI/tsai/issues/665))
+
+### New Features
+
+- add option to pass an instantiated model to TSLearners ([#650](https://github.com/timeseriesAI/tsai/issues/650))
+
+- Added PatchTST model to tsai ([#638](https://github.com/timeseriesAI/tsai/issues/638))
+
+- Added new long-term time series forecasting tutorial notebook
 
 
+### Bugs Squashed
+
+- Undefined variable ([#662](https://github.com/timeseriesAI/tsai/issues/662))
+
+- Multivariate Regression and Forecasting basic tutorials throw an error ([#629](https://github.com/timeseriesAI/tsai/issues/629))
+
+- TypeError: __init__() got an unexpected keyword argument 'custom_head' ([#597](https://github.com/timeseriesAI/tsai/issues/597))
+
+- Issues with TSMultiLabelClassification ([#533](https://github.com/timeseriesAI/tsai/issues/533))
+
+- Incompatible errors or missing functions in 'tutorial_nbs' notebooks, please fix. ([#447](https://github.com/timeseriesAI/tsai/issues/447))
+
+
+- Saving models with TSUnwindowedDataset Dataloaders: AttributeError: 'TSUnwindowedDataset' object has no attribute 'new_empty' ([#215](https://github.com/timeseriesAI/tsai/issues/215))
 
 
 ## 0.3.4

@@ -17,12 +17,17 @@ def get_acts_and_grads(model, modules, x, y=None, detach=True, cpu=False):
     Gradients require y value(s). If they are not provided, it will use the predictions. """
     if not is_listy(modules): modules = [modules]
     x = x[None, None] if x.ndim == 1 else x[None] if x.ndim == 2 else x
+    if cpu: 
+        model = model.cpu()
+        x = x.cpu()
     with hook_outputs(modules, detach=detach, cpu=cpu) as h_act:
         with hook_outputs(modules, grad=True, detach=detach, cpu=cpu) as h_grad:
             preds = model.eval()(x)
             if y is None: preds.max(dim=-1).values.mean().backward()
             else: 
-                if preds.shape[0] == 1: preds[0, y].backward()
+                y = y.detach().cpu().numpy()
+                if preds.shape[0] == 1: 
+                    preds[0, y].backward()
                 else: 
                     if y.ndim == 1: y = y.reshape(-1, 1)
                     torch_slice_by_dim(preds, y).mean().backward()

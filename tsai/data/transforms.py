@@ -41,7 +41,7 @@ class TSShuffle_HLs(RandTransform):
     def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
         timesteps = o.shape[-1] // 4
-        pos_rand_list = np.random.choice(np.arange(timesteps),size=random.randint(1, timesteps),replace=False)
+        pos_rand_list = random_choice(np.arange(timesteps),size=random.randint(1, timesteps),replace=False)
         rand_list = pos_rand_list * 4
         highs = rand_list + 1
         lows = highs + 1
@@ -65,7 +65,7 @@ class TSShuffleSteps(RandTransform):
         odd = 1 - o.shape[-1]%2
         r = np.random.randint(2)
         timesteps = o.shape[-1] // 2
-        pos_rand_list = np.random.choice(np.arange(0, timesteps - r * odd), size=random.randint(1, timesteps - r * odd),replace=False) * 2 + 1 + r
+        pos_rand_list = random_choice(np.arange(0, timesteps - r * odd), size=random.randint(1, timesteps - r * odd),replace=False) * 2 + 1 + r
         a = np.vstack([pos_rand_list, pos_rand_list - 1]).flatten('F')
         b = np.vstack([pos_rand_list - 1, pos_rand_list]).flatten('F')
         output = o.clone()
@@ -349,7 +349,7 @@ class TSRandomTimeStep(RandTransform):
         seq_len = o.shape[-1]
         new_seq_len = int(round(seq_len * max(.5, (1 - np.random.rand() * self.magnitude))))
         if  new_seq_len == seq_len: return o
-        timesteps = np.sort(np.random.choice(np.arange(seq_len),new_seq_len, replace=False))
+        timesteps = np.sort(random_choice(np.arange(seq_len),new_seq_len, replace=False))
         output = F.interpolate(o[..., timesteps], size=seq_len, mode=self.mode, align_corners=None if self.mode in ['nearest', 'area'] else False)
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
@@ -371,9 +371,9 @@ class TSResampleSteps(RandTransform):
         else: 
             step_pct = self.step_pct
         if step_pct != 1 and self.same_seq_len:
-            idxs = np.sort(np.tile(np.random.choice(S, round(S * step_pct), True), math.ceil(1 / step_pct))[:S])
+            idxs = np.sort(np.tile(random_choice(S, round(S * step_pct), True), math.ceil(1 / step_pct))[:S])
         else:
-            idxs = np.sort(np.random.choice(S, round(S * step_pct), True))
+            idxs = np.sort(random_choice(S, round(S * step_pct), True))
         return o[..., idxs]
     
 TSSubsampleSteps = TSResampleSteps
@@ -526,7 +526,7 @@ class TSVarOut(RandTransform):
         p = p/p[-1]
         p = p / p.sum()
         p = p[::-1]
-        out_vars = np.random.choice(np.arange(in_vars), int(round(lambd * in_vars)), p=p, replace=False)
+        out_vars = random_choice(np.arange(in_vars), int(round(lambd * in_vars)), p=p, replace=False)
         if len(out_vars) == 0:  return o
         output = o.clone()
         output[...,out_vars,:] = 0
@@ -566,7 +566,7 @@ class TSTimeStepOut(RandTransform):
         if not self.magnitude or self.magnitude <= 0: return o
         magnitude = min(.5, self.magnitude)
         seq_len = o.shape[-1]
-        timesteps = np.sort(np.random.choice(np.arange(seq_len), int(round(seq_len * magnitude)), replace=False))
+        timesteps = np.sort(random_choice(np.arange(seq_len), int(round(seq_len * magnitude)), replace=False))
         output = o.clone()
         output[..., timesteps] = 0
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
@@ -790,7 +790,7 @@ class TSRandomConv(RandTransform):
         super().__init__(**kwargs)
     def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0 or self.ks is None: return o
-        ks = np.random.choice(self.ks, 1)[0] if is_listy(self.ks) else self.ks
+        ks = random_choice(self.ks, 1)[0] if is_listy(self.ks) else self.ks
         c_in = o.shape[1]
         weight = nn.Parameter(torch.zeros(c_in, c_in, ks, device=o.device, requires_grad=False))
         nn.init.kaiming_normal_(weight)
@@ -933,7 +933,7 @@ class RandAugment(RandTransform):
 
     def encodes(self, o:(NumpyTensor, TSTensor)):
         if not self.N or not self.magnitude: return o
-        tfms = self.tfms if self.n_tfms==1 else L(self.tfms)[np.random.choice(np.arange(self.n_tfms), self.N, replace=False)]
+        tfms = self.tfms if self.n_tfms==1 else L(self.tfms)[random_choice(np.arange(self.n_tfms), self.N, replace=False)]
         tfms_ = []
         for tfm in tfms:
             if isinstance(tfm, tuple):

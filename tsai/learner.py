@@ -39,7 +39,26 @@ def one_batch(self:Learner, i, b):
     self._split(b_on_device)
     self._with_events(self._do_one_batch, 'batch', CancelBatchException)
 
-# %% ../nbs/018_learner.ipynb 8
+# %% ../nbs/018_learner.ipynb 7
+@patch
+def transform(self:Learner, df:pd.DataFrame):
+    "Applies sklearn-type pipeline transforms"
+    
+    if self.pipelines is None: return df
+    for pipeline in self.pipelines:
+        df = pipeline.transform(df)
+    return df
+
+
+@patch
+def inverse_transform(self:Learner, df:pd.DataFrame):
+    "Applies sklearn-type pipeline inverse transforms"
+    if self.pipelines is None: return df
+    for pipeline in self.pipelines:
+        df = pipeline.inverse_transform(df)
+    return df
+
+# %% ../nbs/018_learner.ipynb 9
 @patch
 def save_all(self:Learner, path='export', dls_fname='dls', model_fname='model', learner_fname='learner', verbose=False):
     path = Path(path)
@@ -125,7 +144,7 @@ def load_all(path='export', dls_fname='dls', model_fname='model', learner_fname=
 
 load_learner_all = load_all
 
-# %% ../nbs/018_learner.ipynb 9
+# %% ../nbs/018_learner.ipynb 10
 @patch
 @delegates(subplots)
 def plot_metrics(self: Recorder, nrows=None, ncols=None, figsize=None, final_losses=True, perc=.5, **kwargs):
@@ -134,19 +153,36 @@ def plot_metrics(self: Recorder, nrows=None, ncols=None, figsize=None, final_los
     if n_values < 2:
         print('not enough values to plot a chart')
         return
+    
+    # Prepare results dataframe
+    train_metrics = self.train_metrics
+    valid_metrics = self.valid_metrics
     metrics = np.stack(self.values)
     names = self.metric_names[1:-1]
-    metric_names = [m.replace("valid_", "") for m in self.metric_names[1:-1] if 'loss' not in m and 'train' not in m]
+    if not train_metrics and not valid_metrics:
+        names = [n for n in names if "loss" in n]
+    elif not train_metrics:
+        names = [f"valid_{n}" if (not 'valid' in n and not 'loss' in n) else n for n in names]
+    elif not valid_metrics:
+        names = [f"train_{n}" if (not 'train' in n and not 'loss' in n) else n for n in names]
+    results = pd.DataFrame(metrics, columns=names)
+    
+    # Final losses
     if final_losses:
-        sel_idxs = int(round(n_values * perc))
+        sel_idxs = round(n_values * perc)
         if sel_idxs < 2:
-            final_losses = False 
+            final_losses = False
         else:
-            names = names + ['train_final_loss', 'valid_final_loss']
-            self.loss_idxs = L([i for i,n in enumerate(self.metric_names[1:-1]) if 'loss' in n])
-            metrics = np.concatenate([metrics, metrics[:, self.loss_idxs]], -1) 
+            results['train_final_loss'] = results['train_loss']
+            if valid_metrics: 
+                results['valid_final_loss'] = results['valid_loss']
 
-    n = int(1 + final_losses + len(self.metrics))
+    # set of metrics names
+    names = results.columns
+    metric_names = list(dict.fromkeys([n.replace('train_', '').replace('valid_', '') for n in results.columns]))
+     
+    # Plot
+    n = len(metric_names)
     if nrows is None and ncols is None:
         if n <= 3: 
             nrows = 1
@@ -158,32 +194,34 @@ def plot_metrics(self: Recorder, nrows=None, ncols=None, figsize=None, final_los
     figsize = figsize or (ncols * 6 + ncols - 1, nrows * 4 + nrows - 1)
     fig, axs = subplots(nrows, ncols, figsize=figsize, **kwargs)
     axs = axs.flatten()[:n]
-    for i,name in enumerate(names):
-        xs = np.arange(0, len(metrics))
+
+    for name in names:
+        xs = np.arange(0, len(results))
         if name in ['train_loss', 'valid_loss']: 
             ax_idx = 0
-            m = metrics[:,i]
+            m = results[name].values
             title = 'losses'
         elif name in ['train_final_loss', 'valid_final_loss']: 
             ax_idx = 1
-            m = metrics[-sel_idxs:,i]
+            m = results.loc[len(results) - sel_idxs:, name].values
             xs = xs[-sel_idxs:]
             title = 'final losses'
         else: 
-            ax_idx = metric_names.index(name.replace("valid_", "").replace("train_", "")) + 1 + final_losses
-            m = metrics[:,i]
+            ax_idx = metric_names.index(name.replace("valid_", "").replace("train_", "")) + final_losses
+            m = results[name].values
             title = name.replace("valid_", "").replace("train_", "")
         if 'train' in name:
             color = '#1f77b4'
             label = 'train'
         else:
             color = '#ff7f0e'
-            label = 'valid'
+            label = 'valid' if (m != [None] * len(m)).all() else None
             axs[ax_idx].grid(color='gainsboro', linewidth=.5)
         axs[ax_idx].plot(xs, m, color=color, label=label)
         axs[ax_idx].set_xlim(xs[0], xs[-1])
         axs[ax_idx].legend(loc='best')
         axs[ax_idx].set_title(title)
+        axs[ax_idx].grid(color='gainsboro', linewidth=.5)
     plt.show()
     
     
@@ -192,7 +230,7 @@ def plot_metrics(self: Recorder, nrows=None, ncols=None, figsize=None, final_los
 def plot_metrics(self: Learner, **kwargs):
     self.recorder.plot_metrics(**kwargs)
 
-# %% ../nbs/018_learner.ipynb 10
+# %% ../nbs/018_learner.ipynb 11
 all_archs_names = ['FCN', 'FCNPlus', 'InceptionTime', 'InceptionTimePlus', 'InCoordTime', 'XCoordTime', 'InceptionTimePlus17x17', 'InceptionTimePlus32x32', 
                    'InceptionTimePlus47x47', 'InceptionTimePlus62x62', 'InceptionTimeXLPlus', 'MultiInceptionTimePlus', 'MiniRocketClassifier', 
                    'MiniRocketRegressor', 'MiniRocketVotingClassifier', 'MiniRocketVotingRegressor', 'MiniRocketFeaturesPlus', 'MiniRocketPlus', 
@@ -337,6 +375,9 @@ def get_arch(arch_name):
     elif arch_name == "MGRU_FCNPlus":  
         from tsai.models.RNN_FCNPlus import MGRU_FCNPlus
         arch = MGRU_FCNPlus
+    elif arch_name == "PatchTST":  
+        from tsai.models.PatchTST import PatchTST
+        arch = PatchTST
     elif arch_name == "ROCKET":  
         from tsai.models.ROCKET import ROCKET
         arch = ROCKET
@@ -487,17 +528,23 @@ def get_arch(arch_name):
     elif arch_name == "mWDN":  
         from tsai.models.mWDN import mWDN
         arch = mWDN
+    elif arch_name == "mWDNPlus":  
+        from tsai.models.mWDN import mWDNPlus
+        arch = mWDNPlus
     else: print(f"please, confirm the name of the architecture ({arch_name})")
     assert arch.__name__ == arch_name
     return arch
 
-# %% ../nbs/018_learner.ipynb 12
+# %% ../nbs/018_learner.ipynb 13
 @delegates(build_ts_model)
 def ts_learner(dls, arch=None, c_in=None, c_out=None, seq_len=None, d=None, splitter=trainable_params,
                loss_func=None, opt_func=Adam, lr=defaults.lr, cbs=None, metrics=None, path=None,
-               model_dir='models', wd=None, wd_bn_bias=False, train_bn=True, moms=(0.95,0.85,0.95), train_metrics=False, 
-               **kwargs)->Learner:
+               model_dir='models', wd=None, wd_bn_bias=False, train_bn=True, moms=(0.95,0.85,0.95), 
+               train_metrics=False, valid_metrics=True, seed=None, **kwargs)->Learner:
 
+    if seed is not None:
+        set_seed(seed, reproducible=True)
+    
     if isinstance(arch, nn.Module): 
         model = arch
         if kwargs: 
@@ -517,15 +564,16 @@ def ts_learner(dls, arch=None, c_in=None, c_out=None, seq_len=None, d=None, spli
                     loss_func=loss_func, opt_func=opt_func, lr=lr, cbs=cbs, metrics=metrics, path=path, splitter=splitter,
                     model_dir=model_dir, wd=wd, wd_bn_bias=wd_bn_bias, train_bn=train_bn, moms=moms, )
 
-    if train_metrics and hasattr(learn, "recorder"):
-        learn.recorder.train_metrics = True
+    if hasattr(learn, "recorder"):
+            learn.recorder.train_metrics = train_metrics
+            learn.recorder.valid_metrics = valid_metrics if len(dls.valid) > 0 else False
     
     # keep track of args for loggers
     store_attr('arch', self=learn)
 
     return learn
 
-# %% ../nbs/018_learner.ipynb 13
+# %% ../nbs/018_learner.ipynb 14
 @delegates(build_tsimage_model)
 def tsimage_learner(dls, arch=None, pretrained=False,
                loss_func=None, opt_func=Adam, lr=defaults.lr, cbs=None, metrics=None, path=None,
@@ -546,6 +594,6 @@ def tsimage_learner(dls, arch=None, pretrained=False,
 
     return learn
 
-# %% ../nbs/018_learner.ipynb 14
+# %% ../nbs/018_learner.ipynb 15
 @patch
 def decoder(self:Learner, o): return L([self.dls.decodes(oi) for oi in o])

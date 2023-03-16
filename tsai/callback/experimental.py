@@ -59,7 +59,7 @@ class UBDAug(Callback):
             with torch.no_grad():
                 setattr(self.loss_func, 'reduction', 'none')
                 for i in range(self.C):
-                    idxs = np.random.choice(self.n_tfms, self.N, False)
+                    idxs = random_choice(self.n_tfms, self.N, False)
                     x_tfm = compose_tfms(self.x, self.batch_tfms[idxs], split_idx=0)
                     loss = self.loss_func(self.learn.model(x_tfm), self.y).reshape(-1,1)
                     if i == 0:
@@ -185,9 +185,9 @@ class SamplerWithReplacement(Callback):
         dl = self.learn.dls.train
         if dl.n==0: return []
         if dl.weights is not None:
-            return np.random.choice(dl.n, dl.n, p=dl.weights)
+            return random_choice(dl.n, dl.n, p=dl.weights)
         idxs = Inf.count if dl.indexed else Inf.nones
-        if dl.n is not None: idxs = np.random.choice(dl.n,dl.n,True)
+        if dl.n is not None: idxs = random_choice(dl.n,dl.n,True)
         if dl.shuffle: idxs = dl.shuffle_fn(idxs)
         return idxs
 

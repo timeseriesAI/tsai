@@ -39,7 +39,7 @@ class XCMPlus(nn.Sequential):
     def create_head(self, nf, c_out, seq_len=None, flatten=False, concat_pool=False, fc_dropout=0., bn=False, y_range=None):
         if flatten: 
             nf *= seq_len
-            layers = [Flatten()]
+            layers = [Reshape()]
         else: 
             if concat_pool: nf *= 2
             layers = [GACP1d(1) if concat_pool else GAP1d(1)]
@@ -49,6 +49,7 @@ class XCMPlus(nn.Sequential):
     
     
     def show_gradcam(self, x, y=None, detach=True, cpu=True, apply_relu=True, cmap='inferno', figsize=None, **kwargs):
+
         att_maps = get_attribution_map(self, [self.backbone.conv2dblock, self.backbone.conv1dblock], x, y=y, detach=detach, cpu=cpu, apply_relu=apply_relu)
         att_maps[0] = (att_maps[0] - att_maps[0].min()) / (att_maps[0].max() - att_maps[0].min())
         att_maps[1] = (att_maps[1] - att_maps[1].min()) / (att_maps[1].max() - att_maps[1].min())
@@ -57,6 +58,8 @@ class XCMPlus(nn.Sequential):
         fig = plt.figure(figsize=figsize, **kwargs)
         ax = plt.axes()
         plt.title('Observed variables')
+        if att_maps[0].ndim == 3:
+            att_maps[0] = att_maps[0].mean(0)
         im = ax.imshow(att_maps[0], cmap=cmap)
         cax = fig.add_axes([ax.get_position().x1+0.01,ax.get_position().y0,0.02,ax.get_position().height])
         plt.colorbar(im, cax=cax)
@@ -65,6 +68,8 @@ class XCMPlus(nn.Sequential):
         fig = plt.figure(figsize=figsize, **kwargs)
         ax = plt.axes()
         plt.title('Time')
+        if att_maps[1].ndim == 3:
+            att_maps[1] = att_maps[1].mean(0)
         im = ax.imshow(att_maps[1], cmap=cmap)
         cax = fig.add_axes([ax.get_position().x1+0.01,ax.get_position().y0,0.02,ax.get_position().height])
         plt.colorbar(im, cax=cax)
