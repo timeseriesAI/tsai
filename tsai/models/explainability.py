@@ -17,6 +17,9 @@ def get_acts_and_grads(model, modules, x, y=None, detach=True, cpu=False):
     Gradients require y value(s). If they rae not provided, it will use the predictions. """
     if not is_listy(modules): modules = [modules]
     x = x[None, None] if x.ndim == 1 else x[None] if x.ndim == 2 else x
+    if cpu: 
+        model = model.cpu()
+        x = x.cpu()
     with hook_outputs(modules, detach=detach, cpu=cpu) as h_act:
         with hook_outputs(modules, grad=True, detach=detach, cpu=cpu) as h_grad:
             preds = model.eval()(x)
