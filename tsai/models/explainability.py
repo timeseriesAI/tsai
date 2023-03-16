@@ -15,7 +15,6 @@ warnings.filterwarnings("ignore", category=UserWarning)
 def get_acts_and_grads(model, modules, x, y=None, detach=True, cpu=False):
     r"""Returns activations and gradients for given modules in a model and a single input or a batch. 
     Gradients require y value(s). If they rae not provided, it will use the predictions. """
-    global preds
     if not is_listy(modules): modules = [modules]
     x = x[None, None] if x.ndim == 1 else x[None] if x.ndim == 2 else x
     with hook_outputs(modules, detach=detach, cpu=cpu) as h_act:

@@ -7,6 +7,12 @@ if platform.system() == "Darwin":
     # workaround "OMP: Error #15: Initializing libiomp5.dylib, but found libomp.dylib already initialized"
     os.environ["KMP_DUPLICATE_LIB_OK"] = "True"
 
+try:
+    # Imports only used in notebooks
+    import IPython
+    from IPython.display import HTML, Audio, Javascript, clear_output, display
+except:
+    pass
 import datetime as dt
 import gc
 import importlib
