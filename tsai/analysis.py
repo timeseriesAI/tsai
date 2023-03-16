@@ -4,15 +4,18 @@
 __all__ = []
 
 # %% ../nbs/020_analysis.ipynb 3
-from .imports import *
+import inspect
+
 import sklearn.metrics as skm
-from sklearn.model_selection import train_test_split
-from fastai.learner import * 
 from fastai.interpret import *
-from .utils import *
-from .data.preprocessing import *
+from fastai.learner import *
+from sklearn.model_selection import train_test_split
+
 from .data.core import *
+from .data.preprocessing import *
+from .imports import *
 from .inference import *
+from .utils import *
 
 # %% ../nbs/020_analysis.ipynb 4
 @patch
@@ -177,6 +180,10 @@ def feature_importance(self:Learner,
     else:
         metric_name = metrics[key_metric_idx]
         metric = self.recorder.metrics[key_metric_idx].func
+        if "sklearn" in inspect.getmodule(metric).__name__:
+            sklearn_metric = True
+        else:
+            sklearn_metric = False
     metric_name = metric_name.replace("train_", "").replace("valid_", "")
     pv(f'Selected metric: {metric_name}', verbose)
 
@@ -221,10 +228,21 @@ def feature_importance(self:Learner,
             else:
                 output = self.get_X_preds(X, y)
                 if self.dls.c == 2:
-                    try: value = metric(output[0][:, 1], output[1]).item()
-                    except: value = metric(output[0], output[1]).item()
+                    try: 
+                        if sklearn_metric:
+                            value = metric(output[1], output[0][:, 1]).item()
+                        else:
+                            value = metric(output[0][:, 1], output[1]).item()
+                    except: 
+                        if sklearn_metric:
+                            value = metric(output[1], output[0]).item()
+                        else:
+                            value = metric(output[0], output[1]).item()
                 else:
-                    value = metric(output[0], output[1]).item()
+                    if sklearn_metric:
+                        value = metric(output[1], output[0]).item()
+                    else:
+                        value = metric(output[0], output[1]).item()
                 del output
             pv(f"{k:3} feature: {COLS[i]:20} {metric_name}: {value:8.6f}", verbose)
             results.append([COLS[i], value])
@@ -303,7 +321,7 @@ def step_importance(
     verbose:bool=True, # Flag that controls verbosity.
     ):
     r"""Calculates step importance as the drop in the model's validation loss or metric when a step/s value/s is/are randomly shuffled"""
-
+    
     assert method in ['permutation', 'ablation']
     
     # X, y
@@ -332,6 +350,10 @@ def step_importance(
     else:
         metric_name = metrics[key_metric_idx]
         metric = self.recorder.metrics[key_metric_idx].func
+        if "sklearn" in inspect.getmodule(metric).__name__:
+            sklearn_metric = True
+        else:
+            sklearn_metric = False
     metric_name = metric_name.replace("train_", "").replace("valid_", "")
     pv(f'Selected metric: {metric_name}', verbose)
     
@@ -364,10 +386,21 @@ def step_importance(
             else:
                 output = self.get_X_preds(X, y)
                 if self.dls.c == 2:
-                    try: value = metric(output[0][:, 1], output[1]).item()
-                    except: value = metric(output[0], output[1]).item()
+                    try: 
+                        if sklearn_metric:
+                            value = metric(output[1], output[0][:, 1]).item()
+                        else:
+                            value = metric(output[0][:, 1], output[1]).item()
+                    except: 
+                        if sklearn_metric:
+                            value = metric(output[1], output[0]).item()
+                        else:
+                            value = metric(output[0], output[1]).item()
                 else:
-                    value = metric(output[0], output[1]).item()
+                    if sklearn_metric:
+                        value = metric(output[1], output[0]).item()
+                    else:
+                        value = metric(output[0], output[1]).item()
                 del output
             
             # Step names
