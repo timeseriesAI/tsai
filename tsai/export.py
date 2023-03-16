@@ -21,7 +21,7 @@ https://github.com/fastai/nbdev/blob/master/nbdev/export.py
 def _mk_flag_re(body, n_params, comment):
     "Compiles a regex for finding nbdev flags"
     assert body!=True, 'magics no longer supported'
-    prefix = r"\s*\#\s*"
+    prefix = r"\s*\#\|\s*"
     param_group = ""
     if n_params == -1: param_group = r"[ \t]+(.+)"
     if n_params == 1: param_group = r"[ \t]+(\S+)"
@@ -37,7 +37,7 @@ $            # end of line (since re.MULTILINE is passed)
 """, re.MULTILINE | re.VERBOSE)
 
 _re_hide = _mk_flag_re("hide?", 0,
-    "Matches any line with #hide without any module name")
+    "Matches any line with #|hide without any module name")
 
 def _get_unhidden_cells(cells):
     result = []
