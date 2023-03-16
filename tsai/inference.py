@@ -4,15 +4,14 @@
 __all__ = []
 
 # %% ../nbs/019_inference.ipynb 3
-from fastai.learner import load_learner
-from fastai.learner import Learner
+from fastai.learner import Learner, load_learner
 from fastcore.basics import patch
 
 # %% ../nbs/019_inference.ipynb 4
 @patch
 def get_X_preds(self: Learner, X, y=None, bs=64, with_input=False, with_decoded=True, with_loss=False):
     if with_loss and y is None:
-        print("cannot find loss as y=None")
+        print("with_loss set to False as y is None")
         with_loss = False
     dl = self.dls.valid.new_dl(X, y=y, bs=bs)
     output = list(self.get_preds(dl=dl, with_input=with_input, with_decoded=with_decoded, with_loss=with_loss, reorder=False))

@@ -15,7 +15,7 @@ __all__ = ['UTSC_datasets', 'UCR_univariate_list', 'MTSC_datasets', 'UCR_multiva
 from tqdm import tqdm
 import zipfile
 import tempfile
-try: from urllib import urlretrieve
+try: from urllib import urlretrieveda
 except ImportError: from urllib.request import urlretrieve
 import shutil
 from distutils.util import strtobool
@@ -2480,7 +2480,7 @@ def get_forecasting_time_series(
             df['max Wx'] = max_wv*np.cos(wd_rad)
             df['max Wy'] = max_wv*np.sin(wd_rad)
 
-            timestamp_s = date_time.map(datetime.datetime.timestamp)
+            timestamp_s = date_time.map(dt.datetime.timestamp)
             day = 24*60*60
             year = (365.2425)*day
 
@@ -2677,7 +2677,7 @@ def convert_tsf_to_dataframe(full_file_path_and_name, replace_missing_vals_with 
                             elif col_types[i] == "string":
                                 att_val = str(full_info[i])
                             elif col_types[i] == "date":
-                                att_val = datetime.datetime.strptime(full_info[i], '%Y-%m-%d %H-%M-%S')
+                                att_val = dt.datetime.strptime(full_info[i], '%Y-%m-%d %H-%M-%S')
                             else:
                                 raise _TsFileParseException("Invalid attribute type.") # Currently, the code supports only numeric, string and date types. Extend this as required.
 
