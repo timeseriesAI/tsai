@@ -531,6 +531,15 @@ def get_arch(arch_name):
     elif arch_name == "mWDNPlus":  
         from tsai.models.mWDN import mWDNPlus
         arch = mWDNPlus
+    elif arch_name == "RNNAttention":  
+        from tsai.models.RNNAttention import RNNAttention
+        arch = RNNAttention
+    elif arch_name == "LSTMAttention":  
+        from tsai.models.RNNAttention import LSTMAttention
+        arch = LSTMAttention
+    elif arch_name == "RNNAttention":  
+        from tsai.models.RNNAttention import GRUAttention
+        arch = GRUAttention
     else: print(f"please, confirm the name of the architecture ({arch_name})")
     assert arch.__name__ == arch_name
     return arch
