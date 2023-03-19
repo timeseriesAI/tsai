@@ -752,9 +752,9 @@ class NumpyDataLoader(TfmdDL):
 
     @property
     def c(self):
-        if len(self.dataset) == 0: return 0
-        if self.d: return 1
-        elif hasattr(self, "vocab"):
+        if len(self.dataset) == 0: 
+            return 0
+        if hasattr(self, "vocab"):
             return len(self.vocab)
         else:
             return 1
