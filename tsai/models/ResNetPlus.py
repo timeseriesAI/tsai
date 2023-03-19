@@ -63,7 +63,8 @@ class ResNetPlus(nn.Sequential):
             assert seq_len is not None, "you need to pass seq_len when flatten=True"
             self.head_nf *= seq_len
         if custom_head is not None:
-            head = custom_head(self.head_nf, c_out)
+            if isinstance(custom_head, nn.Module): head = custom_head
+            else: head = custom_head(self.head_nf, c_out, seq_len)
         else:
             head = self.create_head(self.head_nf, c_out, flatten=flatten,
                                          concat_pool=concat_pool, fc_dropout=fc_dropout, y_range=y_range)

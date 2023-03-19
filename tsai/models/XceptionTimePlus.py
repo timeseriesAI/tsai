@@ -85,9 +85,11 @@ class XceptionTimePlus(nn.Sequential):
         conv1x1_2 = ConvBlock(nf * 16 * mult, nf * 8 * mult, 1, coord=coord, norm=norm)
         conv1x1_3 = ConvBlock(nf * 8 * mult, c_out, 1, coord=coord, norm=norm)
         gap2 = GAP1d(1)
-        self.nf = nf * 32 * mult
+        self.head_nf = nf * 32 * mult
         self.seq_len = seq_len
-        if custom_head is not None: head = custom_head(self.nf, c_out, seq_len)
+        if custom_head is not None: 
+            if isinstance(custom_head, nn.Module): head = custom_head
+            else: head = custom_head(self.head_nf, c_out, seq_len)
         else: head = nn.Sequential(gap1, conv1x1_1, conv1x1_2, conv1x1_3, gap2)
         
         super().__init__(OrderedDict([('backbone', backbone), ('head', head)]))
