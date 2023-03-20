@@ -579,7 +579,7 @@ _batch_tfms = ('after_item','before_batch','after_batch')
 class NumpyDataLoader(TfmdDL):
     idxs = None
     do_item = noops # create batch returns indices
-    def __init__(self, dataset, bs=64, shuffle=False, drop_last=False, num_workers=0, verbose=False, do_setup=True, 
+    def __init__(self, dataset, bs=64, shuffle=False, drop_last=False, num_workers=0, verbose=False, do_setup=True, vocab=None,
                  sort=False, weights=None, partial_n=None, sampler=None, **kwargs):
 
         if num_workers is None: num_workers = min(16, defaults.cpus)
@@ -596,6 +596,8 @@ class NumpyDataLoader(TfmdDL):
         if weights is not None: weights = weights / weights.sum()
         self.weights, self.partial_n, self.sampler, self.sort, self.do_setup = weights, partial_n, sampler, sort, do_setup
         super().__init__(dataset, bs=bs, shuffle=shuffle, drop_last=drop_last, num_workers=num_workers, verbose=verbose, do_setup=do_setup, **kwargs)
+        if vocab is not None:
+            self.vocab = vocab
     
     def new_dl(self, X, y=None, bs=64):
         assert X.ndim == 3, "You must pass an X iterable with 3 dimensions [batch_size x n_vars x seq_len]"
@@ -863,7 +865,7 @@ class NumpyDataLoaders(DataLoaders):
 
     @classmethod
     def from_dsets(cls, *ds, path='.', bs=64, num_workers=0, batch_tfms=None, device=None, shuffle_train=True, drop_last=True, 
-                   weights=None, partial_n=None, sampler=None, sort=False, **kwargs):
+                   weights=None, partial_n=None, sampler=None, sort=False, vocab=None, **kwargs):
         device = ifnone(device, default_device())
         if batch_tfms is not None and not isinstance(batch_tfms, list): batch_tfms = [batch_tfms]
         shuffle_default = (shuffle_train,) + (False,) * (len(ds)-1)
@@ -878,7 +880,7 @@ class NumpyDataLoaders(DataLoaders):
         if len(partial_n) != len(ds): partial_n = partial_n * len(ds)
         if not is_listy(sampler): sampler = [sampler]
         if len(sampler) != len(ds): sampler = sampler * len(ds)
-        loaders = [cls._dl_type(d, bs=b, num_workers=num_workers, batch_tfms=batch_tfms, weights=w, partial_n=n, sampler=s, sort=sort, **k)\
+        loaders = [cls._dl_type(d, bs=b, num_workers=num_workers, batch_tfms=batch_tfms, weights=w, partial_n=n, sampler=s, sort=sort, vocab=vocab, **k)\
                    for d,k,b,w,n,s in zip(ds, kwargs, bs, weights, partial_n, sampler)]
         return cls(*loaders, path=path, device=device)
 
@@ -1095,7 +1097,7 @@ def get_ts_dl(X, y=None, split=None, sel_vars=None, sel_steps=None, tfms=None, i
 
 def get_subset_dl(dl, idxs): return dl.new(dl.dataset.subset(idxs))
 
-# %% ../../nbs/006_data.core.ipynb 114
+# %% ../../nbs/006_data.core.ipynb 115
 def get_time_per_batch(dl, model=None, n_batches=None):
     try:
         timer.start(False)
