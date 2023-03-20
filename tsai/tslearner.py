@@ -84,7 +84,7 @@ class TSClassifier(Learner):
 
         if hasattr(self, "recorder"):
             self.recorder.train_metrics = train_metrics
-            if splits is None or not is_listy(splits[0]) or len(splits) == 1 or (len(splits) >= 2 and not splits[1]): 
+            if splits is None or not hasattr(splits[0], "__len__") or len(splits) == 1 or (len(splits) >= 2 and not splits[1]): 
                 self.recorder.valid_metrics = False
             else:
                 self.recorder.valid_metrics = valid_metrics
@@ -158,7 +158,7 @@ class TSRegressor(Learner):
         
         if hasattr(self, "recorder"):
             self.recorder.train_metrics = train_metrics
-            if splits is None or not is_listy(splits[0]) or len(splits) == 1 or (len(splits) >= 2 and not splits[1]): 
+            if splits is None or not hasattr(splits[0], "__len__") or len(splits) == 1 or (len(splits) >= 2 and not splits[1]): 
                 self.recorder.valid_metrics = False
             else:
                 self.recorder.valid_metrics = valid_metrics
@@ -231,7 +231,7 @@ class TSForecaster(Learner):
         
         if hasattr(self, "recorder"):
             self.recorder.train_metrics = train_metrics
-            if splits is None or not is_listy(splits[0]) or len(splits) == 1 or (len(splits) >= 2 and not splits[1]): 
+            if splits is None or not hasattr(splits[0], "__len__") or len(splits) == 1 or (len(splits) >= 2 and not splits[1]): 
                 self.recorder.valid_metrics = False
             else:
                 self.recorder.valid_metrics = valid_metrics

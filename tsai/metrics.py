@@ -205,7 +205,8 @@ def _mAP(inp, targ):
     n_classes = inp.shape[-1]
     inp = inp.view(-1, n_classes)
     if targ.size() != inp.size():
-        targ = F.one_hot(targ.flatten(), n_classes)
-    return skm.average_precision_score(targ, inp)
+        targ = F.one_hot(targ.flatten().long(), n_classes)
+    mask = targ.sum(0) > 0 # this avoid nan when a class is not present in the target
+    return skm.average_precision_score(targ[:, mask], inp[:, mask])
 
 mAP = AccumMetric(_mAP, dim_argmax=-1, activation=ActivationType.Softmax, flatten=False, name='mAP')
