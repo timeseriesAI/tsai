@@ -9,12 +9,20 @@ from fastcore.basics import patch
 
 # %% ../nbs/019_inference.ipynb 4
 @patch
-def get_X_preds(self: Learner, X, y=None, bs=64, with_input=False, with_decoded=True, with_loss=False):
+def get_X_preds(self: Learner, 
+    X, 
+    y=None, 
+    bs=64, 
+    with_input=False, # returns the input as well
+    with_decoded=True, # returns decoded predictions as well
+    with_loss=False, # returns the loss per item as well
+    act=None, # Apply activation to predictions, defaults to `self.loss_func`'s activation
+    ):
     if with_loss and y is None:
         print("with_loss set to False as y is None")
         with_loss = False
     dl = self.dls.valid.new_dl(X, y=y, bs=bs)
-    output = list(self.get_preds(dl=dl, with_input=with_input, with_decoded=with_decoded, with_loss=with_loss, reorder=False))
+    output = list(self.get_preds(dl=dl, with_input=with_input, with_decoded=with_decoded, with_loss=with_loss, reorder=False, act=act))
     if with_decoded and len(self.dls.tls) >= 2 and hasattr(self.dls.tls[-1], "tfms") and hasattr(self.dls.tls[-1].tfms, "decodes"):
         output[2 + with_input] = self.dls.tls[-1].tfms.decode(output[2 + with_input])
     return tuple(output)
