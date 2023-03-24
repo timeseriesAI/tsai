@@ -14,7 +14,7 @@ warnings.filterwarnings("ignore")
 
 # %% ../nbs/072_optuna.ipynb 4
 def run_optuna_study(objective, resume=None, study_type=None, multivariate=True, search_space=None, evaluate=None, seed=None, sampler=None, pruner=None, 
-                     study_name=None, direction='maximize', load_if_exists=False, n_trials=None, timeout=None, gc_after_trial=False, show_progress_bar=True, 
+                     study_name=None, direction='maximize', n_trials=None, timeout=None, gc_after_trial=False, show_progress_bar=True, 
                      save_study=True, path='optuna', show_plots=True):
     r"""Creates and runs an optuna study.
 
