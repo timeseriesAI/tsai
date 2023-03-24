@@ -232,7 +232,7 @@ def plot_metrics(self: Learner, **kwargs):
 
 # %% ../nbs/018_learner.ipynb 11
 all_archs_names = ['FCN', 'FCNPlus', 'InceptionTime', 'InceptionTimePlus', 'InCoordTime', 'XCoordTime', 'InceptionTimePlus17x17', 'InceptionTimePlus32x32', 
-                   'InceptionTimePlus47x47', 'InceptionTimePlus62x62', 'InceptionTimeXLPlus', 'MultiInceptionTimePlus', 'MiniRocketClassifier', 
+                   'InceptionTimePlus47x47', 'InceptionTimePlus62x62', 'InceptionTimeXLPlus', 'MultiInceptionTimePlus', 'MiniRocketClassifier', "MiniRocket",
                    'MiniRocketRegressor', 'MiniRocketVotingClassifier', 'MiniRocketVotingRegressor', 'MiniRocketFeaturesPlus', 'MiniRocketPlus', 
                    'MiniRocketHead', 'InceptionRocketFeaturesPlus', 'InceptionRocketPlus', 'MLP', 'gMLP', 'MultiInputNet', 'OmniScaleCNN', 'RNN', 'LSTM', 'GRU', 
                    'RNNPlus', 'LSTMPlus', 'GRUPlus', 'RNN_FCN', 'LSTM_FCN', 'GRU_FCN', 'MRNN_FCN', 'MLSTM_FCN', 'MGRU_FCN', 'ROCKET', 'RocketClassifier', 
@@ -297,6 +297,9 @@ def get_arch(arch_name):
     elif arch_name == "MiniRocketFeaturesPlus":  
         from tsai.models.MINIROCKETPlus_Pytorch import MiniRocketFeaturesPlus
         arch = MiniRocketFeaturesPlus
+    elif arch_name == "MiniRocket":  
+        from tsai.models.MINIROCKET_Pytorch import MiniRocket
+        arch = MiniRocket
     elif arch_name == "MiniRocketPlus":  
         from tsai.models.MINIROCKETPlus_Pytorch import MiniRocketPlus
         arch = MiniRocketPlus
