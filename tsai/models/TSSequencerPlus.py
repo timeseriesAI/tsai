@@ -192,7 +192,8 @@ class TSSequencerPlus(nn.Sequential):
                  cat_pos:Optional[list]=None, n_cat_embeds:Optional[list]=None, cat_embed_dims:Optional[list]=None, cat_padding_idxs:Optional[list]=None,
                  token_size:int=None, tokenizer:Optional[Callable]=None, feature_extractor:Optional[Callable]=None, 
                  flatten:bool=False, concat_pool:bool=True, fc_dropout:float=0., use_bn:bool=False, 
-                 bias_init:Optional[Union[float, list]]=None, y_range:Optional[tuple]=None, custom_head:Optional[Callable]=None, verbose:bool=True):
+                 bias_init:Optional[Union[float, list]]=None, y_range:Optional[tuple]=None, custom_head:Optional[Callable]=None, verbose:bool=True,
+                 **kwargs):
 
         if use_token and c_out == 1: 
             use_token = False
@@ -210,7 +211,7 @@ class TSSequencerPlus(nn.Sequential):
         # Head
         if custom_head:
             if isinstance(custom_head, nn.Module): head = custom_head
-            else: head = custom_head(self.head_nf, c_out, seq_len)
+            else: head = custom_head(self.head_nf, c_out, seq_len, **kwargs)
         else:
             nf = d_model
             layers = []

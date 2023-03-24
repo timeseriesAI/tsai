@@ -272,7 +272,9 @@ class TSTPlus(nn.Sequential):
         self.head_nf = d_model
         self.c_out = c_out
         self.seq_len = backbone.seq_len
-        if custom_head: head = custom_head(self.head_nf, c_out, self.seq_len) # custom head passed as a partial func with all its kwargs
+        if custom_head is not None:
+            if isinstance(custom_head, nn.Module): head = custom_head
+            else: head = custom_head(self.head_nf, c_out, seq_len)
         else: head = self.create_head(self.head_nf, c_out, self.seq_len, act=act, flatten=flatten, concat_pool=concat_pool,
                                            fc_dropout=fc_dropout, bn=bn, y_range=y_range)
         super().__init__(OrderedDict([('backbone', backbone), ('head', head)]))

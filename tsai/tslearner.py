@@ -18,7 +18,7 @@ from .metrics import *
 
 # %% ../nbs/022_tslearner.ipynb 5
 class TSClassifier(Learner):
-    def __init__(self, X, y=None, splits=None, tfms=None, inplace=True, sel_vars=None, sel_steps=None, weights=None, partial_n=None, 
+    def __init__(self, X, y=None, splits=None, tfms=None, inplace=True, sel_vars=None, sel_steps=None, weights=None, partial_n=None, vocab=None,
                  train_metrics=False, valid_metrics=True, bs=[64, 128], batch_size=None, batch_tfms=None, pipelines=None,
                  shuffle_train=True, drop_last=True, num_workers=0, do_setup=True, device=None, seed=None,
                  arch=None, arch_config={}, pretrained=False, weights_path=None, exclude_head=True, cut=-1, init=None,
@@ -34,7 +34,7 @@ class TSClassifier(Learner):
             bs = batch_size
 
         # DataLoaders
-        dls = get_ts_dls(X, y=y, splits=splits, sel_vars=sel_vars, sel_steps=sel_steps, tfms=tfms, inplace=inplace, 
+        dls = get_ts_dls(X, y=y, splits=splits, sel_vars=sel_vars, sel_steps=sel_steps, tfms=tfms, inplace=inplace, vocab=vocab,
                          path=path, bs=bs, batch_tfms=batch_tfms, num_workers=num_workers, weights=weights, partial_n=partial_n, 
                          device=device, shuffle_train=shuffle_train, drop_last=drop_last)
         
@@ -84,7 +84,8 @@ class TSClassifier(Learner):
 
         if hasattr(self, "recorder"):
             self.recorder.train_metrics = train_metrics
-            if splits is None or not is_listy(splits[0]) or len(splits) == 1 or (len(splits) >= 2 and not splits[1]): 
+            if splits is None or not hasattr(splits[0], "__len__") or len(splits) == 1 or \
+                (len(splits) >= 2 and (splits[1] is None or not hasattr(splits[1], "__len__"))): 
                 self.recorder.valid_metrics = False
             else:
                 self.recorder.valid_metrics = valid_metrics
@@ -158,7 +159,8 @@ class TSRegressor(Learner):
         
         if hasattr(self, "recorder"):
             self.recorder.train_metrics = train_metrics
-            if splits is None or not is_listy(splits[0]) or len(splits) == 1 or (len(splits) >= 2 and not splits[1]): 
+            if splits is None or not hasattr(splits[0], "__len__") or len(splits) == 1 or \
+                (len(splits) >= 2 and (splits[1] is None or not hasattr(splits[1], "__len__"))): 
                 self.recorder.valid_metrics = False
             else:
                 self.recorder.valid_metrics = valid_metrics
@@ -231,7 +233,8 @@ class TSForecaster(Learner):
         
         if hasattr(self, "recorder"):
             self.recorder.train_metrics = train_metrics
-            if splits is None or not is_listy(splits[0]) or len(splits) == 1 or (len(splits) >= 2 and not splits[1]): 
+            if splits is None or not hasattr(splits[0], "__len__") or len(splits) == 1 or \
+                (len(splits) >= 2 and (splits[1] is None or not hasattr(splits[1], "__len__"))): 
                 self.recorder.valid_metrics = False
             else:
                 self.recorder.valid_metrics = valid_metrics

@@ -4,20 +4,20 @@
 __all__ = ['lin_zero_init', 'Conv', 'ConvBN', 'CoordConv', 'SepConv', 'BN1d', 'IN1d', 'Noop', 'LogitAdjLayer', 'GWAP1d',
            'pytorch_acts', 'pytorch_act_names', 'pool_head', 'average_pool_head', 'concat_pool_head', 'pool_plus_head',
            'conv_head', 'mlp_head', 'fc_head', 'rnn_head', 'conv_lin_nd_head', 'conv_lin_3d_head',
-           'create_conv_lin_3d_head', 'lin_nd_head', 'lin_3d_head', 'create_lin_3d_head', 'conv_3d_head', 'heads',
-           'test_module_to_torchscript', 'init_lin_zero', 'SwishBeta', 'SmeLU', 'Chomp1d', 'same_padding1d', 'Pad1d',
-           'SameConv1d', 'same_padding2d', 'Pad2d', 'Conv2dSame', 'Conv2d', 'CausalConv1d', 'Conv1d', 'SeparableConv1d',
-           'AddCoords1d', 'ConvBlock', 'ResBlock1dPlus', 'SEModule1d', 'Norm', 'LinLnDrop', 'LambdaPlus', 'Squeeze',
-           'Unsqueeze', 'Add', 'Concat', 'Unfold', 'Permute', 'Transpose', 'View', 'Reshape', 'Max', 'LastStep',
-           'SoftMax', 'Clamp', 'Clip', 'ReZero', 'DropPath', 'Sharpen', 'Sequential', 'TimeDistributed', 'Temp_Scale',
-           'Vector_Scale', 'Matrix_Scale', 'get_calibrator', 'LogitAdjustmentLayer', 'PPV', 'PPAuc', 'MaxPPVPool1d',
-           'AdaptiveWeightedAvgPool1d', 'GAP1d', 'GACP1d', 'GAWP1d', 'GlobalWeightedAveragePool1d', 'gwa_pool_head',
-           'AttentionalPool1d', 'GAttP1d', 'attentional_pool_head', 'PoolingLayer', 'GEGLU', 'ReGLU', 'get_act_fn',
-           'RevIN', 'create_pool_head', 'max_pool_head', 'create_pool_plus_head', 'create_conv_head', 'create_mlp_head',
-           'create_fc_head', 'create_rnn_head', 'imputation_head', 'create_conv_lin_nd_head', 'create_lin_nd_head',
-           'create_conv_3d_head', 'universal_pool_head', 'SqueezeExciteBlock', 'GaussianNoise',
-           'PositionwiseFeedForward', 'TokenLayer', 'ScaledDotProductAttention', 'MultiheadAttention', 'MultiConv1d',
-           'LSTMOutput', 'emb_sz_rule', 'TSEmbedding', 'MultiEmbedding']
+           'create_conv_lin_3d_head', 'create_lin_nd_head', 'lin_3d_head', 'create_lin_3d_head', 'conv_3d_head',
+           'heads', 'test_module_to_torchscript', 'init_lin_zero', 'SwishBeta', 'SmeLU', 'Chomp1d', 'same_padding1d',
+           'Pad1d', 'SameConv1d', 'same_padding2d', 'Pad2d', 'Conv2dSame', 'Conv2d', 'CausalConv1d', 'Conv1d',
+           'SeparableConv1d', 'AddCoords1d', 'ConvBlock', 'ResBlock1dPlus', 'SEModule1d', 'Norm', 'LinLnDrop',
+           'LambdaPlus', 'Squeeze', 'Unsqueeze', 'Add', 'Concat', 'Unfold', 'Permute', 'Transpose', 'View', 'Reshape',
+           'Max', 'LastStep', 'SoftMax', 'Clamp', 'Clip', 'ReZero', 'DropPath', 'Sharpen', 'Sequential',
+           'TimeDistributed', 'Temp_Scale', 'Vector_Scale', 'Matrix_Scale', 'get_calibrator', 'LogitAdjustmentLayer',
+           'PPV', 'PPAuc', 'MaxPPVPool1d', 'AdaptiveWeightedAvgPool1d', 'GAP1d', 'GACP1d', 'GAWP1d',
+           'GlobalWeightedAveragePool1d', 'gwa_pool_head', 'AttentionalPool1d', 'GAttP1d', 'attentional_pool_head',
+           'PoolingLayer', 'GEGLU', 'ReGLU', 'get_act_fn', 'RevIN', 'create_pool_head', 'max_pool_head',
+           'create_pool_plus_head', 'create_conv_head', 'create_mlp_head', 'create_fc_head', 'create_rnn_head',
+           'imputation_head', 'create_conv_lin_nd_head', 'lin_nd_head', 'create_conv_3d_head', 'universal_pool_head',
+           'SqueezeExciteBlock', 'GaussianNoise', 'PositionwiseFeedForward', 'TokenLayer', 'ScaledDotProductAttention',
+           'MultiheadAttention', 'MultiConv1d', 'LSTMOutput', 'emb_sz_rule', 'TSEmbedding', 'MultiEmbedding']
 
 # %% ../../nbs/029_models.layers.ipynb 3
 from torch.jit import TracerWarning
@@ -416,7 +416,8 @@ class Transpose(Module):
 class View(Module):
     def __init__(self, *shape): self.shape = shape
     def forward(self, x): 
-        return x.view(x.shape[0], -1) if not self.shape else x.view(-1) if self.shape == (-1,) else x.view(x.shape[0], *self.shape)
+        return x.view(x.shape[0], -1).contiguous() if not self.shape else x.view(-1).contiguous() if self.shape == (-1,) else \
+            x.view(x.shape[0], *self.shape).contiguous()
     def __repr__(self): return f"{self.__class__.__name__}({', '.join(['bs'] + [str(s) for s in self.shape])})"
     
     
@@ -1036,13 +1037,17 @@ conv_lin_3d_head = create_conv_lin_nd_head # included for compatibility
 create_conv_lin_3d_head = create_conv_lin_nd_head # included for compatibility
 
 # %% ../../nbs/029_models.layers.ipynb 91
-class create_lin_nd_head(nn.Sequential):
+class lin_nd_head(nn.Sequential):
     "Module to create a nd output head with linear layers"
 
-    def __init__(self, n_in, n_out, seq_len, d, use_bn=False, fc_dropout=0.):
+    def __init__(self, n_in, n_out, seq_len=None, d=None, flatten=False, use_bn=False, fc_dropout=0.):
 
-        assert d, "you cannot use an nd head when d is None or 0"
-        if is_listy(d):
+        if seq_len is None:
+            seq_len = 1
+        if d is None:
+            fd = 1
+            shape = [n_out]
+        elif is_listy(d):
             fd = 1
             shape = []
             for _d in d:
@@ -1053,17 +1058,36 @@ class create_lin_nd_head(nn.Sequential):
             fd = d
             shape = [d, n_out] if n_out > 1 else [d]
             
-        layers = [Reshape()]
-        layers += LinBnDrop(n_in * seq_len, n_out * fd, bn=use_bn, p=fc_dropout)
-        layers += [Reshape(*shape)]
+        layers = []
+        if use_bn:
+            layers += [nn.BatchNorm1d(n_in)]
+        if fc_dropout:
+            layers += [nn.Dropout(fc_dropout)]
+        if d is None:
+            if not flatten or seq_len == 1:
+                layers += [nn.AdaptiveAvgPool1d(1), Squeeze(-1), nn.Linear(nf, n_out)]
+                if n_out == 1:
+                    layers += [Squeeze(-1)]
+            else:
+                layers += [Reshape(), nn.Linear(n_in * seq_len, n_out * fd)]
+                if n_out * fd== 1:
+                    layers += [Squeeze(-1)]
+        else:
+            if seq_len == 1:
+                layers += [nn.AdaptiveAvgPool1d(1), Squeeze(-1)]
+            if not flatten and fd == seq_len:
+                layers += [Transpose(1,2), nn.Linear(n_in, n_out)]
+            else:
+                layers += [Reshape(), nn.Linear(n_in * seq_len, n_out * fd)]
+            layers += [Reshape(*shape)]
 
         super().__init__(*layers)
         
-lin_nd_head = create_lin_nd_head
-lin_3d_head = create_lin_nd_head # included for compatiblity
-create_lin_3d_head = create_lin_nd_head # included for compatiblity
+create_lin_nd_head = lin_nd_head
+lin_3d_head = lin_nd_head # included for backwards compatiblity
+create_lin_3d_head = lin_nd_head # included for backwards compatiblity
 
-# %% ../../nbs/029_models.layers.ipynb 96
+# %% ../../nbs/029_models.layers.ipynb 97
 class create_conv_3d_head(nn.Sequential):
     "Module to create a nd output head with a convolutional layer"
     def __init__(self, n_in, n_out, seq_len, d, use_bn=False, **kwargs):
@@ -1076,17 +1100,17 @@ class create_conv_3d_head(nn.Sequential):
         
 conv_3d_head = create_conv_3d_head
 
-# %% ../../nbs/029_models.layers.ipynb 99
+# %% ../../nbs/029_models.layers.ipynb 100
 def universal_pool_head(n_in, c_out, seq_len, mult=2, pool_n_layers=2, pool_ln=True, pool_dropout=0.5, pool_act=nn.ReLU(),
                         zero_init=True, bn=True, fc_dropout=0.):
     return nn.Sequential(AdaptiveWeightedAvgPool1d(n_in, seq_len, n_layers=pool_n_layers, mult=mult, ln=pool_ln, dropout=pool_dropout, act=pool_act), 
                          Reshape(), LinBnDrop(n_in, c_out, p=fc_dropout, bn=bn))
 
-# %% ../../nbs/029_models.layers.ipynb 101
+# %% ../../nbs/029_models.layers.ipynb 102
 heads = [mlp_head, fc_head, average_pool_head, max_pool_head, concat_pool_head, pool_plus_head, conv_head, rnn_head, 
          conv_lin_nd_head, lin_nd_head, conv_3d_head, attentional_pool_head, universal_pool_head, gwa_pool_head]
 
-# %% ../../nbs/029_models.layers.ipynb 103
+# %% ../../nbs/029_models.layers.ipynb 104
 class SqueezeExciteBlock(Module):
     def __init__(self, ni, reduction=16):
         self.avg_pool = GAP1d(1)
@@ -1097,7 +1121,7 @@ class SqueezeExciteBlock(Module):
         y = self.fc(y).unsqueeze(2)
         return x * y.expand_as(x)
 
-# %% ../../nbs/029_models.layers.ipynb 105
+# %% ../../nbs/029_models.layers.ipynb 106
 class GaussianNoise(Module):
     """Gaussian noise regularizer.
 
@@ -1122,7 +1146,7 @@ class GaussianNoise(Module):
             x = x + sampled_noise
         return x 
 
-# %% ../../nbs/029_models.layers.ipynb 109
+# %% ../../nbs/029_models.layers.ipynb 110
 class PositionwiseFeedForward(nn.Sequential):
     def __init__(self, dim, dropout=0., act='reglu', mlp_ratio=1):
         act_mult = 2 if act.lower() in ["geglu", "reglu"] else 1
@@ -1137,7 +1161,7 @@ class TokenLayer(Module):
     def forward(self, x): return x[..., 0] if self.token is not None else x.mean(-1)
     def __repr__(self): return f"{self.__class__.__name__}()"
 
-# %% ../../nbs/029_models.layers.ipynb 111
+# %% ../../nbs/029_models.layers.ipynb 112
 class ScaledDotProductAttention(Module):
     r"""Scaled Dot-Product Attention module (Attention is all you need by Vaswani et al., 2017) with optional residual attention from previous layer 
     (Realformer: Transformer likes residual attention by He et al, 2020) and locality self sttention (Vision Transformer for Small-Size Datasets 
@@ -1193,7 +1217,7 @@ class ScaledDotProductAttention(Module):
         if self.res_attention: return output, attn_weights, attn_scores
         else: return output, attn_weights
 
-# %% ../../nbs/029_models.layers.ipynb 113
+# %% ../../nbs/029_models.layers.ipynb 114
 class MultiheadAttention(Module):
     def __init__(self, d_model, n_heads, d_k=None, d_v=None, res_attention=False, attn_dropout=0., proj_dropout=0., qkv_bias=True, lsa=False):
         """Multi Head Attention Layer
@@ -1247,7 +1271,7 @@ class MultiheadAttention(Module):
         if self.res_attention: return output, attn_weights, attn_scores
         else: return output, attn_weights 
 
-# %% ../../nbs/029_models.layers.ipynb 120
+# %% ../../nbs/029_models.layers.ipynb 121
 class MultiConv1d(Module):
     """Module that applies multiple convolutions with different kernel sizes"""
 
@@ -1275,17 +1299,17 @@ class MultiConv1d(Module):
         x = torch.cat(output, dim=self.dim)
         return x
 
-# %% ../../nbs/029_models.layers.ipynb 122
+# %% ../../nbs/029_models.layers.ipynb 123
 class LSTMOutput(Module):
     def forward(self, x): return x[0]
     def __repr__(self): return f'{self.__class__.__name__}()'
 
-# %% ../../nbs/029_models.layers.ipynb 124
+# %% ../../nbs/029_models.layers.ipynb 125
 def emb_sz_rule(n_cat):
     "Rule of thumb to pick embedding size corresponding to `n_cat` (original from fastai)"
     return min(600, round(1.6 * n_cat**0.56))
 
-# %% ../../nbs/029_models.layers.ipynb 126
+# %% ../../nbs/029_models.layers.ipynb 127
 class TSEmbedding(nn.Embedding):
     "Embedding layer with truncated normal initialization adapted from fastai"
     def __init__(self, ni, nf, std=0.01, padding_idx=None):
@@ -1294,7 +1318,7 @@ class TSEmbedding(nn.Embedding):
         if padding_idx is not None:
             nn.init.zeros_(self.weight.data[padding_idx])
 
-# %% ../../nbs/029_models.layers.ipynb 127
+# %% ../../nbs/029_models.layers.ipynb 128
 class MultiEmbedding(Module):
     def __init__(self, c_in, n_cat_embeds, cat_embed_dims=None, cat_pos=None, std=0.01, cat_padding_idxs=None):
         cat_n_embeds = listify(n_cat_embeds)

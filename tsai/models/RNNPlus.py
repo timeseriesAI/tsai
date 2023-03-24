@@ -82,8 +82,7 @@ class _RNN_Backbone(Module):
 class _RNNPlus_Base(nn.Sequential):
     def __init__(self, c_in, c_out, seq_len=None, hidden_size=[100], n_layers=1, bias=True, rnn_dropout=0, bidirectional=False,
                  n_cat_embeds=None, cat_embed_dims=None, cat_padding_idxs=None, cat_pos=None, feature_extractor=None, fc_dropout=0., 
-                 last_step=True, bn=False, 
-                 custom_head=None, y_range=None, init_weights=True):
+                 last_step=True, bn=False, custom_head=None, y_range=None, init_weights=True, **kwargs):
 
         if not last_step: assert seq_len, 'you need to pass a seq_len value'
 
@@ -98,7 +97,7 @@ class _RNNPlus_Base(nn.Sequential):
         self.head_nf = hidden_size * (1 + bidirectional) if isinstance(hidden_size, Integral) else hidden_size[-1] * (1 + bidirectional) 
         if custom_head: 
             if isinstance(custom_head, nn.Module): head = custom_head
-            else: head = custom_head(self.head_nf, c_out, seq_len)
+            else: head = custom_head(self.head_nf, c_out, seq_len, **kwargs)
         else: head = self.create_head(self.head_nf, c_out, seq_len, last_step=last_step, fc_dropout=fc_dropout, bn=bn, y_range=y_range)
         super().__init__(OrderedDict([('backbone', backbone), ('head', head)]))
 

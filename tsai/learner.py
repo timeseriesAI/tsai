@@ -237,12 +237,12 @@ all_archs_names = ['FCN', 'FCNPlus', 'InceptionTime', 'InceptionTimePlus', 'InCo
                    'MiniRocketHead', 'InceptionRocketFeaturesPlus', 'InceptionRocketPlus', 'MLP', 'gMLP', 'MultiInputNet', 'OmniScaleCNN', 'RNN', 'LSTM', 'GRU', 
                    'RNNPlus', 'LSTMPlus', 'GRUPlus', 'RNN_FCN', 'LSTM_FCN', 'GRU_FCN', 'MRNN_FCN', 'MLSTM_FCN', 'MGRU_FCN', 'ROCKET', 'RocketClassifier', 
                    'RocketRegressor', 'ResCNN', 'ResNet', 'ResNetPlus', 'TCN', 'TSPerceiver', 'TST', 'TSTPlus', 'MultiTSTPlus', 'TSiTPlus', 'TSiTPlus', 
-                   'TabFusionTransformer', 'TSTabFusionTransformer', 'TabModel', 'TabTransformer', 'GatedTabTransformer', 'TransformerModel', 'XCM', 'XCMPlus', 'xresnet1d18', 
-                   'xresnet1d34', 'xresnet1d50', 'xresnet1d101', 'xresnet1d152', 'xresnet1d18_deep', 'xresnet1d34_deep', 'xresnet1d50_deep', 
+                   'TabFusionTransformer', 'TSTabFusionTransformer', 'TabModel', 'TabTransformer', 'GatedTabTransformer', 'TransformerModel', 'XCM', 'XCMPlus', 
+                   'xresnet1d18', 'xresnet1d34', 'xresnet1d50', 'xresnet1d101', 'xresnet1d152', 'xresnet1d18_deep', 'xresnet1d34_deep', 'xresnet1d50_deep', 
                    'xresnet1d18_deeper', 'xresnet1d34_deeper', 'xresnet1d50_deeper', 'XResNet1dPlus', 'xresnet1d18plus', 'xresnet1d34plus', 
                    'xresnet1d50plus', 'xresnet1d101plus', 'xresnet1d152plus', 'xresnet1d18_deepplus', 'xresnet1d34_deepplus', 'xresnet1d50_deepplus', 
                    'xresnet1d18_deeperplus', 'xresnet1d34_deeperplus', 'xresnet1d50_deeperplus', 'XceptionTime', 'XceptionTimePlus', 'mWDN',
-                   'TSSequencer', 'TSSequencerPlus']
+                   'TSSequencer', 'TSSequencerPlus', "PatchTST", "RNNAttention", "LSTMAttention", "GRUAttention"]
 
 
 def get_arch(arch_name):
@@ -379,7 +379,7 @@ def get_arch(arch_name):
         from tsai.models.PatchTST import PatchTST
         arch = PatchTST
     elif arch_name == "ROCKET":  
-        from tsai.models.ROCKET import ROCKET
+        from tsai.models.ROCKET_Pytorch import ROCKET
         arch = ROCKET
     elif arch_name == "RocketClassifier":  
         from tsai.models.ROCKET import RocketClassifier
@@ -418,7 +418,7 @@ def get_arch(arch_name):
         from tsai.models.TSiTPlus import TSiTPlus
         arch = TSiTPlus
     elif arch_name == "TSSequencer":  
-        from tsai.models.TSiTPlus import TSSequencer
+        from tsai.models.TSSequencerPlus import TSSequencer
         arch = TSSequencer
     elif arch_name == "TSSequencerPlus":  
         from tsai.models.TSSequencerPlus import TSSequencerPlus
@@ -537,11 +537,11 @@ def get_arch(arch_name):
     elif arch_name == "LSTMAttention":  
         from tsai.models.RNNAttention import LSTMAttention
         arch = LSTMAttention
-    elif arch_name == "RNNAttention":  
+    elif arch_name == "GRUAttention":  
         from tsai.models.RNNAttention import GRUAttention
         arch = GRUAttention
     else: print(f"please, confirm the name of the architecture ({arch_name})")
-    assert arch.__name__ == arch_name
+    assert arch.__name__.replace("Plus", "") == arch_name.replace("Plus", ""), f"{arch.__name__} - {arch_name}"
     return arch
 
 # %% ../nbs/018_learner.ipynb 13

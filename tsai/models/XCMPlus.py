@@ -29,7 +29,9 @@ class XCMPlus(nn.Sequential):
         self.head_nf = nf
         self.c_out = c_out
         self.seq_len = seq_len
-        if custom_head: head = custom_head(self.head_nf, c_out, seq_len, **kwargs)
+        if custom_head: 
+            if isinstance(custom_head, nn.Module): head = custom_head
+            else: head = custom_head(self.head_nf, c_out, seq_len, **kwargs)
         else: head = self.create_head(self.head_nf, c_out, seq_len, flatten=flatten, concat_pool=concat_pool, 
                                            fc_dropout=fc_dropout, bn=bn, y_range=y_range)
         
