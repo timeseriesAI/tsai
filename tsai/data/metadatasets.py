@@ -11,6 +11,7 @@ from .core import *
 
 # %% ../../nbs/008_data.metadatasets.ipynb 4
 class TSMetaDataset():
+    _type = (TSTensor,)
     " A dataset capable of indexing mutiple datasets at the same time"
     def __init__(self, dataset_list, **kwargs):
         if not is_listy(dataset_list): dataset_list = [dataset_list]
@@ -29,15 +30,19 @@ class TSMetaDataset():
             return sum([len(ds) for ds in self.datasets])
 
     def __getitem__(self, idx):
-        if self.split is not None: idx = self.split[idx]
-        idx = listify(idx)
-        idxs = self.mapping[idx]
-        idxs = idxs[idxs[:, 0].argsort()]
-        self.mapping_idxs = idxs
-        ds = np.unique(idxs[:, 0])
-        b = [self.datasets[d][idxs[idxs[:, 0] == d, 1]] for d in ds]
-        output = tuple(map(torch.cat, zip(*b)))
-        return output
+        if self.datasets:
+            if self.split is not None: idx = self.split[idx]
+            idx = listify(idx)
+            idxs = self.mapping[idx]
+            idxs = idxs[idxs[:, 0].argsort()]
+            self.mapping_idxs = idxs
+            ds = np.unique(idxs[:, 0])
+            b = [self.datasets[d][idxs[idxs[:, 0] == d, 1]] for d in ds]
+            output = tuple(map(torch.cat, zip(*b)))
+            output = self._type[0](output[0]), output[1]
+            return output
+        else:
+            return
 
     def _mapping(self):
         lengths = [len(ds) for ds in self.datasets]
@@ -49,6 +54,11 @@ class TSMetaDataset():
             idx_pairs[start:start+length, 1] = np.arange(length)
             start += length
         return idx_pairs
+
+    def new_empty(self): 
+        new_dset = type(self)(self.datasets, split=self.split)
+        new_dset.datasets = None
+        return new_dset
     
     @property
     def vars(self):
@@ -58,12 +68,18 @@ class TSMetaDataset():
     def len(self): 
         s = self.datasets[0][0][0] if not isinstance(self.datasets[0][0][0], tuple) else self.datasets[0][0][0][0]
         return s.shape[-1]
+    @property
+    def vocab(self): 
+        return self.datasets[0].vocab
+    @property
+    def cat(self): return hasattr(self, "vocab")
 
 
 class TSMetaDatasets(FilteredBase):
     def __init__(self, metadataset, splits):
         store_attr()
         self.mapping = metadataset.mapping
+        self.datasets = metadataset.datasets
     def subset(self, i):
         return type(self.metadataset)(self.metadataset.datasets, split=self.splits[i])
     @property
