@@ -200,7 +200,7 @@ class TSiTPlus(nn.Sequential):
 
     def __init__(self, c_in:int, c_out:int, seq_len:int, d_model:int=128, depth:int=6, n_heads:int=16, act:str='gelu',
                  lsa:bool=False, attn_dropout:float=0., dropout:float=0., drop_path_rate:float=0., mlp_ratio:int=1, qkv_bias:bool=True, 
-                 pre_norm:bool=False, use_token:bool=True, use_pe:bool=True, 
+                 pre_norm:bool=False, use_token:bool=False, use_pe:bool=True, 
                  cat_pos:Optional[list]=None, n_cat_embeds:Optional[list]=None, cat_embed_dims:Optional[list]=None, cat_padding_idxs:Optional[list]=None,
                  token_size:int=None, tokenizer:Optional[Callable]=None, feature_extractor:Optional[Callable]=None, 
                  flatten:bool=False, concat_pool:bool=True, fc_dropout:float=0., use_bn:bool=False, 
