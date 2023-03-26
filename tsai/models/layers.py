@@ -15,9 +15,10 @@ __all__ = ['lin_zero_init', 'Conv', 'ConvBN', 'CoordConv', 'SepConv', 'BN1d', 'I
            'GlobalWeightedAveragePool1d', 'gwa_pool_head', 'AttentionalPool1d', 'GAttP1d', 'attentional_pool_head',
            'PoolingLayer', 'GEGLU', 'ReGLU', 'get_act_fn', 'RevIN', 'create_pool_head', 'max_pool_head',
            'create_pool_plus_head', 'create_conv_head', 'create_mlp_head', 'create_fc_head', 'create_rnn_head',
-           'imputation_head', 'create_conv_lin_nd_head', 'lin_nd_head', 'create_conv_3d_head', 'universal_pool_head',
-           'SqueezeExciteBlock', 'GaussianNoise', 'PositionwiseFeedForward', 'TokenLayer', 'ScaledDotProductAttention',
-           'MultiheadAttention', 'MultiConv1d', 'LSTMOutput', 'emb_sz_rule', 'TSEmbedding', 'MultiEmbedding']
+           'imputation_head', 'create_conv_lin_nd_head', 'lin_nd_head', 'rocket_nd_head', 'create_conv_3d_head',
+           'universal_pool_head', 'SqueezeExciteBlock', 'GaussianNoise', 'PositionwiseFeedForward', 'TokenLayer',
+           'ScaledDotProductAttention', 'MultiheadAttention', 'MultiConv1d', 'LSTMOutput', 'emb_sz_rule', 'TSEmbedding',
+           'MultiEmbedding']
 
 # %% ../../nbs/029_models.layers.ipynb 3
 from torch.jit import TracerWarning
@@ -1088,6 +1089,43 @@ lin_3d_head = lin_nd_head # included for backwards compatiblity
 create_lin_3d_head = lin_nd_head # included for backwards compatiblity
 
 # %% ../../nbs/029_models.layers.ipynb 97
+class rocket_nd_head(nn.Sequential):
+    "Module to create a nd output head with linear layers for the rocket family of models"
+
+    def __init__(self, n_in, n_out, seq_len=None, d=None, flatten=False, use_bn=False, fc_dropout=0., zero_init=True):
+
+        if d is None:
+            fd = 1
+            shape = [n_out]
+        elif is_listy(d):
+            fd = 1
+            shape = []
+            for _d in d:
+                fd *= _d
+                shape.append(_d)
+            if n_out > 1: shape.append(n_out)
+        else: 
+            fd = d
+            shape = [d, n_out] if n_out > 1 else [d]
+
+        layers = [nn.Flatten()]
+        if use_bn:
+            layers += [nn.BatchNorm1d(n_in)]
+        if fc_dropout:
+            layers += [nn.Dropout(fc_dropout)]
+        linear = nn.Linear(n_in, fd * n_out)
+        if zero_init:
+            nn.init.constant_(linear.weight.data, 0)
+            nn.init.constant_(linear.bias.data, 0)
+        layers += [linear]
+        if d is None and n_out == 1:
+            layers += [Squeeze(-1)]
+        if d is not None:
+            layers += [Reshape(*shape)]
+
+        super().__init__(*layers)
+
+# %% ../../nbs/029_models.layers.ipynb 99
 class create_conv_3d_head(nn.Sequential):
     "Module to create a nd output head with a convolutional layer"
     def __init__(self, n_in, n_out, seq_len, d, use_bn=False, **kwargs):
@@ -1100,17 +1138,17 @@ class create_conv_3d_head(nn.Sequential):
         
 conv_3d_head = create_conv_3d_head
 
-# %% ../../nbs/029_models.layers.ipynb 100
+# %% ../../nbs/029_models.layers.ipynb 102
 def universal_pool_head(n_in, c_out, seq_len, mult=2, pool_n_layers=2, pool_ln=True, pool_dropout=0.5, pool_act=nn.ReLU(),
                         zero_init=True, bn=True, fc_dropout=0.):
     return nn.Sequential(AdaptiveWeightedAvgPool1d(n_in, seq_len, n_layers=pool_n_layers, mult=mult, ln=pool_ln, dropout=pool_dropout, act=pool_act), 
                          Reshape(), LinBnDrop(n_in, c_out, p=fc_dropout, bn=bn))
 
-# %% ../../nbs/029_models.layers.ipynb 102
+# %% ../../nbs/029_models.layers.ipynb 104
 heads = [mlp_head, fc_head, average_pool_head, max_pool_head, concat_pool_head, pool_plus_head, conv_head, rnn_head, 
          conv_lin_nd_head, lin_nd_head, conv_3d_head, attentional_pool_head, universal_pool_head, gwa_pool_head]
 
-# %% ../../nbs/029_models.layers.ipynb 104
+# %% ../../nbs/029_models.layers.ipynb 106
 class SqueezeExciteBlock(Module):
     def __init__(self, ni, reduction=16):
         self.avg_pool = GAP1d(1)
@@ -1121,7 +1159,7 @@ class SqueezeExciteBlock(Module):
         y = self.fc(y).unsqueeze(2)
         return x * y.expand_as(x)
 
-# %% ../../nbs/029_models.layers.ipynb 106
+# %% ../../nbs/029_models.layers.ipynb 108
 class GaussianNoise(Module):
     """Gaussian noise regularizer.
 
@@ -1146,7 +1184,7 @@ class GaussianNoise(Module):
             x = x + sampled_noise
         return x 
 
-# %% ../../nbs/029_models.layers.ipynb 110
+# %% ../../nbs/029_models.layers.ipynb 112
 class PositionwiseFeedForward(nn.Sequential):
     def __init__(self, dim, dropout=0., act='reglu', mlp_ratio=1):
         act_mult = 2 if act.lower() in ["geglu", "reglu"] else 1
@@ -1161,7 +1199,7 @@ class TokenLayer(Module):
     def forward(self, x): return x[..., 0] if self.token is not None else x.mean(-1)
     def __repr__(self): return f"{self.__class__.__name__}()"
 
-# %% ../../nbs/029_models.layers.ipynb 112
+# %% ../../nbs/029_models.layers.ipynb 114
 class ScaledDotProductAttention(Module):
     r"""Scaled Dot-Product Attention module (Attention is all you need by Vaswani et al., 2017) with optional residual attention from previous layer 
     (Realformer: Transformer likes residual attention by He et al, 2020) and locality self sttention (Vision Transformer for Small-Size Datasets 
@@ -1217,7 +1255,7 @@ class ScaledDotProductAttention(Module):
         if self.res_attention: return output, attn_weights, attn_scores
         else: return output, attn_weights
 
-# %% ../../nbs/029_models.layers.ipynb 114
+# %% ../../nbs/029_models.layers.ipynb 116
 class MultiheadAttention(Module):
     def __init__(self, d_model, n_heads, d_k=None, d_v=None, res_attention=False, attn_dropout=0., proj_dropout=0., qkv_bias=True, lsa=False):
         """Multi Head Attention Layer
@@ -1271,7 +1309,7 @@ class MultiheadAttention(Module):
         if self.res_attention: return output, attn_weights, attn_scores
         else: return output, attn_weights 
 
-# %% ../../nbs/029_models.layers.ipynb 121
+# %% ../../nbs/029_models.layers.ipynb 123
 class MultiConv1d(Module):
     """Module that applies multiple convolutions with different kernel sizes"""
 
@@ -1299,17 +1337,17 @@ class MultiConv1d(Module):
         x = torch.cat(output, dim=self.dim)
         return x
 
-# %% ../../nbs/029_models.layers.ipynb 123
+# %% ../../nbs/029_models.layers.ipynb 125
 class LSTMOutput(Module):
     def forward(self, x): return x[0]
     def __repr__(self): return f'{self.__class__.__name__}()'
 
-# %% ../../nbs/029_models.layers.ipynb 125
+# %% ../../nbs/029_models.layers.ipynb 127
 def emb_sz_rule(n_cat):
     "Rule of thumb to pick embedding size corresponding to `n_cat` (original from fastai)"
     return min(600, round(1.6 * n_cat**0.56))
 
-# %% ../../nbs/029_models.layers.ipynb 127
+# %% ../../nbs/029_models.layers.ipynb 129
 class TSEmbedding(nn.Embedding):
     "Embedding layer with truncated normal initialization adapted from fastai"
     def __init__(self, ni, nf, std=0.01, padding_idx=None):
@@ -1318,7 +1356,7 @@ class TSEmbedding(nn.Embedding):
         if padding_idx is not None:
             nn.init.zeros_(self.weight.data[padding_idx])
 
-# %% ../../nbs/029_models.layers.ipynb 128
+# %% ../../nbs/029_models.layers.ipynb 130
 class MultiEmbedding(Module):
     def __init__(self, c_in, n_cat_embeds, cat_embed_dims=None, cat_pos=None, std=0.01, cat_padding_idxs=None):
         cat_n_embeds = listify(n_cat_embeds)

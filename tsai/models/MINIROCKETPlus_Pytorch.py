@@ -193,7 +193,7 @@ class Flatten(nn.Module):
 class MiniRocketPlus(nn.Sequential):
 
     def __init__(self, c_in, c_out, seq_len, num_features=10_000, max_dilations_per_kernel=32, kernel_size=9, max_num_channels=None, max_num_kernels=84,
-                 bn=True, fc_dropout=0, add_lsaz=False, custom_head=None):
+                 bn=True, fc_dropout=0, add_lsaz=False, custom_head=None, zero_init=True):
 
         # Backbone
         backbone = MiniRocketFeaturesPlus(c_in, seq_len, num_features=num_features, max_dilations_per_kernel=max_dilations_per_kernel,
@@ -203,17 +203,21 @@ class MiniRocketPlus(nn.Sequential):
 
         # Head
         self.head_nf = num_features
-        layers = [Flatten()]
-        if bn:
-            layers += [nn.BatchNorm1d(num_features)]
-        if fc_dropout:
-            layers += [nn.Dropout(fc_dropout)]
-        linear = nn.Linear(num_features, c_out)
-        nn.init.constant_(linear.weight.data, 0)
-        nn.init.constant_(linear.bias.data, 0)
-        layers += [linear]
-        if custom_head is not None: head = custom_head(self.head_nf, c_out, 1) # custom head passed as a partial func with all its kwargs
-        else: head = nn.Sequential(*layers)
+        if custom_head is not None: 
+            if isinstance(custom_head, nn.Module): head = custom_head
+            head = custom_head(self.head_nf, c_out, 1)
+        else:
+            layers = [Flatten()]
+            if bn:
+                layers += [nn.BatchNorm1d(num_features)]
+            if fc_dropout:
+                layers += [nn.Dropout(fc_dropout)]
+            linear = nn.Linear(num_features, c_out)
+            if zero_init:
+                nn.init.constant_(linear.weight.data, 0)
+                nn.init.constant_(linear.bias.data, 0)
+            layers += [linear]
+            head = nn.Sequential(*layers)
 
         super().__init__(OrderedDict([('backbone', backbone), ('head', head)]))
 
@@ -251,7 +255,7 @@ class MiniRocketHead(nn.Sequential):
         super().__init__(OrderedDict(
             [('backbone', nn.Sequential()), ('head', head)]))
 
-# %% ../../nbs/057_models.MINIROCKETPlus_Pytorch.ipynb 13
+# %% ../../nbs/057_models.MINIROCKETPlus_Pytorch.ipynb 15
 class InceptionRocketFeaturesPlus(nn.Module):
     fitting = False
 
@@ -299,11 +303,11 @@ class InceptionRocketFeaturesPlus(nn.Module):
         num_features_per_kernel_size = num_features_per_kernel * combs
         return num_features_per_kernel_size
 
-# %% ../../nbs/057_models.MINIROCKETPlus_Pytorch.ipynb 14
+# %% ../../nbs/057_models.MINIROCKETPlus_Pytorch.ipynb 16
 class InceptionRocketPlus(nn.Sequential):
 
     def __init__(self, c_in, c_out, seq_len, num_features=10_000, max_dilations_per_kernel=32, kernel_sizes=[3, 5, 7, 9],
-                 max_num_channels=None, max_num_kernels=84, same_n_feats_per_ks=False, add_lsaz=False, bn=True, fc_dropout=0):
+                 max_num_channels=None, max_num_kernels=84, same_n_feats_per_ks=False, add_lsaz=False, bn=True, fc_dropout=0, custom_head=None, zero_init=True):
 
         # Backbone
         backbone = InceptionRocketFeaturesPlus(c_in, seq_len, num_features=num_features, max_dilations_per_kernel=max_dilations_per_kernel,
@@ -313,15 +317,20 @@ class InceptionRocketPlus(nn.Sequential):
 
         # Head
         self.head_nf = num_features
-        layers = [Flatten()]
-        if bn:
-            layers += [nn.BatchNorm1d(num_features)]
-        if fc_dropout:
-            layers += [nn.Dropout(fc_dropout)]
-        linear = nn.Linear(num_features, c_out)
-        nn.init.constant_(linear.weight.data, 0)
-        nn.init.constant_(linear.bias.data, 0)
-        layers += [linear]
-        head = nn.Sequential(*layers)
+        if custom_head is not None: 
+            if isinstance(custom_head, nn.Module): head = custom_head
+            head = custom_head(self.head_nf, c_out, 1)
+        else:
+            layers = [Flatten()]
+            if bn:
+                layers += [nn.BatchNorm1d(num_features)]
+            if fc_dropout:
+                layers += [nn.Dropout(fc_dropout)]
+            linear = nn.Linear(num_features, c_out)
+            if zero_init:
+                nn.init.constant_(linear.weight.data, 0)
+                nn.init.constant_(linear.bias.data, 0)
+            layers += [linear]
+            head = nn.Sequential(*layers)
 
         super().__init__(OrderedDict([('backbone', backbone), ('head', head)]))

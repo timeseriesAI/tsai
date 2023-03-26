@@ -150,7 +150,10 @@ def build_ts_model(arch, c_in=None, c_out=None, seq_len=None, d=None, dls=None, 
         d = ifnone(d, dls.d)
     if d and not 'patchtst' in arch.__name__.lower(): 
         if 'custom_head' not in kwargs.keys(): 
-            kwargs['custom_head'] = partial(lin_nd_head, d=d)
+            if "rocket" in arch.__name__.lower():
+                kwargs['custom_head'] = partial(rocket_nd_head, d=d)
+            else:
+                kwargs['custom_head'] = partial(lin_nd_head, d=d)
         elif not isinstance(kwargs['custom_head'], nn.Module):
             kwargs['custom_head'] = partial(kwargs['custom_head'], d=d)
     if 'ltsf_' in arch.__name__.lower() or 'patchtst' in arch.__name__.lower():
