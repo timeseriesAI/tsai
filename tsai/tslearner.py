@@ -90,7 +90,7 @@ class TSClassifier(Learner):
             else:
                 self.recorder.valid_metrics = valid_metrics
 
-# %% ../nbs/022_tslearner.ipynb 10
+# %% ../nbs/022_tslearner.ipynb 11
 class TSRegressor(Learner):
     def __init__(self, X, y=None, splits=None, tfms=None, inplace=True, sel_vars=None, sel_steps=None, weights=None, partial_n=None, 
                  train_metrics=False, valid_metrics=True, bs=[64, 128], batch_size=None, batch_tfms=None, pipelines=None,
@@ -165,7 +165,7 @@ class TSRegressor(Learner):
             else:
                 self.recorder.valid_metrics = valid_metrics
 
-# %% ../nbs/022_tslearner.ipynb 13
+# %% ../nbs/022_tslearner.ipynb 14
 class TSForecaster(Learner):
     def __init__(self, X, y=None, splits=None, tfms=None, inplace=True, sel_vars=None, sel_steps=None, weights=None, partial_n=None, 
                  train_metrics=False, valid_metrics=True, bs=[64, 128], batch_size=None, batch_tfms=None, pipelines=None,

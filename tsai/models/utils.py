@@ -152,6 +152,8 @@ def build_ts_model(arch, c_in=None, c_out=None, seq_len=None, d=None, dls=None, 
         if 'custom_head' not in kwargs.keys(): 
             if "rocket" in arch.__name__.lower():
                 kwargs['custom_head'] = partial(rocket_nd_head, d=d)
+            elif "xresnet1d" in arch.__name__.lower():
+                kwargs["custom_head"] = partial(xresnet1d_nd_head, d=d)
             else:
                 kwargs['custom_head'] = partial(lin_nd_head, d=d)
         elif not isinstance(kwargs['custom_head'], nn.Module):
@@ -165,9 +167,9 @@ def build_ts_model(arch, c_in=None, c_out=None, seq_len=None, d=None, dls=None, 
             if v in arch.__name__]):
         pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} seq_len={seq_len} arch_config={arch_config} kwargs={kwargs})', verbose)
         model = arch(c_in, c_out, seq_len=seq_len, **arch_config, **kwargs).to(device=device)
-    elif 'xresnet' in arch.__name__ and not '1d' in arch.__name__:
-        pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} arch_config={arch_config} kwargs={kwargs})', verbose)
-        model = (arch(c_in=c_in, n_out=c_out, **arch_config, **kwargs)).to(device=device)
+    elif 'xresnet1d' in arch.__name__.lower():
+        pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} seq_len={seq_len} arch_config={arch_config} kwargs={kwargs})', verbose)
+        model = (arch(c_in=c_in, c_out=c_out, seq_len=seq_len, **arch_config, **kwargs)).to(device=device)
     elif 'minirockethead' in arch.__name__.lower():
         pv(f'arch: {arch.__name__}(c_in={c_in} seq_len={seq_len} arch_config={arch_config} kwargs={kwargs})', verbose)
         model = (arch(c_in, c_out, seq_len=1, **arch_config, **kwargs)).to(device=device)
@@ -268,7 +270,7 @@ def output_size_calculator(mod, c_in, seq_len=None):
         xb = torch.rand(1, c_in, seq_len)
     training = mod.training
     mod.eval()
-    c_out, q_len = mod(xb).shape[1:]
+    c_out, q_len = mod.to(xb.device)(xb).shape[1:]
     mod.training = training
     if return_q_len:
         return c_out, q_len

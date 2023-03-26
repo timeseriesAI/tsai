@@ -13,9 +13,11 @@ from .utils import *
 # %% ../../nbs/059_models.XResNet1dPlus.ipynb 4
 class XResNet1dPlus(nn.Sequential):
     @delegates(ResBlock1dPlus)
-    def __init__(self, block, expansion, layers, fc_dropout=0.0, c_in=3, n_out=1000, stem_szs=(32,32,64),
-                 widen=1.0, sa=False, act_cls=defaults.activation, ks=3, stride=2, coord=False, **kwargs):
+    def __init__(self, block=ResBlock1dPlus, expansion=4, layers=[3,4,6,3], fc_dropout=0.0, c_in=3, c_out=None, n_out=1000, seq_len=None, stem_szs=(32,32,64),
+                 widen=1.0, sa=False, act_cls=defaults.activation, ks=3, stride=2, coord=False, custom_head=None, **kwargs):
+
         store_attr('block,expansion,act_cls,ks')
+        n_out = c_out or n_out # added for compatibility
         if ks % 2 == 0: raise Exception('kernel size has to be odd!')
         stem_szs = [c_in, *stem_szs]
         stem = [ConvBlock(stem_szs[i], stem_szs[i+1], ks=ks, coord=coord, stride=stride if i==0 else 1,
@@ -26,8 +28,11 @@ class XResNet1dPlus(nn.Sequential):
         block_szs = [64//expansion] + block_szs
         blocks    = self._make_blocks(layers, block_szs, sa, coord, stride, **kwargs)
         backbone = nn.Sequential(*stem, MaxPool(ks=ks, stride=stride, padding=ks//2, ndim=1), *blocks)
-        head = nn.Sequential(AdaptiveAvgPool(sz=1, ndim=1), Flatten(), nn.Dropout(fc_dropout),
-                             nn.Linear(block_szs[-1]*expansion, n_out))
+        self.head_nf = block_szs[-1]*expansion
+        if custom_head is not None: 
+            if isinstance(custom_head, nn.Module): head = custom_head
+            head = custom_head(self.head_nf, n_out, seq_len)
+        else: head = nn.Sequential(AdaptiveAvgPool(sz=1, ndim=1), Flatten(), nn.Dropout(fc_dropout), nn.Linear(block_szs[-1]*expansion, n_out))
         super().__init__(OrderedDict([('backbone', backbone), ('head', head)]))
         self._init_cnn(self)
 
@@ -48,29 +53,40 @@ class XResNet1dPlus(nn.Sequential):
         for l in m.children(): self._init_cnn(l)
 
 # %% ../../nbs/059_models.XResNet1dPlus.ipynb 5
-def _xresnetplus(expansion, layers, **kwargs):
-    return XResNet1dPlus(ResBlock1dPlus, expansion, layers, **kwargs)
+def _xresnetplus(expansion, layers, c_in, c_out, seq_len=None, **kwargs):
+    return XResNet1dPlus(ResBlock1dPlus, expansion, layers, c_in=c_in, c_out=c_out, seq_len=seq_len, **kwargs)
 
 # %% ../../nbs/059_models.XResNet1dPlus.ipynb 6
 @delegates(ResBlock)
-def xresnet1d18plus (c_in, c_out, act=nn.ReLU, **kwargs): return _xresnetplus(1, [2, 2,  2, 2], c_in=c_in, n_out=c_out, act_cls=act, **kwargs)
+def xresnet1d18plus (c_in, c_out, seq_len=None, act=nn.ReLU, **kwargs): 
+    return _xresnetplus(1, [2, 2,  2, 2], c_in, c_out, seq_len=seq_len, act_cls=act, **kwargs)
 @delegates(ResBlock)
-def xresnet1d34plus (c_in, c_out, act=nn.ReLU, **kwargs): return _xresnetplus(1, [3, 4,  6, 3], c_in=c_in, n_out=c_out, act_cls=act, **kwargs)
+def xresnet1d34plus (c_in, c_out, seq_len=None, act=nn.ReLU, **kwargs): 
+    return _xresnetplus(1, [3, 4,  6, 3], c_in, c_out, seq_len=seq_len, act_cls=act, **kwargs)
 @delegates(ResBlock)
-def xresnet1d50plus (c_in, c_out, act=nn.ReLU, **kwargs): return _xresnetplus(4, [3, 4,  6, 3], c_in=c_in, n_out=c_out, act_cls=act, **kwargs)
+def xresnet1d50plus (c_in, c_out, seq_len=None, act=nn.ReLU, **kwargs): 
+    return _xresnetplus(4, [3, 4,  6, 3], c_in, c_out, seq_len=seq_len, act_cls=act, **kwargs)
 @delegates(ResBlock)
-def xresnet1d101plus (c_in, c_out, act=nn.ReLU, **kwargs): return _xresnetplus(4, [3, 4, 23, 3], c_in=c_in, n_out=c_out, act_cls=act, **kwargs)
+def xresnet1d101plus (c_in, c_out,seq_len=None,  act=nn.ReLU, **kwargs): 
+    return _xresnetplus(4, [3, 4, 23, 3], c_in, c_out, seq_len=seq_len, act_cls=act, **kwargs)
 @delegates(ResBlock)
-def xresnet1d152plus (c_in, c_out, act=nn.ReLU, **kwargs): return _xresnetplus(4, [3, 8, 36, 3], c_in=c_in, n_out=c_out, act_cls=act, **kwargs)
+def xresnet1d152plus (c_in, c_out, seq_len=None, act=nn.ReLU, **kwargs): 
+    return _xresnetplus(4, [3, 8, 36, 3], c_in, c_out, seq_len=seq_len, act_cls=act, **kwargs)
 @delegates(ResBlock)
-def xresnet1d18_deepplus (c_in, c_out, act=nn.ReLU, **kwargs): return _xresnetplus(1, [2,2,2,2,1,1], c_in=c_in, n_out=c_out, act_cls=act, **kwargs)
+def xresnet1d18_deepplus (c_in, c_out, seq_len=None, act=nn.ReLU, **kwargs): 
+    return _xresnetplus(1, [2,2,2,2,1,1], c_in, c_out, seq_len=seq_len, act_cls=act, **kwargs)
 @delegates(ResBlock)
-def xresnet1d34_deepplus (c_in, c_out, act=nn.ReLU, **kwargs): return _xresnetplus(1, [3,4,6,3,1,1], c_in=c_in, n_out=c_out, act_cls=act, **kwargs)
+def xresnet1d34_deepplus (c_in, c_out, seq_len=None, act=nn.ReLU, **kwargs): 
+    return _xresnetplus(1, [3,4,6,3,1,1], c_in, c_out, seq_len=seq_len, act_cls=act, **kwargs)
 @delegates(ResBlock)
-def xresnet1d50_deepplus (c_in, c_out, act=nn.ReLU, **kwargs): return _xresnetplus(4, [3,4,6,3,1,1], c_in=c_in, n_out=c_out, act_cls=act, **kwargs)
+def xresnet1d50_deepplus (c_in, c_out, seq_len=None, act=nn.ReLU, **kwargs): 
+    return _xresnetplus(4, [3,4,6,3,1,1], c_in, c_out, seq_len=seq_len, act_cls=act, **kwargs)
 @delegates(ResBlock)
-def xresnet1d18_deeperplus (c_in, c_out, act=nn.ReLU, **kwargs): return _xresnetplus(1, [2,2,1,1,1,1,1,1], c_in=c_in, n_out=c_out, act_cls=act, **kwargs)
+def xresnet1d18_deeperplus (c_in, c_out, seq_len=None, act=nn.ReLU, **kwargs): 
+    return _xresnetplus(1, [2,2,1,1,1,1,1,1], c_in, c_out, seq_len=seq_len, act_cls=act, **kwargs)
 @delegates(ResBlock)
-def xresnet1d34_deeperplus (c_in, c_out, act=nn.ReLU, **kwargs): return _xresnetplus(1, [3,4,6,3,1,1,1,1], c_in=c_in, n_out=c_out, act_cls=act, **kwargs)
+def xresnet1d34_deeperplus (c_in, c_out, seq_len=None, act=nn.ReLU, **kwargs): 
+    return _xresnetplus(1, [3,4,6,3,1,1,1,1], c_in, c_out, seq_len=seq_len, act_cls=act, **kwargs)
 @delegates(ResBlock)
-def xresnet1d50_deeperplus (c_in, c_out, act=nn.ReLU, **kwargs): return _xresnetplus(4, [3,4,6,3,1,1,1,1], c_in=c_in, n_out=c_out, act_cls=act, **kwargs)
+def xresnet1d50_deeperplus (c_in, c_out, seq_len=None, act=nn.ReLU, **kwargs): 
+    return _xresnetplus(4, [3,4,6,3,1,1,1,1], c_in, c_out, seq_len=seq_len, act_cls=act, **kwargs)
