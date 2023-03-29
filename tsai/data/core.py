@@ -1060,10 +1060,11 @@ def get_ts_dls(X, y=None, splits=None, sel_vars=None, sel_steps=None, tfms=None,
     splits = _check_splits(X, splits)
     create_dir(path, verbose=False)
     dsets = TSDatasets(X, y, splits=splits, sel_vars=sel_vars, sel_steps=sel_steps, tfms=tfms, inplace=inplace)
+    dsets = [dsets.subset(i) for i in range(len(splits))]
     if weights is not None:
         assert len(X) == len(weights), 'len(X) != len(weights)'
         weights = [weights[split] if i == 0 else None for i,split in enumerate(splits)] # weights only applied to train set
-    dls   = TSDataLoaders.from_dsets(dsets.train, dsets.valid, path=path, bs=bs, batch_tfms=batch_tfms, num_workers=num_workers,
+    dls   = TSDataLoaders.from_dsets(*dsets, path=path, bs=bs, batch_tfms=batch_tfms, num_workers=num_workers,
                                      device=device, shuffle_train=shuffle_train, drop_last=drop_last, weights=weights, 
                                      partial_n=partial_n, sampler=sampler, sort=sort, **kwargs)
     return dls
