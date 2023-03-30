@@ -14,7 +14,7 @@ from .utils import *
 class XResNet1dPlus(nn.Sequential):
     @delegates(ResBlock1dPlus)
     def __init__(self, block=ResBlock1dPlus, expansion=4, layers=[3,4,6,3], fc_dropout=0.0, c_in=3, c_out=None, n_out=1000, seq_len=None, stem_szs=(32,32,64),
-                 widen=1.0, sa=False, act_cls=defaults.activation, ks=3, stride=2, coord=False, custom_head=None, **kwargs):
+                 widen=1.0, sa=False, act_cls=defaults.activation, ks=3, stride=2, coord=False, custom_head=None, block_szs_base=(64,128,256,512), **kwargs):
 
         store_attr('block,expansion,act_cls,ks')
         n_out = c_out or n_out # added for compatibility
@@ -24,7 +24,7 @@ class XResNet1dPlus(nn.Sequential):
                           act=act_cls)
                 for i in range(3)]
 
-        block_szs = [int(o*widen) for o in [64,128,256,512] +[256]*(len(layers)-4)]
+        block_szs = [int(o*widen) for o in block_szs_base +[int(block_szs_base[-1]/2)]*(len(layers)-4)]
         block_szs = [64//expansion] + block_szs
         blocks    = self._make_blocks(layers, block_szs, sa, coord, stride, **kwargs)
         backbone = nn.Sequential(*stem, MaxPool(ks=ks, stride=stride, padding=ks//2, ndim=1), *blocks)
