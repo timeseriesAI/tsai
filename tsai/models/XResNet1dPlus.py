@@ -24,7 +24,7 @@ class XResNet1dPlus(nn.Sequential):
                           act=act_cls)
                 for i in range(3)]
 
-        block_szs = [int(o*widen) for o in block_szs_base +[int(block_szs_base[-1]/2)]*(len(layers)-4)]
+        block_szs = [int(o*widen) for o in (list(block_szs_base) + [int(block_szs_base[-1]/2)]*(len(layers)-4))]
         block_szs = [64//expansion] + block_szs
         blocks    = self._make_blocks(layers, block_szs, sa, coord, stride, **kwargs)
         backbone = nn.Sequential(*stem, MaxPool(ks=ks, stride=stride, padding=ks//2, ndim=1), *blocks)
