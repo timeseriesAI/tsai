@@ -593,7 +593,7 @@ def tsimage_learner(dls, arch=None, pretrained=False,
                **kwargs):
 
     if arch is None: 
-        from tsai.models.XResNet1d import xresnet34
+        from fastai.vision.models.xresnet import xresnet34
         arch = xresnet34
     elif isinstance(arch, str): arch = get_arch(arch)
     model = build_tsimage_model(arch, dls=dls, pretrained=pretrained, **kwargs)
