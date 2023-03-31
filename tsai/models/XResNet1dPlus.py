@@ -31,7 +31,7 @@ class XResNet1dPlus(nn.Sequential):
         self.head_nf = block_szs[-1]*expansion
         if custom_head is not None: 
             if isinstance(custom_head, nn.Module): head = custom_head
-            head = custom_head(self.head_nf, n_out, seq_len)
+            else: head = custom_head(self.head_nf, n_out, seq_len)
         else: head = nn.Sequential(AdaptiveAvgPool(sz=1, ndim=1), Flatten(), nn.Dropout(fc_dropout), nn.Linear(block_szs[-1]*expansion, n_out))
         super().__init__(OrderedDict([('backbone', backbone), ('head', head)]))
         self._init_cnn(self)

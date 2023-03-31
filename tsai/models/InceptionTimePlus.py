@@ -108,7 +108,7 @@ class InceptionTimePlus(nn.Sequential):
         self.seq_len = seq_len
         if custom_head is not None: 
             if isinstance(custom_head, nn.Module): head = custom_head
-            head = custom_head(self.head_nf, c_out, seq_len)
+            else: head = custom_head(self.head_nf, c_out, seq_len)
         else: head = self.create_head(self.head_nf, c_out, seq_len, flatten=flatten, concat_pool=concat_pool, 
                                       fc_dropout=fc_dropout, bn=bn, y_range=y_range)
             
