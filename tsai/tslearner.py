@@ -70,11 +70,10 @@ class TSClassifier(Learner):
             setattr(model, "__name__", arch.__name__)
         except:
             setattr(model, "__name__", arch.__class__.__name__)
-        try:
-            model[0], model[1]
+        
+        if hasattr(model, "backbone") and hasattr(model, "head"):
             splitter = ts_splitter
-        except:
-            pass
+            
         if pipelines is not None:
             pipelines = listify(pipelines)
         setattr(self, "pipelines", pipelines)
@@ -145,11 +144,10 @@ class TSRegressor(Learner):
             setattr(model, "__name__", arch.__name__)
         except:
             setattr(model, "__name__", arch.__class__.__name__)
-        try:
-            model[0], model[1]
+        
+        if hasattr(model, "backbone") and hasattr(model, "head"):
             splitter = ts_splitter
-        except:
-            pass
+            
         if pipelines is not None:
             pipelines = listify(pipelines)
         setattr(self, "pipelines", pipelines)
@@ -219,11 +217,10 @@ class TSForecaster(Learner):
             setattr(model, "__name__", arch.__name__)
         except:
             setattr(model, "__name__", arch.__class__.__name__)
-        try:
-            model[0], model[1]
+        
+        if hasattr(model, "backbone") and hasattr(model, "head"):
             splitter = ts_splitter
-        except:
-            pass
+            
         if pipelines is not None:
             pipelines = listify(pipelines)
         setattr(self, "pipelines", pipelines)
