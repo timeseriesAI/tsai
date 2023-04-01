@@ -31,7 +31,7 @@ class TSImage(TensorImage):
     def len(self): return self.shape[-2:]
         
     def __repr__(self):
-        if self.ndim == 0: return f'{self}'
+        if self.ndim == 0: return f'{self.data}'
         else: return f'TSImage(shape:{self.shape})'
 
     def show(self, **kwargs):

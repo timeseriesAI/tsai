@@ -44,11 +44,11 @@ class NumpyTensor(TensorBase):
     
     def __repr__(self):
         if self.ndim > 0: return f'NumpyTensor(shape:{tuple(self.shape)}, device={self.device}, dtype={self.dtype})'
-        else: return f'NumpyTensor([{self}], device={self.device}, dtype={self.dtype})'
+        else: return f'NumpyTensor([{self.data}], device={self.device}, dtype={self.dtype})'
         
 
     def show(self, ax=None, ctx=None, title=None, **kwargs):
-        if self.ndim == 0: return str(self)
+        if self.ndim == 0: return str(self.data)
         elif self.ndim != 2: self = type(self)(to2d(self))
         if not isinstance(self,np.ndarray): self = self.detach().cpu().numpy()
         ax = ifnone(ax, ctx)
@@ -79,13 +79,9 @@ class TSTensor(TensorBase):
         
     @property
     def data(self): return cast(self, Tensor)
-    
-    def __repr__(self):
-        if self.ndim > 0: return f'NumpyTensor(shape:{tuple(self.shape)}, device={self.device}, dtype={self.dtype})'
-        else: return f'NumpyTensor([{self}], device={self.device}, dtype={self.dtype})'
         
     def show(self, ax=None, ctx=None, title=None, **kwargs):
-        if self.ndim == 0: return str(self)
+        if self.ndim == 0: return str(self.data)
         elif self.ndim != 2: self = type(self)(to2d(self))
         if not isinstance(self,np.ndarray): self = self.detach().cpu().numpy()
         ax = ifnone(ax, ctx)
@@ -115,7 +111,7 @@ class TSTensor(TensorBase):
             return f'TSTensor(vars:{self.shape[-2]}, len:{self.shape[-1]}, device={self.device}, dtype={self.dtype})'
         elif self.ndim == 1:
             return f'TSTensor(len:{self.shape[-1]}, device={self.device}, dtype={self.dtype})'
-        else: return f'TSTensor([{self}], device={self.device}, dtype={self.dtype})'
+        else: return f'TSTensor([{self.data}], device={self.device}, dtype={self.dtype})'
 
 # %% ../../nbs/006_data.core.ipynb 8
 class ToTSTensor(Transform):
@@ -134,12 +130,12 @@ def show_tuple(tup, **kwargs):
 # %% ../../nbs/006_data.core.ipynb 27
 class TSLabelTensor(NumpyTensor): 
     def __repr__(self):
-        if self.ndim == 0: return f'{self}'
+        if self.ndim == 0: return f'{self.data}'
         else: return f'TSLabelTensor(shape:{tuple(self.shape)}, device={self.device}, dtype={self.dtype})'
 
 class TSMaskTensor(NumpyTensor): 
     def __repr__(self):
-        if self.ndim == 0: return f'{self}'
+        if self.ndim == 0: return f'{self.data}'
         else: return f'TSMaskTensor(shape:{tuple(self.shape)}, device={self.device}, dtype={self.dtype})'
 
 # %% ../../nbs/006_data.core.ipynb 30
