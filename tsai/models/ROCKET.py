@@ -7,10 +7,11 @@ __all__ = ['RocketClassifier', 'load_rocket', 'RocketRegressor']
 import sklearn
 from sklearn.linear_model import RidgeClassifierCV, RidgeCV
 from sklearn.metrics import make_scorer
-from ..imports import *
+from sklearn.preprocessing import StandardScaler
+
 from ..data.external import *
+from ..imports import *
 from .layers import *
-warnings.filterwarnings("ignore", category=FutureWarning)
 
 # %% ../../nbs/053_models.ROCKET.ipynb 4
 class RocketClassifier(sklearn.pipeline.Pipeline):
@@ -32,13 +33,13 @@ class RocketClassifier(sklearn.pipeline.Pipeline):
         try: 
             import sktime
             from sktime.transformations.panel.rocket import Rocket
-            warnings.filterwarnings("ignore", category=FutureWarning)
         except ImportError:
-            print("You need to install sktime to be able to use RocketClassifier")
+            raise("You need to install sktime to be able to use RocketClassifier")
             
-        self.steps = [('rocket', Rocket(num_kernels=num_kernels, normalise=normalize_input, random_state=random_state)),
-                      ('ridgeclassifiercv', RidgeClassifierCV(alphas=alphas, normalize=normalize_features, scoring=scoring, 
-                                                              class_weight=class_weight, **kwargs))]
+        self.steps = [('rocket', Rocket(num_kernels=num_kernels, normalise=normalize_input, random_state=random_state))]
+        if normalize_features:
+            self.steps += [('scalar', StandardScaler(with_mean=False))]
+        self.steps += [('ridgeclassifiercv', RidgeClassifierCV(alphas=alphas, scoring=scoring, class_weight=class_weight, **kwargs))]
         store_attr()
         self._validate_steps()
 
@@ -78,12 +79,13 @@ class RocketRegressor(sklearn.pipeline.Pipeline):
         try: 
             import sktime
             from sktime.transformations.panel.rocket import Rocket
-            warnings.filterwarnings("ignore", category=FutureWarning)
         except ImportError:
-            print("You need to install sktime to be able to use RocketRegressor")
+            raise("You need to install sktime to be able to use RocketRegressor")
             
-        self.steps = [('rocket', Rocket(num_kernels=num_kernels, normalise=normalize_input, random_state=random_state)),
-                  ('ridgecv', RidgeCV(alphas=alphas, normalize=normalize_features, scoring=scoring, **kwargs))]
+        self.steps = [('rocket', Rocket(num_kernels=num_kernels, normalise=normalize_input, random_state=random_state))]
+        if normalize_features:
+            self.steps += [('scalar', StandardScaler(with_mean=False))]
+        self.steps += [('ridgecv', RidgeCV(alphas=alphas, scoring=scoring, **kwargs))]
         store_attr()
         self._validate_steps()
 

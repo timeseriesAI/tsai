@@ -24,7 +24,7 @@ def get_ts_features(X:Union[np.ndarray, torch.Tensor], y:Union[None, np.ndarray,
         from tsfresh import extract_features
         from tsfresh.feature_extraction.settings import ComprehensiveFCParameters, MinimalFCParameters, EfficientFCParameters
     except ImportError:
-        print("You need to install tsfresh to be able to import tsai.data.features")
+        raise ImportError("You need to install tsfresh to be able to import tsai.data.features")
     
     df = to_tsfresh_df(X)
     n_jobs = ifnone(n_jobs, defaults.cpus)

@@ -25,7 +25,7 @@ class WaveBlock(Module):
             try: 
                 import pywt
             except ImportError: 
-                print("You need to either install pywt to run mWDN or set wavelet=None")
+                raise ImportError("You need to either install pywt to run mWDN or set wavelet=None")
             w = pywt.Wavelet(wavelet)
             self.h_filter = w.dec_hi
             self.l_filter = w.dec_lo
