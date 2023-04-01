@@ -30,80 +30,26 @@ classification, regression, forecasting, imputation…
 
 ## What’s new:
 
-#### March 2022
+During the last few releases, here are some of the most significant
+additions to `tsai`:
 
-- ⚡️ Starting with **tsai 0.3.0** you’ll get **faster installs and
-  imports** through a better use of dependencies.
-- New visualization methods: learn.feature_importance() and
-  learn.step_importance() will help you gain better insights on how your
-  models works.
-- New calibration model: learn.calibrate_model() for time series
-  classification tasks.
-
-#### November, 2021
-
-- ✅ Implemented some of the learnings from reviewing Kaggle’s latest
-  time series competition (see Medium [blog
-  post](https://towardsdatascience.com/key-takeaways-from-kaggles-most-recent-time-series-competition-ventilator-pressure-prediction-7a1d2e4e0131?source=user_profile---------0-------------------------------)
-  for more details) like:
-  - improved RNN initialization (based on a kernel shared by
-    https://www.kaggle.com/junkoda)
-  - added the option to pass a feature extractor to RNNPlus & TSiT
-    (Transformer) models.  
-  - created a MultiConv layer that allows the concatenation of original
-    features with the output of one or multiple convolution layers in
-    parallel.
-
-#### September, 2021
-
-- See our new tutorial notebook on how to **track your experiments with
-  Weights & Biases**
-  <a href="https://colab.research.google.com/github/timeseriesAI/tsai/blob/master/tutorial_nbs/12_Experiment_tracking_with_W%26B.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
-
-- `tsai` just got easier to use with the new sklearn-like APIs:
-  [`TSClassifier`](https://timeseriesAI.github.io/tslearner.html#tsclassifier),
-  [`TSRegressor`](https://timeseriesAI.github.io/tslearner.html#tsregressor),
-  and
-  [`TSForecaster`](https://timeseriesAI.github.io/tslearner.html#tsforecaster)!!
-  See [this](https://timeseriesai.github.io/tsai/tslearner.html) for
-  more info.
-
-- New tutorial notebook on how to **train your model with
-  larger-than-memory datasets in less time achieving up to 100% GPU
-  usage!!**
-  <a href="https://colab.research.google.com/github/timeseriesAI/tsai/blob/master/tutorial_nbs/11_How_to_train_big_arrays_faster_with_tsai.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
-
-- **`tsai` supports now more input formats**: np.array, np.memmap, zarr,
-  xarray, dask, list, L, …
-
-#### Previously
-
-- **MINIROCKET** a SOTA Time Series Classification model (now available
-  in Pytorch): You can now check MiniRocket’s performance in our new
-  tutorial notebook
-  <a href="https://colab.research.google.com/github/timeseriesAI/tsai/blob/master/tutorial_nbs/10_Time_Series_Classification_and_Regression_with_MiniRocket.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
-
-> “Using this method, it is possible to train and test a classifier on
-> all of 109 datasets from the UCR archive to state-of-the-art accuracy
-> in less than 10 minutes.” A. Dempster et al. (Dec 2020)
-
-- **Multi-class and multi-label time series classification notebook:**
-  you can also check our new tutorial notebook:
-  <a href="https://colab.research.google.com/github/timeseriesAI/tsai/blob/master/tutorial_nbs/01a_MultiClass_MultiLabel_TSClassification.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
-
-- **Self-supervised learning:** Learn how to leverage your unlabeled
-  datasets
-  <a href="https://colab.research.google.com/github/timeseriesAI/tsai/blob/master/tutorial_nbs/08_Self_Supervised_TSBERT.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
-
-- **New visualization:** We’ve also added a new PredictionDynamics
-  callback that will display the predictions during training. This is
-  the type of output you would get in a classification task for example:
-
-  <p align="center">
-
-  <img src="https://github.com/timeseriesAI/tsai/blob/main/nbs/multimedia/LSST_PD.gif?raw=true">
-
-  </p>
+- **New models**: PatchTST (Accepted by ICLR 2023), RNN with Attention
+  (RNNAttention, LSTMAttention, GRUAttention), TabFusionTransformer, …
+- **New datasets**: we have increased the number of datasets you can
+  download using `tsai`:
+  - 128 univariate classification datasets
+  - 30 multivariate classification datasets
+  - 15 regression datasets
+  - 62 forecasting datasets
+  - 9 long term forecasting datasets
+- **New tutorials**:
+  [PatchTST](https://github.com/timeseriesAI/tsai/blob/main/tutorial_nbs/15_PatchTST_a_new_transformer_for_LTSF.ipynb).
+  Based on some of your requests, we are planning to release additional
+  tutorials on data preparation and forecasting.
+- **New functionality**: sklearn-type pipeline transforms, walk-foward
+  cross validation, reduced RAM requirements, and a lot of new
+  functionality to perform more accurate time series forecasts.
+- Pytorch 2.0 support.
 
 ## Installation
 
@@ -200,6 +146,9 @@ Here’s a list with some of the state-of-the-art models available in
   ([paper](https://dl.acm.org/doi/abs/10.1145/3447548.3467401))
 - [TabTransformer](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/TabTransformer.py)
   (Huang, 2020) ([paper](https://arxiv.org/pdf/2012.06678))
+- [TSiT](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/TSiTPlus.py)
+  Adapted from ViT (Dosovitskiy, 2020)
+  ([paper](https://arxiv.org/abs/2010.11929))
 - [MiniRocket](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/MINIROCKET.py)
   (Dempster, 2021) ([paper](https://arxiv.org/abs/2102.00457))
 - [XCM](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/XCM.py) -
@@ -208,10 +157,19 @@ Here’s a list with some of the state-of-the-art models available in
 - [gMLP](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/gMLP.py) -
   Gated Multilayer Perceptron (Liu, 2021)
   ([paper](https://arxiv.org/abs/2105.08050))
+- [TSPerceiver](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/TSPerceiver.py) -
+  Adapted from Perceiver IO (Jaegle, 2021)
+  ([paper](https://arxiv.org/abs/2107.14795))
 - [GatedTabTransformer](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/GatedTabTransformer.py)
   (Cholakov, 2022) ([paper](https://arxiv.org/abs/2201.00199))
+- [TSSequencerPlus](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/TSSequencerPlus.py) -
+  Adapted from Sequencer (Tatsunami, 2022)
+  ([paper](https://arxiv.org/abs/2205.01972))
+- [PatchTST](https://github.com/timeseriesAI/tsai/blob/main/tsai/models/PatchTST.py) -
+  (Nie, 2022) ([paper](https://arxiv.org/abs/2211.14730))
 
-among others!
+plus other custom models like: TransformerModel, LSTMAttention,
+GRUAttention, …
 
 ## How to start using tsai?
 
@@ -239,10 +197,12 @@ These are just a few examples of how you can use `tsai`:
 **Training:**
 
 ``` python
-from tsai.all import *
+from tsai.basics import *
+
 X, y, splits = get_classification_data('ECG200', split_data=False)
+tfms = [None, TSClassification()]
 batch_tfms = TSStandardize()
-clf = TSClassifier(X, y, splits=splits, path='models', arch=InceptionTimePlus, batch_tfms=batch_tfms, metrics=accuracy, cbs=ShowGraph())
+clf = TSClassifier(X, y, splits=splits, path='models', arch="InceptionTimePlus", tfms=tfms, batch_tfms=batch_tfms, metrics=accuracy, cbs=ShowGraph())
 clf.fit_one_cycle(100, 3e-4)
 clf.export("clf.pkl") 
 ```
@@ -251,8 +211,9 @@ clf.export("clf.pkl")
 
 ``` python
 from tsai.inference import load_learner
+
 clf = load_learner("models/clf.pkl")
-probas, target, preds = clf.get_X_preds(X[splits[0]], y[splits[0]])
+probas, target, preds = clf.get_X_preds(X[splits[1]], y[splits[1]])
 ```
 
 ### Multi-class, multivariate classification
@@ -260,10 +221,12 @@ probas, target, preds = clf.get_X_preds(X[splits[0]], y[splits[0]])
 **Training:**
 
 ``` python
-from tsai.all import *
+from tsai.basics import *
+
 X, y, splits = get_classification_data('LSST', split_data=False)
+tfms = [None, TSClassification()]
 batch_tfms = TSStandardize(by_sample=True)
-mv_clf = TSClassifier(X, y, splits=splits, path='models', arch=InceptionTimePlus, batch_tfms=batch_tfms, metrics=accuracy, cbs=ShowGraph())
+mv_clf = TSClassifier(X, y, splits=splits, path='models', arch="InceptionTimePlus", tfms=tfms, batch_tfms=batch_tfms, metrics=accuracy, cbs=ShowGraph())
 mv_clf.fit_one_cycle(10, 1e-2)
 mv_clf.export("mv_clf.pkl")
 ```
@@ -272,8 +235,9 @@ mv_clf.export("mv_clf.pkl")
 
 ``` python
 from tsai.inference import load_learner
+
 mv_clf = load_learner("models/mv_clf.pkl")
-probas, target, preds = mv_clf.get_X_preds(X[splits[0]], y[splits[0]])
+probas, target, preds = mv_clf.get_X_preds(X[splits[1]], y[splits[1]])
 ```
 
 ### Multivariate Regression
@@ -281,10 +245,12 @@ probas, target, preds = mv_clf.get_X_preds(X[splits[0]], y[splits[0]])
 **Training:**
 
 ``` python
-from tsai.all import *
+from tsai.basics import *
+
 X, y, splits = get_regression_data('AppliancesEnergy', split_data=False)
+tfms = [None, TSRegression()]
 batch_tfms = TSStandardize(by_sample=True)
-reg = TSRegressor(X, y, splits=splits, path='models', arch=TSTPlus, batch_tfms=batch_tfms, metrics=rmse, cbs=ShowGraph(), verbose=True)
+reg = TSRegressor(X, y, splits=splits, path='models', arch="TSTPlus", tfms=tfms, batch_tfms=batch_tfms, metrics=rmse, cbs=ShowGraph(), verbose=True)
 reg.fit_one_cycle(100, 3e-4)
 reg.export("reg.pkl")
 ```
@@ -293,8 +259,9 @@ reg.export("reg.pkl")
 
 ``` python
 from tsai.inference import load_learner
+
 reg = load_learner("models/reg.pkl")
-raw_preds, target, preds = reg.get_X_preds(X[splits[0]], y[splits[0]])
+raw_preds, target, preds = reg.get_X_preds(X[splits[1]], y[splits[1]])
 ```
 
 The ROCKETs (RocketClassifier, RocketRegressor, MiniRocketClassifier,
@@ -320,20 +287,26 @@ pip install tsai[extras]
 
 ``` python
 from sklearn.metrics import mean_squared_error, make_scorer
-from tsai.all import *
-from tsai.models.MINIROCKET import *
-X_train, y_train, X_test, y_test = get_regression_data('AppliancesEnergy')
+from tsai.data.external import get_Monash_regression_data
+from tsai.models.MINIROCKET import MiniRocketRegressor
+
+X_train, y_train, *_ = get_Monash_regression_data('AppliancesEnergy')
 rmse_scorer = make_scorer(mean_squared_error, greater_is_better=False)
-mr_reg = MiniRocketRegressor(scoring=rmse_scorer)
-mr_reg.fit(X_train, y_train)
-mr_reg.save("minirocket_regressor")
+reg = MiniRocketRegressor(scoring=rmse_scorer)
+reg.fit(X_train, y_train)
+reg.save('MiniRocketRegressor')
 ```
 
 **Inference:**
 
 ``` python
-mr_reg = load_rocket("minirocket_regressor")
-y_pred = mr_reg.predict(X_test)
+from sklearn.metrics import mean_squared_error
+from tsai.data.external import get_Monash_regression_data
+from tsai.models.MINIROCKET import load_minirocket
+
+*_, X_test, y_test = get_Monash_regression_data('AppliancesEnergy')
+reg = load_minirocket('MiniRocketRegressor')
+y_pred = reg.predict(X_test)
 mean_squared_error(y_test, y_pred, squared=False)
 ```
 
@@ -347,7 +320,7 @@ You can use tsai for forecast in the following scenarios:
 
 You’ll need to: \* prepare X (time series input) and the target y (see
 [documentation](https://timeseriesai.github.io/tsai/data.preparation.html))
-\* select one of tsai’s models ending in Plus (TSTPlus,
+\* select PatchTST or one of tsai’s models ending in Plus (TSTPlus,
 InceptionTimePlus, TSiTPlus, etc). The model will auto-configure a head
 to yield an output with the same shape as the target input y.
 
@@ -356,12 +329,14 @@ to yield an output with the same shape as the target input y.
 **Training:**
 
 ``` python
-from tsai.all import *
+from tsai.basics import *
+
 ts = get_forecasting_time_series("Sunspots").values
 X, y = SlidingWindow(60, horizon=1)(ts)
 splits = TimeSplitter(235)(y) 
+tfms = [None, TSForecasting()]
 batch_tfms = TSStandardize()
-fcst = TSForecaster(X, y, splits=splits, path='models', batch_tfms=batch_tfms, bs=512, arch=TSTPlus, metrics=mae, cbs=ShowGraph())
+fcst = TSForecaster(X, y, splits=splits, path='models', tfms=tfms, batch_tfms=batch_tfms, bs=512, arch="TSTPlus", metrics=mae, cbs=ShowGraph())
 fcst.fit_one_cycle(50, 1e-3)
 fcst.export("fcst.pkl")
 ```
@@ -370,12 +345,12 @@ fcst.export("fcst.pkl")
 
 ``` python
 from tsai.inference import load_learner
-fcst = load_learner("models/fcst.pkl", cpu=False)
-raw_preds, target, preds = fcst.get_X_preds(X[splits[0]], y[splits[0]])
-raw_preds.shape
-```
 
-output: torch.Size(\[2940, 1\])
+fcst = load_learner("models/fcst.pkl", cpu=False)
+raw_preds, target, preds = fcst.get_X_preds(X[splits[1]], y[splits[1]])
+raw_preds.shape
+# torch.Size([235, 1])
+```
 
 #### Multi-step
 
@@ -384,12 +359,14 @@ This example show how to build a 3-step ahead univariate forecast.
 **Training:**
 
 ``` python
-from tsai.all import *
+from tsai.basics import *
+
 ts = get_forecasting_time_series("Sunspots").values
 X, y = SlidingWindow(60, horizon=3)(ts)
-splits = TimeSplitter(235)(y) 
+splits = TimeSplitter(235, fcst_horizon=3)(y) 
+tfms = [None, TSForecasting()]
 batch_tfms = TSStandardize()
-fcst = TSForecaster(X, y, splits=splits, path='models', batch_tfms=batch_tfms, bs=512, arch=TSTPlus, metrics=mae, cbs=ShowGraph())
+fcst = TSForecaster(X, y, splits=splits, path='models', tfms=tfms, batch_tfms=batch_tfms, bs=512, arch="TSTPlus", metrics=mae, cbs=ShowGraph())
 fcst.fit_one_cycle(50, 1e-3)
 fcst.export("fcst.pkl")
 ```
@@ -399,11 +376,10 @@ fcst.export("fcst.pkl")
 ``` python
 from tsai.inference import load_learner
 fcst = load_learner("models/fcst.pkl", cpu=False)
-raw_preds, target, preds = fcst.get_X_preds(X[splits[0]], y[splits[0]])
+raw_preds, target, preds = fcst.get_X_preds(X[splits[1]], y[splits[1]])
 raw_preds.shape
+# torch.Size([235, 3])
 ```
-
-output: torch.Size(\[2938, 3\])
 
 ## Input data format
 
@@ -425,6 +401,12 @@ fixes, documentation, tutorial notebooks, …
 We have created a guide to help you start contributing to tsai. You can
 read it
 [here](https://github.com/timeseriesAI/tsai/blob/main/CONTRIBUTING.md).
+
+## Enterprise support and consulting services:
+
+Want to make the most out of timeseriesAI/tsai in a professional
+setting? Let us help. Send us an email to learn more:
+info@timeseriesai.co
 
 ## Citing tsai
 
