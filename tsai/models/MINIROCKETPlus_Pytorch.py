@@ -205,7 +205,7 @@ class MiniRocketPlus(nn.Sequential):
         self.head_nf = num_features
         if custom_head is not None: 
             if isinstance(custom_head, nn.Module): head = custom_head
-            head = custom_head(self.head_nf, c_out, 1)
+            else: head = custom_head(self.head_nf, c_out, 1)
         else:
             layers = [Flatten()]
             if bn:
@@ -319,7 +319,7 @@ class InceptionRocketPlus(nn.Sequential):
         self.head_nf = num_features
         if custom_head is not None: 
             if isinstance(custom_head, nn.Module): head = custom_head
-            head = custom_head(self.head_nf, c_out, 1)
+            else: head = custom_head(self.head_nf, c_out, 1)
         else:
             layers = [Flatten()]
             if bn:
