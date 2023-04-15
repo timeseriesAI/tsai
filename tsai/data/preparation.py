@@ -871,12 +871,11 @@ def get_fcst_bounds(
 ):
     "Returns the start and end datetimes used by the forecast"
     min_datetime, max_datetime = get_df_datetime_bounds(df, datetime_col=datetime_col, use_index=use_index)
-    min_datetime, max_datetime = pd.Timestamp(min_datetime, freq=freq), pd.Timestamp(max_datetime, freq=freq)
+    min_datetime, max_datetime = pd.Timestamp(min_datetime).floor(freq), pd.Timestamp(max_datetime).floor(freq)
     fcst_datetime_min, fcst_datetime_max = split_fcst_datetime(fcst_datetime)
     if fcst_datetime_min is None and fcst_datetime_max is None:
         start_datetime, end_datetime = min_datetime, max_datetime
     else:
-        
         if fcst_datetime_min == "today":
             fcst_datetime_min = get_today(fcst_datetime_min, datetime_format=datetime_format)
         if fcst_datetime_max == "today":
@@ -886,9 +885,9 @@ def get_fcst_bounds(
         if fcst_datetime_max is None:
             fcst_dt = end_datetime = max_datetime
         else:
-            fcst_dt = end_datetime = pd.Timestamp(fcst_datetime_max, freq=freq)
+            fcst_dt = end_datetime = pd.Timestamp(fcst_datetime_max).floor(freq)
             if fcst_horizon:
-                end_datetime = end_datetime + end_datetime.freq * fcst_horizon
+                end_datetime = pd.date_range(end_datetime, periods=fcst_horizon + 1, freq=freq).floor(freq)[-1]
 
         # start_datetime
         if fcst_datetime_min is None:
@@ -896,16 +895,18 @@ def get_fcst_bounds(
         elif fcst_datetime_min == fcst_datetime_max:
             start_datetime = fcst_dt
             if fcst_history:
-                start_datetime -= start_datetime.freq * (fcst_history - 1)
+                start_datetime = pd.date_range(end=start_datetime, periods=fcst_history, freq=freq).floor(freq)[0]
         else:
-            n_periods = int((fcst_dt - pd.Timestamp(fcst_datetime_min)) / fcst_dt.freq)
+            # n_periods = int((fcst_dt - pd.Timestamp(fcst_datetime_min)) / fcst_dt.freq)
+            n_periods = len(pd.date_range(start=fcst_datetime_min, end=fcst_dt, freq=freq))
             if fcst_history:
                 n_periods += fcst_history - 1
-            start_datetime = fcst_dt - n_periods * fcst_dt.freq
+            # start_datetime = fcst_dt - n_periods * fcst_dt.freq
+            start_datetime = pd.date_range(end=fcst_dt, periods=n_periods, freq=freq).floor(freq)[0]
     
     return start_datetime, end_datetime
 
-# %% ../../nbs/004_data.preparation.ipynb 120
+# %% ../../nbs/004_data.preparation.ipynb 121
 def filter_df_by_datetime(
     df,  # dataframe containing forecasting data
     start_datetime=None, # lower datetime bound
@@ -938,7 +939,7 @@ def filter_df_by_datetime(
             df.reset_index(drop=True, inplace=True)
     return df
 
-# %% ../../nbs/004_data.preparation.ipynb 122
+# %% ../../nbs/004_data.preparation.ipynb 123
 def get_fcst_data_from_df(
     df,  # dataframe containing forecasting data
     fcst_datetime,  # datetime for which a fcst is created. Optionally tuple of datatimes if the fcst is created for a range of dates.

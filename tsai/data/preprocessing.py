@@ -1052,9 +1052,9 @@ class TSCategoricalEncoder(BaseEstimator, TransformerMixin):
                 if self.suffix: name += [self.suffix]
                 new_col = '_'.join(name)
                 if self.add_na:
-                    X.loc[:, new_col] = np.array(['#na#'] + list(categories.categories))[X.loc[:, new_col]]
+                    X.loc[:, new_col] = np.array(['#na#'] + list(categories.categories))[X.loc[:, new_col].astype(int)]
                 else:
-                    X.loc[:, new_col] = categories.categories[X.loc[:, new_col]]
+                    X.loc[:, new_col] = categories.categories[X.loc[:, new_col].astype(int)]
         else:
             if self.add_na:
                 X = pd.Series(np.array(['#na#'] + list(self.categories[0].categories))[X], name=X.name, index=X.index)
