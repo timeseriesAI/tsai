@@ -60,6 +60,7 @@ from fastcore.meta import *
 from fastcore.test import *
 from fastcore.xtras import *
 from numpy import array
+from numpy.lib.stride_tricks import sliding_window_view
 from torch import Tensor
 
 config = ConfigParser(delimiters=["="])
