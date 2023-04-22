@@ -386,13 +386,21 @@ def TSSplitter(
             test_cut = test_size if isinstance(test_size, Integral) else round(test_size * len(o))
         else:
             test_cut = 0
-        idx = np.arange(len(o))
+        idx = np.arange(len(o), dtype=smallest_dtype(len(o)))
         if test_size: 
-            splits = (L(idx[:-valid_cut - test_cut - fcst_horizon].tolist()), 
-                      L(idx[-valid_cut - test_cut: - test_cut - fcst_horizon].tolist()),
-                      L(idx[-test_cut:].tolist()))
+            if len(idx) < 1_000_000:
+                splits = (L(idx[:-valid_cut - test_cut - fcst_horizon].tolist()), 
+                          L(idx[-valid_cut - test_cut: - test_cut - fcst_horizon].tolist()),
+                          L(idx[-test_cut:].tolist()))
+            else:
+                splits = (idx[:-valid_cut - test_cut - fcst_horizon], 
+                          idx[-valid_cut - test_cut: - test_cut - fcst_horizon],
+                          idx[-test_cut:])
         else: 
-            splits = (L(idx[:-valid_cut - fcst_horizon].tolist()), L(idx[-valid_cut:].tolist()))
+            if len(idx) < 1_000_000:
+                splits = (L(idx[:-valid_cut - fcst_horizon].tolist()), L(idx[-valid_cut:].tolist()))
+            else:
+                splits = (idx[:-valid_cut - fcst_horizon], idx[-valid_cut:])
         if show_plot: 
             if len(o) > 1_000_000:
                 warnings.warn('the splits are too large to be plotted')

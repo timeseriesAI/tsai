@@ -290,43 +290,33 @@ class TSDataset():
 
 # %% ../../nbs/006_data.core.ipynb 40
 def _flatten_list(lst):
-    def __flatten_list(lst):
-        if lst is None: return L([])
-        if not hasattr(lst, "__iter__"): lst = [lst]
-        flattened = []
-        for item in lst:
-            if isinstance(item, (list, tuple, L)):
-                flattened += __flatten_list(item)
-            elif isinstance(item, np.ndarray):
-                flattened += __flatten_list(item.ravel())
-            else:
-                flattened.append(item)
-        output = L(flattened)
-        return output
-    output = __flatten_list(lst)
-    if len(output) == 0: return output
-    dtype = smallest_dtype(np.max(output))
-    return np.asarray(output).astype(dtype)
+    "Flattens a list of lists with splits"
 
-def _flatten_list(lst):
     def __flatten_list(lst):
-        if lst is None: return L([])
-        if not hasattr(lst, "__iter__"): lst = [lst]
-        if len(lst) == 0: return L([])
-        elif len(lst) == 1: return lst
-        flattened = []
-        for item in lst:
-            if item is None: continue
-            elif isinstance(item, Integral):
-                flattened.extend(lst)
-                break
-            elif isinstance(item, (list, tuple, L)):
-                flattened += __flatten_list(item)
-            elif isinstance(item, np.ndarray):
-                flattened += __flatten_list(item.ravel())
-            else:
-                flattened.append(item)
-        return flattened
+        if lst is None: 
+            return L([])
+        if not hasattr(lst, "__iter__"): 
+            lst = [lst]
+
+        # clean_up_list
+        if len(lst) > 10:
+            return lst 
+        else:
+            lst = [l for l in lst if l is not None or (hasattr(l, "__len__") and len(l) == 0)]
+
+        # count lists
+        n_lists = sum([hasattr(l, "__iter__") for l in lst])
+        if n_lists == 0:
+            return lst
+        elif len(lst) == n_lists == 1:
+            return lst[0]
+        else:
+            print("lst", lst)
+            output = np.concatenate([l if hasattr(l, "__iter__") else [l] for l in lst])
+            if len(output) == 0:
+                return L([])
+            return output.astype(smallest_dtype(int(max(output))))
+
     output = __flatten_list(lst)
     if len(output) == 0: return output
     dtype = smallest_dtype(np.max(output))
@@ -445,8 +435,8 @@ def tscoll_repr(c, max_n=10):
     return f'(#{_len}) {L(c[i] for i in range(min(len(c), max_n)))} ...]'
 
 # %% ../../nbs/006_data.core.ipynb 48
-@delegates(NumpyDatasets.__init__)
-class TSDatasets(NumpyDatasets):
+@delegates(Datasets.__init__)
+class TSDatasets(Datasets):
     """A dataset that creates tuples from X (and optionally y) and applies `item_tfms`"""
     typs = TSTensor, torch.as_tensor
     def __init__(self, X=None, y=None, items=None, sel_vars=None, sel_steps=None, tfms=None, tls=None, n_inp=None, dl_type=None, 
@@ -514,10 +504,9 @@ class TSDatasets(NumpyDatasets):
             
         self.n_inp = 1
         if kwargs.get('splits', None) is not None:
-            split_idxs = _flatten_list(kwargs['splits'])
+            split_idxs = _flatten_list(kwargs.get('splits'))
         else: 
-            dtype = np.int16 if np.can_cast(len(self.tls[0].items), np.int16) else np.int32 if np.can_cast(len(self.tls[0].items), np.int32) else np.int64
-            split_idxs = _flatten_list(np.arange(len(self), dtype=dtype))
+            split_idxs = np.arange(len(self), dtype=smallest_dtype(len(self)))
         self.split_idxs = split_idxs
 
     def __getitem__(self, it):
@@ -548,6 +537,14 @@ class TSDatasets(NumpyDatasets):
     def new_empty(self): return type(self)(tls=[tl.new_empty() for tl in self.tls], sel_vars=self.sel_vars, sel_steps=self.sel_steps, 
                                            n_inp=self.n_inp, inplace=self.inplace)
 
+    def __len__(self): return len(self.tls[0])
+    
+    def show_at(self, idx, **kwargs):
+        self.show(self[idx], **kwargs)
+        plt.show()
+        
+    def __repr__(self): return tscoll_repr(self)
+
 # %% ../../nbs/006_data.core.ipynb 51
 def add_ds(dsets, X, y=None, inplace=True):
     "Create test datasets from X (and y) using validation transforms of `dsets`"
@@ -572,15 +569,15 @@ def add_ds(dsets, X, y=None, inplace=True):
         raise Exception(f"Expected a `Datasets` or a `TfmdLists` but got {dsets.__class__.__name__}")
 
 @patch
-def add_dataset(self:NumpyDatasets, X, y=None, inplace=True):
+def add_dataset(self:(NumpyDatasets, TSDatasets), X, y=None, inplace=True):
     return add_ds(self, X, y=y, inplace=inplace)
 
 @patch
-def add_test(self:NumpyDatasets, X, y=None, inplace=True):
+def add_test(self:(NumpyDatasets, TSDatasets), X, y=None, inplace=True):
     return add_ds(self, X, y=y, inplace=inplace)
 
 @patch
-def add_unlabeled(self:NumpyDatasets, X, inplace=True):
+def add_unlabeled(self:(NumpyDatasets, TSDatasets), X, inplace=True):
     return add_ds(self, X, y=None, inplace=inplace)
 
 # %% ../../nbs/006_data.core.ipynb 67
