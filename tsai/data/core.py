@@ -311,7 +311,6 @@ def _flatten_list(lst):
         elif len(lst) == n_lists == 1:
             return lst[0]
         else:
-            print("lst", lst)
             output = np.concatenate([l if hasattr(l, "__iter__") else [l] for l in lst])
             if len(output) == 0:
                 return L([])
