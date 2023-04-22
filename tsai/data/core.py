@@ -568,15 +568,27 @@ def add_ds(dsets, X, y=None, inplace=True):
         raise Exception(f"Expected a `Datasets` or a `TfmdLists` but got {dsets.__class__.__name__}")
 
 @patch
-def add_dataset(self:(NumpyDatasets, TSDatasets), X, y=None, inplace=True):
+def add_dataset(self:NumpyDatasets, X, y=None, inplace=True):
     return add_ds(self, X, y=y, inplace=inplace)
 
 @patch
-def add_test(self:(NumpyDatasets, TSDatasets), X, y=None, inplace=True):
+def add_test(self:NumpyDatasets, X, y=None, inplace=True):
     return add_ds(self, X, y=y, inplace=inplace)
 
 @patch
-def add_unlabeled(self:(NumpyDatasets, TSDatasets), X, inplace=True):
+def add_unlabeled(self:NumpyDatasets, X, inplace=True):
+    return add_ds(self, X, y=None, inplace=inplace)
+
+@patch
+def add_dataset(self:TSDatasets, X, y=None, inplace=True):
+    return add_ds(self, X, y=y, inplace=inplace)
+
+@patch
+def add_test(self:TSDatasets, X, y=None, inplace=True):
+    return add_ds(self, X, y=y, inplace=inplace)
+
+@patch
+def add_unlabeled(self:TSDatasets, X, inplace=True):
     return add_ds(self, X, y=None, inplace=inplace)
 
 # %% ../../nbs/006_data.core.ipynb 67
