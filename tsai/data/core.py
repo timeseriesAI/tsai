@@ -308,6 +308,30 @@ def _flatten_list(lst):
     dtype = smallest_dtype(np.max(output))
     return np.asarray(output).astype(dtype)
 
+def _flatten_list(lst):
+    def __flatten_list(lst):
+        if lst is None: return L([])
+        if not hasattr(lst, "__iter__"): lst = [lst]
+        if len(lst) == 0: return L([])
+        elif len(lst) == 1: return lst
+        flattened = []
+        for item in lst:
+            if item is None: continue
+            elif isinstance(item, Integral):
+                flattened.extend(lst)
+                break
+            elif isinstance(item, (list, tuple, L)):
+                flattened += __flatten_list(item)
+            elif isinstance(item, np.ndarray):
+                flattened += __flatten_list(item.ravel())
+            else:
+                flattened.append(item)
+        return flattened
+    output = __flatten_list(lst)
+    if len(output) == 0: return output
+    dtype = smallest_dtype(np.max(output))
+    return np.asarray(output, dtype=dtype)
+
 def _remove_brackets(l):
     return [li if (not li or not is_listy(li) or len(li) > 1) else li[0] for li in l]
     
@@ -634,14 +658,15 @@ class NumpyDataLoader(TfmdDL):
             return idxs
         if self.weights is not None:
             return random_choice(self.n, n, p=self.weights)
-        idxs = Inf.count if self.indexed else Inf.nones
         if self.n is not None:
-            idxs = np.arange(self.n)
             if self.partial_n is not None:
-                idxs = random_choice(idxs, n, False)
+                return random_choice(self.n, n, False, dtype=smallest_dtype(self.n)) # already shuffled
+            else:
+                idxs = np.arange(self.n, dtype=smallest_dtype(self.n))
+        else:
+            idxs = Inf.count if self.indexed else Inf.nones
         if self.shuffle: idxs = self.shuffle_fn(idxs)
         return idxs
-
 
     def shuffle_fn(self, idxs):
         return np.random.permutation(idxs)
