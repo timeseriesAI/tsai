@@ -620,7 +620,9 @@ class NumpyDataLoader(TfmdDL):
         bs = max(1, min(bs, len(dataset))) # bs cannot be 1
         if is_listy(partial_n): partial_n = partial_n[0]
         if isinstance(partial_n, float): partial_n = int(round(partial_n * len(dataset)))
-        if partial_n is not None: bs = min(bs, partial_n)
+        if partial_n is not None: 
+            partial_n = min(partial_n, len(dataset))
+            bs = min(bs, partial_n)
         if weights is not None: weights = weights / weights.sum()
         self.weights, self.partial_n, self.sampler, self.sort, self.do_setup = weights, partial_n, sampler, sort, do_setup
         super().__init__(dataset, bs=bs, shuffle=shuffle, drop_last=drop_last, num_workers=num_workers, verbose=verbose, do_setup=do_setup, **kwargs)
@@ -906,7 +908,7 @@ class NumpyDataLoaders(DataLoaders):
         if len(bs) != len(ds): bs = bs * len(ds)
         if weights is None: weights = [None] * len(ds)
         if not is_listy(partial_n): partial_n = [partial_n]
-        if len(partial_n) != len(ds): partial_n = partial_n * len(ds)
+        if len(partial_n) != len(ds) and len(ds) > 1: partial_n = partial_n + [None] * (len(ds) - len(partial_n))
         if not is_listy(sampler): sampler = [sampler]
         if len(sampler) != len(ds): sampler = sampler * len(ds)
         loaders = [cls._dl_type(d, bs=b, num_workers=num_workers, batch_tfms=batch_tfms, weights=w, partial_n=n, sampler=s, sort=sort, vocab=vocab, **k)\
