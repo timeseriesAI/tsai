@@ -24,7 +24,7 @@ __all__ = ['Nan2Value', 'TSRandomStandardize', 'default_date_attr', 'PD_TIME_UNI
            'TSGaussianStandardize', 'TSDiff', 'TSLog', 'TSCyclicalPosition', 'TSLinearPosition', 'TSMissingness',
            'TSPositionGaps', 'TSRollingMean', 'TSLogReturn', 'TSAdd', 'TSClipByVar', 'TSDropVars', 'TSOneHotEncode',
            'TSPosition', 'TSShrinkDataFrame', 'object2date', 'TSOneHotEncoder', 'TSCategoricalEncoder',
-           'TSDateTimeEncoder', 'TSDropIfTrueCols', 'ApplyFunction', 'TSMissingnessEncoder', 'TSSortByColumns',
+           'TSDateTimeEncoder', 'TSDropIfTrueCols', 'TSApplyFunction', 'TSMissingnessEncoder', 'TSSortByColumns',
            'TSSelectColumns', 'TSStepsSinceStart', 'TSStandardScaler', 'TSAddMissingTimestamps', 'TSDropDuplicates',
            'TSFillMissing', 'Preprocessor', 'ReLabeler']
 
@@ -1121,30 +1121,31 @@ class TSDateTimeEncoder(BaseEstimator, TransformerMixin):
 # %% ../../nbs/009_data.preprocessing.ipynb 95
 class TSDropIfTrueCols(BaseEstimator, TransformerMixin):
 
-    def __init__(self, drop_if_true_cols=None):
-        self.drop_if_true_cols = listify(drop_if_true_cols)
+    def __init__(self, cols=None):
+        self.cols = listify(cols)
 
     def fit(self, X, y=None, **fit_params):
         assert isinstance(X, pd.DataFrame)
-        if not self.drop_if_true_cols: self.drop_if_true_cols = X.columns
+        if not self.cols: self.cols = X.columns
         return self
 
     def transform(self, X, **kwargs):
         assert isinstance(X, pd.DataFrame)
-        mask = X[self.drop_if_true_cols].sum(axis=1) == 0
+        mask = X[self.cols].sum(axis=1) == 0
         X = X[mask].reset_index(drop=True)
-        X.drop(columns=self.drop_if_true_cols, inplace=True)
+        X.drop(columns=self.cols, inplace=True)
         return X
 
     def inverse_transform(self, X, **kwargs):
         raise NotImplementedError("Inverse transform is not implemented for TSDropIfTrueCols")
 
 # %% ../../nbs/009_data.preprocessing.ipynb 97
-class ApplyFunction(BaseEstimator, TransformerMixin):
+class TSApplyFunction(BaseEstimator, TransformerMixin):
 
-    def __init__(self, function, groups=None, axis=1, cols=None, reset_index=False, drop=True):
+    def __init__(self, function, groups=None, group_keys=False, axis=1, cols=None, reset_index=False, drop=True):
         self.function = function
         self.groups = listify(groups)
+        self.group_keys = group_keys
         self.cols = listify(cols)
         self.reset_index = reset_index
         self.drop = drop
@@ -1160,9 +1161,9 @@ class ApplyFunction(BaseEstimator, TransformerMixin):
         assert isinstance(X, pd.DataFrame)
         if self.groups:
             if self.cols:
-                X = X.groupby(self.groups)[self.cols].apply(lambda x: self.function(x))
+                X = X.groupby(self.groups, group_keys=self.group_keys)[self.cols].apply(lambda x: self.function(x))
             else:
-                X = X.groupby(self.groups).apply(lambda x: self.function(x))
+                X = X.groupby(self.groups, group_keys=self.group_keys).apply(lambda x: self.function(x))
         else:
             if self.cols:
                 X[self.cols] = X[self.cols].apply(lambda x: self.function(x), axis=self.axis)
