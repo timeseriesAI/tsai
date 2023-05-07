@@ -420,8 +420,8 @@ def stack(o, axis=0, retain=True):
 def stack_pad(o, padding_value=np.nan):
     'Converts a an iterable into a numpy array using padding if necessary'
     if not is_listy(o) or not is_array(o):
-        if not hasattr(o, "ndim"): o = np.asarray([o])
-        else: o = np.asarray(o)
+        if not hasattr(o, "ndim"): o = np.asarray([o], dtype=object)
+        else: o = np.asarray(o, dtype=object)
     o_ndim = 1
     if o.ndim > 1:
         o_ndim = o.ndim

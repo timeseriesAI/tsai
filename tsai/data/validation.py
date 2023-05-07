@@ -439,7 +439,7 @@ def get_splits_len(splits):
 # %% ../../nbs/003_data.validation.ipynb 41
 def get_usable_idxs(df, fcst_history, fcst_horizon, stride=1):
     if len(df) < fcst_history + fcst_horizon:
-        return []
+        return np.array([], dtype=int)
     usable_idxs = df[fcst_history - 1:len(df) - fcst_horizon].index.values
     if stride != 1:
         usable_idxs = usable_idxs[::-stride][::-1]
@@ -452,7 +452,10 @@ def get_df_usable_idxs(
     fcst_horizon,               # # steps forecasted into the future (size of the sliding window for the target)
     stride=1,                   # int or tuple of 2 int containing the strides of the sliding windows (input and target)
     unique_id_cols=None,        # str indicating the column/s with the unique identifier/s for each entity
+    return_np_indices=False,    # bool indicating what type of indices are returned. Default to False (dataframe indices)
 ):
+    "Calculates the indices that can be used from a df when using a sliding window"
+    
     dtype = smallest_dtype(len(df))
     if unique_id_cols is not None:
         usable_df_idxs = np.sort(np.concatenate(df
@@ -465,7 +468,10 @@ def get_df_usable_idxs(
                                                                                 )).values, dtype=dtype))
     else:
         usable_df_idxs = np.sort(get_usable_idxs(df, fcst_history, fcst_horizon, stride).astype(dtype=dtype))
+    if return_np_indices:
+        usable_df_idxs = usable_df_idxs - (fcst_history - 1)
     return usable_df_idxs
+
 
 # %% ../../nbs/003_data.validation.ipynb 42
 def calculate_fcst_stats(
