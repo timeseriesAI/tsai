@@ -25,8 +25,8 @@ __all__ = ['Nan2Value', 'TSRandomStandardize', 'default_date_attr', 'PD_TIME_UNI
            'TSPositionGaps', 'TSRollingMean', 'TSLogReturn', 'TSAdd', 'TSClipByVar', 'TSDropVars', 'TSOneHotEncode',
            'TSPosition', 'TSShrinkDataFrame', 'object2date', 'TSOneHotEncoder', 'TSCategoricalEncoder',
            'TSDateTimeEncoder', 'TSDropIfTrueCols', 'TSApplyFunction', 'TSMissingnessEncoder', 'TSSortByColumns',
-           'TSSelectColumns', 'TSStepsSinceStart', 'TSStandardScaler', 'TSAddMissingTimestamps', 'TSDropDuplicates',
-           'TSFillMissing', 'Preprocessor', 'ReLabeler']
+           'TSSelectColumns', 'TSStepsSinceStart', 'TSStandardScaler', 'TSRobustScaler', 'TSAddMissingTimestamps',
+           'TSDropDuplicates', 'TSFillMissing', 'Preprocessor', 'ReLabeler']
 
 # %% ../../nbs/009_data.preprocessing.ipynb 6
 class ToNumpyCategory(Transform):
@@ -1372,6 +1372,48 @@ class TSStandardScaler(TransformerMixin, BaseEstimator):
         return X
 
 # %% ../../nbs/009_data.preprocessing.ipynb 112
+class TSRobustScaler(TransformerMixin, BaseEstimator):
+    """This Scaler removes the median and scales the data according to the quantile range (defaults to IQR: Interquartile Range)"""
+
+    def __init__(self, columns=None, quantile_range=(25.0, 75.0), eps=1e-6):
+        self.columns = listify(columns)
+        self.quantile_range = quantile_range
+        self.eps = np.array(eps, dtype='float32')
+
+    def fit(self, X, y=None, **fit_params):
+        assert isinstance(X, (pd.DataFrame, pd.Series))
+        if not self.columns:
+            if isinstance(X, pd.DataFrame):
+                self.columns = X.columns
+            else:
+                self.columns = X.name
+        idxs = fit_params.get("idxs", slice(None))
+        
+        self.median = []
+        for c in self.columns:
+            self.median.append(np.nanpercentile(X.loc[idxs, c], 50))
+
+        self.iqr = []
+        for c in self.columns:
+            q1 = np.nanpercentile(X.loc[idxs, c], self.quantile_range[0])
+            q3 = np.nanpercentile(X.loc[idxs, c], self.quantile_range[1])
+            self.iqr.append(q3 - q1)
+                
+        return self
+
+    def transform(self, X, **kwargs):
+        assert isinstance(X, (pd.DataFrame, pd.Series))
+        for c, m, q in zip(self.columns, self.median, self.iqr):
+            X[c] = (X[c] - m) / (q + self.eps)
+        return X
+
+    def inverse_transform(self, X, **kwargs):
+        assert isinstance(X, (pd.DataFrame, pd.Series))
+        for c, m, q in zip(self.columns, self.median, self.iqr):
+            X[c] = X[c] * (q + self.eps) + m
+        return X
+
+# %% ../../nbs/009_data.preprocessing.ipynb 114
 class TSAddMissingTimestamps(TransformerMixin, BaseEstimator):
     def __init__(self, datetime_col=None, use_index=False, unique_id_cols=None, fill_value=np.nan, range_by_group=True, 
                  start_date=None, end_date=None, freq=None):
@@ -1393,7 +1435,7 @@ class TSAddMissingTimestamps(TransformerMixin, BaseEstimator):
     def inverse_transform(self, X, **kwargs):
         return X
 
-# %% ../../nbs/009_data.preprocessing.ipynb 116
+# %% ../../nbs/009_data.preprocessing.ipynb 118
 class TSDropDuplicates(TransformerMixin, BaseEstimator):
     "Drop rows with duplicated values in a set of columns, optionally including a datetime column or index"
 
@@ -1430,7 +1472,7 @@ class TSDropDuplicates(TransformerMixin, BaseEstimator):
     def inverse_transform(self, X, **kwargs):
         return X
 
-# %% ../../nbs/009_data.preprocessing.ipynb 118
+# %% ../../nbs/009_data.preprocessing.ipynb 120
 class TSFillMissing(TransformerMixin, BaseEstimator):
     "Fill missing values in specified columns using the specified method and/ or value."
 
@@ -1471,7 +1513,7 @@ class TSFillMissing(TransformerMixin, BaseEstimator):
     def inverse_transform(self, X, **kwargs):
         return X
 
-# %% ../../nbs/009_data.preprocessing.ipynb 120
+# %% ../../nbs/009_data.preprocessing.ipynb 122
 class TSMissingnessEncoder(BaseEstimator, TransformerMixin):
 
     def __init__(self, columns=None):
@@ -1491,7 +1533,7 @@ class TSMissingnessEncoder(BaseEstimator, TransformerMixin):
     def inverse_transform(self, X):
         return X
 
-# %% ../../nbs/009_data.preprocessing.ipynb 124
+# %% ../../nbs/009_data.preprocessing.ipynb 126
 class Preprocessor():
     def __init__(self, preprocessor, **kwargs): 
         self.preprocessor = preprocessor(**kwargs)
@@ -1533,7 +1575,7 @@ setattr(YeoJohnshon, '__name__', 'YeoJohnshon')
 Quantile = partial(sklearn.preprocessing.QuantileTransformer, n_quantiles=1_000, output_distribution='normal', random_state=0)
 setattr(Quantile, '__name__', 'Quantile')
 
-# %% ../../nbs/009_data.preprocessing.ipynb 132
+# %% ../../nbs/009_data.preprocessing.ipynb 134
 def ReLabeler(cm):
     r"""Changes the labels in a dataset based on a dictionary (class mapping) 
         Args:
