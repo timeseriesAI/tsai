@@ -11,11 +11,9 @@ from fastai.learner import Learner, load_learner, Recorder
 from fastai.callback.schedule import *
 from fastai.optimizer import Adam
 from fastai.losses import MSELossFlat
-from .data.core import get_ts_dls
 from .imports import *
 from .models.utils import *
 from .models.InceptionTimePlus import *
-from .utils import remove_dir
 
 # %% ../nbs/018_learner.ipynb 4
 @patch
