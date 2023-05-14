@@ -11,9 +11,11 @@ from fastai.learner import Learner, load_learner, Recorder
 from fastai.callback.schedule import *
 from fastai.optimizer import Adam
 from fastai.losses import MSELossFlat
+from .data.core import get_ts_dls
 from .imports import *
 from .models.utils import *
 from .models.InceptionTimePlus import *
+from .utils import remove_dir
 
 # %% ../nbs/018_learner.ipynb 4
 @patch
@@ -104,6 +106,8 @@ def load_all(path='export', dls_fname='dls', model_fname='model', learner_fname=
 
     path = Path(path)
     learn = load_learner(path/f'{learner_fname}.pkl', cpu=cpu, pickle_module=pickle_module)
+    learn.path = path
+    learn.model_dir = Path() # '.'
     learn.load(f'{model_fname}', with_opt=True, device=device)
 
     
@@ -144,7 +148,7 @@ def load_all(path='export', dls_fname='dls', model_fname='model', learner_fname=
 
 load_learner_all = load_all
 
-# %% ../nbs/018_learner.ipynb 10
+# %% ../nbs/018_learner.ipynb 11
 @patch
 @delegates(subplots)
 def plot_metrics(self: Recorder, nrows=None, ncols=None, figsize=None, final_losses=True, perc=.5, **kwargs):
@@ -230,7 +234,7 @@ def plot_metrics(self: Recorder, nrows=None, ncols=None, figsize=None, final_los
 def plot_metrics(self: Learner, **kwargs):
     self.recorder.plot_metrics(**kwargs)
 
-# %% ../nbs/018_learner.ipynb 11
+# %% ../nbs/018_learner.ipynb 12
 all_arch_names =  ['FCN', 'FCNPlus', 'InceptionTime', 'InceptionTimePlus', 'InCoordTime', 'XCoordTime', 'InceptionTimePlus17x17', 'InceptionTimePlus32x32', 
                    'InceptionTimePlus47x47', 'InceptionTimePlus62x62', 'InceptionTimeXLPlus', 'MultiInceptionTimePlus', 'MiniRocketClassifier', "MiniRocket",
                    'MiniRocketRegressor', 'MiniRocketVotingClassifier', 'MiniRocketVotingRegressor', 'MiniRocketPlus', 
@@ -547,7 +551,7 @@ def get_arch(arch_name):
     assert arch.__name__.replace("Plus", "") == arch_name.replace("Plus", ""), f"{arch.__name__} - {arch_name}"
     return arch
 
-# %% ../nbs/018_learner.ipynb 13
+# %% ../nbs/018_learner.ipynb 14
 @delegates(build_ts_model)
 def ts_learner(dls, arch=None, c_in=None, c_out=None, seq_len=None, d=None, splitter=trainable_params,
                loss_func=None, opt_func=Adam, lr=defaults.lr, cbs=None, metrics=None, path=None,
@@ -585,7 +589,7 @@ def ts_learner(dls, arch=None, c_in=None, c_out=None, seq_len=None, d=None, spli
 
     return learn
 
-# %% ../nbs/018_learner.ipynb 14
+# %% ../nbs/018_learner.ipynb 15
 @delegates(build_tsimage_model)
 def tsimage_learner(dls, arch=None, pretrained=False,
                loss_func=None, opt_func=Adam, lr=defaults.lr, cbs=None, metrics=None, path=None,
@@ -606,6 +610,6 @@ def tsimage_learner(dls, arch=None, pretrained=False,
 
     return learn
 
-# %% ../nbs/018_learner.ipynb 15
+# %% ../nbs/018_learner.ipynb 16
 @patch
 def decoder(self:Learner, o): return L([self.dls.decodes(oi) for oi in o])
