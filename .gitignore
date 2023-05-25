@@ -140,7 +140,7 @@ checklink/cookies.txt
 .gitconfig
 
 
-
+exp/*
 old/*
 *_dev*
 *.npy
