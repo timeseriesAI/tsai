@@ -99,7 +99,7 @@ def load_all(path='export', dls_fname='dls', model_fname='model', learner_fname=
 
     if isinstance(device, int): device = torch.device('cuda', device)
     elif device is None: device = default_device()
-    if device == 'cpu': cpu = True
+    if device.type == 'cpu': cpu = True
     else: cpu = None
 
     path = Path(path)

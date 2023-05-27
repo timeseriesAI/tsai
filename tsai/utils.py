@@ -26,7 +26,7 @@ __all__ = ['rng', 'bytes2size', 'b2s', 'memmap2cache', 'cache_memmap', 'a', 'b',
            'plot_feature_dist', 'rolling_moving_average', 'ffill_sequence', 'bfill_sequence', 'fbfill_sequence',
            'dummify', 'shuffle_along_axis', 'analyze_feature', 'analyze_array', 'get_relpath', 'get_root',
            'to_root_path', 'split_in_chunks', 'save_object', 'load_object', 'get_idxs_to_keep', 'zerofy', 'feat2list',
-           'smallest_dtype', 'plot_forecast']
+           'smallest_dtype', 'plot_forecast', 'str2callable']
 
 # %% ../nbs/002_utils.ipynb 3
 from .imports import *
@@ -1675,3 +1675,53 @@ def plot_forecast(X_true, y_true, y_pred, sel_vars=None, idx=None, figsize=(8, 4
                 sel_vars = listify(sel_vars)
             for sel_var in sel_vars:
                 _plot_forecast(X_true, y_true, y_pred, sel_var=sel_var, idx=idx, figsize=figsize)
+
+# %% ../nbs/002_utils.ipynb 197
+def str2callable(
+    object_path: str = None # The string representing the object path.
+):
+    "Transform a string into a callable object without importing it in the script."
+
+
+    if object_path in [None, "null", "None", "none"]:
+        return None
+
+
+    pattern = r'([\w\.]+)\((.*)\)'
+    match = re.match(pattern, object_path)
+
+
+    if match:
+        path, args_str = match.groups()
+
+
+        # Parse the arguments string into a dictionary
+        kwargs = {}
+        if args_str:
+            for arg_str in args_str.split(','):
+                key, value = arg_str.split('=')
+                kwargs[key.strip()] = eval(value.strip())
+
+
+        mod_name, object_name = path.rsplit(".", 1)
+    else:
+        mod_name, object_name = object_path.rsplit(".", 1)
+        kwargs = {}
+
+
+    try:
+        mod = importlib.import_module(mod_name)
+        obj = getattr(mod, object_name)
+
+
+        if inspect.isclass(obj):
+            return obj(**kwargs)
+        elif inspect.isfunction(obj):
+            return functools.partial(obj, **kwargs)
+        else:
+            raise TypeError(f"{object_path} is not a class or a function")
+    except (ImportError, AttributeError) as e:
+        raise ImportError(f"Failed to import {object_path}: {e}")
+    except Exception as e:
+        raise TypeError(f"{object_path} is not a class or a function: {e}")
+
