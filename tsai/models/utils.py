@@ -140,6 +140,8 @@ def transfer_weights(model, weights_path:Path, device:torch.device=None, exclude
 
 # %% ../../nbs/030_models.utils.ipynb 13
 def build_ts_model(arch, c_in=None, c_out=None, seq_len=None, d=None, dls=None, device=None, verbose=False, 
+                   s_cat_idxs=None, s_cat_embeddings=None, s_cat_embedding_dims=None, s_cont_idxs=None, 
+                   o_cat_idxs=None, o_cat_embeddings=None, o_cat_embedding_dims=None, o_cont_idxs=None,
                    pretrained=False, weights_path=None, exclude_head=True, cut=-1, init=None, arch_config={}, **kwargs):
 
     device = ifnone(device, default_device())
@@ -148,40 +150,47 @@ def build_ts_model(arch, c_in=None, c_out=None, seq_len=None, d=None, dls=None, 
         c_out = ifnone(c_out, dls.c)
         seq_len = ifnone(seq_len, dls.len)
         d = ifnone(d, dls.d)
-    if d and not 'patchtst' in arch.__name__.lower(): 
-        if 'custom_head' not in kwargs.keys(): 
-            if "rocket" in arch.__name__.lower():
-                kwargs['custom_head'] = partial(rocket_nd_head, d=d)
-            elif "xresnet1d" in arch.__name__.lower():
-                kwargs["custom_head"] = partial(xresnet1d_nd_head, d=d)
-            else:
-                kwargs['custom_head'] = partial(lin_nd_head, d=d)
-        elif not isinstance(kwargs['custom_head'], nn.Module):
-            kwargs['custom_head'] = partial(kwargs['custom_head'], d=d)
-    if 'ltsf_' in arch.__name__.lower() or 'patchtst' in arch.__name__.lower():
-        pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} seq_len={seq_len} pred_dim={d} arch_config={arch_config}, kwargs={kwargs})', verbose)
-        model = (arch(c_in=c_in, c_out=c_out, seq_len=seq_len, pred_dim=d, **arch_config, **kwargs)).to(device=device)
-    elif sum([1 for v in ['RNN_FCN', 'LSTM_FCN', 'RNNPlus', 'LSTMPlus', 'GRUPlus', 'InceptionTime', 'TSiT', 'Sequencer', 'XceptionTimePlus',
-                        'GRU_FCN', 'OmniScaleCNN', 'mWDN', 'TST', 'XCM', 'MLP', 'MiniRocket', 'InceptionRocket', 'ResNetPlus', 
-                        'RNNAttention', 'LSTMAttention', 'GRUAttention']
-            if v in arch.__name__]):
-        pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} seq_len={seq_len} arch_config={arch_config} kwargs={kwargs})', verbose)
-        model = arch(c_in, c_out, seq_len=seq_len, **arch_config, **kwargs).to(device=device)
-    elif 'xresnet' in arch.__name__ and not '1d' in arch.__name__:
-        pv(f'arch: {arch.__name__}(c_in={c_in} n_out={c_out} arch_config={arch_config} kwargs={kwargs})', verbose)
-        model = (arch(c_in=c_in, n_out=c_out, **arch_config, **kwargs)).to(device=device)
-    elif 'xresnet1d' in arch.__name__.lower():
-        pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} seq_len={seq_len} arch_config={arch_config} kwargs={kwargs})', verbose)
-        model = (arch(c_in=c_in, c_out=c_out, seq_len=seq_len, **arch_config, **kwargs)).to(device=device)
-    elif 'minirockethead' in arch.__name__.lower():
-        pv(f'arch: {arch.__name__}(c_in={c_in} seq_len={seq_len} arch_config={arch_config} kwargs={kwargs})', verbose)
-        model = (arch(c_in, c_out, seq_len=1, **arch_config, **kwargs)).to(device=device)
-    elif 'rocket' in arch.__name__.lower():
-        pv(f'arch: {arch.__name__}(c_in={c_in} seq_len={seq_len} arch_config={arch_config} kwargs={kwargs})', verbose)
-        model = (arch(c_in=c_in, seq_len=seq_len, **arch_config, **kwargs)).to(device=device)
+    
+    if s_cat_idxs or s_cat_embeddings or s_cat_embedding_dims or s_cont_idxs or o_cat_idxs or o_cat_embeddings or o_cat_embedding_dims or o_cont_idxs:
+        from tsai.models.multimodal import MultInputWrapper
+        model = MultInputWrapper(arch, c_in=c_in, c_out=c_out, seq_len=seq_len, d=d,
+                                    s_cat_idxs=s_cat_idxs, s_cat_embeddings=s_cat_embeddings, s_cat_embedding_dims=s_cat_embedding_dims, s_cont_idxs=s_cont_idxs, 
+                                    o_cat_idxs=o_cat_idxs, o_cat_embeddings=o_cat_embeddings, o_cat_embedding_dims=o_cat_embedding_dims, o_cont_idxs=o_cont_idxs, **kwargs)
     else:
-        pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} arch_config={arch_config} kwargs={kwargs})', verbose)
-        model = arch(c_in, c_out, **arch_config, **kwargs).to(device=device)
+        if d and not 'patchtst' in arch.__name__.lower(): 
+            if 'custom_head' not in kwargs.keys(): 
+                if "rocket" in arch.__name__.lower():
+                    kwargs['custom_head'] = partial(rocket_nd_head, d=d)
+                elif "xresnet1d" in arch.__name__.lower():
+                    kwargs["custom_head"] = partial(xresnet1d_nd_head, d=d)
+                else:
+                    kwargs['custom_head'] = partial(lin_nd_head, d=d)
+            elif not isinstance(kwargs['custom_head'], nn.Module):
+                kwargs['custom_head'] = partial(kwargs['custom_head'], d=d)
+        if 'ltsf_' in arch.__name__.lower() or 'patchtst' in arch.__name__.lower():
+            pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} seq_len={seq_len} pred_dim={d} arch_config={arch_config}, kwargs={kwargs})', verbose)
+            model = (arch(c_in=c_in, c_out=c_out, seq_len=seq_len, pred_dim=d, **arch_config, **kwargs)).to(device=device)
+        elif sum([1 for v in ['RNN_FCN', 'LSTM_FCN', 'RNNPlus', 'LSTMPlus', 'GRUPlus', 'InceptionTime', 'TSiT', 'Sequencer', 'XceptionTimePlus',
+                            'GRU_FCN', 'OmniScaleCNN', 'mWDN', 'TST', 'XCM', 'MLP', 'MiniRocket', 'InceptionRocket', 'ResNetPlus', 
+                            'RNNAttention', 'LSTMAttention', 'GRUAttention', 'MultiRocket', 'MultiRocketPlus']
+                if v in arch.__name__]):
+            pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} seq_len={seq_len} arch_config={arch_config} kwargs={kwargs})', verbose)
+            model = arch(c_in, c_out, seq_len=seq_len, **arch_config, **kwargs).to(device=device)
+        elif 'xresnet' in arch.__name__ and not '1d' in arch.__name__:
+            pv(f'arch: {arch.__name__}(c_in={c_in} n_out={c_out} arch_config={arch_config} kwargs={kwargs})', verbose)
+            model = (arch(c_in=c_in, n_out=c_out, **arch_config, **kwargs)).to(device=device)
+        elif 'xresnet1d' in arch.__name__.lower():
+            pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} seq_len={seq_len} arch_config={arch_config} kwargs={kwargs})', verbose)
+            model = (arch(c_in=c_in, c_out=c_out, seq_len=seq_len, **arch_config, **kwargs)).to(device=device)
+        elif 'minirockethead' in arch.__name__.lower():
+            pv(f'arch: {arch.__name__}(c_in={c_in} seq_len={seq_len} arch_config={arch_config} kwargs={kwargs})', verbose)
+            model = (arch(c_in, c_out, seq_len=1, **arch_config, **kwargs)).to(device=device)
+        elif 'rocket' in arch.__name__.lower():
+            pv(f'arch: {arch.__name__}(c_in={c_in} seq_len={seq_len} arch_config={arch_config} kwargs={kwargs})', verbose)
+            model = (arch(c_in=c_in, seq_len=seq_len, **arch_config, **kwargs)).to(device=device)
+        else:
+            pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} arch_config={arch_config} kwargs={kwargs})', verbose)
+            model = arch(c_in, c_out, **arch_config, **kwargs).to(device=device)
 
     try:
         model[0], model[1]
@@ -273,7 +282,11 @@ def output_size_calculator(mod, c_in, seq_len=None):
         xb = torch.rand(1, c_in, seq_len)
     training = mod.training
     mod.eval()
-    c_out, q_len = mod.to(xb.device)(xb).shape[1:]
+    output_shape = tuple(mod.to(xb.device)(xb).shape)
+    if len(output_shape) == 2:
+        c_out, q_len = output_shape[1], None
+    else:
+        c_out, q_len = output_shape[1:]
     mod.training = training
     if return_q_len:
         return c_out, q_len

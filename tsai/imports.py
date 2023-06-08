@@ -152,8 +152,8 @@ def save_nb(nb_name=None, attempts=1, verbose=True, wait=2):
         for i in range(attempts):
             _save_nb()
             # confirm it's saved. This takes come variable time.
-            for j in range(20):
-                time.sleep(0.5)
+            for j in range(10):
+                time.sleep(1)
                 saved_time = os.path.getmtime(nb_name)
                 if saved_time >= current_time:
                     break

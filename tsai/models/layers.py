@@ -1066,7 +1066,7 @@ class lin_nd_head(nn.Sequential):
             layers += [nn.Dropout(fc_dropout)]
         if d is None:
             if not flatten or seq_len == 1:
-                layers += [nn.AdaptiveAvgPool1d(1), Squeeze(-1), nn.Linear(nf, n_out)]
+                layers += [nn.AdaptiveAvgPool1d(1), Squeeze(-1), nn.Linear(n_in, n_out)]
                 if n_out == 1:
                     layers += [Squeeze(-1)]
             else:

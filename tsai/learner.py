@@ -235,7 +235,7 @@ def plot_metrics(self: Learner, **kwargs):
 # %% ../nbs/018_learner.ipynb 12
 all_arch_names =  ['FCN', 'FCNPlus', 'InceptionTime', 'InceptionTimePlus', 'InCoordTime', 'XCoordTime', 'InceptionTimePlus17x17', 'InceptionTimePlus32x32', 
                    'InceptionTimePlus47x47', 'InceptionTimePlus62x62', 'InceptionTimeXLPlus', 'MultiInceptionTimePlus', 'MiniRocketClassifier', "MiniRocket",
-                   'MiniRocketRegressor', 'MiniRocketVotingClassifier', 'MiniRocketVotingRegressor', 'MiniRocketPlus', 
+                   'MiniRocketRegressor', 'MiniRocketVotingClassifier', 'MiniRocketVotingRegressor', 'MiniRocketPlus', 'MultiRocket', 'MultiRocketPlus',
                    'MiniRocketHead', 'InceptionRocketPlus', 'MLP', 'gMLP', 'MultiInputNet', 'OmniScaleCNN', 'RNN', 'LSTM', 'GRU', 
                    'RNNPlus', 'LSTMPlus', 'GRUPlus', 'RNN_FCN', 'LSTM_FCN', 'GRU_FCN', 'MRNN_FCN', 'MLSTM_FCN', 'MGRU_FCN', 'ROCKET', 'RocketClassifier', 
                    'RocketRegressor', 'ResCNN', 'ResNet', 'ResNetPlus', 'TCN', 'TSPerceiver', 'TST', 'TSTPlus', 'MultiTSTPlus', 'TSiTPlus', 
@@ -248,6 +248,8 @@ all_arch_names =  ['FCN', 'FCNPlus', 'InceptionTime', 'InceptionTimePlus', 'InCo
 
 
 def get_arch(arch_name):
+    if not isinstance(arch_name, str): return arch_name
+    arch = None
     if arch_name == "FCN":  
         from tsai.models.FCN import FCN
         arch = FCN
@@ -302,6 +304,12 @@ def get_arch(arch_name):
     elif arch_name == "MiniRocket":  
         from tsai.models.MINIROCKET_Pytorch import MiniRocket
         arch = MiniRocket
+    elif arch_name == "MultiRocket":  
+        from tsai.models.MultiRocketPlus import MultiRocket
+        arch = MultiRocket
+    elif arch_name == "MultiRocketPlus":  
+        from tsai.models.MultiRocketPlus import MultiRocketPlus
+        arch = MultiRocketPlus
     elif arch_name == "MiniRocketPlus":  
         from tsai.models.MINIROCKETPlus_Pytorch import MiniRocketPlus
         arch = MiniRocketPlus
@@ -452,9 +460,6 @@ def get_arch(arch_name):
     elif arch_name == "XCMPlus":  
         from tsai.models.XCMPlus import XCMPlus
         arch = XCMPlus
-    elif arch_name == "XResNet1d":  
-        from tsai.models.XResNet1d import XResNet1d
-        arch = XResNet1d
     elif arch_name == "xresnet1d18":  
         from tsai.models.XResNet1d import xresnet1d18
         arch = xresnet1d18
@@ -545,7 +550,9 @@ def get_arch(arch_name):
     elif arch_name == "GRUAttention":  
         from tsai.models.RNNAttention import GRUAttention
         arch = GRUAttention
-    else: print(f"please, confirm the name of the architecture ({arch_name})")
+    else: 
+        raise ValueError(f"Architecture {arch_name} not found. Please, check the name is correct.")
+    
     assert arch.__name__.replace("Plus", "") == arch_name.replace("Plus", ""), f"{arch.__name__} - {arch_name}"
     return arch
 
