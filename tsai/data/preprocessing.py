@@ -23,10 +23,11 @@ __all__ = ['Nan2Value', 'TSRandomStandardize', 'default_date_attr', 'PD_TIME_UNI
            'TSClip', 'TSSelfMissingness', 'TSRobustScale', 'get_stats_with_uncertainty', 'get_random_stats',
            'TSGaussianStandardize', 'TSDiff', 'TSLog', 'TSCyclicalPosition', 'TSLinearPosition', 'TSMissingness',
            'TSPositionGaps', 'TSRollingMean', 'TSLogReturn', 'TSAdd', 'TSClipByVar', 'TSDropVars', 'TSOneHotEncode',
-           'TSPosition', 'TSShrinkDataFrame', 'object2date', 'TSOneHotEncoder', 'TSCategoricalEncoder',
-           'TSTargetEncoder', 'TSDateTimeEncoder', 'TSDropIfTrueCols', 'TSApplyFunction', 'TSMissingnessEncoder',
-           'TSSortByColumns', 'TSSelectColumns', 'TSStepsSinceStart', 'TSStandardScaler', 'TSRobustScaler',
-           'TSAddMissingTimestamps', 'TSDropDuplicates', 'TSFillMissing', 'Preprocessor', 'ReLabeler']
+           'TSPosition', 'PatchEncoder', 'TSPatchEncoder', 'TSTuplePatchEncoder', 'TSShrinkDataFrame', 'object2date',
+           'TSOneHotEncoder', 'TSCategoricalEncoder', 'TSTargetEncoder', 'TSDateTimeEncoder', 'TSDropIfTrueCols',
+           'TSApplyFunction', 'TSMissingnessEncoder', 'TSSortByColumns', 'TSSelectColumns', 'TSStepsSinceStart',
+           'TSStandardScaler', 'TSRobustScaler', 'TSAddMissingTimestamps', 'TSDropDuplicates', 'TSFillMissing',
+           'Preprocessor', 'ReLabeler']
 
 # %% ../../nbs/009_data.preprocessing.ipynb 6
 class ToNumpyCategory(Transform):
@@ -861,7 +862,159 @@ class TSPosition(Transform):
         steps = self.steps.expand(bs, -1, -1).to(device=o.device, dtype=o.dtype)
         return torch.cat([o, steps], 1)
 
-# %% ../../nbs/009_data.preprocessing.ipynb 80
+# %% ../../nbs/009_data.preprocessing.ipynb 79
+import torch
+import torch.nn.functional as F
+
+class PatchEncoder():
+    "Creates a sequence of patches from a 3d input tensor."
+
+    def __init__(self, 
+        patch_len:int, # Number of time steps in each patch.
+        patch_stride:int=None, # Stride of the patch.
+        pad_at_start:bool=True, # If True, pad the input tensor at the start to ensure that the input tensor is evenly divisible by the patch length.
+        value:float=0.0, # Value to pad the input tensor with.
+        seq_len:int=None, # Number of time steps in the input tensor. If None, make sure seq_len >= patch_len and a multiple of stride
+        merge_dims:bool=True, # If True, merge channels within the same patch.
+        reduction:str='none', # type of reduction applied. Available: "none", "mean", "min", "max", "mode"
+        reduction_dim:int=-1, # dimension where the reduction is applied
+        swap_dims:tuple=None, # If True, swap the time and channel dimensions.
+        ):
+        super().__init__()
+
+        self.seq_len = seq_len
+        self.patch_len = patch_len
+        self.patch_stride = patch_stride or patch_len
+        self.pad_at_start = pad_at_start
+        self.value = value
+        self.merge_dims = merge_dims
+
+        assert reduction in ["none", "mean", "min", "max", "mode"]
+        self.reduction = reduction
+        self.reduction_dim = reduction_dim
+        self.swap_dims = swap_dims
+        
+        if seq_len is None:
+            self.pad_size = 0
+        elif self.seq_len < self.patch_len:
+            self.pad_size = self.patch_len - self.seq_len
+        else:
+            if (self.seq_len % self.patch_len) % self.patch_stride == 0:
+                self.pad_size = 0
+            else:
+                self.pad_size = self.patch_stride - (self.seq_len % self.patch_len) % self.patch_stride
+
+    def __call__(self, 
+        x: torch.Tensor # 3d input tensor with shape [batch size, sequence length, channels]
+        ) -> torch.Tensor: #  Transformed tensor of patches with shape [batch size, channels*patch length, number of patches]
+
+        if x.ndim == 2:
+            x = x[:, None]
+            
+        bs, c_in, *_ = x.size()
+        if not bs: 
+            return x
+        
+        if self.pad_size:
+            x = F.pad(x, (self.pad_size, 0), value=self.value) if self.pad_at_start else F.pad(x, (0, self.pad_size), value=self.value)
+        
+        x = x.unfold(2, self.patch_len, self.patch_stride)
+        x = x.permute(0, 1, 3, 2)
+        if self.merge_dims:
+            x = x.reshape(bs, c_in * self.patch_len, -1)
+
+        if self.reduction == "mean":
+            x = x.mean(self.reduction_dim)
+        elif self.reduction == "min":
+            x = x.min(self.reduction_dim).values
+        elif self.reduction == "max":
+            x = x.max(self.reduction_dim).values
+        elif self.reduction == "mode":
+            x = x.mode(self.reduction_dim).values
+
+        if self.swap_dims:
+            x = x.swapaxes(*self.swap_dims)
+
+        return x
+
+# %% ../../nbs/009_data.preprocessing.ipynb 81
+class TSPatchEncoder(Transform):
+    "Tansforms a time series into a sequence of patches along the last dimension"
+    order = 90
+    
+    def __init__(self, 
+        patch_len:int, # Number of time steps in each patch.
+        patch_stride:int=None, # Stride of the patch.
+        pad_at_start:bool=True, # If True, pad the input tensor at the start to ensure that the input tensor is evenly divisible by the patch length.
+        value:float=0.0, # Value to pad the input tensor with.
+        seq_len:int=None, # Number of time steps in the input tensor. If None, make sure seq_len >= patch_len and a multiple of stride
+        merge_dims:bool=True, # If True, merge channels within the same patch.
+        reduction:str='none', # type of reduction applied. Available: "none", "mean", "min", "max", "mode"
+        reduction_dim:int=-2, # dimension where the y reduction is applied.
+        swap_dims:tuple=None, # If True, swap the time and channel dimensions.
+        ):
+        super().__init__()
+
+        self.patch_encoder = PatchEncoder(patch_len=patch_len, 
+                                          patch_stride=patch_stride, 
+                                          pad_at_start=pad_at_start, 
+                                          value=value,
+                                          seq_len=seq_len, 
+                                          merge_dims=merge_dims,
+                                          reduction=reduction,
+                                          reduction_dim=reduction_dim,
+                                          swap_dims=swap_dims)
+
+    def encodes(self, o:TSTensor):
+        return self.patch_encoder(o)
+
+# %% ../../nbs/009_data.preprocessing.ipynb 83
+from fastcore.transform import ItemTransform
+
+class TSTuplePatchEncoder(ItemTransform):
+    "Tansforms a time series with x and y into sequences of patches along the last dimension"
+    order = 90
+    
+    def __init__(self, 
+        patch_len:int, # Number of time steps in each patch.
+        patch_stride:int=None, # Stride of the patch.
+        pad_at_start:bool=True, # If True, pad the input tensor at the start to ensure that the input tensor is evenly divisible by the patch length.
+        value:float=0.0, # Value to pad the input tensor with.
+        seq_len:int=None, # Number of time steps in the input tensor. If None, make sure seq_len >= patch_len and a multiple of stride
+        merge_dims:bool=True, # If True, merge y channels within the same patch.
+        reduction:str='none', # type of reduction applied to y. Available: "none", "mean", "min", "max", "mode"
+        reduction_dim:int=-2, # dimension where the y reduction is applied.
+        swap_dims:tuple=None, # If True, swap the time and channel dimensions in y.
+        ):
+        super().__init__()
+
+        self.x_patch_encoder = PatchEncoder(patch_len=patch_len, 
+                                            patch_stride=patch_stride, 
+                                            pad_at_start=pad_at_start, 
+                                            value=value,
+                                            seq_len=seq_len)
+
+        self.y_patch_encoder = PatchEncoder(patch_len=patch_len, 
+                                            patch_stride=patch_stride, 
+                                            pad_at_start=pad_at_start, 
+                                            value=value,
+                                            seq_len=seq_len, 
+                                            merge_dims=merge_dims,
+                                            reduction=reduction,
+                                            reduction_dim=reduction_dim,
+                                            swap_dims=swap_dims)
+
+    def encodes(self, xy):
+        if len(xy) == 2:
+            x, y = xy
+            x, y = self.x_patch_encoder(x), self.y_patch_encoder(y)
+            return (x, y)
+        elif len(xy) == 1:
+            x = xy[0]
+            x = self.x_patch_encoder(x)
+            return (x, )
+
+# %% ../../nbs/009_data.preprocessing.ipynb 86
 class TSShrinkDataFrame(BaseEstimator, TransformerMixin):
     """A transformer to shrink dataframe or series memory usage"""
 
@@ -924,7 +1077,7 @@ def object2date(x, format=None):
     except:
         return x
 
-# %% ../../nbs/009_data.preprocessing.ipynb 84
+# %% ../../nbs/009_data.preprocessing.ipynb 90
 class TSOneHotEncoder(BaseEstimator, TransformerMixin):
     "Encode categorical variables using one-hot encoding"
 
@@ -978,7 +1131,7 @@ class TSOneHotEncoder(BaseEstimator, TransformerMixin):
             X = X.drop(self.new_cols, axis=1)
         return X
 
-# %% ../../nbs/009_data.preprocessing.ipynb 86
+# %% ../../nbs/009_data.preprocessing.ipynb 92
 class TSCategoricalEncoder(BaseEstimator, TransformerMixin):
     """A transformer to encode categorical columns"""
 
@@ -1085,7 +1238,7 @@ class TSCategoricalEncoder(BaseEstimator, TransformerMixin):
         else:
             return pd.CategoricalDtype(categories=np.sort(categories) if self.sort else categories, ordered=True)
 
-# %% ../../nbs/009_data.preprocessing.ipynb 92
+# %% ../../nbs/009_data.preprocessing.ipynb 98
 class TSTargetEncoder(TransformerMixin, BaseEstimator):
     def __init__(self, 
         target_column, # column containing the target 
@@ -1144,7 +1297,7 @@ class TSTargetEncoder(TransformerMixin, BaseEstimator):
     def inverse_transform(self, X, **kwargs):
         raise NotImplementedError("This method cannot be implemented because the original data cannot be reconstructed exactly.")
 
-# %% ../../nbs/009_data.preprocessing.ipynb 94
+# %% ../../nbs/009_data.preprocessing.ipynb 100
 default_date_attr = ['Year', 'Month', 'Week', 'Day', 'Dayofweek', 'Dayofyear', 'Is_month_end', 'Is_month_start', 
                      'Is_quarter_end', 'Is_quarter_start', 'Is_year_end', 'Is_year_start']
 
@@ -1152,7 +1305,7 @@ class TSDateTimeEncoder(BaseEstimator, TransformerMixin):
 
     def __init__(self, datetime_columns=None, prefix=None, drop=True, time=False, attr=default_date_attr):
         self.datetime_columns = listify(datetime_columns)
-        self.prefix, self.drop, self.time, self.attr = prefix, drop, time ,attr
+        self.prefix, self.drop, self.time, self.attr = prefix, drop, time, listify(attr)
         
     def fit(self, X, y=None, **fit_params):
         assert isinstance(X, pd.DataFrame)
@@ -1177,7 +1330,7 @@ class TSDateTimeEncoder(BaseEstimator, TransformerMixin):
             if self.drop: X = X.drop(self.datetime_columns, axis=1)
         return X
 
-# %% ../../nbs/009_data.preprocessing.ipynb 97
+# %% ../../nbs/009_data.preprocessing.ipynb 103
 class TSDropIfTrueCols(BaseEstimator, TransformerMixin):
 
     def __init__(self, columns=None):
@@ -1198,7 +1351,7 @@ class TSDropIfTrueCols(BaseEstimator, TransformerMixin):
     def inverse_transform(self, X, **kwargs):
         raise NotImplementedError("Inverse transform is not implemented for TSDropIfTrueCols")
 
-# %% ../../nbs/009_data.preprocessing.ipynb 99
+# %% ../../nbs/009_data.preprocessing.ipynb 105
 class TSApplyFunction(BaseEstimator, TransformerMixin):
 
     def __init__(self, function, groups=None, group_keys=False, axis=1, columns=None, reset_index=False, drop=True):
@@ -1235,7 +1388,7 @@ class TSApplyFunction(BaseEstimator, TransformerMixin):
     def inverse_transform(self, X, **kwargs):
         raise NotImplementedError("Inverse transform is not implemented for ApplyFunction")
 
-# %% ../../nbs/009_data.preprocessing.ipynb 103
+# %% ../../nbs/009_data.preprocessing.ipynb 109
 class TSMissingnessEncoder(BaseEstimator, TransformerMixin):
 
     def __init__(self, columns=None):
@@ -1257,7 +1410,7 @@ class TSMissingnessEncoder(BaseEstimator, TransformerMixin):
         X.drop(self.missing_columns, axis=1, inplace=True)
         return X
 
-# %% ../../nbs/009_data.preprocessing.ipynb 105
+# %% ../../nbs/009_data.preprocessing.ipynb 111
 class TSSortByColumns(TransformerMixin, BaseEstimator):
     "Transforms a dataframe by sorting by columns."
 
@@ -1290,7 +1443,7 @@ class TSSortByColumns(TransformerMixin, BaseEstimator):
     def inverse_transform(self, X, **kwargs):
         return X
 
-# %% ../../nbs/009_data.preprocessing.ipynb 107
+# %% ../../nbs/009_data.preprocessing.ipynb 113
 class TSSelectColumns(TransformerMixin, BaseEstimator):
     "Transform used to select columns"
 
@@ -1312,7 +1465,7 @@ class TSSelectColumns(TransformerMixin, BaseEstimator):
     def inverse_transform(self, X, **kwargs):
         return X
 
-# %% ../../nbs/009_data.preprocessing.ipynb 109
+# %% ../../nbs/009_data.preprocessing.ipynb 115
 PD_TIME_UNITS = dict([
     ("Y", "year"), 
     ("M", "month"), 
@@ -1381,7 +1534,7 @@ class TSStepsSinceStart(BaseEstimator, TransformerMixin):
             X[self.datetime_col] = datetimes
         return X
 
-# %% ../../nbs/009_data.preprocessing.ipynb 111
+# %% ../../nbs/009_data.preprocessing.ipynb 117
 class TSStandardScaler(TransformerMixin, BaseEstimator):
     "Scale the values of specified columns in the input DataFrame to have a mean of 0 and standard deviation of 1."
 
@@ -1430,7 +1583,7 @@ class TSStandardScaler(TransformerMixin, BaseEstimator):
             X[c] = X[c] * (s + self.eps)  + m
         return X
 
-# %% ../../nbs/009_data.preprocessing.ipynb 114
+# %% ../../nbs/009_data.preprocessing.ipynb 120
 class TSRobustScaler(TransformerMixin, BaseEstimator):
     """This Scaler removes the median and scales the data according to the quantile range (defaults to IQR: Interquartile Range)"""
 
@@ -1472,7 +1625,7 @@ class TSRobustScaler(TransformerMixin, BaseEstimator):
             X[c] = X[c] * (q + self.eps) + m
         return X
 
-# %% ../../nbs/009_data.preprocessing.ipynb 116
+# %% ../../nbs/009_data.preprocessing.ipynb 122
 class TSAddMissingTimestamps(TransformerMixin, BaseEstimator):
     def __init__(self, datetime_col=None, use_index=False, unique_id_cols=None, fill_value=np.nan, range_by_group=True, 
                  start_date=None, end_date=None, freq=None):
@@ -1494,7 +1647,7 @@ class TSAddMissingTimestamps(TransformerMixin, BaseEstimator):
     def inverse_transform(self, X, **kwargs):
         return X
 
-# %% ../../nbs/009_data.preprocessing.ipynb 120
+# %% ../../nbs/009_data.preprocessing.ipynb 126
 class TSDropDuplicates(TransformerMixin, BaseEstimator):
     "Drop rows with duplicated values in a set of columns, optionally including a datetime column or index"
 
@@ -1531,7 +1684,7 @@ class TSDropDuplicates(TransformerMixin, BaseEstimator):
     def inverse_transform(self, X, **kwargs):
         return X
 
-# %% ../../nbs/009_data.preprocessing.ipynb 122
+# %% ../../nbs/009_data.preprocessing.ipynb 128
 class TSFillMissing(TransformerMixin, BaseEstimator):
     "Fill missing values in specified columns using the specified method and/ or value."
 
@@ -1572,7 +1725,7 @@ class TSFillMissing(TransformerMixin, BaseEstimator):
     def inverse_transform(self, X, **kwargs):
         return X
 
-# %% ../../nbs/009_data.preprocessing.ipynb 124
+# %% ../../nbs/009_data.preprocessing.ipynb 130
 class TSMissingnessEncoder(BaseEstimator, TransformerMixin):
 
     def __init__(self, columns=None):
@@ -1592,7 +1745,7 @@ class TSMissingnessEncoder(BaseEstimator, TransformerMixin):
     def inverse_transform(self, X):
         return X
 
-# %% ../../nbs/009_data.preprocessing.ipynb 128
+# %% ../../nbs/009_data.preprocessing.ipynb 134
 class Preprocessor():
     def __init__(self, preprocessor, **kwargs): 
         self.preprocessor = preprocessor(**kwargs)
@@ -1634,7 +1787,7 @@ setattr(YeoJohnshon, '__name__', 'YeoJohnshon')
 Quantile = partial(sklearn.preprocessing.QuantileTransformer, n_quantiles=1_000, output_distribution='normal', random_state=0)
 setattr(Quantile, '__name__', 'Quantile')
 
-# %% ../../nbs/009_data.preprocessing.ipynb 136
+# %% ../../nbs/009_data.preprocessing.ipynb 142
 def ReLabeler(cm):
     r"""Changes the labels in a dataset based on a dictionary (class mapping) 
         Args:
