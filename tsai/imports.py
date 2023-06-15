@@ -26,6 +26,7 @@ from functools import partial
 from numbers import Integral
 from pathlib import Path
 from time import strftime
+from tqdm import tqdm
 from typing import (
     Dict,
     Generator,
