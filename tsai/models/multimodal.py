@@ -10,6 +10,7 @@ from fastcore.test import test_eq
 from fastcore.xtras import L
 from fastai.tabular.model import emb_sz_rule
 from ..data.core import TSDataLoaders
+from ..data.preprocessing import PatchEncoder
 from ..learner import get_arch
 from .utils import build_ts_model, output_size_calculator
 from .layers import Reshape, LinBnDrop, get_act_fn, lin_nd_head, rocket_nd_head
@@ -138,16 +139,18 @@ class MultInputWrapper(nn.Module):
         d:tuple=None, # shape of the output tensor
         dls:TSDataLoaders=None, # TSDataLoaders object
         s_cat_idxs:list=None, # list of indices for static categorical variables
-        s_cat_embeddings=None, # list of num_embeddings for each static categorical variable
-        s_cat_embedding_dims=None, # list of embedding dimensions for each static categorical variable
+        s_cat_embeddings:list=None, # list of num_embeddings for each static categorical variable
+        s_cat_embedding_dims:list=None, # list of embedding dimensions for each static categorical variable
         s_cont_idxs:list=None, # list of indices for static continuous variables
         o_cat_idxs:list=None, # list of indices for observed categorical variables
-        o_cat_embeddings=None, # list of num_embeddings for each observed categorical variable
-        o_cat_embedding_dims=None, # list of embedding dimensions for each observed categorical variable
+        o_cat_embeddings:list=None, # list of num_embeddings for each observed categorical variable
+        o_cat_embedding_dims:list=None, # list of embedding dimensions for each observed categorical variable
         o_cont_idxs:list=None, # list of indices for observed continuous variables
-        flatten=False, # boolean indicating whether to flatten bacbone's output tensor
-        use_bn=False, # boolean indicating whether to use batch normalization in the head
-        fc_dropout=0., # dropout probability for the fully connected layer in the head
+        patch_len:int=None, # Number of time steps in each patch.
+        patch_stride:int=None, # Stride of the patch.
+        flatten:bool=False, # boolean indicating whether to flatten bacbone's output tensor
+        use_bn:bool=False, # boolean indicating whether to use batch normalization in the head
+        fc_dropout:float=0., # dropout probability for the fully connected layer in the head
         custom_head=None, # custom head to replace the default head
         **kwargs
     ):
@@ -168,10 +171,20 @@ class MultInputWrapper(nn.Module):
         # embeddings
         self.s_embeddings = Embeddings(s_cat_embeddings, s_cat_embedding_dims)
         self.o_embeddings = Embeddings(o_cat_embeddings, o_cat_embedding_dims)
+
+        # patch encoder
+        if patch_len is not None:
+            patch_stride = patch_stride or patch_len
+            self.patch_encoder = PatchEncoder(patch_len, patch_stride, seq_len=seq_len)
+            c_mult = patch_len
+            seq_len = (seq_len + self.patch_encoder.pad_size - patch_len) // patch_stride + 1
+        else:
+            self.patch_encoder = nn.Identity()
+            c_mult = 1
         
         # backbone
         n_s_features = len(self.splitter.s_cont_idxs) + self.s_embeddings.embedding_dims
-        n_o_features = len(self.splitter.o_cont_idxs) + self.o_embeddings.embedding_dims
+        n_o_features = (len(self.splitter.o_cont_idxs) + self.o_embeddings.embedding_dims) * c_mult
         s_backbone = StaticBackbone(c_in=n_s_features, c_out=c_out, seq_len=1, **kwargs)
         if isinstance(arch, str):
             arch = get_arch(arch)
@@ -207,6 +220,9 @@ class MultInputWrapper(nn.Module):
         # contatenate static and observed features
         s_x = torch.cat([s_cat, s_cont], 1)
         o_x = torch.cat([o_cat, o_cont], 1)
+        
+        # patch encoder
+        o_x = self.patch_encoder(o_x)
         
         # pass static and observed features through their respective backbones
         for i,(b,xi) in enumerate(zip(self.backbone, [o_x, s_x])):
