@@ -9,6 +9,7 @@ import torch.nn as nn
 from fastcore.test import test_eq
 from fastcore.xtras import L
 from fastai.tabular.model import emb_sz_rule
+from ..data.core import TSDataLoaders
 from ..learner import get_arch
 from .utils import build_ts_model, output_size_calculator
 from .layers import Reshape, LinBnDrop, get_act_fn, lin_nd_head, rocket_nd_head
@@ -131,23 +132,23 @@ class MultInputWrapper(nn.Module):
 
     def __init__(self,
         arch,
-        c_in=None, # for compatibility only
-        c_out=None,
-        seq_len=None,
-        d=None,
-        dls=None,
-        s_cat_idxs=None, 
-        s_cat_embeddings=None, 
-        s_cat_embedding_dims=None, 
-        s_cont_idxs=None, 
-        o_cat_idxs=None, 
-        o_cat_embeddings=None, 
-        o_cat_embedding_dims=None, 
-        o_cont_idxs=None, 
-        flatten=False,
-        use_bn=False, 
-        fc_dropout=0.,
-        custom_head=None,
+        c_in:int=None, # number of input variables
+        c_out:int=None, # number of output variables
+        seq_len:int=None, # input sequence length
+        d:tuple=None, # shape of the output tensor
+        dls:TSDataLoaders=None, # TSDataLoaders object
+        s_cat_idxs:list=None, # list of indices for static categorical variables
+        s_cat_embeddings=None, # list of num_embeddings for each static categorical variable
+        s_cat_embedding_dims=None, # list of embedding dimensions for each static categorical variable
+        s_cont_idxs:list=None, # list of indices for static continuous variables
+        o_cat_idxs:list=None, # list of indices for observed categorical variables
+        o_cat_embeddings=None, # list of num_embeddings for each observed categorical variable
+        o_cat_embedding_dims=None, # list of embedding dimensions for each observed categorical variable
+        o_cont_idxs:list=None, # list of indices for observed continuous variables
+        flatten=False, # boolean indicating whether to flatten bacbone's output tensor
+        use_bn=False, # boolean indicating whether to use batch normalization in the head
+        fc_dropout=0., # dropout probability for the fully connected layer in the head
+        custom_head=None, # custom head to replace the default head
         **kwargs
     ):
         super().__init__()

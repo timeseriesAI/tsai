@@ -558,8 +558,10 @@ def get_arch(arch_name):
 
 # %% ../nbs/018_learner.ipynb 14
 @delegates(build_ts_model)
-def ts_learner(dls, arch=None, c_in=None, c_out=None, seq_len=None, d=None, splitter=trainable_params,
-               loss_func=None, opt_func=Adam, lr=defaults.lr, cbs=None, metrics=None, path=None,
+def ts_learner(dls, arch=None, c_in=None, c_out=None, seq_len=None, d=None, 
+               s_cat_idxs=None, s_cat_embeddings=None, s_cat_embedding_dims=None, s_cont_idxs=None, 
+               o_cat_idxs=None, o_cat_embeddings=None, o_cat_embedding_dims=None, o_cont_idxs=None,
+               splitter=trainable_params, loss_func=None, opt_func=Adam, lr=defaults.lr, cbs=None, metrics=None, path=None,
                model_dir='models', wd=None, wd_bn_bias=False, train_bn=True, moms=(0.95,0.85,0.95), 
                train_metrics=False, valid_metrics=True, seed=None, **kwargs)->Learner:
 
@@ -573,7 +575,9 @@ def ts_learner(dls, arch=None, c_in=None, c_out=None, seq_len=None, d=None, spli
     else:
         if arch is None: arch = InceptionTimePlus
         elif isinstance(arch, str): arch = get_arch(arch)
-        model = build_ts_model(arch, dls=dls, c_in=c_in, c_out=c_out, seq_len=seq_len, d=d, **kwargs)
+        model = build_ts_model(arch, dls=dls, c_in=c_in, c_out=c_out, seq_len=seq_len, d=d, 
+                               s_cat_idxs=s_cat_idxs, s_cat_embeddings=s_cat_embeddings, s_cat_embedding_dims=s_cat_embedding_dims, s_cont_idxs=s_cont_idxs, 
+                               o_cat_idxs=o_cat_idxs, o_cat_embeddings=o_cat_embeddings, o_cat_embedding_dims=o_cat_embedding_dims, o_cont_idxs=o_cont_idxs, **kwargs)
     if hasattr(model, "backbone") and hasattr(model, "head"):
         splitter = ts_splitter
     if loss_func is None:
