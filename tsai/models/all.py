@@ -25,7 +25,9 @@ from .MINIROCKET import *
 from .ROCKET_Pytorch import *
 from .MINIROCKET_Pytorch import *
 from .MINIROCKETPlus_Pytorch import *
+from .MultiRocketPlus import *
 from .TransformerModel import *
+from .TransformerRNNPlus import *
 from .TST import *
 from .TSTPlus import *
 from .XceptionTime import *

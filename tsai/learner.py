@@ -244,7 +244,8 @@ all_arch_names =  ['FCN', 'FCNPlus', 'InceptionTime', 'InceptionTimePlus', 'InCo
                    'xresnet1d18_deeper', 'xresnet1d34_deeper', 'xresnet1d50_deeper', 'XResNet1dPlus', 'xresnet1d18plus', 'xresnet1d34plus', 
                    'xresnet1d50plus', 'xresnet1d101plus', 'xresnet1d152plus', 'xresnet1d18_deepplus', 'xresnet1d34_deepplus', 'xresnet1d50_deepplus', 
                    'xresnet1d18_deeperplus', 'xresnet1d34_deeperplus', 'xresnet1d50_deeperplus', 'XceptionTime', 'XceptionTimePlus', 'mWDN',
-                   'TSSequencer', 'TSSequencerPlus', "PatchTST", "RNNAttention", "LSTMAttention", "GRUAttention"]
+                   'TSSequencer', 'TSSequencerPlus', "PatchTST", "RNNAttention", "LSTMAttention", "GRUAttention", 
+                   "TransformerRNNPlus", "TransformerLSTMPlus", "TransformerGRUPlus"]
 
 
 def get_arch(arch_name):
@@ -550,6 +551,15 @@ def get_arch(arch_name):
     elif arch_name == "GRUAttention":  
         from tsai.models.RNNAttention import GRUAttention
         arch = GRUAttention
+    elif arch_name == "TransformerRNNPlus":
+        from tsai.models.TransformerRNNPlus import TransformerRNNPlus
+        arch = TransformerRNNPlus
+    elif arch_name == "TransformerLSTMPlus":
+        from tsai.models.TransformerRNNPlus import TransformerLSTMPlus
+        arch = TransformerLSTMPlus
+    elif arch_name == "TransformerGRUPlus":
+        from tsai.models.TransformerRNNPlus import TransformerGRUPlus
+        arch = TransformerGRUPlus
     else: 
         raise ValueError(f"Architecture {arch_name} not found. Please, check the name is correct.")
     

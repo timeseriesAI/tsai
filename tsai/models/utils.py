@@ -157,7 +157,7 @@ def build_ts_model(arch, c_in=None, c_out=None, seq_len=None, d=None, dls=None, 
                                     s_cat_idxs=s_cat_idxs, s_cat_embeddings=s_cat_embeddings, s_cat_embedding_dims=s_cat_embedding_dims, s_cont_idxs=s_cont_idxs, 
                                     o_cat_idxs=o_cat_idxs, o_cat_embeddings=o_cat_embeddings, o_cat_embedding_dims=o_cat_embedding_dims, o_cont_idxs=o_cont_idxs, **kwargs)
     else:
-        if d and not 'patchtst' in arch.__name__.lower(): 
+        if d and arch.__name__ not in ["PatchTST", "PatchTSTPlus", 'TransformerRNNPlus', 'TransformerLSTMPlus', 'TransformerGRUPlus']:
             if 'custom_head' not in kwargs.keys(): 
                 if "rocket" in arch.__name__.lower():
                     kwargs['custom_head'] = partial(rocket_nd_head, d=d)
@@ -170,6 +170,9 @@ def build_ts_model(arch, c_in=None, c_out=None, seq_len=None, d=None, dls=None, 
         if 'ltsf_' in arch.__name__.lower() or 'patchtst' in arch.__name__.lower():
             pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} seq_len={seq_len} pred_dim={d} arch_config={arch_config}, kwargs={kwargs})', verbose)
             model = (arch(c_in=c_in, c_out=c_out, seq_len=seq_len, pred_dim=d, **arch_config, **kwargs)).to(device=device)
+        elif arch.__name__ in ['TransformerRNNPlus', 'TransformerLSTMPlus', 'TransformerGRUPlus']:
+            pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} seq_len={seq_len} d={d} arch_config={arch_config}, kwargs={kwargs})', verbose)
+            model = (arch(c_in=c_in, c_out=c_out, seq_len=seq_len, d=d, **arch_config, **kwargs)).to(device=device)
         elif sum([1 for v in ['RNN_FCN', 'LSTM_FCN', 'RNNPlus', 'LSTMPlus', 'GRUPlus', 'InceptionTime', 'TSiT', 'Sequencer', 'XceptionTimePlus',
                             'GRU_FCN', 'OmniScaleCNN', 'mWDN', 'TST', 'XCM', 'MLP', 'MiniRocket', 'InceptionRocket', 'ResNetPlus', 
                             'RNNAttention', 'LSTMAttention', 'GRUAttention', 'MultiRocket', 'MultiRocketPlus']
