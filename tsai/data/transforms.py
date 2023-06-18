@@ -10,7 +10,8 @@ __all__ = ['TSMagScaleByVar', 'TSRandomZoomIn', 'TSSubsampleSteps', 'TSRandomRot
            'TSRandomResizedLookBack', 'TSRandomLookBackOut', 'TSVarOut', 'TSCutOut', 'TSTimeStepOut', 'TSRandomCropPad',
            'TSMaskOut', 'TSInputDropout', 'TSTranslateX', 'TSRandomShift', 'TSHorizontalFlip', 'TSRandomTrend',
            'TSVerticalFlip', 'TSResize', 'TSRandomSize', 'TSRandomLowRes', 'TSDownUpScale', 'TSRandomDownUpScale',
-           'TSRandomConv', 'TSRandom2Value', 'TSMask2Value', 'RandAugment', 'TestTfm', 'get_tfm_name']
+           'TSRandomConv', 'TSRandom2Value', 'TSMask2Value', 'self_mask', 'TSSelfDropout', 'RandAugment', 'TestTfm',
+           'get_tfm_name']
 
 # %% ../../nbs/010_data.transforms.ipynb 3
 from ..imports import *
@@ -867,6 +868,21 @@ class TSMask2Value(RandTransform):
         return o.masked_fill(mask, self.value)
 
 # %% ../../nbs/010_data.transforms.ipynb 98
+def self_mask(o): 
+    mask1 = torch.isnan(o)
+    mask2 = rotate_axis0(mask1)
+    return torch.logical_and(mask2, ~mask1)
+
+
+class TSSelfDropout(RandTransform):
+    """Applies dropout to a tensor with nan values by rotating axis=0 inplace"""
+    order = 90
+    def encodes(self, o: TSTensor):
+        mask = self_mask(o)
+        o[mask] = np.nan
+        return o
+
+# %% ../../nbs/010_data.transforms.ipynb 100
 all_TS_randaugs = [
     
     TSIdentity, 
@@ -916,7 +932,7 @@ all_TS_randaugs = [
     (TSMaskOut, 0.01, 0.2),
 ]
 
-# %% ../../nbs/010_data.transforms.ipynb 99
+# %% ../../nbs/010_data.transforms.ipynb 101
 class RandAugment(RandTransform):
     order = 90
     def __init__(self, tfms:list, N:int=1, M:int=3, **kwargs):
@@ -943,7 +959,7 @@ class RandAugment(RandTransform):
         output = compose_tfms(o, tfms_, split_idx=self.split_idx)
         return output
 
-# %% ../../nbs/010_data.transforms.ipynb 101
+# %% ../../nbs/010_data.transforms.ipynb 103
 class TestTfm(RandTransform):
     "Utility class to test the output of selected tfms during training"
     def __init__(self, tfm, magnitude=1., ex=None, **kwargs): 
@@ -957,7 +973,7 @@ class TestTfm(RandTransform):
         self.shape.append(o.shape)
         return output
 
-# %% ../../nbs/010_data.transforms.ipynb 102
+# %% ../../nbs/010_data.transforms.ipynb 104
 def get_tfm_name(tfm):
     if isinstance(tfm, tuple): tfm = tfm[0]
     if hasattr(tfm, "func"): tfm = tfm.func
