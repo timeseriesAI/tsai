@@ -135,6 +135,7 @@ def plot_top_losses(self:Learner,
 def feature_importance(self:Learner, 
     X=None, # array-like object containing the time series. If None, all data in the validation set will be used.
     y=None, # array-like object containing the targets. If None, all targets in the validation set will be used.
+    bs:int=None, # batch size. If None, the default batch size of the dataloader will be used.
     partial_n:(int, float)=None, # # (int) or % (float) of used to measure feature importance. If None, all data will be used.
     method:str='permutation', # Method used to invalidate feature. Use 'permutation' for shuffling or 'ablation' for setting values to np.nan.
     feature_names:list=None, # Optional list of feature names that will be displayed if available. Otherwise var_0, var_1, etc.
@@ -149,8 +150,6 @@ def feature_importance(self:Learner,
     verbose:bool=True, # Flag that controls verbosity.
     ):
     r"""Calculates feature importance as the drop in the model's validation loss or metric when a feature value is randomly shuffled"""
-    
-    global output, metric
     
     assert method in ['permutation', 'ablation']
 
@@ -171,6 +170,8 @@ def feature_importance(self:Learner,
         X, y = X[filt], y[filt]
     pv(f'X.shape: {X.shape}', verbose)
     pv(f'y.shape: {y.shape}', verbose)
+    if bs is None:
+        bs = self.dls.valid.bs
 
     # Metrics
     metrics = [mn for mn in self.recorder.metric_names if mn not in ['epoch', 'train_loss', 'valid_loss', 'time']]
@@ -224,9 +225,9 @@ def feature_importance(self:Learner,
                 elif method == 'ablation':
                     X[:, k] = np.nan
             if key_metric_idx is None:
-                value = self.get_X_preds(X, y, with_loss=True)[-1].mean().item()
+                value = self.get_X_preds(X, y, with_loss=True, with_decoded=False, bs=bs)[-1].mean().item()
             else:
-                output = self.get_X_preds(X, y)
+                output = self.get_X_preds(X, y, with_decoded=False, bs=bs)
                 if self.dls.c == 2:
                     try: 
                         if sklearn_metric:
@@ -305,6 +306,7 @@ def step_importance(
     self:Learner, 
     X=None, # array-like object containing the time series. If None, all data in the validation set will be used.
     y=None, # array-like object containing the targets. If None, all targets in the validation set will be used.
+    bs:int=None, # batch size used to compute predictions. If None, the batch size used in the validation set will be used.
     partial_n:(int, float)=None, # # (int) or % (float) of used to measure feature importance. If None, all data will be used.
     method:str='permutation', # Method used to invalidate feature. Use 'permutation' for shuffling or 'ablation' for setting values to np.nan.
     step_names:list=None, # Optional list of step names that will be displayed if available. Otherwise 0, 1, 2, etc.
@@ -341,6 +343,8 @@ def step_importance(
         X, y = X[filt], y[filt]
     pv(f'X.shape: {X.shape}', verbose)
     pv(f'y.shape: {y.shape}', verbose)
+    if bs is None:
+        bs = self.dls.valid.bs
 
     # Metrics
     metrics = [mn for mn in self.recorder.metric_names if mn not in ['epoch', 'train_loss', 'valid_loss', 'time']]
@@ -382,9 +386,9 @@ def step_importance(
                 elif method == 'ablation':
                     X[..., k] = np.nan
             if key_metric_idx is None:
-                value = self.get_X_preds(X, y, with_loss=True)[-1].mean().item()
+                value = self.get_X_preds(X, y, bs=bs, with_loss=True, with_decoded=False)[-1].mean().item()
             else:
-                output = self.get_X_preds(X, y)
+                output = self.get_X_preds(X, y, bs=bs, with_decoded=False)
                 if self.dls.c == 2:
                     try: 
                         if sklearn_metric:
