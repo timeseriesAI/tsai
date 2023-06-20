@@ -25,7 +25,9 @@ class MixHandler1d(Callback):
         self.distrib = Beta(alpha, alpha)
 
     def before_train(self):
-        self.labeled = self.dls.d
+        if not self.training: return
+        b = self.learn.dls.one_batch()
+        self.labeled = len(b) > 1
         if self.labeled:
             self.stack_y = getattr(self.learn.loss_func, 'y_int', False)
             if self.stack_y: self.old_lf, self.learn.loss_func = self.learn.loss_func, self.lf
@@ -46,6 +48,7 @@ class MixUp1d(MixHandler1d):
         super().__init__(alpha)
 
     def before_batch(self):
+        if not self.training: return
         lam = self.distrib.sample((self.x.size(0), ))
         self.lam = torch.max(lam, 1 - lam).to(self.x.device)
         shuffle = torch.randperm(self.x.size(0))
@@ -63,10 +66,12 @@ class CutMix1d(MixHandler1d):
 
     def __init__(self, alpha=1.):
         super().__init__(alpha)
-
+            
     def before_batch(self):
+        if not self.training: return
         bs, *_, seq_len = self.x.size()
-        self.lam = self.distrib.sample((1, ))
+        lam = self.distrib.sample((1, ))
+        self.lam = torch.max(lam, 1 - lam).to(self.x.device)
         shuffle = torch.randperm(bs)
         xb1 = self.x[shuffle]
         x1, x2 = self.rand_bbox(seq_len, self.lam)
@@ -82,10 +87,11 @@ class CutMix1d(MixHandler1d):
         half_cut_seq_len = torch.div(cut_seq_len, 2, rounding_mode='floor')
 
         # uniform
-        cx = torch.randint(0, seq_len, (1, ))
+        cx = torch.randint(0, seq_len, (1, ), device=lam.device)
         x1 = torch.clamp(cx - half_cut_seq_len, 0, seq_len)
         x2 = torch.clamp(cx + half_cut_seq_len, 0, seq_len)
         return x1, x2
+
 
 # %% ../../nbs/011_data.mixed_augmentation.ipynb 10
 class IntraClassCutMix1d(Callback):
@@ -96,13 +102,14 @@ class IntraClassCutMix1d(Callback):
         self.distrib = Beta(tensor(alpha), tensor(alpha))
 
     def before_batch(self):
+        if not self.training: return
         bs, *_, seq_len = self.x.size()
         idxs = torch.arange(bs, device=self.x.device)
         y = torch.tensor(self.y)
         unique_c = torch.unique(y).tolist()
         idxs_by_class = torch.cat([idxs[torch.eq(y, c)] for c in unique_c])
         idxs_shuffled_by_class = torch.cat([random_shuffle(idxs[torch.eq(y, c)]) for c in unique_c])
-        self.lam = self.distrib.sample((1, ))
+        self.lam = self.distrib.sample((1, )).to(self.x.device)
         x1, x2 = self.rand_bbox(seq_len, self.lam)
         xb1 = self.x[idxs_shuffled_by_class]
         self.learn.xb[0][idxs_by_class, :, x1:x2] = xb1[..., x1:x2]
@@ -112,7 +119,7 @@ class IntraClassCutMix1d(Callback):
         half_cut_seq_len = torch.div(cut_seq_len, 2, rounding_mode='floor')
 
         # uniform
-        cx = torch.randint(0, seq_len, (1, ))
+        cx = torch.randint(0, seq_len, (1, ), device=lam.device)
         x1 = torch.clamp(cx - half_cut_seq_len, 0, seq_len)
         x2 = torch.clamp(cx + half_cut_seq_len, 0, seq_len)
         return x1, x2
