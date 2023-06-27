@@ -142,6 +142,7 @@ def transfer_weights(model, weights_path:Path, device:torch.device=None, exclude
 def build_ts_model(arch, c_in=None, c_out=None, seq_len=None, d=None, dls=None, device=None, verbose=False, 
                    s_cat_idxs=None, s_cat_embeddings=None, s_cat_embedding_dims=None, s_cont_idxs=None, 
                    o_cat_idxs=None, o_cat_embeddings=None, o_cat_embedding_dims=None, o_cont_idxs=None,
+                   patch_len=None, patch_stride=None, fusion_layers=128, fusion_act='relu', fusion_dropout=0., fusion_use_bn=True, 
                    pretrained=False, weights_path=None, exclude_head=True, cut=-1, init=None, arch_config={}, **kwargs):
 
     device = ifnone(device, default_device())
@@ -154,8 +155,11 @@ def build_ts_model(arch, c_in=None, c_out=None, seq_len=None, d=None, dls=None, 
     if s_cat_idxs or s_cat_embeddings or s_cat_embedding_dims or s_cont_idxs or o_cat_idxs or o_cat_embeddings or o_cat_embedding_dims or o_cont_idxs:
         from tsai.models.multimodal import MultInputWrapper
         model = MultInputWrapper(arch, c_in=c_in, c_out=c_out, seq_len=seq_len, d=d,
-                                    s_cat_idxs=s_cat_idxs, s_cat_embeddings=s_cat_embeddings, s_cat_embedding_dims=s_cat_embedding_dims, s_cont_idxs=s_cont_idxs, 
-                                    o_cat_idxs=o_cat_idxs, o_cat_embeddings=o_cat_embeddings, o_cat_embedding_dims=o_cat_embedding_dims, o_cont_idxs=o_cont_idxs, **kwargs)
+                                 s_cat_idxs=s_cat_idxs, s_cat_embeddings=s_cat_embeddings, s_cat_embedding_dims=s_cat_embedding_dims, s_cont_idxs=s_cont_idxs, 
+                                 o_cat_idxs=o_cat_idxs, o_cat_embeddings=o_cat_embeddings, o_cat_embedding_dims=o_cat_embedding_dims, o_cont_idxs=o_cont_idxs, 
+                                 patch_len=patch_len, patch_stride=patch_stride, 
+                                 fusion_layers=fusion_layers, fusion_act=fusion_act, fusion_dropout=fusion_dropout, fusion_use_bn=fusion_use_bn,
+                                 **kwargs)
     else:
         if d and arch.__name__ not in ["PatchTST", "PatchTSTPlus", 'TransformerRNNPlus', 'TransformerLSTMPlus', 'TransformerGRUPlus']:
             if 'custom_head' not in kwargs.keys(): 

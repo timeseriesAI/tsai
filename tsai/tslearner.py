@@ -21,6 +21,7 @@ class TSClassifier(Learner):
     def __init__(self, X, y=None, splits=None, tfms=None, inplace=True, sel_vars=None, sel_steps=None, 
                  s_cat_idxs=None, s_cat_embeddings=None, s_cat_embedding_dims=None, s_cont_idxs=None, 
                  o_cat_idxs=None, o_cat_embeddings=None, o_cat_embedding_dims=None, o_cont_idxs=None,
+                 patch_len=None, patch_stride=None, fusion_layers=128, fusion_act='relu', fusion_dropout=0., fusion_use_bn=True, 
                  weights=None, partial_n=None, vocab=None,
                  train_metrics=False, valid_metrics=True, bs=[64, 128], batch_size=None, batch_tfms=None, pipelines=None,
                  shuffle_train=True, drop_last=True, num_workers=0, do_setup=True, device=None, seed=None,
@@ -70,6 +71,8 @@ class TSClassifier(Learner):
             model = build_ts_model(arch, dls=dls, 
                                    s_cat_idxs=s_cat_idxs, s_cat_embeddings=s_cat_embeddings, s_cat_embedding_dims=s_cat_embedding_dims, s_cont_idxs=s_cont_idxs, 
                                    o_cat_idxs=o_cat_idxs, o_cat_embeddings=o_cat_embeddings, o_cat_embedding_dims=o_cat_embedding_dims, o_cont_idxs=o_cont_idxs,
+                                   patch_len=patch_len, patch_stride=patch_stride, 
+                                   fusion_layers=fusion_layers, fusion_act=fusion_act, fusion_dropout=fusion_dropout, fusion_use_bn=fusion_use_bn, 
                                    device=device, verbose=verbose, pretrained=pretrained, weights_path=weights_path,
                                    exclude_head=exclude_head, cut=cut, init=init, arch_config=arch_config)
         try:
@@ -100,6 +103,7 @@ class TSRegressor(Learner):
     def __init__(self, X, y=None, splits=None, tfms=None, inplace=True, sel_vars=None, sel_steps=None, 
                  s_cat_idxs=None, s_cat_embeddings=None, s_cat_embedding_dims=None, s_cont_idxs=None, 
                  o_cat_idxs=None, o_cat_embeddings=None, o_cat_embedding_dims=None, o_cont_idxs=None,
+                 patch_len=None, patch_stride=None, fusion_layers=128, fusion_act='relu', fusion_dropout=0., fusion_use_bn=True, 
                  weights=None, partial_n=None, 
                  train_metrics=False, valid_metrics=True, bs=[64, 128], batch_size=None, batch_tfms=None, pipelines=None,
                  shuffle_train=True, drop_last=True, num_workers=0, do_setup=True, device=None, seed=None,
@@ -150,6 +154,8 @@ class TSRegressor(Learner):
             model = build_ts_model(arch, dls=dls, 
                                    s_cat_idxs=s_cat_idxs, s_cat_embeddings=s_cat_embeddings, s_cat_embedding_dims=s_cat_embedding_dims, s_cont_idxs=s_cont_idxs, 
                                    o_cat_idxs=o_cat_idxs, o_cat_embeddings=o_cat_embeddings, o_cat_embedding_dims=o_cat_embedding_dims, o_cont_idxs=o_cont_idxs,
+                                   patch_len=patch_len, patch_stride=patch_stride, 
+                                   fusion_layers=fusion_layers, fusion_act=fusion_act, fusion_dropout=fusion_dropout, fusion_use_bn=fusion_use_bn,
                                    device=device, verbose=verbose, pretrained=pretrained, weights_path=weights_path,
                                    exclude_head=exclude_head, cut=cut, init=init, arch_config=arch_config)
         try:
@@ -180,6 +186,7 @@ class TSForecaster(Learner):
     def __init__(self, X, y=None, splits=None, tfms=None, inplace=True, sel_vars=None, sel_steps=None, 
                  s_cat_idxs=None, s_cat_embeddings=None, s_cat_embedding_dims=None, s_cont_idxs=None, 
                  o_cat_idxs=None, o_cat_embeddings=None, o_cat_embedding_dims=None, o_cont_idxs=None,
+                 patch_len=None, patch_stride=None, fusion_layers=128, fusion_act='relu', fusion_dropout=0., fusion_use_bn=True, 
                  weights=None, partial_n=None, 
                  train_metrics=False, valid_metrics=True, bs=[64, 128], batch_size=None, batch_tfms=None, pipelines=None,
                  shuffle_train=True, drop_last=True, num_workers=0, do_setup=True, device=None, seed=None,
@@ -229,6 +236,8 @@ class TSForecaster(Learner):
             model = build_ts_model(arch, dls=dls, 
                                    s_cat_idxs=s_cat_idxs, s_cat_embeddings=s_cat_embeddings, s_cat_embedding_dims=s_cat_embedding_dims, s_cont_idxs=s_cont_idxs, 
                                    o_cat_idxs=o_cat_idxs, o_cat_embeddings=o_cat_embeddings, o_cat_embedding_dims=o_cat_embedding_dims, o_cont_idxs=o_cont_idxs,
+                                   patch_len=patch_len, patch_stride=patch_stride, 
+                                   fusion_layers=fusion_layers, fusion_act=fusion_act, fusion_dropout=fusion_dropout, fusion_use_bn=fusion_use_bn,
                                    device=device, verbose=verbose, pretrained=pretrained, weights_path=weights_path,
                                    exclude_head=exclude_head, cut=cut, init=init, arch_config=arch_config)
         try:
