@@ -231,7 +231,7 @@ def create_scripts(nb_name, max_elapsed=60, wait=2):
         output = py_last_saved(nb_name, max_elapsed)
         beep(output)
     else:
-        nb_export()
+        print("Couldn't get nb_name. Script not created 😔")
 
 
 class Timer:
