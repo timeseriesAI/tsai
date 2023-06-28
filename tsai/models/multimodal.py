@@ -107,11 +107,11 @@ class TensorSplitter(nn.Module):
                     slices.append(input_tensor[:, idxs, :])
             else:
                 if idx < 2:  # s_cat_idxs or s_cont_idxs
-                    slices.append(torch.empty((input_tensor.size(0), 0)))  # return 2D empty tensor
+                    slices.append(torch.empty((input_tensor.size(0), 0), device=input_tensor.device))  # return 2D empty tensor
                 elif idx < 4 and self.horizon is not None: # o_cat_idxs or o_cont_idxs and horizon is not None
-                        slices.append(torch.empty((input_tensor.size(0), 0, input_tensor.size(2)-self.horizon)))
+                        slices.append(torch.empty((input_tensor.size(0), 0, input_tensor.size(2)-self.horizon), device=input_tensor.device))
                 else:   # k_cat_idxs or k_cont_idxs or o_cat_idxs or o_cont_idxs and horizon is None
-                    slices.append(torch.empty((input_tensor.size(0), 0, input_tensor.size(2))))
+                    slices.append(torch.empty((input_tensor.size(0), 0, input_tensor.size(2)), device=input_tensor.device))
         return slices
 
 
