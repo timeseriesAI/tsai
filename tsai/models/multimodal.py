@@ -100,7 +100,7 @@ class TensorSplitter(nn.Module):
         # for idx, idxs in enumerate([self.s_cat_idxs, self.s_cont_idxs, self.o_cat_idxs, self.o_cont_idxs, self.k_cat_idxs, self.k_cont_idxs]):
             if idxs:
                 if idx < 2:  # s_cat_idxs or s_cont_idxs
-                    slices.append(torch.round(input_tensor[:, idxs, 0]).long())
+                    slices.append(input_tensor[:, idxs, 0].long())
                 elif idx < 4 and self.horizon is not None:  # o_cat_idxs or o_cont_idxs and horizon is not None
                     slices.append(input_tensor[:, idxs, :-self.horizon])
                 else:  # k_cat_idxs or k_cont_idxs or o_cat_idxs or o_cont_idxs and horizon is None
@@ -138,9 +138,9 @@ class Embeddings(nn.Module):
     
     def forward(self, x):
         if x.ndim == 2:
-            return torch.cat([e(torch.round(x[:,i]).long()) for i,e in enumerate(self.embedding_layers)],1)
+            return torch.cat([e(x[:,i].long()) for i,e in enumerate(self.embedding_layers)],1)
         elif x.ndim == 3:
-            return torch.cat([e(torch.round(x[:,i]).long()).transpose(1,2) for i,e in enumerate(self.embedding_layers)],1)
+            return torch.cat([e(x[:,i].long()).transpose(1,2) for i,e in enumerate(self.embedding_layers)],1)
 
 # %% ../../nbs/077_models.multimodal.ipynb 13
 class StaticBackbone(nn.Module):
