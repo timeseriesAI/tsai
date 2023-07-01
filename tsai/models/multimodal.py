@@ -13,6 +13,7 @@ from fastcore.test import test_eq
 from fastcore.xtras import listify
 from fastcore.xtras import L
 from fastai.tabular.model import emb_sz_rule
+from ..imports import default_device
 from ..data.core import TSDataLoaders
 from ..data.preprocessing import PatchEncoder
 from ..learner import get_arch

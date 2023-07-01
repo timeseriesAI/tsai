@@ -220,7 +220,9 @@ def nb2py(nb:      Param("absolute or relative full path to the notebook you wan
     if nb_path is None: 
         print("nb2py couldn't get the nb name. Pass it as an nb argument and rerun nb2py.")
         return
+    
     nb_name = nb_path.name
+    nb_path = Path(nb_path).absolute()
     assert os.path.isfile(nb_path), f"nb2py couldn't find {nb_path}. Please, confirm the path is correct."
     
     # save nb: only those that are run from the notebook itself
