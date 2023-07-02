@@ -2,6 +2,52 @@
 
 <!-- do not remove -->
 
+## 0.3.7
+
+### New Features
+
+- added functionality to support inputs with static/ observed (time-dependent) features
+
+- added functionality to support inputs with categorical/ continuous features
+
+- added functionality to apply patches to time series models
+
+- Added `MultiRocket`/ `MultiRocketPlus` architectures
+
+- added `TSSelfDropout` ([#790](https://github.com/timeseriesAI/tsai/issues/790))
+
+- added `get_feat_idxs` to calculate multimodal indices ([#789](https://github.com/timeseriesAI/tsai/issues/789))
+
+- remaining features assigned to o_cont_idxs by default ([#788](https://github.com/timeseriesAI/tsai/issues/788))
+
+- added patch encoder to `MultiInputWrapper` ([#787](https://github.com/timeseriesAI/tsai/issues/787))
+
+- added `TSTargetEncoder` transform ([#769](https://github.com/timeseriesAI/tsai/issues/769))
+
+- added `TSRobustScaler` to tfm pipelines ([#763](https://github.com/timeseriesAI/tsai/issues/763))
+
+- added new tfms - `TSDropIfTrueCols` and ApplyFunc ([#760](https://github.com/timeseriesAI/tsai/issues/760))
+
+- tensor slices in different devices when using `TensorSplitter` ([#799](https://github.com/timeseriesAI/tsai/issues/799))
+
+### Bugs Squashed
+
+- mixed augmentations (`MixUp1d`, `CutMix1d`,..) are not updating labels ([#791](https://github.com/timeseriesAI/tsai/issues/791))
+
+- `get_UCR_data` function fails due to changed download link ([#785](https://github.com/timeseriesAI/tsai/issues/785))
+
+- error when using `TSSelectColumns` due to pandas df slicing ([#762](https://github.com/timeseriesAI/tsai/issues/762))
+
+- short arrays create issues when running `get_usable_idxs` ([#761](https://github.com/timeseriesAI/tsai/issues/761))
+
+- `get_X_pred` creates different probablities when using numpy array or torch tensor ([#754](https://github.com/timeseriesAI/tsai/issues/754))
+
+- `partial_n` is applied to all datasets by default ([#748](https://github.com/timeseriesAI/tsai/issues/748))
+
+- `get_best_dls_params`  function still prints output when the verbose parameter is set to false ([#737](https://github.com/timeseriesAI/tsai/issues/737))
+
+- using xresnet for vision classification raises an error ([#728](https://github.com/timeseriesAI/tsai/issues/728))
+
 ## 0.3.6
 
 ### New Features
@@ -408,25 +454,26 @@ trying to install the package from source does not work for on Windows 10; it fa
 
 ### New Features
 
-* Models:
+- Models:
   - implement src_key_padding_mask in TST & TSTPlus ([#79](https://github.com/timeseriesAI/tsai/issues/79))
 
 ### Bugs Squashed
 
-* Models:
+- Models:
   - Problem with get_minirocket_features while using CUDA in training ([#153](https://github.com/timeseriesAI/tsai/issues/153))
 
 ## 0.2.18
 
 ## New features
 
-* Data:
+- Data:
   - Update TSStandardize to accept some variables and/or groups of variables when using by_var.
   - added option to pad labeled and unlabed datasets with SlidingWindow with a padding value
   - added split_idxs and idxs to mixed_dls
   - added sklearn preprocessing tfms
   - added functions to measure sequence gaps
   - added decodes to TSStandardize
+
 - Callbacks:
   - change mask return values in MVP to True then mask
   - updated MVP to accept nan values
@@ -447,8 +494,9 @@ trying to install the package from source does not work for on Windows 10; it fa
 
 ### Bug Fixes
 
-* Callbacks:
+- Callbacks:
   - fixed and issue with inconsistency in show_preds in MVP
+
 - Models:
   - Fixed an issue in InceptionTimePlus with stochastic depth regularization (stoch_depth parameter)
   - Fixed issue with get_X_preds (different predictions when executed multiple times)
@@ -464,15 +512,16 @@ trying to install the package from source does not work for on Windows 10; it fa
 
 ### Bug Fixes
 
-* Models:
+- Models:
   - Fixed an issue in TST and TSTPlus related to encoder layer creation.
   - Fixed issue in TSStandardize when passing tensor with nan values
 
 ## New features
 
-* Models:
+- Models:
   - Added TabTransformer, a state-of-the-art tabular transformer released in Dec 2020.
   - TSTPlus now supports padding masks (passed as nan values) by default.
+
 - Data:
   - Added a Nan2Value batch transform that removes any nan value in the tensor by zero or median.
   - Faster dataloader when suffle == True.
@@ -485,13 +534,13 @@ trying to install the package from source does not work for on Windows 10; it fa
 
 ### Breaking changes
 
-* Data:
+- Data:
   - train_perc in get_splits has been changed to train_size to allow both floats or integers.
   - df2Xy API has been modified
 
 ### Updates
 
-* Learner:
+- Learner:
   - Updated 3 new learner APIs: TSClassifier, TSRegressor, TSForecaster.
 
 - ShowGraph callback:
@@ -501,24 +550,24 @@ trying to install the package from source does not work for on Windows 10; it fa
 
 ### Bug Fixes
 
-* Data:
+- Data:
   - Updated df2xy function to fix a bug.
 
 ### Updates
 
-* Tutorial notebooks:
+- Tutorial notebooks:
   - Updated 04 (regression) to use the recently released Monash, UEA & UCR Time Series Extrinsic Regression Repository (2020).
 
 ## New features
 
-* Models:
+- Models:
   - Added new pooling layers and 3 new heads: attentional_pool_head, universal_pool_head, gwa_pool_head
 
 ## 0.2.15
 
 ### New Features
 
-* General:
+- General:
   - Added 3 new sklearn-type APIs: TSClassifier, TSRegressor and TSForecaster.
 
 - Data:
@@ -545,15 +594,16 @@ trying to install the package from source does not work for on Windows 10; it fa
 
 ### Bug Fixes
 
-* Models:
+- Models:
   - Fixed bug that prevented models to freeze or unfreeze. Now all models that end with Plus can take predefined weights and learn.freeze()/ learn.unfreeze() will work as expected.
 
 ## 0.2.14
 
 ### New Features
 
-* Data:
+- Data:
   - External: added a new function get_Monash_data to get extrinsic regression data.
+
 - Models:
   - Added show_batch functionality to TSBERT.
 
@@ -561,7 +611,8 @@ trying to install the package from source does not work for on Windows 10; it fa
 
 ### New Features
 
-* General: Added min requirements for all package dependencies.
+- General: Added min requirements for all package dependencies.
+
 - Data:
   - Validation: added split visualization (show_plot=True by default).
   - Data preprocessing: add option to TSStandardize or TSNormalize by_step.
@@ -580,7 +631,7 @@ trying to install the package from source does not work for on Windows 10; it fa
 
 ### Bug Fixes
 
-* Data:
+- Data:
   - ROCKET: fixed a bug in `create_rocket_features`.
 
 ## 0.2.12
@@ -628,7 +679,8 @@ trying to install the package from source does not work for on Windows 10; it fa
 
 ### New Features
 
-* More ts data transforms have been added, including ts to images.
+- More ts data transforms have been added, including ts to images.
+
 - New callbacks, like the state of the art noisy_student that will allow you to use unlabeled data.
 - New time series, state-of-the-art models are now available like XceptionTime, RNN_FCN (like LSTM_FCN, GRU_FCN), TransformerModel, TST (Transformer), OmniScaleCNN, mWDN (multi-wavelet decomposition network), XResNet1d.
 - Some of the models (those finishing with an plus) have additional, experimental functionality (like coordconv, zero_norm, squeeze and excitation, etc).
