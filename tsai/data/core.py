@@ -1061,7 +1061,7 @@ def get_best_dls_params(dls, n_iters=10, num_workers=[0, 1, 2, 4, 8], pin_memory
     
     for i in range(len(dls.loaders)):
         try:
-            print(f'\nDataloader {i}\n')
+            pv(f'\nDataloader {i}\n', verbose)
             dls.loaders[i] = get_best_dl_params(dls.loaders[i], n_iters=n_iters, num_workers=num_workers, pin_memory=pin_memory, 
                                             prefetch_factor=prefetch_factor, return_best=return_best, verbose=verbose)
         except KeyboardInterrupt: pass
