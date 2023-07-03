@@ -146,7 +146,7 @@ def load_all(path='export', dls_fname='dls', model_fname='model', learner_fname=
 
 load_learner_all = load_all
 
-# %% ../nbs/018_learner.ipynb 11
+# %% ../nbs/018_learner.ipynb 12
 @patch
 @delegates(subplots)
 def plot_metrics(self: Recorder, nrows=None, ncols=None, figsize=None, final_losses=True, perc=.5, **kwargs):
@@ -232,20 +232,22 @@ def plot_metrics(self: Recorder, nrows=None, ncols=None, figsize=None, final_los
 def plot_metrics(self: Learner, **kwargs):
     self.recorder.plot_metrics(**kwargs)
 
-# %% ../nbs/018_learner.ipynb 12
+# %% ../nbs/018_learner.ipynb 13
 all_arch_names =  ['FCN', 'FCNPlus', 'InceptionTime', 'InceptionTimePlus', 'InCoordTime', 'XCoordTime', 'InceptionTimePlus17x17', 'InceptionTimePlus32x32', 
                    'InceptionTimePlus47x47', 'InceptionTimePlus62x62', 'InceptionTimeXLPlus', 'MultiInceptionTimePlus', 'MiniRocketClassifier', "MiniRocket",
-                   'MiniRocketRegressor', 'MiniRocketVotingClassifier', 'MiniRocketVotingRegressor', 'MiniRocketPlus', 'MultiRocket', 'MultiRocketPlus',
-                   'MiniRocketHead', 'InceptionRocketPlus', 'MLP', 'gMLP', 'MultiInputNet', 'OmniScaleCNN', 'RNN', 'LSTM', 'GRU', 
-                   'RNNPlus', 'LSTMPlus', 'GRUPlus', 'RNN_FCN', 'LSTM_FCN', 'GRU_FCN', 'MRNN_FCN', 'MLSTM_FCN', 'MGRU_FCN', 'ROCKET', 'RocketClassifier', 
-                   'RocketRegressor', 'ResCNN', 'ResNet', 'ResNetPlus', 'TCN', 'TSPerceiver', 'TST', 'TSTPlus', 'MultiTSTPlus', 'TSiTPlus', 
+                   'MiniRocketRegressor', 'MiniRocketVotingClassifier', 'MiniRocketVotingRegressor', 'MiniRocket', 'MiniRocketPlus', 
+                   'MultiRocket', 'MultiRocketPlus', 'InceptionRocketPlus', 'MLP', 'gMLP', 'MultiInputNet', 'OmniScaleCNN', 'RNN', 'LSTM', 'GRU', 
+                   'RNNPlus', 'LSTMPlus', 'GRUPlus', 'RNN_FCN', 'LSTM_FCN', 'GRU_FCN', 'MRNN_FCN', 'MLSTM_FCN', 'MGRU_FCN', 
+                   'RNN_FCNPlus', 'LSTM_FCNPlus', 'GRU_FCNPlus', 'MRNN_FCNPlus', 'MLSTM_FCNPlus', 'MGRU_FCNPlus', 'ROCKET', 'RocketClassifier', 
+                   'RocketRegressor', 'ResCNN', 'ResNet', 'ResNetPlus', 'TCN', 'TSPerceiver', 'TST', 'TSTPlus', 'MultiTSTPlus', 'TSiT', 'TSiTPlus', 
                    'TabFusionTransformer', 'TSTabFusionTransformer', 'TabModel', 'TabTransformer', 'GatedTabTransformer', 'TransformerModel', 'XCM', 'XCMPlus', 
                    'xresnet1d18', 'xresnet1d34', 'xresnet1d50', 'xresnet1d101', 'xresnet1d152', 'xresnet1d18_deep', 'xresnet1d34_deep', 'xresnet1d50_deep', 
                    'xresnet1d18_deeper', 'xresnet1d34_deeper', 'xresnet1d50_deeper', 'XResNet1dPlus', 'xresnet1d18plus', 'xresnet1d34plus', 
                    'xresnet1d50plus', 'xresnet1d101plus', 'xresnet1d152plus', 'xresnet1d18_deepplus', 'xresnet1d34_deepplus', 'xresnet1d50_deepplus', 
-                   'xresnet1d18_deeperplus', 'xresnet1d34_deeperplus', 'xresnet1d50_deeperplus', 'XceptionTime', 'XceptionTimePlus', 'mWDN',
-                   'TSSequencer', 'TSSequencerPlus', "PatchTST", "RNNAttention", "LSTMAttention", "GRUAttention", 
-                   "TransformerRNNPlus", "TransformerLSTMPlus", "TransformerGRUPlus", "HydraPlus", "HydraMultiRocketPlus"]
+                   'xresnet1d18_deeperplus', 'xresnet1d34_deeperplus', 'xresnet1d50_deeperplus', 'XceptionTime', 'XceptionTimePlus', 'mWDN', 'mWDNPlus',
+                   'TSSequencer', 'TSSequencerPlus', "PatchTST", 
+                   "RNNAttention", "LSTMAttention", "GRUAttention", "RNNAttentionPlus", "LSTMAttentionPlus", "GRUAttentionPlus", 
+                   "TransformerRNNPlus", "TransformerLSTMPlus", "TransformerGRUPlus", "Hydra", "HydraPlus", "HydraMultiRocket", "HydraMultiRocketPlus"]
 
 
 def get_arch(arch_name):
@@ -563,6 +565,15 @@ def get_arch(arch_name):
     elif arch_name == "GRUAttention":  
         from tsai.models.RNNAttention import GRUAttention
         arch = GRUAttention
+    elif arch_name == "RNNAttentionPlus":  
+        from tsai.models.RNNAttentionPlus import RNNAttentionPlus
+        arch = RNNAttentionPlus
+    elif arch_name == "LSTMAttentionPlus":  
+        from tsai.models.RNNAttentionPlus import LSTMAttentionPlus
+        arch = LSTMAttentionPlus
+    elif arch_name == "GRUAttentionPlus":  
+        from tsai.models.RNNAttentionPlus import GRUAttentionPlus
+        arch = GRUAttentionPlus
     elif arch_name == "TransformerRNNPlus":
         from tsai.models.TransformerRNNPlus import TransformerRNNPlus
         arch = TransformerRNNPlus
@@ -578,7 +589,7 @@ def get_arch(arch_name):
     assert arch.__name__.replace("Plus", "") == arch_name.replace("Plus", ""), f"{arch.__name__} - {arch_name}"
     return arch
 
-# %% ../nbs/018_learner.ipynb 14
+# %% ../nbs/018_learner.ipynb 15
 @delegates(build_ts_model)
 def ts_learner(dls, arch=None, c_in=None, c_out=None, seq_len=None, d=None, 
                s_cat_idxs=None, s_cat_embeddings=None, s_cat_embedding_dims=None, s_cont_idxs=None, 
@@ -620,7 +631,7 @@ def ts_learner(dls, arch=None, c_in=None, c_out=None, seq_len=None, d=None,
 
     return learn
 
-# %% ../nbs/018_learner.ipynb 15
+# %% ../nbs/018_learner.ipynb 16
 @delegates(build_tsimage_model)
 def tsimage_learner(dls, arch=None, pretrained=False,
                loss_func=None, opt_func=Adam, lr=defaults.lr, cbs=None, metrics=None, path=None,
@@ -641,6 +652,6 @@ def tsimage_learner(dls, arch=None, pretrained=False,
 
     return learn
 
-# %% ../nbs/018_learner.ipynb 16
+# %% ../nbs/018_learner.ipynb 17
 @patch
 def decoder(self:Learner, o): return L([self.dls.decodes(oi) for oi in o])
