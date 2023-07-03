@@ -245,7 +245,7 @@ all_arch_names =  ['FCN', 'FCNPlus', 'InceptionTime', 'InceptionTimePlus', 'InCo
                    'xresnet1d50plus', 'xresnet1d101plus', 'xresnet1d152plus', 'xresnet1d18_deepplus', 'xresnet1d34_deepplus', 'xresnet1d50_deepplus', 
                    'xresnet1d18_deeperplus', 'xresnet1d34_deeperplus', 'xresnet1d50_deeperplus', 'XceptionTime', 'XceptionTimePlus', 'mWDN',
                    'TSSequencer', 'TSSequencerPlus', "PatchTST", "RNNAttention", "LSTMAttention", "GRUAttention", 
-                   "TransformerRNNPlus", "TransformerLSTMPlus", "TransformerGRUPlus"]
+                   "TransformerRNNPlus", "TransformerLSTMPlus", "TransformerGRUPlus", "HydraPlus", "HydraMultiRocketPlus"]
 
 
 def get_arch(arch_name):
@@ -323,6 +323,18 @@ def get_arch(arch_name):
     elif arch_name == "InceptionRocketPlus":  
         from tsai.models.MINIROCKETPlus_Pytorch import InceptionRocketPlus
         arch = InceptionRocketPlus
+    elif arch_name == "Hydra":
+        from tsai.models.HydraPlus import Hydra
+        arch = Hydra
+    elif arch_name == "HydraPlus":
+        from tsai.models.HydraPlus import HydraPlus
+        arch = HydraPlus
+    elif arch_name == "HydraMultiRocket":
+        from tsai.models.HydraMultiRocketPlus import HydraMultiRocket
+        arch = HydraMultiRocket
+    elif arch_name == "HydraMultiRocketPlus":
+        from tsai.models.HydraMultiRocketPlus import HydraMultiRocketPlus
+        arch = HydraMultiRocketPlus
     elif arch_name == "MLP":  
         from tsai.models.MLP import MLP
         arch = MLP
