@@ -75,7 +75,7 @@ website:
               - 055_models.MINIROCKET.ipynb
               - 056_models.MINIROCKET_Pytorch.ipynb
               - 057_models.MINIROCKETPlus_Pytorch.ipynb
-              - 076_MultiRocketPlus.ipynb
+              - 076_models.MultiRocketPlus.ipynb
               - 079_models.HydraPlus.ipynb
               - 080_models.HydraMultiRocketPlus.ipynb
           - section: Tabular models
