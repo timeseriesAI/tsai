@@ -90,10 +90,10 @@ class mWDNBlocks(Module):
     
 
 class mWDNPlus(nn.Sequential):
-    def __init__(self, c_in, c_out, seq_len, levels=3, wavelet=None, base_model=None, base_arch=InceptionTimePlus, **kwargs):
+    def __init__(self, c_in, c_out, seq_len, d=None, levels=3, wavelet=None, base_model=None, base_arch=InceptionTimePlus, **kwargs):
 
         if base_model is None:
-            base_model = build_model(base_arch, c_in, c_out, seq_len=seq_len, **kwargs)
+            base_model = build_model(base_arch, c_in, c_out, d=d, seq_len=seq_len, **kwargs)
         blocks = mWDNBlocks(c_in, c_out, seq_len, levels=levels, wavelet=wavelet)
         backbone = nn.Sequential(blocks, base_model.backbone)
         super().__init__(OrderedDict([('backbone', backbone), ('head', base_model.head)]))
