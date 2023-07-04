@@ -1,5 +1,6 @@
 from fastai.vision.models.xresnet import *
 
+from .ConvTranPlus import *
 from .explainability import *
 from .FCN import *
 from .FCNPlus import *

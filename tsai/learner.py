@@ -245,7 +245,7 @@ all_arch_names =  ['FCN', 'FCNPlus', 'InceptionTime', 'InceptionTimePlus', 'InCo
                    'xresnet1d18_deeper', 'xresnet1d34_deeper', 'xresnet1d50_deeper', 'XResNet1dPlus', 'xresnet1d18plus', 'xresnet1d34plus', 
                    'xresnet1d50plus', 'xresnet1d101plus', 'xresnet1d152plus', 'xresnet1d18_deepplus', 'xresnet1d34_deepplus', 'xresnet1d50_deepplus', 
                    'xresnet1d18_deeperplus', 'xresnet1d34_deeperplus', 'xresnet1d50_deeperplus', 'XceptionTime', 'XceptionTimePlus', 'mWDN', 'mWDNPlus',
-                   'TSSequencer', 'TSSequencerPlus', "PatchTST", 
+                   'TSSequencer', 'TSSequencerPlus', "PatchTST", "ConvTran", "ConvTranPlus",
                    "RNNAttention", "LSTMAttention", "GRUAttention", "RNNAttentionPlus", "LSTMAttentionPlus", "GRUAttentionPlus", 
                    "TransformerRNNPlus", "TransformerLSTMPlus", "TransformerGRUPlus", "Hydra", "HydraPlus", "HydraMultiRocket", "HydraMultiRocketPlus"]
 
@@ -583,6 +583,9 @@ def get_arch(arch_name):
     elif arch_name == "TransformerGRUPlus":
         from tsai.models.TransformerRNNPlus import TransformerGRUPlus
         arch = TransformerGRUPlus
+    elif arch_name in ["ConvTran", "ConvTranPlus"]: 
+        from tsai.models.ConvTranPlus import ConvTranPlus
+        arch = ConvTranPlus
     else: 
         raise ValueError(f"Architecture {arch_name} not found. Please, check the name is correct.")
     
