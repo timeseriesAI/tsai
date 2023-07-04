@@ -95,32 +95,32 @@ class LearnablePositionalEncoding(nn.Module):
 # %% ../../nbs/081_models.ConvTranPlus.ipynb 10
 class Attention(nn.Module):
     def __init__(self, 
-        emb_size:int, # Embedding dimension
-        num_heads:int=8, # number of attention heads
+        d_model:int, # Embedding dimension
+        n_heads:int=8, # number of attention heads
         dropout:float=0.01, # dropout
         ):
         super().__init__()
-        self.num_heads = num_heads
-        self.scale = emb_size ** -0.5
-        self.key = nn.Linear(emb_size, emb_size, bias=False)
-        self.value = nn.Linear(emb_size, emb_size, bias=False)
-        self.query = nn.Linear(emb_size, emb_size, bias=False)
+        self.n_heads = n_heads
+        self.scale = d_model ** -0.5
+        self.key = nn.Linear(d_model, d_model, bias=False)
+        self.value = nn.Linear(d_model, d_model, bias=False)
+        self.query = nn.Linear(d_model, d_model, bias=False)
 
         self.dropout = nn.Dropout(dropout)
-        self.to_out = nn.LayerNorm(emb_size)
+        self.to_out = nn.LayerNorm(d_model)
 
     def forward(self, x): #[batch size, seq_len, embed dim]
 
         batch_size, seq_len, _ = x.shape
-        k = self.key(x).reshape(batch_size, seq_len, self.num_heads, -1).permute(0, 2, 3, 1)
-        v = self.value(x).reshape(batch_size, seq_len, self.num_heads, -1).transpose(1, 2)
-        q = self.query(x).reshape(batch_size, seq_len, self.num_heads, -1).transpose(1, 2)
+        k = self.key(x).reshape(batch_size, seq_len, self.n_heads, -1).permute(0, 2, 3, 1)
+        v = self.value(x).reshape(batch_size, seq_len, self.n_heads, -1).transpose(1, 2)
+        q = self.query(x).reshape(batch_size, seq_len, self.n_heads, -1).transpose(1, 2)
 
         attn = torch.matmul(q, k) * self.scale
         attn = nn.functional.softmax(attn, dim=-1)
 
-        out = torch.matmul(attn, v) # [batch_size, num_heads, seq_len, d_head]
-        out = out.transpose(1, 2) # [batch_size, seq_len, num_heads, d_head]
+        out = torch.matmul(attn, v) # [batch_size, n_heads, seq_len, d_head]
+        out = out.transpose(1, 2) # [batch_size, seq_len, n_heads, d_head]
         out = out.reshape(batch_size, seq_len, -1) # [batch_size, seq_len, d_model]
         out = self.to_out(out)
         return out
@@ -128,22 +128,22 @@ class Attention(nn.Module):
 # %% ../../nbs/081_models.ConvTranPlus.ipynb 12
 class Attention_Rel_Scl(nn.Module):
     def __init__(self, 
-        emb_size:int, # Embedding dimension
+        d_model:int, # Embedding dimension
         seq_len:int, # sequence length
-        num_heads:int=8, # number of attention heads
+        n_heads:int=8, # number of attention heads
         dropout:float=0.01, # dropout
         ):
         super().__init__()
 
         self.seq_len = seq_len
-        self.num_heads = num_heads
-        self.scale = emb_size ** -0.5
+        self.n_heads = n_heads
+        self.scale = d_model ** -0.5
 
-        self.key = nn.Linear(emb_size, emb_size, bias=False)
-        self.value = nn.Linear(emb_size, emb_size, bias=False)
-        self.query = nn.Linear(emb_size, emb_size, bias=False)
+        self.key = nn.Linear(d_model, d_model, bias=False)
+        self.value = nn.Linear(d_model, d_model, bias=False)
+        self.query = nn.Linear(d_model, d_model, bias=False)
 
-        self.relative_bias_table = nn.Parameter(torch.zeros((2 * self.seq_len - 1), num_heads))
+        self.relative_bias_table = nn.Parameter(torch.zeros((2 * self.seq_len - 1), n_heads))
         coords = torch.meshgrid((torch.arange(1), torch.arange(self.seq_len)), indexing="xy")
         coords = torch.flatten(torch.stack(coords), 1)
         relative_coords = coords[:, :, None] - coords[:, None, :]
@@ -153,13 +153,13 @@ class Attention_Rel_Scl(nn.Module):
         self.register_buffer("relative_index", relative_index)
 
         self.dropout = nn.Dropout(dropout)
-        self.to_out = nn.LayerNorm(emb_size)
+        self.to_out = nn.LayerNorm(d_model)
 
     def forward(self, x): #[batch size, seq_len, embed dim]
         batch_size, seq_len, _ = x.shape
-        k = self.key(x).reshape(batch_size, seq_len, self.num_heads, -1).permute(0, 2, 3, 1)
-        v = self.value(x).reshape(batch_size, seq_len, self.num_heads, -1).transpose(1, 2)
-        q = self.query(x).reshape(batch_size, seq_len, self.num_heads, -1).transpose(1, 2)
+        k = self.key(x).reshape(batch_size, seq_len, self.n_heads, -1).permute(0, 2, 3, 1)
+        v = self.value(x).reshape(batch_size, seq_len, self.n_heads, -1).transpose(1, 2)
+        q = self.query(x).reshape(batch_size, seq_len, self.n_heads, -1).transpose(1, 2)
 
         attn = torch.matmul(q, k) * self.scale # [seq_len, seq_len]
         attn = nn.functional.softmax(attn, dim=-1)
@@ -168,8 +168,8 @@ class Attention_Rel_Scl(nn.Module):
         relative_bias = relative_bias.reshape(self.seq_len, self.seq_len, -1).permute(2, 0, 1).unsqueeze(0)
         attn = attn + relative_bias
 
-        out = torch.matmul(attn, v) # [batch_size, num_heads, seq_len, d_head]
-        out = out.transpose(1, 2) # [batch_size, seq_len, num_heads, d_head]
+        out = torch.matmul(attn, v) # [batch_size, n_heads, seq_len, d_head]
+        out = out.transpose(1, 2) # [batch_size, seq_len, n_heads, d_head]
         out = out.reshape(batch_size, seq_len, -1) # [batch_size, seq_len, d_model]
         out = self.to_out(out)
         return out
@@ -177,22 +177,22 @@ class Attention_Rel_Scl(nn.Module):
 # %% ../../nbs/081_models.ConvTranPlus.ipynb 14
 class Attention_Rel_Vec(nn.Module):
     def __init__(self, 
-        emb_size:int, # Embedding dimension
+        d_model:int, # Embedding dimension
         seq_len:int, # sequence length
-        num_heads:int=8, # number of attention heads
+        n_heads:int=8, # number of attention heads
         dropout:float=0.01, # dropout
         ):
         super().__init__()
 
         self.seq_len = seq_len
-        self.num_heads = num_heads
-        self.scale = emb_size ** -0.5
+        self.n_heads = n_heads
+        self.scale = d_model ** -0.5
 
-        self.key = nn.Linear(emb_size, emb_size, bias=False)
-        self.value = nn.Linear(emb_size, emb_size, bias=False)
-        self.query = nn.Linear(emb_size, emb_size, bias=False)
+        self.key = nn.Linear(d_model, d_model, bias=False)
+        self.value = nn.Linear(d_model, d_model, bias=False)
+        self.query = nn.Linear(d_model, d_model, bias=False)
 
-        self.Er = nn.Parameter(torch.randn(self.seq_len, int(emb_size/num_heads)))
+        self.Er = nn.Parameter(torch.randn(self.seq_len, int(d_model/n_heads)))
 
         self.register_buffer(
             "mask",
@@ -201,32 +201,32 @@ class Attention_Rel_Vec(nn.Module):
         )
 
         self.dropout = nn.Dropout(dropout)
-        self.to_out = nn.LayerNorm(emb_size)
+        self.to_out = nn.LayerNorm(d_model)
 
     def forward(self, x): #[batch size, seq_len, embed dim]
         batch_size, seq_len, _ = x.shape
-        k = self.key(x).reshape(batch_size, seq_len, self.num_heads, -1).permute(0, 2, 3, 1) # [batch_size, num_heads, seq_len, d_head]
-        v = self.value(x).reshape(batch_size, seq_len, self.num_heads, -1).transpose(1, 2) # [batch_size, num_heads, seq_len, d_head]
-        q = self.query(x).reshape(batch_size, seq_len, self.num_heads, -1).transpose(1, 2) # [batch_size, num_heads, seq_len, d_head]
+        k = self.key(x).reshape(batch_size, seq_len, self.n_heads, -1).permute(0, 2, 3, 1) # [batch_size, n_heads, seq_len, d_head]
+        v = self.value(x).reshape(batch_size, seq_len, self.n_heads, -1).transpose(1, 2) # [batch_size, n_heads, seq_len, d_head]
+        q = self.query(x).reshape(batch_size, seq_len, self.n_heads, -1).transpose(1, 2) # [batch_size, n_heads, seq_len, d_head]
 
         QEr = torch.matmul(q, self.Er.transpose(0, 1))
-        Srel = self.skew(QEr) # [batch_size, self.num_heads, seq_len, seq_len]
+        Srel = self.skew(QEr) # [batch_size, self.n_heads, seq_len, seq_len]
 
         attn = torch.matmul(q, k) # [seq_len, seq_len]
         attn = (attn + Srel) * self.scale
 
         attn = nn.functional.softmax(attn, dim=-1)
-        out = torch.matmul(attn, v) # [batch_size, num_heads, seq_len, d_head]
-        out = out.transpose(1, 2) # [batch_size, seq_len, num_heads, d_head]
+        out = torch.matmul(attn, v) # [batch_size, n_heads, seq_len, d_head]
+        out = out.transpose(1, 2) # [batch_size, seq_len, n_heads, d_head]
         out = out.reshape(batch_size, seq_len, -1) # [batch_size, seq_len, d_model]
         out = self.to_out(out)
         return out
 
-    def skew(self, QEr): # [batch_size, num_heads, seq_len, seq_len]
-        padded = nn.functional.pad(QEr, (1, 0)) # [batch_size, num_heads, seq_len, 1 + seq_len]
-        batch_size, num_heads, num_rows, num_cols = padded.shape
-        reshaped = padded.reshape(batch_size, num_heads, num_cols, num_rows) # [batch_size, num_heads, 1 + seq_len, seq_len]
-        Srel = reshaped[:, :, 1:, :] # [batch_size, num_heads, seq_len, seq_len]
+    def skew(self, QEr): # [batch_size, n_heads, seq_len, seq_len]
+        padded = nn.functional.pad(QEr, (1, 0)) # [batch_size, n_heads, seq_len, 1 + seq_len]
+        batch_size, n_heads, num_rows, num_cols = padded.shape
+        reshaped = padded.reshape(batch_size, n_heads, num_cols, num_rows) # [batch_size, n_heads, 1 + seq_len, seq_len]
+        Srel = reshaped[:, :, 1:, :] # [batch_size, n_heads, seq_len, seq_len]
         return Srel
 
 # %% ../../nbs/081_models.ConvTranPlus.ipynb 16
@@ -234,8 +234,8 @@ class ConvTranBackbone(nn.Module):
     def __init__(self, 
         c_in:int, 
         seq_len:int, 
-        emb_size=16, # Internal dimension of transformer embeddings
-        num_heads:int=8, # Number of multi-headed attention heads
+        d_model=16, # Internal dimension of transformer embeddings
+        n_heads:int=8, # Number of multi-headed attention heads
         dim_ff:int=256, # Dimension of dense feedforward part of transformer layer
         abs_pos_encode:str='tAPE', # Absolute Position Embedding. choices={'tAPE', 'sin', 'learned', None}
         rel_pos_encode:str='eRPE', # Relative Position Embedding. choices={'eRPE', 'vector', None}
@@ -244,35 +244,35 @@ class ConvTranBackbone(nn.Module):
         super().__init__()
 
 
-        self.embed_layer = nn.Sequential(nn.Conv2d(1, emb_size*4, kernel_size=[1, 7], padding='same'), nn.BatchNorm2d(emb_size*4), nn.GELU())
-        self.embed_layer2 = nn.Sequential(nn.Conv2d(emb_size*4, emb_size, kernel_size=[c_in, 1], padding='valid'), nn.BatchNorm2d(emb_size), nn.GELU())
+        self.embed_layer = nn.Sequential(nn.Conv2d(1, d_model*4, kernel_size=[1, 7], padding='same'), nn.BatchNorm2d(d_model*4), nn.GELU())
+        self.embed_layer2 = nn.Sequential(nn.Conv2d(d_model*4, d_model, kernel_size=[c_in, 1], padding='valid'), nn.BatchNorm2d(d_model), nn.GELU())
 
         assert abs_pos_encode in ['tAPE', 'sin', 'learned', None]
         if abs_pos_encode == 'tAPE':
-            self.abs_position = tAPE(emb_size, dropout=dropout, seq_len=seq_len)
+            self.abs_position = tAPE(d_model, dropout=dropout, seq_len=seq_len)
         elif abs_pos_encode == 'sin':
-            self.abs_position = AbsolutePositionalEncoding(emb_size, dropout=dropout, seq_len=seq_len)
+            self.abs_position = AbsolutePositionalEncoding(d_model, dropout=dropout, seq_len=seq_len)
         elif abs_pos_encode== 'learned':
-            self.abs_position = LearnablePositionalEncoding(emb_size, dropout=dropout, seq_len=seq_len)
+            self.abs_position = LearnablePositionalEncoding(d_model, dropout=dropout, seq_len=seq_len)
         else:
             self.abs_position = nn.Identity()
 
         assert rel_pos_encode in ['eRPE', 'vector', None]
         if rel_pos_encode == 'eRPE':
-            self.attention_layer = Attention_Rel_Scl(emb_size, seq_len, num_heads=num_heads, dropout=dropout)
+            self.attention_layer = Attention_Rel_Scl(d_model, seq_len, n_heads=n_heads, dropout=dropout)
         elif rel_pos_encode == 'vector':
-            self.attention_layer = Attention_Rel_Vec(emb_size, seq_len, num_heads=num_heads, dropout=dropout)
+            self.attention_layer = Attention_Rel_Vec(d_model, seq_len, n_heads=n_heads, dropout=dropout)
         else:
-            self.attention_layer = Attention(emb_size, num_heads=num_heads, dropout=dropout)
+            self.attention_layer = Attention(d_model, n_heads=n_heads, dropout=dropout)
 
-        self.LayerNorm = nn.LayerNorm(emb_size, eps=1e-5)
-        self.LayerNorm2 = nn.LayerNorm(emb_size, eps=1e-5)
+        self.LayerNorm = nn.LayerNorm(d_model, eps=1e-5)
+        self.LayerNorm2 = nn.LayerNorm(d_model, eps=1e-5)
 
         self.FeedForward = nn.Sequential(
-            nn.Linear(emb_size, dim_ff),
+            nn.Linear(d_model, dim_ff),
             nn.ReLU(),
             nn.Dropout(dropout),
-            nn.Linear(dim_ff, emb_size),
+            nn.Linear(dim_ff, d_model),
             nn.Dropout(dropout))
 
     def forward(self, x): # [batch size, c_in, seq_len]
@@ -296,8 +296,8 @@ class ConvTranPlus(nn.Sequential):
         c_out:int, # Number of channels in output
         seq_len:int, # Number of input sequence length
         d:tuple=None,  # output shape (excluding batch dimension).
-        emb_size=16, # Internal dimension of transformer embeddings
-        num_heads:int=8, # Number of multi-headed attention heads
+        d_model:int=16, # Internal dimension of transformer embeddings
+        n_heads:int=8, # Number of multi-headed attention heads
         dim_ff:int=256, # Dimension of dense feedforward part of transformer layer
         abs_pos_encode:str='tAPE', # Absolute Position Embedding. choices={'tAPE', 'sin', 'learned', None}
         rel_pos_encode:str='eRPE', # Relative Position Embedding. choices={'eRPE', 'vector', None}
@@ -310,11 +310,11 @@ class ConvTranPlus(nn.Sequential):
         ""
 
         # Backbone
-        backbone = ConvTranBackbone(c_in, seq_len, emb_size=emb_size, num_heads=num_heads, dim_ff=dim_ff, 
+        backbone = ConvTranBackbone(c_in, seq_len, d_model=d_model, n_heads=n_heads, dim_ff=dim_ff, 
                                     abs_pos_encode=abs_pos_encode, rel_pos_encode=rel_pos_encode, dropout=encoder_dropout)
 
         # Head
-        self.head_nf = emb_size
+        self.head_nf = d_model
         if custom_head is not None: 
             if isinstance(custom_head, nn.Module): head = custom_head
             else: head = custom_head(self.head_nf, c_out, seq_len)
