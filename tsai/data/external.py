@@ -2195,7 +2195,7 @@ def get_UCR_data(dsid, path='.', parent_dir='data/UCR', on_disk=True, mode='c', 
     full_tgt_dir.parent.mkdir(parents=True, exist_ok=True)
     if force_download or not all([os.path.isfile(f'{full_tgt_dir}/{fn}.npy') for fn in ['X_train', 'X_valid', 'y_train', 'y_valid', 'X', 'y']]):
         # Option A
-        src_website = 'http://www.timeseriesclassification.com/ClassificationDownloads'
+        src_website = 'http://www.timeseriesclassification.com/aeon-toolkit'
         decompress_from_url(f'{src_website}/{dsid}.zip', target_dir=full_tgt_dir, verbose=verbose)
         if dsid == 'DuckDuckGeese':
             with zipfile.ZipFile(Path(f'{full_parent_dir}/DuckDuckGeese/DuckDuckGeese_ts.zip'), 'r') as zip_ref:
