@@ -789,8 +789,6 @@ class NumpyDataLoader(TfmdDL):
     def c(self):
         if len(self.dataset) == 0: 
             return 0
-        if self.d:                   #NOTE, this and the next clause were restored from v0.3.5 to fix issue #847 about TSMultiLabelClassification model head shape
-            return 1
         elif hasattr(self, "vocab"):
             return len(self.vocab)
         else:
