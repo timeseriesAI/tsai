@@ -24,18 +24,18 @@ class TSImage(TensorImage):
         return res.as_subclass(type(self))
 
     @property
-    def vars(self): 
+    def vars(self):
         return self.shape[-3]
 
     @property
     def len(self): return self.shape[-2:]
-        
+
     def __repr__(self):
         if self.ndim == 0: return f'{self.data}'
         else: return f'TSImage(shape:{self.shape})'
 
     def show(self, **kwargs):
-        if self.ndim < 3: 
+        if self.ndim < 3:
             while True:
                 self = self[None]
                 if self.ndim == 3: break
@@ -43,10 +43,10 @@ class TSImage(TensorImage):
             while True:
                 self = self[0]
                 if self.ndim == 3: break
-        if self[:3].shape[0] == 3 and kwargs == {}: 
+        if self[:3].shape[0] == 3 and kwargs == {}:
             display(to_image(self[:3]))
             return
-        else: 
+        else:
             TensorImage(self[:3]).show(**kwargs)
             return
 
@@ -78,7 +78,7 @@ class TSToPlot(Transform):
         output = []
         for oi in o:
             start = time.time()
-            ax.plot(oi.T, lw=self.lw, **self.kwargs) 
+            ax.plot(oi.T.numpy(), lw=self.lw, **self.kwargs)
             canvas.draw()
             buf = np.asarray(canvas.buffer_rgba())[..., :3]
             output.append(tensor(buf / 255).permute(2,0,1)[None])
@@ -106,7 +106,7 @@ class TSToMat(Transform):
         canvas = FigureCanvasAgg(fig)
         output = []
         for oi in o:
-            if output == []: im = ax.imshow(oi, aspect=aspect, vmin=-1, vmax=1, cmap=self.cmap, **self.kwargs) 
+            if output == []: im = ax.imshow(oi, aspect=aspect, vmin=-1, vmax=1, cmap=self.cmap, **self.kwargs)
             else: im.set_data(oi)
             canvas.draw()
             buf = np.asarray(canvas.buffer_rgba())[..., :3]
@@ -121,7 +121,7 @@ class TSToGADF(Transform):
     It requires either input to be previously normalized between -1 and 1 or set range to (-1, 1)"""
     order = 98
 
-    def __init__(self, size=224, cmap=None, range=None, **kwargs): 
+    def __init__(self, size=224, cmap=None, range=None, **kwargs):
         self.size,self.cmap,self.range = size,cmap,range
         self.encoder = GramianAngularField(image_size=1., sample_range=self.range, method='d', **kwargs)
 
@@ -130,22 +130,22 @@ class TSToGADF(Transform):
         size = ifnone(self.size, seq_len)
         if size != seq_len:
             o = F.interpolate(o.reshape(-1, 1, seq_len), size=size, mode='linear', align_corners=False)[:, 0]
-        else: 
+        else:
             o = o.reshape(-1, seq_len)
         output = self.encoder.fit_transform(o.cpu().numpy()).reshape(bs, -1, size, size) / 2 + .5
-        if self.cmap and output.shape[1] == 1: 
+        if self.cmap and output.shape[1] == 1:
             output = TSImage(plt.get_cmap(self.cmap)(output)[..., :3]).squeeze(1).permute(0,3,1,2)
         else: output = TSImage(output)
         return output.to(device=o.device)
-    
-    
+
+
 @delegates(GramianAngularField.__init__)
 class TSToGASF(Transform):
     r"""Transforms a time series batch to a 4d TSImage (bs, n_vars, size, size) by applying Gramian Angular Summation Field.
     It requires either input to be previously normalized between -1 and 1 or set range to (-1, 1)"""
     order = 98
 
-    def __init__(self, size=224, cmap=None, range=None, **kwargs): 
+    def __init__(self, size=224, cmap=None, range=None, **kwargs):
         self.size,self.cmap,self.range = size,cmap,range
         self.encoder = GramianAngularField(image_size=1., sample_range=self.range, method='s', **kwargs)
 
@@ -154,14 +154,14 @@ class TSToGASF(Transform):
         size = ifnone(self.size, seq_len)
         if size != seq_len:
             o = F.interpolate(o.reshape(-1, 1, seq_len), size=size, mode='linear', align_corners=False)[:, 0]
-        else: 
+        else:
             o = o.reshape(-1, seq_len)
         output = self.encoder.fit_transform(o.cpu().numpy()).reshape(bs, -1, size, size) / 2 + .5
-        if self.cmap and output.shape[1] == 1: 
+        if self.cmap and output.shape[1] == 1:
             output = TSImage(plt.get_cmap(self.cmap)(output)[..., :3]).squeeze(1).permute(0,3,1,2)
         else: output = TSImage(output)
         return output.to(device=o.device)
-    
+
 
 
 @delegates(MarkovTransitionField.__init__)
@@ -169,7 +169,7 @@ class TSToMTF(Transform):
     r"""Transforms a time series batch to a 4d TSImage (bs, n_vars, size, size) by applying Markov Transition Field"""
     order = 98
 
-    def __init__(self, size=224, cmap=None, n_bins=5, **kwargs): 
+    def __init__(self, size=224, cmap=None, n_bins=5, **kwargs):
         self.size,self.cmap = size,cmap
         self.encoder = MarkovTransitionField(n_bins=n_bins, **kwargs)
 
@@ -178,22 +178,22 @@ class TSToMTF(Transform):
         size = ifnone(self.size, seq_len)
         if size != seq_len:
             o = F.interpolate(o.reshape(-1, 1, seq_len), size=size, mode='linear', align_corners=False)[:, 0]
-        else: 
+        else:
             o = o.reshape(-1, seq_len)
         output = self.encoder.fit_transform(o.cpu().numpy()).reshape(bs, -1, size, size)
-        if self.cmap and output.shape[1] == 1: 
+        if self.cmap and output.shape[1] == 1:
             output = TSImage(plt.get_cmap(self.cmap)(output)[..., :3]).squeeze(1).permute(0,3,1,2)
         else: output = TSImage(output)
         return output.to(device=o.device)
-    
-    
+
+
 @delegates(RecurrencePlot.__init__)
 class TSToRP(Transform):
-    r"""Transforms a time series batch to a 4d TSImage (bs, n_vars, size, size) by applying Recurrence Plot. 
+    r"""Transforms a time series batch to a 4d TSImage (bs, n_vars, size, size) by applying Recurrence Plot.
     It requires input to be previously normalized between -1 and 1"""
     order = 98
 
-    def __init__(self, size=224, cmap=None, **kwargs): 
+    def __init__(self, size=224, cmap=None, **kwargs):
         self.size,self.cmap = size,cmap
         self.encoder = RecurrencePlot(**kwargs)
 
@@ -202,22 +202,22 @@ class TSToRP(Transform):
         size = ifnone(self.size, seq_len)
         if size != seq_len:
             o = F.interpolate(o.reshape(-1, 1, seq_len), size=size, mode='linear', align_corners=False)[:, 0]
-        else: 
+        else:
             o = o.reshape(-1, seq_len)
         output = self.encoder.fit_transform(o.cpu().numpy()) / 2
         output = output.reshape(bs, -1, size, size)
-        if self.cmap and output.shape[1] == 1: 
+        if self.cmap and output.shape[1] == 1:
             output = TSImage(plt.get_cmap(self.cmap)(output)[..., :3]).squeeze(1).permute(0,3,1,2)
         else: output = TSImage(output)
         return output.to(device=o.device)
-    
-    
+
+
 @delegates(JointRecurrencePlot.__init__)
 class TSToJRP(Transform):
     r"""Transforms a time series batch to a 4d TSImage (bs, n_vars, size, size) by applying Joint Recurrence Plot"""
     order = 98
 
-    def __init__(self, size=224, cmap=None, **kwargs): 
+    def __init__(self, size=224, cmap=None, **kwargs):
         self.size,self.cmap = size,cmap
         self.encoder = JointRecurrencePlot(**kwargs)
 
@@ -227,7 +227,7 @@ class TSToJRP(Transform):
         size = ifnone(self.size, seq_len)
         if size != seq_len: o = F.interpolate(o, size=size, mode='linear', align_corners=False)
         output = self.encoder.fit_transform(o.cpu().numpy()).reshape(bs, -1, size, size)
-        if self.cmap and output.shape[1] == 1: 
+        if self.cmap and output.shape[1] == 1:
             output = TSImage(plt.get_cmap(self.cmap)(output)[..., :3]).squeeze(1).permute(0,3,1,2)
         else: output = TSImage(output)
         return output.to(device=o.device)

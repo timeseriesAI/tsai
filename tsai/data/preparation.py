@@ -805,7 +805,7 @@ def prepare_forecasting_data(
             X, y = _prepare_forecasting_data(df[x_vars], x_vars=None, y_vars=None)
         else:
             X, y = _prepare_forecasting_data(df, x_vars=x_vars, y_vars=y_vars)
-    if y == []:
+    if not isinstance(y, (torch.Tensor, np.ndarray)):
         y = None
     return X, y
 

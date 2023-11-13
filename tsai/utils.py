@@ -1000,8 +1000,7 @@ def assign_in_chunks(a, b, chunksize='auto', inplace=True, verbose=True):
     b: may be an integer, float, str, 'rand' (for random data), or another array like object.
     chunksize: is the size of chunks. If 'auto' chunks will have around 1GB each.
     """
-
-    if b != 'rand' and not isinstance(b, (Iterable, Generator)):
+    if not (isinstance(b, str) and b == 'rand') and not isinstance(b, (Iterable, Generator)):
         a[:] = b
     else:
         shape = a.shape
@@ -1014,7 +1013,7 @@ def assign_in_chunks(a, b, chunksize='auto', inplace=True, verbose=True):
         for i in progress_bar(range((shape[0] - 1) // chunksize + 1), display=verbose, leave=False):
             start, end = i * chunksize, min(shape[0], (i + 1) * chunksize)
             if start >= shape[0]: break
-            if b == 'rand':
+            if (isinstance(b, str) and b == 'rand'):
                 a[start:end] = np.random.rand(end - start, *shape[1:])
             else:
                 if is_dask(b):
