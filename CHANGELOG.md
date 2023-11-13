@@ -2,6 +2,20 @@
 
 <!-- do not remove -->
 
+## 0.3.8
+
+### New Features
+
+- added Hydra and HydraMultiRocket archs ([#800](https://github.com/timeseriesAI/tsai/issues/800))
+
+### Bugs Squashed
+
+- UCR Dataset download link has been updated ([#827](https://github.com/timeseriesAI/tsai/issues/827))
+
+- mWDNPlus now supports multidimensional outputs ([#802](https://github.com/timeseriesAI/tsai/issues/802))
+
+- Fixed import issues with demo code in Readme.MD ([#798](https://github.com/timeseriesAI/tsai/issues/798))
+
 ## 0.3.7
 
 ### New Features
