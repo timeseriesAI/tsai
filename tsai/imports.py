@@ -26,13 +26,13 @@ from functools import partial
 from numbers import Integral
 from pathlib import Path
 from time import strftime
-from tqdm import tqdm
 from typing import (
     Dict,
     Generator,
     Iterable,
     Iterator,
     List,
+    Literal,
     Optional,
     Sequence,
     Set,
@@ -60,9 +60,11 @@ from fastcore.imports import *
 from fastcore.meta import *
 from fastcore.test import *
 from fastcore.xtras import *
+from matplotlib.figure import Figure
 from numpy import array
 from numpy.lib.stride_tricks import sliding_window_view
 from torch import Tensor
+from tqdm import tqdm
 
 config = ConfigParser(delimiters=["="])
 config.read("../settings.ini")
@@ -100,8 +102,7 @@ def is_nb():
         import IPython
     except ImportError:
         raise ImportError("You need to install IPython to use is_nb")
-    from IPython.core import getipython
-
+    from IPython import get_ipython
     return get_ipython().__class__.__name__ == "ZMQInteractiveShell"
 
 
@@ -111,7 +112,6 @@ def is_colab():
     except ImportError:
         raise ImportError("You need to install IPython to use is_colab")
     from IPython.core import getipython
-
     return "google.colab" in str(getipython.get_ipython())
 
 
@@ -403,7 +403,7 @@ def my_setup(*pkgs):
                 gpu_text = "gpu" if device_count == 1 else "gpus"
                 print(f"device          : {device_count} {gpu_text} ({[torch.cuda.get_device_name(i) for i in range(device_count)]})")
             else:
-                print(f"device          : {DEFAULT_DEVICE}")
+                print(f"device          : {default_device()}")
     except:
         pass
     try:
