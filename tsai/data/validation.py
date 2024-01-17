@@ -169,7 +169,7 @@ def TrainValidTestSplitter(n_splits:int=1, valid_size:Union[float, int]=0.2, tes
     return _inner
 
 # %% ../../nbs/003_data.validation.ipynb 13
-def plot_splits(splits, contains_test_data):
+def plot_splits(splits, contains_test_data=True):
     _max = 0
     _splits = 0
     for i, split in enumerate(splits):
@@ -670,5 +670,5 @@ def get_long_term_forecasting_splits(
     test_split = L(np.arange(border1s[2], border2s[2] - fcst_horizon - fcst_history + 1).tolist())   
     splits = train_split, valid_split, test_split
     if show_plot:
-        plot_splits(splits)
+        plot_splits(splits, test_size > 0)
     return splits
