@@ -169,7 +169,7 @@ def TrainValidTestSplitter(n_splits:int=1, valid_size:Union[float, int]=0.2, tes
     return _inner
 
 # %% ../../nbs/003_data.validation.ipynb 13
-def plot_splits(splits):
+def plot_splits(splits, contains_test_data):
     _max = 0
     _splits = 0
     for i, split in enumerate(splits):
@@ -188,7 +188,7 @@ def plot_splits(splits):
                 v[i, s] = 1 + j
         else: v[i, split] = 1 + i
     vals = np.unique(v)
-    if 2 in vals and 3 not in vals:
+    if 2 in vals and 3 not in vals and contains_test_data:
         vals = [v + 1 if v == 2 else v for v in vals]
     plt.figure(figsize=(16, len(_splits)/2))
     if len(vals) == 1:
@@ -276,7 +276,7 @@ def get_splits(o, n_splits:int=1, valid_size:float=0.2, test_size:float=0., trai
                 if valid_size != 0: splits[1] = splits[0]
                 if test_size != 0: splits[2] = splits[0]
             splits = tuple(splits)
-    if show_plot: plot_splits(splits)
+    if show_plot: plot_splits(splits, test_size > 0)
     return splits
 
 # %% ../../nbs/003_data.validation.ipynb 17
@@ -365,7 +365,7 @@ def get_walk_forward_splits(
             splits.append((L(train_idxs[n]),))
     splits = tuple(splits)[::-1]
     if show_plot:
-        plot_splits(splits)
+        plot_splits(splits, test_size > 0)
     return splits
 
 # %% ../../nbs/003_data.validation.ipynb 19
@@ -405,7 +405,7 @@ def TSSplitter(
             if len(o) > 1_000_000:
                 warnings.warn('the splits are too large to be plotted')
             else: 
-                plot_splits(splits) if test_size else plot_splits(splits[:2])
+                plot_splits(splits, test_size > 0) if test_size else plot_splits(splits[:2], test_size > 0)
         return splits
     return _inner
 
@@ -636,7 +636,7 @@ def get_forecasting_splits(
         if len(df) > 1_000_000:
             warnings.warn('the splits are too large to be plotted')
         else:
-            plot_splits(splits)
+            plot_splits(splits, test_size > 0)
     return tuple(splits)
 
 # %% ../../nbs/003_data.validation.ipynb 48
