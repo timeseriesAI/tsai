@@ -348,7 +348,7 @@ def default_device(use=-1):
     return torch.device("cpu")
 
 
-device = default_device()
+#device = default_device()
 
 
 def my_setup(*pkgs):
