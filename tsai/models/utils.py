@@ -29,7 +29,7 @@ def apply_idxs(o, idxs):
 # %% ../../nbs/030_models.utils.ipynb 5
 def SeqTokenizer(c_in, embed_dim, token_size=60, norm=False):
     "Generates non-overlapping tokens from sub-sequences within a sequence by applying a sliding window"
-    return ConvBlock(c_in, embed_dim, token_size, stride=token_size, padding=0, act=None, 
+    return ConvBlock(c_in, embed_dim, token_size, stride=token_size, padding=0, act=None,
                      norm='Batch' if norm else None, bias=norm is None)
 
 SeqEmbed = SeqTokenizer
@@ -82,18 +82,18 @@ def has_weight_or_bias(l):
 # %% ../../nbs/030_models.utils.ipynb 9
 def check_bias(m, cond=noop, verbose=False):
     mean, std = [], []
-    for i,l in enumerate(get_layers(m, cond=cond)): 
-        if hasattr(l, 'bias') and l.bias is not None: 
+    for i,l in enumerate(get_layers(m, cond=cond)):
+        if hasattr(l, 'bias') and l.bias is not None:
             b = l.bias.data
             mean.append(b.mean())
             std.append(b.std())
             pv(f'{i:3} {l.__class__.__name__:15} shape: {str(list(b.shape)):15}  mean: {b.mean():+6.3f}  std: {b.std():+6.3f}', verbose)
     return np.array(mean), np.array(std)
-            
+
 def check_weight(m, cond=noop, verbose=False):
     mean, std = [], []
-    for i,l in enumerate(get_layers(m, cond=cond)): 
-        if hasattr(l, 'weight') and l.weight is not None: 
+    for i,l in enumerate(get_layers(m, cond=cond)):
+        if hasattr(l, 'weight') and l.weight is not None:
             w = l.weight.data
             mean.append(w.mean())
             std.append(w.std())
@@ -139,10 +139,10 @@ def transfer_weights(model, weights_path:Path, device:torch.device=None, exclude
             print(f"weights from {weights_path} successfully transferred!\n")
 
 # %% ../../nbs/030_models.utils.ipynb 13
-def build_ts_model(arch, c_in=None, c_out=None, seq_len=None, d=None, dls=None, device=None, verbose=False, 
-                   s_cat_idxs=None, s_cat_embeddings=None, s_cat_embedding_dims=None, s_cont_idxs=None, 
+def build_ts_model(arch, c_in=None, c_out=None, seq_len=None, d=None, dls=None, device=None, verbose=False,
+                   s_cat_idxs=None, s_cat_embeddings=None, s_cat_embedding_dims=None, s_cont_idxs=None,
                    o_cat_idxs=None, o_cat_embeddings=None, o_cat_embedding_dims=None, o_cont_idxs=None,
-                   patch_len=None, patch_stride=None, fusion_layers=128, fusion_act='relu', fusion_dropout=0., fusion_use_bn=True, 
+                   patch_len=None, patch_stride=None, fusion_layers=128, fusion_act='relu', fusion_dropout=0., fusion_use_bn=True,
                    pretrained=False, weights_path=None, exclude_head=True, cut=-1, init=None, arch_config={}, **kwargs):
 
     device = ifnone(device, default_device())
@@ -151,20 +151,20 @@ def build_ts_model(arch, c_in=None, c_out=None, seq_len=None, d=None, dls=None, 
         c_out = ifnone(c_out, dls.c)
         seq_len = ifnone(seq_len, dls.len)
         d = ifnone(d, dls.d)
-    
+
     if s_cat_idxs or s_cat_embeddings or s_cat_embedding_dims or s_cont_idxs or o_cat_idxs or o_cat_embeddings or o_cat_embedding_dims or o_cont_idxs:
         from tsai.models.multimodal import MultInputWrapper
         model = MultInputWrapper(arch, c_in=c_in, c_out=c_out, seq_len=seq_len, d=d,
-                                 s_cat_idxs=s_cat_idxs, s_cat_embeddings=s_cat_embeddings, s_cat_embedding_dims=s_cat_embedding_dims, s_cont_idxs=s_cont_idxs, 
-                                 o_cat_idxs=o_cat_idxs, o_cat_embeddings=o_cat_embeddings, o_cat_embedding_dims=o_cat_embedding_dims, o_cont_idxs=o_cont_idxs, 
-                                 patch_len=patch_len, patch_stride=patch_stride, 
-                                 fusion_layers=fusion_layers, fusion_act=fusion_act, fusion_dropout=fusion_dropout, fusion_use_bn=fusion_use_bn,
+                                 s_cat_idxs=s_cat_idxs, s_cat_embeddings=s_cat_embeddings, s_cat_embedding_dims=s_cat_embedding_dims, s_cont_idxs=s_cont_idxs,
+                                 o_cat_idxs=o_cat_idxs, o_cat_embeddings=o_cat_embeddings, o_cat_embedding_dims=o_cat_embedding_dims, o_cont_idxs=o_cont_idxs,
+                                 patch_len=patch_len, patch_stride=patch_stride,
+                                 fusion_layers=fusion_layers, fusion_act=fusion_act, fusion_dropout=fusion_dropout, fusion_use_bn=fusion_use_bn,**arch_config,
                                  **kwargs)
     else:
-        if d and arch.__name__ not in ["PatchTST", "PatchTSTPlus", 'TransformerRNNPlus', 'TransformerLSTMPlus', 'TransformerGRUPlus', 
-        "RNN_FCNPlus", "LSTM_FCNPlus", "GRU_FCNPlus", "MRNN_FCNPlus", "MLSTM_FCNPlus", "MGRU_FCNPlus", 
+        if d and arch.__name__ not in ["PatchTST", "PatchTSTPlus", 'TransformerRNNPlus', 'TransformerLSTMPlus', 'TransformerGRUPlus',
+        "RNN_FCNPlus", "LSTM_FCNPlus", "GRU_FCNPlus", "MRNN_FCNPlus", "MLSTM_FCNPlus", "MGRU_FCNPlus",
         "RNNAttentionPlus", "LSTMAttentionPlus", "GRUAttentionPlus", "ConvTran", "ConvTranPlus"]:
-            if 'custom_head' not in kwargs.keys(): 
+            if 'custom_head' not in kwargs.keys():
                 if "rocket" in arch.__name__.lower() or 'hydra' in arch.__name__.lower():
                     kwargs['custom_head'] = partial(rocket_nd_head, d=d)
                 elif "xresnet1d" in arch.__name__.lower():
@@ -176,13 +176,13 @@ def build_ts_model(arch, c_in=None, c_out=None, seq_len=None, d=None, dls=None, 
         if 'ltsf_' in arch.__name__.lower() or 'patchtst' in arch.__name__.lower():
             pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} seq_len={seq_len} pred_dim={d} arch_config={arch_config}, kwargs={kwargs})', verbose)
             model = (arch(c_in=c_in, c_out=c_out, seq_len=seq_len, pred_dim=d, **arch_config, **kwargs)).to(device=device)
-        elif arch.__name__ in ['TransformerRNNPlus', 'TransformerLSTMPlus', 'TransformerGRUPlus', "RNN_FCNPlus", "LSTM_FCNPlus", "GRU_FCNPlus", "MRNN_FCNPlus", 
+        elif arch.__name__ in ['TransformerRNNPlus', 'TransformerLSTMPlus', 'TransformerGRUPlus', "RNN_FCNPlus", "LSTM_FCNPlus", "GRU_FCNPlus", "MRNN_FCNPlus",
         "MLSTM_FCNPlus", "MGRU_FCNPlus", "RNNAttentionPlus", "LSTMAttentionPlus", "GRUAttentionPlus", "ConvTran", "ConvTranPlus", 'mWDNPlus']:
             pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} seq_len={seq_len} d={d} arch_config={arch_config}, kwargs={kwargs})', verbose)
             model = (arch(c_in=c_in, c_out=c_out, seq_len=seq_len, d=d, **arch_config, **kwargs)).to(device=device)
         elif sum([1 for v in ['RNN_FCN', 'LSTM_FCN', 'RNNPlus', 'LSTMPlus', 'GRUPlus', 'InceptionTime', 'TSiT', 'Sequencer', 'XceptionTimePlus',
-                            'GRU_FCN', 'OmniScaleCNN', 'mWDN', 'TST', 'XCM', 'MLP', 'MiniRocket', 'InceptionRocket', 'ResNetPlus', 
-                            'RNNAttention', 'LSTMAttention', 'GRUAttention', 'MultiRocket', 'MultiRocketPlus', 'Hydra', 'HydraPlus', 
+                            'GRU_FCN', 'OmniScaleCNN', 'mWDN', 'TST', 'XCM', 'MLP', 'MiniRocket', 'InceptionRocket', 'ResNetPlus',
+                            'RNNAttention', 'LSTMAttention', 'GRUAttention', 'MultiRocket', 'MultiRocketPlus', 'Hydra', 'HydraPlus',
                             'HydraMultiRocket', 'HydraMultiRocketPlus']
                 if v in arch.__name__]):
             pv(f'arch: {arch.__name__}(c_in={c_in} c_out={c_out} seq_len={seq_len} arch_config={arch_config} kwargs={kwargs})', verbose)
@@ -229,7 +229,7 @@ def build_ts_model(arch, c_in=None, c_out=None, seq_len=None, d=None, dls=None, 
     setattr(model, "__name__", arch.__name__)
 
     return model
-    
+
 build_model = build_ts_model
 create_model = build_ts_model
 
@@ -245,10 +245,10 @@ def build_tsimage_model(arch, c_in=None, c_out=None, dls=None, pretrained=False,
     if dls is not None:
         c_in = ifnone(c_in, dls.vars)
         c_out = ifnone(c_out, dls.c)
-    
+
     model = arch(pretrained=pretrained, c_in=c_in, n_out=c_out, **arch_config, **kwargs).to(device=device)
     setattr(model, "__name__", arch.__name__)
-    if init is not None: 
+    if init is not None:
         apply_init(model[1] if pretrained else model, init)
     return model
 
@@ -262,7 +262,7 @@ def build_tabular_model(arch, dls, layers=None, emb_szs=None, n_out=None, y_rang
     assert n_out, "`n_out` is not defined, and could not be inferred from data, set `dls.c` or pass `n_out`"
     if y_range is None and 'y_range' in kwargs: y_range = kwargs.pop('y_range')
     model = arch(emb_szs, len(dls.cont_names), n_out, layers, y_range=y_range, **arch_config, **kwargs).to(device=device)
-    
+
     if hasattr(model, "head_nf"):  head_nf = model.head_nf
     else: head_nf = get_nf(model)
     setattr(model, "__name__", arch.__name__)
@@ -286,10 +286,10 @@ def output_size_calculator(mod, c_in, seq_len=None):
     if seq_len is None:
         seq_len = 50
         return_q_len = False
-    try: 
+    try:
         params_0 = list(mod.parameters())[0]
         xb = torch.rand(1, c_in, seq_len, device=params_0.device, dtype=params_0.dtype)
-    except: 
+    except:
         xb = torch.rand(1, c_in, seq_len)
     training = mod.training
     mod.eval()
@@ -301,7 +301,7 @@ def output_size_calculator(mod, c_in, seq_len=None):
     mod.training = training
     if return_q_len:
         return c_out, q_len
-    else: 
+    else:
         return c_out, None
 
 # %% ../../nbs/030_models.utils.ipynb 24
@@ -321,6 +321,6 @@ def naive_forecaster(o, split, horizon=1):
 
 def true_forecaster(o, split, horizon=1):
     o_true = o[split]
-    if is_listy(horizon): 
+    if is_listy(horizon):
         o_true = o_true[np.newaxis].repeat(len(horizon), 0)
     return o_true
