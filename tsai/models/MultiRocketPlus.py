@@ -19,24 +19,22 @@ class Flatten(nn.Module):
 
 # %% ../../nbs/076_models.MultiRocketPlus.ipynb 5
 def _LPVV(o, dim=2):
-    "Longest stretch of positive values (-1, 1)"
+    "Longest stretch of positive values along a dimension(-1, 1)"
 
     seq_len = o.shape[dim]
-
-    # Convert tensor to binary format (1 for positive values, 0 for non-positive values)
     binary_tensor = (o > 0).float()
 
-    # Find the changes in the binary tensor
     diff = torch.cat([torch.ones_like(binary_tensor.narrow(dim, 0, 1)),
-                     binary_tensor.narrow(dim, 1, binary_tensor.shape[dim]-1) - binary_tensor.narrow(dim, 0, binary_tensor.shape[dim]-1)], dim=dim)
+                      binary_tensor.narrow(dim, 1, seq_len-1) - binary_tensor.narrow(dim, 0, seq_len-1)], dim=dim)
 
-    # Create groups of positive values
     groups = (diff > 0).cumsum(dim)
 
-    # Count the number of values in each group
-    counts = torch.zeros_like(binary_tensor).scatter_add_(dim, groups * binary_tensor.long(), binary_tensor)
+    # Ensure groups are within valid index bounds
+    groups = groups * binary_tensor.long()
+    valid_groups = groups.where(groups < binary_tensor.size(dim), torch.tensor(0, device=groups.device))
 
-    # The longest stretch of positive values is the maximum count
+    counts = torch.zeros_like(binary_tensor).scatter_add_(dim, valid_groups, binary_tensor)
+
     longest_stretch = counts.max(dim)[0]
 
     return torch.nan_to_num(2 * (longest_stretch / seq_len) - 1)
@@ -67,7 +65,7 @@ def _PPV(o_pos, dim=2):
     "Proportion of Positive Values (-1, 1)"
     return (o_pos).float().mean(dim) * 2 - 1
 
-# %% ../../nbs/076_models.MultiRocketPlus.ipynb 10
+# %% ../../nbs/076_models.MultiRocketPlus.ipynb 11
 class MultiRocketFeaturesPlus(nn.Module):
     fitting = False
 
@@ -239,7 +237,7 @@ class MultiRocketFeaturesPlus(nn.Module):
                     len(indices), max_num_kernels, False))]
         return indices, pos_values
 
-# %% ../../nbs/076_models.MultiRocketPlus.ipynb 11
+# %% ../../nbs/076_models.MultiRocketPlus.ipynb 12
 class MultiRocketBackbonePlus(nn.Module):
     def __init__(self, c_in, seq_len, num_features=50_000, max_dilations_per_kernel=32, kernel_size=9, max_num_channels=None, max_num_kernels=84, use_diff=True):
         super(MultiRocketBackbonePlus, self).__init__()
@@ -266,7 +264,7 @@ class MultiRocketBackbonePlus(nn.Module):
             output = self.branch_x(x)
             return output
 
-# %% ../../nbs/076_models.MultiRocketPlus.ipynb 12
+# %% ../../nbs/076_models.MultiRocketPlus.ipynb 13
 class MultiRocketPlus(nn.Sequential):
 
     def __init__(self, c_in, c_out, seq_len, d=None, num_features=50_000, max_dilations_per_kernel=32, kernel_size=9, max_num_channels=None, max_num_kernels=84,
