@@ -17,26 +17,26 @@ from fastai.callback.all import *
 
 # %% ../../nbs/026_callback.noisy_student.ipynb 5
 # This is an unofficial implementation of noisy student based on:
-# Xie, Q., Luong, M. T., Hovy, E., & Le, Q. V. (2020). Self-training with noisy student improves imagenet classification. 
+# Xie, Q., Luong, M. T., Hovy, E., & Le, Q. V. (2020). Self-training with noisy student improves imagenet classification.
 # In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (pp. 10687-10698).
 # Official tensorflow implementation available in https://github.com/google-research/noisystudent
 
 
 class NoisyStudent(Callback):
-    """A callback to implement the Noisy Student approach. In the original paper this was used in combination with noise: 
+    """A callback to implement the Noisy Student approach. In the original paper this was used in combination with noise:
         - stochastic depth: .8
         - RandAugment: N=2, M=27
         - dropout: .5
-        
+
     Steps:
         1. Build the dl you will use as a teacher
         2. Create dl2 with the pseudolabels (either soft or hard preds)
         3. Pass any required batch_tfms to the callback
-    
+
     """
-    
-    def __init__(self, dl2:DataLoader, bs:Optional[int]=None, l2pl_ratio:int=1, batch_tfms:Optional[list]=None, do_setup:bool=True, 
-                 pseudolabel_sample_weight:float=1., verbose=False): 
+
+    def __init__(self, dl2:DataLoader, bs:Optional[int]=None, l2pl_ratio:int=1, batch_tfms:Optional[list]=None, do_setup:bool=True,
+                 pseudolabel_sample_weight:float=1., verbose=False):
         r'''
         Args:
             dl2:                       dataloader with the pseudolabels
@@ -46,18 +46,18 @@ class NoisyStudent(Callback):
             do_setup:                  perform a transform setup on the labeled dataset.
             pseudolabel_sample_weight: weight of each pseudolabel sample relative to the labeled one of the loss.
         '''
-        
+
         self.dl2, self.bs, self.l2pl_ratio, self.batch_tfms, self.do_setup, self.verbose = dl2, bs, l2pl_ratio, batch_tfms, do_setup, verbose
         self.pl_sw = pseudolabel_sample_weight
-        
+
     def before_fit(self):
         if self.batch_tfms is None: self.batch_tfms = self.dls.train.after_batch
         self.old_bt = self.dls.train.after_batch # Remove and store dl.train.batch_tfms
         self.old_bs = self.dls.train.bs
-        self.dls.train.after_batch = noop        
+        self.dls.train.after_batch = noop
 
         if self.do_setup and self.batch_tfms:
-            for bt in self.batch_tfms: 
+            for bt in self.batch_tfms:
                 bt.setup(self.dls.train)
 
         if self.bs is None: self.bs = self.dls.train.bs
@@ -67,12 +67,12 @@ class NoisyStudent(Callback):
         pv(f'labels / pseudolabels per training batch              : {self.dls.train.bs} / {self.dl2.bs}', self.verbose)
         rel_weight = (self.dls.train.bs/self.dl2.bs) * (len(self.dl2.dataset)/len(self.dls.train.dataset))
         pv(f'relative labeled/ pseudolabel sample weight in dataset: {rel_weight:.1f}', self.verbose)
-        
+
         self.dl2iter = iter(self.dl2)
-    
+
         self.old_loss_func = self.learn.loss_func
         self.learn.loss_func = self.loss
-        
+
     def before_batch(self):
         if self.training:
             X, y = self.x, self.y
@@ -81,26 +81,26 @@ class NoisyStudent(Callback):
                 self.dl2iter = iter(self.dl2)
                 X2, y2 = next(self.dl2iter)
             if y.ndim == 1 and y2.ndim == 2: y = torch.eye(self.learn.dls.c, device=y.device)[y]
-            
+
             X_comb, y_comb = concat(X, X2), concat(y, y2)
-            
-            if self.batch_tfms is not None: 
+
+            if self.batch_tfms is not None:
                 X_comb = compose_tfms(X_comb, self.batch_tfms, split_idx=0)
                 y_comb = compose_tfms(y_comb, self.batch_tfms, split_idx=0)
             self.learn.xb = (X_comb,)
             self.learn.yb = (y_comb,)
             pv(f'\nX: {X.shape}  X2: {X2.shape}  X_comb: {X_comb.shape}', self.verbose)
             pv(f'y: {y.shape}  y2: {y2.shape}  y_comb: {y_comb.shape}', self.verbose)
-            
-    def loss(self, output, target): 
+
+    def loss(self, output, target):
         if target.ndim == 2: _, target = target.max(dim=1)
-        if self.training and self.pl_sw != 1: 
+        if self.training and self.pl_sw != 1:
             loss = (1 - self.pl_sw) * self.old_loss_func(output[:self.dls.train.bs], target[:self.dls.train.bs])
             loss += self.pl_sw * self.old_loss_func(output[self.dls.train.bs:], target[self.dls.train.bs:])
-            return loss 
-        else: 
+            return loss
+        else:
             return self.old_loss_func(output, target)
-    
+
     def after_fit(self):
         self.dls.train.after_batch = self.old_bt
         self.learn.loss_func = self.old_loss_func

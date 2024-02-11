@@ -19,7 +19,7 @@ from .MultiRocketPlus import MultiRocketBackbonePlus
 # %% ../../nbs/080_models.HydraMultiRocketPlus.ipynb 4
 class HydraMultiRocketBackbonePlus(nn.Module):
 
-    def __init__(self, c_in, c_out, seq_len, d=None, 
+    def __init__(self, c_in, c_out, seq_len, d=None,
                  k = 8, g = 64, max_c_in = 8, clip=True,
                  num_features=50_000, max_dilations_per_kernel=32, kernel_size=9, max_num_channels=None, max_num_kernels=84,
                  use_bn=True, fc_dropout=0, custom_head=None, zero_init=True, use_diff=True, device=default_device()):
@@ -28,12 +28,12 @@ class HydraMultiRocketBackbonePlus(nn.Module):
 
         self.hydra = HydraBackbonePlus(c_in, c_out, seq_len, k=k, g=g, max_c_in=max_c_in, clip=clip, device=device, zero_init=zero_init)
         self.multirocket = MultiRocketBackbonePlus(c_in, seq_len, num_features=num_features, max_dilations_per_kernel=max_dilations_per_kernel,
-                                                   kernel_size=kernel_size, max_num_channels=max_num_channels, max_num_kernels=max_num_kernels, 
+                                                   kernel_size=kernel_size, max_num_channels=max_num_channels, max_num_kernels=max_num_kernels,
                                                    use_diff=use_diff)
 
         self.num_features = self.hydra.num_features + self.multirocket.num_features
-        
-    
+
+
     # transform in batches of *batch_size*
     def batch(self, X, split=None, batch_size=256):
         bs = X.shape[0]
@@ -50,8 +50,8 @@ class HydraMultiRocketBackbonePlus(nn.Module):
             for i, batch in enumerate(batches):
                 Z.append(self(X[batch]))
             return torch.cat(Z)
-    
-    
+
+
     def forward(self, x):
         x = torch.cat([self.hydra(x), self.multirocket(x)], -1)
         return x
@@ -59,7 +59,7 @@ class HydraMultiRocketBackbonePlus(nn.Module):
 # %% ../../nbs/080_models.HydraMultiRocketPlus.ipynb 5
 class HydraMultiRocketPlus(nn.Sequential):
 
-    def __init__(self, 
+    def __init__(self,
         c_in:int, # num of channels in input
         c_out:int, # num of channels in output
         seq_len:int, # sequence length
@@ -84,13 +84,13 @@ class HydraMultiRocketPlus(nn.Sequential):
         backbone = HydraMultiRocketBackbonePlus(c_in, c_out, seq_len, k=k, g=g, max_c_in=max_c_in, clip=clip, device=device, zero_init=zero_init,
                                                 num_features=num_features, max_dilations_per_kernel=max_dilations_per_kernel,
                                                 kernel_size=kernel_size, max_num_channels=max_num_channels, max_num_kernels=max_num_kernels, use_diff=use_diff)
-        
+
         num_features = backbone.num_features
 
 
         # Head
         self.head_nf = num_features
-        if custom_head is not None: 
+        if custom_head is not None:
             if isinstance(custom_head, nn.Module): head = custom_head
             else: head = custom_head(self.head_nf, c_out, 1)
         elif d is not None:

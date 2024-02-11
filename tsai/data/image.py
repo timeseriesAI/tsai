@@ -67,7 +67,7 @@ class TSToPlot(Transform):
 
     def encodes(self, o: TSTensor):
         device = o.device
-        if o.data.device.type == 'cuda': o = o.cpu()
+        if o.data.device.type != 'cpu': o = o.cpu()
         if o.ndim == 2: o = o[None]
         seq_len = o.shape[-1]
         fig = self.fig
@@ -95,7 +95,7 @@ class TSToMat(Transform):
 
     def encodes(self, o: TSTensor):
         device = o.device
-        if o.data.device.type == 'cuda': o = o.cpu()
+        if o.data.device.type != 'cpu': o = o.cpu()
         if o.ndim == 2: o = o[None]
         nvars, seq_len = o.shape[-2:]
         aspect = seq_len / nvars
@@ -129,7 +129,7 @@ class TSToGADF(Transform):
         bs, *_, seq_len = o.shape
         size = ifnone(self.size, seq_len)
         if size != seq_len:
-            o = F.interpolate(o.reshape(-1, 1, seq_len), size=size, mode='linear', align_corners=False)[:, 0]
+            o = F.interpolate(o.reshape(-1, 1, seq_len), size=size, mode='nearest', align_corners=None)[:, 0]
         else:
             o = o.reshape(-1, seq_len)
         output = self.encoder.fit_transform(o.cpu().numpy()).reshape(bs, -1, size, size) / 2 + .5
@@ -153,7 +153,7 @@ class TSToGASF(Transform):
         bs, *_, seq_len = o.shape
         size = ifnone(self.size, seq_len)
         if size != seq_len:
-            o = F.interpolate(o.reshape(-1, 1, seq_len), size=size, mode='linear', align_corners=False)[:, 0]
+            o = F.interpolate(o.reshape(-1, 1, seq_len), size=size, mode='nearest', align_corners=None)[:, 0]
         else:
             o = o.reshape(-1, seq_len)
         output = self.encoder.fit_transform(o.cpu().numpy()).reshape(bs, -1, size, size) / 2 + .5
@@ -177,7 +177,7 @@ class TSToMTF(Transform):
         bs, *_, seq_len = o.shape
         size = ifnone(self.size, seq_len)
         if size != seq_len:
-            o = F.interpolate(o.reshape(-1, 1, seq_len), size=size, mode='linear', align_corners=False)[:, 0]
+            o = F.interpolate(o.reshape(-1, 1, seq_len), size=size, mode='nearest', align_corners=None)[:, 0]
         else:
             o = o.reshape(-1, seq_len)
         output = self.encoder.fit_transform(o.cpu().numpy()).reshape(bs, -1, size, size)
@@ -201,7 +201,7 @@ class TSToRP(Transform):
         bs, *_, seq_len = o.shape
         size = ifnone(self.size, seq_len)
         if size != seq_len:
-            o = F.interpolate(o.reshape(-1, 1, seq_len), size=size, mode='linear', align_corners=False)[:, 0]
+            o = F.interpolate(o.reshape(-1, 1, seq_len), size=size, mode='nearest', align_corners=None)[:, 0]
         else:
             o = o.reshape(-1, seq_len)
         output = self.encoder.fit_transform(o.cpu().numpy()) / 2
@@ -225,7 +225,7 @@ class TSToJRP(Transform):
         o = to3d(o)
         bs, *_, seq_len = o.shape
         size = ifnone(self.size, seq_len)
-        if size != seq_len: o = F.interpolate(o, size=size, mode='linear', align_corners=False)
+        if size != seq_len: o = F.interpolate(o, size=size, mode='nearest', align_corners=None)
         output = self.encoder.fit_transform(o.cpu().numpy()).reshape(bs, -1, size, size)
         if self.cmap and output.shape[1] == 1:
             output = TSImage(plt.get_cmap(self.cmap)(output)[..., :3]).squeeze(1).permute(0,3,1,2)
