@@ -38,14 +38,14 @@ class NumpyTensor(TensorBase):
         res = cast(o, cls) # if the tensor results in a dtype torch.float64 a copy is made as dtype torch.float32
         for k,v in kwargs.items(): setattr(res, k, v)
         return res
-        
+
     @property
     def data(self): return cast(self, Tensor)
-    
+
     def __repr__(self):
         if self.ndim > 0: return f'NumpyTensor(shape:{tuple(self.shape)}, device={self.device}, dtype={self.dtype})'
         else: return f'NumpyTensor([{self.data}], device={self.device}, dtype={self.dtype})'
-        
+
 
     def show(self, ax=None, ctx=None, title=None, **kwargs):
         if self.ndim == 0: return str(self.data)
@@ -61,7 +61,7 @@ class NumpyTensor(TensorBase):
             ax.set_title(title, weight='bold', color=title_color)
         plt.tight_layout()
         return ax
-    
+
 
 class ToNumpyTensor(Transform):
     "Transforms an object into NumpyTensor"
@@ -76,10 +76,10 @@ class TSTensor(TensorBase):
         res = cast(o, cls) # if the tensor results in a dtype torch.float64 a copy is made as dtype torch.float32
         for k,v in kwargs.items(): setattr(res, k, v)
         return res
-        
+
     @property
     def data(self): return cast(self, Tensor)
-        
+
     def show(self, ax=None, ctx=None, title=None, **kwargs):
         if self.ndim == 0: return str(self.data)
         elif self.ndim != 2: self = type(self)(to2d(self))
@@ -94,7 +94,7 @@ class TSTensor(TensorBase):
             ax.set_title(title, weight='bold', color=title_color)
         plt.tight_layout()
         return ax
-    
+
     @property
     def vars(self):
         return self.shape[-2]
@@ -128,12 +128,12 @@ def show_tuple(tup, **kwargs):
     tup[0].show(title=title, **kwargs)
 
 # %% ../../nbs/006_data.core.ipynb 27
-class TSLabelTensor(NumpyTensor): 
+class TSLabelTensor(NumpyTensor):
     def __repr__(self):
         if self.ndim == 0: return f'{self.data}'
         else: return f'TSLabelTensor(shape:{tuple(self.shape)}, device={self.device}, dtype={self.dtype})'
 
-class TSMaskTensor(NumpyTensor): 
+class TSMaskTensor(NumpyTensor):
     def __repr__(self):
         if self.ndim == 0: return f'{self.data}'
         else: return f'TSMaskTensor(shape:{tuple(self.shape)}, device={self.device}, dtype={self.dtype})'
@@ -145,22 +145,22 @@ class ToFloat(Transform):
     loss_func=MSELossFlat()
     def encodes(self, o:torch.Tensor): return o.float()
     def encodes(self, o): return np.asarray(o, dtype=np.float32)
-    def decodes(self, o): 
-        if o.ndim==0: return TitledFloat(o) 
-        else: 
+    def decodes(self, o):
+        if o.ndim==0: return TitledFloat(o)
+        else:
             return TitledTuple(o.cpu().numpy().tolist())
-            
+
 
 class ToInt(Transform):
     "Transforms an object dtype to int"
     def encodes(self, o:torch.Tensor): return o.long()
     def encodes(self, o): return np.asarray(o).astype(np.float32).astype(np.int64)
-    def decodes(self, o): 
-        if o.ndim==0: return TitledFloat(o) 
-        else: 
+    def decodes(self, o):
+        if o.ndim==0: return TitledFloat(o)
+        else:
             return TitledTuple(o.cpu().numpy().tolist())
-    
-    
+
+
 class TSClassification(DisplayedTransform):
     "Vectorized, reversible transform of category string to `vocab` id"
     loss_func,order,vectorized=CrossEntropyLossFlat(),1,True
@@ -193,7 +193,7 @@ class TSClassification(DisplayedTransform):
         else:
             return stack(MultiCategory(self.vocab[o.flatten()])).reshape(*o.shape)
 
-        
+
 TSCategorize = TSClassification
 TSRegression = ToFloat
 TSForecasting = ToFloat
@@ -202,7 +202,7 @@ TSForecasting = ToFloat
 class TSMultiLabelClassification(Categorize):
     "Reversible combined transform of multi-category strings to one-hot encoded `vocab` id"
     loss_func,order=BCEWithLogitsLossFlat(),1
-    def __init__(self, c=None, vocab=None, add_na=False, sort=True): 
+    def __init__(self, c=None, vocab=None, add_na=False, sort=True):
         super().__init__(vocab=vocab,add_na=add_na,sort=sort)
         self.c = c
 
@@ -222,7 +222,7 @@ class TSMultiLabelClassification(Categorize):
             diff_str = "', '".join(diff)
             raise KeyError(f"Labels '{diff_str}' were not included in the training dataset")
         return TensorMultiCategory(one_hot([self.vocab.o2i[o_] for o_ in o], self.c).float())
-    def decodes(self, o): 
+    def decodes(self, o):
         if o.ndim == 2:
             return MultiCategory([self.vocab[o_] for o_ in o])
         else:
@@ -235,7 +235,7 @@ class NumpyTensorBlock():
         self.item_tfms  = ToNumpyTensor + L(item_tfms)
         self.batch_tfms =                 L(batch_tfms)
         self.dl_type,self.dls_kwargs = dl_type,({} if dls_kwargs is None else dls_kwargs)
-        
+
 class TSTensorBlock():
     def __init__(self, type_tfms=None, item_tfms=None, batch_tfms=None, dl_type=None, dls_kwargs=None):
         self.type_tfms  =              L(type_tfms)
@@ -249,7 +249,7 @@ class TorchDataset():
     def __getitem__(self, idx): return (self.X[idx],) if self.y is None else (self.X[idx], self.y[idx])
     def __len__(self): return len(self.X)
 
-    
+
 class NumpyDataset():
     def __init__(self, X, y=None, types=None): self.X, self.y, self.types = X, y, types
     def __getitem__(self, idx):
@@ -295,14 +295,14 @@ def _flatten_list(lst):
     "Flattens a list of lists with splits"
 
     def __flatten_list(lst):
-        if lst is None: 
+        if lst is None:
             return L([])
-        if not hasattr(lst, "__iter__"): 
+        if not hasattr(lst, "__iter__"):
             lst = [lst]
 
         # clean_up_list
         if len(lst) > 10:
-            return lst 
+            return lst
         else:
             lst = [l for l in lst if l is not None or (hasattr(l, "__len__") and len(l) == 0)]
 
@@ -325,20 +325,20 @@ def _flatten_list(lst):
 
 def _remove_brackets(l):
     return [li if (not li or not is_listy(li) or len(li) > 1) else li[0] for li in l]
-    
+
 class NoTfmLists(TfmdLists):
     def __init__(self, items, tfms=None, splits=None, split_idx=None, types=None, do_setup=False, **kwargs):
         self.splits = ifnone(splits, L(np.arange(len(items)).tolist(),[]))
         self._splits = _flatten_list(self.splits)
         store_attr('items,types,split_idx')
         self.tfms = Pipeline(split_idx=split_idx)
-    def subset(self, i, **kwargs): return type(self)(self.items, splits=self.splits[i], split_idx=i, do_setup=False, types=self.types, 
+    def subset(self, i, **kwargs): return type(self)(self.items, splits=self.splits[i], split_idx=i, do_setup=False, types=self.types,
                                                      **kwargs)
     def __getitem__(self, it):
         if hasattr(self.items, 'oindex'): return self.items.oindex[self._splits[it]]
         else: return self.items[self._splits[it]]
     def __len__(self): return len(self._splits)
-    def __repr__(self): 
+    def __repr__(self):
         if hasattr(self.items, "shape"):
             return f"{self.__class__.__name__}: {self.items.__class__.__name__}{(len(self), *self.items.shape[1:])}"
         else:
@@ -354,7 +354,7 @@ NoTfmLists.train, NoTfmLists.valid = add_props(lambda i,x: x.subset(i))
 class TSTfmdLists(TfmdLists):
     def __getitem__(self, it):
         # res = self._get(it)
-        if hasattr(self.items, 'oindex'): res = self.items.oindex[it] 
+        if hasattr(self.items, 'oindex'): res = self.items.oindex[it]
         else: res = self.items[it]
         if self._after_item is None: return res
         else: return self._after_item(res)
@@ -397,7 +397,7 @@ class NumpyDatasets(Datasets):
         self.n_inp = 1
         if kwargs.get('splits', None) is not None:
             split_idxs = _flatten_list(kwargs['splits'])
-        else: 
+        else:
             split_idxs = _flatten_list(np.arange(len(self)))
         self.split_idxs = split_idxs
 
@@ -416,16 +416,16 @@ class NumpyDatasets(Datasets):
             return type(self)(*self[i], inplace=True, tfms=None, splits=splits, split_idx=ifnone(self.split_idx, 1))
 
     def __len__(self): return len(self.tls[0])
-    
+
     def _new(self, X, y=None, **kwargs):
         return type(self)(X, y=y, tfms=self.tfms, inplace=self.inplace, do_setup=False, **kwargs)
 
     def new_empty(self): return type(self)(tls=[tl.new_empty() for tl in self.tls], n_inp=self.n_inp, inplace=self.inplace)
-    
+
     def show_at(self, idx, **kwargs):
         self.show(self[idx], **kwargs)
         plt.show()
-        
+
     def __repr__(self): return tscoll_repr(self)
 
 
@@ -440,37 +440,37 @@ def tscoll_repr(c, max_n=10):
 class TSDatasets(Datasets):
     """A dataset that creates tuples from X (and optionally y) and applies `item_tfms`"""
     typs = TSTensor, torch.as_tensor
-    def __init__(self, X=None, y=None, items=None, sel_vars=None, sel_steps=None, tfms=None, tls=None, n_inp=None, dl_type=None, 
+    def __init__(self, X=None, y=None, items=None, sel_vars=None, sel_steps=None, tfms=None, tls=None, n_inp=None, dl_type=None,
                  inplace=True, **kwargs):
 
         # Prepare X (and y)
         if X is not None:
-            if not hasattr(X, '__array__'): 
+            if not hasattr(X, '__array__'):
                 X = np.asarray(X)
             X = to3d(X)
         if y is not None:
-            if not hasattr(y, '__array__'):  
+            if not hasattr(y, '__array__'):
                 y = np.asarray(y)
-            elif hasattr(y, "iloc"): 
+            elif hasattr(y, "iloc"):
                 y = toarray(y)
 
         # Prepare sel_vars and sel_steps
         self.multi_index = False
         if sel_vars is None or (type(sel_vars) == slice and sel_vars == slice(None)):
             self.sel_vars = slice(None)
-        elif type(sel_vars) == slice: 
+        elif type(sel_vars) == slice:
             self.sel_vars = sel_vars
             self.multi_index = True
         else:
             self.sel_vars = np.asarray(sel_vars)
             if sel_steps is not None and type(sel_steps) != slice: self.sel_vars = sel_vars[:, None]
             self.multi_index = True
-        if sel_steps is None or (type(sel_steps) == slice and sel_steps == slice(None)): 
+        if sel_steps is None or (type(sel_steps) == slice and sel_steps == slice(None)):
             self.sel_steps = slice(None)
-        elif type(sel_steps) == slice: 
+        elif type(sel_steps) == slice:
             self.sel_steps = sel_steps
             self.multi_index = True
-        else: 
+        else:
             self.sel_steps = np.asarray(sel_steps)
             self.multi_index = True
         self.tfms, self.inplace = tfms, inplace
@@ -502,11 +502,11 @@ class TSDatasets(Datasets):
             self.ptls = L([typ(stack(tl[:]))[...,self.sel_vars, self.sel_steps] if (i==0 and self.multi_index) else typ(stack(tl[:])) \
                 for i,(tl,typ) in enumerate(zip(self.tls,self.typs))]) if inplace and len(tls[0]) != 0 else tls
             self.no_tfm = False
-            
+
         self.n_inp = 1
         if kwargs.get('splits', None) is not None:
             split_idxs = _flatten_list(kwargs.get('splits'))
-        else: 
+        else:
             split_idxs = np.arange(len(self), dtype=smallest_dtype(len(self)))
         self.split_idxs = split_idxs
 
@@ -516,41 +516,41 @@ class TSDatasets(Datasets):
         else:
             return tuple([typ(stack(ptl[it]))[...,self.sel_vars, self.sel_steps] if (i==0 and self.multi_index) else typ(stack(ptl[it])) \
                           for i,(ptl,typ) in enumerate(zip(self.ptls,self.typs))])
-    
+
     def subset(self, i):
         if is_indexer(i):
             return type(self)(tls=L([tl.subset(i) for tl in self.tls]), inplace=self.inplace, tfms=self.tfms,
-                              sel_vars=self.sel_vars, sel_steps=self.sel_steps, splits=None if self.splits is None else self.splits[i], 
+                              sel_vars=self.sel_vars, sel_steps=self.sel_steps, splits=None if self.splits is None else self.splits[i],
                               split_idx=i)
         else:
             if self.splits is None:
-                splits = None  
+                splits = None
             else:
                 min_dtype = np.min_scalar_type(len(i))
                 splits = np.arange(len(i), dtype=min_dtype)
-            return type(self)(*self[i], inplace=True, tfms=None, 
+            return type(self)(*self[i], inplace=True, tfms=None,
                               sel_vars=self.sel_vars, sel_steps=self.sel_steps, splits=splits, split_idx=ifnone(self.split_idx, 1))
-    
+
     def _new(self, X, y=None, **kwargs):
-        return type(self)(X, y=y, sel_vars=self.sel_vars, sel_steps=self.sel_steps, tfms=self.tfms, inplace=self.inplace, 
+        return type(self)(X, y=y, sel_vars=self.sel_vars, sel_steps=self.sel_steps, tfms=self.tfms, inplace=self.inplace,
                           do_setup=False, **kwargs)
-    
-    def new_empty(self): return type(self)(tls=[tl.new_empty() for tl in self.tls], sel_vars=self.sel_vars, sel_steps=self.sel_steps, 
+
+    def new_empty(self): return type(self)(tls=[tl.new_empty() for tl in self.tls], sel_vars=self.sel_vars, sel_steps=self.sel_steps,
                                            n_inp=self.n_inp, inplace=self.inplace)
 
     def __len__(self): return len(self.tls[0])
-    
+
     def show_at(self, idx, **kwargs):
         self.show(self[idx], **kwargs)
         plt.show()
-        
+
     def __repr__(self): return tscoll_repr(self)
 
 # %% ../../nbs/006_data.core.ipynb 51
 def add_ds(dsets, X, y=None, inplace=True):
     "Create test datasets from X (and y) using validation transforms of `dsets`"
     items = tuple((X,)) if y is None else tuple((X, y))
-    with_labels = False if y is None else True 
+    with_labels = False if y is None else True
     if isinstance(dsets, TSDatasets):
         tls = dsets.tls if with_labels else dsets.tls[:dsets.n_inp]
         new_tls = L([tl._new(item, split_idx=1) for tl,item in zip(tls, items)])
@@ -566,7 +566,7 @@ def add_ds(dsets, X, y=None, inplace=True):
     elif isinstance(dsets, TfmdLists):
         new_tl = dsets._new(items, split_idx=1)
         return new_tl
-    else: 
+    else:
         raise Exception(f"Expected a `Datasets` or a `TfmdLists` but got {dsets.__class__.__name__}")
 
 @patch
@@ -615,14 +615,14 @@ class NumpyDataLoader(TfmdDL):
         if num_workers is None: num_workers = min(16, defaults.cpus)
         if sampler is not None and shuffle:
             raise ValueError('sampler option is mutually exclusive with shuffle')
-        
+
         for nm in _batch_tfms:
             if nm == 'after_batch' and kwargs.get('batch_tfms',None) is not None: kwargs[nm] = Pipeline(listify(kwargs.get('batch_tfms')))
             else: kwargs[nm] = Pipeline(kwargs.get(nm,None))
         bs = max(1, min(bs, len(dataset))) # bs cannot be 1
         if is_listy(partial_n): partial_n = partial_n[0]
         if isinstance(partial_n, float): partial_n = int(round(partial_n * len(dataset)))
-        if partial_n is not None: 
+        if partial_n is not None:
             partial_n = min(partial_n, len(dataset))
             bs = min(bs, partial_n)
         if weights is not None: weights = weights / weights.sum()
@@ -630,10 +630,10 @@ class NumpyDataLoader(TfmdDL):
         super().__init__(dataset, bs=bs, shuffle=shuffle, drop_last=drop_last, num_workers=num_workers, verbose=verbose, do_setup=do_setup, **kwargs)
         if vocab is not None:
             self.vocab = vocab
-    
+
     def new_dl(self, X, y=None, bs=64):
         assert X.ndim == 3, "You must pass an X iterable with 3 dimensions [batch_size x n_vars x seq_len]"
-        if y is not None: 
+        if y is not None:
             y = np.asarray(y)
             assert y.ndim > 0, "You must pass a y iterable with at least 1 dimension"
         ds = self.dataset.add_dataset(X, y=y)
@@ -643,14 +643,14 @@ class NumpyDataLoader(TfmdDL):
         if self.shuffle or self.sampler is not None:
             if self.sort and hasattr(b, 'sort'): b.sort()
             self.idxs = L(b)
-        else: 
+        else:
             if self.n is not None:
                 b = slice(b[0], min(self.n, b[0] + self.bs))
             else:
                 b = slice(b[0], b[0] + self.bs)
-                
+
             self.idxs = b
-        if hasattr(self, "split_idxs"): 
+        if hasattr(self, "split_idxs"):
             self.input_idxs = self.split_idxs[b]
         else: self.input_idxs = self.idxs
         return self.dataset[b]
@@ -659,7 +659,7 @@ class NumpyDataLoader(TfmdDL):
         if self.indexed: return self.dataset[s or 0]
         elif s is None:  return next(self.it)
         else: raise IndexError("Cannot index an iterable dataset numerically - must use `None`.")
-    
+
     def get_idxs(self):
         if self.n==0: return []
         if self.partial_n is not None: n = min(self.partial_n, self.n)
@@ -707,12 +707,12 @@ class NumpyDataLoader(TfmdDL):
         if self.n == 0: return 0
         elif self.partial_n is None: return super().__len__()
         return self.partial_n//self.bs + (0 if self.drop_last or self.partial_n%self.bs==0 else 1)
-    
+
     @delegates(plt.subplots)
-    def show_batch(self, b=None, ctxs=None, max_n=9, nrows=3, ncols=3, figsize=None, unique=False, sharex=True, sharey=False, decode=False, 
+    def show_batch(self, b=None, ctxs=None, max_n=9, nrows=3, ncols=3, figsize=None, unique=False, sharex=True, sharey=False, decode=False,
                    show_title=True, **kwargs):
-        
-        old_sort = self.sort 
+
+        old_sort = self.sort
         self.sort = False # disable sorting when showing a batch to ensure varied samples
 
         if unique:
@@ -732,13 +732,13 @@ class NumpyDataLoader(TfmdDL):
         if figsize is None: figsize = (ncols*6, math.ceil(max_n/ncols)*4)
         if ctxs is None: ctxs = get_grid(max_n, nrows=nrows, ncols=ncols, figsize=figsize, sharex=sharex, sharey=sharey, **kwargs)
         if show_title:
-            for i,ctx in enumerate(ctxs): 
+            for i,ctx in enumerate(ctxs):
                 show_tuple(db[i], ctx=ctx)
         else:
             db = [x for x,_ in db]
-            for i,ctx in enumerate(ctxs): 
+            for i,ctx in enumerate(ctxs):
                 db[i].show(ctx=ctx)
-        
+
         self.sort = old_sort
 
     @delegates(plt.subplots)
@@ -787,7 +787,7 @@ class NumpyDataLoader(TfmdDL):
 
     @property
     def c(self):
-        if len(self.dataset) == 0: 
+        if len(self.dataset) == 0:
             return 0
         if hasattr(self, "vocab"):
             return len(self.vocab)
@@ -897,7 +897,7 @@ class NumpyDataLoaders(DataLoaders):
         return cls.from_dblock(dblock, source, **kwargs)
 
     @classmethod
-    def from_dsets(cls, *ds, path='.', bs=64, num_workers=0, batch_tfms=None, device=None, shuffle_train=True, drop_last=True, 
+    def from_dsets(cls, *ds, path='.', bs=64, num_workers=0, batch_tfms=None, device=None, shuffle_train=True, drop_last=True,
                    weights=None, partial_n=None, sampler=None, sort=False, vocab=None, **kwargs):
         device = ifnone(device, default_device())
         if batch_tfms is not None and not isinstance(batch_tfms, list): batch_tfms = [batch_tfms]
@@ -925,8 +925,8 @@ class TSDataLoaders(NumpyDataLoaders):
 # %% ../../nbs/006_data.core.ipynb 71
 class StratifiedSampler:
     "Sampler where batches preserve the percentage of samples for each class"
-    
-    def __init__(self, 
+
+    def __init__(self,
         y, # The target variable for supervised learning problems. Stratification is done based on the y labels.
         bs : int = 64, # Batch size
         shuffle : bool = False, # Flag to shuffle each class’s samples before splitting into batches.
@@ -959,14 +959,14 @@ def get_c(dls):
     return len(vocab)
 
 # %% ../../nbs/006_data.core.ipynb 74
-def get_best_dl_params(dl, n_iters=10, num_workers=[0, 1, 2, 4, 8], pin_memory=[True, False], prefetch_factor=[2, 4, 8], return_best=True, 
-                       verbose=True): 
+def get_best_dl_params(dl, n_iters=10, num_workers=[0, 1, 2, 4, 8], pin_memory=[True, False], prefetch_factor=[2, 4, 8], return_best=True,
+                       verbose=True):
 
-    if not torch.cuda.is_available(): 
+    if not torch.cuda.is_available():
         num_workers = 0
     n_iters = min(n_iters, len(dl))
     if not return_best: verbose = True
-    
+
     nw = dl.fake_l.num_workers
     pm = dl.fake_l.pin_memory
     pf = dl.fake_l.prefetch_factor
@@ -975,25 +975,25 @@ def get_best_dl_params(dl, n_iters=10, num_workers=[0, 1, 2, 4, 8], pin_memory=[
         best_nw = nw
         best_pm = pm
         best_pf = pf
-        
+
         # num_workers
         if not num_workers: best_nw = nw
         elif isinstance(num_workers, Integral): best_nw = num_workers
-        else: 
+        else:
             best_time = np.inf
             for _nw in num_workers:
                 dl.fake_l.num_workers = _nw
                 timer.start(False)
                 for i, _ in enumerate(dl):
-                    if i == n_iters - 1: 
+                    if i == n_iters - 1:
                         t = timer.stop() / (i + 1)
                         pv(f'   num_workers: {_nw:2}  pin_memory: {pm!s:^5}  prefetch_factor: {pf:2}  -  time: {1_000 * t/n_iters:8.3f} ms/iter', verbose)
-                        if t < best_time: 
+                        if t < best_time:
                             best_nw = _nw
                             best_time = t
                         break
         dl.fake_l.num_workers = best_nw
-        
+
 
         # pin_memory
         if not pin_memory: best_pm = pm
@@ -1005,11 +1005,11 @@ def get_best_dl_params(dl, n_iters=10, num_workers=[0, 1, 2, 4, 8], pin_memory=[
                 dl.fake_l.pin_memory = _pm
                 timer.start(False)
                 for i, _ in enumerate(dl):
-                    if i == n_iters - 1: 
+                    if i == n_iters - 1:
                         t = timer.stop() / (i + 1)
-                        pv(f'   num_workers: {best_nw:2}  pin_memory: {_pm!s:^5}  prefetch_factor: {pf:2}  -  time: {1_000 * t/n_iters:8.3f} ms/iter', 
+                        pv(f'   num_workers: {best_nw:2}  pin_memory: {_pm!s:^5}  prefetch_factor: {pf:2}  -  time: {1_000 * t/n_iters:8.3f} ms/iter',
                            verbose)
-                        if t < best_time: 
+                        if t < best_time:
                             best_pm = _pm
                             best_time = t
                         break
@@ -1026,27 +1026,27 @@ def get_best_dl_params(dl, n_iters=10, num_workers=[0, 1, 2, 4, 8], pin_memory=[
                 dl.fake_l.prefetch_factor = _pf
                 timer.start(False)
                 for i, _ in enumerate(dl):
-                    if i == n_iters - 1: 
+                    if i == n_iters - 1:
                         t = timer.stop() / (i + 1)
-                        pv(f'   num_workers: {best_nw:2}  pin_memory: {best_pm!s:^5}  prefetch_factor: {_pf:2}  -  time: {1_000 * t/n_iters:8.3f} ms/iter', 
+                        pv(f'   num_workers: {best_nw:2}  pin_memory: {best_pm!s:^5}  prefetch_factor: {_pf:2}  -  time: {1_000 * t/n_iters:8.3f} ms/iter',
                            verbose)
-                        if t < best_time: 
+                        if t < best_time:
                             best_pf = _pf
                             best_time = t
                         break
         dl.fake_l.prefetch_factor = best_pf
-    
-    except KeyboardInterrupt: 
+
+    except KeyboardInterrupt:
         dl.fake_l.num_workers = best_nw if return_best else nw
         dl.fake_l.pin_memory = best_pm if return_best else pm
         dl.fake_l.prefetch_factor = best_pf if return_best else pf
 
-    if not return_best: 
+    if not return_best:
         dl.fake_l.num_workers = nw
         dl.fake_l.pin_memory = pm
         dl.fake_l.prefetch_factor = pf
 
-    if verbose: 
+    if verbose:
         print('\n   best dl params:')
         print(f'       best num_workers    : {best_nw}')
         print(f'       best pin_memory     : {best_pm}')
@@ -1056,13 +1056,13 @@ def get_best_dl_params(dl, n_iters=10, num_workers=[0, 1, 2, 4, 8], pin_memory=[
 
     return dl
 
-def get_best_dls_params(dls, n_iters=10, num_workers=[0, 1, 2, 4, 8], pin_memory=[True, False], prefetch_factor=[2, 4, 8], 
-                        return_best=True, verbose=True): 
-    
+def get_best_dls_params(dls, n_iters=10, num_workers=[0, 1, 2, 4, 8], pin_memory=[True, False], prefetch_factor=[2, 4, 8],
+                        return_best=True, verbose=True):
+
     for i in range(len(dls.loaders)):
         try:
             pv(f'\nDataloader {i}\n', verbose)
-            dls.loaders[i] = get_best_dl_params(dls.loaders[i], n_iters=n_iters, num_workers=num_workers, pin_memory=pin_memory, 
+            dls.loaders[i] = get_best_dl_params(dls.loaders[i], n_iters=n_iters, num_workers=num_workers, pin_memory=pin_memory,
                                             prefetch_factor=prefetch_factor, return_best=return_best, verbose=verbose)
         except KeyboardInterrupt: pass
     return dls
@@ -1071,9 +1071,9 @@ def get_best_dls_params(dls, n_iters=10, num_workers=[0, 1, 2, 4, 8], pin_memory
 def _check_splits(X, splits):
     if splits is None:
         _dtype = smallest_dtype(len(X))
-        if len(X) < 1e6: 
+        if len(X) < 1e6:
             splits = (L(np.arange(len(X), dtype=_dtype).tolist()), L())
-        else: 
+        else:
             _dtype = smallest_dtype(len(X))
             splits = (np.arange(len(X), dtype=_dtype), L())
     elif isinstance(splits, (tuple, list, L, np.ndarray)):
@@ -1088,7 +1088,7 @@ def _check_splits(X, splits):
     return splits
 
 def get_ts_dls(X, y=None, splits=None, sel_vars=None, sel_steps=None, tfms=None, inplace=True,
-               path='.', bs=64, batch_tfms=None, num_workers=0, device=None, shuffle_train=True, drop_last=True, 
+               path='.', bs=64, batch_tfms=None, num_workers=0, device=None, shuffle_train=True, drop_last=True,
                weights=None, partial_n=None, sampler=None, sort=False, **kwargs):
     splits = _check_splits(X, splits)
     create_dir(path, verbose=False)
@@ -1098,7 +1098,7 @@ def get_ts_dls(X, y=None, splits=None, sel_vars=None, sel_steps=None, tfms=None,
         assert len(X) == len(weights), 'len(X) != len(weights)'
         weights = [weights[split] if i == 0 else None for i,split in enumerate(splits)] # weights only applied to train set
     dls   = TSDataLoaders.from_dsets(*dsets, path=path, bs=bs, batch_tfms=batch_tfms, num_workers=num_workers,
-                                     device=device, shuffle_train=shuffle_train, drop_last=drop_last, weights=weights, 
+                                     device=device, shuffle_train=shuffle_train, drop_last=drop_last, weights=weights,
                                      partial_n=partial_n, sampler=sampler, sort=sort, **kwargs)
     return dls
 
@@ -1108,9 +1108,9 @@ get_tsimage_dls = get_ts_dls
 def _check_split(X, split):
     if split is None:
         _dtype = smallest_dtype(len(X))
-        if len(X) < 1e6: 
+        if len(X) < 1e6:
             split = L(np.arange(len(X), dtype=_dtype).tolist())
-        else: 
+        else:
             _dtype = smallest_dtype(len(X))
             split = np.arange(len(X), dtype=_dtype)
     return (split, L())
@@ -1136,22 +1136,22 @@ def get_time_per_batch(dl, model=None, n_batches=None):
     try:
         timer.start(False)
         pbar = progress_bar(dl, leave=False)
-        for i, (xb, _) in enumerate(pbar): 
-            if model is not None: 
+        for i, (xb, _) in enumerate(pbar):
+            if model is not None:
                 _ = model(xb)
-            if n_batches is not None and i >= n_batches - 1: 
+            if n_batches is not None and i >= n_batches - 1:
                 t = timer.stop()
                 pbar.on_interrupt()
                 break
-        if n_batches is None or i < n_batches - 1: 
+        if n_batches is None or i < n_batches - 1:
             t = timer.stop()
-        
+
     except KeyboardInterrupt:
         t = timer.stop()
         pbar.on_interrupt()
     return t / (i+1)
 
-def get_dl_percent_per_epoch(dl, model, n_batches=None): 
+def get_dl_percent_per_epoch(dl, model, n_batches=None):
     dl_time = get_time_per_batch(dl, model=None, n_batches=n_batches)
     model_time = get_time_per_batch(dl, model=model, n_batches=n_batches)
     return f'{min(1, dl_time/model_time):.2%}'

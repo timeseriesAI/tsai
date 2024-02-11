@@ -28,7 +28,7 @@ def _to_list(idx):
         return [idx]
     elif isinstance(idx, list):
         return idx
-    
+
 
 def get_o_cont_idxs(c_in, s_cat_idxs=None, s_cont_idxs=None, o_cat_idxs=None):
     "Calculate the indices of the observed continuous features."
@@ -52,7 +52,7 @@ def get_feat_idxs(c_in, s_cat_idxs=None, s_cont_idxs=None, o_cat_idxs=None, o_co
 
 # %% ../../nbs/077_models.multimodal.ipynb 6
 class TensorSplitter(nn.Module):
-    def __init__(self, 
+    def __init__(self,
         s_cat_idxs:list=None, # list of indices for static categorical variables
         s_cont_idxs:list=None, # list of indices for static continuous variables
         o_cat_idxs:list=None, # list of indices for observed categorical variables
@@ -119,7 +119,7 @@ class TensorSplitter(nn.Module):
 # %% ../../nbs/077_models.multimodal.ipynb 9
 class Embeddings(nn.Module):
     "Embedding layers for each categorical variable in a 2D or 3D tensor"
-    def __init__(self, 
+    def __init__(self,
         n_embeddings:list, # List of num_embeddings for each categorical variable
         embedding_dims:list=None, # List of embedding dimensions for each categorical variable
         padding_idx:int=0, # Embedding padding_idx
@@ -134,9 +134,9 @@ class Embeddings(nn.Module):
         embedding_dims = [emb_sz_rule(s) if s is None else s for s in n_embeddings]
         assert len(n_embeddings) == len(embedding_dims)
         self.embedding_dims = sum(embedding_dims)
-        self.embedding_layers = nn.ModuleList([nn.Sequential(nn.Embedding(n,d,padding_idx=padding_idx, **kwargs), 
+        self.embedding_layers = nn.ModuleList([nn.Sequential(nn.Embedding(n,d,padding_idx=padding_idx, **kwargs),
                                                              nn.Dropout(embed_dropout)) for n,d in zip(n_embeddings, embedding_dims)])
-    
+
     def forward(self, x):
         if x.ndim == 2:
             return torch.cat([e(x[:,i].long()) for i,e in enumerate(self.embedding_layers)],1)
@@ -216,7 +216,7 @@ class MultInputBackboneWrapper(nn.Module):
         **kwargs
     ):
         super().__init__()
-        
+
         # attributes
         c_in = c_in or dls.vars
         seq_len = seq_len or dls.len
@@ -229,7 +229,7 @@ class MultInputBackboneWrapper(nn.Module):
         self.splitter = TensorSplitter(s_cat_idxs, s_cont_idxs, o_cat_idxs, o_cont_idxs)
         s_cat_idxs, s_cont_idxs, o_cat_idxs, o_cont_idxs = self.splitter.s_cat_idxs, self.splitter.s_cont_idxs, self.splitter.o_cat_idxs, self.splitter.o_cont_idxs
         assert c_in == sum([len(s_cat_idxs), len(s_cont_idxs), len(o_cat_idxs), len(o_cont_idxs)])
-        
+
         # embeddings
         self.s_embeddings = Embeddings(s_cat_embeddings, s_cat_embedding_dims) if s_cat_idxs else nn.Identity()
         self.o_embeddings = Embeddings(o_cat_embeddings, o_cat_embedding_dims) if o_cat_idxs else nn.Identity()
@@ -243,7 +243,7 @@ class MultInputBackboneWrapper(nn.Module):
         else:
             self.patch_encoder = nn.Identity()
             c_mult = 1
-        
+
         # backbone
         n_s_features = len(s_cont_idxs) + (self.s_embeddings.embedding_dims if s_cat_idxs else 0)
         n_o_features = (len(o_cont_idxs) + (self.o_embeddings.embedding_dims if o_cat_idxs else 0)) * c_mult
@@ -274,10 +274,10 @@ class MultInputBackboneWrapper(nn.Module):
 
         # contatenate observed features
         o_x = torch.cat([o_cat, o_cont], 1)
-        
+
         # patch encoder
         o_x = self.patch_encoder(o_x)
-        
+
         # pass static and observed features through their respective backbones
         o_x = self.o_backbone(o_x)
 
@@ -312,12 +312,12 @@ class MultInputWrapper(nn.Sequential):
         custom_head=None, # custom head to replace the default head
         **kwargs
     ):
-        
+
         # create backbone
-        backbone = MultInputBackboneWrapper(arch, c_in=c_in, seq_len=seq_len, d=d, dls=dls, s_cat_idxs=s_cat_idxs, s_cat_embeddings=s_cat_embeddings, s_cat_embedding_dims=s_cat_embedding_dims, 
-                                            s_cont_idxs=s_cont_idxs, o_cat_idxs=o_cat_idxs, o_cat_embeddings=o_cat_embeddings, o_cat_embedding_dims=o_cat_embedding_dims, o_cont_idxs=o_cont_idxs, 
+        backbone = MultInputBackboneWrapper(arch, c_in=c_in, seq_len=seq_len, d=d, dls=dls, s_cat_idxs=s_cat_idxs, s_cat_embeddings=s_cat_embeddings, s_cat_embedding_dims=s_cat_embedding_dims,
+                                            s_cont_idxs=s_cont_idxs, o_cat_idxs=o_cat_idxs, o_cat_embeddings=o_cat_embeddings, o_cat_embedding_dims=o_cat_embedding_dims, o_cont_idxs=o_cont_idxs,
                                             patch_len=patch_len, patch_stride=patch_stride, fusion_layers=fusion_layers, fusion_act=fusion_act, fusion_dropout=fusion_dropout, fusion_use_bn=fusion_use_bn, **kwargs)
-        
+
         # create head
         self.head_nf = backbone.head_nf
         self.c_out = c_out
@@ -328,4 +328,4 @@ class MultInputWrapper(nn.Sequential):
         else:
             head = nn.Linear(self.head_nf, c_out)
         super().__init__(OrderedDict([('backbone', backbone), ('head', head)]))
-        
+
