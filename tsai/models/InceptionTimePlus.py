@@ -14,18 +14,33 @@ from .layers import *
 from .utils import *
 
 # %% ../../nbs/036_models.InceptionTimePlus.ipynb 5
-# This is an unofficial PyTorch implementation by Ignacio Oguiza - oguiza@timeseriesAI.co modified from:
-
+## This is an unofficial PyTorch implementation by Ignacio Oguiza - oguiza@timeseriesAI.co modified from:
+#
 # Fawaz, H. I., Lucas, B., Forestier, G., Pelletier, C., Schmidt, D. F., Weber, J., ... & Petitjean, F. (2019). 
 # InceptionTime: Finding AlexNet for Time Series Classification. arXiv preprint arXiv:1909.04939.
 # Official InceptionTime tensorflow implementation: https://github.com/hfawaz/InceptionTime
 
-    
+
 class InceptionModulePlus(Module):
     def __init__(self, ni, nf, ks=40, bottleneck=True, padding='same', coord=False, separable=False, dilation=1, stride=1, conv_dropout=0., sa=False, se=None,
-                 norm='Batch', zero_norm=False, bn_1st=True, act=nn.ReLU, act_kwargs={}):
+                norm='Batch', zero_norm=False, bn_1st=True, act=nn.ReLU, act_kwargs={},**kwargs):
+
+        repeat_const = (len(ks) if is_listy(ks) else 3) + 1
         
-        if not (is_listy(ks) and len(ks) == 3):
+
+        self.ni = ni
+        self.nf = nf
+
+
+        conv_args = {}
+        if 'momemtum' in kwargs: 
+            conv_args['momentum'] = kwargs['momemtum']
+        else:
+            conv_args['momentum'] = 0.1
+
+        
+        if not (is_listy(ks)):
+        #if not (is_listy(ks) and len(ks) == 3):
             if isinstance(ks, Integral): ks = [ks // (2**i) for i in range(3)]
             ks = [ksi if ksi % 2 != 0 else ksi - 1 for ksi in ks]  # ensure odd ks for padding='same'
 
@@ -33,14 +48,15 @@ class InceptionModulePlus(Module):
         self.bottleneck = Conv(ni, nf, 1, coord=coord, bias=False) if bottleneck else noop # 
         self.convs = nn.ModuleList()
         for i in range(len(ks)): self.convs.append(Conv(nf if bottleneck else ni, nf, ks[i], padding=padding, coord=coord, separable=separable,
-                                                         dilation=dilation**i, stride=stride, bias=False))
+                                                         dilation=dilation**i, stride=stride, bias=False, **conv_args))
+                                                                                                                                          
         self.mp_conv = nn.Sequential(*[nn.MaxPool1d(3, stride=1, padding=1), Conv(ni, nf, 1, coord=coord, bias=False)])
         self.concat = Concat()
-        self.norm = Norm(nf * 4, norm=norm, zero_norm=zero_norm)
+        self.norm = Norm(nf * repeat_const, norm=norm, zero_norm=zero_norm, **conv_args)
         self.conv_dropout = nn.Dropout(conv_dropout) if conv_dropout else noop
-        self.sa = SimpleSelfAttention(nf * 4) if sa else noop
+        self.sa = SimpleSelfAttention(nf * repeat_const) if sa else noop
         self.act = act(**act_kwargs) if act else noop
-        self.se = nn.Sequential(SqueezeExciteBlock(nf * 4, reduction=se), BN1d(nf * 4)) if se else noop
+        self.se = nn.Sequential(SqueezeExciteBlock(nf * repeat_const, reduction=se), BN1d(nf * repeat_const, **conv_args)) if se else noop
         
         self._init_cnn(self)
     
@@ -67,16 +83,34 @@ class InceptionBlockPlus(Module):
                  stoch_depth=1., **kwargs):
         self.residual, self.depth = residual, depth
         self.inception, self.shortcut, self.act = nn.ModuleList(), nn.ModuleList(), nn.ModuleList()
+        if 'pos_encode' in kwargs:
+            self.pos_encode = kwargs['pos_encode']
+        else:
+            self.pos_encode = False
+
+
+        if 'ks' in kwargs and is_listy(kwargs['ks']):
+            repeat_const = len(kwargs['ks']) + 1
+        else:
+            repeat_const = 4
+
+
+        bn_kwargs = {}
+        if 'momemtum' in kwargs:
+            bn_kwargs['momentum'] = kwargs['momemtum']
+
+
+
         for d in range(depth):
-            self.inception.append(InceptionModulePlus(ni if d == 0 else nf * 4, nf, coord=coord, norm=norm, 
+            self.inception.append(InceptionModulePlus(ni if d == 0 else nf * repeat_const, nf, coord=coord, norm=norm, 
                                                       zero_norm=zero_norm if d % 3 == 2 else False,
                                                       act=act if d % 3 != 2 else None, act_kwargs=act_kwargs, 
                                                       sa=sa if d % 3 == 2 else False,
                                                       se=se if d % 3 != 2 else None,
                                                       **kwargs))
             if self.residual and d % 3 == 2:
-                n_in, n_out = ni if d == 2 else nf * 4, nf * 4
-                self.shortcut.append(Norm(n_in, norm=norm) if n_in == n_out else ConvBlock(n_in, n_out, 1, coord=coord, bias=False, norm=norm, act=None))
+                n_in, n_out = ni if d == 2 else nf * repeat_const, nf * repeat_const
+                self.shortcut.append(Norm(n_in, norm=norm, **bn_kwargs) if n_in == n_out else ConvBlock(n_in, n_out, 1, coord=coord, bias=False, norm=norm, act=None, **bn_kwargs))
                 self.act.append(act(**act_kwargs))
         self.add = Add()
         if stoch_depth != 0: keep_prob = np.linspace(1, stoch_depth, depth)
@@ -84,7 +118,14 @@ class InceptionBlockPlus(Module):
         self.keep_prob = keep_prob
 
     def forward(self, x):
-        res = x
+
+        if self.pos_encode:
+            cc = torch.linspace(-1,1,x.shape[-1], device=x.device).repeat(x.shape[0], 1, 1)
+            cc = (cc - cc.mean()) / cc.std()
+            res = torch.add(x, cc)
+        else:
+            res = x
+
         for i in range(self.depth):
             if self.keep_prob[i] > random.random() or not self.training:
                 x = self.inception[i](x)
@@ -101,9 +142,19 @@ class InceptionTimePlus(nn.Sequential):
         if nb_filters is not None: nf = nb_filters
         else: nf = ifnone(nf, nb_filters) # for compatibility
         backbone = InceptionBlockPlus(c_in, nf, **kwargs)
+
+        # check if there is a ks in kwargs
+        ks = None
+        repeat_const = None
+        if 'ks' in kwargs and is_listy(kwargs['ks']):
+            repeat_const = len(kwargs['ks']) + 1
+        else:
+            repeat_const = 4
+
+
         
         #head
-        self.head_nf = nf * 4
+        self.head_nf = nf * repeat_const
         self.c_out = c_out
         self.seq_len = seq_len
         if custom_head is not None: 
@@ -140,7 +191,7 @@ InceptionTimePlus17x17 = named_partial('InceptionTimePlus17x17', InceptionTimePl
 InceptionTimePlus32x32 = named_partial('InceptionTimePlus32x32', InceptionTimePlus)
 InceptionTimePlus47x47 = named_partial('InceptionTimePlus47x47', InceptionTimePlus, nf=47, depth=9)
 InceptionTimePlus62x62 = named_partial('InceptionTimePlus62x62', InceptionTimePlus, nf=62, depth=9)
-InceptionTimeXLPlus = named_partial('InceptionTimeXLPlus', InceptionTimePlus, nf=64, depth=12)
+InceptionTimeXLPlus = named_partial('InceptionTimeXLPlus', InceptionTimePlus, nf=64, depth=12, momemtum=.1)
 
 # %% ../../nbs/036_models.InceptionTimePlus.ipynb 14
 @delegates(InceptionTimePlus.__init__)

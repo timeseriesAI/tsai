@@ -279,8 +279,8 @@ class ConvBlock(nn.Sequential):
         bn = norm_type in (NormType.Batch, NormType.BatchZero)
         inn = norm_type in (NormType.Instance, NormType.InstanceZero)
         if bias is None: bias = not (bn or inn)
-        if separable: conv = SeparableConv1d(ni + coord, nf, ks=kernel_size, bias=bias, stride=stride, padding=padding, **kwargs)
-        else: conv = Conv1d(ni + coord, nf, ks=kernel_size, bias=bias, stride=stride, padding=padding, **kwargs)
+        if separable: conv = SeparableConv1d(ni + coord, nf, ks=kernel_size, bias=bias, stride=stride, padding=padding) #, **kwargs)
+        else: conv = Conv1d(ni + coord, nf, ks=kernel_size, bias=bias, stride=stride, padding=padding) #, **kwargs)
         act = None if act is None else act(**act_kwargs)
         if not separable: init_linear(conv, act, init=init, bias_std=bias_std)
         if   norm_type==NormType.Weight:   conv = weight_norm(conv)
@@ -288,7 +288,8 @@ class ConvBlock(nn.Sequential):
         layers += [conv]
         act_bn = []        
         if act is not None: act_bn.append(act)
-        if bn: act_bn.append(BatchNorm(nf, norm_type=norm_type, ndim=ndim))
+
+        if bn: act_bn.append(BatchNorm(nf, norm_type=norm_type, ndim=ndim, **kwargs))
         if inn: act_bn.append(InstanceNorm(nf, norm_type=norm_type, ndim=ndim))
         if bn_1st: act_bn.reverse()
         if dropout: layers += [nn.Dropout(dropout)]
