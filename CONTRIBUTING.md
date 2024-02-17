@@ -18,7 +18,7 @@ It's very easy to create a PR to tsai.
 
 - We will also show you how to create a separate conda environment with all required packages. This is optional, although highly recommended.
 
-- If you are unfamiliar with the fastai / tsai code style, be sure to read [this] (<https://docs.fast.ai/dev/style.html>) first. (Note that, like fastai, we do not follow PEP8, instead we follow a coding style designed specifically for numeric and interactive programming.)
+- If you are unfamiliar with the fastai / tsai code style, be sure to read [this](<https://docs.fast.ai/dev/style.html>) first. (Note that, like fastai, we do not follow PEP8, instead we follow a coding style designed specifically for numeric and interactive programming.)
 
 ## One-time only setup
 
