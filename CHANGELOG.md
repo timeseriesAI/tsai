@@ -2,6 +2,12 @@
 
 <!-- do not remove -->
 
+## 0.3.9
+
+- support to MPS backend. Both the MPS accelerator and the PyTorch backend are still experimental. As such, not all operations are currently supported.
+- compatibility with torch 2.2
+- ability to pass arch_config to multimodal models
+
 ## 0.3.8
 
 ### New Features

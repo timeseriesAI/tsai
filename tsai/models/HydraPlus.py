@@ -27,7 +27,7 @@ class HydraBackbonePlus(nn.Module):
 
         max_exponent = np.log2((seq_len - 1) / (9 - 1)) # kernel length = 9
 
-        self.dilations = 2 ** torch.arange(int(max_exponent) + 1)
+        self.dilations = 2 ** torch.arange(int(max_exponent) + 1, device=device)
         self.num_dilations = len(self.dilations)
 
         self.paddings = torch.div((9 - 1) * self.dilations, 2, rounding_mode = "floor").int()
@@ -36,14 +36,14 @@ class HydraBackbonePlus(nn.Module):
         divisor = 2 if self.g > 1 else 1
         _g = g // divisor
         self._g = _g
-        self.W = [self.normalize(torch.randn(divisor, k * _g, 1, 9).to(device=device)) for _ in range(self.num_dilations)]
+        self.W = [self.normalize(torch.randn(divisor, k * _g, 1, 9)).to(device=device) for _ in range(self.num_dilations)]
 
-        
+
         # combine c_in // 2 channels (2 < n < max_c_in)
         c_in_per = np.clip(c_in // 2, 2, max_c_in)
-        self.I = [torch.randint(0, c_in, (divisor, _g, c_in_per)).to(device=device) for _ in range(self.num_dilations)]
+        self.I = [torch.randint(0, c_in, (divisor, _g, c_in_per), device=device) for _ in range(self.num_dilations)]
 
-        # clip values 
+        # clip values
         self.clip = clip
 
         self.device = device
@@ -89,7 +89,6 @@ class HydraBackbonePlus(nn.Module):
             # diff_index == 0 -> X
             # diff_index == 1 -> diff(X)
             for diff_index in range(min(2, self.g)):
-
                 _Z = F.conv1d(X[:, self.I[dilation_index][diff_index]].sum(2) if diff_index == 0 else diff_X[:, self.I[dilation_index][diff_index]].sum(2),
                               self.W[dilation_index][diff_index], dilation = d, padding = p, groups = self._g).view(bs, self._g, self.k, -1)
 
@@ -115,7 +114,7 @@ class HydraBackbonePlus(nn.Module):
 # %% ../../nbs/079_models.HydraPlus.ipynb 5
 class HydraPlus(nn.Sequential):
 
-    def __init__(self, 
+    def __init__(self,
         c_in:int, # num of channels in input
         c_out:int, # num of channels in output
         seq_len:int, # sequence length
@@ -123,7 +122,7 @@ class HydraPlus(nn.Sequential):
         k:int=8, # number of kernels per group
         g:int=64, # number of groups
         max_c_in:int=8, # max number of channels per group
-        clip:bool=True, # clip values >= 0 
+        clip:bool=True, # clip values >= 0
         use_bn:bool=True, # use batch norm
         fc_dropout:float=0., # dropout probability
         custom_head:Any=None, # optional custom head as a torch.nn.Module or Callable
@@ -139,7 +138,7 @@ class HydraPlus(nn.Sequential):
 
         # Head
         self.head_nf = num_features
-        if custom_head is not None: 
+        if custom_head is not None:
             if isinstance(custom_head, nn.Module): head = custom_head
             else: head = custom_head(self.head_nf, c_out, 1)
         elif d is not None:

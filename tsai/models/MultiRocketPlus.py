@@ -18,17 +18,26 @@ class Flatten(nn.Module):
     def forward(self, x): return x.view(x.size(0), -1)
 
 # %% ../../nbs/076_models.MultiRocketPlus.ipynb 5
-def _LPVV(o_pos, dim=2):
-    "Longest stretch of positive values (-1, 1)" 
-    shape = list(o_pos.shape)
-    shape[dim] = 1
-    o_pos = torch.cat([torch.zeros(shape, device=o_pos.device), o_pos], dim)
-    o_arange_shape = [1] * o_pos.ndim
-    o_arange_shape[dim] = -1
-    o_arange = torch.arange(o_pos.shape[dim], device=o_pos.device).reshape(o_arange_shape)
-    o_pos = torch.where(o_pos == 1, 0, o_arange)
-    o_pos = o_pos.cummax(dim).values
-    return ((o_arange - o_pos).max(dim).values / (o_pos.shape[dim] - 1)) * 2 - 1
+def _LPVV(o, dim=2):
+    "Longest stretch of positive values along a dimension(-1, 1)"
+
+    seq_len = o.shape[dim]
+    binary_tensor = (o > 0).float()
+
+    diff = torch.cat([torch.ones_like(binary_tensor.narrow(dim, 0, 1)),
+                      binary_tensor.narrow(dim, 1, seq_len-1) - binary_tensor.narrow(dim, 0, seq_len-1)], dim=dim)
+
+    groups = (diff > 0).cumsum(dim)
+
+    # Ensure groups are within valid index bounds
+    groups = groups * binary_tensor.long()
+    valid_groups = groups.where(groups < binary_tensor.size(dim), torch.tensor(0, device=groups.device))
+
+    counts = torch.zeros_like(binary_tensor).scatter_add_(dim, valid_groups, binary_tensor)
+
+    longest_stretch = counts.max(dim)[0]
+
+    return torch.nan_to_num(2 * (longest_stretch / seq_len) - 1)
 
 def _MPV(o, dim=2):
     "Mean of Positive Values (any positive value)"
@@ -56,13 +65,13 @@ def _PPV(o_pos, dim=2):
     "Proportion of Positive Values (-1, 1)"
     return (o_pos).float().mean(dim) * 2 - 1
 
-# %% ../../nbs/076_models.MultiRocketPlus.ipynb 6
+# %% ../../nbs/076_models.MultiRocketPlus.ipynb 11
 class MultiRocketFeaturesPlus(nn.Module):
     fitting = False
 
     def __init__(self, c_in, seq_len, num_features=10_000, max_dilations_per_kernel=32, kernel_size=9, max_num_channels=9, max_num_kernels=84, diff=False):
         super(MultiRocketFeaturesPlus, self).__init__()
-        
+
         self.c_in, self.seq_len = c_in, seq_len
         self.kernel_size, self.max_num_channels = kernel_size, max_num_channels
 
@@ -90,7 +99,7 @@ class MultiRocketFeaturesPlus(nn.Module):
         self.register_buffer('prefit', torch.BoolTensor([False]))
 
     def forward(self, x):
-        
+
         _features = []
         for i, (dilation, padding) in enumerate(zip(self.dilations, self.padding)):
             _padding1 = i % 2
@@ -134,11 +143,11 @@ class MultiRocketFeaturesPlus(nn.Module):
         num_samples = X.shape[0]
         if chunksize is None:
             chunksize = min(num_samples, self.num_dilations * self.num_kernels)
-        else: 
+        else:
             chunksize = min(num_samples, chunksize)
         idxs = np.random.choice(num_samples, chunksize, False)
         self.fitting = True
-        if isinstance(X, np.ndarray): 
+        if isinstance(X, np.ndarray):
             self(torch.from_numpy(X[idxs]).to(self.kernels.device))
         else:
             self(X[idxs].to(self.kernels.device))
@@ -228,12 +237,12 @@ class MultiRocketFeaturesPlus(nn.Module):
                     len(indices), max_num_kernels, False))]
         return indices, pos_values
 
-# %% ../../nbs/076_models.MultiRocketPlus.ipynb 7
+# %% ../../nbs/076_models.MultiRocketPlus.ipynb 12
 class MultiRocketBackbonePlus(nn.Module):
     def __init__(self, c_in, seq_len, num_features=50_000, max_dilations_per_kernel=32, kernel_size=9, max_num_channels=None, max_num_kernels=84, use_diff=True):
         super(MultiRocketBackbonePlus, self).__init__()
-        
-        num_features_per_branch = num_features // (1 + use_diff)        
+
+        num_features_per_branch = num_features // (1 + use_diff)
         self.branch_x = MultiRocketFeaturesPlus(c_in, seq_len, num_features=num_features_per_branch, max_dilations_per_kernel=max_dilations_per_kernel,
                                                 kernel_size=kernel_size, max_num_channels=max_num_channels, max_num_kernels=max_num_kernels)
         if use_diff:
@@ -244,7 +253,7 @@ class MultiRocketBackbonePlus(nn.Module):
         else:
             self.num_features = self.branch_x.num_features * 4
         self.use_diff = use_diff
-        
+
     def forward(self, x):
         if self.use_diff:
             x_features = self.branch_x(x)
@@ -255,7 +264,7 @@ class MultiRocketBackbonePlus(nn.Module):
             output = self.branch_x(x)
             return output
 
-# %% ../../nbs/076_models.MultiRocketPlus.ipynb 8
+# %% ../../nbs/076_models.MultiRocketPlus.ipynb 13
 class MultiRocketPlus(nn.Sequential):
 
     def __init__(self, c_in, c_out, seq_len, d=None, num_features=50_000, max_dilations_per_kernel=32, kernel_size=9, max_num_channels=None, max_num_kernels=84,
@@ -268,7 +277,7 @@ class MultiRocketPlus(nn.Sequential):
 
         # Head
         self.head_nf = num_features
-        if custom_head is not None: 
+        if custom_head is not None:
             if isinstance(custom_head, nn.Module): head = custom_head
             else: head = custom_head(self.head_nf, c_out, 1)
         elif d is not None:

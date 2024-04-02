@@ -5,13 +5,13 @@ __all__ = ['TSMagScaleByVar', 'TSRandomZoomIn', 'TSSubsampleSteps', 'TSRandomRot
            'TSShuffle_HLs', 'TSShuffleSteps', 'TSGaussianNoise', 'TSMagAddNoise', 'TSMagMulNoise',
            'random_curve_generator', 'random_cum_curve_generator', 'random_cum_noise_generator',
            'random_cum_linear_generator', 'TSTimeNoise', 'TSMagWarp', 'TSTimeWarp', 'TSWindowWarp', 'TSMagScale',
-           'TSMagScalePerVar', 'TSRandomResizedCrop', 'TSWindowSlicing', 'TSRandomZoomOut', 'TSRandomTimeScale',
-           'TSRandomTimeStep', 'TSResampleSteps', 'TSBlur', 'TSSmooth', 'maddest', 'TSFreqDenoise', 'TSRandomFreqNoise',
-           'TSRandomResizedLookBack', 'TSRandomLookBackOut', 'TSVarOut', 'TSCutOut', 'TSTimeStepOut', 'TSRandomCropPad',
-           'TSMaskOut', 'TSInputDropout', 'TSTranslateX', 'TSRandomShift', 'TSHorizontalFlip', 'TSRandomTrend',
-           'TSVerticalFlip', 'TSResize', 'TSRandomSize', 'TSRandomLowRes', 'TSDownUpScale', 'TSRandomDownUpScale',
-           'TSRandomConv', 'TSRandom2Value', 'TSMask2Value', 'self_mask', 'TSSelfDropout', 'RandAugment', 'TestTfm',
-           'get_tfm_name']
+           'TSMagScalePerVar', 'test_interpolate', 'TSRandomResizedCrop', 'TSWindowSlicing', 'TSRandomZoomOut',
+           'TSRandomTimeScale', 'TSRandomTimeStep', 'TSResampleSteps', 'TSBlur', 'TSSmooth', 'maddest', 'TSFreqDenoise',
+           'TSRandomFreqNoise', 'TSRandomResizedLookBack', 'TSRandomLookBackOut', 'TSVarOut', 'TSCutOut',
+           'TSTimeStepOut', 'TSRandomCropPad', 'TSMaskOut', 'TSInputDropout', 'TSTranslateX', 'TSRandomShift',
+           'TSHorizontalFlip', 'TSRandomTrend', 'TSVerticalFlip', 'TSResize', 'TSRandomSize', 'TSRandomLowRes',
+           'TSDownUpScale', 'TSRandomDownUpScale', 'TSRandomConv', 'TSRandom2Value', 'TSMask2Value', 'self_mask',
+           'TSSelfDropout', 'RandAugment', 'TestTfm', 'get_tfm_name']
 
 # %% ../../nbs/010_data.transforms.ipynb 3
 from ..imports import *
@@ -26,17 +26,17 @@ from .core import *
 class TSIdentity(RandTransform):
     "Applies the identity tfm to a `TSTensor` batch"
     order = 90
-    def __init__(self, magnitude=None, **kwargs): 
-        self.magnitude = magnitude 
+    def __init__(self, magnitude=None, **kwargs):
+        self.magnitude = magnitude
         super().__init__(**kwargs)
     def encodes(self, o: TSTensor): return o
 
 # %% ../../nbs/010_data.transforms.ipynb 8
-# partial(TSShuffle_HLs, ex=0), 
+# partial(TSShuffle_HLs, ex=0),
 class TSShuffle_HLs(RandTransform):
     "Randomly shuffles HIs/LOs of an OHLC `TSTensor` batch"
     order = 90
-    def __init__(self, magnitude=1., ex=None, **kwargs): 
+    def __init__(self, magnitude=1., ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
     def encodes(self, o: TSTensor):
@@ -54,11 +54,11 @@ class TSShuffle_HLs(RandTransform):
         return output
 
 # %% ../../nbs/010_data.transforms.ipynb 10
-# partial(TSShuffleSteps, ex=0), 
+# partial(TSShuffleSteps, ex=0),
 class TSShuffleSteps(RandTransform):
     "Randomly shuffles consecutive sequence datapoints in batch"
     order = 90
-    def __init__(self, magnitude=1., ex=None, **kwargs): 
+    def __init__(self, magnitude=1., ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
     def encodes(self, o: TSTensor):
@@ -107,10 +107,10 @@ class TSMagAddNoise(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-class TSMagMulNoise(RandTransform): 
+class TSMagMulNoise(RandTransform):
     "Applies multiplicative noise on the y-axis for each step of a `TSTensor` batch"
     order = 90
-    def __init__(self, magnitude=1, ex=None, **kwargs): 
+    def __init__(self, magnitude=1, ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
     def encodes(self, o: TSTensor):
@@ -123,7 +123,7 @@ class TSMagMulNoise(RandTransform):
 # %% ../../nbs/010_data.transforms.ipynb 16
 def random_curve_generator(o, magnitude=0.1, order=4, noise=None):
     seq_len = o.shape[-1]
-    f = CubicSpline(np.linspace(-seq_len, 2 * seq_len - 1, 3 * (order - 1) + 1, dtype=int), 
+    f = CubicSpline(np.linspace(-seq_len, 2 * seq_len - 1, 3 * (order - 1) + 1, dtype=int),
                     np.random.normal(loc=1.0, scale=magnitude, size=3 * (order - 1) + 1), axis=-1)
     return f(np.arange(seq_len))
 
@@ -161,7 +161,7 @@ def random_cum_linear_generator(o, magnitude=0.1):
 class TSTimeNoise(RandTransform):
     "Applies noise to each step in the x-axis of a `TSTensor` batch based on smooth random curve"
     order = 90
-    def __init__(self, magnitude=0.1, ex=None, **kwargs): 
+    def __init__(self, magnitude=0.1, ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
     def encodes(self, o: TSTensor):
@@ -175,7 +175,7 @@ class TSTimeNoise(RandTransform):
 class TSMagWarp(RandTransform):
     "Applies warping to the y-axis of a `TSTensor` batch based on a smooth random curve"
     order = 90
-    def __init__(self, magnitude=0.02, ord=4, ex=None, **kwargs): 
+    def __init__(self, magnitude=0.02, ord=4, ex=None, **kwargs):
         self.magnitude, self.ord, self.ex = magnitude, ord, ex
         super().__init__(**kwargs)
     def encodes(self, o: TSTensor):
@@ -204,7 +204,7 @@ class TSWindowWarp(RandTransform):
     """Applies window slicing to the x-axis of a `TSTensor` batch based on a random linear curve based on
     https://halshs.archives-ouvertes.fr/halshs-01357973/document"""
     order = 90
-    def __init__(self, magnitude=0.1, ex=None, **kwargs): 
+    def __init__(self, magnitude=0.1, ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
     def encodes(self, o: TSTensor):
@@ -218,7 +218,7 @@ class TSWindowWarp(RandTransform):
 class TSMagScale(RandTransform):
     "Applies scaling to the y-axis of a `TSTensor` batch based on a scalar"
     order = 90
-    def __init__(self, magnitude=0.5, ex=None, **kwargs): 
+    def __init__(self, magnitude=0.5, ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
     def encodes(self, o: TSTensor):
@@ -228,11 +228,11 @@ class TSMagScale(RandTransform):
         output = o * scale
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
-    
+
 class TSMagScalePerVar(RandTransform):
     "Applies per_var scaling to the y-axis of a `TSTensor` batch based on a scalar"
     order = 90
-    def __init__(self, magnitude=0.5, ex=None, **kwargs): 
+    def __init__(self, magnitude=0.5, ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
     def encodes(self, o: TSTensor):
@@ -244,55 +244,82 @@ class TSMagScalePerVar(RandTransform):
         output = o * scale
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
-    
+
 TSMagScaleByVar = TSMagScalePerVar
 
 # %% ../../nbs/010_data.transforms.ipynb 27
+def test_interpolate(mode="linear"):
+
+    assert mode in ["nearest", "linear", "area"], "Mode must be 'nearest', 'linear' or 'area'."
+
+    # Create a 1D tensor
+    tensor = torch.randn(1, 1, 8, device=default_device())
+
+    try:
+        # Try to interpolate using linear mode
+        result = F.interpolate(tensor, scale_factor=2, mode=mode)
+        return True
+    except NotImplementedError as e:
+        print(f"{mode} interpolation is not supported by {default_device()}. You can try a different mode")
+        print("Error:", e)
+        return False
+
+# %% ../../nbs/010_data.transforms.ipynb 30
 class TSRandomResizedCrop(RandTransform):
     "Randomly amplifies a sequence focusing on a random section of the steps"
     order = 90
-    def __init__(self, magnitude=0.1, size=None, scale=None, ex=None, mode='linear', **kwargs): 
+    def __init__(self, magnitude=0.1, size=None, scale=None, ex=None, mode='nearest', **kwargs):
         """
         Args:
             size: None, int or float
             scale: None or tuple of 2 floats 0 < float <= 1
             mode:  'nearest' | 'linear' | 'area'
-        
+
         """
+
+        if not test_interpolate(mode):
+            print(f"self.__name__ will not be applied because {mode} interpolation is not supported by {default_device()}. You can try a different mode")
+            magnitude = 0
+
         self.magnitude, self.ex, self.mode = magnitude, ex, mode
-        if scale is not None: 
+        if scale is not None:
             assert is_listy(scale) and len(scale) == 2 and min(scale) > 0 and min(scale) <= 1, "scale must be a tuple with 2 floats 0 < float <= 1"
         self.size,self.scale = size,scale
         super().__init__(**kwargs)
     def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
         seq_len = o.shape[-1]
-        if self.size is not None: 
+        if self.size is not None:
             size = self.size if isinstance(self.size, Integral) else int(round(self.size * seq_len))
         else:
             size = seq_len
-        if self.scale is not None: 
+        if self.scale is not None:
             lambd = np.random.uniform(self.scale[0], self.scale[1])
-        else: 
+        else:
             lambd = np.random.beta(self.magnitude, self.magnitude)
             lambd = max(lambd, 1 - lambd)
         win_len = int(round(seq_len * lambd))
-        if win_len == seq_len: 
+        if win_len == seq_len:
             if size == seq_len: return o
-            _slice = slice(None) 
+            _slice = slice(None)
         else:
             start = np.random.randint(0, seq_len - win_len)
             _slice = slice(start, start + win_len)
         return F.interpolate(o[..., _slice], size=size, mode=self.mode, align_corners=None if self.mode in ['nearest', 'area'] else False)
-    
+
 TSRandomZoomIn = TSRandomResizedCrop
 
-# %% ../../nbs/010_data.transforms.ipynb 29
+# %% ../../nbs/010_data.transforms.ipynb 32
 class TSWindowSlicing(RandTransform):
     "Randomly extracts an resize a ts slice based on https://halshs.archives-ouvertes.fr/halshs-01357973/document"
     order = 90
-    def __init__(self, magnitude=0.1, ex=None, mode='linear', **kwargs): 
+    def __init__(self, magnitude=0.1, ex=None, mode='nearest', **kwargs):
         "mode:  'nearest' | 'linear' | 'area'"
+
+        if not test_interpolate(mode):
+            print(f"self.__name__ will not be applied because {mode} interpolation is not supported by {default_device()}. You can try a different mode")
+            magnitude = 0
+
         self.magnitude, self.ex, self.mode = magnitude, ex, mode
         super().__init__(**kwargs)
     def encodes(self, o: TSTensor):
@@ -303,12 +330,17 @@ class TSWindowSlicing(RandTransform):
         start = np.random.randint(0, seq_len - win_len)
         return F.interpolate(o[..., start : start + win_len], size=seq_len, mode=self.mode, align_corners=None if self.mode in ['nearest', 'area'] else False)
 
-# %% ../../nbs/010_data.transforms.ipynb 31
+# %% ../../nbs/010_data.transforms.ipynb 34
 class TSRandomZoomOut(RandTransform):
     "Randomly compresses a sequence on the x-axis"
     order = 90
-    def __init__(self, magnitude=0.1, ex=None, mode='linear', **kwargs): 
+    def __init__(self, magnitude=0.1, ex=None, mode='nearest', **kwargs):
         "mode:  'nearest' | 'linear' | 'area'"
+
+        if not test_interpolate(mode):
+            print(f"self.__name__ will not be applied because {mode} interpolation is not supported by {default_device()}. You can try a different mode")
+            magnitude = 0
+
         self.magnitude, self.ex, self.mode = magnitude, ex, mode
         super().__init__(**kwargs)
     def encodes(self, o: TSTensor):
@@ -324,12 +356,17 @@ class TSRandomZoomOut(RandTransform):
         output[..., start:start + win_len] = o.new(interp)
         return output
 
-# %% ../../nbs/010_data.transforms.ipynb 33
+# %% ../../nbs/010_data.transforms.ipynb 36
 class TSRandomTimeScale(RandTransform):
     "Randomly amplifies/ compresses a sequence on the x-axis keeping the same length"
     order = 90
-    def __init__(self, magnitude=0.1, ex=None, mode='linear', **kwargs): 
+    def __init__(self, magnitude=0.1, ex=None, mode='nearest', **kwargs):
         "mode:  'nearest' | 'linear' | 'area'"
+
+        if not test_interpolate(mode):
+            print(f"self.__name__ will not be applied because {mode} interpolation is not supported by {default_device()}. You can try a different mode")
+            magnitude = 0
+
         self.magnitude, self.ex, self.mode = magnitude, ex, mode
         super().__init__(**kwargs)
     def encodes(self, o: TSTensor):
@@ -337,12 +374,17 @@ class TSRandomTimeScale(RandTransform):
         if np.random.rand() <= 0.5: return TSRandomZoomIn(magnitude=self.magnitude, ex=self.ex, mode=self.mode)(o, split_idx=0)
         else: return TSRandomZoomOut(magnitude=self.magnitude, ex=self.ex, mode=self.mode)(o, split_idx=0)
 
-# %% ../../nbs/010_data.transforms.ipynb 35
+# %% ../../nbs/010_data.transforms.ipynb 38
 class TSRandomTimeStep(RandTransform):
     "Compresses a sequence on the x-axis by randomly selecting sequence steps and interpolating to previous size"
     order = 90
-    def __init__(self, magnitude=0.02, ex=None, mode='linear', **kwargs): 
+    def __init__(self, magnitude=0.02, ex=None, mode='nearest', **kwargs):
         "mode:  'nearest' | 'linear' | 'area'"
+
+        if not test_interpolate(mode):
+            print(f"self.__name__ will not be applied because {mode} interpolation is not supported by {default_device()}. You can try a different mode")
+            magnitude = 0
+
         self.magnitude, self.ex, self.mode = magnitude, ex, mode
         super().__init__(**kwargs)
     def encodes(self, o: TSTensor):
@@ -355,7 +397,7 @@ class TSRandomTimeStep(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/010_data.transforms.ipynb 37
+# %% ../../nbs/010_data.transforms.ipynb 40
 class TSResampleSteps(RandTransform):
     "Transform that randomly selects and sorts sequence steps (with replacement) maintaining the sequence length"
 
@@ -369,27 +411,27 @@ class TSResampleSteps(RandTransform):
         S = o.shape[-1]
         if isinstance(self.step_pct, tuple):
             step_pct = np.random.rand() * (self.step_pct[1] - self.step_pct[0]) + self.step_pct[0]
-        else: 
+        else:
             step_pct = self.step_pct
         if step_pct != 1 and self.same_seq_len:
             idxs = np.sort(np.tile(random_choice(S, round(S * step_pct), True), math.ceil(1 / step_pct))[:S])
         else:
             idxs = np.sort(random_choice(S, round(S * step_pct), True))
         return o[..., idxs]
-    
+
 TSSubsampleSteps = TSResampleSteps
 
-# %% ../../nbs/010_data.transforms.ipynb 39
+# %% ../../nbs/010_data.transforms.ipynb 42
 class TSBlur(RandTransform):
     "Blurs a sequence applying a filter of type [1, 0, 1]"
     order = 90
-    def __init__(self, magnitude=1., ex=None, filt_len=None, **kwargs): 
+    def __init__(self, magnitude=1., ex=None, filt_len=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
-        if filt_len is None: 
-            filterargs = [1, 0, 1]  
-        else: 
+        if filt_len is None:
+            filterargs = [1, 0, 1]
+        else:
             filterargs = ([1] * max(1, filt_len // 2) + [0] + [1] * max(1, filt_len // 2))
-        self.filterargs = np.array(filterargs) 
+        self.filterargs = np.array(filterargs)
         self.filterargs = self.filterargs/self.filterargs.sum()
         super().__init__(**kwargs)
     def encodes(self, o: TSTensor):
@@ -398,18 +440,18 @@ class TSBlur(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/010_data.transforms.ipynb 41
+# %% ../../nbs/010_data.transforms.ipynb 44
 class TSSmooth(RandTransform):
     "Smoothens a sequence applying a filter of type [1, 5, 1]"
     order = 90
-    def __init__(self, magnitude=1., ex=None, filt_len=None, **kwargs): 
+    def __init__(self, magnitude=1., ex=None, filt_len=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         self.filterargs = np.array([1, 5, 1])
-        if filt_len is None: 
-            filterargs = [1, 5, 1]  
-        else: 
+        if filt_len is None:
+            filterargs = [1, 5, 1]
+        else:
             filterargs = ([1] * max(1, filt_len // 2) + [5] + [1] * max(1, filt_len // 2))
-        self.filterargs = np.array(filterargs) 
+        self.filterargs = np.array(filterargs)
         self.filterargs = self.filterargs/self.filterargs.sum()
         super().__init__(**kwargs)
     def encodes(self, o: TSTensor):
@@ -418,21 +460,21 @@ class TSSmooth(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/010_data.transforms.ipynb 43
-def maddest(d, axis=None): 
+# %% ../../nbs/010_data.transforms.ipynb 46
+def maddest(d, axis=None):
     #Mean Absolute Deviation
     return np.mean(np.absolute(d - np.mean(d, axis=axis)), axis=axis)
 
 class TSFreqDenoise(RandTransform):
     "Denoises a sequence applying a wavelet decomposition method"
     order = 90
-    def __init__(self, magnitude=0.1, ex=None, wavelet='db4', level=2, thr=None, thr_mode='hard', pad_mode='per', **kwargs): 
+    def __init__(self, magnitude=0.1, ex=None, wavelet='db4', level=2, thr=None, thr_mode='hard', pad_mode='per', **kwargs):
         self.magnitude, self.ex = magnitude, ex
         self.wavelet, self.level, self.thr, self.thr_mode, self.pad_mode = wavelet, level, thr, thr_mode, pad_mode
         super().__init__(**kwargs)
-        try: 
+        try:
             import pywt
-        except ImportError: 
+        except ImportError:
             raise ImportError('You need to install pywt to run TSFreqDenoise')
     def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
@@ -457,17 +499,17 @@ class TSFreqDenoise(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/010_data.transforms.ipynb 46
+# %% ../../nbs/010_data.transforms.ipynb 49
 class TSRandomFreqNoise(RandTransform):
     "Applys random noise using a wavelet decomposition method"
     order = 90
-    def __init__(self, magnitude=0.1, ex=None, wavelet='db4', level=2, mode='constant', **kwargs): 
+    def __init__(self, magnitude=0.1, ex=None, wavelet='db4', level=2, mode='constant', **kwargs):
         self.magnitude, self.ex = magnitude, ex
         self.wavelet, self.level, self.mode = wavelet, level, mode
         super().__init__(**kwargs)
-        try: 
+        try:
             import pywt
-        except ImportError: 
+        except ImportError:
             raise ImportError('You need to install pywt to run TSRandomFreqNoise')
     def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
@@ -478,12 +520,17 @@ class TSRandomFreqNoise(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/010_data.transforms.ipynb 48
+# %% ../../nbs/010_data.transforms.ipynb 51
 class TSRandomResizedLookBack(RandTransform):
     "Selects a random number of sequence steps starting from the end and return an output of the same shape"
     order = 90
-    def __init__(self, magnitude=0.1, mode='linear', **kwargs): 
+    def __init__(self, magnitude=0.1, mode='nearest', **kwargs):
         "mode:  'nearest' | 'linear' | 'area'"
+
+        if not test_interpolate(mode):
+            print(f"self.__name__ will not be applied because {mode} interpolation is not supported by {default_device()}. You can try a different mode")
+            magnitude = 0
+
         self.magnitude, self.mode = magnitude, mode
         super().__init__(**kwargs)
     def encodes(self, o: TSTensor):
@@ -494,11 +541,11 @@ class TSRandomResizedLookBack(RandTransform):
         output = o.clone()[..., int(round(lambd * seq_len)):]
         return F.interpolate(output, size=seq_len, mode=self.mode, align_corners=None if self.mode in ['nearest', 'area'] else False)
 
-# %% ../../nbs/010_data.transforms.ipynb 50
+# %% ../../nbs/010_data.transforms.ipynb 53
 class TSRandomLookBackOut(RandTransform):
     "Selects a random number of sequence steps starting from the end and set them to zero"
     order = 90
-    def __init__(self, magnitude=0.1, **kwargs): 
+    def __init__(self, magnitude=0.1, **kwargs):
         self.magnitude = magnitude
         super().__init__(**kwargs)
     def encodes(self, o: TSTensor):
@@ -507,14 +554,14 @@ class TSRandomLookBackOut(RandTransform):
         lambd = np.random.beta(self.magnitude, self.magnitude)
         lambd = min(lambd, 1 - lambd)
         output = o.clone()
-        output[..., :int(round(lambd * seq_len))] = 0 
+        output[..., :int(round(lambd * seq_len))] = 0
         return output
 
-# %% ../../nbs/010_data.transforms.ipynb 52
+# %% ../../nbs/010_data.transforms.ipynb 55
 class TSVarOut(RandTransform):
     "Set the value of a random number of variables to zero"
     order = 90
-    def __init__(self, magnitude=0.05, ex=None, **kwargs): 
+    def __init__(self, magnitude=0.05, ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
     def encodes(self, o: TSTensor):
@@ -534,11 +581,11 @@ class TSVarOut(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/010_data.transforms.ipynb 54
+# %% ../../nbs/010_data.transforms.ipynb 57
 class TSCutOut(RandTransform):
     "Sets a random section of the sequence to zero"
     order = 90
-    def __init__(self, magnitude=0.05, ex=None, **kwargs): 
+    def __init__(self, magnitude=0.05, ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
     def encodes(self, o: TSTensor):
@@ -556,11 +603,11 @@ class TSCutOut(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/010_data.transforms.ipynb 56
+# %% ../../nbs/010_data.transforms.ipynb 59
 class TSTimeStepOut(RandTransform):
     "Sets random sequence steps to zero"
     order = 90
-    def __init__(self, magnitude=0.05, ex=None, **kwargs): 
+    def __init__(self, magnitude=0.05, ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
     def encodes(self, o: TSTensor):
@@ -573,11 +620,11 @@ class TSTimeStepOut(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/010_data.transforms.ipynb 58
+# %% ../../nbs/010_data.transforms.ipynb 61
 class TSRandomCropPad(RandTransform):
     "Crops a section of the sequence of a random length"
     order = 90
-    def __init__(self, magnitude=0.05, ex=None, **kwargs): 
+    def __init__(self, magnitude=0.05, ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
     def encodes(self, o: TSTensor):
@@ -593,7 +640,7 @@ class TSRandomCropPad(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/010_data.transforms.ipynb 60
+# %% ../../nbs/010_data.transforms.ipynb 63
 class TSMaskOut(RandTransform):
     """Applies a random mask"""
     order = 90
@@ -611,7 +658,7 @@ class TSMaskOut(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/010_data.transforms.ipynb 62
+# %% ../../nbs/010_data.transforms.ipynb 65
 class TSInputDropout(RandTransform):
     """Applies input dropout with required_grad=False"""
     order = 90
@@ -619,7 +666,7 @@ class TSInputDropout(RandTransform):
         self.magnitude, self.ex = magnitude, ex
         self.dropout = nn.Dropout(magnitude)
         super().__init__(**kwargs)
-    
+
     @torch.no_grad()
     def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
@@ -627,11 +674,11 @@ class TSInputDropout(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/010_data.transforms.ipynb 64
+# %% ../../nbs/010_data.transforms.ipynb 67
 class TSTranslateX(RandTransform):
     "Moves a selected sequence window a random number of steps"
     order = 90
-    def __init__(self, magnitude=0.1, ex=None, **kwargs): 
+    def __init__(self, magnitude=0.1, ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
     def encodes(self, o: TSTensor):
@@ -651,11 +698,11 @@ class TSTranslateX(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/010_data.transforms.ipynb 66
+# %% ../../nbs/010_data.transforms.ipynb 69
 class TSRandomShift(RandTransform):
     "Shifts and splits a sequence"
     order = 90
-    def __init__(self, magnitude=0.02, ex=None, **kwargs): 
+    def __init__(self, magnitude=0.02, ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
     def encodes(self, o: TSTensor):
@@ -665,11 +712,11 @@ class TSRandomShift(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/010_data.transforms.ipynb 68
+# %% ../../nbs/010_data.transforms.ipynb 71
 class TSHorizontalFlip(RandTransform):
     "Flips the sequence along the x-axis"
     order = 90
-    def __init__(self, magnitude=1., ex=None, **kwargs): 
+    def __init__(self, magnitude=1., ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
     def encodes(self, o: TSTensor):
@@ -678,11 +725,11 @@ class TSHorizontalFlip(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/010_data.transforms.ipynb 70
+# %% ../../nbs/010_data.transforms.ipynb 73
 class TSRandomTrend(RandTransform):
     "Randomly rotates the sequence along the z-axis"
     order = 90
-    def __init__(self, magnitude=0.1, ex=None, **kwargs): 
+    def __init__(self, magnitude=0.1, ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
     def encodes(self, o: TSTensor):
@@ -696,40 +743,50 @@ class TSRandomTrend(RandTransform):
         output = o + t
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
-    
+
 TSRandomRotate = TSRandomTrend
 
-# %% ../../nbs/010_data.transforms.ipynb 72
+# %% ../../nbs/010_data.transforms.ipynb 75
 class TSVerticalFlip(RandTransform):
     "Applies a negative value to the time sequence"
     order = 90
-    def __init__(self, magnitude=1., ex=None, **kwargs): 
+    def __init__(self, magnitude=1., ex=None, **kwargs):
         self.magnitude, self.ex = magnitude, ex
         super().__init__(**kwargs)
-    def encodes(self, o: TSTensor): 
+    def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
         return - o
 
-# %% ../../nbs/010_data.transforms.ipynb 74
+# %% ../../nbs/010_data.transforms.ipynb 77
 class TSResize(RandTransform):
     "Resizes the sequence length of a time series"
     order = 90
-    def __init__(self, magnitude=-0.5, size=None, ex=None, mode='linear', **kwargs): 
+    def __init__(self, magnitude=-0.5, size=None, ex=None, mode='nearest', **kwargs):
         "mode:  'nearest' | 'linear' | 'area'"
+
+        if not test_interpolate(mode):
+            print(f"self.__name__ will not be applied because {mode} interpolation is not supported by {default_device()}. You can try a different mode")
+            magnitude = 0
+
         self.magnitude, self.size, self.ex, self.mode = magnitude, size, ex, mode
         super().__init__(**kwargs)
-    def encodes(self, o: TSTensor): 
+    def encodes(self, o: TSTensor):
         if self.magnitude == 0: return o
         size = ifnone(self.size, int(round((1 + self.magnitude) * o.shape[-1])))
         output = F.interpolate(o, size=size, mode=self.mode, align_corners=None if self.mode in ['nearest', 'area'] else False)
         return output
 
-# %% ../../nbs/010_data.transforms.ipynb 76
+# %% ../../nbs/010_data.transforms.ipynb 79
 class TSRandomSize(RandTransform):
     "Randomly resizes the sequence length of a time series"
     order = 90
-    def __init__(self, magnitude=0.1, ex=None, mode='linear', **kwargs):
+    def __init__(self, magnitude=0.1, ex=None, mode='nearest', **kwargs):
         "mode:  'nearest' | 'linear' | 'area'"
+
+        if not test_interpolate(mode):
+            print(f"self.__name__ will not be applied because {mode} interpolation is not supported by {default_device()}. You can try a different mode")
+            magnitude = 0
+
         self.magnitude, self.ex, self.mode = magnitude, ex, mode
         super().__init__(**kwargs)
     def encodes(self, o: TSTensor):
@@ -737,51 +794,66 @@ class TSRandomSize(RandTransform):
         size_perc = 1 + random_half_normal() * self.magnitude * (-1 if random.random() > .5 else 1)
         return F.interpolate(o, size=int(size_perc * o.shape[-1]), mode=self.mode, align_corners=None if self.mode in ['nearest', 'area'] else False)
 
-# %% ../../nbs/010_data.transforms.ipynb 78
+# %% ../../nbs/010_data.transforms.ipynb 81
 class TSRandomLowRes(RandTransform):
     "Randomly resizes the sequence length of a time series to a lower resolution"
     order = 90
-    def __init__(self, magnitude=.5, ex=None, mode='linear', **kwargs): 
+    def __init__(self, magnitude=.5, ex=None, mode='nearest', **kwargs):
         "mode:  'nearest' | 'linear' | 'area'"
+
+        if not test_interpolate(mode):
+            print(f"self.__name__ will not be applied because {mode} interpolation is not supported by {default_device()}. You can try a different mode")
+            magnitude = 0
+
         self.magnitude, self.ex, self.mode = magnitude, ex, mode
         super().__init__(**kwargs)
-    def encodes(self, o: TSTensor): 
+    def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
         size_perc = 1 - (np.random.rand() * (1 - self.magnitude))
         return F.interpolate(o, size=int(size_perc * o.shape[-1]), mode=self.mode, align_corners=None if self.mode in ['nearest', 'area'] else False)
 
-# %% ../../nbs/010_data.transforms.ipynb 79
+# %% ../../nbs/010_data.transforms.ipynb 82
 class TSDownUpScale(RandTransform):
     "Downscales a time series and upscales it again to previous sequence length"
     order = 90
-    def __init__(self, magnitude=0.5, ex=None, mode='linear', **kwargs): 
+    def __init__(self, magnitude=0.5, ex=None, mode='nearest', **kwargs):
         "mode:  'nearest' | 'linear' | 'area'"
+
+        if not test_interpolate(mode):
+            print(f"self.__name__ will not be applied because {mode} interpolation is not supported by {default_device()}. You can try a different mode")
+            magnitude = 0
+
         self.magnitude, self.ex, self.mode = magnitude, ex, mode
         super().__init__(**kwargs)
-    def encodes(self, o: TSTensor): 
+    def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0 or self.magnitude >= 1: return o
         output = F.interpolate(o, size=int((1 - self.magnitude) * o.shape[-1]), mode=self.mode, align_corners=None if self.mode in ['nearest', 'area'] else False)
         output = F.interpolate(output, size=o.shape[-1], mode=self.mode, align_corners=None if self.mode in ['nearest', 'area'] else False)
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/010_data.transforms.ipynb 81
+# %% ../../nbs/010_data.transforms.ipynb 84
 class TSRandomDownUpScale(RandTransform):
     "Randomly downscales a time series and upscales it again to previous sequence length"
     order = 90
-    def __init__(self, magnitude=.5, ex=None, mode='linear', **kwargs): 
+    def __init__(self, magnitude=.5, ex=None, mode='nearest', **kwargs):
         "mode:  'nearest' | 'linear' | 'area'"
+
+        if not test_interpolate(mode):
+            print(f"self.__name__ will not be applied because {mode} interpolation is not supported by {default_device()}. You can try a different mode")
+            magnitude = 0
+
         self.magnitude, self.ex, self.mode = magnitude, ex, mode
         super().__init__(**kwargs)
-    def encodes(self, o: TSTensor): 
+    def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0 or self.magnitude >= 1: return o
-        scale_factor = 0.5 + 0.5 * np.random.rand() 
+        scale_factor = 0.5 + 0.5 * np.random.rand()
         output = F.interpolate(o, size=int(scale_factor * o.shape[-1]), mode=self.mode, align_corners=None if self.mode in ['nearest', 'area'] else False)
         output = F.interpolate(output, size=o.shape[-1], mode=self.mode, align_corners=None if self.mode in ['nearest', 'area'] else False)
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/010_data.transforms.ipynb 83
+# %% ../../nbs/010_data.transforms.ipynb 86
 class TSRandomConv(RandTransform):
     """Applies a convolution with a random kernel and random weights with required_grad=False"""
     order = 90
@@ -801,7 +873,7 @@ class TSRandomConv(RandTransform):
         if self.ex is not None: output[...,self.ex,:] = o[...,self.ex,:]
         return output
 
-# %% ../../nbs/010_data.transforms.ipynb 85
+# %% ../../nbs/010_data.transforms.ipynb 88
 class TSRandom2Value(RandTransform):
     "Randomly sets selected variables of type `TSTensor` to predefined value (default: np.nan)"
     order = 90
@@ -833,7 +905,7 @@ class TSRandom2Value(RandTransform):
                     vals[:, self._sel_vars] = torch.rand(*vals[:, self._sel_vars, 0].shape, device=o.device).unsqueeze(-1)
             else:
                 if self.magnitude == 1:
-                    return o.fill_(self.value) 
+                    return o.fill_(self.value)
                 else:
                     vals = torch.rand(*o.shape[:-1], device=o.device).unsqueeze(-1)
         elif self.sel_vars is not None or self.sel_steps is not None:
@@ -845,13 +917,13 @@ class TSRandom2Value(RandTransform):
                 vals[:, self._sel_vars, self._sel_steps] = torch.rand(*vals[:, self._sel_vars, self._sel_steps].shape, device=o.device)
         else:
             if self.magnitude == 1:
-                return o.fill_(self.value) 
+                return o.fill_(self.value)
             else:
                 vals = torch.rand_like(o)
         mask = vals > (1 - self.magnitude)
         return o.masked_fill(mask, self.value)
 
-# %% ../../nbs/010_data.transforms.ipynb 96
+# %% ../../nbs/010_data.transforms.ipynb 99
 class TSMask2Value(RandTransform):
     "Randomly sets selected variables of type `TSTensor` to predefined value (default: np.nan)"
     order = 90
@@ -867,8 +939,8 @@ class TSMask2Value(RandTransform):
             mask[:, self.sel_vars] = False
         return o.masked_fill(mask, self.value)
 
-# %% ../../nbs/010_data.transforms.ipynb 98
-def self_mask(o): 
+# %% ../../nbs/010_data.transforms.ipynb 101
+def self_mask(o):
     mask1 = torch.isnan(o)
     mask2 = rotate_axis0(mask1)
     return torch.logical_and(mask2, ~mask1)
@@ -882,11 +954,11 @@ class TSSelfDropout(RandTransform):
         o[mask] = np.nan
         return o
 
-# %% ../../nbs/010_data.transforms.ipynb 100
+# %% ../../nbs/010_data.transforms.ipynb 103
 all_TS_randaugs = [
-    
-    TSIdentity, 
-    
+
+    TSIdentity,
+
     # Noise
     (TSMagAddNoise, 0.1, 1.),
     (TSGaussianNoise, .01, 1.),
@@ -894,12 +966,12 @@ all_TS_randaugs = [
     (partial(TSTimeNoise, ex=0), 0.1, 1.),
     (partial(TSRandomFreqNoise, ex=0), 0.1, 1.),
     partial(TSShuffleSteps, ex=0),
-    (TSRandomTimeScale, 0.05, 0.5), 
-    (TSRandomTimeStep, 0.05, 0.5), 
+    (TSRandomTimeScale, 0.05, 0.5),
+    (TSRandomTimeStep, 0.05, 0.5),
     (partial(TSFreqDenoise, ex=0), 0.1, 1.),
     (TSRandomLowRes, 0.05, 0.5),
     (TSInputDropout, 0.05, .5),
-    
+
     # Magnitude
     (partial(TSMagWarp, ex=0), 0.02, 0.2),
     (TSMagScale, 0.2, 1.),
@@ -908,31 +980,31 @@ all_TS_randaugs = [
     partial(TSBlur, ex=0),
     partial(TSSmooth, ex=0),
     partial(TSDownUpScale, ex=0),
-    partial(TSRandomDownUpScale, ex=0), 
-    (TSRandomTrend, 0.1, 0.5), 
-    TSVerticalFlip, 
-    (TSVarOut, 0.05, 0.5), 
-    (TSCutOut, 0.05, 0.5), 
-    
+    partial(TSRandomDownUpScale, ex=0),
+    (TSRandomTrend, 0.1, 0.5),
+    TSVerticalFlip,
+    (TSVarOut, 0.05, 0.5),
+    (TSCutOut, 0.05, 0.5),
+
     # Time
     (partial(TSTimeWarp, ex=0), 0.02, 0.2),
     (TSWindowWarp, 0.05, 0.5),
     (TSRandomSize, 0.05, 1.),
-    TSHorizontalFlip, 
+    TSHorizontalFlip,
     (TSTranslateX, 0.1, 0.5),
-    (TSRandomShift, 0.02, 0.2), 
-    (TSRandomZoomIn, 0.05, 0.5), 
+    (TSRandomShift, 0.02, 0.2),
+    (TSRandomZoomIn, 0.05, 0.5),
     (TSWindowSlicing, 0.05, 0.2),
     (TSRandomZoomOut, 0.05, 0.5),
     (TSRandomLookBackOut, 0.1, 1.),
     (TSRandomResizedLookBack, 0.1, 1.),
     (TSTimeStepOut, 0.01, 0.2),
-    (TSRandomCropPad, 0.05, 0.5), 
+    (TSRandomCropPad, 0.05, 0.5),
     (TSRandomResizedCrop, 0.05, 0.5),
     (TSMaskOut, 0.01, 0.2),
 ]
 
-# %% ../../nbs/010_data.transforms.ipynb 101
+# %% ../../nbs/010_data.transforms.ipynb 104
 class RandAugment(RandTransform):
     order = 90
     def __init__(self, tfms:list, N:int=1, M:int=3, **kwargs):
@@ -959,21 +1031,21 @@ class RandAugment(RandTransform):
         output = compose_tfms(o, tfms_, split_idx=self.split_idx)
         return output
 
-# %% ../../nbs/010_data.transforms.ipynb 103
+# %% ../../nbs/010_data.transforms.ipynb 106
 class TestTfm(RandTransform):
     "Utility class to test the output of selected tfms during training"
-    def __init__(self, tfm, magnitude=1., ex=None, **kwargs): 
+    def __init__(self, tfm, magnitude=1., ex=None, **kwargs):
         self.tfm, self.magnitude, self.ex = tfm, magnitude, ex
         self.tfmd, self.shape = [], []
         super().__init__(**kwargs)
-    def encodes(self, o: TSTensor): 
+    def encodes(self, o: TSTensor):
         if not self.magnitude or self.magnitude <= 0: return o
         output = self.tfm(o, split_idx=self.split_idx)
         self.tfmd.append(torch.equal(o, output))
         self.shape.append(o.shape)
         return output
 
-# %% ../../nbs/010_data.transforms.ipynb 104
+# %% ../../nbs/010_data.transforms.ipynb 107
 def get_tfm_name(tfm):
     if isinstance(tfm, tuple): tfm = tfm[0]
     if hasattr(tfm, "func"): tfm = tfm.func
