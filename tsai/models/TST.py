@@ -76,7 +76,6 @@ class _TSTEncoderLayer(Module):
     def __init__(self, q_len:int, d_model:int, n_heads:int, d_k:Optional[int]=None, d_v:Optional[int]=None, d_ff:int=256, dropout:float=0.1, 
                  activation:str="gelu"):
 
-        assert d_model // n_heads, f"d_model ({d_model}) must be divisible by n_heads ({n_heads})"
         d_k = ifnone(d_k, d_model // n_heads)
         d_v = ifnone(d_v, d_model // n_heads)
 
