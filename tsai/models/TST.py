@@ -142,8 +142,8 @@ class TST(Module):
             max_seq_len: useful to control the temporal resolution in long time series to avoid memory issues.
             d_model: total dimension of the model (number of features created by the model)
             n_heads:  parallel attention heads.
-            d_k: size of the learned linear projection of queries and keys in the MHA. Usual values: 16-512. Default: None -> (d_model/n_heads) = 32.
-            d_v: size of the learned linear projection of values in the MHA. Usual values: 16-512. Default: None -> (d_model/n_heads) = 32.
+            d_k: size of the learned linear projection of queries and keys in the MHA. Usual values: 8-64. Default: None -> (d_model/n_heads) = 8.
+            d_v: size of the learned linear projection of values in the MHA. Usual values: 8-64. Default: None -> (d_model/n_heads) = 8.
             d_ff: the dimension of the feedforward network model.
             dropout: amount of residual dropout applied in the encoder.
             act: the activation function of intermediate layer, relu or gelu.
