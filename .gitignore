@@ -175,3 +175,5 @@ sidebar.yml
 token
 token
 *.pkg
+new.*
+old.*

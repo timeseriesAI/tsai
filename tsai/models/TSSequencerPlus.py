@@ -11,11 +11,11 @@ from typing import Callable
 
 # %% ../../nbs/069_models.TSSequencerPlus.ipynb 4
 class _TSSequencerEncoderLayer(nn.Module):
-    def __init__(self, d_model:int, q_len:int=None, lstm_dropout:float=0., dropout:float=0, drop_path_rate:float=0., 
+    def __init__(self, d_model:int, q_len:int=None, lstm_dropout:float=0., dropout:float=0, drop_path_rate:float=0.,
                  mlp_ratio:int=1, lstm_bias:bool=True, act:str='gelu', pre_norm:bool=False):
         super().__init__()
         self.bilstm = nn.LSTM(q_len, q_len, num_layers=1, bidirectional=True, bias=lstm_bias)
-        self.dropout = nn.Dropout(lstm_dropout)
+        self.dropout = nn.Dropout(lstm_dropout) if lstm_dropout else nn.Identity()
         self.fc = nn.Linear(2 * q_len, q_len)
         self.lstm_norm = nn.LayerNorm(d_model)
         self.pwff =  PositionwiseFeedForward(d_model, dropout=dropout, act=act, mlp_ratio=mlp_ratio)
@@ -35,7 +35,7 @@ class _TSSequencerEncoderLayer(nn.Module):
 
 # %% ../../nbs/069_models.TSSequencerPlus.ipynb 5
 class _TSSequencerEncoder(nn.Module):
-    def __init__(self, d_model, depth:int=6, q_len:int=None, lstm_dropout:float=0., dropout:float=0, drop_path_rate:float=0., 
+    def __init__(self, d_model, depth:int=6, q_len:int=None, lstm_dropout:float=0., dropout:float=0, drop_path_rate:float=0.,
                  mlp_ratio:int=1, lstm_bias:bool=True, act:str='gelu', pre_norm:bool=False):
         super().__init__()
         dpr = [x.item() for x in torch.linspace(0, drop_path_rate, depth)]
@@ -54,22 +54,22 @@ class _TSSequencerEncoder(nn.Module):
 
 # %% ../../nbs/069_models.TSSequencerPlus.ipynb 6
 class _TSSequencerBackbone(Module):
-    def __init__(self, c_in:int, seq_len:int, depth:int=6, d_model:int=128, act:str='gelu', 
-                 lstm_bias:bool=True, lstm_dropout:float=0., dropout:float=0., drop_path_rate:float=0., mlp_ratio:int=1, 
-                 pre_norm:bool=False, use_token:bool=True,  use_pe:bool=True, n_cat_embeds:Optional[list]=None, cat_embed_dims:Optional[list]=None, 
-                 cat_padding_idxs:Optional[list]=None, cat_pos:Optional[list]=None, feature_extractor:Optional[Callable]=None, 
+    def __init__(self, c_in:int, seq_len:int, depth:int=6, d_model:int=128, act:str='gelu',
+                 lstm_bias:bool=True, lstm_dropout:float=0., dropout:float=0., drop_path_rate:float=0., mlp_ratio:int=1,
+                 pre_norm:bool=False, use_token:bool=True,  use_pe:bool=True, n_cat_embeds:Optional[list]=None, cat_embed_dims:Optional[list]=None,
+                 cat_padding_idxs:Optional[list]=None, cat_pos:Optional[list]=None, feature_extractor:Optional[Callable]=None,
                  token_size:int=None, tokenizer:Optional[Callable]=None):
 
         # Categorical embeddings
         if n_cat_embeds is not None:
             n_cat_embeds = listify(n_cat_embeds)
-            if cat_embed_dims is None:  
+            if cat_embed_dims is None:
                 cat_embed_dims = [emb_sz_rule(s) for s in n_cat_embeds]
             self.to_cat_embed = MultiEmbedding(c_in, n_cat_embeds, cat_embed_dims=cat_embed_dims, cat_padding_idxs=cat_padding_idxs, cat_pos=cat_pos)
             c_in, seq_len = output_size_calculator(self.to_cat_embed, c_in, seq_len)
         else:
             self.to_cat_embed = nn.Identity()
-            
+
         # Sequence embedding
         if token_size is not None:
             self.tokenizer = SeqTokenizer(c_in, d_model, token_size)
@@ -78,7 +78,7 @@ class _TSSequencerBackbone(Module):
             if isinstance(tokenizer, nn.Module):  self.tokenizer = tokenizer
             else: self.tokenizer = tokenizer(c_in, d_model)
             c_in, seq_len = output_size_calculator(self.tokenizer, c_in, seq_len)
-        else: 
+        else:
             self.tokenizer = nn.Identity()
 
         # Feature extractor
@@ -88,13 +88,13 @@ class _TSSequencerBackbone(Module):
             c_in, seq_len = output_size_calculator(self.feature_extractor, c_in, seq_len)
         else:
             self.feature_extractor = nn.Identity()
-        
+
         # Linear projection
         if token_size is None and tokenizer is None and feature_extractor is None:
             self.linear_proj = nn.Conv1d(c_in, d_model, 1)
         else:
             self.linear_proj = nn.Identity()
-            
+
         self.transpose = Transpose(1,2)
 
         # Position embedding & token
@@ -103,10 +103,10 @@ class _TSSequencerBackbone(Module):
         self.use_pe = use_pe
         self.cls_token = nn.Parameter(torch.zeros(1, 1, d_model))
         self.use_token = use_token
-        self.emb_dropout = nn.Dropout(dropout)
+        self.emb_dropout = nn.Dropout(dropout) if dropout else nn.Identity()
 
         # Encoder
-        self.encoder = _TSSequencerEncoder(d_model, depth=depth, q_len=seq_len + use_token, lstm_bias=lstm_bias, 
+        self.encoder = _TSSequencerEncoder(d_model, depth=depth, q_len=seq_len + use_token, lstm_bias=lstm_bias,
                                          lstm_dropout=lstm_dropout, dropout=dropout,
                                          mlp_ratio=mlp_ratio, drop_path_rate=drop_path_rate, act=act, pre_norm=pre_norm)
 
@@ -114,19 +114,19 @@ class _TSSequencerBackbone(Module):
 
         # Categorical embeddings
         x = self.to_cat_embed(x)
-        
+
         # Sequence embedding
         x = self.tokenizer(x)
 
         # Feature extractor
         x = self.feature_extractor(x)
-        
+
         # Linear projection
         x = self.linear_proj(x)
-        
+
         # Position embedding & token
         x = self.transpose(x)
-        if self.use_pe: 
+        if self.use_pe:
             x = x + self.pos_embed
         if self.use_token: # token is concatenated after position embedding so that embedding can be learned using self.supervised learning
             x = torch.cat((self.cls_token.expand(x.shape[0], -1, -1), x), dim=1)
@@ -134,7 +134,7 @@ class _TSSequencerBackbone(Module):
 
         # Encoder
         x = self.encoder(x)
-        
+
         # Output
         x = x.transpose(1,2)
         return x
@@ -154,7 +154,7 @@ class TSSequencerPlus(nn.Sequential):
         depth:              number of blocks in the encoder.
         act:                the activation function of positionwise feedforward layer.
         lstm_dropout:       dropout rate applied to the lstm sublayer.
-        dropout:            dropout applied to to the embedded sequence steps after position embeddings have been added and 
+        dropout:            dropout applied to to the embedded sequence steps after position embeddings have been added and
                             to the mlp sublayer in the encoder.
         drop_path_rate:     stochastic depth rate.
         mlp_ratio:          ratio of mlp hidden dim to embedding dim.
@@ -170,38 +170,38 @@ class TSSequencerPlus(nn.Sequential):
         cat_pos:            list with the position of the categorical variables in the input.
         token_size:         Size of the embedding function used to reduce the sequence length (similar to ViT's patch size)
         tokenizer:          nn.Module or callable that will be used to reduce the sequence length
-        feature_extractor:  nn.Module or callable that will be used to preprocess the time series before 
+        feature_extractor:  nn.Module or callable that will be used to preprocess the time series before
                             the embedding step. It is useful to extract features or resample the time series.
-        flatten:            flag to indicate if the 3d logits will be flattened to 2d in the model's head if use_token is set to False. 
+        flatten:            flag to indicate if the 3d logits will be flattened to 2d in the model's head if use_token is set to False.
                             If use_token is False and flatten is False, the model will apply a pooling layer.
-        concat_pool:        if True the head begins with fastai's AdaptiveConcatPool2d if concat_pool=True; otherwise, it uses traditional average pooling. 
+        concat_pool:        if True the head begins with fastai's AdaptiveConcatPool2d if concat_pool=True; otherwise, it uses traditional average pooling.
         fc_dropout:         dropout applied to the final fully connected layer.
         use_bn:             flag that indicates if batchnorm will be applied to the head.
         bias_init:          values used to initialized the output layer.
-        y_range:            range of possible y values (used in regression tasks).        
+        y_range:            range of possible y values (used in regression tasks).
         custom_head:        custom head that will be applied to the network. It must contain all kwargs (pass a partial function)
         verbose:            flag to control verbosity of the model.
 
     Input:
         x: bs (batch size) x nvars (aka features, variables, dimensions, channels) x seq_len (aka time steps)
     """
-    
+
     def __init__(self, c_in:int, c_out:int, seq_len:int, d_model:int=128, depth:int=6, act:str='gelu',
-                 lstm_dropout:float=0., dropout:float=0., drop_path_rate:float=0., mlp_ratio:int=1, lstm_bias:bool=True, 
-                 pre_norm:bool=False, use_token:bool=False, use_pe:bool=True, 
+                 lstm_dropout:float=0., dropout:float=0., drop_path_rate:float=0., mlp_ratio:int=1, lstm_bias:bool=True,
+                 pre_norm:bool=False, use_token:bool=False, use_pe:bool=True,
                  cat_pos:Optional[list]=None, n_cat_embeds:Optional[list]=None, cat_embed_dims:Optional[list]=None, cat_padding_idxs:Optional[list]=None,
-                 token_size:int=None, tokenizer:Optional[Callable]=None, feature_extractor:Optional[Callable]=None, 
-                 flatten:bool=False, concat_pool:bool=True, fc_dropout:float=0., use_bn:bool=False, 
+                 token_size:int=None, tokenizer:Optional[Callable]=None, feature_extractor:Optional[Callable]=None,
+                 flatten:bool=False, concat_pool:bool=True, fc_dropout:float=0., use_bn:bool=False,
                  bias_init:Optional[Union[float, list]]=None, y_range:Optional[tuple]=None, custom_head:Optional[Callable]=None, verbose:bool=True,
                  **kwargs):
 
-        if use_token and c_out == 1: 
+        if use_token and c_out == 1:
             use_token = False
             pv("use_token set to False as c_out == 1", verbose)
         backbone = _TSSequencerBackbone(c_in, seq_len, depth=depth, d_model=d_model, act=act,
-                                      lstm_dropout=lstm_dropout, dropout=dropout, drop_path_rate=drop_path_rate, 
-                                      pre_norm=pre_norm, mlp_ratio=mlp_ratio, use_pe=use_pe, use_token=use_token, 
-                                      n_cat_embeds=n_cat_embeds, cat_embed_dims=cat_embed_dims, cat_padding_idxs=cat_padding_idxs, cat_pos=cat_pos, 
+                                      lstm_dropout=lstm_dropout, dropout=dropout, drop_path_rate=drop_path_rate,
+                                      pre_norm=pre_norm, mlp_ratio=mlp_ratio, use_pe=use_pe, use_token=use_token,
+                                      n_cat_embeds=n_cat_embeds, cat_embed_dims=cat_embed_dims, cat_padding_idxs=cat_padding_idxs, cat_pos=cat_pos,
                                       feature_extractor=feature_extractor, token_size=token_size, tokenizer=tokenizer)
 
         self.head_nf = d_model
@@ -215,7 +215,7 @@ class TSSequencerPlus(nn.Sequential):
         else:
             nf = d_model
             layers = []
-            if use_token: 
+            if use_token:
                 layers += [TokenLayer()]
             elif flatten:
                 layers += [Reshape(-1)]
@@ -225,10 +225,10 @@ class TSSequencerPlus(nn.Sequential):
                 layers = [GACP1d(1) if concat_pool else GAP1d(1)]
             if use_bn: layers += [nn.BatchNorm1d(nf)]
             if fc_dropout: layers += [nn.Dropout(fc_dropout)]
-            
+
             # Last layer
             linear = nn.Linear(nf, c_out)
-            if bias_init is not None: 
+            if bias_init is not None:
                 if isinstance(bias_init, float): nn.init.constant_(linear.bias, bias_init)
                 else: linear.bias = nn.Parameter(torch.as_tensor(bias_init, dtype=torch.float32))
             layers += [linear]
@@ -236,6 +236,6 @@ class TSSequencerPlus(nn.Sequential):
             if y_range: layers += [SigmoidRange(*y_range)]
             head = nn.Sequential(*layers)
         super().__init__(OrderedDict([('backbone', backbone), ('head', head)]))
-        
-        
+
+
 TSSequencer = TSSequencerPlus

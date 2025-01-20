@@ -333,6 +333,7 @@ def _has_mps():
 
 def default_device(use=-1):
     "Return or set default device; `use_cuda`: -1 - CUDA/mps if available; True - error if not available; False - CPU"
+    # return torch.device("cpu")
     if use == -1:
         use = defaults.use_cuda
     else:
