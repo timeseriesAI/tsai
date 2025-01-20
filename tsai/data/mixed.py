@@ -34,6 +34,8 @@ class MixedDataLoader():
             if hasattr(dl, 'split_idxs'):
                 self.split_idxs = dl.split_idxs
             dl.bs = self.bs
+            if i > 0 and hasattr(dl, 'get_idxs'):
+                dl.get_idxs = self.get_idxs_copy
             dl.shuffle_fn = self.shuffle_fn
             if self.c is None and hasattr(dl, "c"):
                 self.c = dl.c
@@ -83,6 +85,9 @@ class MixedDataLoader():
             b = next(iter(self.loaders[key]))
             outs += L(b[n_inp:])
         self.y_idxs = self._get_vals(outs)
+
+    def get_idxs_copy(self):
+        return self.loaders[0].get_idxs()
 
     def __iter__(self):
         z = zip(*[_loaders[i.fake_l.num_workers == 0](i.fake_l)

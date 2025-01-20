@@ -32,7 +32,7 @@ class TemperatureSetter(nn.Module):
     def __init__(self, model, lr=0.01, max_iter=1_000, line_search_fn=None, n_bins=10, verbose=True):
         super().__init__()
         self.model = ModelWithTemperature(model) if not hasattr(model, 'temperature_scale') else model
-        self.lr, self.max_iter, self.line_search_fn, self.n_bins, self.verbose = lr, max_iter, line_search_fn, n_bins, verbose 
+        self.lr, self.max_iter, self.line_search_fn, self.n_bins, self.verbose = lr, max_iter, line_search_fn, n_bins, verbose
         self.nll_criterion = CrossEntropyLossFlat()
         self.ece_criterion = ECELoss(n_bins)
 
@@ -134,11 +134,11 @@ def plot_calibration_curve(labels, logits, cal_logits=None, figsize=(6,6), n_bin
 
 # %% ../nbs/021_calibration.ipynb 6
 @patch
-def calibrate_model(self:Learner, X=None, y=None, lr=1e-2, max_iter=10_000, line_search_fn=None, n_bins=10, strategy='uniform', 
+def calibrate_model(self:Learner, X=None, y=None, lr=1e-2, max_iter=10_000, line_search_fn=None, n_bins=10, strategy='uniform',
                     show_plot=True, figsize=(6,6), verbose=True):
-    if X is not None and y is not None: 
+    if X is not None and y is not None:
         dl = self.dls.valid.new_dl(X, y)
-    else: 
+    else:
         dl = self.dls.valid
     assert dl.c == 2, "calibrate_model is only available for binary classification tasks"
     temp_setter = TemperatureSetter(self.model, lr=lr, max_iter=max_iter, line_search_fn=line_search_fn, n_bins=n_bins, verbose=verbose)

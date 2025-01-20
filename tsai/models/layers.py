@@ -44,7 +44,7 @@ def test_module_to_torchscript(
     verbose:bool=True, # If `True`, prints detailed information about the tracing and scripting process. Defaults to `True`.
 ):
     "Tests if a PyTorch module can be correctly traced or scripted and serialized"
-    
+
     m = m.eval()
     m_name = m.__class__.__name__
 
@@ -104,16 +104,16 @@ def test_module_to_torchscript(
 
 # %% ../../nbs/029_models.layers.ipynb 6
 def init_lin_zero(m):
-    if isinstance(m, (nn.Linear)): 
+    if isinstance(m, (nn.Linear)):
         if getattr(m, 'bias', None) is not None: nn.init.constant_(m.bias, 0)
         nn.init.constant_(m.weight, 0)
     for l in m.children(): init_lin_zero(l)
-        
+
 lin_zero_init = init_lin_zero
 
 # %% ../../nbs/029_models.layers.ipynb 7
 class SwishBeta(Module):
-    def __multiinit__(self, beta=1.): 
+    def __multiinit__(self, beta=1.):
         self.sigmoid = torch.sigmoid
         self.beta = nn.Parameter(torch.Tensor(1).fill_(beta))
     def forward(self, x): return x.mul(self.sigmoid(x*self.beta))
@@ -122,7 +122,7 @@ class SwishBeta(Module):
 class SmeLU(nn.Module):
     "Smooth ReLU activation function based on https://arxiv.org/pdf/2202.06499.pdf"
 
-    def __init__(self, 
+    def __init__(self,
         beta: float = 2. # Beta value
         ) -> None:
         super().__init__()
@@ -136,7 +136,7 @@ class Chomp1d(nn.Module):
     def __init__(self, chomp_size):
         super(Chomp1d, self).__init__()
         self.chomp_size = chomp_size
-        
+
     def forward(self, x):
         return x[:, :, :-self.chomp_size].contiguous()
 
@@ -151,7 +151,7 @@ class Pad1d(nn.ConstantPad1d):
     def __init__(self, padding, value=0.):
         super().__init__(padding, value)
 
-        
+
 # @delegates(nn.Conv1d.__init__)
 class SameConv1d(Module):
     "Conv1d with padding='same'"
@@ -198,15 +198,15 @@ class Conv2dSame(Module):
     def forward(self, x):
         self.padding = same_padding2d(x.shape[-2], x.shape[-1], self.ks, dilation=self.dilation) #stride=self.stride not used in padding calculation!
         return self.conv2d_same(self.pad(self.padding)(x))
-    
-    
+
+
 # @delegates(nn.Conv2d.__init__)
 def Conv2d(ni, nf, kernel_size=None, ks=None, stride=1, padding='same', dilation=1, init='auto', bias_std=0.01, **kwargs):
     "conv1d layer with padding='same', 'valid', or any integer (defaults to 'same')"
     assert not (kernel_size and ks), 'use kernel_size or ks but not both simultaneously'
     assert kernel_size is not None or ks is not None, 'you need to pass a ks'
     kernel_size = kernel_size or ks
-    if padding == 'same': 
+    if padding == 'same':
         conv = Conv2dSame(ni, nf, kernel_size, stride=stride, dilation=dilation, **kwargs)
     elif padding == 'valid': conv = nn.Conv2d(ni, nf, kernel_size, stride=stride, padding=0, dilation=dilation, **kwargs)
     else: conv = nn.Conv2d(ni, nf, kernel_size, stride=stride, padding=padding, dilation=dilation, **kwargs)
@@ -228,8 +228,8 @@ def Conv1d(ni, nf, kernel_size=None, ks=None, stride=1, padding='same', dilation
     assert not (kernel_size and ks), 'use kernel_size or ks but not both simultaneously'
     assert kernel_size is not None or ks is not None, 'you need to pass a ks'
     kernel_size = kernel_size or ks
-    if padding == 'same': 
-        if kernel_size%2==1: 
+    if padding == 'same':
+        if kernel_size%2==1:
             conv = nn.Conv1d(ni, nf, kernel_size, stride=stride, padding=kernel_size//2 * dilation, dilation=dilation, **kwargs)
         else:
             conv = SameConv1d(ni, nf, kernel_size, stride=stride, dilation=dilation, **kwargs)
@@ -245,10 +245,10 @@ class SeparableConv1d(Module):
         self.depthwise_conv = Conv1d(ni, ni, ks, stride=stride, padding=padding, dilation=dilation, groups=ni, bias=bias)
         self.pointwise_conv = nn.Conv1d(ni, nf, 1, stride=1, padding=0, dilation=1, groups=1, bias=bias)
         if bias:
-            if bias_std != 0: 
+            if bias_std != 0:
                 normal_(self.depthwise_conv.bias, 0, bias_std)
                 normal_(self.pointwise_conv.bias, 0, bias_std)
-            else: 
+            else:
                 self.depthwise_conv.bias.data.zero_()
                 self.pointwise_conv.bias.data.zero_()
 
@@ -286,7 +286,7 @@ class ConvBlock(nn.Sequential):
         if   norm_type==NormType.Weight:   conv = weight_norm(conv)
         elif norm_type==NormType.Spectral: conv = spectral_norm(conv)
         layers += [conv]
-        act_bn = []        
+        act_bn = []
         if act is not None: act_bn.append(act)
         if bn: act_bn.append(BatchNorm(nf, norm_type=norm_type, ndim=ndim))
         if inn: act_bn.append(InstanceNorm(nf, norm_type=norm_type, ndim=ndim))
@@ -294,8 +294,8 @@ class ConvBlock(nn.Sequential):
         if dropout: layers += [nn.Dropout(dropout)]
         layers += act_bn
         if xtra: layers.append(xtra)
-        super().__init__(*layers)     
-                            
+        super().__init__(*layers)
+
 Conv = named_partial('Conv', ConvBlock, norm=None, act=None)
 ConvBN = named_partial('ConvBN', ConvBlock, norm='Batch', act=None)
 CoordConv = named_partial('CoordConv', ConvBlock, norm=None, act=None, coord=True)
@@ -335,7 +335,7 @@ def SEModule1d(ni, reduction=16, act=nn.ReLU, act_kwargs={}):
     "Squeeze and excitation module for 1d"
     nf = math.ceil(ni//reduction/8)*8
     assert nf != 0, 'nf cannot be 0'
-    return SequentialEx(nn.AdaptiveAvgPool1d(1), 
+    return SequentialEx(nn.AdaptiveAvgPool1d(1),
                         ConvBlock(ni, nf, ks=1, norm=None, act=act, act_kwargs=act_kwargs),
                         ConvBlock(nf, ni, ks=1, norm=None, act=nn.Sigmoid), ProdLayer())
 
@@ -396,88 +396,89 @@ class Unfold(Module):
     def __init__(self, dim, size, step=1): self.dim, self.size, self.step =  dim, size, step
     def forward(self, x:Tensor) -> Tensor: return x.unfold(dimension=self.dim, size=self.size, step=self.step)
     def __repr__(self): return f"{self.__class__.__name__}(dim={self.dim}, size={self.size}, step={self.step})"
-    
-    
+
+
 class Permute(Module):
     def __init__(self, *dims): self.dims = dims
     def forward(self, x:Tensor) -> Tensor: return x.permute(self.dims)
     def __repr__(self): return f"{self.__class__.__name__}(dims={', '.join([str(d) for d in self.dims])})"
-    
-    
+
+
 class Transpose(Module):
-    def __init__(self, *dims, contiguous=False): self.dims, self.contiguous = dims, contiguous
-    def forward(self, x): 
+    def __init__(self, *dims, contiguous=True): self.dims, self.contiguous = dims, contiguous
+    def forward(self, x):
+        x = x.contiguous()
         if self.contiguous: return x.transpose(*self.dims).contiguous()
         else: return x.transpose(*self.dims)
-    def __repr__(self): 
+    def __repr__(self):
         if self.contiguous: return f"{self.__class__.__name__}(dims={', '.join([str(d) for d in self.dims])}).contiguous()"
         else: return f"{self.__class__.__name__}({', '.join([str(d) for d in self.dims])})"
-    
-    
+
+
 class View(Module):
     def __init__(self, *shape): self.shape = shape
-    def forward(self, x): 
+    def forward(self, x):
         return x.view(x.shape[0], -1).contiguous() if not self.shape else x.view(-1).contiguous() if self.shape == (-1,) else \
             x.view(x.shape[0], *self.shape).contiguous()
     def __repr__(self): return f"{self.__class__.__name__}({', '.join(['bs'] + [str(s) for s in self.shape])})"
-    
-    
+
+
 class Reshape(Module):
     def __init__(self, *shape): self.shape = shape
     def forward(self, x):
-        return x.reshape(x.shape[0], -1) if not self.shape else x.reshape(-1) if self.shape == (-1,) else x.reshape(x.shape[0], *self.shape)
+        return x.contiguous().reshape(x.shape[0], -1) if not self.shape else x.contiguous().reshape(-1) if self.shape == (-1,) else x.contiguous().reshape(x.shape[0], *self.shape)
     def __repr__(self): return f"{self.__class__.__name__}({', '.join(['bs'] + [str(s) for s in self.shape])})"
-    
-    
+
+
 class Max(Module):
     def __init__(self, dim=None, keepdim=False): self.dim, self.keepdim = dim, keepdim
     def forward(self, x): return x.max(self.dim, keepdim=self.keepdim)[0]
     def __repr__(self): return f'{self.__class__.__name__}(dim={self.dim}, keepdim={self.keepdim})'
 
-    
+
 class LastStep(Module):
     def forward(self, x): return x[..., -1]
     def __repr__(self): return f'{self.__class__.__name__}()'
-    
-    
+
+
 class SoftMax(Module):
     "SoftMax layer"
     def __init__(self, dim=-1):
         self.dim = dim
     def forward(self, x):
         return F.softmax(x, dim=self.dim)
-    def __repr__(self): return f'{self.__class__.__name__}(dim={self.dim})' 
-    
+    def __repr__(self): return f'{self.__class__.__name__}(dim={self.dim})'
+
 
 class Clamp(Module):
     def __init__(self, min=None, max=None):
         self.min, self.max = min, max
     def forward(self, x):
         return x.clamp(min=self.min, max=self.max)
-    def __repr__(self): return f'{self.__class__.__name__}(min={self.min}, max={self.max})' 
-    
-    
+    def __repr__(self): return f'{self.__class__.__name__}(min={self.min}, max={self.max})'
+
+
 class Clip(Module):
     def __init__(self, min=None, max=None):
         self.min, self.max = min, max
-        
+
     def forward(self, x):
         if self.min is not None:
             x = torch.maximum(x, self.min)
         if self.max is not None:
             x = torch.minimum(x, self.max)
         return x
-    def __repr__(self): return f'{self.__class__.__name__}()' 
-    
-    
+    def __repr__(self): return f'{self.__class__.__name__}()'
+
+
 class ReZero(Module):
     def __init__(self, module):
         self.module = module
         self.alpha = nn.Parameter(torch.zeros(1))
     def forward(self, x):
         return x + self.alpha * self.module(x)
-    
-    
+
+
 Noop = nn.Sequential()
 
 # %% ../../nbs/029_models.layers.ipynb 38
@@ -514,7 +515,7 @@ class Sharpen(Module):
 class Sequential(nn.Sequential):
     """Class that allows you to pass one or multiple inputs"""
     def forward(self, *x):
-        for i, module in enumerate(self._modules.values()): 
+        for i, module in enumerate(self._modules.values()):
             x = module(*x) if isinstance(x, (list, tuple, L)) else module(x)
         return x
 
@@ -531,15 +532,15 @@ class TimeDistributed(nn.Module):
             return self.module(x)
 
         # Squash samples and timesteps into a single axis
-        x_reshape = x.contiguous().view(-1, x.size(-1))  # (samples * timesteps, input_size)
+        x_reshape = x.contiguous().reshape(-1, x.size(-1))  # (samples * timesteps, input_size)
 
         y = self.module(x_reshape)
 
         # We have to reshape Y
         if self.batch_first:
-            y = y.contiguous().view(x.size(0), -1, y.size(-1))  # (samples, timesteps, output_size)
+            y = y.contiguous().reshape(x.size(0), -1, y.size(-1))  # (samples, timesteps, output_size)
         else:
-            y = y.view(-1, x.size(1), y.size(-1))  # (timesteps, samples, output_size)
+            y = y.reshape(-1, x.size(1), y.size(-1))  # (timesteps, samples, output_size)
 
         return y
 
@@ -581,8 +582,8 @@ class Matrix_Scale(Module):
     def forward(self, x):
         if self.log_softmax: x = F.log_softmax(x, dim=-1)
         return self.ms(x)
-    
-    
+
+
 def get_calibrator(calibrator=None, n_classes=1, **kwargs):
     if calibrator is None or not calibrator: return noop
     elif calibrator.lower() == 'temp': return Temp_Scale(dirichlet=False, **kwargs)
@@ -600,27 +601,27 @@ class LogitAdjustmentLayer(Module):
         self.class_priors = class_priors
     def forward(self, x):
         return x.add(self.class_priors)
-    
+
 LogitAdjLayer = LogitAdjustmentLayer
 
 # %% ../../nbs/029_models.layers.ipynb 51
 class PPV(Module):
-    def __init__(self, dim=-1): 
+    def __init__(self, dim=-1):
         self.dim = dim
-    def forward(self, x): 
+    def forward(self, x):
         return torch.gt(x, 0).sum(dim=self.dim).float() / x.shape[self.dim]
     def __repr__(self): return f'{self.__class__.__name__}(dim={self.dim})'
-    
+
 
 class PPAuc(Module):
-    def __init__(self, dim=-1): 
+    def __init__(self, dim=-1):
         self.dim = dim
-    def forward(self, x): 
+    def forward(self, x):
         x = F.relu(x).sum(self.dim) / (abs(x).sum(self.dim) + 1e-8)
         return x
     def __repr__(self): return f'{self.__class__.__name__}(dim={self.dim})'
-    
-    
+
+
 class MaxPPVPool1d(Module):
     "Drop-in replacement for AdaptiveConcatPool1d - multiplies nf by 2"
     def forward(self, x):
@@ -631,8 +632,8 @@ class MaxPPVPool1d(Module):
 # %% ../../nbs/029_models.layers.ipynb 53
 class AdaptiveWeightedAvgPool1d(Module):
     '''Global Pooling layer that performs a weighted average along the temporal axis
-    
-    It can be considered as a channel-wise form of local temporal attention. Inspired by the paper: 
+
+    It can be considered as a channel-wise form of local temporal attention. Inspired by the paper:
     Hyun, J., Seong, H., & Kim, E. (2019). Universal Pooling--A New Pooling Method for Convolutional Neural Networks. arXiv preprint arXiv:1907.11440.'''
 
     def __init__(self, n_in, seq_len, mult=2, n_layers=2, ln=False, dropout=0.5, act=nn.ReLU(), zero_init=True):
@@ -641,7 +642,7 @@ class AdaptiveWeightedAvgPool1d(Module):
             inp_mult = mult if i > 0 else 1
             out_mult = mult if i < n_layers -1 else 1
             p = dropout[i] if is_listy(dropout) else dropout
-            layers.append(LinLnDrop(seq_len * inp_mult, seq_len * out_mult, ln=False, p=p, 
+            layers.append(LinLnDrop(seq_len * inp_mult, seq_len * out_mult, ln=False, p=p,
                                     act=act if i < n_layers-1 and n_layers > 1 else None))
         self.layers = layers
         self.softmax = SoftMax(-1)
@@ -661,8 +662,8 @@ class GAP1d(Module):
         self.flatten = Reshape()
     def forward(self, x):
         return self.flatten(self.gap(x))
-    
-    
+
+
 class GACP1d(Module):
     "Global AdaptiveConcatPool + Flatten"
     def __init__(self, output_size=1):
@@ -670,7 +671,7 @@ class GACP1d(Module):
         self.flatten = Reshape()
     def forward(self, x):
         return self.flatten(self.gacp(x))
-    
+
 
 class GAWP1d(Module):
     "Global AdaptiveWeightedAvgPool1d + Flatten"
@@ -682,13 +683,13 @@ class GAWP1d(Module):
 
 # %% ../../nbs/029_models.layers.ipynb 55
 class GlobalWeightedAveragePool1d(Module):
-    """ Global Weighted Average Pooling layer 
-    
+    """ Global Weighted Average Pooling layer
+
     Inspired by Building Efficient CNN Architecture for Offline Handwritten Chinese Character Recognition
     https://arxiv.org/pdf/1804.01259.pdf
     """
-    
-    def __init__(self, n_in, seq_len): 
+
+    def __init__(self, n_in, seq_len):
         self.weight = nn.Parameter(torch.ones(1, n_in, seq_len))
         self.bias = nn.Parameter(torch.zeros(1, n_in, seq_len))
 
@@ -704,26 +705,26 @@ def gwa_pool_head(n_in, c_out, seq_len, bn=True, fc_dropout=0.):
 # %% ../../nbs/029_models.layers.ipynb 57
 class AttentionalPool1d(Module):
     """Global Adaptive Pooling layer inspired by Attentional Pooling for Action Recognition https://arxiv.org/abs/1711.01467"""
-    def __init__(self, n_in, c_out, bn=False): 
+    def __init__(self, n_in, c_out, bn=False):
         store_attr()
         self.bn = nn.BatchNorm1d(n_in) if bn else None
         self.conv1 = Conv1d(n_in, 1, 1)
         self.conv2 = Conv1d(n_in, c_out, 1)
 
     def forward(self, x):
-        if self.bn is not None: x = self.bn(x) 
+        if self.bn is not None: x = self.bn(x)
         return (self.conv1(x) @ self.conv2(x).transpose(1,2)).transpose(1,2)
-    
+
 class GAttP1d(nn.Sequential):
     def __init__(self, n_in, c_out, bn=False):
         super().__init__(AttentionalPool1d(n_in, c_out, bn=bn), Reshape())
-        
+
 def attentional_pool_head(n_in, c_out, seq_len=None, bn=True, **kwargs):
     return nn.Sequential(AttentionalPool1d(n_in, c_out, bn=bn, **kwargs), Reshape())
 
 # %% ../../nbs/029_models.layers.ipynb 60
 class PoolingLayer(Module):
-    def __init__(self, method='cls', seq_len=None, token=True, seq_last=True): 
+    def __init__(self, method='cls', seq_len=None, token=True, seq_last=True):
         method = method.lower()
         assert method in ['cls', 'max', 'mean', 'max-mean', 'linear', 'conv1d', 'flatten']
         if method == 'cls': assert token, 'you can only choose method=cls if a token exists'
@@ -733,11 +734,11 @@ class PoolingLayer(Module):
         if method == 'linear' or method == 'conv1d':
             self.linear = nn.Linear(seq_len - token, 1)
 
-    def forward(self, x): 
+    def forward(self, x):
         if self.method == 'cls':
             return x[..., 0] if self.seq_last else x[:, 0]
         if self.token:
-            x = x[..., 1:] if self.seq_last else x[:, 1:] 
+            x = x[..., 1:] if self.seq_last else x[:, 1:]
         if self.method == 'max':
             return torch.max(x, -1)[0] if self.seq_last else torch.max(x, 1)[0]
         elif self.method == 'mean':
@@ -749,7 +750,7 @@ class PoolingLayer(Module):
             return x.flatten(1)
         elif self.method == 'linear' or self.method == 'conv1d':
             return self.linear(x)[...,0] if self.seq_last else self.linear(x.transpose(1,2))[...,0]
-    
+
     def __repr__(self): return f"{self.__class__.__name__}(method={self.method}, token={self.token}, seq_last={self.seq_last})"
 
 # %% ../../nbs/029_models.layers.ipynb 63
@@ -779,8 +780,8 @@ def get_act_fn(act, **act_kwargs):
 class RevIN(nn.Module):
     """ Reversible Instance Normalization layer adapted from
 
-        Kim, T., Kim, J., Tae, Y., Park, C., Choi, J. H., & Choo, J. (2021, September). 
-        Reversible instance normalization for accurate time-series forecasting against distribution shift. 
+        Kim, T., Kim, J., Tae, Y., Park, C., Choi, J. H., & Choo, J. (2021, September).
+        Reversible instance normalization for accurate time-series forecasting against distribution shift.
         In International Conference on Learning Representations.
         Original code: https://github.com/ts-kim/RevIN
     """
@@ -797,20 +798,20 @@ class RevIN(nn.Module):
         if self.affine:
             self.weight = nn.Parameter(torch.ones(1, c_in, 1))
             self.bias = nn.Parameter(torch.zeros(1, c_in, 1))
-    
+
     def forward(self, x:Tensor, mode:Tensor):
         """Args:
 
             x: rank 3 tensor with shape [batch size x c_in x sequence length]
             mode: torch.tensor(True) to normalize data and torch.tensor(False) to reverse normalization
         """
-        
+
         # Normalize
         if mode: return self.normalize(x)
-        
+
         # Denormalize
         else: return self.denormalize(x)
-           
+
     def normalize(self, x):
         if self.subtract_last:
             self.sub = x[..., -1].unsqueeze(-1).detach()
@@ -827,7 +828,7 @@ class RevIN(nn.Module):
             x = x.sub(self.sub)
             x = x.div(self.std)
             return x
-        
+
     def denormalize(self, x):
         if self.affine:
             x = x.sub(self.bias)
@@ -844,8 +845,8 @@ class RevIN(nn.Module):
 class RevIN(nn.Module):
     """ Reversible Instance Normalization layer adapted from
 
-        Kim, T., Kim, J., Tae, Y., Park, C., Choi, J. H., & Choo, J. (2021, September). 
-        Reversible instance normalization for accurate time-series forecasting against distribution shift. 
+        Kim, T., Kim, J., Tae, Y., Park, C., Choi, J. H., & Choo, J. (2021, September).
+        Reversible instance normalization for accurate time-series forecasting against distribution shift.
         In International Conference on Learning Representations.
         Original code: https://github.com/ts-kim/RevIN
     """
@@ -862,16 +863,16 @@ class RevIN(nn.Module):
         self.weight = nn.Parameter(torch.ones(1, c_in, 1))
         self.bias = nn.Parameter(torch.zeros(1, c_in, 1))
         self.sub, self.std, self.mul, self.add = torch.zeros(1), torch.ones(1), torch.ones(1), torch.zeros(1)
-    
+
     def forward(self, x:Tensor, mode:Tensor):
         """Args:
 
             x: rank 3 tensor with shape [batch size x c_in x sequence length]
             mode: torch.tensor(True) to normalize data and torch.tensor(False) to reverse normalization
         """
-        
+
         # Normalize
-        if mode: 
+        if mode:
             if self.subtract_last:
                 self.sub = x[..., -1].unsqueeze(-1).detach()
             else:
@@ -887,9 +888,9 @@ class RevIN(nn.Module):
                 x = x.sub(self.sub)
                 x = x.div(self.std)
                 return x
-        
+
         # Denormalize
-        else: 
+        else:
             if self.affine:
                 x = x.sub(self.bias)
                 x = x.div(self.weight)
@@ -951,8 +952,8 @@ def create_conv_head(*args, adaptive_size=None, y_range=None):
     c_out = args[1]
     layers = [nn.AdaptiveAvgPool1d(adaptive_size)] if adaptive_size is not None else []
     for i in range(2):
-        if nf > 1: 
-            layers += [ConvBlock(nf, nf // 2, 1)] 
+        if nf > 1:
+            layers += [ConvBlock(nf, nf // 2, 1)]
             nf = nf//2
         else: break
     layers += [ConvBlock(nf, c_out, 1), GAP1d(1)]
@@ -998,7 +999,7 @@ rnn_head = create_rnn_head
 # %% ../../nbs/029_models.layers.ipynb 84
 def imputation_head(c_in, c_out, seq_len=None, ks=1, y_range=None, fc_dropout=0.):
     layers = [nn.Dropout(fc_dropout), nn.Conv1d(c_in, c_out, ks)]
-    if y_range is not None: 
+    if y_range is not None:
         y_range = (tensor(y_range[0]), tensor(y_range[1]))
         layers += [SigmoidRange(*y_range)]
     return nn.Sequential(*layers)
@@ -1017,10 +1018,10 @@ class create_conv_lin_nd_head(nn.Sequential):
                 fd *= _d
                 shape.append(_d)
             if n_out > 1: shape.append(n_out)
-        else: 
+        else:
             fd = d
             shape = [d, n_out] if n_out > 1 else [d]
-        
+
         conv = [BatchNorm(n_in, ndim=1)] if conv_bn else []
         conv.append(Conv1d(n_in, n_out, 1, padding=0, bias=not conv_bn, **kwargs))
         l = [Transpose(-1, -2), BatchNorm(seq_len, ndim=1), Transpose(-1, -2)] if lin_bn else []
@@ -1032,7 +1033,7 @@ class create_conv_lin_nd_head(nn.Sequential):
         layers += [Reshape(*shape)]
 
         super().__init__(*layers)
-        
+
 conv_lin_nd_head = create_conv_lin_nd_head
 conv_lin_3d_head = create_conv_lin_nd_head # included for compatibility
 create_conv_lin_3d_head = create_conv_lin_nd_head # included for compatibility
@@ -1055,10 +1056,10 @@ class lin_nd_head(nn.Sequential):
                 fd *= _d
                 shape.append(_d)
             if n_out > 1: shape.append(n_out)
-        else: 
+        else:
             fd = d
             shape = [d, n_out] if n_out > 1 else [d]
-            
+
         layers = []
         if use_bn:
             layers += [nn.BatchNorm1d(n_in)]
@@ -1083,7 +1084,7 @@ class lin_nd_head(nn.Sequential):
             layers += [Reshape(*shape)]
 
         super().__init__(*layers)
-        
+
 create_lin_nd_head = lin_nd_head
 lin_3d_head = lin_nd_head # included for backwards compatiblity
 create_lin_3d_head = lin_nd_head # included for backwards compatiblity
@@ -1104,7 +1105,7 @@ class rocket_nd_head(nn.Sequential):
                 fd *= _d
                 shape.append(_d)
             if n_out > 1: shape.append(n_out)
-        else: 
+        else:
             fd = d
             shape = [d, n_out] if n_out > 1 else [d]
 
@@ -1141,7 +1142,7 @@ class xresnet1d_nd_head(nn.Sequential):
                 fd *= _d
                 shape.append(_d)
             if n_out > 1: shape.append(n_out)
-        else: 
+        else:
             fd = d
             shape = [d, n_out] if n_out > 1 else [d]
 
@@ -1172,17 +1173,17 @@ class create_conv_3d_head(nn.Sequential):
         layers += [Conv(n_in, n_out, 1, **kwargs), Transpose(-1,-2)]
         if n_out == 1: layers += [Squeeze(-1)]
         super().__init__(*layers)
-        
+
 conv_3d_head = create_conv_3d_head
 
 # %% ../../nbs/029_models.layers.ipynb 104
 def universal_pool_head(n_in, c_out, seq_len, mult=2, pool_n_layers=2, pool_ln=True, pool_dropout=0.5, pool_act=nn.ReLU(),
                         zero_init=True, bn=True, fc_dropout=0.):
-    return nn.Sequential(AdaptiveWeightedAvgPool1d(n_in, seq_len, n_layers=pool_n_layers, mult=mult, ln=pool_ln, dropout=pool_dropout, act=pool_act), 
+    return nn.Sequential(AdaptiveWeightedAvgPool1d(n_in, seq_len, n_layers=pool_n_layers, mult=mult, ln=pool_ln, dropout=pool_dropout, act=pool_act),
                          Reshape(), LinBnDrop(n_in, c_out, p=fc_dropout, bn=bn))
 
 # %% ../../nbs/029_models.layers.ipynb 106
-heads = [mlp_head, fc_head, average_pool_head, max_pool_head, concat_pool_head, pool_plus_head, conv_head, rnn_head, 
+heads = [mlp_head, fc_head, average_pool_head, max_pool_head, concat_pool_head, pool_plus_head, conv_head, rnn_head,
          conv_lin_nd_head, lin_nd_head, conv_3d_head, attentional_pool_head, universal_pool_head, gwa_pool_head]
 
 # %% ../../nbs/029_models.layers.ipynb 108
@@ -1219,7 +1220,7 @@ class GaussianNoise(Module):
             scale = self.sigma * (x.detach() if self.is_relative_detach else x)
             sampled_noise = torch.empty(x.size(), device=x.device).normal_() * scale
             x = x + sampled_noise
-        return x 
+        return x
 
 # %% ../../nbs/029_models.layers.ipynb 114
 class PositionwiseFeedForward(nn.Sequential):
@@ -1238,11 +1239,11 @@ class TokenLayer(Module):
 
 # %% ../../nbs/029_models.layers.ipynb 116
 class ScaledDotProductAttention(Module):
-    r"""Scaled Dot-Product Attention module (Attention is all you need by Vaswani et al., 2017) with optional residual attention from previous layer 
-    (Realformer: Transformer likes residual attention by He et al, 2020) and locality self sttention (Vision Transformer for Small-Size Datasets 
+    r"""Scaled Dot-Product Attention module (Attention is all you need by Vaswani et al., 2017) with optional residual attention from previous layer
+    (Realformer: Transformer likes residual attention by He et al, 2020) and locality self sttention (Vision Transformer for Small-Size Datasets
     by Lee et al, 2021)"""
 
-    def __init__(self, d_model, n_heads, attn_dropout=0., res_attention=False, lsa=False):  
+    def __init__(self, d_model, n_heads, attn_dropout=0., res_attention=False, lsa=False):
         self.attn_dropout = nn.Dropout(attn_dropout)
         self.res_attention = res_attention
         head_dim = d_model // n_heads
@@ -1259,7 +1260,7 @@ class ScaledDotProductAttention(Module):
             key_padding_mask: [bs x seq_len]
             attn_mask       : [1 x seq_len x seq_len]
 
-        Output shape: 
+        Output shape:
             output:  [bs x n_heads x q_len x d_v]
             attn   : [bs x n_heads x q_len x seq_len]
             scores : [bs x n_heads x q_len x seq_len]
@@ -1269,7 +1270,7 @@ class ScaledDotProductAttention(Module):
         attn_scores = torch.matmul(q, k) * self.scale      # attn_scores : [bs x n_heads x max_q_len x q_len]
 
         # Add pre-softmax attention scores from the previous layer (optional)
-        if prev is not None: attn_scores = attn_scores + prev 
+        if prev is not None: attn_scores = attn_scores + prev
 
         # Attention mask (optional)
         if attn_mask is not None:                                     # attn_mask with shape [q_len x seq_len] - only used when q_len == seq_len
@@ -1328,9 +1329,9 @@ class MultiheadAttention(Module):
         if V is None: V = Q
 
         # Linear (+ split in multiple heads)
-        q_s = self.W_Q(Q).view(bs, -1, self.n_heads, self.d_k).transpose(1,2)       # q_s    : [bs x n_heads x max_q_len x d_k]
-        k_s = self.W_K(K).view(bs, -1, self.n_heads, self.d_k).permute(0,2,3,1)     # k_s    : [bs x n_heads x d_k x q_len] - transpose(1,2) + transpose(2,3)
-        v_s = self.W_V(V).view(bs, -1, self.n_heads, self.d_v).transpose(1,2)       # v_s    : [bs x n_heads x q_len x d_v]
+        q_s = self.W_Q(Q).reshape(bs, -1, self.n_heads, self.d_k).transpose(1,2)       # q_s    : [bs x n_heads x max_q_len x d_k]
+        k_s = self.W_K(K).reshape(bs, -1, self.n_heads, self.d_k).permute(0,2,3,1)     # k_s    : [bs x n_heads x d_k x q_len] - transpose(1,2) + transpose(2,3)
+        v_s = self.W_V(V).reshape(bs, -1, self.n_heads, self.d_v).transpose(1,2)       # v_s    : [bs x n_heads x q_len x d_v]
 
         # Apply Scaled Dot-Product Attention (multiple heads)
         if self.res_attention:
@@ -1340,11 +1341,11 @@ class MultiheadAttention(Module):
         # output: [bs x n_heads x q_len x d_v], attn: [bs x n_heads x q_len x q_len], scores: [bs x n_heads x max_q_len x q_len]
 
         # back to the original inputs dimensions
-        output = output.transpose(1, 2).contiguous().view(bs, -1, self.n_heads * self.d_v) # output: [bs x q_len x n_heads * d_v]
+        output = output.transpose(1, 2).contiguous().reshape(bs, -1, self.n_heads * self.d_v) # output: [bs x q_len x n_heads * d_v]
         output = self.to_out(output)
 
         if self.res_attention: return output, attn_weights, attn_scores
-        else: return output, attn_weights 
+        else: return output, attn_weights
 
 # %% ../../nbs/029_models.layers.ipynb 125
 class MultiConv1d(Module):
@@ -1399,18 +1400,18 @@ class MultiEmbedding(Module):
         cat_n_embeds = listify(n_cat_embeds)
         if cat_padding_idxs is None: cat_padding_idxs = [None]
         else: cat_padding_idxs = listify(cat_padding_idxs)
-        if len(cat_padding_idxs) == 1 and len(cat_padding_idxs) < len(cat_n_embeds): 
+        if len(cat_padding_idxs) == 1 and len(cat_padding_idxs) < len(cat_n_embeds):
             cat_padding_idxs = cat_padding_idxs * len(cat_n_embeds)
         assert len(cat_n_embeds) == len(cat_padding_idxs)
-        if cat_embed_dims is None: 
+        if cat_embed_dims is None:
             cat_embed_dims = [emb_sz_rule(s) for s in cat_n_embeds]
         else:
             cat_embed_dims = listify(cat_embed_dims)
             if len(cat_embed_dims) == 1: cat_embed_dims = cat_embed_dims * len(cat_n_embeds)
             assert len(cat_embed_dims) == len(cat_n_embeds)
-        if cat_pos: 
-            cat_pos = torch.as_tensor(listify(cat_pos))  
-        else: 
+        if cat_pos:
+            cat_pos = torch.as_tensor(listify(cat_pos))
+        else:
             cat_pos = torch.arange(len(cat_n_embeds))
         self.register_buffer("cat_pos", cat_pos)
         cont_pos = torch.tensor([p for p in torch.arange(c_in) if p not in self.cat_pos])
