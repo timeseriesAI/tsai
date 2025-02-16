@@ -233,12 +233,12 @@ def build_ts_model(arch, c_in=None, c_out=None, seq_len=None, d=None, dls=None, 
 build_model = build_ts_model
 create_model = build_ts_model
 
-# %% ../../nbs/030_models.utils.ipynb 14
+# %% ../../nbs/030_models.utils.ipynb 16
 def count_parameters(model, trainable=True):
     if trainable: return sum(p.numel() for p in model.parameters() if p.requires_grad)
     else: return sum(p.numel() for p in model.parameters())
 
-# %% ../../nbs/030_models.utils.ipynb 15
+# %% ../../nbs/030_models.utils.ipynb 17
 # @delegates(XResNet.__init__)
 def build_tsimage_model(arch, c_in=None, c_out=None, dls=None, pretrained=False, device=None, verbose=False, init=None, arch_config={}, **kwargs):
     device = ifnone(device, default_device())
@@ -252,7 +252,7 @@ def build_tsimage_model(arch, c_in=None, c_out=None, dls=None, pretrained=False,
         apply_init(model[1] if pretrained else model, init)
     return model
 
-# %% ../../nbs/030_models.utils.ipynb 16
+# %% ../../nbs/030_models.utils.ipynb 18
 # @delegates(TabularModel.__init__)
 def build_tabular_model(arch, dls, layers=None, emb_szs=None, n_out=None, y_range=None, device=None, arch_config={}, **kwargs):
     if device is None: device = default_device()
@@ -271,14 +271,14 @@ def build_tabular_model(arch, dls, layers=None, emb_szs=None, n_out=None, y_rang
 
 create_tabular_model = build_tabular_model
 
-# %% ../../nbs/030_models.utils.ipynb 19
+# %% ../../nbs/030_models.utils.ipynb 21
 def get_clones(module, N):
     return nn.ModuleList([deepcopy(module) for i in range(N)])
 
-# %% ../../nbs/030_models.utils.ipynb 21
+# %% ../../nbs/030_models.utils.ipynb 23
 def split_model(m): return m.backbone, m.head
 
-# %% ../../nbs/030_models.utils.ipynb 22
+# %% ../../nbs/030_models.utils.ipynb 24
 @torch.no_grad()
 def output_size_calculator(mod, c_in, seq_len=None):
     assert isinstance(mod, nn.Module)
@@ -304,13 +304,13 @@ def output_size_calculator(mod, c_in, seq_len=None):
     else:
         return c_out, None
 
-# %% ../../nbs/030_models.utils.ipynb 24
+# %% ../../nbs/030_models.utils.ipynb 26
 def change_model_head(model, custom_head, **kwargs):
     r"""Replaces a model's head by a custom head as long as the model has a head, head_nf, c_out and seq_len attributes"""
     model.head = custom_head(model.head_nf, model.c_out, model.seq_len, **kwargs)
     return model
 
-# %% ../../nbs/030_models.utils.ipynb 25
+# %% ../../nbs/030_models.utils.ipynb 27
 def naive_forecaster(o, split, horizon=1):
     if is_listy(horizon):
         _f = []

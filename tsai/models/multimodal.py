@@ -162,7 +162,7 @@ class StaticBackbone(nn.Module):
         for mlp in self.mlp: x = mlp(x)
         return x
 
-# %% ../../nbs/077_models.multimodal.ipynb 18
+# %% ../../nbs/077_models.multimodal.ipynb 15
 class FusionMLP(nn.Module):
     def __init__(self, comb_dim, layers, act='relu', dropout=0., use_bn=True):
         super().__init__()
@@ -189,7 +189,7 @@ class FusionMLP(nn.Module):
         output = self.mlp(output)
         return output
 
-# %% ../../nbs/077_models.multimodal.ipynb 21
+# %% ../../nbs/077_models.multimodal.ipynb 18
 class MultInputBackboneWrapper(nn.Module):
     "Model backbone wrapper for input tensors with static and/ or observed, categorical and/ or numerical features."
 
@@ -286,7 +286,7 @@ class MultInputBackboneWrapper(nn.Module):
 
         return x
 
-# %% ../../nbs/077_models.multimodal.ipynb 22
+# %% ../../nbs/077_models.multimodal.ipynb 19
 class MultInputWrapper(nn.Sequential):
     def __init__(self,
         arch,
