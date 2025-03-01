@@ -49,7 +49,7 @@ def leakage_finder(*splits, verbose=True):
     for i in range(len(splits)):
         for j in range(i + 1, len(splits)):
             overlap = check_overlap(splits[i], splits[j])
-            if overlap: 
+            if overlap:
                 pv(f'overlap between splits [{i}, {j}] {overlap}', verbose)
                 overlaps += 1
     assert overlaps == 0, 'Please, review your splits!'
@@ -69,30 +69,30 @@ def balance_idx(o, shuffle=False, strategy="oversample", random_state=None, verb
 
 # %% ../../nbs/003_data.validation.ipynb 12
 def TrainValidTestSplitter(n_splits:int=1, valid_size:Union[float, int]=0.2, test_size:Union[float, int]=0., train_only:bool=False,
-                           stratify:bool=True, balance:bool=False, strategy:str="oversample", shuffle:bool=True, 
+                           stratify:bool=True, balance:bool=False, strategy:str="oversample", shuffle:bool=True,
                            random_state:Union[None, int]=None, verbose:bool=False, **kwargs):
     "Split `items` into random train, valid (and test optional) subsets."
-    
-    if not shuffle and stratify and not train_only: 
+
+    if not shuffle and stratify and not train_only:
         pv('stratify set to False because shuffle=False. If you want to stratify set shuffle=True', verbose)
         stratify = False
-        
+
     def _inner(o, **kwargs):
         if stratify:
             _, unique_counts = np.unique(o, return_counts=True)
-            if np.min(unique_counts) >= 2 and np.min(unique_counts) >= n_splits: stratify_ = stratify  
-            elif np.min(unique_counts) < n_splits: 
+            if np.min(unique_counts) >= 2 and np.min(unique_counts) >= n_splits: stratify_ = stratify
+            elif np.min(unique_counts) < n_splits:
                 stratify_ = False
-                pv(f'stratify set to False as n_splits={n_splits} cannot be greater than the min number of members in each class ({np.min(unique_counts)}).', 
+                pv(f'stratify set to False as n_splits={n_splits} cannot be greater than the min number of members in each class ({np.min(unique_counts)}).',
                    verbose)
             else:
                 stratify_ = False
                 pv('stratify set to False as the least populated class in o has only 1 member, which is too few.', verbose)
         else: stratify_ = False
         vs = 0 if train_only else 1. / n_splits if n_splits > 1 else int(valid_size * len(o)) if isinstance(valid_size, float) else valid_size
-        if test_size: 
+        if test_size:
             ts = int(test_size * len(o)) if isinstance(test_size, float) else test_size
-            train_valid, test = train_test_split(range(len(o)), test_size=ts, stratify=o if stratify_ else None, shuffle=shuffle, 
+            train_valid, test = train_test_split(range(len(o)), test_size=ts, stratify=o if stratify_ else None, shuffle=shuffle,
                                                  random_state=random_state, **kwargs)
             test = toL(test)
             if shuffle: test = random_shuffle(test, random_state)
@@ -104,12 +104,12 @@ def TrainValidTestSplitter(n_splits:int=1, valid_size:Union[float, int]=0.2, tes
                 train_ = L(L([train]) * n_splits) if n_splits > 1 else train
                 valid_ = L(L([train]) * n_splits) if n_splits > 1 else train
                 test_ = L(L([test]) * n_splits) if n_splits > 1 else test
-                if n_splits > 1: 
+                if n_splits > 1:
                     return [split for split in itemify(train_, valid_, test_)]
-                else: 
+                else:
                     return train_, valid_, test_
-            elif n_splits > 1: 
-                if stratify_: 
+            elif n_splits > 1:
+                if stratify_:
                     splits = StratifiedKFold(n_splits=n_splits, shuffle=shuffle, random_state=random_state).split(np.arange(len(train_valid)), o[train_valid])
                 else:
                     splits = KFold(n_splits=n_splits, shuffle=shuffle, random_state=random_state).split(np.arange(len(train_valid)))
@@ -117,7 +117,7 @@ def TrainValidTestSplitter(n_splits:int=1, valid_size:Union[float, int]=0.2, tes
                 for train, valid in splits:
                     train, valid = toL(train), toL(valid)
                     if balance: train = train[balance_idx(o[train], random_state=random_state, strategy=strategy)]
-                    if shuffle: 
+                    if shuffle:
                         train = random_shuffle(train, random_state)
                         valid = random_shuffle(valid, random_state)
                     train_.append(L(L(train_valid)[train]))
@@ -125,15 +125,15 @@ def TrainValidTestSplitter(n_splits:int=1, valid_size:Union[float, int]=0.2, tes
                 test_ = L(L([test]) * n_splits)
                 return [split for split in itemify(train_, valid_, test_)]
             else:
-                train, valid = train_test_split(range(len(train_valid)), test_size=vs, random_state=random_state, 
+                train, valid = train_test_split(range(len(train_valid)), test_size=vs, random_state=random_state,
                                                 stratify=o[train_valid] if stratify_ else None, shuffle=shuffle, **kwargs)
                 train, valid = toL(train), toL(valid)
                 if balance: train = train[balance_idx(o[train], random_state=random_state, strategy=strategy)]
-                if shuffle: 
+                if shuffle:
                     train = random_shuffle(train, random_state)
                     valid = random_shuffle(valid, random_state)
                 return (L(L(train_valid)[train]), L(L(train_valid)[valid]),  test)
-        else: 
+        else:
             if vs == 0:
                 train, _ = RandomSplitter(0, seed=random_state)(o)
                 train = toL(train)
@@ -141,18 +141,18 @@ def TrainValidTestSplitter(n_splits:int=1, valid_size:Union[float, int]=0.2, tes
                 if shuffle: train = random_shuffle(train, random_state)
                 train_ = L(L([train]) * n_splits) if n_splits > 1 else train
                 valid_ = L(L([train]) * n_splits) if n_splits > 1 else train
-                if n_splits > 1: 
+                if n_splits > 1:
                     return [split for split in itemify(train_, valid_)]
-                else: 
+                else:
                     return (train_, valid_)
-            elif n_splits > 1: 
+            elif n_splits > 1:
                 if stratify_: splits = StratifiedKFold(n_splits=n_splits, shuffle=shuffle, random_state=random_state).split(np.arange(len(o)), o)
                 else: splits = KFold(n_splits=n_splits, shuffle=shuffle, random_state=random_state).split(np.arange(len(o)))
                 train_, valid_ = L([]), L([])
                 for train, valid in splits:
                     train, valid = toL(train), toL(valid)
                     if balance: train = train[balance_idx(o[train], random_state=random_state, strategy=strategy)]
-                    if shuffle: 
+                    if shuffle:
                         train = random_shuffle(train, random_state)
                         valid = random_shuffle(valid, random_state)
                     if not isinstance(train, (list, L)):  train = train.tolist()
@@ -161,7 +161,7 @@ def TrainValidTestSplitter(n_splits:int=1, valid_size:Union[float, int]=0.2, tes
                     valid_.append(L(L(valid)))
                 return [split for split in itemify(train_, valid_)]
             else:
-                train, valid = train_test_split(range(len(o)), test_size=vs, random_state=random_state, stratify=o if stratify_ else None, 
+                train, valid = train_test_split(range(len(o)), test_size=vs, random_state=random_state, stratify=o if stratify_ else None,
                                                 shuffle=shuffle, **kwargs)
                 train, valid = toL(train), toL(valid)
                 if balance: train = train[balance_idx(o[train], random_state=random_state, strategy=strategy)]
@@ -177,14 +177,14 @@ def plot_splits(splits):
             for j, s in enumerate(split):
                 _max = max(_max, array(s).max())
                 _splits += 1
-        else: 
+        else:
             _max = max(_max, array(split).max())
             _splits += 1
     _splits = [splits] if not is_listy(split[0]) else splits
     v = np.zeros((len(_splits), _max + 1))
     for i, split in enumerate(_splits):
         if is_listy(split[0]):
-            for j, s in enumerate(split): 
+            for j, s in enumerate(split):
                 v[i, s] = 1 + j
         else: v[i, split] = 1 + i
     vals = np.unique(v)
@@ -196,7 +196,7 @@ def plot_splits(splits):
         plt.pcolormesh(v, color='blue')
         legend_elements = [Patch(facecolor='blue', label='Train')]
         plt.legend(handles=legend_elements, bbox_to_anchor=(1.05, 1), loc='upper left')
-    else: 
+    else:
         colors = L(['gainsboro', 'blue', 'orange', 'limegreen'])[vals]
         cmap = LinearSegmentedColormap.from_list('', colors)
         plt.pcolormesh(v, cmap=cmap)
@@ -213,15 +213,15 @@ def plot_splits(splits):
 
 # %% ../../nbs/003_data.validation.ipynb 14
 def get_splits(o, n_splits:int=1, valid_size:float=0.2, test_size:float=0., train_only:bool=False, train_size:Union[None, float, int]=None, balance:bool=False,
-               strategy:str="oversample", shuffle:bool=True, stratify:bool=True, check_splits:bool=True, random_state:Union[None, int]=None, 
+               strategy:str="oversample", shuffle:bool=True, stratify:bool=True, check_splits:bool=True, random_state:Union[None, int]=None,
                show_plot:bool=True, verbose:bool=False):
-    '''Arguments: 
+    '''Arguments:
         o            : object to which splits will be applied, usually target.
         n_splits     : number of folds. Must be an int >= 1.
-        valid_size   : size of validation set. Only used if n_splits = 1. If n_splits > 1 valid_size = (1. - test_size) / n_splits. 
+        valid_size   : size of validation set. Only used if n_splits = 1. If n_splits > 1 valid_size = (1. - test_size) / n_splits.
         test_size    : size of test set. Default = 0.
         train_only   : if True valid set == train set. This may be useful for debugging purposes.
-        train_size   : size of the train set used. Default = None (the remainder after assigning both valid and test). 
+        train_size   : size of the train set used. Default = None (the remainder after assigning both valid and test).
                         Useful for to get learning curves with different train sizes or get a small batch to debug a neural net.
         balance      : whether to balance data so that train always contain the same number of items per class.
         strategy     : strategy to balance data ("undersample" or "oversample"). Default = "oversample".
@@ -233,17 +233,17 @@ def get_splits(o, n_splits:int=1, valid_size:float=0.2, test_size:float=0., trai
     '''
     if n_splits == 1 and valid_size == 0. and  test_size == 0.: train_only = True
     if balance: stratify = True
-    splits = TrainValidTestSplitter(n_splits, valid_size=valid_size, test_size=test_size, train_only=train_only, stratify=stratify, 
+    splits = TrainValidTestSplitter(n_splits, valid_size=valid_size, test_size=test_size, train_only=train_only, stratify=stratify,
                                     balance=balance, strategy=strategy, shuffle=shuffle, random_state=random_state, verbose=verbose)(o)
     if check_splits:
         if train_only or (n_splits == 1 and valid_size == 0): print('valid == train')
-        elif n_splits > 1: 
-            for i in range(n_splits): 
+        elif n_splits > 1:
+            for i in range(n_splits):
                 leakage_finder([*splits[i]], verbose=True)
                 cum_len = 0
                 for split in splits[i]: cum_len += len(split)
                 if not balance: assert len(o) == cum_len, f'len(o)={len(o)} while cum_len={cum_len}'
-        else: 
+        else:
             leakage_finder([splits], verbose=True)
             cum_len = 0
             if not isinstance(splits[0], Integral):
@@ -253,11 +253,11 @@ def get_splits(o, n_splits:int=1, valid_size:float=0.2, test_size:float=0., trai
     if train_size is not None and train_size != 1: # train_size=1 legacy
         if n_splits > 1:
             splits = list(splits)
-            for i in range(n_splits): 
+            for i in range(n_splits):
                 splits[i] = list(splits[i])
                 if isinstance(train_size, Integral):
-                    n_train_samples = train_size  
-                elif train_size > 0 and train_size < 1: 
+                    n_train_samples = train_size
+                elif train_size > 0 and train_size < 1:
                     n_train_samples = int(len(splits[i][0]) * train_size)
                 splits[i][0] = L(random_choice(splits[i][0], n_train_samples, False).tolist())
                 if train_only:
@@ -265,11 +265,11 @@ def get_splits(o, n_splits:int=1, valid_size:float=0.2, test_size:float=0., trai
                     if test_size != 0: splits[i][2] = splits[i][0]
                 splits[i] = tuple(splits[i])
             splits = tuple(splits)
-        else: 
+        else:
             splits = list(splits)
             if isinstance(train_size, Integral):
-                n_train_samples = train_size  
-            elif train_size > 0 and train_size < 1: 
+                n_train_samples = train_size
+            elif train_size > 0 and train_size < 1:
                 n_train_samples = int(len(splits[0]) * train_size)
             splits[0] = L(random_choice(splits[0], n_train_samples, False).tolist())
             if train_only:
@@ -295,13 +295,13 @@ def get_walk_forward_splits(
 
     if anchored:
         train_size = None
-    elif isinstance(train_size, float): 
+    elif isinstance(train_size, float):
         train_size = np.int32(np.floor(len(o) * train_size))
-    if isinstance(valid_size, float): 
+    if isinstance(valid_size, float):
         valid_size = np.int32(np.floor(len(o) * valid_size))
-    if isinstance(test_size, float): 
+    if isinstance(test_size, float):
         test_size = np.int32(np.floor(len(o) * test_size))
-    if isinstance(gap, float): 
+    if isinstance(gap, float):
         gap = np.int32(np.floor(len(o) * gap))
 
     if train_size is not None:
@@ -376,35 +376,35 @@ def TSSplitter(
     show_plot=True, # flag that indicates if a plot showing the splits will be created
 ):
     "Create function that splits `items` between train/val with `valid_size` without shuffling data."
-    
-    if fcst_horizon: 
+
+    if fcst_horizon:
         fcst_horizon = fcst_horizon - 1
-        
+
     def _inner(o):
         valid_cut = valid_size if isinstance(valid_size, Integral) else round(valid_size * len(o))
-        if test_size: 
+        if test_size:
             test_cut = test_size if isinstance(test_size, Integral) else round(test_size * len(o))
         else:
             test_cut = 0
         idx = np.arange(len(o), dtype=smallest_dtype(len(o)))
-        if test_size: 
+        if test_size:
             if len(idx) < 1_000_000:
-                splits = (L(idx[:-valid_cut - test_cut - fcst_horizon].tolist()), 
+                splits = (L(idx[:-valid_cut - test_cut - fcst_horizon].tolist()),
                           L(idx[-valid_cut - test_cut: - test_cut - fcst_horizon].tolist()),
                           L(idx[-test_cut:].tolist()))
             else:
-                splits = (idx[:-valid_cut - test_cut - fcst_horizon], 
+                splits = (idx[:-valid_cut - test_cut - fcst_horizon],
                           idx[-valid_cut - test_cut: - test_cut - fcst_horizon],
                           idx[-test_cut:])
-        else: 
+        else:
             if len(idx) < 1_000_000:
                 splits = (L(idx[:-valid_cut - fcst_horizon].tolist()), L(idx[-valid_cut:].tolist()))
             else:
                 splits = (idx[:-valid_cut - fcst_horizon], idx[-valid_cut:])
-        if show_plot: 
+        if show_plot:
             if len(o) > 1_000_000:
                 warnings.warn('the splits are too large to be plotted')
-            else: 
+            else:
                 plot_splits(splits) if test_size else plot_splits(splits[:2])
         return splits
     return _inner
@@ -416,7 +416,7 @@ def get_predefined_splits(*xs):
     '''xs is a list with X_train, X_valid, ...'''
     splits_ = []
     start = 0
-    for x in xs: 
+    for x in xs:
         splits_.append(L(list(np.arange(start, start + len(x)))))
         start += len(x)
     return tuple(splits_)
@@ -431,7 +431,7 @@ def combine_split_data(xs, ys=None):
 # %% ../../nbs/003_data.validation.ipynb 37
 def get_splits_len(splits):
     _len = []
-    for split in splits: 
+    for split in splits:
         if isinstance(split[0], (list, L, tuple)):  _len.append([len(s) for s in split])
         else: _len.append(len(split))
     return _len
@@ -455,15 +455,15 @@ def get_df_usable_idxs(
     return_np_indices=False,    # bool indicating what type of indices are returned. Default to False (dataframe indices)
 ):
     "Calculates the indices that can be used from a df when using a sliding window"
-    
+
     dtype = smallest_dtype(len(df))
     if unique_id_cols is not None:
         usable_df_idxs = np.sort(np.concatenate(df
                                                 .reset_index(drop=True)
                                                 .groupby(unique_id_cols)
-                                                .apply(lambda x: get_usable_idxs(x, 
-                                                                                 fcst_history=fcst_history, 
-                                                                                 fcst_horizon=fcst_horizon, 
+                                                .apply(lambda x: get_usable_idxs(x,
+                                                                                 fcst_history=fcst_history,
+                                                                                 fcst_horizon=fcst_horizon,
                                                                                  stride=stride
                                                                                 )).values, dtype=dtype))
     else:
@@ -477,7 +477,7 @@ def get_df_usable_idxs(
 def calculate_fcst_stats(
     df, # dataframe containing a sorted time series for a single entity or subject
     fcst_history, # # historical steps used as input.
-    fcst_horizon, # # steps forecasted into the future. 
+    fcst_horizon, # # steps forecasted into the future.
     splits, # splits that will be used to train the model. splits[0] is the train split:
     x_vars=None, # features used as input
     y_vars=None,  # features used as output
@@ -490,7 +490,7 @@ def calculate_fcst_stats(
     if fcst_history == 1:
         train_idxs = split
     else:
-        
+
         if subset_size is None:
             idxs = split
         else:
@@ -525,17 +525,17 @@ def get_forecasting_splits(
     if unique_id_cols or valid_cutoff_datetime is not None or test_cutoff_datetime is not None:
         assert datetime_col is not None or use_index, \
         "you need to pass a datetime_col or set use_index=False to be able to access datetime"
-    
+
     if valid_cutoff_datetime is not None or test_cutoff_datetime is not None:
         valid_size = 0
         test_size = 0
-        
+
     use_valid = valid_cutoff_datetime is not None or valid_size != 0
     use_test = test_cutoff_datetime is not None or test_size != 0
-    
-    if valid_cutoff_datetime is not None: 
+
+    if valid_cutoff_datetime is not None:
         valid_cutoff_datetime = np.datetime64(valid_cutoff_datetime)
-    if test_cutoff_datetime is not None: 
+    if test_cutoff_datetime is not None:
         test_cutoff_datetime = np.datetime64(test_cutoff_datetime)
 
     if use_index:
@@ -545,9 +545,9 @@ def get_forecasting_splits(
         df = df[feat2list(datetime_col) + feat2list(unique_id_cols)]
     else:
         df = df.reset_index(drop=True)
-        if unique_id_cols is not None: 
+        if unique_id_cols is not None:
             df = df[feat2list(unique_id_cols)]
-    
+
     usable_df_idxs = get_df_usable_idxs(df, fcst_history, fcst_horizon, stride=stride, unique_id_cols=unique_id_cols)
     usable_np_idxs = usable_df_idxs - (fcst_history - 1)
 
@@ -557,7 +557,7 @@ def get_forecasting_splits(
         usable_step_codes = cat.codes.values
     else:
         usable_step_codes = np.arange(len(usable_df_idxs))
-        
+
 
     # test indices
     if test_cutoff_datetime is not None:
@@ -575,7 +575,7 @@ def get_forecasting_splits(
     else:
         test_idxs = np.array([])
     test_size = len(test_idxs)
-    
+
     # valid indices
     if valid_cutoff_datetime is not None:
         valid_start =  np.argmax(cat.categories >= valid_cutoff_datetime)
@@ -618,7 +618,7 @@ def get_forecasting_splits(
         train_idxs = usable_np_idxs
     train_size = len(train_idxs)
 
-    
+
     if len(df) < 1_000_000:
         train_idxs = L(train_idxs.tolist())
         if len(valid_idxs):
@@ -643,12 +643,12 @@ def get_forecasting_splits(
 def get_long_term_forecasting_splits(
     df, # dataframe containing a sorted time series for a single entity or subject
     fcst_history,   # # historical steps used as input.
-    fcst_horizon,   # # steps forecasted into the future. 
+    fcst_horizon,   # # steps forecasted into the future.
     dsid=None,      # dataset name
     show_plot=True, # plot the splits
 ):
     "Returns the train, valid and test splits for long-range time series datasets"
-    
+
     if dsid in ["ETTh1", "ETTh2"]:
         border1s = [0, 12 * 30 * 24 - fcst_history, 12 * 30 * 24 + 4 * 30 * 24 - fcst_history]
         border2s = [12 * 30 * 24, 12 * 30 * 24 + 4 * 30 * 24, 12 * 30 * 24 + 8 * 30 * 24]
@@ -657,7 +657,7 @@ def get_long_term_forecasting_splits(
         border2s = [12 * 30 * 24 * 4, 12 * 30 * 24 * 4 + 4 * 30 * 24 * 4, 12 * 30 * 24 * 4 + 8 * 30 * 24 * 4]
     else:
         train_size = .7 # default 0.7
-        test_size = .2 # default 0.2        
+        test_size = .2 # default 0.2
         num_train = int(len(df) * train_size)
         num_test = int(len(df) * test_size)
         num_vali = len(df) - num_train - num_test
@@ -667,7 +667,7 @@ def get_long_term_forecasting_splits(
 
     train_split = L(np.arange(border1s[0], border2s[0] - fcst_horizon - fcst_history + 1).tolist())
     valid_split = L(np.arange(border1s[1], border2s[1] - fcst_horizon - fcst_history + 1).tolist())
-    test_split = L(np.arange(border1s[2], border2s[2] - fcst_horizon - fcst_history + 1).tolist())   
+    test_split = L(np.arange(border1s[2], border2s[2] - fcst_horizon - fcst_history + 1).tolist())
     splits = train_split, valid_split, test_split
     if show_plot:
         plot_splits(splits)

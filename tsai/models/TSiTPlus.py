@@ -40,7 +40,7 @@ class _TSiTEncoderLayer(nn.Module):
             x = self.ff_norm(self.drop_path(self.pwff(x)) + x)
         return x
 
-# %% ../../nbs/068_models.TSiTPlus.ipynb 5
+# %% ../../nbs/068_models.TSiTPlus.ipynb 6
 class _TSiTEncoder(nn.Module):
     def __init__(self, d_model, n_heads, depth:int=6, q_len:int=None, attn_dropout:float=0., dropout:float=0, drop_path_rate:float=0.,
                  mlp_ratio:int=1, lsa:bool=False, qkv_bias:bool=True, act:str='gelu', pre_norm:bool=False):
@@ -59,7 +59,7 @@ class _TSiTEncoder(nn.Module):
         x = self.norm(x)
         return x
 
-# %% ../../nbs/068_models.TSiTPlus.ipynb 6
+# %% ../../nbs/068_models.TSiTPlus.ipynb 8
 class _TSiTBackbone(Module):
     def __init__(self, c_in:int, seq_len:int, depth:int=6, d_model:int=128, n_heads:int=16, act:str='gelu',
                  lsa:bool=False, qkv_bias:bool=True, attn_dropout:float=0., dropout:float=0., drop_path_rate:float=0., mlp_ratio:int=1,
@@ -98,7 +98,8 @@ class _TSiTBackbone(Module):
 
         # Linear projection
         if token_size is None and tokenizer is None and feature_extractor is None:
-            self.linear_proj = nn.Conv1d(c_in, d_model, 1)
+            # self.linear_proj = nn.Conv1d(c_in, d_model, 1)
+            self.linear_proj = nn.Linear(c_in, d_model)
         else:
             self.linear_proj = nn.Identity()
 
@@ -128,10 +129,10 @@ class _TSiTBackbone(Module):
         x = self.feature_extractor(x)
 
         # Linear projection
+        x = self.transpose(x)
         x = self.linear_proj(x)
 
         # Position embedding & token
-        x = self.transpose(x)
         if self.use_pe:
             x = x + self.pos_embed
         if self.use_token: # token is concatenated after position embedding so that embedding can be learned using self.supervised learning
@@ -145,7 +146,7 @@ class _TSiTBackbone(Module):
         x = x.transpose(1,2)
         return x
 
-# %% ../../nbs/068_models.TSiTPlus.ipynb 7
+# %% ../../nbs/068_models.TSiTPlus.ipynb 9
 class TSiTPlus(nn.Sequential):
     r"""Time series transformer model based on ViT (Vision Transformer):
 

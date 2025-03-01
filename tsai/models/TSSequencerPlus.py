@@ -90,12 +90,12 @@ class _TSSequencerBackbone(Module):
             self.feature_extractor = nn.Identity()
 
         # Linear projection
+        self.transpose = Transpose(1,2)
         if token_size is None and tokenizer is None and feature_extractor is None:
-            self.linear_proj = nn.Conv1d(c_in, d_model, 1)
+            self.linear_proj = nn.Linear(c_in, d_model)
+            # self.linear_proj = nn.Conv1d(c_in, d_model, 1)
         else:
             self.linear_proj = nn.Identity()
-
-        self.transpose = Transpose(1,2)
 
         # Position embedding & token
         if use_pe:
@@ -122,10 +122,10 @@ class _TSSequencerBackbone(Module):
         x = self.feature_extractor(x)
 
         # Linear projection
+        x = self.transpose(x)
         x = self.linear_proj(x)
 
         # Position embedding & token
-        x = self.transpose(x)
         if self.use_pe:
             x = x + self.pos_embed
         if self.use_token: # token is concatenated after position embedding so that embedding can be learned using self.supervised learning
