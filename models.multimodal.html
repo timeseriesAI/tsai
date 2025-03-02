@@ -1,0 +1,2356 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Multimodal – tsai</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-ae44de7e3b26b230a7801128389852ee.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="Multimodal – tsai">
+<meta property="og:description" content="Practical Deep Learning for Time Series / Sequential Data library based on fastai &amp; Pytorch">
+<meta property="og:site_name" content="tsai">
+<meta name="twitter:title" content="Multimodal – tsai">
+<meta name="twitter:description" content="Practical Deep Learning for Time Series / Sequential Data library based on fastai &amp; Pytorch">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">tsai</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/timeseriesAI/tsai"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./models.layers.html">Models</a></li><li class="breadcrumb-item"><a href="./models.multiinputnet.html">Miscellaneous</a></li><li class="breadcrumb-item"><a href="./models.multimodal.html">Multimodal</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">tsai</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tutorials.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tutorial notebooks</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Data</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.core.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Core</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.external.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">External data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.preparation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data preparation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.validation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Spliting data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.preprocessing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data preprocessing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.unwindowed.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Unwindowed datasets</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.transforms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Time Series Data Augmentation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.mixed_augmentation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Label-mixing transforms</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.image.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Imaging Time Series</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.features.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Featurizing Time Series</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.tabular.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Time Series Tabular Data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.mixed.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Mixed data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.metadatasets.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Metadataset</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Models</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.layers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Layers</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.utils.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Model utilities</span></a>
+  </div>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
+ <span class="menu-text">MLPs</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.mlp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">MLP</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.gmlp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">gMLP</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false">
+ <span class="menu-text">RNNs</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.rnn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">RNNs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.rnnplus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">RNNPlus</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.rnnattention.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">RNNAttention</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.tssequencerplus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TSSequencerPlus</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
+ <span class="menu-text">CNNs</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.fcn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">FCN</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.fcnplus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">FCNPlus</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.resnet.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">ResNet</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.resnetplus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">ResNetPlus</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.xresnet1d.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">XResNet1d</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.xresnet1dplus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">XResNet1dPlus</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.rescnn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">ResCNN</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.tcn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TCN</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.inceptiontime.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">InceptionTime</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.inceptiontimeplus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">InceptionTimePlus</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.xceptiontime.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">XceptionTime</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.xceptiontimeplus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">XceptionTimePlus</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.omniscalecnn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">OmniScaleCNN</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.xcm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">XCM</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.xcmplus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">XCMPlus</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false">
+ <span class="menu-text">Transformers</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.positional_encoders.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Positional encoders</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.transformermodel.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TransformerModel</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.tst.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TST</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.tstplus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TSTPlus</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.tsperceiver.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TSPerceiver</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.tsitplus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TSiT</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.patchtst.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">PatchTST</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false">
+ <span class="menu-text">ROCKETs</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.rocket.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">ROCKET</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.rocket_pytorch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">ROCKET Pytorch</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.minirocket.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">MINIROCKET</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.minirocket_pytorch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">MINIROCKET Pytorch</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.minirocketplus_pytorch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">MINIROCKETPlus Pytorch</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.multirocketplus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">MultiRocketPlus</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.hydraplus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">HydraPlus</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.hydramultirocketplus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">HydraMultiRocketPlus</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false">
+ <span class="menu-text">Wavelet-based NNs</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.mwdn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">mWDN</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false">
+ <span class="menu-text">Hybrid models</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.rnn_fcn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">RNN_FCN</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.rnn_fcnplus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">RNN_FCNPlus</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.transformerrnnplus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TransformerRNNPlus</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.convtranplus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">ConvTranPlus</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false">
+ <span class="menu-text">Tabular models</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.tabmodel.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TabModel</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.tabtransformer.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TabTransformer</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.gatedtabtransformer.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">GatedTabTransformer</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.tabfusiontransformer.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TabFusionTransformer</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true">
+ <span class="menu-text">Miscellaneous</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth2 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.multiinputnet.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">MultiInputNet</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.multimodal.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Multimodal</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.misc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Miscellaneous</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="true">
+ <span class="menu-text">Training</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./learner.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Learner</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tslearner.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TSLearner</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./optimizer.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Optimizers</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./losses.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Losses</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./metrics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Metrics</span></a>
+  </div>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-13" role="navigation" aria-expanded="false">
+ <span class="menu-text">Callbacks</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-13" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-13" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./callback.core.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Callback</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./callback.predictiondynamics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">PredictionDynamics</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./callback.noisy_student.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Noisy student</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./callback.mvp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">MVP (aka TSBERT)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./callback.experimental.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Experimental Callbacks</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./calibration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Calibration</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-14" role="navigation" aria-expanded="true">
+ <span class="menu-text">HPO &amp; experiment tracking</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-14" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-14" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./optuna.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Optuna</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wandb.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Weights &amp; Biases Sweeps</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Inference</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.explainability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Explainability</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./utils.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Utilities</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#get_feat_idxs" id="toc-get_feat_idxs" class="nav-link active" data-scroll-target="#get_feat_idxs">get_feat_idxs</a></li>
+  <li><a href="#get_o_cont_idxs" id="toc-get_o_cont_idxs" class="nav-link" data-scroll-target="#get_o_cont_idxs">get_o_cont_idxs</a></li>
+  <li><a href="#tensorsplitter" id="toc-tensorsplitter" class="nav-link" data-scroll-target="#tensorsplitter">TensorSplitter</a></li>
+  <li><a href="#embeddings" id="toc-embeddings" class="nav-link" data-scroll-target="#embeddings">Embeddings</a></li>
+  <li><a href="#staticbackbone" id="toc-staticbackbone" class="nav-link" data-scroll-target="#staticbackbone">StaticBackbone</a></li>
+  <li><a href="#fusionmlp" id="toc-fusionmlp" class="nav-link" data-scroll-target="#fusionmlp">FusionMLP</a></li>
+  <li><a href="#multinputbackbonewrapper" id="toc-multinputbackbonewrapper" class="nav-link" data-scroll-target="#multinputbackbonewrapper">MultInputBackboneWrapper</a></li>
+  <li><a href="#multinputwrapper" id="toc-multinputwrapper" class="nav-link" data-scroll-target="#multinputwrapper">MultInputWrapper</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/timeseriesAI/tsai/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./models.layers.html">Models</a></li><li class="breadcrumb-item"><a href="./models.multiinputnet.html">Miscellaneous</a></li><li class="breadcrumb-item"><a href="./models.multimodal.html">Multimodal</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Multimodal</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<blockquote class="blockquote">
+<p>Functionality used for multiple data modalities.</p>
+</blockquote>
+<p>A common scenario in time-series related tasks is the use of multiple types of inputs:</p>
+<ul>
+<li>static: data that doesn’t change with time</li>
+<li>observed: temporal data only available in the past</li>
+<li>known: temporal data available in the past and in the future</li>
+</ul>
+<p>At the same time, these different modalities may contain:</p>
+<ul>
+<li>categorical data</li>
+<li>continuous or numerical data</li>
+</ul>
+<p>Based on that, there are situations where we have up to 6 different types of input features:</p>
+<ul>
+<li>s_cat: static continuous variables</li>
+<li>o_cat: observed categorical variables</li>
+<li>o_cont: observed continuous variables</li>
+<li>k_cat: known categorical variables</li>
+<li>k_cont: known continuous variables</li>
+</ul>
+<hr>
+<p><a href="https://github.com/timeseriesAI/tsai/blob/main/tsai/models/multimodal.py#L45" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="get_feat_idxs" class="level3">
+<h3 class="anchored" data-anchor-id="get_feat_idxs">get_feat_idxs</h3>
+<blockquote class="blockquote">
+<pre><code> get_feat_idxs (c_in, s_cat_idxs=None, s_cont_idxs=None, o_cat_idxs=None,
+                o_cont_idxs=None)</code></pre>
+</blockquote>
+<p><em>Calculate the indices of the features used for training.</em></p>
+<hr>
+<p><a href="https://github.com/timeseriesAI/tsai/blob/main/tsai/models/multimodal.py#L33" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="get_o_cont_idxs" class="level3">
+<h3 class="anchored" data-anchor-id="get_o_cont_idxs">get_o_cont_idxs</h3>
+<blockquote class="blockquote">
+<pre><code> get_o_cont_idxs (c_in, s_cat_idxs=None, s_cont_idxs=None,
+                  o_cat_idxs=None)</code></pre>
+</blockquote>
+<p><em>Calculate the indices of the observed continuous features.</em></p>
+<div id="cell-5" class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>c_in <span class="op">=</span> <span class="dv">7</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>s_cat_idxs <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>s_cont_idxs <span class="op">=</span> [<span class="dv">1</span>, <span class="dv">4</span>, <span class="dv">5</span>]</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>o_cat_idxs <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>o_cont_idxs <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>s_cat_idxs, s_cont_idxs, o_cat_idxs, o_cont_idxs <span class="op">=</span> get_feat_idxs(c_in, s_cat_idxs<span class="op">=</span>s_cat_idxs, s_cont_idxs<span class="op">=</span>s_cont_idxs, o_cat_idxs<span class="op">=</span>o_cat_idxs, o_cont_idxs<span class="op">=</span>o_cont_idxs)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>test_eq(s_cat_idxs, [<span class="dv">3</span>])</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>test_eq(s_cont_idxs, [<span class="dv">1</span>, <span class="dv">4</span>, <span class="dv">5</span>])</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>test_eq(o_cat_idxs, [])</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>test_eq(o_cont_idxs, [<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">6</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+<p><a href="https://github.com/timeseriesAI/tsai/blob/main/tsai/models/multimodal.py#L54" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="tensorsplitter" class="level3">
+<h3 class="anchored" data-anchor-id="tensorsplitter">TensorSplitter</h3>
+<blockquote class="blockquote">
+<pre><code> TensorSplitter (s_cat_idxs:list=None, s_cont_idxs:list=None,
+                 o_cat_idxs:list=None, o_cont_idxs:list=None,
+                 k_cat_idxs:list=None, k_cont_idxs:list=None,
+                 horizon:int=None)</code></pre>
+</blockquote>
+<p>*Base class for all neural network modules.</p>
+<p>Your models should also subclass this class.</p>
+<p>Modules can also contain other Modules, allowing to nest them in a tree structure. You can assign the submodules as regular attributes::</p>
+<pre><code>import torch.nn as nn
+import torch.nn.functional as F
+
+class Model(nn.Module):
+    def __init__(self) -&gt; None:
+        super().__init__()
+        self.conv1 = nn.Conv2d(1, 20, 5)
+        self.conv2 = nn.Conv2d(20, 20, 5)
+
+    def forward(self, x):
+        x = F.relu(self.conv1(x))
+        return F.relu(self.conv2(x))</code></pre>
+<p>Submodules assigned in this way will be registered, and will have their parameters converted too when you call :meth:<code>to</code>, etc.</p>
+<p>.. note:: As per the example above, an <code>__init__()</code> call to the parent class must be made before assignment on the child.</p>
+<table class="caption-top table">
+<caption>ivar training: Boolean represents whether this module is in training or evaluation mode. :vartype training: bool*</caption>
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>s_cat_idxs</td>
+<td>list</td>
+<td>None</td>
+<td>list of indices for static categorical variables</td>
+</tr>
+<tr class="even">
+<td>s_cont_idxs</td>
+<td>list</td>
+<td>None</td>
+<td>list of indices for static continuous variables</td>
+</tr>
+<tr class="odd">
+<td>o_cat_idxs</td>
+<td>list</td>
+<td>None</td>
+<td>list of indices for observed categorical variables</td>
+</tr>
+<tr class="even">
+<td>o_cont_idxs</td>
+<td>list</td>
+<td>None</td>
+<td>list of indices for observed continuous variables</td>
+</tr>
+<tr class="odd">
+<td>k_cat_idxs</td>
+<td>list</td>
+<td>None</td>
+<td>list of indices for known categorical variables</td>
+</tr>
+<tr class="even">
+<td>k_cont_idxs</td>
+<td>list</td>
+<td>None</td>
+<td>list of indices for known continuous variables</td>
+</tr>
+<tr class="odd">
+<td>horizon</td>
+<td>int</td>
+<td>None</td>
+<td>number of time steps to predict ahead</td>
+</tr>
+</tbody>
+</table>
+<div id="cell-7" class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>bs <span class="op">=</span> <span class="dv">4</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>s_cat_idxs <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>s_cont_idxs <span class="op">=</span> [<span class="dv">0</span>, <span class="dv">2</span>]</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>o_cat_idxs <span class="op">=</span>[ <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>]</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>o_cont_idxs <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>k_cat_idxs <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>k_cont_idxs <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>horizon<span class="op">=</span><span class="va">None</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>input_tensor <span class="op">=</span> torch.randn(bs, <span class="dv">6</span>, <span class="dv">10</span>)  <span class="co"># 3D input tensor</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>splitter <span class="op">=</span> TensorSplitter(s_cat_idxs<span class="op">=</span>s_cat_idxs, s_cont_idxs<span class="op">=</span>s_cont_idxs,</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>                          o_cat_idxs<span class="op">=</span>o_cat_idxs, o_cont_idxs<span class="op">=</span>o_cont_idxs)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>slices <span class="op">=</span> splitter(input_tensor)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, slice_tensor <span class="kw">in</span> <span class="bu">enumerate</span>(slices):</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Slice </span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>slice_tensor<span class="sc">.</span>shape<span class="sc">}</span><span class="ss"> </span><span class="sc">{</span>slice_tensor<span class="sc">.</span>dtype<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Slice 1: torch.Size([4, 1]) torch.int64
+Slice 2: torch.Size([4, 2]) torch.int64
+Slice 3: torch.Size([4, 3, 10]) torch.float32
+Slice 4: torch.Size([4, 0, 10]) torch.float32</code></pre>
+</div>
+</div>
+<div id="cell-8" class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>bs <span class="op">=</span> <span class="dv">4</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>s_cat_idxs <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>s_cont_idxs <span class="op">=</span> [<span class="dv">0</span>, <span class="dv">2</span>]</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>o_cat_idxs <span class="op">=</span>[ <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>]</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>o_cont_idxs <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>k_cat_idxs <span class="op">=</span> [<span class="dv">6</span>,<span class="dv">7</span>]</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>k_cont_idxs <span class="op">=</span> <span class="dv">8</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>horizon<span class="op">=</span><span class="dv">3</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>input_tensor <span class="op">=</span> torch.randn(<span class="dv">4</span>, <span class="dv">9</span>, <span class="dv">10</span>)  <span class="co"># 3D input tensor</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>splitter <span class="op">=</span> TensorSplitter(s_cat_idxs<span class="op">=</span>s_cat_idxs, s_cont_idxs<span class="op">=</span>s_cont_idxs,</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>                          o_cat_idxs<span class="op">=</span>o_cat_idxs, o_cont_idxs<span class="op">=</span>o_cont_idxs,</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>                          k_cat_idxs<span class="op">=</span>k_cat_idxs, k_cont_idxs<span class="op">=</span>k_cont_idxs, horizon<span class="op">=</span>horizon)</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>slices <span class="op">=</span> splitter(input_tensor)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, slice_tensor <span class="kw">in</span> <span class="bu">enumerate</span>(slices):</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Slice </span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>slice_tensor<span class="sc">.</span>shape<span class="sc">}</span><span class="ss"> </span><span class="sc">{</span>slice_tensor<span class="sc">.</span>dtype<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Slice 1: torch.Size([4, 1]) torch.int64
+Slice 2: torch.Size([4, 2]) torch.int64
+Slice 3: torch.Size([4, 3, 7]) torch.float32
+Slice 4: torch.Size([4, 0, 7]) torch.float32
+Slice 5: torch.Size([4, 2, 10]) torch.float32
+Slice 6: torch.Size([4, 1, 10]) torch.float32</code></pre>
+</div>
+</div>
+<hr>
+<p><a href="https://github.com/timeseriesAI/tsai/blob/main/tsai/models/multimodal.py#L120" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="embeddings" class="level3">
+<h3 class="anchored" data-anchor-id="embeddings">Embeddings</h3>
+<blockquote class="blockquote">
+<pre><code> Embeddings (n_embeddings:list, embedding_dims:list=None,
+             padding_idx:int=0, embed_dropout:float=0.0, **kwargs)</code></pre>
+</blockquote>
+<p><em>Embedding layers for each categorical variable in a 2D or 3D tensor</em></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>n_embeddings</td>
+<td>list</td>
+<td></td>
+<td>List of num_embeddings for each categorical variable</td>
+</tr>
+<tr class="even">
+<td>embedding_dims</td>
+<td>list</td>
+<td>None</td>
+<td>List of embedding dimensions for each categorical variable</td>
+</tr>
+<tr class="odd">
+<td>padding_idx</td>
+<td>int</td>
+<td>0</td>
+<td>Embedding padding_idx</td>
+</tr>
+<tr class="even">
+<td>embed_dropout</td>
+<td>float</td>
+<td>0.0</td>
+<td>Dropout probability for <code>Embedding</code> layer</td>
+</tr>
+<tr class="odd">
+<td>kwargs</td>
+<td>VAR_KEYWORD</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<div id="cell-10" class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>t1 <span class="op">=</span> torch.randint(<span class="dv">0</span>, <span class="dv">7</span>, (<span class="dv">16</span>, <span class="dv">1</span>))</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>t2 <span class="op">=</span> torch.randint(<span class="dv">0</span>, <span class="dv">5</span>, (<span class="dv">16</span>, <span class="dv">1</span>))</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> torch.cat([t1, t2], <span class="dv">1</span>).<span class="bu">float</span>()</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>emb <span class="op">=</span> Embeddings([<span class="dv">7</span>, <span class="dv">5</span>], <span class="va">None</span>, embed_dropout<span class="op">=</span><span class="fl">0.1</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>test_eq(emb(t).shape, (<span class="dv">16</span>, <span class="dv">12</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-11" class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>t1 <span class="op">=</span> torch.randint(<span class="dv">0</span>, <span class="dv">7</span>, (<span class="dv">16</span>, <span class="dv">1</span>))</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>t2 <span class="op">=</span> torch.randint(<span class="dv">0</span>, <span class="dv">5</span>, (<span class="dv">16</span>, <span class="dv">1</span>))</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> torch.cat([t1, t2], <span class="dv">1</span>).<span class="bu">float</span>()</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>emb <span class="op">=</span> Embeddings([<span class="dv">7</span>, <span class="dv">5</span>], [<span class="dv">4</span>, <span class="dv">3</span>])</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>test_eq(emb(t).shape, (<span class="dv">16</span>, <span class="dv">12</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-12" class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>t1 <span class="op">=</span> torch.randint(<span class="dv">0</span>, <span class="dv">7</span>, (<span class="dv">16</span>, <span class="dv">1</span>, <span class="dv">10</span>))</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>t2 <span class="op">=</span> torch.randint(<span class="dv">0</span>, <span class="dv">5</span>, (<span class="dv">16</span>, <span class="dv">1</span>, <span class="dv">10</span>))</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> torch.cat([t1, t2], <span class="dv">1</span>).<span class="bu">float</span>()</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>emb <span class="op">=</span> Embeddings([<span class="dv">7</span>, <span class="dv">5</span>], <span class="va">None</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>test_eq(emb(t).shape, (<span class="dv">16</span>, <span class="dv">12</span>, <span class="dv">10</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+<p><a href="https://github.com/timeseriesAI/tsai/blob/main/tsai/models/multimodal.py#L147" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="staticbackbone" class="level3">
+<h3 class="anchored" data-anchor-id="staticbackbone">StaticBackbone</h3>
+<blockquote class="blockquote">
+<pre><code> StaticBackbone (c_in, c_out, seq_len, d=None, layers=[200, 100],
+                 dropouts=[0.1, 0.2], act=ReLU(inplace=True),
+                 use_bn=False, lin_first=False)</code></pre>
+</blockquote>
+<p><em>Static backbone model to embed static features</em></p>
+<div id="cell-14" class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>bs <span class="op">=</span> <span class="dv">4</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>c_in <span class="op">=</span> <span class="dv">6</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>c_out <span class="op">=</span> <span class="dv">8</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>seq_len <span class="op">=</span> <span class="dv">10</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>input_tensor <span class="op">=</span> torch.randn(bs, c_in, seq_len)  <span class="co"># 3D input tensor</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>backbone <span class="op">=</span> StaticBackbone(c_in, c_out, seq_len)</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>output_tensor <span class="op">=</span> backbone(input_tensor)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Input shape: </span><span class="sc">{</span>input_tensor<span class="sc">.</span>shape<span class="sc">}</span><span class="ss"> Output shape: </span><span class="sc">{</span>output_tensor<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>backbone</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Input shape: torch.Size([4, 6, 10]) Output shape: torch.Size([4, 100])</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre><code>StaticBackbone(
+  (flatten): Reshape(bs)
+  (mlp): ModuleList(
+    (0): LinBnDrop(
+      (0): Dropout(p=0.1, inplace=False)
+      (1): Linear(in_features=60, out_features=200, bias=True)
+      (2): ReLU(inplace=True)
+    )
+    (1): LinBnDrop(
+      (0): Dropout(p=0.2, inplace=False)
+      (1): Linear(in_features=200, out_features=100, bias=True)
+      (2): ReLU(inplace=True)
+    )
+  )
+)</code></pre>
+</div>
+</div>
+<hr>
+<p><a href="https://github.com/timeseriesAI/tsai/blob/main/tsai/models/multimodal.py#L166" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="fusionmlp" class="level3">
+<h3 class="anchored" data-anchor-id="fusionmlp">FusionMLP</h3>
+<blockquote class="blockquote">
+<pre><code> FusionMLP (comb_dim, layers, act='relu', dropout=0.0, use_bn=True)</code></pre>
+</blockquote>
+<p>*Base class for all neural network modules.</p>
+<p>Your models should also subclass this class.</p>
+<p>Modules can also contain other Modules, allowing to nest them in a tree structure. You can assign the submodules as regular attributes::</p>
+<pre><code>import torch.nn as nn
+import torch.nn.functional as F
+
+class Model(nn.Module):
+    def __init__(self) -&gt; None:
+        super().__init__()
+        self.conv1 = nn.Conv2d(1, 20, 5)
+        self.conv2 = nn.Conv2d(20, 20, 5)
+
+    def forward(self, x):
+        x = F.relu(self.conv1(x))
+        return F.relu(self.conv2(x))</code></pre>
+<p>Submodules assigned in this way will be registered, and will have their parameters converted too when you call :meth:<code>to</code>, etc.</p>
+<p>.. note:: As per the example above, an <code>__init__()</code> call to the parent class must be made before assignment on the child.</p>
+<p>:ivar training: Boolean represents whether this module is in training or evaluation mode. :vartype training: bool*</p>
+<div id="cell-16" class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>bs <span class="op">=</span> <span class="dv">16</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>emb_dim <span class="op">=</span> <span class="dv">128</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>seq_len <span class="op">=</span> <span class="dv">20</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>cat_dim <span class="op">=</span> <span class="dv">24</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>cont_feat <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>comb_dim <span class="op">=</span> emb_dim <span class="op">+</span> cat_dim <span class="op">+</span> cont_feat</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>emb <span class="op">=</span> torch.randn(bs, emb_dim, seq_len)</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>cat <span class="op">=</span> torch.randn(bs, cat_dim)</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>cont <span class="op">=</span> torch.randn(bs, cont_feat)</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>fusion_mlp <span class="op">=</span> FusionMLP(comb_dim, layers<span class="op">=</span>comb_dim, act<span class="op">=</span><span class="st">'relu'</span>, dropout<span class="op">=</span><span class="fl">.1</span>)</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>output <span class="op">=</span> fusion_mlp(cat, cont, emb)</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>test_eq(output.shape, (bs, comb_dim))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-17" class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>bs <span class="op">=</span> <span class="dv">16</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>emb_dim <span class="op">=</span> <span class="dv">50000</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>cat_dim <span class="op">=</span> <span class="dv">24</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>cont_feat <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>comb_dim <span class="op">=</span> emb_dim <span class="op">+</span> cat_dim <span class="op">+</span> cont_feat</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>emb <span class="op">=</span> torch.randn(bs, emb_dim)</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>cat <span class="op">=</span> torch.randn(bs, cat_dim)</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>cont <span class="op">=</span> torch.randn(bs, cont_feat)</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>fusion_mlp <span class="op">=</span> FusionMLP(comb_dim, layers<span class="op">=</span>[<span class="dv">128</span>], act<span class="op">=</span><span class="st">'relu'</span>, dropout<span class="op">=</span><span class="fl">.1</span>)</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>output <span class="op">=</span> fusion_mlp(cat, cont, emb)</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>test_eq(output.shape, (bs, <span class="dv">128</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+<p><a href="https://github.com/timeseriesAI/tsai/blob/main/tsai/models/multimodal.py#L193" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="multinputbackbonewrapper" class="level3">
+<h3 class="anchored" data-anchor-id="multinputbackbonewrapper">MultInputBackboneWrapper</h3>
+<blockquote class="blockquote">
+<pre><code> MultInputBackboneWrapper (arch, c_in:int=None, seq_len:int=None,
+                           d:tuple=None,
+                           dls:tsai.data.core.TSDataLoaders=None,
+                           s_cat_idxs:list=None,
+                           s_cat_embeddings:list=None,
+                           s_cat_embedding_dims:list=None,
+                           s_cont_idxs:list=None, o_cat_idxs:list=None,
+                           o_cat_embeddings:list=None,
+                           o_cat_embedding_dims:list=None,
+                           o_cont_idxs:list=None, patch_len:int=None,
+                           patch_stride:int=None,
+                           fusion_layers:list=[128],
+                           fusion_act:str='relu',
+                           fusion_dropout:float=0.0,
+                           fusion_use_bn:bool=True, **kwargs)</code></pre>
+</blockquote>
+<p><em>Model backbone wrapper for input tensors with static and/ or observed, categorical and/ or numerical features.</em></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>arch</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>c_in</td>
+<td>int</td>
+<td>None</td>
+<td>number of input variables</td>
+</tr>
+<tr class="odd">
+<td>seq_len</td>
+<td>int</td>
+<td>None</td>
+<td>input sequence length</td>
+</tr>
+<tr class="even">
+<td>d</td>
+<td>tuple</td>
+<td>None</td>
+<td>shape of the output tensor</td>
+</tr>
+<tr class="odd">
+<td>dls</td>
+<td>TSDataLoaders</td>
+<td>None</td>
+<td>TSDataLoaders object</td>
+</tr>
+<tr class="even">
+<td>s_cat_idxs</td>
+<td>list</td>
+<td>None</td>
+<td>list of indices for static categorical variables</td>
+</tr>
+<tr class="odd">
+<td>s_cat_embeddings</td>
+<td>list</td>
+<td>None</td>
+<td>list of num_embeddings for each static categorical variable</td>
+</tr>
+<tr class="even">
+<td>s_cat_embedding_dims</td>
+<td>list</td>
+<td>None</td>
+<td>list of embedding dimensions for each static categorical variable</td>
+</tr>
+<tr class="odd">
+<td>s_cont_idxs</td>
+<td>list</td>
+<td>None</td>
+<td>list of indices for static continuous variables</td>
+</tr>
+<tr class="even">
+<td>o_cat_idxs</td>
+<td>list</td>
+<td>None</td>
+<td>list of indices for observed categorical variables</td>
+</tr>
+<tr class="odd">
+<td>o_cat_embeddings</td>
+<td>list</td>
+<td>None</td>
+<td>list of num_embeddings for each observed categorical variable</td>
+</tr>
+<tr class="even">
+<td>o_cat_embedding_dims</td>
+<td>list</td>
+<td>None</td>
+<td>list of embedding dimensions for each observed categorical variable</td>
+</tr>
+<tr class="odd">
+<td>o_cont_idxs</td>
+<td>list</td>
+<td>None</td>
+<td>list of indices for observed continuous variables. All features not in s_cat_idxs, s_cont_idxs, o_cat_idxs are considered observed continuous variables.</td>
+</tr>
+<tr class="even">
+<td>patch_len</td>
+<td>int</td>
+<td>None</td>
+<td>Number of time steps in each patch.</td>
+</tr>
+<tr class="odd">
+<td>patch_stride</td>
+<td>int</td>
+<td>None</td>
+<td>Stride of the patch.</td>
+</tr>
+<tr class="even">
+<td>fusion_layers</td>
+<td>list</td>
+<td>[128]</td>
+<td>list of layer dimensions for the fusion MLP</td>
+</tr>
+<tr class="odd">
+<td>fusion_act</td>
+<td>str</td>
+<td>relu</td>
+<td>activation function for the fusion MLP</td>
+</tr>
+<tr class="even">
+<td>fusion_dropout</td>
+<td>float</td>
+<td>0.0</td>
+<td>dropout probability for the fusion MLP</td>
+</tr>
+<tr class="odd">
+<td>fusion_use_bn</td>
+<td>bool</td>
+<td>True</td>
+<td>boolean indicating whether to use batch normalization in the fusion MLP</td>
+</tr>
+<tr class="even">
+<td>kwargs</td>
+<td>VAR_KEYWORD</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p><a href="https://github.com/timeseriesAI/tsai/blob/main/tsai/models/multimodal.py#L290" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="multinputwrapper" class="level3">
+<h3 class="anchored" data-anchor-id="multinputwrapper">MultInputWrapper</h3>
+<blockquote class="blockquote">
+<pre><code> MultInputWrapper (arch, c_in:int=None, c_out:int=1, seq_len:int=None,
+                   d:tuple=None, dls:tsai.data.core.TSDataLoaders=None,
+                   s_cat_idxs:list=None, s_cat_embeddings:list=None,
+                   s_cat_embedding_dims:list=None, s_cont_idxs:list=None,
+                   o_cat_idxs:list=None, o_cat_embeddings:list=None,
+                   o_cat_embedding_dims:list=None, o_cont_idxs:list=None,
+                   patch_len:int=None, patch_stride:int=None,
+                   fusion_layers:list=128, fusion_act:str='relu',
+                   fusion_dropout:float=0.0, fusion_use_bn:bool=True,
+                   custom_head=None, **kwargs)</code></pre>
+</blockquote>
+<p>*A sequential container.</p>
+<p>Modules will be added to it in the order they are passed in the constructor. Alternatively, an <code>OrderedDict</code> of modules can be passed in. The <code>forward()</code> method of <code>[</code>Sequential<code>](https://timeseriesAI.github.io/models.layers.html#sequential)</code> accepts any input and forwards it to the first module it contains. It then “chains” outputs to inputs sequentially for each subsequent module, finally returning the output of the last module.</p>
+<p>The value a <code>[</code>Sequential<code>](https://timeseriesAI.github.io/models.layers.html#sequential)</code> provides over manually calling a sequence of modules is that it allows treating the whole container as a single module, such that performing a transformation on the <code>[</code>Sequential<code>](https://timeseriesAI.github.io/models.layers.html#sequential)</code> applies to each of the modules it stores (which are each a registered submodule of the <code>[</code>Sequential<code>](https://timeseriesAI.github.io/models.layers.html#sequential)</code>).</p>
+<p>What’s the difference between a <code>[</code>Sequential<code>](https://timeseriesAI.github.io/models.layers.html#sequential)</code> and a :class:<code>torch.nn.ModuleList</code>? A <code>ModuleList</code> is exactly what it sounds like–a list for storing <code>Module</code> s! On the other hand, the layers in a <code>[</code>Sequential<code>](https://timeseriesAI.github.io/models.layers.html#sequential)</code> are connected in a cascading way.</p>
+<p>Example::</p>
+<pre><code># Using Sequential to create a small model. When `model` is run,
+# input will first be passed to `Conv2d(1,20,5)`. The output of
+# `Conv2d(1,20,5)` will be used as the input to the first
+# `ReLU`; the output of the first `ReLU` will become the input
+# for `Conv2d(20,64,5)`. Finally, the output of
+# `Conv2d(20,64,5)` will be used as input to the second `ReLU`
+model = nn.Sequential(
+          nn.Conv2d(1,20,5),
+          nn.ReLU(),
+          nn.Conv2d(20,64,5),
+          nn.ReLU()
+        )
+
+# Using Sequential with OrderedDict. This is functionally the
+# same as the above code
+model = nn.Sequential(OrderedDict([
+          ('conv1', nn.Conv2d(1,20,5)),
+          ('relu1', nn.ReLU()),
+          ('conv2', nn.Conv2d(20,64,5)),
+          ('relu2', nn.ReLU())
+        ]))*</code></pre>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>arch</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>c_in</td>
+<td>int</td>
+<td>None</td>
+<td>number of input variables</td>
+</tr>
+<tr class="odd">
+<td>c_out</td>
+<td>int</td>
+<td>1</td>
+<td>number of output variables</td>
+</tr>
+<tr class="even">
+<td>seq_len</td>
+<td>int</td>
+<td>None</td>
+<td>input sequence length</td>
+</tr>
+<tr class="odd">
+<td>d</td>
+<td>tuple</td>
+<td>None</td>
+<td>shape of the output tensor</td>
+</tr>
+<tr class="even">
+<td>dls</td>
+<td>TSDataLoaders</td>
+<td>None</td>
+<td>TSDataLoaders object</td>
+</tr>
+<tr class="odd">
+<td>s_cat_idxs</td>
+<td>list</td>
+<td>None</td>
+<td>list of indices for static categorical variables</td>
+</tr>
+<tr class="even">
+<td>s_cat_embeddings</td>
+<td>list</td>
+<td>None</td>
+<td>list of num_embeddings for each static categorical variable</td>
+</tr>
+<tr class="odd">
+<td>s_cat_embedding_dims</td>
+<td>list</td>
+<td>None</td>
+<td>list of embedding dimensions for each static categorical variable</td>
+</tr>
+<tr class="even">
+<td>s_cont_idxs</td>
+<td>list</td>
+<td>None</td>
+<td>list of indices for static continuous variables</td>
+</tr>
+<tr class="odd">
+<td>o_cat_idxs</td>
+<td>list</td>
+<td>None</td>
+<td>list of indices for observed categorical variables</td>
+</tr>
+<tr class="even">
+<td>o_cat_embeddings</td>
+<td>list</td>
+<td>None</td>
+<td>list of num_embeddings for each observed categorical variable</td>
+</tr>
+<tr class="odd">
+<td>o_cat_embedding_dims</td>
+<td>list</td>
+<td>None</td>
+<td>list of embedding dimensions for each observed categorical variable</td>
+</tr>
+<tr class="even">
+<td>o_cont_idxs</td>
+<td>list</td>
+<td>None</td>
+<td>list of indices for observed continuous variables. All features not in s_cat_idxs, s_cont_idxs, o_cat_idxs are considered observed continuous variables.</td>
+</tr>
+<tr class="odd">
+<td>patch_len</td>
+<td>int</td>
+<td>None</td>
+<td>Number of time steps in each patch.</td>
+</tr>
+<tr class="even">
+<td>patch_stride</td>
+<td>int</td>
+<td>None</td>
+<td>Stride of the patch.</td>
+</tr>
+<tr class="odd">
+<td>fusion_layers</td>
+<td>list</td>
+<td>128</td>
+<td>list of layer dimensions for the fusion MLP</td>
+</tr>
+<tr class="even">
+<td>fusion_act</td>
+<td>str</td>
+<td>relu</td>
+<td>activation function for the fusion MLP</td>
+</tr>
+<tr class="odd">
+<td>fusion_dropout</td>
+<td>float</td>
+<td>0.0</td>
+<td>dropout probability for the fusion MLP</td>
+</tr>
+<tr class="even">
+<td>fusion_use_bn</td>
+<td>bool</td>
+<td>True</td>
+<td>boolean indicating whether to use batch normalization in the fusion MLP</td>
+</tr>
+<tr class="odd">
+<td>custom_head</td>
+<td>NoneType</td>
+<td>None</td>
+<td>custom head to replace the default head</td>
+</tr>
+<tr class="even">
+<td>kwargs</td>
+<td>VAR_KEYWORD</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<div id="cell-20" class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tsai.models.InceptionTimePlus <span class="im">import</span> InceptionTimePlus</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-21" class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>bs <span class="op">=</span> <span class="dv">8</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>c_in <span class="op">=</span> <span class="dv">6</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>c_out <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>seq_len <span class="op">=</span> <span class="dv">97</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>s_cat_idxs<span class="op">=</span><span class="dv">2</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>s_cont_idxs<span class="op">=</span><span class="dv">4</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>o_cat_idxs<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">3</span>]</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>o_cont_idxs<span class="op">=</span><span class="va">None</span></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>s_cat_embeddings <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>s_cat_embedding_dims <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>o_cat_embeddings <span class="op">=</span> [<span class="dv">7</span>, <span class="dv">3</span>]</span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>o_cat_embedding_dims <span class="op">=</span> [<span class="dv">3</span>, <span class="va">None</span>]</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>fusion_layers <span class="op">=</span> <span class="dv">128</span></span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>t0 <span class="op">=</span> torch.randint(<span class="dv">0</span>, <span class="dv">7</span>, (bs, <span class="dv">1</span>, seq_len)) <span class="co"># cat</span></span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>t1 <span class="op">=</span> torch.randn(bs, <span class="dv">1</span>, seq_len)</span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a>t2 <span class="op">=</span> torch.randint(<span class="dv">0</span>, <span class="dv">5</span>, (bs, <span class="dv">1</span>, seq_len)) <span class="co"># cat</span></span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>t3 <span class="op">=</span> torch.randint(<span class="dv">0</span>, <span class="dv">3</span>, (bs, <span class="dv">1</span>, seq_len)) <span class="co"># cat</span></span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a>t4 <span class="op">=</span> torch.randn(bs, <span class="dv">1</span>, seq_len)</span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a>t5 <span class="op">=</span> torch.randn(bs, <span class="dv">1</span>, seq_len)</span>
+<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> torch.cat([t0, t1, t2, t3, t4, t5], <span class="dv">1</span>).<span class="bu">float</span>().to(default_device())</span>
+<span id="cb26-26"><a href="#cb26-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-27"><a href="#cb26-27" aria-hidden="true" tabindex="-1"></a>patch_lens <span class="op">=</span> [<span class="va">None</span>, <span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">5</span>]</span>
+<span id="cb26-28"><a href="#cb26-28" aria-hidden="true" tabindex="-1"></a>patch_strides <span class="op">=</span> [<span class="va">None</span>, <span class="va">None</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">5</span>]</span>
+<span id="cb26-29"><a href="#cb26-29" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> patch_len, patch_stride <span class="kw">in</span> <span class="bu">zip</span>(patch_lens, patch_strides):</span>
+<span id="cb26-30"><a href="#cb26-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> arch <span class="kw">in</span> [<span class="st">"InceptionTimePlus"</span>, InceptionTimePlus, <span class="st">"TSiTPlus"</span>]:</span>
+<span id="cb26-31"><a href="#cb26-31" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"arch: </span><span class="sc">{</span>arch<span class="sc">}</span><span class="ss">, patch_len: </span><span class="sc">{</span>patch_len<span class="sc">}</span><span class="ss">, patch_stride: </span><span class="sc">{</span>patch_stride<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb26-32"><a href="#cb26-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-33"><a href="#cb26-33" aria-hidden="true" tabindex="-1"></a>        model <span class="op">=</span> MultInputWrapper(</span>
+<span id="cb26-34"><a href="#cb26-34" aria-hidden="true" tabindex="-1"></a>            arch<span class="op">=</span>arch,</span>
+<span id="cb26-35"><a href="#cb26-35" aria-hidden="true" tabindex="-1"></a>            c_in<span class="op">=</span>c_in,</span>
+<span id="cb26-36"><a href="#cb26-36" aria-hidden="true" tabindex="-1"></a>            c_out<span class="op">=</span>c_out,</span>
+<span id="cb26-37"><a href="#cb26-37" aria-hidden="true" tabindex="-1"></a>            seq_len<span class="op">=</span>seq_len,</span>
+<span id="cb26-38"><a href="#cb26-38" aria-hidden="true" tabindex="-1"></a>            d<span class="op">=</span>d,</span>
+<span id="cb26-39"><a href="#cb26-39" aria-hidden="true" tabindex="-1"></a>            s_cat_idxs<span class="op">=</span>s_cat_idxs, s_cat_embeddings<span class="op">=</span>s_cat_embeddings, s_cat_embedding_dims<span class="op">=</span>s_cat_embedding_dims,</span>
+<span id="cb26-40"><a href="#cb26-40" aria-hidden="true" tabindex="-1"></a>            s_cont_idxs<span class="op">=</span>s_cont_idxs,</span>
+<span id="cb26-41"><a href="#cb26-41" aria-hidden="true" tabindex="-1"></a>            o_cat_idxs<span class="op">=</span>o_cat_idxs, o_cat_embeddings<span class="op">=</span>o_cat_embeddings, o_cat_embedding_dims<span class="op">=</span>o_cat_embedding_dims,</span>
+<span id="cb26-42"><a href="#cb26-42" aria-hidden="true" tabindex="-1"></a>            o_cont_idxs<span class="op">=</span>o_cont_idxs,</span>
+<span id="cb26-43"><a href="#cb26-43" aria-hidden="true" tabindex="-1"></a>            patch_len<span class="op">=</span>patch_len,</span>
+<span id="cb26-44"><a href="#cb26-44" aria-hidden="true" tabindex="-1"></a>            patch_stride<span class="op">=</span>patch_stride,</span>
+<span id="cb26-45"><a href="#cb26-45" aria-hidden="true" tabindex="-1"></a>            fusion_layers<span class="op">=</span>fusion_layers,</span>
+<span id="cb26-46"><a href="#cb26-46" aria-hidden="true" tabindex="-1"></a>        ).to(default_device())</span>
+<span id="cb26-47"><a href="#cb26-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-48"><a href="#cb26-48" aria-hidden="true" tabindex="-1"></a>        test_eq(model(t).shape, (bs, c_out))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>arch: InceptionTimePlus, patch_len: None, patch_stride: None
+arch: &lt;class 'tsai.models.InceptionTimePlus.InceptionTimePlus'&gt;, patch_len: None, patch_stride: None
+arch: TSiTPlus, patch_len: None, patch_stride: None
+arch: InceptionTimePlus, patch_len: 5, patch_stride: None
+arch: &lt;class 'tsai.models.InceptionTimePlus.InceptionTimePlus'&gt;, patch_len: 5, patch_stride: None
+arch: TSiTPlus, patch_len: 5, patch_stride: None
+arch: InceptionTimePlus, patch_len: 5, patch_stride: 1
+arch: &lt;class 'tsai.models.InceptionTimePlus.InceptionTimePlus'&gt;, patch_len: 5, patch_stride: 1
+arch: TSiTPlus, patch_len: 5, patch_stride: 1
+arch: InceptionTimePlus, patch_len: 5, patch_stride: 3
+arch: &lt;class 'tsai.models.InceptionTimePlus.InceptionTimePlus'&gt;, patch_len: 5, patch_stride: 3
+arch: TSiTPlus, patch_len: 5, patch_stride: 3
+arch: InceptionTimePlus, patch_len: 5, patch_stride: 5
+arch: &lt;class 'tsai.models.InceptionTimePlus.InceptionTimePlus'&gt;, patch_len: 5, patch_stride: 5
+arch: TSiTPlus, patch_len: 5, patch_stride: 5</code></pre>
+</div>
+</div>
+<div id="cell-22" class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>bs <span class="op">=</span> <span class="dv">8</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>c_in <span class="op">=</span> <span class="dv">6</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>c_out <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>seq_len <span class="op">=</span> <span class="dv">97</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>s_cat_idxs<span class="op">=</span><span class="va">None</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>s_cont_idxs<span class="op">=</span><span class="dv">4</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>o_cat_idxs<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">3</span>]</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>o_cont_idxs<span class="op">=</span><span class="va">None</span></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>s_cat_embeddings <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>s_cat_embedding_dims <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>o_cat_embeddings <span class="op">=</span> [<span class="dv">7</span>, <span class="dv">3</span>]</span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>o_cat_embedding_dims <span class="op">=</span> [<span class="dv">3</span>, <span class="va">None</span>]</span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>fusion_layers <span class="op">=</span> <span class="dv">128</span></span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>t0 <span class="op">=</span> torch.randint(<span class="dv">0</span>, <span class="dv">7</span>, (bs, <span class="dv">1</span>, seq_len)) <span class="co"># cat</span></span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>t1 <span class="op">=</span> torch.randn(bs, <span class="dv">1</span>, seq_len)</span>
+<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a>t2 <span class="op">=</span> torch.randint(<span class="dv">0</span>, <span class="dv">5</span>, (bs, <span class="dv">1</span>, seq_len)) <span class="co"># cat</span></span>
+<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a>t3 <span class="op">=</span> torch.randint(<span class="dv">0</span>, <span class="dv">3</span>, (bs, <span class="dv">1</span>, seq_len)) <span class="co"># cat</span></span>
+<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a>t4 <span class="op">=</span> torch.randn(bs, <span class="dv">1</span>, seq_len)</span>
+<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a>t5 <span class="op">=</span> torch.randn(bs, <span class="dv">1</span>, seq_len)</span>
+<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> torch.cat([t0, t1, t2, t3, t4, t5], <span class="dv">1</span>).<span class="bu">float</span>().to(default_device())</span>
+<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a>patch_lens <span class="op">=</span> [<span class="va">None</span>, <span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">5</span>]</span>
+<span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a>patch_strides <span class="op">=</span> [<span class="va">None</span>, <span class="va">None</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">5</span>]</span>
+<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> patch_len, patch_stride <span class="kw">in</span> <span class="bu">zip</span>(patch_lens, patch_strides):</span>
+<span id="cb28-30"><a href="#cb28-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> arch <span class="kw">in</span> [<span class="st">"InceptionTimePlus"</span>, InceptionTimePlus, <span class="st">"TSiTPlus"</span>]:</span>
+<span id="cb28-31"><a href="#cb28-31" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"arch: </span><span class="sc">{</span>arch<span class="sc">}</span><span class="ss">, patch_len: </span><span class="sc">{</span>patch_len<span class="sc">}</span><span class="ss">, patch_stride: </span><span class="sc">{</span>patch_stride<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb28-32"><a href="#cb28-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-33"><a href="#cb28-33" aria-hidden="true" tabindex="-1"></a>        model <span class="op">=</span> MultInputWrapper(</span>
+<span id="cb28-34"><a href="#cb28-34" aria-hidden="true" tabindex="-1"></a>            arch<span class="op">=</span>arch,</span>
+<span id="cb28-35"><a href="#cb28-35" aria-hidden="true" tabindex="-1"></a>            c_in<span class="op">=</span>c_in,</span>
+<span id="cb28-36"><a href="#cb28-36" aria-hidden="true" tabindex="-1"></a>            c_out<span class="op">=</span>c_out,</span>
+<span id="cb28-37"><a href="#cb28-37" aria-hidden="true" tabindex="-1"></a>            seq_len<span class="op">=</span>seq_len,</span>
+<span id="cb28-38"><a href="#cb28-38" aria-hidden="true" tabindex="-1"></a>            d<span class="op">=</span>d,</span>
+<span id="cb28-39"><a href="#cb28-39" aria-hidden="true" tabindex="-1"></a>            s_cat_idxs<span class="op">=</span>s_cat_idxs, s_cat_embeddings<span class="op">=</span>s_cat_embeddings, s_cat_embedding_dims<span class="op">=</span>s_cat_embedding_dims,</span>
+<span id="cb28-40"><a href="#cb28-40" aria-hidden="true" tabindex="-1"></a>            s_cont_idxs<span class="op">=</span>s_cont_idxs,</span>
+<span id="cb28-41"><a href="#cb28-41" aria-hidden="true" tabindex="-1"></a>            o_cat_idxs<span class="op">=</span>o_cat_idxs, o_cat_embeddings<span class="op">=</span>o_cat_embeddings, o_cat_embedding_dims<span class="op">=</span>o_cat_embedding_dims,</span>
+<span id="cb28-42"><a href="#cb28-42" aria-hidden="true" tabindex="-1"></a>            o_cont_idxs<span class="op">=</span>o_cont_idxs,</span>
+<span id="cb28-43"><a href="#cb28-43" aria-hidden="true" tabindex="-1"></a>            patch_len<span class="op">=</span>patch_len,</span>
+<span id="cb28-44"><a href="#cb28-44" aria-hidden="true" tabindex="-1"></a>            patch_stride<span class="op">=</span>patch_stride,</span>
+<span id="cb28-45"><a href="#cb28-45" aria-hidden="true" tabindex="-1"></a>            fusion_layers<span class="op">=</span>fusion_layers,</span>
+<span id="cb28-46"><a href="#cb28-46" aria-hidden="true" tabindex="-1"></a>        ).to(default_device())</span>
+<span id="cb28-47"><a href="#cb28-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-48"><a href="#cb28-48" aria-hidden="true" tabindex="-1"></a>        test_eq(model(t).shape, (bs, c_out))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>arch: InceptionTimePlus, patch_len: None, patch_stride: None
+arch: &lt;class 'tsai.models.InceptionTimePlus.InceptionTimePlus'&gt;, patch_len: None, patch_stride: None
+arch: TSiTPlus, patch_len: None, patch_stride: None
+arch: InceptionTimePlus, patch_len: 5, patch_stride: None
+arch: &lt;class 'tsai.models.InceptionTimePlus.InceptionTimePlus'&gt;, patch_len: 5, patch_stride: None
+arch: TSiTPlus, patch_len: 5, patch_stride: None
+arch: InceptionTimePlus, patch_len: 5, patch_stride: 1
+arch: &lt;class 'tsai.models.InceptionTimePlus.InceptionTimePlus'&gt;, patch_len: 5, patch_stride: 1
+arch: TSiTPlus, patch_len: 5, patch_stride: 1
+arch: InceptionTimePlus, patch_len: 5, patch_stride: 3
+arch: &lt;class 'tsai.models.InceptionTimePlus.InceptionTimePlus'&gt;, patch_len: 5, patch_stride: 3
+arch: TSiTPlus, patch_len: 5, patch_stride: 3
+arch: InceptionTimePlus, patch_len: 5, patch_stride: 5
+arch: &lt;class 'tsai.models.InceptionTimePlus.InceptionTimePlus'&gt;, patch_len: 5, patch_stride: 5
+arch: TSiTPlus, patch_len: 5, patch_stride: 5</code></pre>
+</div>
+</div>
+<div id="cell-23" class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>bs <span class="op">=</span> <span class="dv">8</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>c_in <span class="op">=</span> <span class="dv">6</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>c_out <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>seq_len <span class="op">=</span> <span class="dv">97</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>s_cat_idxs<span class="op">=</span><span class="dv">2</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>s_cont_idxs<span class="op">=</span><span class="dv">4</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>o_cat_idxs<span class="op">=</span><span class="va">None</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>o_cont_idxs<span class="op">=</span><span class="va">None</span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>s_cat_embeddings <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>s_cat_embedding_dims <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>o_cat_embeddings <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>o_cat_embedding_dims <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a>fusion_layers <span class="op">=</span> <span class="dv">128</span></span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a>t0 <span class="op">=</span> torch.randint(<span class="dv">0</span>, <span class="dv">7</span>, (bs, <span class="dv">1</span>, seq_len)) <span class="co"># cat</span></span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a>t1 <span class="op">=</span> torch.randn(bs, <span class="dv">1</span>, seq_len)</span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a>t2 <span class="op">=</span> torch.randint(<span class="dv">0</span>, <span class="dv">5</span>, (bs, <span class="dv">1</span>, seq_len)) <span class="co"># cat</span></span>
+<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a>t3 <span class="op">=</span> torch.randint(<span class="dv">0</span>, <span class="dv">3</span>, (bs, <span class="dv">1</span>, seq_len)) <span class="co"># cat</span></span>
+<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a>t4 <span class="op">=</span> torch.randn(bs, <span class="dv">1</span>, seq_len)</span>
+<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a>t5 <span class="op">=</span> torch.randn(bs, <span class="dv">1</span>, seq_len)</span>
+<span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> torch.cat([t0, t1, t2, t3, t4, t5], <span class="dv">1</span>).<span class="bu">float</span>().to(default_device())</span>
+<span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-27"><a href="#cb30-27" aria-hidden="true" tabindex="-1"></a>patch_lens <span class="op">=</span> [<span class="va">None</span>, <span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">5</span>]</span>
+<span id="cb30-28"><a href="#cb30-28" aria-hidden="true" tabindex="-1"></a>patch_strides <span class="op">=</span> [<span class="va">None</span>, <span class="va">None</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">5</span>]</span>
+<span id="cb30-29"><a href="#cb30-29" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> patch_len, patch_stride <span class="kw">in</span> <span class="bu">zip</span>(patch_lens, patch_strides):</span>
+<span id="cb30-30"><a href="#cb30-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> arch <span class="kw">in</span> [<span class="st">"InceptionTimePlus"</span>, InceptionTimePlus, <span class="st">"TSiTPlus"</span>]:</span>
+<span id="cb30-31"><a href="#cb30-31" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"arch: </span><span class="sc">{</span>arch<span class="sc">}</span><span class="ss">, patch_len: </span><span class="sc">{</span>patch_len<span class="sc">}</span><span class="ss">, patch_stride: </span><span class="sc">{</span>patch_stride<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb30-32"><a href="#cb30-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-33"><a href="#cb30-33" aria-hidden="true" tabindex="-1"></a>        model <span class="op">=</span> MultInputWrapper(</span>
+<span id="cb30-34"><a href="#cb30-34" aria-hidden="true" tabindex="-1"></a>            arch<span class="op">=</span>arch,</span>
+<span id="cb30-35"><a href="#cb30-35" aria-hidden="true" tabindex="-1"></a>            c_in<span class="op">=</span>c_in,</span>
+<span id="cb30-36"><a href="#cb30-36" aria-hidden="true" tabindex="-1"></a>            c_out<span class="op">=</span>c_out,</span>
+<span id="cb30-37"><a href="#cb30-37" aria-hidden="true" tabindex="-1"></a>            seq_len<span class="op">=</span>seq_len,</span>
+<span id="cb30-38"><a href="#cb30-38" aria-hidden="true" tabindex="-1"></a>            d<span class="op">=</span>d,</span>
+<span id="cb30-39"><a href="#cb30-39" aria-hidden="true" tabindex="-1"></a>            s_cat_idxs<span class="op">=</span>s_cat_idxs, s_cat_embeddings<span class="op">=</span>s_cat_embeddings, s_cat_embedding_dims<span class="op">=</span>s_cat_embedding_dims,</span>
+<span id="cb30-40"><a href="#cb30-40" aria-hidden="true" tabindex="-1"></a>            s_cont_idxs<span class="op">=</span>s_cont_idxs,</span>
+<span id="cb30-41"><a href="#cb30-41" aria-hidden="true" tabindex="-1"></a>            o_cat_idxs<span class="op">=</span>o_cat_idxs, o_cat_embeddings<span class="op">=</span>o_cat_embeddings, o_cat_embedding_dims<span class="op">=</span>o_cat_embedding_dims,</span>
+<span id="cb30-42"><a href="#cb30-42" aria-hidden="true" tabindex="-1"></a>            o_cont_idxs<span class="op">=</span>o_cont_idxs,</span>
+<span id="cb30-43"><a href="#cb30-43" aria-hidden="true" tabindex="-1"></a>            patch_len<span class="op">=</span>patch_len,</span>
+<span id="cb30-44"><a href="#cb30-44" aria-hidden="true" tabindex="-1"></a>            patch_stride<span class="op">=</span>patch_stride,</span>
+<span id="cb30-45"><a href="#cb30-45" aria-hidden="true" tabindex="-1"></a>            fusion_layers<span class="op">=</span>fusion_layers,</span>
+<span id="cb30-46"><a href="#cb30-46" aria-hidden="true" tabindex="-1"></a>        ).to(default_device())</span>
+<span id="cb30-47"><a href="#cb30-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-48"><a href="#cb30-48" aria-hidden="true" tabindex="-1"></a>        test_eq(model(t).shape, (bs, c_out))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>arch: InceptionTimePlus, patch_len: None, patch_stride: None
+arch: &lt;class 'tsai.models.InceptionTimePlus.InceptionTimePlus'&gt;, patch_len: None, patch_stride: None
+arch: TSiTPlus, patch_len: None, patch_stride: None
+arch: InceptionTimePlus, patch_len: 5, patch_stride: None
+arch: &lt;class 'tsai.models.InceptionTimePlus.InceptionTimePlus'&gt;, patch_len: 5, patch_stride: None
+arch: TSiTPlus, patch_len: 5, patch_stride: None
+arch: InceptionTimePlus, patch_len: 5, patch_stride: 1
+arch: &lt;class 'tsai.models.InceptionTimePlus.InceptionTimePlus'&gt;, patch_len: 5, patch_stride: 1
+arch: TSiTPlus, patch_len: 5, patch_stride: 1
+arch: InceptionTimePlus, patch_len: 5, patch_stride: 3
+arch: &lt;class 'tsai.models.InceptionTimePlus.InceptionTimePlus'&gt;, patch_len: 5, patch_stride: 3
+arch: TSiTPlus, patch_len: 5, patch_stride: 3
+arch: InceptionTimePlus, patch_len: 5, patch_stride: 5
+arch: &lt;class 'tsai.models.InceptionTimePlus.InceptionTimePlus'&gt;, patch_len: 5, patch_stride: 5
+arch: TSiTPlus, patch_len: 5, patch_stride: 5</code></pre>
+</div>
+</div>
+<div id="cell-24" class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>bs <span class="op">=</span> <span class="dv">8</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>c_in <span class="op">=</span> <span class="dv">6</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>c_out <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>seq_len <span class="op">=</span> <span class="dv">97</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>s_cat_idxs<span class="op">=</span><span class="va">None</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>s_cont_idxs<span class="op">=</span><span class="va">None</span></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>o_cat_idxs<span class="op">=</span><span class="va">None</span></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>o_cont_idxs<span class="op">=</span><span class="va">None</span></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>s_cat_embeddings <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>s_cat_embedding_dims <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>o_cat_embeddings <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>o_cat_embedding_dims <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>fusion_layers <span class="op">=</span> <span class="dv">128</span></span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a>t0 <span class="op">=</span> torch.randint(<span class="dv">0</span>, <span class="dv">7</span>, (bs, <span class="dv">1</span>, seq_len)) <span class="co"># cat</span></span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a>t1 <span class="op">=</span> torch.randn(bs, <span class="dv">1</span>, seq_len)</span>
+<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a>t2 <span class="op">=</span> torch.randint(<span class="dv">0</span>, <span class="dv">5</span>, (bs, <span class="dv">1</span>, seq_len)) <span class="co"># cat</span></span>
+<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a>t3 <span class="op">=</span> torch.randint(<span class="dv">0</span>, <span class="dv">3</span>, (bs, <span class="dv">1</span>, seq_len)) <span class="co"># cat</span></span>
+<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a>t4 <span class="op">=</span> torch.randn(bs, <span class="dv">1</span>, seq_len)</span>
+<span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a>t5 <span class="op">=</span> torch.randn(bs, <span class="dv">1</span>, seq_len)</span>
+<span id="cb32-24"><a href="#cb32-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-25"><a href="#cb32-25" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> torch.cat([t0, t1, t2, t3, t4, t5], <span class="dv">1</span>).<span class="bu">float</span>().to(default_device())</span>
+<span id="cb32-26"><a href="#cb32-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-27"><a href="#cb32-27" aria-hidden="true" tabindex="-1"></a>patch_lens <span class="op">=</span> [<span class="va">None</span>, <span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">5</span>]</span>
+<span id="cb32-28"><a href="#cb32-28" aria-hidden="true" tabindex="-1"></a>patch_strides <span class="op">=</span> [<span class="va">None</span>, <span class="va">None</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">5</span>]</span>
+<span id="cb32-29"><a href="#cb32-29" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> patch_len, patch_stride <span class="kw">in</span> <span class="bu">zip</span>(patch_lens, patch_strides):</span>
+<span id="cb32-30"><a href="#cb32-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> arch <span class="kw">in</span> [<span class="st">"InceptionTimePlus"</span>, InceptionTimePlus, <span class="st">"TSiTPlus"</span>]:</span>
+<span id="cb32-31"><a href="#cb32-31" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"arch: </span><span class="sc">{</span>arch<span class="sc">}</span><span class="ss">, patch_len: </span><span class="sc">{</span>patch_len<span class="sc">}</span><span class="ss">, patch_stride: </span><span class="sc">{</span>patch_stride<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb32-32"><a href="#cb32-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-33"><a href="#cb32-33" aria-hidden="true" tabindex="-1"></a>        model <span class="op">=</span> MultInputWrapper(</span>
+<span id="cb32-34"><a href="#cb32-34" aria-hidden="true" tabindex="-1"></a>            arch<span class="op">=</span>arch,</span>
+<span id="cb32-35"><a href="#cb32-35" aria-hidden="true" tabindex="-1"></a>            c_in<span class="op">=</span>c_in,</span>
+<span id="cb32-36"><a href="#cb32-36" aria-hidden="true" tabindex="-1"></a>            c_out<span class="op">=</span>c_out,</span>
+<span id="cb32-37"><a href="#cb32-37" aria-hidden="true" tabindex="-1"></a>            seq_len<span class="op">=</span>seq_len,</span>
+<span id="cb32-38"><a href="#cb32-38" aria-hidden="true" tabindex="-1"></a>            d<span class="op">=</span>d,</span>
+<span id="cb32-39"><a href="#cb32-39" aria-hidden="true" tabindex="-1"></a>            s_cat_idxs<span class="op">=</span>s_cat_idxs, s_cat_embeddings<span class="op">=</span>s_cat_embeddings, s_cat_embedding_dims<span class="op">=</span>s_cat_embedding_dims,</span>
+<span id="cb32-40"><a href="#cb32-40" aria-hidden="true" tabindex="-1"></a>            s_cont_idxs<span class="op">=</span>s_cont_idxs,</span>
+<span id="cb32-41"><a href="#cb32-41" aria-hidden="true" tabindex="-1"></a>            o_cat_idxs<span class="op">=</span>o_cat_idxs, o_cat_embeddings<span class="op">=</span>o_cat_embeddings, o_cat_embedding_dims<span class="op">=</span>o_cat_embedding_dims,</span>
+<span id="cb32-42"><a href="#cb32-42" aria-hidden="true" tabindex="-1"></a>            o_cont_idxs<span class="op">=</span>o_cont_idxs,</span>
+<span id="cb32-43"><a href="#cb32-43" aria-hidden="true" tabindex="-1"></a>            patch_len<span class="op">=</span>patch_len,</span>
+<span id="cb32-44"><a href="#cb32-44" aria-hidden="true" tabindex="-1"></a>            patch_stride<span class="op">=</span>patch_stride,</span>
+<span id="cb32-45"><a href="#cb32-45" aria-hidden="true" tabindex="-1"></a>            fusion_layers<span class="op">=</span>fusion_layers,</span>
+<span id="cb32-46"><a href="#cb32-46" aria-hidden="true" tabindex="-1"></a>        ).to(default_device())</span>
+<span id="cb32-47"><a href="#cb32-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-48"><a href="#cb32-48" aria-hidden="true" tabindex="-1"></a>        test_eq(model(t).shape, (bs, c_out))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>arch: InceptionTimePlus, patch_len: None, patch_stride: None
+arch: &lt;class 'tsai.models.InceptionTimePlus.InceptionTimePlus'&gt;, patch_len: None, patch_stride: None
+arch: TSiTPlus, patch_len: None, patch_stride: None
+arch: InceptionTimePlus, patch_len: 5, patch_stride: None
+arch: &lt;class 'tsai.models.InceptionTimePlus.InceptionTimePlus'&gt;, patch_len: 5, patch_stride: None
+arch: TSiTPlus, patch_len: 5, patch_stride: None
+arch: InceptionTimePlus, patch_len: 5, patch_stride: 1
+arch: &lt;class 'tsai.models.InceptionTimePlus.InceptionTimePlus'&gt;, patch_len: 5, patch_stride: 1
+arch: TSiTPlus, patch_len: 5, patch_stride: 1
+arch: InceptionTimePlus, patch_len: 5, patch_stride: 3
+arch: &lt;class 'tsai.models.InceptionTimePlus.InceptionTimePlus'&gt;, patch_len: 5, patch_stride: 3
+arch: TSiTPlus, patch_len: 5, patch_stride: 3
+arch: InceptionTimePlus, patch_len: 5, patch_stride: 5
+arch: &lt;class 'tsai.models.InceptionTimePlus.InceptionTimePlus'&gt;, patch_len: 5, patch_stride: 5
+arch: TSiTPlus, patch_len: 5, patch_stride: 5</code></pre>
+</div>
+</div>
+<div id="cell-25" class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> CustomHead(nn.Module):</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, head_nf, c_out, seq_len, d):</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.d <span class="op">=</span> d</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.c_out <span class="op">=</span> c_out</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.fc <span class="op">=</span> nn.Linear(head_nf, d <span class="op">*</span> c_out)</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, x):</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> <span class="va">self</span>.fc(x)         <span class="co"># [batch_size, d*c]</span></span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> x.view(x.shape[<span class="dv">0</span>], <span class="va">self</span>.d, <span class="va">self</span>.c_out)</span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-26" class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>bs <span class="op">=</span> <span class="dv">8</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>c_in <span class="op">=</span> <span class="dv">6</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>c_out <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>seq_len <span class="op">=</span> <span class="dv">97</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> <span class="dv">7</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>s_cat_idxs<span class="op">=</span><span class="va">None</span></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>s_cont_idxs<span class="op">=</span><span class="va">None</span></span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>o_cat_idxs<span class="op">=</span><span class="va">None</span></span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>o_cont_idxs<span class="op">=</span><span class="va">None</span></span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>s_cat_embeddings <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>s_cat_embedding_dims <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>o_cat_embeddings <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a>o_cat_embedding_dims <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a>fusion_layers <span class="op">=</span> <span class="dv">128</span></span>
+<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-18"><a href="#cb35-18" aria-hidden="true" tabindex="-1"></a>t0 <span class="op">=</span> torch.randint(<span class="dv">0</span>, <span class="dv">7</span>, (bs, <span class="dv">1</span>, seq_len)) <span class="co"># cat</span></span>
+<span id="cb35-19"><a href="#cb35-19" aria-hidden="true" tabindex="-1"></a>t1 <span class="op">=</span> torch.randn(bs, <span class="dv">1</span>, seq_len)</span>
+<span id="cb35-20"><a href="#cb35-20" aria-hidden="true" tabindex="-1"></a>t2 <span class="op">=</span> torch.randint(<span class="dv">0</span>, <span class="dv">5</span>, (bs, <span class="dv">1</span>, seq_len)) <span class="co"># cat</span></span>
+<span id="cb35-21"><a href="#cb35-21" aria-hidden="true" tabindex="-1"></a>t3 <span class="op">=</span> torch.randint(<span class="dv">0</span>, <span class="dv">3</span>, (bs, <span class="dv">1</span>, seq_len)) <span class="co"># cat</span></span>
+<span id="cb35-22"><a href="#cb35-22" aria-hidden="true" tabindex="-1"></a>t4 <span class="op">=</span> torch.randn(bs, <span class="dv">1</span>, seq_len)</span>
+<span id="cb35-23"><a href="#cb35-23" aria-hidden="true" tabindex="-1"></a>t5 <span class="op">=</span> torch.randn(bs, <span class="dv">1</span>, seq_len)</span>
+<span id="cb35-24"><a href="#cb35-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-25"><a href="#cb35-25" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> torch.cat([t0, t1, t2, t3, t4, t5], <span class="dv">1</span>).<span class="bu">float</span>().to(default_device())</span>
+<span id="cb35-26"><a href="#cb35-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-27"><a href="#cb35-27" aria-hidden="true" tabindex="-1"></a>patch_lens <span class="op">=</span> [<span class="va">None</span>, <span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">5</span>]</span>
+<span id="cb35-28"><a href="#cb35-28" aria-hidden="true" tabindex="-1"></a>patch_strides <span class="op">=</span> [<span class="va">None</span>, <span class="va">None</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">5</span>]</span>
+<span id="cb35-29"><a href="#cb35-29" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> patch_len, patch_stride <span class="kw">in</span> <span class="bu">zip</span>(patch_lens, patch_strides):</span>
+<span id="cb35-30"><a href="#cb35-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> arch <span class="kw">in</span> [<span class="st">"InceptionTimePlus"</span>, InceptionTimePlus, <span class="st">"TSiTPlus"</span>]:</span>
+<span id="cb35-31"><a href="#cb35-31" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"arch: </span><span class="sc">{</span>arch<span class="sc">}</span><span class="ss">, patch_len: </span><span class="sc">{</span>patch_len<span class="sc">}</span><span class="ss">, patch_stride: </span><span class="sc">{</span>patch_stride<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb35-32"><a href="#cb35-32" aria-hidden="true" tabindex="-1"></a>        model <span class="op">=</span> MultInputWrapper(</span>
+<span id="cb35-33"><a href="#cb35-33" aria-hidden="true" tabindex="-1"></a>            arch<span class="op">=</span>arch,</span>
+<span id="cb35-34"><a href="#cb35-34" aria-hidden="true" tabindex="-1"></a>            custom_head<span class="op">=</span>CustomHead,</span>
+<span id="cb35-35"><a href="#cb35-35" aria-hidden="true" tabindex="-1"></a>            c_in<span class="op">=</span>c_in,</span>
+<span id="cb35-36"><a href="#cb35-36" aria-hidden="true" tabindex="-1"></a>            c_out<span class="op">=</span>c_out,</span>
+<span id="cb35-37"><a href="#cb35-37" aria-hidden="true" tabindex="-1"></a>            seq_len<span class="op">=</span>seq_len,</span>
+<span id="cb35-38"><a href="#cb35-38" aria-hidden="true" tabindex="-1"></a>            d<span class="op">=</span>d,</span>
+<span id="cb35-39"><a href="#cb35-39" aria-hidden="true" tabindex="-1"></a>            s_cat_idxs<span class="op">=</span>s_cat_idxs, s_cat_embeddings<span class="op">=</span>s_cat_embeddings, s_cat_embedding_dims<span class="op">=</span>s_cat_embedding_dims,</span>
+<span id="cb35-40"><a href="#cb35-40" aria-hidden="true" tabindex="-1"></a>            s_cont_idxs<span class="op">=</span>s_cont_idxs,</span>
+<span id="cb35-41"><a href="#cb35-41" aria-hidden="true" tabindex="-1"></a>            o_cat_idxs<span class="op">=</span>o_cat_idxs, o_cat_embeddings<span class="op">=</span>o_cat_embeddings, o_cat_embedding_dims<span class="op">=</span>o_cat_embedding_dims,</span>
+<span id="cb35-42"><a href="#cb35-42" aria-hidden="true" tabindex="-1"></a>            o_cont_idxs<span class="op">=</span>o_cont_idxs,</span>
+<span id="cb35-43"><a href="#cb35-43" aria-hidden="true" tabindex="-1"></a>            patch_len<span class="op">=</span>patch_len,</span>
+<span id="cb35-44"><a href="#cb35-44" aria-hidden="true" tabindex="-1"></a>            patch_stride<span class="op">=</span>patch_stride,</span>
+<span id="cb35-45"><a href="#cb35-45" aria-hidden="true" tabindex="-1"></a>            fusion_layers<span class="op">=</span>fusion_layers,</span>
+<span id="cb35-46"><a href="#cb35-46" aria-hidden="true" tabindex="-1"></a>        ).to(default_device())</span>
+<span id="cb35-47"><a href="#cb35-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-48"><a href="#cb35-48" aria-hidden="true" tabindex="-1"></a>        test_eq(model(t).shape, (bs, d, c_out))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>arch: InceptionTimePlus, patch_len: None, patch_stride: None
+arch: &lt;class 'tsai.models.InceptionTimePlus.InceptionTimePlus'&gt;, patch_len: None, patch_stride: None
+arch: TSiTPlus, patch_len: None, patch_stride: None
+arch: InceptionTimePlus, patch_len: 5, patch_stride: None
+arch: &lt;class 'tsai.models.InceptionTimePlus.InceptionTimePlus'&gt;, patch_len: 5, patch_stride: None
+arch: TSiTPlus, patch_len: 5, patch_stride: None
+arch: InceptionTimePlus, patch_len: 5, patch_stride: 1
+arch: &lt;class 'tsai.models.InceptionTimePlus.InceptionTimePlus'&gt;, patch_len: 5, patch_stride: 1
+arch: TSiTPlus, patch_len: 5, patch_stride: 1
+arch: InceptionTimePlus, patch_len: 5, patch_stride: 3
+arch: &lt;class 'tsai.models.InceptionTimePlus.InceptionTimePlus'&gt;, patch_len: 5, patch_stride: 3
+arch: TSiTPlus, patch_len: 5, patch_stride: 3
+arch: InceptionTimePlus, patch_len: 5, patch_stride: 5
+arch: &lt;class 'tsai.models.InceptionTimePlus.InceptionTimePlus'&gt;, patch_len: 5, patch_stride: 5
+arch: TSiTPlus, patch_len: 5, patch_stride: 5</code></pre>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/timeseriesAI\.github\.io\/tsai\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/timeseriesAI/tsai/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

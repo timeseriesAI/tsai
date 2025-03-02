@@ -1,0 +1,4024 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Featurizing Time Series – tsai</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-ae44de7e3b26b230a7801128389852ee.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="Featurizing Time Series – tsai">
+<meta property="og:description" content="Practical Deep Learning for Time Series / Sequential Data library based on fastai &amp; Pytorch">
+<meta property="og:site_name" content="tsai">
+<meta name="twitter:title" content="Featurizing Time Series – tsai">
+<meta name="twitter:description" content="Practical Deep Learning for Time Series / Sequential Data library based on fastai &amp; Pytorch">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">tsai</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/timeseriesAI/tsai"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./data.core.html">Data</a></li><li class="breadcrumb-item"><a href="./data.features.html">Featurizing Time Series</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">tsai</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tutorials.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tutorial notebooks</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Data</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.core.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Core</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.external.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">External data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.preparation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data preparation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.validation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Spliting data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.preprocessing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data preprocessing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.unwindowed.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Unwindowed datasets</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.transforms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Time Series Data Augmentation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.mixed_augmentation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Label-mixing transforms</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.image.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Imaging Time Series</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.features.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Featurizing Time Series</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.tabular.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Time Series Tabular Data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.mixed.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Mixed data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.metadatasets.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Metadataset</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Models</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.layers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Layers</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.utils.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Model utilities</span></a>
+  </div>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
+ <span class="menu-text">MLPs</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.mlp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">MLP</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.gmlp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">gMLP</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false">
+ <span class="menu-text">RNNs</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.rnn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">RNNs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.rnnplus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">RNNPlus</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.rnnattention.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">RNNAttention</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.tssequencerplus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TSSequencerPlus</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
+ <span class="menu-text">CNNs</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.fcn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">FCN</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.fcnplus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">FCNPlus</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.resnet.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">ResNet</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.resnetplus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">ResNetPlus</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.xresnet1d.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">XResNet1d</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.xresnet1dplus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">XResNet1dPlus</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.rescnn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">ResCNN</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.tcn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TCN</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.inceptiontime.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">InceptionTime</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.inceptiontimeplus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">InceptionTimePlus</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.xceptiontime.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">XceptionTime</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.xceptiontimeplus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">XceptionTimePlus</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.omniscalecnn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">OmniScaleCNN</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.xcm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">XCM</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.xcmplus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">XCMPlus</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false">
+ <span class="menu-text">Transformers</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.positional_encoders.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Positional encoders</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.transformermodel.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TransformerModel</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.tst.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TST</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.tstplus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TSTPlus</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.tsperceiver.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TSPerceiver</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.tsitplus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TSiT</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.patchtst.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">PatchTST</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false">
+ <span class="menu-text">ROCKETs</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.rocket.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">ROCKET</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.rocket_pytorch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">ROCKET Pytorch</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.minirocket.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">MINIROCKET</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.minirocket_pytorch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">MINIROCKET Pytorch</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.minirocketplus_pytorch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">MINIROCKETPlus Pytorch</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.multirocketplus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">MultiRocketPlus</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.hydraplus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">HydraPlus</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.hydramultirocketplus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">HydraMultiRocketPlus</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false">
+ <span class="menu-text">Wavelet-based NNs</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.mwdn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">mWDN</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false">
+ <span class="menu-text">Hybrid models</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.rnn_fcn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">RNN_FCN</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.rnn_fcnplus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">RNN_FCNPlus</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.transformerrnnplus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TransformerRNNPlus</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.convtranplus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">ConvTranPlus</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false">
+ <span class="menu-text">Tabular models</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.tabmodel.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TabModel</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.tabtransformer.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TabTransformer</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.gatedtabtransformer.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">GatedTabTransformer</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.tabfusiontransformer.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TabFusionTransformer</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="false">
+ <span class="menu-text">Miscellaneous</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.multiinputnet.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">MultiInputNet</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.multimodal.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Multimodal</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.misc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Miscellaneous</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="true">
+ <span class="menu-text">Training</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./learner.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Learner</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tslearner.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TSLearner</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./optimizer.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Optimizers</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./losses.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Losses</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./metrics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Metrics</span></a>
+  </div>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-13" role="navigation" aria-expanded="false">
+ <span class="menu-text">Callbacks</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-13" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-13" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./callback.core.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Callback</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./callback.predictiondynamics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">PredictionDynamics</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./callback.noisy_student.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Noisy student</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./callback.mvp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">MVP (aka TSBERT)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./callback.experimental.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Experimental Callbacks</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./calibration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Calibration</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-14" role="navigation" aria-expanded="true">
+ <span class="menu-text">HPO &amp; experiment tracking</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-14" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-14" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./optuna.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Optuna</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wandb.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Weights &amp; Biases Sweeps</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Inference</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.explainability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Explainability</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./utils.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Utilities</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#get_ts_features" id="toc-get_ts_features" class="nav-link active" data-scroll-target="#get_ts_features">get_ts_features</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/timeseriesAI/tsai/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./data.core.html">Data</a></li><li class="breadcrumb-item"><a href="./data.features.html">Featurizing Time Series</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Featurizing Time Series</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<blockquote class="blockquote">
+<p>Functions used to transform time series into a dataframe that can be used to create tabular dataloaders.</p>
+</blockquote>
+<p>In this case we are using tsfresh that is one of the most widely known libraries used to create features from time series. You can get more details about this library here: https://tsfresh.readthedocs.io/en/latest/</p>
+<hr>
+<p><a href="https://github.com/timeseriesAI/tsai/blob/main/tsai/data/features.py#L14" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="get_ts_features" class="level3">
+<h3 class="anchored" data-anchor-id="get_ts_features">get_ts_features</h3>
+<blockquote class="blockquote">
+<pre><code> get_ts_features (X:Union[numpy.ndarray,torch.Tensor],
+                  y:Union[NoneType,numpy.ndarray,torch.Tensor]=None,
+                  features:Union[str,dict]='min',
+                  n_jobs:Optional[int]=None, **kwargs)</code></pre>
+</blockquote>
+<p><em>Args: X: np.array or torch.Tesnor of shape [samples, dimensions, timesteps]. y: Not required for unlabeled data. Otherwise, you need to pass it. features: ‘min’, ‘efficient’, ‘all’, or a dictionary. Be aware that ‘efficient’ and ‘all’ may required substantial memory and time.</em></p>
+<div id="cell-5" class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>dsid <span class="op">=</span> <span class="st">'NATOPS'</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>X, y, splits <span class="op">=</span> get_UCR_data(dsid, return_split<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>X.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>(360, 24, 51)</code></pre>
+</div>
+</div>
+<p>There are 3 levels of fatures you can extract: ‘min’, ‘efficient’ and ‘all’. I’d encourage you to start with min as feature creation may take a long time.</p>
+<p>In addition to this, you can pass a dictionary to build the desired features (see tsfresh documentation in the link above).</p>
+<div id="cell-7" class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>ts_features_df <span class="op">=</span> get_ts_features(X, y)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>ts_features_df.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Feature Extraction: 100%|██████████| 40/40 [00:09&lt;00:00,  4.00it/s]</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre><code>(360, 241)</code></pre>
+</div>
+</div>
+<p>The ‘min’ set creates a dataframe with 8 features per channel + 1 per target (total 193) for each time series sample (360).</p>
+<div id="cell-9" class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>cont_names <span class="op">=</span> ts_features_df.columns[:<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>y_names <span class="op">=</span> <span class="st">'target'</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>dls <span class="op">=</span> get_tabular_dls(ts_features_df, splits<span class="op">=</span>splits, cont_names<span class="op">=</span>cont_names, y_names<span class="op">=</span>y_names)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>dls.show_batch()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">0__sum_values</th>
+<th data-quarto-table-cell-role="th">0__median</th>
+<th data-quarto-table-cell-role="th">0__mean</th>
+<th data-quarto-table-cell-role="th">0__length</th>
+<th data-quarto-table-cell-role="th">0__standard_deviation</th>
+<th data-quarto-table-cell-role="th">0__variance</th>
+<th data-quarto-table-cell-role="th">0__root_mean_square</th>
+<th data-quarto-table-cell-role="th">0__maximum</th>
+<th data-quarto-table-cell-role="th">0__absolute_maximum</th>
+<th data-quarto-table-cell-role="th">0__minimum</th>
+<th data-quarto-table-cell-role="th">1__sum_values</th>
+<th data-quarto-table-cell-role="th">1__median</th>
+<th data-quarto-table-cell-role="th">1__mean</th>
+<th data-quarto-table-cell-role="th">1__length</th>
+<th data-quarto-table-cell-role="th">1__standard_deviation</th>
+<th data-quarto-table-cell-role="th">1__variance</th>
+<th data-quarto-table-cell-role="th">1__root_mean_square</th>
+<th data-quarto-table-cell-role="th">1__maximum</th>
+<th data-quarto-table-cell-role="th">1__absolute_maximum</th>
+<th data-quarto-table-cell-role="th">1__minimum</th>
+<th data-quarto-table-cell-role="th">2__sum_values</th>
+<th data-quarto-table-cell-role="th">2__median</th>
+<th data-quarto-table-cell-role="th">2__mean</th>
+<th data-quarto-table-cell-role="th">2__length</th>
+<th data-quarto-table-cell-role="th">2__standard_deviation</th>
+<th data-quarto-table-cell-role="th">2__variance</th>
+<th data-quarto-table-cell-role="th">2__root_mean_square</th>
+<th data-quarto-table-cell-role="th">2__maximum</th>
+<th data-quarto-table-cell-role="th">2__absolute_maximum</th>
+<th data-quarto-table-cell-role="th">2__minimum</th>
+<th data-quarto-table-cell-role="th">3__sum_values</th>
+<th data-quarto-table-cell-role="th">3__median</th>
+<th data-quarto-table-cell-role="th">3__mean</th>
+<th data-quarto-table-cell-role="th">3__length</th>
+<th data-quarto-table-cell-role="th">3__standard_deviation</th>
+<th data-quarto-table-cell-role="th">3__variance</th>
+<th data-quarto-table-cell-role="th">3__root_mean_square</th>
+<th data-quarto-table-cell-role="th">3__maximum</th>
+<th data-quarto-table-cell-role="th">3__absolute_maximum</th>
+<th data-quarto-table-cell-role="th">3__minimum</th>
+<th data-quarto-table-cell-role="th">4__sum_values</th>
+<th data-quarto-table-cell-role="th">4__median</th>
+<th data-quarto-table-cell-role="th">4__mean</th>
+<th data-quarto-table-cell-role="th">4__length</th>
+<th data-quarto-table-cell-role="th">4__standard_deviation</th>
+<th data-quarto-table-cell-role="th">4__variance</th>
+<th data-quarto-table-cell-role="th">4__root_mean_square</th>
+<th data-quarto-table-cell-role="th">4__maximum</th>
+<th data-quarto-table-cell-role="th">4__absolute_maximum</th>
+<th data-quarto-table-cell-role="th">4__minimum</th>
+<th data-quarto-table-cell-role="th">5__sum_values</th>
+<th data-quarto-table-cell-role="th">5__median</th>
+<th data-quarto-table-cell-role="th">5__mean</th>
+<th data-quarto-table-cell-role="th">5__length</th>
+<th data-quarto-table-cell-role="th">5__standard_deviation</th>
+<th data-quarto-table-cell-role="th">5__variance</th>
+<th data-quarto-table-cell-role="th">5__root_mean_square</th>
+<th data-quarto-table-cell-role="th">5__maximum</th>
+<th data-quarto-table-cell-role="th">5__absolute_maximum</th>
+<th data-quarto-table-cell-role="th">5__minimum</th>
+<th data-quarto-table-cell-role="th">6__sum_values</th>
+<th data-quarto-table-cell-role="th">6__median</th>
+<th data-quarto-table-cell-role="th">6__mean</th>
+<th data-quarto-table-cell-role="th">6__length</th>
+<th data-quarto-table-cell-role="th">6__standard_deviation</th>
+<th data-quarto-table-cell-role="th">6__variance</th>
+<th data-quarto-table-cell-role="th">6__root_mean_square</th>
+<th data-quarto-table-cell-role="th">6__maximum</th>
+<th data-quarto-table-cell-role="th">6__absolute_maximum</th>
+<th data-quarto-table-cell-role="th">6__minimum</th>
+<th data-quarto-table-cell-role="th">7__sum_values</th>
+<th data-quarto-table-cell-role="th">7__median</th>
+<th data-quarto-table-cell-role="th">7__mean</th>
+<th data-quarto-table-cell-role="th">7__length</th>
+<th data-quarto-table-cell-role="th">7__standard_deviation</th>
+<th data-quarto-table-cell-role="th">7__variance</th>
+<th data-quarto-table-cell-role="th">7__root_mean_square</th>
+<th data-quarto-table-cell-role="th">7__maximum</th>
+<th data-quarto-table-cell-role="th">7__absolute_maximum</th>
+<th data-quarto-table-cell-role="th">7__minimum</th>
+<th data-quarto-table-cell-role="th">8__sum_values</th>
+<th data-quarto-table-cell-role="th">8__median</th>
+<th data-quarto-table-cell-role="th">8__mean</th>
+<th data-quarto-table-cell-role="th">8__length</th>
+<th data-quarto-table-cell-role="th">8__standard_deviation</th>
+<th data-quarto-table-cell-role="th">8__variance</th>
+<th data-quarto-table-cell-role="th">8__root_mean_square</th>
+<th data-quarto-table-cell-role="th">8__maximum</th>
+<th data-quarto-table-cell-role="th">8__absolute_maximum</th>
+<th data-quarto-table-cell-role="th">8__minimum</th>
+<th data-quarto-table-cell-role="th">9__sum_values</th>
+<th data-quarto-table-cell-role="th">9__median</th>
+<th data-quarto-table-cell-role="th">9__mean</th>
+<th data-quarto-table-cell-role="th">9__length</th>
+<th data-quarto-table-cell-role="th">9__standard_deviation</th>
+<th data-quarto-table-cell-role="th">9__variance</th>
+<th data-quarto-table-cell-role="th">9__root_mean_square</th>
+<th data-quarto-table-cell-role="th">9__maximum</th>
+<th data-quarto-table-cell-role="th">9__absolute_maximum</th>
+<th data-quarto-table-cell-role="th">9__minimum</th>
+<th data-quarto-table-cell-role="th">10__sum_values</th>
+<th data-quarto-table-cell-role="th">10__median</th>
+<th data-quarto-table-cell-role="th">10__mean</th>
+<th data-quarto-table-cell-role="th">10__length</th>
+<th data-quarto-table-cell-role="th">10__standard_deviation</th>
+<th data-quarto-table-cell-role="th">10__variance</th>
+<th data-quarto-table-cell-role="th">10__root_mean_square</th>
+<th data-quarto-table-cell-role="th">10__maximum</th>
+<th data-quarto-table-cell-role="th">10__absolute_maximum</th>
+<th data-quarto-table-cell-role="th">10__minimum</th>
+<th data-quarto-table-cell-role="th">11__sum_values</th>
+<th data-quarto-table-cell-role="th">11__median</th>
+<th data-quarto-table-cell-role="th">11__mean</th>
+<th data-quarto-table-cell-role="th">11__length</th>
+<th data-quarto-table-cell-role="th">11__standard_deviation</th>
+<th data-quarto-table-cell-role="th">11__variance</th>
+<th data-quarto-table-cell-role="th">11__root_mean_square</th>
+<th data-quarto-table-cell-role="th">11__maximum</th>
+<th data-quarto-table-cell-role="th">11__absolute_maximum</th>
+<th data-quarto-table-cell-role="th">11__minimum</th>
+<th data-quarto-table-cell-role="th">12__sum_values</th>
+<th data-quarto-table-cell-role="th">12__median</th>
+<th data-quarto-table-cell-role="th">12__mean</th>
+<th data-quarto-table-cell-role="th">12__length</th>
+<th data-quarto-table-cell-role="th">12__standard_deviation</th>
+<th data-quarto-table-cell-role="th">12__variance</th>
+<th data-quarto-table-cell-role="th">12__root_mean_square</th>
+<th data-quarto-table-cell-role="th">12__maximum</th>
+<th data-quarto-table-cell-role="th">12__absolute_maximum</th>
+<th data-quarto-table-cell-role="th">12__minimum</th>
+<th data-quarto-table-cell-role="th">13__sum_values</th>
+<th data-quarto-table-cell-role="th">13__median</th>
+<th data-quarto-table-cell-role="th">13__mean</th>
+<th data-quarto-table-cell-role="th">13__length</th>
+<th data-quarto-table-cell-role="th">13__standard_deviation</th>
+<th data-quarto-table-cell-role="th">13__variance</th>
+<th data-quarto-table-cell-role="th">13__root_mean_square</th>
+<th data-quarto-table-cell-role="th">13__maximum</th>
+<th data-quarto-table-cell-role="th">13__absolute_maximum</th>
+<th data-quarto-table-cell-role="th">13__minimum</th>
+<th data-quarto-table-cell-role="th">14__sum_values</th>
+<th data-quarto-table-cell-role="th">14__median</th>
+<th data-quarto-table-cell-role="th">14__mean</th>
+<th data-quarto-table-cell-role="th">14__length</th>
+<th data-quarto-table-cell-role="th">14__standard_deviation</th>
+<th data-quarto-table-cell-role="th">14__variance</th>
+<th data-quarto-table-cell-role="th">14__root_mean_square</th>
+<th data-quarto-table-cell-role="th">14__maximum</th>
+<th data-quarto-table-cell-role="th">14__absolute_maximum</th>
+<th data-quarto-table-cell-role="th">14__minimum</th>
+<th data-quarto-table-cell-role="th">15__sum_values</th>
+<th data-quarto-table-cell-role="th">15__median</th>
+<th data-quarto-table-cell-role="th">15__mean</th>
+<th data-quarto-table-cell-role="th">15__length</th>
+<th data-quarto-table-cell-role="th">15__standard_deviation</th>
+<th data-quarto-table-cell-role="th">15__variance</th>
+<th data-quarto-table-cell-role="th">15__root_mean_square</th>
+<th data-quarto-table-cell-role="th">15__maximum</th>
+<th data-quarto-table-cell-role="th">15__absolute_maximum</th>
+<th data-quarto-table-cell-role="th">15__minimum</th>
+<th data-quarto-table-cell-role="th">16__sum_values</th>
+<th data-quarto-table-cell-role="th">16__median</th>
+<th data-quarto-table-cell-role="th">16__mean</th>
+<th data-quarto-table-cell-role="th">16__length</th>
+<th data-quarto-table-cell-role="th">16__standard_deviation</th>
+<th data-quarto-table-cell-role="th">16__variance</th>
+<th data-quarto-table-cell-role="th">16__root_mean_square</th>
+<th data-quarto-table-cell-role="th">16__maximum</th>
+<th data-quarto-table-cell-role="th">16__absolute_maximum</th>
+<th data-quarto-table-cell-role="th">16__minimum</th>
+<th data-quarto-table-cell-role="th">17__sum_values</th>
+<th data-quarto-table-cell-role="th">17__median</th>
+<th data-quarto-table-cell-role="th">17__mean</th>
+<th data-quarto-table-cell-role="th">17__length</th>
+<th data-quarto-table-cell-role="th">17__standard_deviation</th>
+<th data-quarto-table-cell-role="th">17__variance</th>
+<th data-quarto-table-cell-role="th">17__root_mean_square</th>
+<th data-quarto-table-cell-role="th">17__maximum</th>
+<th data-quarto-table-cell-role="th">17__absolute_maximum</th>
+<th data-quarto-table-cell-role="th">17__minimum</th>
+<th data-quarto-table-cell-role="th">18__sum_values</th>
+<th data-quarto-table-cell-role="th">18__median</th>
+<th data-quarto-table-cell-role="th">18__mean</th>
+<th data-quarto-table-cell-role="th">18__length</th>
+<th data-quarto-table-cell-role="th">18__standard_deviation</th>
+<th data-quarto-table-cell-role="th">18__variance</th>
+<th data-quarto-table-cell-role="th">18__root_mean_square</th>
+<th data-quarto-table-cell-role="th">18__maximum</th>
+<th data-quarto-table-cell-role="th">18__absolute_maximum</th>
+<th data-quarto-table-cell-role="th">18__minimum</th>
+<th data-quarto-table-cell-role="th">19__sum_values</th>
+<th data-quarto-table-cell-role="th">19__median</th>
+<th data-quarto-table-cell-role="th">19__mean</th>
+<th data-quarto-table-cell-role="th">19__length</th>
+<th data-quarto-table-cell-role="th">19__standard_deviation</th>
+<th data-quarto-table-cell-role="th">19__variance</th>
+<th data-quarto-table-cell-role="th">19__root_mean_square</th>
+<th data-quarto-table-cell-role="th">19__maximum</th>
+<th data-quarto-table-cell-role="th">19__absolute_maximum</th>
+<th data-quarto-table-cell-role="th">19__minimum</th>
+<th data-quarto-table-cell-role="th">20__sum_values</th>
+<th data-quarto-table-cell-role="th">20__median</th>
+<th data-quarto-table-cell-role="th">20__mean</th>
+<th data-quarto-table-cell-role="th">20__length</th>
+<th data-quarto-table-cell-role="th">20__standard_deviation</th>
+<th data-quarto-table-cell-role="th">20__variance</th>
+<th data-quarto-table-cell-role="th">20__root_mean_square</th>
+<th data-quarto-table-cell-role="th">20__maximum</th>
+<th data-quarto-table-cell-role="th">20__absolute_maximum</th>
+<th data-quarto-table-cell-role="th">20__minimum</th>
+<th data-quarto-table-cell-role="th">21__sum_values</th>
+<th data-quarto-table-cell-role="th">21__median</th>
+<th data-quarto-table-cell-role="th">21__mean</th>
+<th data-quarto-table-cell-role="th">21__length</th>
+<th data-quarto-table-cell-role="th">21__standard_deviation</th>
+<th data-quarto-table-cell-role="th">21__variance</th>
+<th data-quarto-table-cell-role="th">21__root_mean_square</th>
+<th data-quarto-table-cell-role="th">21__maximum</th>
+<th data-quarto-table-cell-role="th">21__absolute_maximum</th>
+<th data-quarto-table-cell-role="th">21__minimum</th>
+<th data-quarto-table-cell-role="th">22__sum_values</th>
+<th data-quarto-table-cell-role="th">22__median</th>
+<th data-quarto-table-cell-role="th">22__mean</th>
+<th data-quarto-table-cell-role="th">22__length</th>
+<th data-quarto-table-cell-role="th">22__standard_deviation</th>
+<th data-quarto-table-cell-role="th">22__variance</th>
+<th data-quarto-table-cell-role="th">22__root_mean_square</th>
+<th data-quarto-table-cell-role="th">22__maximum</th>
+<th data-quarto-table-cell-role="th">22__absolute_maximum</th>
+<th data-quarto-table-cell-role="th">22__minimum</th>
+<th data-quarto-table-cell-role="th">23__sum_values</th>
+<th data-quarto-table-cell-role="th">23__median</th>
+<th data-quarto-table-cell-role="th">23__mean</th>
+<th data-quarto-table-cell-role="th">23__length</th>
+<th data-quarto-table-cell-role="th">23__standard_deviation</th>
+<th data-quarto-table-cell-role="th">23__variance</th>
+<th data-quarto-table-cell-role="th">23__root_mean_square</th>
+<th data-quarto-table-cell-role="th">23__maximum</th>
+<th data-quarto-table-cell-role="th">23__absolute_maximum</th>
+<th data-quarto-table-cell-role="th">23__minimum</th>
+<th data-quarto-table-cell-role="th">target</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>-29.398621</td>
+<td>-0.578626</td>
+<td>-0.576444</td>
+<td>51.0</td>
+<td>0.019595</td>
+<td>0.000384</td>
+<td>0.576777</td>
+<td>-0.536114</td>
+<td>0.606751</td>
+<td>-0.606751</td>
+<td>-88.761322</td>
+<td>-1.745473</td>
+<td>-1.740418</td>
+<td>51.0</td>
+<td>0.033961</td>
+<td>0.001153</td>
+<td>1.740749</td>
+<td>-1.659181</td>
+<td>1.779713</td>
+<td>-1.779713</td>
+<td>-35.539612</td>
+<td>-0.696636</td>
+<td>-0.696855</td>
+<td>51.0</td>
+<td>0.005860</td>
+<td>0.000034</td>
+<td>0.696880</td>
+<td>-0.685844</td>
+<td>0.710908</td>
+<td>-0.710908</td>
+<td>63.889797</td>
+<td>0.837208</td>
+<td>1.252741</td>
+<td>51.0</td>
+<td>0.676822</td>
+<td>0.458088</td>
+<td>1.423885</td>
+<td>2.169677</td>
+<td>2.169677</td>
+<td>0.536361</td>
+<td>-54.103661</td>
+<td>-1.758527</td>
+<td>-1.060856</td>
+<td>51.0</td>
+<td>0.952467</td>
+<td>0.907193</td>
+<td>1.425696</td>
+<td>0.619366</td>
+<td>1.832052</td>
+<td>-1.832052</td>
+<td>-25.470938</td>
+<td>-0.562629</td>
+<td>-0.499430</td>
+<td>51.0</td>
+<td>0.176602</td>
+<td>0.031188</td>
+<td>0.529735</td>
+<td>-0.166668</td>
+<td>0.659942</td>
+<td>-0.659942</td>
+<td>-33.909939</td>
+<td>-0.666688</td>
+<td>-0.664901</td>
+<td>51.0</td>
+<td>0.013168</td>
+<td>0.000173</td>
+<td>0.665031</td>
+<td>-0.643999</td>
+<td>0.682598</td>
+<td>-0.682598</td>
+<td>-39.194389</td>
+<td>-0.766594</td>
+<td>-0.768517</td>
+<td>51.0</td>
+<td>0.007046</td>
+<td>0.000050</td>
+<td>0.768550</td>
+<td>-0.750228</td>
+<td>0.782717</td>
+<td>-0.782717</td>
+<td>-9.894929</td>
+<td>-0.191213</td>
+<td>-0.194018</td>
+<td>51.0</td>
+<td>0.008862</td>
+<td>0.000079</td>
+<td>0.194220</td>
+<td>-0.182825</td>
+<td>0.210663</td>
+<td>-0.210663</td>
+<td>41.573109</td>
+<td>0.658693</td>
+<td>0.815159</td>
+<td>51.0</td>
+<td>0.227995</td>
+<td>0.051982</td>
+<td>0.846443</td>
+<td>1.144142</td>
+<td>1.144142</td>
+<td>0.601647</td>
+<td>-26.870213</td>
+<td>-0.801317</td>
+<td>-0.526867</td>
+<td>51.0</td>
+<td>0.410643</td>
+<td>0.168628</td>
+<td>0.667994</td>
+<td>0.183081</td>
+<td>0.862615</td>
+<td>-0.862615</td>
+<td>-4.248524</td>
+<td>-0.096245</td>
+<td>-0.083304</td>
+<td>51.0</td>
+<td>0.033176</td>
+<td>0.001101</td>
+<td>0.089668</td>
+<td>-0.021126</td>
+<td>0.121141</td>
+<td>-0.121141</td>
+<td>-33.603584</td>
+<td>-0.660318</td>
+<td>-0.658894</td>
+<td>51.0</td>
+<td>0.016815</td>
+<td>0.000283</td>
+<td>0.659108</td>
+<td>-0.626267</td>
+<td>0.684841</td>
+<td>-0.684841</td>
+<td>-70.926521</td>
+<td>-1.409798</td>
+<td>-1.390716</td>
+<td>51.0</td>
+<td>0.031278</td>
+<td>0.000978</td>
+<td>1.391068</td>
+<td>-1.337275</td>
+<td>1.423652</td>
+<td>-1.423652</td>
+<td>-26.984289</td>
+<td>-0.529285</td>
+<td>-0.529104</td>
+<td>51.0</td>
+<td>0.005923</td>
+<td>0.000035</td>
+<td>0.529137</td>
+<td>-0.517306</td>
+<td>0.548614</td>
+<td>-0.548614</td>
+<td>56.133301</td>
+<td>0.789974</td>
+<td>1.100653</td>
+<td>51.0</td>
+<td>0.483293</td>
+<td>0.233572</td>
+<td>1.202085</td>
+<td>1.757948</td>
+<td>1.757948</td>
+<td>0.587645</td>
+<td>-45.478088</td>
+<td>-1.421026</td>
+<td>-0.891727</td>
+<td>51.0</td>
+<td>0.739772</td>
+<td>0.547262</td>
+<td>1.158637</td>
+<td>0.386504</td>
+<td>1.509923</td>
+<td>-1.509923</td>
+<td>-17.145500</td>
+<td>-0.387209</td>
+<td>-0.336186</td>
+<td>51.0</td>
+<td>0.127724</td>
+<td>0.016313</td>
+<td>0.359631</td>
+<td>-0.108017</td>
+<td>0.469502</td>
+<td>-0.469502</td>
+<td>-25.565697</td>
+<td>-0.502589</td>
+<td>-0.501288</td>
+<td>51.0</td>
+<td>0.016613</td>
+<td>0.000276</td>
+<td>0.501563</td>
+<td>-0.465890</td>
+<td>0.535957</td>
+<td>-0.535957</td>
+<td>-77.823814</td>
+<td>-1.519193</td>
+<td>-1.525957</td>
+<td>51.0</td>
+<td>0.028265</td>
+<td>0.000799</td>
+<td>1.526219</td>
+<td>-1.468685</td>
+<td>1.564035</td>
+<td>-1.564035</td>
+<td>-36.996349</td>
+<td>-0.727857</td>
+<td>-0.725419</td>
+<td>51.0</td>
+<td>0.007882</td>
+<td>0.000062</td>
+<td>0.725461</td>
+<td>-0.705429</td>
+<td>0.735931</td>
+<td>-0.735931</td>
+<td>58.453831</td>
+<td>0.779782</td>
+<td>1.146154</td>
+<td>51.0</td>
+<td>0.682839</td>
+<td>0.466269</td>
+<td>1.334143</td>
+<td>2.093526</td>
+<td>2.093526</td>
+<td>0.433132</td>
+<td>-52.249134</td>
+<td>-1.582441</td>
+<td>-1.024493</td>
+<td>51.0</td>
+<td>0.815997</td>
+<td>0.665852</td>
+<td>1.309747</td>
+<td>0.419112</td>
+<td>1.718448</td>
+<td>-1.718448</td>
+<td>-22.941730</td>
+<td>-0.449813</td>
+<td>-0.449838</td>
+<td>51.0</td>
+<td>0.179541</td>
+<td>0.032235</td>
+<td>0.484344</td>
+<td>-0.149044</td>
+<td>0.718254</td>
+<td>-0.718254</td>
+<td>2.0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>-22.630985</td>
+<td>-0.572027</td>
+<td>-0.443745</td>
+<td>51.0</td>
+<td>0.548965</td>
+<td>0.301363</td>
+<td>0.705884</td>
+<td>0.844384</td>
+<td>1.284441</td>
+<td>-1.284441</td>
+<td>-43.583847</td>
+<td>-1.497262</td>
+<td>-0.854585</td>
+<td>51.0</td>
+<td>1.019406</td>
+<td>1.039188</td>
+<td>1.330227</td>
+<td>1.096710</td>
+<td>1.692231</td>
+<td>-1.692231</td>
+<td>-31.147585</td>
+<td>-0.398927</td>
+<td>-0.610737</td>
+<td>51.0</td>
+<td>0.360847</td>
+<td>0.130210</td>
+<td>0.709373</td>
+<td>-0.256470</td>
+<td>1.562690</td>
+<td>-1.562690</td>
+<td>35.902119</td>
+<td>0.479088</td>
+<td>0.703963</td>
+<td>51.0</td>
+<td>0.365270</td>
+<td>0.133422</td>
+<td>0.793087</td>
+<td>1.559241</td>
+<td>1.559241</td>
+<td>0.320613</td>
+<td>-26.475592</td>
+<td>-1.411000</td>
+<td>-0.519129</td>
+<td>51.0</td>
+<td>1.250764</td>
+<td>1.564410</td>
+<td>1.354218</td>
+<td>1.246734</td>
+<td>1.762012</td>
+<td>-1.762012</td>
+<td>-34.175106</td>
+<td>-0.647045</td>
+<td>-0.670100</td>
+<td>51.0</td>
+<td>0.273988</td>
+<td>0.075069</td>
+<td>0.723950</td>
+<td>-0.189910</td>
+<td>1.339854</td>
+<td>-1.339854</td>
+<td>-25.383873</td>
+<td>-0.599582</td>
+<td>-0.497723</td>
+<td>51.0</td>
+<td>0.304314</td>
+<td>0.092607</td>
+<td>0.583383</td>
+<td>0.198417</td>
+<td>0.860741</td>
+<td>-0.860741</td>
+<td>-23.190578</td>
+<td>-0.632231</td>
+<td>-0.454717</td>
+<td>51.0</td>
+<td>0.267774</td>
+<td>0.071703</td>
+<td>0.527703</td>
+<td>0.086810</td>
+<td>0.735903</td>
+<td>-0.735903</td>
+<td>-9.272245</td>
+<td>0.044390</td>
+<td>-0.181809</td>
+<td>51.0</td>
+<td>0.310334</td>
+<td>0.096307</td>
+<td>0.359668</td>
+<td>0.103880</td>
+<td>0.687320</td>
+<td>-0.687320</td>
+<td>33.800453</td>
+<td>0.639043</td>
+<td>0.662754</td>
+<td>51.0</td>
+<td>0.155807</td>
+<td>0.024276</td>
+<td>0.680822</td>
+<td>0.971393</td>
+<td>0.971393</td>
+<td>0.338048</td>
+<td>-20.350363</td>
+<td>-0.685427</td>
+<td>-0.399027</td>
+<td>51.0</td>
+<td>0.401511</td>
+<td>0.161211</td>
+<td>0.566068</td>
+<td>0.388883</td>
+<td>0.798647</td>
+<td>-0.798647</td>
+<td>-22.385489</td>
+<td>-0.310659</td>
+<td>-0.438931</td>
+<td>51.0</td>
+<td>0.202867</td>
+<td>0.041155</td>
+<td>0.483545</td>
+<td>-0.223507</td>
+<td>0.780465</td>
+<td>-0.780465</td>
+<td>-23.431786</td>
+<td>-0.607775</td>
+<td>-0.459447</td>
+<td>51.0</td>
+<td>0.502495</td>
+<td>0.252501</td>
+<td>0.680876</td>
+<td>0.557547</td>
+<td>1.097538</td>
+<td>-1.097538</td>
+<td>-35.239632</td>
+<td>-1.173477</td>
+<td>-0.690973</td>
+<td>51.0</td>
+<td>0.790543</td>
+<td>0.624958</td>
+<td>1.049953</td>
+<td>0.850109</td>
+<td>1.334061</td>
+<td>-1.334061</td>
+<td>-23.722792</td>
+<td>-0.263811</td>
+<td>-0.465153</td>
+<td>51.0</td>
+<td>0.304623</td>
+<td>0.092795</td>
+<td>0.556024</td>
+<td>-0.096469</td>
+<td>1.355410</td>
+<td>-1.355410</td>
+<td>36.532707</td>
+<td>0.576822</td>
+<td>0.716328</td>
+<td>51.0</td>
+<td>0.285204</td>
+<td>0.081341</td>
+<td>0.771016</td>
+<td>1.347809</td>
+<td>1.347809</td>
+<td>0.321302</td>
+<td>-23.286812</td>
+<td>-1.098079</td>
+<td>-0.456604</td>
+<td>51.0</td>
+<td>0.934937</td>
+<td>0.874106</td>
+<td>1.040478</td>
+<td>0.973006</td>
+<td>1.405902</td>
+<td>-1.405902</td>
+<td>-31.214712</td>
+<td>-0.552194</td>
+<td>-0.612053</td>
+<td>51.0</td>
+<td>0.146669</td>
+<td>0.021512</td>
+<td>0.629381</td>
+<td>-0.445301</td>
+<td>1.042179</td>
+<td>-1.042179</td>
+<td>-23.984716</td>
+<td>-0.675121</td>
+<td>-0.470289</td>
+<td>51.0</td>
+<td>0.554180</td>
+<td>0.307116</td>
+<td>0.726834</td>
+<td>0.807535</td>
+<td>1.182987</td>
+<td>-1.182987</td>
+<td>-39.006611</td>
+<td>-1.346193</td>
+<td>-0.764835</td>
+<td>51.0</td>
+<td>0.884366</td>
+<td>0.782103</td>
+<td>1.169220</td>
+<td>1.003716</td>
+<td>1.507433</td>
+<td>-1.507433</td>
+<td>-28.776979</td>
+<td>-0.436710</td>
+<td>-0.564255</td>
+<td>51.0</td>
+<td>0.328655</td>
+<td>0.108014</td>
+<td>0.652991</td>
+<td>-0.268483</td>
+<td>1.373182</td>
+<td>-1.373182</td>
+<td>33.181316</td>
+<td>0.482228</td>
+<td>0.650614</td>
+<td>51.0</td>
+<td>0.366002</td>
+<td>0.133957</td>
+<td>0.746496</td>
+<td>1.554717</td>
+<td>1.554717</td>
+<td>0.254808</td>
+<td>-25.558233</td>
+<td>-1.347874</td>
+<td>-0.501142</td>
+<td>51.0</td>
+<td>1.110295</td>
+<td>1.232755</td>
+<td>1.218153</td>
+<td>1.149943</td>
+<td>1.741076</td>
+<td>-1.741076</td>
+<td>-33.443592</td>
+<td>-0.659850</td>
+<td>-0.655757</td>
+<td>51.0</td>
+<td>0.246830</td>
+<td>0.060925</td>
+<td>0.700673</td>
+<td>-0.250632</td>
+<td>1.340311</td>
+<td>-1.340311</td>
+<td>6.0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>-35.085182</td>
+<td>-0.687561</td>
+<td>-0.687945</td>
+<td>51.0</td>
+<td>0.030869</td>
+<td>0.000953</td>
+<td>0.688637</td>
+<td>-0.624283</td>
+<td>0.739868</td>
+<td>-0.739868</td>
+<td>-106.435272</td>
+<td>-2.126637</td>
+<td>-2.086966</td>
+<td>51.0</td>
+<td>0.089233</td>
+<td>0.007963</td>
+<td>2.088873</td>
+<td>-1.959578</td>
+<td>2.215342</td>
+<td>-2.215342</td>
+<td>-43.562584</td>
+<td>-0.854689</td>
+<td>-0.854168</td>
+<td>51.0</td>
+<td>0.032274</td>
+<td>0.001042</td>
+<td>0.854778</td>
+<td>-0.801072</td>
+<td>0.912399</td>
+<td>-0.912399</td>
+<td>73.886467</td>
+<td>1.213113</td>
+<td>1.448754</td>
+<td>51.0</td>
+<td>0.694268</td>
+<td>0.482008</td>
+<td>1.606517</td>
+<td>2.342902</td>
+<td>2.342902</td>
+<td>0.642018</td>
+<td>-67.402786</td>
+<td>-2.043274</td>
+<td>-1.321623</td>
+<td>51.0</td>
+<td>1.021520</td>
+<td>1.043502</td>
+<td>1.670386</td>
+<td>0.217647</td>
+<td>2.288412</td>
+<td>-2.288412</td>
+<td>-40.294270</td>
+<td>-0.799205</td>
+<td>-0.790084</td>
+<td>51.0</td>
+<td>0.048503</td>
+<td>0.002353</td>
+<td>0.791571</td>
+<td>-0.688059</td>
+<td>0.888159</td>
+<td>-0.888159</td>
+<td>-34.629044</td>
+<td>-0.681434</td>
+<td>-0.679001</td>
+<td>51.0</td>
+<td>0.017385</td>
+<td>0.000302</td>
+<td>0.679223</td>
+<td>-0.649223</td>
+<td>0.703762</td>
+<td>-0.703762</td>
+<td>-40.258858</td>
+<td>-0.804071</td>
+<td>-0.789389</td>
+<td>51.0</td>
+<td>0.033163</td>
+<td>0.001100</td>
+<td>0.790086</td>
+<td>-0.741303</td>
+<td>0.842110</td>
+<td>-0.842110</td>
+<td>-12.998519</td>
+<td>-0.267240</td>
+<td>-0.254873</td>
+<td>51.0</td>
+<td>0.017719</td>
+<td>0.000314</td>
+<td>0.255488</td>
+<td>-0.224532</td>
+<td>0.273925</td>
+<td>-0.273925</td>
+<td>47.912884</td>
+<td>0.805694</td>
+<td>0.939468</td>
+<td>51.0</td>
+<td>0.229189</td>
+<td>0.052528</td>
+<td>0.967020</td>
+<td>1.233679</td>
+<td>1.233679</td>
+<td>0.697387</td>
+<td>-28.587210</td>
+<td>-0.880814</td>
+<td>-0.560534</td>
+<td>51.0</td>
+<td>0.403328</td>
+<td>0.162674</td>
+<td>0.690559</td>
+<td>0.038331</td>
+<td>0.921428</td>
+<td>-0.921428</td>
+<td>-10.081242</td>
+<td>-0.202227</td>
+<td>-0.197671</td>
+<td>51.0</td>
+<td>0.030237</td>
+<td>0.000914</td>
+<td>0.199971</td>
+<td>-0.156339</td>
+<td>0.284775</td>
+<td>-0.284775</td>
+<td>-33.949532</td>
+<td>-0.670309</td>
+<td>-0.665677</td>
+<td>51.0</td>
+<td>0.022919</td>
+<td>0.000525</td>
+<td>0.666072</td>
+<td>-0.629390</td>
+<td>0.697200</td>
+<td>-0.697200</td>
+<td>-85.588051</td>
+<td>-1.724138</td>
+<td>-1.678197</td>
+<td>51.0</td>
+<td>0.080795</td>
+<td>0.006528</td>
+<td>1.680141</td>
+<td>-1.563966</td>
+<td>1.791635</td>
+<td>-1.791635</td>
+<td>-36.548447</td>
+<td>-0.725060</td>
+<td>-0.716636</td>
+<td>51.0</td>
+<td>0.030728</td>
+<td>0.000944</td>
+<td>0.717295</td>
+<td>-0.671330</td>
+<td>0.760870</td>
+<td>-0.760870</td>
+<td>65.181526</td>
+<td>1.113361</td>
+<td>1.278069</td>
+<td>51.0</td>
+<td>0.494449</td>
+<td>0.244479</td>
+<td>1.370380</td>
+<td>1.934985</td>
+<td>1.934985</td>
+<td>0.748902</td>
+<td>-54.790508</td>
+<td>-1.635758</td>
+<td>-1.074324</td>
+<td>51.0</td>
+<td>0.817957</td>
+<td>0.669053</td>
+<td>1.350268</td>
+<td>0.139169</td>
+<td>1.839433</td>
+<td>-1.839433</td>
+<td>-28.428947</td>
+<td>-0.573270</td>
+<td>-0.557430</td>
+<td>51.0</td>
+<td>0.053855</td>
+<td>0.002900</td>
+<td>0.560026</td>
+<td>-0.439413</td>
+<td>0.630352</td>
+<td>-0.630352</td>
+<td>-26.714603</td>
+<td>-0.519391</td>
+<td>-0.523816</td>
+<td>51.0</td>
+<td>0.032224</td>
+<td>0.001038</td>
+<td>0.524806</td>
+<td>-0.489540</td>
+<td>0.659033</td>
+<td>-0.659033</td>
+<td>-93.493767</td>
+<td>-1.865099</td>
+<td>-1.833211</td>
+<td>51.0</td>
+<td>0.092432</td>
+<td>0.008544</td>
+<td>1.835540</td>
+<td>-1.700841</td>
+<td>2.010093</td>
+<td>-2.010093</td>
+<td>-43.577209</td>
+<td>-0.860299</td>
+<td>-0.854455</td>
+<td>51.0</td>
+<td>0.049561</td>
+<td>0.002456</td>
+<td>0.855891</td>
+<td>-0.796042</td>
+<td>1.014816</td>
+<td>-1.014816</td>
+<td>65.893486</td>
+<td>1.051441</td>
+<td>1.292029</td>
+<td>51.0</td>
+<td>0.685999</td>
+<td>0.470595</td>
+<td>1.462851</td>
+<td>2.178514</td>
+<td>2.178514</td>
+<td>0.574974</td>
+<td>-64.151787</td>
+<td>-1.856631</td>
+<td>-1.257878</td>
+<td>51.0</td>
+<td>0.804017</td>
+<td>0.646444</td>
+<td>1.492884</td>
+<td>-0.037161</td>
+<td>2.008020</td>
+<td>-2.008020</td>
+<td>-39.252415</td>
+<td>-0.786807</td>
+<td>-0.769655</td>
+<td>51.0</td>
+<td>0.054600</td>
+<td>0.002981</td>
+<td>0.771589</td>
+<td>-0.582144</td>
+<td>0.898071</td>
+<td>-0.898071</td>
+<td>3.0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>9.418392</td>
+<td>0.124306</td>
+<td>0.184674</td>
+<td>51.0</td>
+<td>0.683525</td>
+<td>0.467206</td>
+<td>0.708033</td>
+<td>1.098620</td>
+<td>1.098620</td>
+<td>-0.619085</td>
+<td>-65.183624</td>
+<td>-1.598239</td>
+<td>-1.278110</td>
+<td>51.0</td>
+<td>0.931468</td>
+<td>0.867632</td>
+<td>1.581518</td>
+<td>0.194134</td>
+<td>2.234432</td>
+<td>-2.234432</td>
+<td>-41.886803</td>
+<td>-0.976904</td>
+<td>-0.821310</td>
+<td>51.0</td>
+<td>0.252251</td>
+<td>0.063631</td>
+<td>0.859174</td>
+<td>-0.396303</td>
+<td>1.147354</td>
+<td>-1.147354</td>
+<td>45.166958</td>
+<td>0.801148</td>
+<td>0.885627</td>
+<td>51.0</td>
+<td>0.278827</td>
+<td>0.077744</td>
+<td>0.928482</td>
+<td>1.635586</td>
+<td>1.635586</td>
+<td>0.577137</td>
+<td>-35.295097</td>
+<td>-1.093421</td>
+<td>-0.692061</td>
+<td>51.0</td>
+<td>1.567398</td>
+<td>2.456736</td>
+<td>1.713384</td>
+<td>1.325327</td>
+<td>2.416220</td>
+<td>-2.416220</td>
+<td>-19.785007</td>
+<td>-0.294643</td>
+<td>-0.387941</td>
+<td>51.0</td>
+<td>0.282500</td>
+<td>0.079806</td>
+<td>0.479901</td>
+<td>-0.008022</td>
+<td>0.944945</td>
+<td>-0.944945</td>
+<td>-28.304108</td>
+<td>-0.693464</td>
+<td>-0.554982</td>
+<td>51.0</td>
+<td>0.202652</td>
+<td>0.041068</td>
+<td>0.590824</td>
+<td>-0.242434</td>
+<td>0.741845</td>
+<td>-0.741845</td>
+<td>-36.350716</td>
+<td>-0.670180</td>
+<td>-0.712759</td>
+<td>51.0</td>
+<td>0.144370</td>
+<td>0.020843</td>
+<td>0.727233</td>
+<td>-0.523174</td>
+<td>0.890112</td>
+<td>-0.890112</td>
+<td>-28.392370</td>
+<td>-0.522761</td>
+<td>-0.556713</td>
+<td>51.0</td>
+<td>0.107739</td>
+<td>0.011608</td>
+<td>0.567042</td>
+<td>-0.435334</td>
+<td>0.710886</td>
+<td>-0.710886</td>
+<td>38.783321</td>
+<td>0.658475</td>
+<td>0.760457</td>
+<td>51.0</td>
+<td>0.165045</td>
+<td>0.027240</td>
+<td>0.778161</td>
+<td>1.025254</td>
+<td>1.025254</td>
+<td>0.573761</td>
+<td>-29.159790</td>
+<td>-0.807073</td>
+<td>-0.571761</td>
+<td>51.0</td>
+<td>0.451058</td>
+<td>0.203453</td>
+<td>0.728260</td>
+<td>0.058212</td>
+<td>1.089511</td>
+<td>-1.089511</td>
+<td>-0.357431</td>
+<td>0.210966</td>
+<td>-0.007008</td>
+<td>51.0</td>
+<td>0.359132</td>
+<td>0.128976</td>
+<td>0.359200</td>
+<td>0.358109</td>
+<td>0.519043</td>
+<td>-0.519043</td>
+<td>-6.840534</td>
+<td>-0.255334</td>
+<td>-0.134128</td>
+<td>51.0</td>
+<td>0.504682</td>
+<td>0.254704</td>
+<td>0.522201</td>
+<td>0.582558</td>
+<td>0.693457</td>
+<td>-0.693457</td>
+<td>-55.873280</td>
+<td>-1.168818</td>
+<td>-1.095554</td>
+<td>51.0</td>
+<td>0.563111</td>
+<td>0.317094</td>
+<td>1.231801</td>
+<td>-0.219940</td>
+<td>1.721503</td>
+<td>-1.721503</td>
+<td>-37.602516</td>
+<td>-0.815972</td>
+<td>-0.737304</td>
+<td>51.0</td>
+<td>0.176043</td>
+<td>0.030991</td>
+<td>0.758029</td>
+<td>-0.360776</td>
+<td>0.927193</td>
+<td>-0.927193</td>
+<td>43.445599</td>
+<td>0.848623</td>
+<td>0.851875</td>
+<td>51.0</td>
+<td>0.218035</td>
+<td>0.047539</td>
+<td>0.879335</td>
+<td>1.345085</td>
+<td>1.345085</td>
+<td>0.596721</td>
+<td>-33.225483</td>
+<td>-1.050173</td>
+<td>-0.651480</td>
+<td>51.0</td>
+<td>1.146453</td>
+<td>1.314353</td>
+<td>1.318628</td>
+<td>0.890806</td>
+<td>1.963266</td>
+<td>-1.963266</td>
+<td>-12.263644</td>
+<td>-0.319137</td>
+<td>-0.240464</td>
+<td>51.0</td>
+<td>0.276771</td>
+<td>0.076602</td>
+<td>0.366640</td>
+<td>0.244209</td>
+<td>0.701782</td>
+<td>-0.701782</td>
+<td>-1.089832</td>
+<td>-0.055650</td>
+<td>-0.021369</td>
+<td>51.0</td>
+<td>0.549241</td>
+<td>0.301665</td>
+<td>0.549656</td>
+<td>0.656405</td>
+<td>0.802634</td>
+<td>-0.802634</td>
+<td>-58.871620</td>
+<td>-1.318070</td>
+<td>-1.154346</td>
+<td>51.0</td>
+<td>0.793757</td>
+<td>0.630050</td>
+<td>1.400915</td>
+<td>0.036103</td>
+<td>2.034981</td>
+<td>-2.034981</td>
+<td>-38.605354</td>
+<td>-0.873019</td>
+<td>-0.756968</td>
+<td>51.0</td>
+<td>0.309986</td>
+<td>0.096091</td>
+<td>0.817980</td>
+<td>-0.183816</td>
+<td>1.145963</td>
+<td>-1.145963</td>
+<td>44.849518</td>
+<td>0.865092</td>
+<td>0.879402</td>
+<td>51.0</td>
+<td>0.278859</td>
+<td>0.077762</td>
+<td>0.922557</td>
+<td>1.511787</td>
+<td>1.511787</td>
+<td>0.490558</td>
+<td>-35.374996</td>
+<td>-1.168080</td>
+<td>-0.693627</td>
+<td>51.0</td>
+<td>1.392385</td>
+<td>1.938735</td>
+<td>1.555588</td>
+<td>1.122289</td>
+<td>2.264597</td>
+<td>-2.264597</td>
+<td>-23.718605</td>
+<td>-0.533045</td>
+<td>-0.465071</td>
+<td>51.0</td>
+<td>0.283010</td>
+<td>0.080095</td>
+<td>0.544413</td>
+<td>0.070285</td>
+<td>0.913923</td>
+<td>-0.913923</td>
+<td>6.0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>0.670717</td>
+<td>-0.551674</td>
+<td>0.013151</td>
+<td>51.0</td>
+<td>0.796336</td>
+<td>0.634151</td>
+<td>0.796444</td>
+<td>1.303428</td>
+<td>1.303428</td>
+<td>-0.740258</td>
+<td>-82.721443</td>
+<td>-2.117861</td>
+<td>-1.621989</td>
+<td>51.0</td>
+<td>0.745800</td>
+<td>0.556218</td>
+<td>1.785236</td>
+<td>-0.325693</td>
+<td>2.317141</td>
+<td>-2.317141</td>
+<td>-42.753490</td>
+<td>-0.679642</td>
+<td>-0.838304</td>
+<td>51.0</td>
+<td>0.347571</td>
+<td>0.120805</td>
+<td>0.907501</td>
+<td>-0.450540</td>
+<td>1.606419</td>
+<td>-1.606419</td>
+<td>43.941456</td>
+<td>0.675603</td>
+<td>0.861597</td>
+<td>51.0</td>
+<td>0.571390</td>
+<td>0.326487</td>
+<td>1.033845</td>
+<td>2.105319</td>
+<td>2.105319</td>
+<td>0.364709</td>
+<td>-54.047619</td>
+<td>-2.158519</td>
+<td>-1.059757</td>
+<td>51.0</td>
+<td>1.451326</td>
+<td>2.106348</td>
+<td>1.797063</td>
+<td>1.128832</td>
+<td>2.503777</td>
+<td>-2.503777</td>
+<td>-8.701278</td>
+<td>-0.097304</td>
+<td>-0.170613</td>
+<td>51.0</td>
+<td>0.254706</td>
+<td>0.064875</td>
+<td>0.306568</td>
+<td>0.143676</td>
+<td>0.995945</td>
+<td>-0.995945</td>
+<td>-25.513714</td>
+<td>-0.696055</td>
+<td>-0.500269</td>
+<td>51.0</td>
+<td>0.274384</td>
+<td>0.075287</td>
+<td>0.570575</td>
+<td>0.089958</td>
+<td>0.745964</td>
+<td>-0.745964</td>
+<td>-37.482643</td>
+<td>-0.790602</td>
+<td>-0.734954</td>
+<td>51.0</td>
+<td>0.116809</td>
+<td>0.013644</td>
+<td>0.744178</td>
+<td>-0.541465</td>
+<td>0.878685</td>
+<td>-0.878685</td>
+<td>-33.195599</td>
+<td>-0.672431</td>
+<td>-0.650894</td>
+<td>51.0</td>
+<td>0.199584</td>
+<td>0.039834</td>
+<td>0.680806</td>
+<td>-0.429070</td>
+<td>0.989809</td>
+<td>-0.989809</td>
+<td>34.543270</td>
+<td>0.566918</td>
+<td>0.677319</td>
+<td>51.0</td>
+<td>0.293252</td>
+<td>0.085997</td>
+<td>0.738077</td>
+<td>1.267009</td>
+<td>1.267009</td>
+<td>0.387009</td>
+<td>-30.752882</td>
+<td>-0.775993</td>
+<td>-0.602998</td>
+<td>51.0</td>
+<td>0.315380</td>
+<td>0.099464</td>
+<td>0.680493</td>
+<td>0.063736</td>
+<td>1.075059</td>
+<td>-1.075059</td>
+<td>5.405560</td>
+<td>0.286917</td>
+<td>0.105991</td>
+<td>51.0</td>
+<td>0.283277</td>
+<td>0.080246</td>
+<td>0.302456</td>
+<td>0.384380</td>
+<td>0.392310</td>
+<td>-0.392310</td>
+<td>-10.194630</td>
+<td>-0.575963</td>
+<td>-0.199895</td>
+<td>51.0</td>
+<td>0.608274</td>
+<td>0.369997</td>
+<td>0.640277</td>
+<td>0.946359</td>
+<td>0.946359</td>
+<td>-0.750195</td>
+<td>-67.181175</td>
+<td>-1.644588</td>
+<td>-1.317278</td>
+<td>51.0</td>
+<td>0.480866</td>
+<td>0.231232</td>
+<td>1.402303</td>
+<td>-0.524218</td>
+<td>1.829902</td>
+<td>-1.829902</td>
+<td>-42.235485</td>
+<td>-0.693468</td>
+<td>-0.828147</td>
+<td>51.0</td>
+<td>0.266756</td>
+<td>0.071159</td>
+<td>0.870049</td>
+<td>-0.607596</td>
+<td>1.443514</td>
+<td>-1.443514</td>
+<td>42.286137</td>
+<td>0.849937</td>
+<td>0.829140</td>
+<td>51.0</td>
+<td>0.445894</td>
+<td>0.198822</td>
+<td>0.941432</td>
+<td>1.798162</td>
+<td>1.798162</td>
+<td>0.406039</td>
+<td>-45.729931</td>
+<td>-1.668248</td>
+<td>-0.896665</td>
+<td>51.0</td>
+<td>1.043643</td>
+<td>1.089190</td>
+<td>1.375936</td>
+<td>0.752602</td>
+<td>2.014132</td>
+<td>-2.014132</td>
+<td>-2.545863</td>
+<td>0.035224</td>
+<td>-0.049919</td>
+<td>51.0</td>
+<td>0.176097</td>
+<td>0.031010</td>
+<td>0.183036</td>
+<td>0.169495</td>
+<td>0.488377</td>
+<td>-0.488377</td>
+<td>-7.721382</td>
+<td>-0.629895</td>
+<td>-0.151400</td>
+<td>51.0</td>
+<td>0.731868</td>
+<td>0.535631</td>
+<td>0.747364</td>
+<td>1.081553</td>
+<td>1.081553</td>
+<td>-0.841546</td>
+<td>-73.237610</td>
+<td>-1.826482</td>
+<td>-1.436032</td>
+<td>51.0</td>
+<td>0.668636</td>
+<td>0.447074</td>
+<td>1.584065</td>
+<td>-0.235637</td>
+<td>2.140610</td>
+<td>-2.140610</td>
+<td>-44.032135</td>
+<td>-0.673831</td>
+<td>-0.863375</td>
+<td>51.0</td>
+<td>0.386634</td>
+<td>0.149486</td>
+<td>0.945993</td>
+<td>-0.419474</td>
+<td>1.715174</td>
+<td>-1.715174</td>
+<td>41.510166</td>
+<td>0.733873</td>
+<td>0.813925</td>
+<td>51.0</td>
+<td>0.506757</td>
+<td>0.256803</td>
+<td>0.958789</td>
+<td>1.993738</td>
+<td>1.993738</td>
+<td>0.362309</td>
+<td>-50.167858</td>
+<td>-1.763661</td>
+<td>-0.983684</td>
+<td>51.0</td>
+<td>1.247509</td>
+<td>1.556279</td>
+<td>1.588683</td>
+<td>0.955917</td>
+<td>2.361580</td>
+<td>-2.361580</td>
+<td>-8.757638</td>
+<td>-0.146574</td>
+<td>-0.171718</td>
+<td>51.0</td>
+<td>0.236743</td>
+<td>0.056047</td>
+<td>0.292463</td>
+<td>0.202188</td>
+<td>0.984318</td>
+<td>-0.984318</td>
+<td>6.0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">5</td>
+<td>-50.560036</td>
+<td>-0.925159</td>
+<td>-0.991373</td>
+<td>51.0</td>
+<td>0.970520</td>
+<td>0.941910</td>
+<td>1.387347</td>
+<td>0.800761</td>
+<td>2.398621</td>
+<td>-2.398621</td>
+<td>-30.233727</td>
+<td>-0.178814</td>
+<td>-0.592818</td>
+<td>51.0</td>
+<td>1.103251</td>
+<td>1.217162</td>
+<td>1.252436</td>
+<td>0.972976</td>
+<td>2.095890</td>
+<td>-2.095890</td>
+<td>-42.399975</td>
+<td>-0.641855</td>
+<td>-0.831372</td>
+<td>51.0</td>
+<td>0.369349</td>
+<td>0.136419</td>
+<td>0.909724</td>
+<td>-0.293571</td>
+<td>1.665465</td>
+<td>-1.665465</td>
+<td>39.197685</td>
+<td>0.735326</td>
+<td>0.768582</td>
+<td>51.0</td>
+<td>0.972865</td>
+<td>0.946467</td>
+<td>1.239833</td>
+<td>2.223790</td>
+<td>2.223790</td>
+<td>-0.900167</td>
+<td>-25.861439</td>
+<td>0.006240</td>
+<td>-0.507087</td>
+<td>51.0</td>
+<td>1.103717</td>
+<td>1.218190</td>
+<td>1.214631</td>
+<td>1.036380</td>
+<td>2.057254</td>
+<td>-2.057254</td>
+<td>-54.733055</td>
+<td>-0.955823</td>
+<td>-1.073197</td>
+<td>51.0</td>
+<td>0.341752</td>
+<td>0.116795</td>
+<td>1.126298</td>
+<td>-0.407128</td>
+<td>1.797132</td>
+<td>-1.797132</td>
+<td>-43.710899</td>
+<td>-0.780402</td>
+<td>-0.857076</td>
+<td>51.0</td>
+<td>0.244302</td>
+<td>0.059683</td>
+<td>0.891215</td>
+<td>-0.568018</td>
+<td>1.237588</td>
+<td>-1.237588</td>
+<td>-16.875654</td>
+<td>-0.136531</td>
+<td>-0.330895</td>
+<td>51.0</td>
+<td>0.380901</td>
+<td>0.145086</td>
+<td>0.504557</td>
+<td>0.301934</td>
+<td>0.825958</td>
+<td>-0.825958</td>
+<td>-12.057025</td>
+<td>-0.090500</td>
+<td>-0.236412</td>
+<td>51.0</td>
+<td>0.246839</td>
+<td>0.060929</td>
+<td>0.341790</td>
+<td>0.002809</td>
+<td>0.739954</td>
+<td>-0.739954</td>
+<td>43.413063</td>
+<td>0.779447</td>
+<td>0.851237</td>
+<td>51.0</td>
+<td>0.224609</td>
+<td>0.050449</td>
+<td>0.880371</td>
+<td>1.244718</td>
+<td>1.244718</td>
+<td>0.445537</td>
+<td>-16.459957</td>
+<td>-0.233873</td>
+<td>-0.322744</td>
+<td>51.0</td>
+<td>0.378000</td>
+<td>0.142884</td>
+<td>0.497039</td>
+<td>0.267569</td>
+<td>0.802695</td>
+<td>-0.802695</td>
+<td>-29.580076</td>
+<td>-0.443360</td>
+<td>-0.580002</td>
+<td>51.0</td>
+<td>0.283071</td>
+<td>0.080129</td>
+<td>0.645392</td>
+<td>-0.340970</td>
+<td>1.223840</td>
+<td>-1.223840</td>
+<td>-46.450630</td>
+<td>-0.899175</td>
+<td>-0.910797</td>
+<td>51.0</td>
+<td>0.711464</td>
+<td>0.506181</td>
+<td>1.155739</td>
+<td>0.568156</td>
+<td>1.918004</td>
+<td>-1.918004</td>
+<td>-25.124174</td>
+<td>-0.161948</td>
+<td>-0.492631</td>
+<td>51.0</td>
+<td>0.804141</td>
+<td>0.646643</td>
+<td>0.943042</td>
+<td>0.727019</td>
+<td>1.617498</td>
+<td>-1.617498</td>
+<td>-31.201376</td>
+<td>-0.434257</td>
+<td>-0.611792</td>
+<td>51.0</td>
+<td>0.313101</td>
+<td>0.098032</td>
+<td>0.687256</td>
+<td>-0.172693</td>
+<td>1.229459</td>
+<td>-1.229459</td>
+<td>41.937992</td>
+<td>0.793140</td>
+<td>0.822314</td>
+<td>51.0</td>
+<td>0.641221</td>
+<td>0.411164</td>
+<td>1.042767</td>
+<td>1.812513</td>
+<td>1.812513</td>
+<td>-0.339336</td>
+<td>-21.495180</td>
+<td>-0.052168</td>
+<td>-0.421474</td>
+<td>51.0</td>
+<td>0.799914</td>
+<td>0.639862</td>
+<td>0.904158</td>
+<td>0.620937</td>
+<td>1.550453</td>
+<td>-1.550453</td>
+<td>-42.943439</td>
+<td>-0.776023</td>
+<td>-0.842028</td>
+<td>51.0</td>
+<td>0.225123</td>
+<td>0.050680</td>
+<td>0.871603</td>
+<td>-0.285606</td>
+<td>1.344810</td>
+<td>-1.344810</td>
+<td>-52.034657</td>
+<td>-0.921795</td>
+<td>-1.020287</td>
+<td>51.0</td>
+<td>0.898630</td>
+<td>0.807537</td>
+<td>1.359604</td>
+<td>0.655126</td>
+<td>2.344413</td>
+<td>-2.344413</td>
+<td>-27.837105</td>
+<td>-0.061648</td>
+<td>-0.545826</td>
+<td>51.0</td>
+<td>0.969040</td>
+<td>0.939039</td>
+<td>1.112189</td>
+<td>0.931854</td>
+<td>1.992733</td>
+<td>-1.992733</td>
+<td>-36.875374</td>
+<td>-0.585629</td>
+<td>-0.723047</td>
+<td>51.0</td>
+<td>0.349626</td>
+<td>0.122238</td>
+<td>0.803141</td>
+<td>-0.215493</td>
+<td>1.429438</td>
+<td>-1.429438</td>
+<td>40.247742</td>
+<td>0.798090</td>
+<td>0.789171</td>
+<td>51.0</td>
+<td>0.786085</td>
+<td>0.617930</td>
+<td>1.113877</td>
+<td>1.984581</td>
+<td>1.984581</td>
+<td>-0.677269</td>
+<td>-23.811928</td>
+<td>-0.119661</td>
+<td>-0.466901</td>
+<td>51.0</td>
+<td>0.912458</td>
+<td>0.832579</td>
+<td>1.024976</td>
+<td>0.800261</td>
+<td>1.841989</td>
+<td>-1.841989</td>
+<td>-52.909077</td>
+<td>-1.040256</td>
+<td>-1.037433</td>
+<td>51.0</td>
+<td>0.335496</td>
+<td>0.112557</td>
+<td>1.090332</td>
+<td>-0.334281</td>
+<td>1.676773</td>
+<td>-1.676773</td>
+<td>4.0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">6</td>
+<td>-39.833595</td>
+<td>-0.581072</td>
+<td>-0.781051</td>
+<td>51.0</td>
+<td>0.909044</td>
+<td>0.826360</td>
+<td>1.198499</td>
+<td>0.568540</td>
+<td>2.283604</td>
+<td>-2.283604</td>
+<td>-38.821877</td>
+<td>-0.786507</td>
+<td>-0.761213</td>
+<td>51.0</td>
+<td>0.961909</td>
+<td>0.925269</td>
+<td>1.226668</td>
+<td>0.511668</td>
+<td>1.878216</td>
+<td>-1.878216</td>
+<td>-38.064991</td>
+<td>-0.843750</td>
+<td>-0.746372</td>
+<td>51.0</td>
+<td>0.289446</td>
+<td>0.083779</td>
+<td>0.800532</td>
+<td>-0.137036</td>
+<td>1.416119</td>
+<td>-1.416119</td>
+<td>41.832554</td>
+<td>0.615405</td>
+<td>0.820246</td>
+<td>51.0</td>
+<td>0.852135</td>
+<td>0.726135</td>
+<td>1.182767</td>
+<td>2.278694</td>
+<td>2.278694</td>
+<td>-0.571341</td>
+<td>-46.324547</td>
+<td>-0.797607</td>
+<td>-0.908324</td>
+<td>51.0</td>
+<td>0.966797</td>
+<td>0.934696</td>
+<td>1.326556</td>
+<td>0.542440</td>
+<td>2.116034</td>
+<td>-2.116034</td>
+<td>-20.751741</td>
+<td>-0.570023</td>
+<td>-0.406897</td>
+<td>51.0</td>
+<td>0.581464</td>
+<td>0.338100</td>
+<td>0.709694</td>
+<td>0.768066</td>
+<td>1.202626</td>
+<td>-1.202626</td>
+<td>-37.311344</td>
+<td>-0.603243</td>
+<td>-0.731595</td>
+<td>51.0</td>
+<td>0.236690</td>
+<td>0.056022</td>
+<td>0.768930</td>
+<td>-0.428848</td>
+<td>1.151210</td>
+<td>-1.151210</td>
+<td>-24.191328</td>
+<td>-0.593942</td>
+<td>-0.474340</td>
+<td>51.0</td>
+<td>0.321964</td>
+<td>0.103661</td>
+<td>0.573288</td>
+<td>0.118205</td>
+<td>0.778171</td>
+<td>-0.778171</td>
+<td>-10.869180</td>
+<td>-0.166239</td>
+<td>-0.213121</td>
+<td>51.0</td>
+<td>0.118523</td>
+<td>0.014048</td>
+<td>0.243861</td>
+<td>-0.055137</td>
+<td>0.518928</td>
+<td>-0.518928</td>
+<td>37.055542</td>
+<td>0.630720</td>
+<td>0.726579</td>
+<td>51.0</td>
+<td>0.187477</td>
+<td>0.035147</td>
+<td>0.750377</td>
+<td>1.041933</td>
+<td>1.041933</td>
+<td>0.511867</td>
+<td>-27.166332</td>
+<td>-0.715093</td>
+<td>-0.532673</td>
+<td>51.0</td>
+<td>0.297583</td>
+<td>0.088556</td>
+<td>0.610161</td>
+<td>0.032286</td>
+<td>0.820952</td>
+<td>-0.820952</td>
+<td>-5.845339</td>
+<td>-0.214925</td>
+<td>-0.114614</td>
+<td>51.0</td>
+<td>0.219578</td>
+<td>0.048215</td>
+<td>0.247691</td>
+<td>0.302756</td>
+<td>0.333025</td>
+<td>-0.333025</td>
+<td>-38.241142</td>
+<td>-0.594127</td>
+<td>-0.749826</td>
+<td>51.0</td>
+<td>0.627857</td>
+<td>0.394204</td>
+<td>0.977979</td>
+<td>0.256995</td>
+<td>1.747855</td>
+<td>-1.747855</td>
+<td>-32.509758</td>
+<td>-0.579769</td>
+<td>-0.637446</td>
+<td>51.0</td>
+<td>0.690723</td>
+<td>0.477098</td>
+<td>0.939913</td>
+<td>0.338581</td>
+<td>1.427238</td>
+<td>-1.427238</td>
+<td>-26.793001</td>
+<td>-0.502856</td>
+<td>-0.525353</td>
+<td>51.0</td>
+<td>0.140510</td>
+<td>0.019743</td>
+<td>0.543819</td>
+<td>-0.301202</td>
+<td>0.999421</td>
+<td>-0.999421</td>
+<td>38.700047</td>
+<td>0.607511</td>
+<td>0.758824</td>
+<td>51.0</td>
+<td>0.584079</td>
+<td>0.341148</td>
+<td>0.957582</td>
+<td>1.645291</td>
+<td>1.645291</td>
+<td>-0.209163</td>
+<td>-37.871262</td>
+<td>-0.758263</td>
+<td>-0.742574</td>
+<td>51.0</td>
+<td>0.648642</td>
+<td>0.420737</td>
+<td>0.985978</td>
+<td>0.297268</td>
+<td>1.478050</td>
+<td>-1.478050</td>
+<td>-15.965348</td>
+<td>-0.512104</td>
+<td>-0.313046</td>
+<td>51.0</td>
+<td>0.436921</td>
+<td>0.190900</td>
+<td>0.537492</td>
+<td>0.543558</td>
+<td>1.049285</td>
+<td>-1.049285</td>
+<td>-39.408485</td>
+<td>-0.581423</td>
+<td>-0.772715</td>
+<td>51.0</td>
+<td>0.801424</td>
+<td>0.642281</td>
+<td>1.113270</td>
+<td>0.497681</td>
+<td>2.193919</td>
+<td>-2.193919</td>
+<td>-36.982643</td>
+<td>-0.627740</td>
+<td>-0.725150</td>
+<td>51.0</td>
+<td>0.856815</td>
+<td>0.734132</td>
+<td>1.122486</td>
+<td>0.517904</td>
+<td>1.754343</td>
+<td>-1.754343</td>
+<td>-31.530857</td>
+<td>-0.578748</td>
+<td>-0.618252</td>
+<td>51.0</td>
+<td>0.279074</td>
+<td>0.077882</td>
+<td>0.678320</td>
+<td>-0.208244</td>
+<td>1.305216</td>
+<td>-1.305216</td>
+<td>37.909523</td>
+<td>0.533470</td>
+<td>0.743324</td>
+<td>51.0</td>
+<td>0.796210</td>
+<td>0.633951</td>
+<td>1.089257</td>
+<td>2.103847</td>
+<td>2.103847</td>
+<td>-0.552248</td>
+<td>-39.577774</td>
+<td>-0.742289</td>
+<td>-0.776035</td>
+<td>51.0</td>
+<td>0.849310</td>
+<td>0.721327</td>
+<td>1.150460</td>
+<td>0.575411</td>
+<td>1.851035</td>
+<td>-1.851035</td>
+<td>-22.426970</td>
+<td>-0.587765</td>
+<td>-0.439745</td>
+<td>51.0</td>
+<td>0.553202</td>
+<td>0.306033</td>
+<td>0.706688</td>
+<td>0.689770</td>
+<td>1.236947</td>
+<td>-1.236947</td>
+<td>5.0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">7</td>
+<td>-36.896690</td>
+<td>-0.912707</td>
+<td>-0.723464</td>
+<td>51.0</td>
+<td>1.064085</td>
+<td>1.132277</td>
+<td>1.286732</td>
+<td>0.912205</td>
+<td>2.307096</td>
+<td>-2.307096</td>
+<td>-19.239029</td>
+<td>-0.282667</td>
+<td>-0.377236</td>
+<td>51.0</td>
+<td>1.052407</td>
+<td>1.107561</td>
+<td>1.117975</td>
+<td>0.881856</td>
+<td>2.153838</td>
+<td>-2.153838</td>
+<td>-62.821152</td>
+<td>-1.281961</td>
+<td>-1.231787</td>
+<td>51.0</td>
+<td>0.530944</td>
+<td>0.281901</td>
+<td>1.341343</td>
+<td>0.098188</td>
+<td>2.117577</td>
+<td>-2.117577</td>
+<td>55.359245</td>
+<td>1.107040</td>
+<td>1.085475</td>
+<td>51.0</td>
+<td>0.981749</td>
+<td>0.963832</td>
+<td>1.463588</td>
+<td>2.348134</td>
+<td>2.348134</td>
+<td>-0.507044</td>
+<td>-23.611309</td>
+<td>0.024880</td>
+<td>-0.462967</td>
+<td>51.0</td>
+<td>1.022359</td>
+<td>1.045218</td>
+<td>1.122299</td>
+<td>0.884884</td>
+<td>2.283836</td>
+<td>-2.283836</td>
+<td>-34.417664</td>
+<td>-0.666021</td>
+<td>-0.674856</td>
+<td>51.0</td>
+<td>0.336352</td>
+<td>0.113133</td>
+<td>0.754031</td>
+<td>-0.017647</td>
+<td>1.378753</td>
+<td>-1.378753</td>
+<td>-38.069172</td>
+<td>-0.877256</td>
+<td>-0.746454</td>
+<td>51.0</td>
+<td>0.354419</td>
+<td>0.125613</td>
+<td>0.826321</td>
+<td>-0.077006</td>
+<td>1.163693</td>
+<td>-1.163693</td>
+<td>-10.263086</td>
+<td>-0.051315</td>
+<td>-0.201237</td>
+<td>51.0</td>
+<td>0.370457</td>
+<td>0.137238</td>
+<td>0.421586</td>
+<td>0.256480</td>
+<td>0.847701</td>
+<td>-0.847701</td>
+<td>-30.174412</td>
+<td>-0.570585</td>
+<td>-0.591655</td>
+<td>51.0</td>
+<td>0.173184</td>
+<td>0.029993</td>
+<td>0.616481</td>
+<td>-0.356980</td>
+<td>1.046295</td>
+<td>-1.046295</td>
+<td>46.865932</td>
+<td>0.877540</td>
+<td>0.918940</td>
+<td>51.0</td>
+<td>0.188330</td>
+<td>0.035468</td>
+<td>0.938040</td>
+<td>1.202289</td>
+<td>1.202289</td>
+<td>0.597824</td>
+<td>-24.255749</td>
+<td>-0.452062</td>
+<td>-0.475603</td>
+<td>51.0</td>
+<td>0.309431</td>
+<td>0.095748</td>
+<td>0.567403</td>
+<td>0.061571</td>
+<td>0.980127</td>
+<td>-0.980127</td>
+<td>-10.561463</td>
+<td>-0.084279</td>
+<td>-0.207088</td>
+<td>51.0</td>
+<td>0.266664</td>
+<td>0.071109</td>
+<td>0.337631</td>
+<td>0.100390</td>
+<td>0.787678</td>
+<td>-0.787678</td>
+<td>-35.248955</td>
+<td>-0.933832</td>
+<td>-0.691156</td>
+<td>51.0</td>
+<td>0.792044</td>
+<td>0.627334</td>
+<td>1.051204</td>
+<td>0.613102</td>
+<td>1.636708</td>
+<td>-1.636708</td>
+<td>-16.299442</td>
+<td>-0.262266</td>
+<td>-0.319597</td>
+<td>51.0</td>
+<td>0.805276</td>
+<td>0.648469</td>
+<td>0.866378</td>
+<td>0.682406</td>
+<td>1.797832</td>
+<td>-1.797832</td>
+<td>-50.258915</td>
+<td>-0.981771</td>
+<td>-0.985469</td>
+<td>51.0</td>
+<td>0.327322</td>
+<td>0.107139</td>
+<td>1.038407</td>
+<td>-0.382916</td>
+<td>1.556926</td>
+<td>-1.556926</td>
+<td>50.633633</td>
+<td>1.068598</td>
+<td>0.992816</td>
+<td>51.0</td>
+<td>0.669171</td>
+<td>0.447789</td>
+<td>1.197278</td>
+<td>1.868672</td>
+<td>1.868672</td>
+<td>-0.068966</td>
+<td>-22.703091</td>
+<td>-0.056605</td>
+<td>-0.445159</td>
+<td>51.0</td>
+<td>0.739652</td>
+<td>0.547084</td>
+<td>0.863279</td>
+<td>0.671985</td>
+<td>1.762866</td>
+<td>-1.762866</td>
+<td>-24.762434</td>
+<td>-0.469707</td>
+<td>-0.485538</td>
+<td>51.0</td>
+<td>0.268093</td>
+<td>0.071874</td>
+<td>0.554636</td>
+<td>-0.000126</td>
+<td>0.909962</td>
+<td>-0.909962</td>
+<td>-38.911346</td>
+<td>-0.915691</td>
+<td>-0.762968</td>
+<td>51.0</td>
+<td>0.941245</td>
+<td>0.885943</td>
+<td>1.211636</td>
+<td>0.747633</td>
+<td>2.031039</td>
+<td>-2.031039</td>
+<td>-19.286667</td>
+<td>-0.411864</td>
+<td>-0.378170</td>
+<td>51.0</td>
+<td>0.938402</td>
+<td>0.880599</td>
+<td>1.011737</td>
+<td>0.850090</td>
+<td>1.990998</td>
+<td>-1.990998</td>
+<td>-54.983307</td>
+<td>-1.106866</td>
+<td>-1.078104</td>
+<td>51.0</td>
+<td>0.498255</td>
+<td>0.248258</td>
+<td>1.187673</td>
+<td>-0.044980</td>
+<td>1.856607</td>
+<td>-1.856607</td>
+<td>55.272842</td>
+<td>1.142773</td>
+<td>1.083781</td>
+<td>51.0</td>
+<td>0.912429</td>
+<td>0.832527</td>
+<td>1.416725</td>
+<td>2.338898</td>
+<td>2.338898</td>
+<td>-0.387132</td>
+<td>-24.889832</td>
+<td>-0.118238</td>
+<td>-0.488036</td>
+<td>51.0</td>
+<td>0.872788</td>
+<td>0.761758</td>
+<td>0.999969</td>
+<td>0.686074</td>
+<td>2.103849</td>
+<td>-2.103849</td>
+<td>-32.013580</td>
+<td>-0.695968</td>
+<td>-0.627717</td>
+<td>51.0</td>
+<td>0.353181</td>
+<td>0.124737</td>
+<td>0.720254</td>
+<td>0.051580</td>
+<td>1.284638</td>
+<td>-1.284638</td>
+<td>4.0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">8</td>
+<td>-26.011322</td>
+<td>-0.536596</td>
+<td>-0.510026</td>
+<td>51.0</td>
+<td>0.055607</td>
+<td>0.003092</td>
+<td>0.513048</td>
+<td>-0.419569</td>
+<td>0.570454</td>
+<td>-0.570454</td>
+<td>-92.222801</td>
+<td>-1.791812</td>
+<td>-1.808290</td>
+<td>51.0</td>
+<td>0.098298</td>
+<td>0.009663</td>
+<td>1.810960</td>
+<td>-1.699334</td>
+<td>1.995639</td>
+<td>-1.995639</td>
+<td>-37.869225</td>
+<td>-0.712115</td>
+<td>-0.742534</td>
+<td>51.0</td>
+<td>0.048071</td>
+<td>0.002311</td>
+<td>0.744088</td>
+<td>-0.677641</td>
+<td>0.836827</td>
+<td>-0.836827</td>
+<td>64.245613</td>
+<td>1.286482</td>
+<td>1.259718</td>
+<td>51.0</td>
+<td>0.586856</td>
+<td>0.344400</td>
+<td>1.389708</td>
+<td>2.007180</td>
+<td>2.007180</td>
+<td>0.607638</td>
+<td>-38.855114</td>
+<td>-1.503779</td>
+<td>-0.761865</td>
+<td>51.0</td>
+<td>1.135116</td>
+<td>1.288489</td>
+<td>1.367087</td>
+<td>1.195478</td>
+<td>1.817826</td>
+<td>-1.817826</td>
+<td>-28.189720</td>
+<td>-0.513122</td>
+<td>-0.552740</td>
+<td>51.0</td>
+<td>0.103227</td>
+<td>0.010656</td>
+<td>0.562296</td>
+<td>-0.369479</td>
+<td>0.759343</td>
+<td>-0.759343</td>
+<td>-27.265202</td>
+<td>-0.548034</td>
+<td>-0.534612</td>
+<td>51.0</td>
+<td>0.022753</td>
+<td>0.000518</td>
+<td>0.535096</td>
+<td>-0.490623</td>
+<td>0.572237</td>
+<td>-0.572237</td>
+<td>-39.857010</td>
+<td>-0.771910</td>
+<td>-0.781510</td>
+<td>51.0</td>
+<td>0.061902</td>
+<td>0.003832</td>
+<td>0.783958</td>
+<td>-0.717654</td>
+<td>0.923757</td>
+<td>-0.923757</td>
+<td>-6.367034</td>
+<td>-0.115645</td>
+<td>-0.124844</td>
+<td>51.0</td>
+<td>0.060107</td>
+<td>0.003613</td>
+<td>0.138560</td>
+<td>-0.062456</td>
+<td>0.225210</td>
+<td>-0.225210</td>
+<td>42.372810</td>
+<td>0.886792</td>
+<td>0.830839</td>
+<td>51.0</td>
+<td>0.201009</td>
+<td>0.040405</td>
+<td>0.854809</td>
+<td>1.109116</td>
+<td>1.109116</td>
+<td>0.605396</td>
+<td>-13.769955</td>
+<td>-0.545444</td>
+<td>-0.269999</td>
+<td>51.0</td>
+<td>0.548812</td>
+<td>0.301195</td>
+<td>0.611632</td>
+<td>0.657959</td>
+<td>0.810047</td>
+<td>-0.810047</td>
+<td>-11.842787</td>
+<td>-0.255244</td>
+<td>-0.232212</td>
+<td>51.0</td>
+<td>0.044901</td>
+<td>0.002016</td>
+<td>0.236513</td>
+<td>-0.145291</td>
+<td>0.307812</td>
+<td>-0.307812</td>
+<td>-28.094807</td>
+<td>-0.559510</td>
+<td>-0.550879</td>
+<td>51.0</td>
+<td>0.043867</td>
+<td>0.001924</td>
+<td>0.552622</td>
+<td>-0.491768</td>
+<td>0.597890</td>
+<td>-0.597890</td>
+<td>-73.582306</td>
+<td>-1.460591</td>
+<td>-1.442790</td>
+<td>51.0</td>
+<td>0.122198</td>
+<td>0.014932</td>
+<td>1.447956</td>
+<td>-1.304898</td>
+<td>1.658409</td>
+<td>-1.658409</td>
+<td>-22.921581</td>
+<td>-0.463139</td>
+<td>-0.449443</td>
+<td>51.0</td>
+<td>0.052460</td>
+<td>0.002752</td>
+<td>0.452494</td>
+<td>-0.385089</td>
+<td>0.526610</td>
+<td>-0.526610</td>
+<td>56.109291</td>
+<td>1.201811</td>
+<td>1.100182</td>
+<td>51.0</td>
+<td>0.445087</td>
+<td>0.198103</td>
+<td>1.186804</td>
+<td>1.676672</td>
+<td>1.676672</td>
+<td>0.602798</td>
+<td>-29.902466</td>
+<td>-1.201119</td>
+<td>-0.586323</td>
+<td>51.0</td>
+<td>0.950869</td>
+<td>0.904151</td>
+<td>1.117106</td>
+<td>1.049786</td>
+<td>1.495527</td>
+<td>-1.495527</td>
+<td>-23.161522</td>
+<td>-0.453892</td>
+<td>-0.454147</td>
+<td>51.0</td>
+<td>0.071312</td>
+<td>0.005085</td>
+<td>0.459712</td>
+<td>-0.308134</td>
+<td>0.624632</td>
+<td>-0.624632</td>
+<td>-30.269337</td>
+<td>-0.606525</td>
+<td>-0.593516</td>
+<td>51.0</td>
+<td>0.053951</td>
+<td>0.002911</td>
+<td>0.595963</td>
+<td>-0.501898</td>
+<td>0.661645</td>
+<td>-0.661645</td>
+<td>-85.624870</td>
+<td>-1.647284</td>
+<td>-1.678919</td>
+<td>51.0</td>
+<td>0.107465</td>
+<td>0.011549</td>
+<td>1.682355</td>
+<td>-1.548876</td>
+<td>1.879864</td>
+<td>-1.879864</td>
+<td>-26.338734</td>
+<td>-0.505198</td>
+<td>-0.516446</td>
+<td>51.0</td>
+<td>0.055644</td>
+<td>0.003096</td>
+<td>0.519435</td>
+<td>-0.443595</td>
+<td>0.624974</td>
+<td>-0.624974</td>
+<td>63.065834</td>
+<td>1.133581</td>
+<td>1.236585</td>
+<td>51.0</td>
+<td>0.536658</td>
+<td>0.288002</td>
+<td>1.348015</td>
+<td>1.935572</td>
+<td>1.935572</td>
+<td>0.574532</td>
+<td>-40.009689</td>
+<td>-1.531141</td>
+<td>-0.784504</td>
+<td>51.0</td>
+<td>1.003145</td>
+<td>1.006301</td>
+<td>1.273478</td>
+<td>0.979440</td>
+<td>1.697684</td>
+<td>-1.697684</td>
+<td>-26.970509</td>
+<td>-0.520441</td>
+<td>-0.528834</td>
+<td>51.0</td>
+<td>0.084388</td>
+<td>0.007121</td>
+<td>0.535524</td>
+<td>-0.347588</td>
+<td>0.714076</td>
+<td>-0.714076</td>
+<td>3.0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">9</td>
+<td>-24.176491</td>
+<td>-0.488977</td>
+<td>-0.474049</td>
+<td>51.0</td>
+<td>0.043168</td>
+<td>0.001863</td>
+<td>0.476010</td>
+<td>-0.366197</td>
+<td>0.527277</td>
+<td>-0.527277</td>
+<td>-87.327805</td>
+<td>-1.710973</td>
+<td>-1.712310</td>
+<td>51.0</td>
+<td>0.031561</td>
+<td>0.000996</td>
+<td>1.712601</td>
+<td>-1.631805</td>
+<td>1.772976</td>
+<td>-1.772976</td>
+<td>-21.451313</td>
+<td>-0.408822</td>
+<td>-0.420614</td>
+<td>51.0</td>
+<td>0.032761</td>
+<td>0.001073</td>
+<td>0.421888</td>
+<td>-0.376194</td>
+<td>0.493162</td>
+<td>-0.493162</td>
+<td>58.397629</td>
+<td>0.748125</td>
+<td>1.145051</td>
+<td>51.0</td>
+<td>0.692690</td>
+<td>0.479820</td>
+<td>1.338269</td>
+<td>2.103378</td>
+<td>2.103378</td>
+<td>0.480623</td>
+<td>-48.922287</td>
+<td>-1.675132</td>
+<td>-0.959261</td>
+<td>51.0</td>
+<td>0.974441</td>
+<td>0.949535</td>
+<td>1.367375</td>
+<td>0.852968</td>
+<td>1.817363</td>
+<td>-1.817363</td>
+<td>-29.856304</td>
+<td>-0.640901</td>
+<td>-0.585418</td>
+<td>51.0</td>
+<td>0.124195</td>
+<td>0.015424</td>
+<td>0.598447</td>
+<td>-0.312080</td>
+<td>0.750260</td>
+<td>-0.750260</td>
+<td>-27.958775</td>
+<td>-0.565279</td>
+<td>-0.548211</td>
+<td>51.0</td>
+<td>0.035193</td>
+<td>0.001239</td>
+<td>0.549340</td>
+<td>-0.492060</td>
+<td>0.583746</td>
+<td>-0.583746</td>
+<td>-37.864830</td>
+<td>-0.732618</td>
+<td>-0.742448</td>
+<td>51.0</td>
+<td>0.041091</td>
+<td>0.001688</td>
+<td>0.743584</td>
+<td>-0.692059</td>
+<td>0.802448</td>
+<td>-0.802448</td>
+<td>-0.649227</td>
+<td>-0.005362</td>
+<td>-0.012730</td>
+<td>51.0</td>
+<td>0.039293</td>
+<td>0.001544</td>
+<td>0.041304</td>
+<td>0.035067</td>
+<td>0.069732</td>
+<td>-0.069732</td>
+<td>43.424145</td>
+<td>0.733217</td>
+<td>0.851454</td>
+<td>51.0</td>
+<td>0.218725</td>
+<td>0.047841</td>
+<td>0.879099</td>
+<td>1.171012</td>
+<td>1.171012</td>
+<td>0.632703</td>
+<td>-21.846182</td>
+<td>-0.721695</td>
+<td>-0.428356</td>
+<td>51.0</td>
+<td>0.389760</td>
+<td>0.151912</td>
+<td>0.579139</td>
+<td>0.287935</td>
+<td>0.756129</td>
+<td>-0.756129</td>
+<td>-13.696244</td>
+<td>-0.290477</td>
+<td>-0.268554</td>
+<td>51.0</td>
+<td>0.049435</td>
+<td>0.002444</td>
+<td>0.273066</td>
+<td>-0.169651</td>
+<td>0.314362</td>
+<td>-0.314362</td>
+<td>-28.335342</td>
+<td>-0.570419</td>
+<td>-0.555595</td>
+<td>51.0</td>
+<td>0.031328</td>
+<td>0.000981</td>
+<td>0.556478</td>
+<td>-0.508227</td>
+<td>0.598616</td>
+<td>-0.598616</td>
+<td>-67.415817</td>
+<td>-1.322900</td>
+<td>-1.321879</td>
+<td>51.0</td>
+<td>0.020617</td>
+<td>0.000425</td>
+<td>1.322040</td>
+<td>-1.252832</td>
+<td>1.356348</td>
+<td>-1.356348</td>
+<td>-14.509363</td>
+<td>-0.280158</td>
+<td>-0.284497</td>
+<td>51.0</td>
+<td>0.027159</td>
+<td>0.000738</td>
+<td>0.285791</td>
+<td>-0.237379</td>
+<td>0.326241</td>
+<td>-0.326241</td>
+<td>54.223145</td>
+<td>0.808409</td>
+<td>1.063199</td>
+<td>51.0</td>
+<td>0.487772</td>
+<td>0.237921</td>
+<td>1.169749</td>
+<td>1.747880</td>
+<td>1.747880</td>
+<td>0.582484</td>
+<td>-38.194836</td>
+<td>-1.286616</td>
+<td>-0.748918</td>
+<td>51.0</td>
+<td>0.720042</td>
+<td>0.518461</td>
+<td>1.038913</td>
+<td>0.589410</td>
+<td>1.341641</td>
+<td>-1.341641</td>
+<td>-24.306427</td>
+<td>-0.513999</td>
+<td>-0.476597</td>
+<td>51.0</td>
+<td>0.113742</td>
+<td>0.012937</td>
+<td>0.489981</td>
+<td>-0.236320</td>
+<td>0.606179</td>
+<td>-0.606179</td>
+<td>-20.204275</td>
+<td>-0.414832</td>
+<td>-0.396162</td>
+<td>51.0</td>
+<td>0.036496</td>
+<td>0.001332</td>
+<td>0.397840</td>
+<td>-0.328904</td>
+<td>0.434622</td>
+<td>-0.434622</td>
+<td>-71.983742</td>
+<td>-1.408678</td>
+<td>-1.411446</td>
+<td>51.0</td>
+<td>0.031827</td>
+<td>0.001013</td>
+<td>1.411805</td>
+<td>-1.346405</td>
+<td>1.477625</td>
+<td>-1.477625</td>
+<td>-23.991568</td>
+<td>-0.466880</td>
+<td>-0.470423</td>
+<td>51.0</td>
+<td>0.027061</td>
+<td>0.000732</td>
+<td>0.471201</td>
+<td>-0.430881</td>
+<td>0.532167</td>
+<td>-0.532167</td>
+<td>53.270744</td>
+<td>0.767735</td>
+<td>1.044524</td>
+<td>51.0</td>
+<td>0.671843</td>
+<td>0.451373</td>
+<td>1.241936</td>
+<td>2.002148</td>
+<td>2.002148</td>
+<td>0.376754</td>
+<td>-38.753330</td>
+<td>-1.399783</td>
+<td>-0.759869</td>
+<td>51.0</td>
+<td>0.882002</td>
+<td>0.777927</td>
+<td>1.164186</td>
+<td>0.885538</td>
+<td>1.513484</td>
+<td>-1.513484</td>
+<td>-31.401262</td>
+<td>-0.670306</td>
+<td>-0.615711</td>
+<td>51.0</td>
+<td>0.152118</td>
+<td>0.023140</td>
+<td>0.634224</td>
+<td>-0.286498</td>
+<td>0.862852</td>
+<td>-0.862852</td>
+<td>2.0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="cell-10" class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>x_cat, x_cont, yb <span class="op">=</span> first(dls.train)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>x_cont[:<span class="dv">10</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>tensor([[-0.8581, -0.1346, -0.8581,  ...,  0.3235,  0.5841, -0.6917],
+        [-0.0406,  0.0344, -0.0406,  ..., -0.0171, -1.7253,  1.2745],
+        [ 1.7966, -0.0497,  1.7966,  ..., -0.6516,  0.9802, -1.0290],
+        ...,
+        [ 0.2804,  0.4747,  0.2804,  ..., -0.4816, -0.3325,  0.0887],
+        [-0.1472, -0.1884, -0.1472,  ..., -0.1036, -1.2258,  0.8491],
+        [-0.9960, -0.6116, -0.9960,  ...,  0.4602,  3.3105, -3.0129]])</code></pre>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/timeseriesAI\.github\.io\/tsai\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/timeseriesAI/tsai/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
