@@ -2,6 +2,17 @@
 
 <!-- do not remove -->
 
+## 0.4.0
+
+### New Features
+
+- Applied necessary changes to the tsai library for full support on MPS devices.
+
+### Bugs Squashed
+
+- Updated TSiT and TSSequencer models to resolve compatibility issues on the MPS backend.
+- Modified the multimodal head to properly handle sequence predictions.
+
 ## 0.3.9
 
 - support to MPS backend. Both the MPS accelerator and the PyTorch backend are still experimental. As such, not all operations are currently supported.
