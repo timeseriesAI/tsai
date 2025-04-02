@@ -292,7 +292,11 @@ class TSNormalize(Transform):
             else:
                 _min, _max = o.mul_min(self.axes, keepdim=self.axes!=()), o.mul_max(self.axes, keepdim=self.axes!=())
             self.min, self.max = _min, _max
-        output = ((o - self.min) / (self.max - self.min)) * (self.range_max - self.range_min) + self.range_min
+        diff = self.max - self.min
+        if (diff == 0).any():
+            output = torch.full_like(o, self.range_min) 
+        else:
+            output = ((o - self.min) / diff) * (self.range_max - self.range_min) + self.range_min
         if self.clip_values:
             if self.by_var and is_listy(self.by_var):
                 for v in self.by_var:
