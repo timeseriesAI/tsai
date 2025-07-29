@@ -11,20 +11,29 @@ __all__ = ['TSCategorize', 'TSRegression', 'TSForecasting', 'get_tsimage_dls', '
 
 # %% ../../nbs/006_data.core.ipynb 3
 import warnings
-from ..imports import *
-from sklearn.model_selection import StratifiedKFold
 from types import MethodType
-from matplotlib.ticker import PercentFormatter
+
 import matplotlib.colors as mcolors
-from matplotlib import rcParams
-from fastcore.transform import Transform, DisplayedTransform, Pipeline
-from fastai.data.transforms import (RandomSplitter, ItemGetter, MultiCategorize, CategoryMap,
-Category, MultiCategory, Categorize)
-from fastai.data.core import TfmdLists, Datasets, TfmdDL, DataLoaders
-from fastai.data.load import DataLoader
 from fastai.data.block import CategoryBlock, DataBlock
-from fastai.losses import MSELossFlat, CrossEntropyLossFlat, BCEWithLogitsLossFlat
+from fastai.data.core import DataLoaders, Datasets, TfmdDL, TfmdLists
+from fastai.data.load import DataLoader
+from fastai.data.transforms import (
+    Categorize,
+    Category,
+    CategoryMap,
+    ItemGetter,
+    MultiCategorize,
+    MultiCategory,
+    RandomSplitter,
+)
+from fastai.losses import BCEWithLogitsLossFlat, CrossEntropyLossFlat, MSELossFlat
 from fastai.vision.data import get_grid
+from fasttransform import DisplayedTransform, Pipeline, Transform
+from matplotlib import rcParams
+from matplotlib.ticker import PercentFormatter
+from sklearn.model_selection import StratifiedKFold
+
+from ..imports import *
 from ..utils import *
 
 warnings.filterwarnings("ignore", category=UserWarning)
@@ -66,6 +75,7 @@ class NumpyTensor(TensorBase):
 class ToNumpyTensor(Transform):
     "Transforms an object into NumpyTensor"
     def encodes(self, o): return NumpyTensor(o)
+    def decodes(self, o): return o.detach().cpu().numpy()
 
 # %% ../../nbs/006_data.core.ipynb 7
 class TSTensor(TensorBase):
@@ -117,6 +127,7 @@ class TSTensor(TensorBase):
 class ToTSTensor(Transform):
     "Transforms an object into TSTensor"
     def encodes(self, o): return TSTensor(o)
+    def decodes(self, o): return o.data
 
 
 @delegates(plt.subplots)

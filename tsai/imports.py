@@ -54,7 +54,8 @@ from fastai.basics import *
 from fastai.imports import *
 from fastai.torch_core import *
 from fastcore.basics import *
-from fastcore.dispatch import *
+
+# from fastcore.dispatch import *
 from fastcore.foundation import *
 from fastcore.imports import *
 from fastcore.meta import *
