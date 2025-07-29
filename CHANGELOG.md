@@ -2,6 +2,16 @@
 
 <!-- do not remove -->
 
+## 0.4.1
+
+### New Features
+
+- updated torch version to 2.7
+
+### Bugs Squashed
+
+- fixed issue with fastcore import path ([#954](https://github.com/timeseriesAI/tsai/pull/954))
+
 ## 0.4.0
 
 ### New Features
