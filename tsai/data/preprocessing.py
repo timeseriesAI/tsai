@@ -2,19 +2,22 @@
 
 # %% ../../nbs/009_data.preprocessing.ipynb 3
 from __future__ import annotations
-from ..imports import *
+
 import re
-from joblib import dump, load
+
 import sklearn
-from sklearn.base import BaseEstimator, TransformerMixin
-from pandas._libs.tslibs.timestamps import Timestamp
-from fastcore.transform import Transform, ItemTransform, Pipeline
-from fastai.data.transforms import Categorize
 from fastai.data.load import DataLoader
+from fastai.data.transforms import Categorize
 from fastai.tabular.core import df_shrink_dtypes, make_date
-from ..utils import *
+from fasttransform import ItemTransform, Pipeline, Transform
+from joblib import dump, load
+from pandas._libs.tslibs.timestamps import Timestamp
+from sklearn.base import BaseEstimator, TransformerMixin
+
 from .core import *
 from .preparation import *
+from ..imports import *
+from ..utils import *
 
 # %% auto 0
 __all__ = ['Nan2Value', 'TSRandomStandardize', 'default_date_attr', 'PD_TIME_UNITS', 'StandardScaler', 'RobustScaler',
@@ -51,16 +54,16 @@ class ToNumpyCategory(Transform):
         return stack([self.cat.decode(oi) for oi in o])
 
 # %% ../../nbs/009_data.preprocessing.ipynb 9
-class OneHot(Transform): 
+class OneHot(Transform):
     "One-hot encode/ decode a batch"
     order = 90
-    def __init__(self, n_classes=None, **kwargs): 
+    def __init__(self, n_classes=None, **kwargs):
         self.n_classes = n_classes
         super().__init__(**kwargs)
-    def encodes(self, o: torch.Tensor): 
+    def encodes(self, o: torch.Tensor):
         if not self.n_classes: self.n_classes = len(np.unique(o))
         return torch.eye(self.n_classes)[o]
-    def encodes(self, o: np.ndarray): 
+    def encodes(self, o: np.ndarray):
         o = ToNumpyCategory()(o)
         if not self.n_classes: self.n_classes = len(np.unique(o))
         return np.eye(self.n_classes)[o]
@@ -77,7 +80,7 @@ class TSNan2Value(Transform):
             raise ValueError('This function only works with Pytorch>=1.8.')
 
     def encodes(self, o:TSTensor):
-        if self.sel_vars is not None: 
+        if self.sel_vars is not None:
             mask = torch.isnan(o[:, self.sel_vars])
             if mask.any() and self.median:
                 if self.by_sample_and_var:
@@ -98,7 +101,7 @@ class TSNan2Value(Transform):
         return o
 
 
-    
+
 Nan2Value = TSNan2Value
 
 # %% ../../nbs/009_data.preprocessing.ipynb 16
@@ -145,7 +148,7 @@ class TSStandardize(Transform):
         self.use_single_batch = use_single_batch
         self.verbose = verbose
         if self.mean is not None or self.std is not None:
-            pv(f'{self.__class__.__name__} mean={self.mean}, std={self.std}, by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step}\n', 
+            pv(f'{self.__class__.__name__} mean={self.mean}, std={self.std}, by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step}\n',
                self.verbose)
 
     @classmethod
@@ -229,7 +232,7 @@ class TSNormalize(Transform):
     "Normalizes batch of type `TSTensor`"
     parameters, order = L('min', 'max'), 90
     _setup = True # indicates it requires set up
-    def __init__(self, min=None, max=None, range=(-1, 1), by_sample=False, by_var=False, by_step=False, clip_values=True, 
+    def __init__(self, min=None, max=None, range=(-1, 1), by_sample=False, by_var=False, by_step=False, clip_values=True,
                  use_single_batch=True, verbose=False, **kwargs):
         super().__init__(**kwargs)
         self.min = tensor(min) if min is not None else None
@@ -249,7 +252,7 @@ class TSNormalize(Transform):
         self.verbose = verbose
         if self.min is not None or self.max is not None:
             pv(f'{self.__class__.__name__} min={self.min}, max={self.max}, by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step}\n', self.verbose)
-            
+
     @classmethod
     def from_stats(cls, min, max, range_min=0, range_max=1): return cls(min, max, range_min, range_max)
 
@@ -270,17 +273,17 @@ class TSNormalize(Transform):
             else:
                 _min, _max = o.mul_min(self.axes, keepdim=self.axes!=()), o.mul_max(self.axes, keepdim=self.axes!=())
             self.min, self.max = _min, _max
-            if len(self.min.shape) == 0: 
-                pv(f'{self.__class__.__name__} min={self.min}, max={self.max}, by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step}\n', 
+            if len(self.min.shape) == 0:
+                pv(f'{self.__class__.__name__} min={self.min}, max={self.max}, by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step}\n',
                    self.verbose)
             else:
-                pv(f'{self.__class__.__name__} min shape={self.min.shape}, max shape={self.max.shape}, by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step}\n', 
+                pv(f'{self.__class__.__name__} min shape={self.min.shape}, max shape={self.max.shape}, by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step}\n',
                    self.verbose)
             self._setup = False
         elif self.by_sample: self.min, self.max = -torch.ones(1), torch.ones(1)
 
-    def encodes(self, o:TSTensor): 
-        if self.by_sample: 
+    def encodes(self, o:TSTensor):
+        if self.by_sample:
             if self.by_var and is_listy(self.by_var):
                 shape = torch.mean(o, dim=self.axes, keepdim=self.axes!=()).shape
                 _min = torch.zeros(*shape, device=o.device) + self.range_min
@@ -301,20 +304,20 @@ class TSNormalize(Transform):
             else:
                 output = torch.clamp(output, self.range_min, self.range_max)
         return output
-    
+
     def __repr__(self): return f'{self.__class__.__name__}(by_sample={self.by_sample}, by_var={self.by_var}, by_step={self.by_step})'
 
 # %% ../../nbs/009_data.preprocessing.ipynb 28
 class TSStandardizeTuple(ItemTransform):
     "Standardizes X (and y if provided)"
     parameters, order = L('x_mean', 'x_std', 'y_mean', 'y_std'), 90
-    
-    def __init__(self, x_mean, x_std, y_mean=None, y_std=None, eps=1e-5): 
+
+    def __init__(self, x_mean, x_std, y_mean=None, y_std=None, eps=1e-5):
         self.x_mean, self.x_std = torch.as_tensor(x_mean).float(), torch.as_tensor(x_std + eps).float()
         self.y_mean = self.x_mean if y_mean is None else torch.as_tensor(y_mean).float()
         self.y_std = self.x_std if y_std is None else torch.as_tensor(y_std + eps).float()
-        
-    def encodes(self, xy): 
+
+    def encodes(self, xy):
         if len(xy) == 2:
             x, y = xy
             x = (x - self.x_mean) / self.x_std
@@ -324,7 +327,7 @@ class TSStandardizeTuple(ItemTransform):
             x = xy[0]
             x = (x - self.x_mean) / self.x_std
             return (x, )
-    def decodes(self, xy): 
+    def decodes(self, xy):
         if len(xy) == 2:
             x, y = xy
             x = x * self.x_std + self.x_mean
@@ -355,11 +358,11 @@ class TSCatEncode(Transform):
 
 # %% ../../nbs/009_data.preprocessing.ipynb 33
 class TSDropFeatByKey(Transform):
-    """Randomly drops selected features at selected steps based 
+    """Randomly drops selected features at selected steps based
     with a given probability per feature, step and a key variable"""
     parameters, order = 'p', 90
-    
-    def __init__(self, 
+
+    def __init__(self,
     key_var, # int representing the variable that contains the key information
     p, # array of shape (n_keys, n_features, n_steps) representing the probabilities of dropping a feature at a given step for a given key
     sel_vars, # int or slice or list of ints or array of ints representing the variables to drop
@@ -418,7 +421,7 @@ class TSClipOutliers(Transform):
         self.min = tensor(min) if min is not None else tensor(-np.inf)
         self.max = tensor(max) if max is not None else tensor(np.inf)
         self.by_sample, self.by_var = by_sample, by_var
-        self._setup = (min is None or max is None) and not by_sample 
+        self._setup = (min is None or max is None) and not by_sample
         if by_sample and by_var: self.axis = (2)
         elif by_sample: self.axis = (1, 2)
         elif by_var: self.axis = (0, 2)
@@ -436,19 +439,19 @@ class TSClipOutliers(Transform):
                 o, *_ = dl.one_batch()
             min, max = get_outliers_IQR(o, self.axis)
             self.min, self.max = tensor(min), tensor(max)
-            if self.axis is None: pv(f'{self.__class__.__name__} min={self.min}, max={self.max}, by_sample={self.by_sample}, by_var={self.by_var}\n', 
+            if self.axis is None: pv(f'{self.__class__.__name__} min={self.min}, max={self.max}, by_sample={self.by_sample}, by_var={self.by_var}\n',
                                      self.verbose)
-            else: pv(f'{self.__class__.__name__} min={self.min.shape}, max={self.max.shape}, by_sample={self.by_sample}, by_var={self.by_var}\n', 
+            else: pv(f'{self.__class__.__name__} min={self.min.shape}, max={self.max.shape}, by_sample={self.by_sample}, by_var={self.by_var}\n',
                      self.verbose)
             self._setup = False
-            
+
     def encodes(self, o:TSTensor):
         if self.axis is None: return torch.clamp(o, self.min, self.max)
-        elif self.by_sample: 
+        elif self.by_sample:
             min, max = get_outliers_IQR(o, axis=self.axis)
             self.min, self.max = o.new(min), o.new(max)
         return torch_clamp(o, self.min, self.max)
-    
+
     def __repr__(self): return f'{self.__class__.__name__}(by_sample={self.by_sample}, by_var={self.by_var})'
 
 # %% ../../nbs/009_data.preprocessing.ipynb 37
@@ -473,7 +476,7 @@ class TSSelfMissingness(Transform):
         super().__init__(**kwargs)
 
     def encodes(self, o:TSTensor):
-        if self.sel_vars is not None: 
+        if self.sel_vars is not None:
             mask = rotate_axis0(torch.isnan(o[:, self.sel_vars]))
             o[:, self.sel_vars] = o[:, self.sel_vars].masked_fill(mask, np.nan)
         else:
@@ -496,7 +499,7 @@ class TSRobustScale(Transform):
         self.eps = eps
         self.verbose = verbose
         self.quantile_range = quantile_range
-            
+
     def setups(self, dl: DataLoader):
         if self._setup:
             if not self.use_single_batch:
@@ -509,17 +512,17 @@ class TSRobustScale(Transform):
             iqrmin, iqrmax = get_outliers_IQR(new_o, axis=1, quantile_range=self.quantile_range)
             self.median = median.unsqueeze(0)
             self.iqr = torch.clamp_min((iqrmax - iqrmin).unsqueeze(0), self.eps)
-            if self.exc_vars is not None: 
+            if self.exc_vars is not None:
                 self.median[:, self.exc_vars] = 0
                 self.iqr[:, self.exc_vars] = 1
-            
+
             pv(f'{self.__class__.__name__} median={self.median.shape} iqr={self.iqr.shape}', self.verbose)
             self._setup = False
-        else: 
+        else:
             if self.median is None: self.median = torch.zeros(1, device=dl.device)
             if self.iqr is None: self.iqr = torch.ones(1, device=dl.device)
 
-            
+
     def encodes(self, o:TSTensor):
         return (o - self.median) / self.iqr
 
@@ -571,7 +574,7 @@ class TSGaussianStandardize(Transform):
     "Scales each batch using modeled mean and std based on UNCERTAINTY MODELING FOR OUT-OF-DISTRIBUTION GENERALIZATION https://arxiv.org/abs/2202.03958"
 
     parameters, order = L('E_mean', 'S_mean', 'E_std', 'S_std'), 90
-    def __init__(self, 
+    def __init__(self,
         E_mean : np.ndarray, # Mean expected value
         S_mean : np.ndarray, # Uncertainty (standard deviation) of the mean
         E_std : np.ndarray,  # Standard deviation expected value
@@ -584,13 +587,13 @@ class TSGaussianStandardize(Transform):
         self.E_std, self.S_std = torch.from_numpy(E_std), torch.from_numpy(S_std)
         self.eps = eps
         super().__init__(split_idx=split_idx, **kwargs)
-        
+
     def encodes(self, o:TSTensor):
         mult = torch.normal(0, 1, (2,), device=o.device)
         new_mean = self.E_mean + self.S_mean * mult[0]
         new_std = torch.clamp(self.E_std + self.S_std * mult[1], self.eps)
         return (o - new_mean) / new_std
-    
+
 TSRandomStandardize = TSGaussianStandardize
 
 # %% ../../nbs/009_data.preprocessing.ipynb 47
@@ -601,9 +604,9 @@ class TSDiff(Transform):
         super().__init__(**kwargs)
         self.lag, self.pad = lag, pad
 
-    def encodes(self, o:TSTensor): 
+    def encodes(self, o:TSTensor):
         return torch_diff(o, lag=self.lag, pad=self.pad)
-    
+
     def __repr__(self): return f'{self.__class__.__name__}(lag={self.lag}, pad={self.pad})'
 
 # %% ../../nbs/009_data.preprocessing.ipynb 49
@@ -631,7 +634,7 @@ class TSLog(Transform):
 class TSCyclicalPosition(Transform):
     "Concatenates the position along the sequence as 2 additional variables (sine and cosine)"
     order = 90
-    def __init__(self, 
+    def __init__(self,
         cyclical_var=None, # Optional variable to indicate the steps withing the cycle (ie minute of the day)
         magnitude=None, # Added for compatibility. It's not used.
         drop_var=False, # Flag to indicate if the cyclical var is removed
@@ -661,17 +664,17 @@ class TSLinearPosition(Transform):
     "Concatenates the position along the sequence as 1 additional variable"
 
     order = 90
-    def __init__(self, 
+    def __init__(self,
         linear_var:int=None, # Optional variable to indicate the steps withing the cycle (ie minute of the day)
         var_range:tuple=None, # Optional range indicating min and max values of the linear variable
         magnitude=None, # Added for compatibility. It's not used.
         drop_var:bool=False, # Flag to indicate if the cyclical var is removed
-        lin_range:tuple=(-1,1), 
-        **kwargs): 
+        lin_range:tuple=(-1,1),
+        **kwargs):
         self.linear_var, self.var_range, self.drop_var, self.lin_range = linear_var, var_range, drop_var, lin_range
         super().__init__(**kwargs)
 
-    def encodes(self, o: TSTensor): 
+    def encodes(self, o: TSTensor):
         bs,nvars,seq_len = o.shape
         if self.linear_var is None:
             lin = linear_encoding(seq_len, device=o.device, lin_range=self.lin_range)
@@ -713,7 +716,7 @@ class TSPositionGaps(Transform):
     """Concatenates gaps for selected features along the sequence as additional variables"""
 
     order = 90
-    def __init__(self, sel_vars=None, feature_idxs=None, magnitude=None, forward=True, backward=False, 
+    def __init__(self, sel_vars=None, feature_idxs=None, magnitude=None, forward=True, backward=False,
                  nearest=False, normalize=True, **kwargs):
         sel_vars = sel_vars or feature_idxs
         self.sel_vars = listify(sel_vars)
@@ -730,7 +733,7 @@ class TSPositionGaps(Transform):
 # %% ../../nbs/009_data.preprocessing.ipynb 61
 class TSRollingMean(Transform):
     """Calculates the rolling mean for all/ selected features alongside the sequence
-    
+
        It replaces the original values or adds additional variables (default)
        If nan values are found, they will be filled forward and backward"""
 
@@ -747,7 +750,7 @@ class TSRollingMean(Transform):
             if torch.isnan(o[:, self.sel_vars]).any():
                 o[:, self.sel_vars] = fbfill_sequence(o[:, self.sel_vars])
             rolling_mean = self.rolling_mean_fn(o[:, self.sel_vars])
-            if self.replace: 
+            if self.replace:
                 o[:, self.sel_vars] = rolling_mean
                 return o
         else:
@@ -785,7 +788,7 @@ class TSAdd(Transform):
 # %% ../../nbs/009_data.preprocessing.ipynb 67
 class TSClipByVar(Transform):
     """Clip  batch of type `TSTensor` by variable
-    
+
     Args:
         var_min_max: list of tuples containing variable index, min value (or None) and max value (or None)
     """
@@ -829,7 +832,7 @@ class TSOneHotEncode(Transform):
         self.add_na = add_na
         self.drop_var = drop_var
         super().__init__(**kwargs)
-        
+
     def encodes(self, o: TSTensor):
         bs, n_vars, seq_len = o.shape
         o_var = o[:, [self.sel_var]]
@@ -869,7 +872,7 @@ import torch.nn.functional as F
 class PatchEncoder():
     "Creates a sequence of patches from a 3d input tensor."
 
-    def __init__(self, 
+    def __init__(self,
         patch_len:int, # Number of time steps in each patch.
         patch_stride:int=None, # Stride of the patch.
         pad_at_start:bool=True, # If True, pad the input tensor at the start to ensure that the input tensor is evenly divisible by the patch length.
@@ -893,7 +896,7 @@ class PatchEncoder():
         self.reduction = reduction
         self.reduction_dim = reduction_dim
         self.swap_dims = swap_dims
-        
+
         if seq_len is None:
             self.pad_size = 0
         elif self.seq_len < self.patch_len:
@@ -904,20 +907,20 @@ class PatchEncoder():
             else:
                 self.pad_size = self.patch_stride - (self.seq_len % self.patch_len) % self.patch_stride
 
-    def __call__(self, 
+    def __call__(self,
         x: torch.Tensor # 3d input tensor with shape [batch size, sequence length, channels]
         ) -> torch.Tensor: #  Transformed tensor of patches with shape [batch size, channels*patch length, number of patches]
 
         if x.ndim == 2:
             x = x[:, None]
-            
+
         bs, c_in, *_ = x.size()
-        if not bs: 
+        if not bs:
             return x
-        
+
         if self.pad_size:
             x = F.pad(x, (self.pad_size, 0), value=self.value) if self.pad_at_start else F.pad(x, (0, self.pad_size), value=self.value)
-        
+
         x = x.unfold(2, self.patch_len, self.patch_stride)
         x = x.permute(0, 1, 3, 2)
         if self.merge_dims:
@@ -941,8 +944,8 @@ class PatchEncoder():
 class TSPatchEncoder(Transform):
     "Tansforms a time series into a sequence of patches along the last dimension"
     order = 90
-    
-    def __init__(self, 
+
+    def __init__(self,
         patch_len:int, # Number of time steps in each patch.
         patch_stride:int=None, # Stride of the patch.
         pad_at_start:bool=True, # If True, pad the input tensor at the start to ensure that the input tensor is evenly divisible by the patch length.
@@ -955,11 +958,11 @@ class TSPatchEncoder(Transform):
         ):
         super().__init__()
 
-        self.patch_encoder = PatchEncoder(patch_len=patch_len, 
-                                          patch_stride=patch_stride, 
-                                          pad_at_start=pad_at_start, 
+        self.patch_encoder = PatchEncoder(patch_len=patch_len,
+                                          patch_stride=patch_stride,
+                                          pad_at_start=pad_at_start,
                                           value=value,
-                                          seq_len=seq_len, 
+                                          seq_len=seq_len,
                                           merge_dims=merge_dims,
                                           reduction=reduction,
                                           reduction_dim=reduction_dim,
@@ -969,13 +972,11 @@ class TSPatchEncoder(Transform):
         return self.patch_encoder(o)
 
 # %% ../../nbs/009_data.preprocessing.ipynb 83
-from fastcore.transform import ItemTransform
-
 class TSTuplePatchEncoder(ItemTransform):
     "Tansforms a time series with x and y into sequences of patches along the last dimension"
     order = 90
-    
-    def __init__(self, 
+
+    def __init__(self,
         patch_len:int, # Number of time steps in each patch.
         patch_stride:int=None, # Stride of the patch.
         pad_at_start:bool=True, # If True, pad the input tensor at the start to ensure that the input tensor is evenly divisible by the patch length.
@@ -988,17 +989,17 @@ class TSTuplePatchEncoder(ItemTransform):
         ):
         super().__init__()
 
-        self.x_patch_encoder = PatchEncoder(patch_len=patch_len, 
-                                            patch_stride=patch_stride, 
-                                            pad_at_start=pad_at_start, 
+        self.x_patch_encoder = PatchEncoder(patch_len=patch_len,
+                                            patch_stride=patch_stride,
+                                            pad_at_start=pad_at_start,
                                             value=value,
                                             seq_len=seq_len)
 
-        self.y_patch_encoder = PatchEncoder(patch_len=patch_len, 
-                                            patch_stride=patch_stride, 
-                                            pad_at_start=pad_at_start, 
+        self.y_patch_encoder = PatchEncoder(patch_len=patch_len,
+                                            patch_stride=patch_stride,
+                                            pad_at_start=pad_at_start,
                                             value=value,
-                                            seq_len=seq_len, 
+                                            seq_len=seq_len,
                                             merge_dims=merge_dims,
                                             reduction=reduction,
                                             reduction_dim=reduction_dim,
@@ -1018,7 +1019,7 @@ class TSTuplePatchEncoder(ItemTransform):
 class TSShrinkDataFrame(BaseEstimator, TransformerMixin):
     """A transformer to shrink dataframe or series memory usage"""
 
-    def __init__(self, 
+    def __init__(self,
         columns=None, # List[str], optional. Columns to shrink, all columns by default.
         skip=None, # List[str], optional. Columns to skip, None by default.
         obj2cat=True, # bool, optional. Convert object columns to category, True by default.
@@ -1026,11 +1027,11 @@ class TSShrinkDataFrame(BaseEstimator, TransformerMixin):
         verbose=True # bool, optional. Print memory usage info. True by default.
         ):
         self.columns, self.skip, self.obj2cat, self.int2uint, self.verbose = listify(columns), listify(skip), obj2cat, int2uint, verbose
-        
+
     def fit(self, X, y=None, **fit_params):
-        if isinstance(X, pd.Series): 
+        if isinstance(X, pd.Series):
             X = X.to_frame()
-        assert isinstance(X, pd.DataFrame), "X must be a pd.DataFrame or pd.Series" 
+        assert isinstance(X, pd.DataFrame), "X must be a pd.DataFrame or pd.Series"
         if isinstance(X, pd.Series):
             X = X.to_frame().apply(object2date)
         else:
@@ -1040,9 +1041,9 @@ class TSShrinkDataFrame(BaseEstimator, TransformerMixin):
         else:
             self.dt = df_shrink_dtypes(X, self.skip, obj2cat=self.obj2cat, int2uint=self.int2uint)
         return self
-        
+
     def transform(self, X, **kwargs):
-        if isinstance(X, pd.Series): 
+        if isinstance(X, pd.Series):
             col_name = X.name
             X = X.to_frame()
         else:
@@ -1065,7 +1066,7 @@ class TSShrinkDataFrame(BaseEstimator, TransformerMixin):
         if col_name is not None:
             X = X[col_name]
         return X
-         
+
     def inverse_transform(self, X, **kwargs):
         return X
 
@@ -1152,7 +1153,7 @@ class TSCategoricalEncoder(BaseEstimator, TransformerMixin):
         self.sort = sort
         self.inplace = inplace
         self.drop = drop
-        if categories is None or categories == 'auto': 
+        if categories is None or categories == 'auto':
             self.categories = None
         else:
             assert is_listy(categories) and len(categories) > 0, "you must pass a list or list of lists of categories"
@@ -1166,7 +1167,7 @@ class TSCategoricalEncoder(BaseEstimator, TransformerMixin):
                 self.columns = X.columns
             else:
                 self.columns = X.name
-        
+
         idxs = fit_params.get("idxs", slice(None))
         if self.categories is None:
             _categories = []
@@ -1240,8 +1241,8 @@ class TSCategoricalEncoder(BaseEstimator, TransformerMixin):
 
 # %% ../../nbs/009_data.preprocessing.ipynb 98
 class TSTargetEncoder(TransformerMixin, BaseEstimator):
-    def __init__(self, 
-        target_column, # column containing the target 
+    def __init__(self,
+        target_column, # column containing the target
         columns=None, # List[str], optional. Columns to encode, all non-numerical columns by default.
         inplace=True, # bool, optional. Modify input DataFrame, True by default.
         prefix=None, # str, optional. Prefix for created column names. None by default.
@@ -1250,7 +1251,7 @@ class TSTargetEncoder(TransformerMixin, BaseEstimator):
         dtypes=["object", "category"], # List[str]. List with dtypes that will be used to identify columns to encode if not explicitly passed.
         ):
         "Transforms categorical columns into numerical by replacing categories with target means."
-        
+
         self.columns = listify(columns)
         self.target_column = target_column
         self.target_means = {}
@@ -1264,7 +1265,7 @@ class TSTargetEncoder(TransformerMixin, BaseEstimator):
         assert isinstance(X, pd.DataFrame)
         if not self.columns:
             self.columns = X.select_dtypes(include=self.dtypes).columns
-                
+
         assert self.target_column in X.columns
         idxs = fit_params.get("idxs", slice(None))
         X_fit = X.loc[idxs]
@@ -1298,7 +1299,7 @@ class TSTargetEncoder(TransformerMixin, BaseEstimator):
         raise NotImplementedError("This method cannot be implemented because the original data cannot be reconstructed exactly.")
 
 # %% ../../nbs/009_data.preprocessing.ipynb 100
-default_date_attr = ['Year', 'Month', 'Week', 'Day', 'Dayofweek', 'Dayofyear', 'Is_month_end', 'Is_month_start', 
+default_date_attr = ['Year', 'Month', 'Week', 'Day', 'Dayofweek', 'Dayofyear', 'Is_month_end', 'Is_month_start',
                      'Is_quarter_end', 'Is_quarter_start', 'Is_year_end', 'Is_year_start']
 
 class TSDateTimeEncoder(BaseEstimator, TransformerMixin):
@@ -1306,21 +1307,21 @@ class TSDateTimeEncoder(BaseEstimator, TransformerMixin):
     def __init__(self, datetime_columns=None, prefix=None, drop=True, time=False, attr=default_date_attr):
         self.datetime_columns = listify(datetime_columns)
         self.prefix, self.drop, self.time, self.attr = prefix, drop, time, listify(attr)
-        
+
     def fit(self, X, y=None, **fit_params):
         assert isinstance(X, pd.DataFrame)
         if self.time: self.attr = self.attr + ['Hour', 'Minute', 'Second']
         if not self.datetime_columns:
             self.datetime_columns = X.columns
         self.prefixes = []
-        for dt_column in self.datetime_columns: 
+        for dt_column in self.datetime_columns:
             self.prefixes.append(re.sub('[Dd]ate$', '', dt_column) if self.prefix is None else self.prefix)
         return self
-        
+
     def transform(self, X, **kwargs):
         assert isinstance(X, pd.DataFrame)
-        
-        for dt_column,prefix in zip(self.datetime_columns,self.prefixes): 
+
+        for dt_column,prefix in zip(self.datetime_columns,self.prefixes):
             make_date(X, dt_column)
             field = X[dt_column]
 
@@ -1381,7 +1382,7 @@ class TSApplyFunction(BaseEstimator, TransformerMixin):
                 X[self.columns] = X[self.columns].apply(lambda x: self.function(x), axis=self.axis)
             else:
                 X = X.apply(lambda x: self.function(x), axis=self.axis)
-        if self.reset_index: 
+        if self.reset_index:
             X = X.reset_index(drop=self.drop)
         return X
 
@@ -1393,18 +1394,18 @@ class TSMissingnessEncoder(BaseEstimator, TransformerMixin):
 
     def __init__(self, columns=None):
         self.columns = listify(columns)
-        
+
     def fit(self, X, y=None, **fit_params):
         assert isinstance(X, pd.DataFrame)
         if not self.columns: self.columns = X.columns
         self.missing_columns = [f"{cn}_missing" for cn in self.columns]
         return self
-        
+
     def transform(self, X, **kwargs):
         assert isinstance(X, pd.DataFrame)
         X[self.missing_columns] = X[self.columns].isnull().astype(int)
         return X
-         
+
     def inverse_transform(self, X, **kwargs):
         assert isinstance(X, pd.DataFrame)
         X.drop(self.missing_columns, axis=1, inplace=True)
@@ -1414,7 +1415,7 @@ class TSMissingnessEncoder(BaseEstimator, TransformerMixin):
 class TSSortByColumns(TransformerMixin, BaseEstimator):
     "Transforms a dataframe by sorting by columns."
 
-    def __init__(self, 
+    def __init__(self,
         columns, # Columns to sort by
         ascending=True, # Ascending or descending
         inplace=True, # Perform operation in place
@@ -1425,18 +1426,18 @@ class TSSortByColumns(TransformerMixin, BaseEstimator):
         ):
         self.columns, self.ascending, self.inplace, self.kind, self.na_position, self.ignore_index, self.key = \
         listify(columns), ascending, inplace, kind, na_position, ignore_index, key
-    
+
     def fit(self, X, y=None, **fit_params):
         assert isinstance(X, (pd.DataFrame, pd.Series))
         return self
-        
+
     def transform(self, X, **kwargs):
         assert isinstance(X, (pd.DataFrame, pd.Series))
         if self.inplace:
-            X.sort_values(self.columns, axis=0, ascending=self.ascending, inplace=True, kind=self.kind, 
+            X.sort_values(self.columns, axis=0, ascending=self.ascending, inplace=True, kind=self.kind,
                           na_position=self.na_position, ignore_index=self.ignore_index, key=self.key)
         else:
-            X = X.sort_values(self.columns, axis=0, ascending=self.ascending, inplace=False, kind=self.kind, 
+            X = X.sort_values(self.columns, axis=0, ascending=self.ascending, inplace=False, kind=self.kind,
                               na_position=self.na_position, ignore_index=self.ignore_index, key=self.key)
         return X
 
@@ -1447,15 +1448,15 @@ class TSSortByColumns(TransformerMixin, BaseEstimator):
 class TSSelectColumns(TransformerMixin, BaseEstimator):
     "Transform used to select columns"
 
-    def __init__(self, 
+    def __init__(self,
         columns # str or List[str]. Selected columns.
         ):
         self.columns = listify(columns)
-    
+
     def fit(self, X, y=None, **fit_params):
         assert isinstance(X, (pd.DataFrame, pd.Series))
         return self
-        
+
     def transform(self, X, idxs=None, **kwargs):
         assert isinstance(X, (pd.DataFrame, pd.Series))
         if idxs is not None:
@@ -1467,18 +1468,18 @@ class TSSelectColumns(TransformerMixin, BaseEstimator):
 
 # %% ../../nbs/009_data.preprocessing.ipynb 115
 PD_TIME_UNITS = dict([
-    ("Y", "year"), 
-    ("M", "month"), 
-    ("W", "week"), 
-    ("D", "day"), 
-    ("h", "hour"), 
-    ("m", "minute"), 
-    ("s", "second"), 
-    ("ms", "millisecond"), 
-    ("us", "microsecond"), 
-    ("ns", "nanosecond"), 
-    ("ps", "picosecond"), 
-    ("fs", "femtosecond"), 
+    ("Y", "year"),
+    ("M", "month"),
+    ("W", "week"),
+    ("D", "day"),
+    ("h", "hour"),
+    ("m", "minute"),
+    ("s", "second"),
+    ("ms", "millisecond"),
+    ("us", "microsecond"),
+    ("ns", "nanosecond"),
+    ("ps", "picosecond"),
+    ("fs", "femtosecond"),
     ("as", "attosecond")
 ])
 
@@ -1501,7 +1502,7 @@ class TSStepsSinceStart(BaseEstimator, TransformerMixin):
         self.new_col = f"{datetime_value}s_since_start"
         self.datetime_unit = datetime_unit
         if start_datetime is None:
-            self.start_datetime = None  
+            self.start_datetime = None
         elif isinstance(start_datetime, Timestamp):
             self.start_datetime = start_datetime
         else:
@@ -1517,7 +1518,7 @@ class TSStepsSinceStart(BaseEstimator, TransformerMixin):
     def transform(self, X, **kwargs):
         assert isinstance(X, (pd.DataFrame, pd.Series))
         time_deltas = (pd.to_timedelta(X[self.datetime_col] - self.start_datetime) / self.datetime_div).astype(dtype=self.dtype)
-        if self.drop: 
+        if self.drop:
             X[self.datetime_col] = time_deltas
             X.rename(columns={self.datetime_col:self.new_col}, inplace=True)
         else:
@@ -1527,7 +1528,7 @@ class TSStepsSinceStart(BaseEstimator, TransformerMixin):
     def inverse_transform(self, X, **kwargs):
         assert isinstance(X, (pd.DataFrame, pd.Series))
         datetimes  = pd.to_datetime(X[self.new_col] * self.datetime_div + self.start_datetime).astype(dtype=self.ori_dtype)
-        if self.drop: 
+        if self.drop:
             X[self.new_col] = datetimes
             X.rename(columns={self.new_col:self.datetime_col}, inplace=True)
         else:
@@ -1548,7 +1549,7 @@ class TSStandardScaler(TransformerMixin, BaseEstimator):
         self.mean = mean
         self.std = std
         self.eps = np.array(eps, dtype='float32')
-    
+
     def fit(self, X, y=None, **fit_params):
         assert isinstance(X, (pd.DataFrame, pd.Series))
         if not self.columns:
@@ -1600,7 +1601,7 @@ class TSRobustScaler(TransformerMixin, BaseEstimator):
             else:
                 self.columns = X.name
         idxs = fit_params.get("idxs", slice(None))
-        
+
         self.median = []
         for c in self.columns:
             self.median.append(np.nanpercentile(X.loc[idxs, c], 50))
@@ -1610,7 +1611,7 @@ class TSRobustScaler(TransformerMixin, BaseEstimator):
             q1 = np.nanpercentile(X.loc[idxs, c], self.quantile_range[0])
             q3 = np.nanpercentile(X.loc[idxs, c], self.quantile_range[1])
             self.iqr.append(q3 - q1)
-                
+
         return self
 
     def transform(self, X, **kwargs):
@@ -1627,18 +1628,18 @@ class TSRobustScaler(TransformerMixin, BaseEstimator):
 
 # %% ../../nbs/009_data.preprocessing.ipynb 122
 class TSAddMissingTimestamps(TransformerMixin, BaseEstimator):
-    def __init__(self, datetime_col=None, use_index=False, unique_id_cols=None, fill_value=np.nan, range_by_group=True, 
+    def __init__(self, datetime_col=None, use_index=False, unique_id_cols=None, fill_value=np.nan, range_by_group=True,
                  start_date=None, end_date=None, freq=None):
         assert datetime_col is not None or use_index
         store_attr()
-        self.func = partial(add_missing_timestamps, datetime_col=datetime_col, use_index=use_index, unique_id_cols=unique_id_cols, 
-                            fill_value=fill_value, range_by_group=range_by_group, start_date=start_date, end_date=end_date, 
+        self.func = partial(add_missing_timestamps, datetime_col=datetime_col, use_index=use_index, unique_id_cols=unique_id_cols,
+                            fill_value=fill_value, range_by_group=range_by_group, start_date=start_date, end_date=end_date,
                             freq=freq)
-    
+
     def fit(self, X, y=None, **fit_params):
         assert isinstance(X, (pd.DataFrame, pd.Series))
         return self
-        
+
     def transform(self, X, **kwargs):
         assert isinstance(X, (pd.DataFrame, pd.Series))
         X = self.func(X)
@@ -1659,14 +1660,14 @@ class TSDropDuplicates(TransformerMixin, BaseEstimator):
         reset_index=False, #(bool, optional): Whether to reset the index after dropping duplicates. Ignored if use_index=False. Defaults to False.
     ):
         assert datetime_col is not None or use_index, "you need to either pass a datetime_col or set use_index=True"
-    
+
         self.datetime_col, self.use_index, self.unique_id_cols, self.keep, self.reset_index =  \
         listify(datetime_col), use_index, listify(unique_id_cols), keep, reset_index
-    
+
     def fit(self, X, y=None, **fit_params):
         assert isinstance(X, (pd.DataFrame, pd.Series))
         return self
-        
+
     def transform(self, X, **kwargs):
         assert isinstance(X, (pd.DataFrame, pd.Series))
         if self.use_index:
@@ -1699,7 +1700,7 @@ class TSFillMissing(TransformerMixin, BaseEstimator):
         self.unique_id_cols = unique_id_cols
         self.method = method
         self.value = value
-    
+
     def fit(self, X, y=None, **fit_params):
         assert isinstance(X, (pd.DataFrame, pd.Series))
         if not self.columns:
@@ -1708,7 +1709,7 @@ class TSFillMissing(TransformerMixin, BaseEstimator):
             else:
                 self.columns = X.name
         return self
-        
+
     def transform(self, X, **kwargs):
         assert isinstance(X, (pd.DataFrame, pd.Series))
         if self.method is not None:
@@ -1747,15 +1748,15 @@ class TSMissingnessEncoder(BaseEstimator, TransformerMixin):
 
 # %% ../../nbs/009_data.preprocessing.ipynb 134
 class Preprocessor():
-    def __init__(self, preprocessor, **kwargs): 
+    def __init__(self, preprocessor, **kwargs):
         self.preprocessor = preprocessor(**kwargs)
-        
-    def fit(self, o): 
+
+    def fit(self, o):
         if isinstance(o, pd.Series): o = o.values.reshape(-1,1)
         else: o = o.reshape(-1,1)
         self.fit_preprocessor = self.preprocessor.fit(o)
         return self.fit_preprocessor
-    
+
     def transform(self, o, copy=True):
         if type(o) in [float, int]: o = array([o]).reshape(-1,1)
         o_shape = o.shape
@@ -1764,7 +1765,7 @@ class Preprocessor():
         output = self.fit_preprocessor.transform(o).reshape(*o_shape)
         if isinstance(o, torch.Tensor): return o.new(output)
         return output
-    
+
     def inverse_transform(self, o, copy=True):
         o_shape = o.shape
         if isinstance(o, pd.Series): o = o.values.reshape(-1,1)
@@ -1789,17 +1790,17 @@ setattr(Quantile, '__name__', 'Quantile')
 
 # %% ../../nbs/009_data.preprocessing.ipynb 142
 def ReLabeler(cm):
-    r"""Changes the labels in a dataset based on a dictionary (class mapping) 
+    r"""Changes the labels in a dataset based on a dictionary (class mapping)
         Args:
             cm = class mapping dictionary
     """
     def _relabel(y):
         obj = len(set([len(listify(v)) for v in cm.values()])) > 1
         keys = cm.keys()
-        if obj: 
+        if obj:
             new_cm = {k:v for k,v in zip(keys, [listify(v) for v in cm.values()])}
             return np.array([new_cm[yi] if yi in keys else listify(yi) for yi in y], dtype=object).reshape(*y.shape)
-        else: 
+        else:
             new_cm = {k:v for k,v in zip(keys, [listify(v) for v in cm.values()])}
             return np.array([new_cm[yi] if yi in keys else listify(yi) for yi in y]).reshape(*y.shape)
     return _relabel
