@@ -76,7 +76,6 @@ class _TSTEncoderLayer(Module):
     def __init__(self, q_len:int, d_model:int, n_heads:int, d_k:Optional[int]=None, d_v:Optional[int]=None, d_ff:int=256, dropout:float=0.1, 
                  activation:str="gelu"):
 
-        assert d_model // n_heads, f"d_model ({d_model}) must be divisible by n_heads ({n_heads})"
         d_k = ifnone(d_k, d_model // n_heads)
         d_v = ifnone(d_v, d_model // n_heads)
 
@@ -142,8 +141,8 @@ class TST(Module):
             max_seq_len: useful to control the temporal resolution in long time series to avoid memory issues.
             d_model: total dimension of the model (number of features created by the model)
             n_heads:  parallel attention heads.
-            d_k: size of the learned linear projection of queries and keys in the MHA. Usual values: 16-512. Default: None -> (d_model/n_heads) = 32.
-            d_v: size of the learned linear projection of values in the MHA. Usual values: 16-512. Default: None -> (d_model/n_heads) = 32.
+            d_k: size of the learned linear projection of queries and keys in the MHA. Usual values: 8-64. Default: None -> (d_model/n_heads) = 8.
+            d_v: size of the learned linear projection of values in the MHA. Usual values: 8-64. Default: None -> (d_model/n_heads) = 8.
             d_ff: the dimension of the feedforward network model.
             dropout: amount of residual dropout applied in the encoder.
             act: the activation function of intermediate layer, relu or gelu.
