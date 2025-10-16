@@ -4,10 +4,15 @@
 __all__ = ['MixedDataLoader', 'MixedDataLoaders', 'get_mixed_dls']
 
 # %% ../../nbs/015_data.mixed.ipynb 3
-from packaging import version
-from torch.utils.data.dataloader import _MultiProcessingDataLoaderIter, _SingleProcessDataLoaderIter, _DatasetKind
 from fastai.data.load import _FakeLoader
 from fastai.tabular.core import *
+from packaging import version
+from torch.utils.data.dataloader import (
+    _DatasetKind,
+    _MultiProcessingDataLoaderIter,
+    _SingleProcessDataLoaderIter,
+)
+
 from ..imports import *
 
 # %% ../../nbs/015_data.mixed.ipynb 4

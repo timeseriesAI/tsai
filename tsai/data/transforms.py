@@ -17,7 +17,7 @@ __all__ = ['TSMagScaleByVar', 'TSRandomZoomIn', 'TSSubsampleSteps', 'TSRandomRot
 from ..imports import *
 from scipy.interpolate import CubicSpline
 from scipy.ndimage import convolve1d
-from fastcore.transform import compose_tfms
+from fasttransform import compose_tfms
 from fastai.vision.augment import RandTransform
 from ..utils import *
 from .core import *
