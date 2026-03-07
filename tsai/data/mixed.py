@@ -54,9 +54,10 @@ class MixedDataLoader():
             self.rng = np.arange(len(self.dataset)).tolist()
         self.loaders = loaders
         self.count = 0
-        self.fake_l = _FakeLoader(self, False, 0, 0, 0, "") if version.parse(fastai.__version__) >= version.parse("2.7") \
-            else _FakeLoader(self, False, 0, 0, 0) if version.parse(fastai.__version__) >= version.parse("2.1") \
-            else _FakeLoader(self, False, 0, 0)
+        # self.fake_l = _FakeLoader(self, False, 0, 0, 0, "") if version.parse(fastai.__version__) >= version.parse("2.7") \
+        #     else _FakeLoader(self, False, 0, 0, 0) if version.parse(fastai.__version__) >= version.parse("2.1") \
+        #     else _FakeLoader(self, False, 0, 0)
+        self.fake_l = self._create_fake_l()
         if sum([len(dl.dataset) for dl in loaders]) > 0:
             self._get_idxs()  # Do not apply on an empty dataset
 
@@ -66,6 +67,30 @@ class MixedDataLoader():
 
 #     def __len__(self): return len(self.loaders[0])
     def __len__(self): return self.loaders[0].__len__()
+
+    def _create_fake_l(self):
+        "Create a _FakeLoader appropriate for the installed fastai version"
+        if version.parse(fastai.__version__) >= version.parse("2.7"):
+            return _FakeLoader(self, False, 0, 0, 0, "")
+        elif version.parse(fastai.__version__) >= version.parse("2.1"):
+            return _FakeLoader(self, False, 0, 0, 0)
+        else:
+            return _FakeLoader(self, False, 0, 0)
+
+    def __getstate__(self):
+        "Remove unpicklable state for serialization"
+        for dl in self.loaders:
+            if hasattr(dl, 'it'):
+                del dl.it
+        state = self.__dict__.copy()
+        state.pop('fake_l', None)
+        return state
+
+    def __setstate__(self, state):
+        "Restore state and recreate non-serialized attributes"
+        self.__dict__.update(state)
+        self.fake_l = self._create_fake_l()
+
 
     def _get_vals(self, x):
         "Checks for duplicates in batches"

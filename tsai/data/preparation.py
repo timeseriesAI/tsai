@@ -32,7 +32,7 @@ def prepare_idxs(o, shape=None):
             return np.array(o).reshape(shape)
         else:
             return np.array(o)
-        
+
 def prepare_sel_vars_and_steps(sel_vars=None, sel_steps=None, idxs=False):
     sel_vars = prepare_idxs(sel_vars)
     sel_steps = prepare_idxs(sel_steps)
@@ -56,16 +56,16 @@ def prepare_sel_vars_and_steps(sel_vars=None, sel_steps=None, idxs=False):
         return _sel_vars, _sel_steps, idx_shape
     else:
         return _sel_vars[0], _sel_steps[0]
-    
+
 def apply_sliding_window(
-    data, # and array-like object with the input data 
+    data, # and array-like object with the input data
     window_len:int|list, # sliding window length. When using a list, use negative numbers and 0.
     horizon:int|list=0, # horizon
     x_vars:int|list=None, # indices of the independent variables
     y_vars:int|list=None, # indices of the dependent variables (target). [] means no y will be created. None means all variables.
     ):
     "Applies a sliding window on an array-like input to generate a 3d X (and optionally y)"
-  
+
     if isinstance(data, pd.DataFrame): data = data.to_numpy()
     if isinstance(window_len, list):
         assert np.max(window_len) == 0
@@ -73,7 +73,7 @@ def apply_sliding_window(
         window_len = abs(np.min(window_len)) + 1
     else:
         x_steps = None
-        
+
     X_data_windowed = sliding_window_view(data, window_len, axis=0)
 
     # X
@@ -108,9 +108,9 @@ def df2Xy(df, sample_col=None, feat_col=None, data_cols=None, target_col=None, s
     target_col: indicates the column/s where the target is.
     steps_in_rows: flag to indicate if each step is in a different row or in a different column (default).
     to3d: turns X to 3d (including univariate time series)
-    sort_by: this is used to pass any colum/s that are needed to sort the steps in the sequence. 
-             If you pass a sample_col and/ or feat_col these will be automatically used before the sort_by column/s, and 
-             you don't need to add them to the sort_by column/s list. 
+    sort_by: this is used to pass any colum/s that are needed to sort the steps in the sequence.
+             If you pass a sample_col and/ or feat_col these will be automatically used before the sort_by column/s, and
+             you don't need to add them to the sort_by column/s list.
     y_func: function used to calculate y for each sample (and target_col)
     return_names: flag to return the names of the columns from where X was generated
     """
@@ -141,7 +141,7 @@ def df2Xy(df, sample_col=None, feat_col=None, data_cols=None, target_col=None, s
         passed_cols += target_col
     if data_cols is None:
         data_cols = [col for col in df.columns if col not in passed_cols]
-    if target_col is not None: 
+    if target_col is not None:
         if any([t for t in target_col if t in data_cols]): print(f"Are you sure you want to include {target_col} in X?")
     if sort_cols:
         df.sort_values(sort_cols, ascending=ascending, kind='stable', inplace=True)
@@ -181,16 +181,16 @@ def df2Xy(df, sample_col=None, feat_col=None, data_cols=None, target_col=None, s
         y = None
 
     # Output
-    if splits is None: 
+    if splits is None:
         if return_names: return X, y, data_cols
         else: return X, y
-    else: 
+    else:
         if return_names: return split_xy(X, y, splits), data_cols
         return split_xy(X, y, splits)
 
 # %% ../../nbs/004_data.preparation.ipynb 11
 def split_Xy(X, y=None, splits=None):
-    if splits is None: 
+    if splits is None:
         if y is not None: return X, y
         else: return X
     if not is_listy(splits[0]): splits = [splits]
@@ -203,7 +203,7 @@ def split_Xy(X, y=None, splits=None):
     if len(splits) == 1: return _X[0], _y[0]
     elif len(splits) == 2: return _X[0], _y[0], _X[1], _y[1]
     elif len(splits) == 3: return _X[0], _y[0], _X[1], _y[1], _X[2], _y[2]
-    
+
 df2xy = df2Xy
 split_xy = split_Xy
 
@@ -242,11 +242,11 @@ def add_missing_timestamps(
     if use_index:
         datetime_col = df.index.name or 'index'
         df.reset_index(inplace=True)
-    if is_listy(datetime_col): 
+    if is_listy(datetime_col):
         assert len(datetime_col) == 1, 'you can only pass a single datetime_col'
         datetime_col = datetime_col[0]
     if unique_id_cols is not None:
-        if is_listy(unique_id_cols): 
+        if is_listy(unique_id_cols):
             assert len(unique_id_cols) == 1, 'you can only pass a single unique_id_cols'
             unique_id_cols = unique_id_cols[0]
         keys = df[unique_id_cols].unique()
@@ -258,7 +258,7 @@ def add_missing_timestamps(
                                        zip(min_dates, max_dates, keys)])
             multi_idx = pd.MultiIndex.from_tuples(idx_tuples, names=[datetime_col, unique_id_cols])
             df.set_index([datetime_col, unique_id_cols], inplace=True)
-            df = df.reindex(multi_idx, fill_value=fill_value, copy=False)
+            df = df.reindex(multi_idx, fill_value=fill_value)
             df.reset_index(inplace=True)
         else:
             # Fills missing dates between min and max - same for all unique ids
@@ -267,17 +267,17 @@ def add_missing_timestamps(
             dates = pd.date_range(start_date, end_date, freq=freq)
             multi_idx = pd.MultiIndex.from_product((dates, keys), names=[datetime_col, unique_id_cols])
             df.set_index([datetime_col, unique_id_cols], inplace=True)
-            df = df.reindex(multi_idx, fill_value=fill_value, copy=False)
+            df = df.reindex(multi_idx, fill_value=fill_value)
             df.sort_values(by=[unique_id_cols, datetime_col], inplace=True)
             # df.reset_index(drop=True, inplace=True)
             df.reset_index(inplace=True)
-    else: 
+    else:
         start_date = start_date or df[datetime_col].min()
         end_date = end_date or df[datetime_col].max()
         dates = pd.date_range(start_date, end_date, freq=freq)
         index = pd.Index(dates, name=datetime_col)
         df.set_index([datetime_col], inplace=True)
-        df = df.reindex(index, fill_value=fill_value, copy=False)
+        df = df.reindex(index, fill_value=fill_value)
         df.reset_index(inplace=True)
     if use_index:
         df.set_index(datetime_col, inplace=True)
@@ -286,8 +286,8 @@ def add_missing_timestamps(
 # %% ../../nbs/004_data.preparation.ipynb 42
 def time_encoding(series, freq, max_val=None):
     """Transforms a pandas series of dtype datetime64 (of any freq) or DatetimeIndex into 2 float arrays
-    
-    Available options: microsecond, millisecond, second, minute, hour, day = day_of_month = dayofmonth, 
+
+    Available options: microsecond, millisecond, second, minute, hour, day = day_of_month = dayofmonth,
     day_of_week = weekday = dayofweek, day_of_year = dayofyear, week = week_of_year = weekofyear, month and year
     """
 
@@ -360,27 +360,27 @@ def nearest_gaps(o, normalize=True):
         return np.fmin(forward, backward)
 
 
-def get_gaps(o : torch.Tensor, forward : bool = True, backward : bool = True, 
+def get_gaps(o : torch.Tensor, forward : bool = True, backward : bool = True,
              nearest : bool = True, normalize : bool = True):
-    """Number of sequence steps from previous, to next and/or to nearest real value along the 
+    """Number of sequence steps from previous, to next and/or to nearest real value along the
     last dimension of 3D arrays or tensors"""
-    
+
     _gaps = []
-    if forward or nearest:  
+    if forward or nearest:
         fwd = forward_gaps(o, normalize=normalize)
-        if forward: 
+        if forward:
             _gaps.append(fwd)
-    if backward or nearest: 
+    if backward or nearest:
         bwd = backward_gaps(o, normalize=normalize)
-        if backward: 
+        if backward:
             _gaps.append(bwd)
     if nearest:
-        if isinstance(o, torch.Tensor): 
+        if isinstance(o, torch.Tensor):
             nst = torch.fmin(fwd, bwd)
-        elif isinstance(o, np.ndarray): 
+        elif isinstance(o, np.ndarray):
             nst = np.fmin(fwd, bwd)
         _gaps.append(nst)
-    if isinstance(o, torch.Tensor): 
+    if isinstance(o, torch.Tensor):
         gaps = torch.cat(_gaps, 1)
     elif isinstance(o, np.ndarray):
         gaps = np.concatenate(_gaps, 1)
@@ -396,7 +396,7 @@ def add_delta_timestamp_cols(df, cols=None, groupby=None, forward=True, backward
             forward_time_gaps = np.concatenate(forward_time_gaps, -1)[0].transpose(1,0)
         else:
             forward_time_gaps = forward_gaps(df[cols].values.transpose(1,0)[None], normalize=normalize)[0].transpose(1,0)
-        if forward : 
+        if forward :
             df[[f'{col}_dt_fwd' for col in cols]] = forward_time_gaps
             df[[f'{col}_dt_fwd' for col in cols]] = df[[f'{col}_dt_fwd' for col in cols]]
     if backward or nearest:
@@ -405,7 +405,7 @@ def add_delta_timestamp_cols(df, cols=None, groupby=None, forward=True, backward
             backward_time_gaps = np.concatenate(backward_time_gaps, -1)[0].transpose(1,0)
         else:
             backward_time_gaps = backward_gaps(df[cols].values.transpose(1,0)[None], normalize=normalize)[0].transpose(1,0)
-        if backward: 
+        if backward:
             df[[f'{col}_dt_bwd' for col in cols]] = backward_time_gaps
             df[[f'{col}_dt_bwd' for col in cols]] = df[[f'{col}_dt_bwd' for col in cols]]
     if nearest:
@@ -423,7 +423,7 @@ def SlidingWindow(
   start:int=0, # determines the step where the first window is applied: 0 (default) or a given step (int). Previous steps will be discarded.
   pad_remainder:bool=False, #allows to pad remainder subsequences when the sliding window is applied and get_y == [] (unlabeled data).
   padding:str="post", #'pre' or 'post' (optional, defaults to 'pre'): pad either before or after each sequence. If pad_remainder == False, it indicates the starting point to create the sequence ('pre' from the end, and 'post' from the beginning)
-  padding_value:float=np.nan, #value (float) that will be used for padding. Default: np.nan       
+  padding_value:float=np.nan, #value (float) that will be used for padding. Default: np.nan
   add_padding_feature:bool=True, #add an additional feature indicating whether each timestep is padded (1) or not (0).
   get_x:Union[None, int, list]=None, # indices of columns that contain the independent variable (xs). If None, all data will be used as x.
   get_y:Union[None, int, list]=None, # indices of columns that contain the target (ys). If None, all data will be used as y. [] means no y data is created (unlabeled data).
@@ -497,7 +497,7 @@ def SlidingWindow(
                 n_windows = 1 + (X_len - max_horizon - window_len) // stride
         else:
             n_windows = 1 + max(0, np.ceil((X_len - max_horizon - window_len) / stride).astype(int))
-        
+
         X_max_len = window_len + max_horizon + (n_windows - 1) * stride # total length required (including y)
         X_seq_len = X_max_len - max_horizon
 
@@ -519,9 +519,9 @@ def SlidingWindow(
             elif padding == "post":
                 X_start = 0
                 X = X[:X_seq_len]
-        else: 
+        else:
             X_start = 0
-        
+
         X_sub_windows = (np.expand_dims(np.arange(window_len), 0) +
                          np.expand_dims(np.arange(n_windows * stride, step=stride), 0).T)
         X = np.transpose(X[X_sub_windows], (0, 2, 1))
@@ -634,7 +634,7 @@ def SlidingWindowPanel(window_len:int, unique_id_cols:list, stride:Union[None, i
             elif verbose>=2:
                 print(f'cannot use {unique_id_cols} = {v} due to not having enough records')
 
-        if verbose: 
+        if verbose:
             print('...data processed')
             print('concatenating X...')
         X = np.concatenate(_x)
@@ -660,14 +660,14 @@ SlidingWindowPanelSplitter = SlidingWindowPanel
 # %% ../../nbs/004_data.preparation.ipynb 97
 def identify_padding(float_mask, value=-1):
     """Identifies padded subsequences in a mask of type float
-    
-    This function identifies as padded subsequences those where all values == nan 
+
+    This function identifies as padded subsequences those where all values == nan
     from the end of the sequence (last dimension) across all channels, and sets
     those values to the selected value (default = -1)
-    
+
     Args:
         mask: boolean or float mask
-        value: scalar that will be used to identify padded subsequences 
+        value: scalar that will be used to identify padded subsequences
     """
     padding = torch.argmax((torch.flip(float_mask.mean((1)) - 1, (-1,)) != 0).float(), -1)
     padded_idxs = torch.arange(len(float_mask))[padding != 0]
@@ -699,12 +699,12 @@ def basic_data_preparation_fn(
             dup_rows = df[datetime_col].duplicated(keep=keep)
         if dup_rows.sum():
             df = df[~dup_rows].copy()
-    
+
     if use_index:
         df.sort_index(inplace=True)
     if sort_by is not None:
         df.sort_values(sort_by, kind='stable', inplace=True)
-        
+
     if add_missing_datetimes:
         if not use_index:
             # We'll set the timestamp column as index
@@ -713,13 +713,13 @@ def basic_data_preparation_fn(
         df = df.asfreq(freq=freq, method=method)
         if not use_index:
             df.reset_index(drop=False, inplace=True)
-    
+
     return df[cols]
 
 # %% ../../nbs/004_data.preparation.ipynb 102
 def check_safe_conversion(o, dtype='float32', cols=None):
     "Checks if the conversion to float is safe"
-    
+
     def _check_safe_conversion(o, dtype='float32'):
 
         if isinstance(o, (Integral, float)):
@@ -730,7 +730,7 @@ def check_safe_conversion(o, dtype='float32', cols=None):
         else:
             o_min = np.asarray(o).min()
             o_max = np.asarray(o).max()
-        
+
         dtype = np.dtype(dtype)
         if dtype == 'float16':
             return -2**11 <= o_min and o_max <= 2**11
@@ -749,7 +749,7 @@ def check_safe_conversion(o, dtype='float32', cols=None):
             return np.iinfo(np.int64).min <= o_min and o_max <= np.iinfo(np.int64).max
         else:
             raise ValueError("Unsupported data type")
-    
+
     if isinstance(o, pd.DataFrame):
         cols = o.columns if cols is None else cols
         checks = [_check_safe_conversion(o[c], dtype=dtype) for c in cols]
@@ -758,13 +758,13 @@ def check_safe_conversion(o, dtype='float32', cols=None):
         return False
     else:
         return _check_safe_conversion(o, dtype=dtype)
-    
+
 
 # %% ../../nbs/004_data.preparation.ipynb 104
 def prepare_forecasting_data(
     df:pd.DataFrame, # dataframe containing a sorted time series for a single entity or subject
     fcst_history:int, # # historical steps used as input.
-    fcst_horizon:int=1, # # steps forecasted into the future. 
+    fcst_horizon:int=1, # # steps forecasted into the future.
     x_vars:str|list=None, # features used as input. None means all columns. [] means no features.
     y_vars:str|list=None,  # features used as output. None means all columns. [] means no features.
     dtype:str=None, # data type
@@ -774,12 +774,12 @@ def prepare_forecasting_data(
     def _prepare_forecasting_data(df, x_vars, y_vars):
         x_np = df.to_numpy(dtype=dtype) if x_vars is None else df[x_vars].to_numpy(dtype=dtype)
         X = sliding_window_view(x_np[:len(x_np) - fcst_horizon], fcst_history, axis=0)
-        if y_vars == []: 
+        if y_vars == []:
             return X, []
         y_np = x_np if x_vars == y_vars else df.to_numpy(dtype=dtype) if y_vars is None else df[y_vars].to_numpy(dtype=dtype)
         y = sliding_window_view(y_np[fcst_history:], fcst_horizon, axis=0)
         return X, y
-    
+
     x_vars = None if (x_vars is None or feat2list(x_vars) == list(df.columns)) else feat2list(x_vars)
     y_vars = None if (y_vars is None or feat2list(y_vars) == list(df.columns)) else feat2list(y_vars)
     if dtype is not None:
@@ -848,7 +848,7 @@ def get_df_datetime_bounds(
     df,  # dataframe containing forecasting data
     datetime_col=None,  # str data column containing the datetime
     use_index=False,  # bool flag to indicate if index should be used to get column
-    
+
 ):
     "Returns the start date and and dates used by the forecast"
     set_df_datetime(df, datetime_col=datetime_col, use_index=use_index)
@@ -880,7 +880,7 @@ def get_fcst_bounds(
             fcst_datetime_min = get_today(fcst_datetime_min, datetime_format=datetime_format)
         if fcst_datetime_max == "today":
             fcst_datetime_max = get_today(fcst_datetime_max, datetime_format=datetime_format)
-        
+
         # end_datetime
         if fcst_datetime_max is None:
             fcst_dt = end_datetime = max_datetime
@@ -903,7 +903,7 @@ def get_fcst_bounds(
                 n_periods += fcst_history - 1
             # start_datetime = fcst_dt - n_periods * fcst_dt.freq
             start_datetime = pd.date_range(end=fcst_dt, periods=n_periods, freq=freq).floor(freq)[0]
-    
+
     return start_datetime, end_datetime
 
 # %% ../../nbs/004_data.preparation.ipynb 121
@@ -955,7 +955,7 @@ def get_fcst_data_from_df(
         return df
     assert datetime_col or use_index
     start_datetime, end_datetime = get_fcst_bounds(
-        df, 
+        df,
         fcst_datetime,
         fcst_history=fcst_history,
         fcst_horizon=fcst_horizon,

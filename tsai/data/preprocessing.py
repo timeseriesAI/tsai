@@ -1202,10 +1202,12 @@ class TSCategoricalEncoder(BaseEstimator, TransformerMixin):
                 if self.suffix: name += [self.suffix]
                 new_col = '_'.join(name)
                 if self.drop:
-                    X.loc[:, column] = X.loc[:, column].astype(categories).cat.codes + self.add_na
+                    # X.loc[:, column] = X.loc[:, column].astype(categories).cat.codes + self.add_na
+                    X[column] = X[column].astype(categories).cat.codes + self.add_na
                     X.rename(columns={column: new_col}, inplace=True)
                 else:
-                    X.loc[:, new_col] = X.loc[:, column].astype(categories).cat.codes + self.add_na
+                    # X.loc[:, new_col] = X.loc[:, column].astype(categories).cat.codes + self.add_na
+                    X[new_col] = X[column].astype(categories).cat.codes + self.add_na
             else:
                 X = X.astype(categories).cat.codes + self.add_na
         return X
@@ -1223,9 +1225,11 @@ class TSCategoricalEncoder(BaseEstimator, TransformerMixin):
                 if self.suffix: name += [self.suffix]
                 new_col = '_'.join(name)
                 if self.add_na:
-                    X.loc[:, new_col] = np.array(['#na#'] + list(categories.categories))[X.loc[:, new_col].astype(int)]
+                    # X.loc[:, new_col] = np.array(['#na#'] + list(categories.categories))[X.loc[:, new_col].astype(int)]
+                    X[new_col] = np.array(['#na#'] + list(categories.categories))[X[new_col].astype(int)]
                 else:
-                    X.loc[:, new_col] = categories.categories[X.loc[:, new_col].astype(int)]
+                    # X.loc[:, new_col] = categories.categories[X.loc[:, new_col].astype(int)]
+                    X[new_col] = categories.categories[X[new_col].astype(int)]
         else:
             if self.add_na:
                 X = pd.Series(np.array(['#na#'] + list(self.categories[0].categories))[X], name=X.name, index=X.index)
@@ -1715,9 +1719,9 @@ class TSFillMissing(TransformerMixin, BaseEstimator):
         if self.method is not None:
             for c in self.columns:
                 if self.unique_id_cols is not None:
-                    X[c] = X.groupby(self.unique_id_cols)[c].fillna(method=self.method)
+                    X[c] = X.groupby(self.unique_id_cols)[c].apply(lambda s: getattr(s, self.method)())
                 else:
-                    X[c] = X[c].fillna(method=self.method)
+                    X[c] = getattr(X[c], self.method)()
         if self.value is not None:
             for c in self.columns:
                 X[c] = X[c].fillna(value=self.value)
