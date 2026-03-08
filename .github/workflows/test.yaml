@@ -1,7 +1,11 @@
 name: CI
-on:  [workflow_dispatch, pull_request, push]
+on: [workflow_dispatch, pull_request, push]
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    steps: [uses: fastai/workflows/nbdev-ci@master]
+    steps: #[uses: fastai/workflows/nbdev-ci@master]
+      - name: Run nbdev tests
+        uses: fastai/workflows/nbdev-ci@master
+        with:
+          version: "3.11"
