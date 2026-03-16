@@ -2445,7 +2445,7 @@ def get_forecasting_time_series(
 
         if 'sunspot' in dsid.lower(): # accepts sunspot, Sunspot, sunspots, Sunspots etc.
             df = pd.read_csv(full_tgt_dir)
-            dates = pd.date_range(start=df["Month"].min(), end=pd.to_datetime(df["Month"].max()) + pd.Timedelta(days=30), freq='1M')
+            dates = pd.date_range(start=df["Month"].min(), end=pd.to_datetime(df["Month"].max()) + pd.Timedelta(days=30), freq='MS')
             df["Month"] = dates
             df.set_index('Month', inplace=True)
             return df
