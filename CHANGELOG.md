@@ -2,6 +2,34 @@
 
 <!-- do not remove -->
 
+## 1.0.0
+
+### Upgrade guide
+
+- **PyPI users:** bump your Python to 3.10 or newer before running `pip install -U tsai`. On Python 3.9 the upgrade will fail to resolve dependencies.
+- **Conda users:** switch to pip. The `timeseriesai` conda channel is no longer updated; older releases remain available there but new versions ship to PyPI only.
+- **Contributors with an existing checkout:** `git pull`, then in your dev env run `pip install -U -e ".[dev]"` followed by `nbdev-install-hooks`. The old `settings.ini` and `setup.py` have been replaced by `pyproject.toml`; if your checkout still has them locally, the migration tooling expects them to be gone.
+
+### Breaking changes
+
+- Migrated project configuration from `settings.ini` to `pyproject.toml` (PEP 621). `settings.ini` and `setup.py` have been removed.
+- Upgraded to nbdev 3. Contributors must run `nbdev-install-hooks` after pulling. nbdev CLI commands now use hyphens (e.g. `nbdev-clean`, `nbdev-export`); underscore aliases still work.
+- Minimum supported Python is now 3.10 (was 3.9).
+- PyTorch requirement bumped to `>=2.12,<3` (was `>=1.10,<2.8`).
+- fastai bumped to `>=2.8.7`, fastcore added explicitly as `>=1.13.2`.
+- scikit-learn bumped to `>=1.7,<1.8` (capped due to imbalanced-learn incompatibility with sklearn 1.8).
+- imbalanced-learn floor raised to `>=0.14` (older releases are incompatible with sklearn 1.7+).
+- Conda packaging metadata has been dropped; tsai is now distributed via PyPI only.
+
+### New Features
+
+- CI workflows updated to `fastai/workflows/nbdev3-ci@master` and `fastai/workflows/quarto-ghp3@master`.
+
+### Bugs Squashed
+
+- Made datetime dtype tests version-agnostic to work with pandas 3 (which defaults to `datetime64[us]` instead of `datetime64[ns]`).
+- Marked the Monash forecasting dataset test as `#|slow` and switched it to `force_download=True` so it works when explicitly run.
+
 ## 0.4.1
 
 ### New Features

@@ -33,10 +33,10 @@ All steps in this section need to be done **<u>only the first time you set up th
    ```
 
    and follow the instructions.
-2. **Create and activate a new conda environment**. This step is optional, but recommended. You will need to choose a name for the environment and a version of Python (i.e. `tsai_dev` and Python 3.9).
+2. **Create and activate a new conda environment**. This step is optional, but recommended. You will need to choose a name for the environment and a Python version (tsai requires Python 3.10 or newer).
 
    ```
-   conda create -n tsai_dev python=3.9
+   conda create -n tsai_dev python=3.11
    conda activate tsai_dev
    ```
 
@@ -54,7 +54,7 @@ All steps in this section need to be done **<u>only the first time you set up th
 4. **Set up git hooks**. This step is required by nbdev. Run:
 
    ```
-   nbdev_install_hooks
+   nbdev-install-hooks
    ```
 
    in the tsai repo folder. Git hooks clean up the notebooks to remove the extraneous stuff stored in the notebooks. In this way you avoid unnecessary merge conflicts.
@@ -88,15 +88,45 @@ If you have already set up your environment, you can proceed with the following 
    - Remember that nbdev creates all scripts, tests and documentation from the notebooks. That's why it's important that you explain how the code works. You should also add tests. Tests will ensure that the new functionality keeps working in the future, when new changes are made.
    - When finished, restart the kernel and re-run the whole notebook. Make sure everything runs smoothly until the end. This will also automatically save the notebook. If you see this at the bottom of the notebook "Correct conversion! 😃", it means everything went well and you can close the notebook. You are now ready to create your PR.
 
-4. In your terminal, run
+4. **Prepare the commit.** Pick the option that matches your platform.
 
-   ```python
-   nbdev_prepare
-   ````
+   **On Linux (or CI)** — use the shortcut:
 
-    This will export, test, and clean notebooks, and render README if needed.
+   ```bash
+   nbdev-prepare    # runs nbdev-export, nbdev-test, and nbdev-clean in sequence
+   ```
 
-7. Review the files that have been changed. You can do that with:
+   **On macOS (Apple Silicon)** — run the steps individually so the test suite uses an
+   in-process runner. The default parallel runner used by `nbdev-prepare` can crash
+   when PyTorch's Metal (MPS) compiler service becomes unstable under load:
+
+   ```bash
+   # 1. Strip notebook outputs/metadata
+   nbdev-clean
+
+   # 2. Regenerate tsai/*.py from the notebooks
+   nbdev-export
+
+   # 3. Run the test suite in-process (avoids MPS-related crashes)
+   #    --do_print and --timing are optional; drop them for quieter output
+   nbdev-test --n_workers 0 --do_print --timing
+   ```
+
+   **Rule of thumb:** use `nbdev-prepare` unless you're on macOS and hit Metal flakes,
+   then fall back to the individual sequence with `--n_workers 0`.
+
+   **Optional — update the documentation site.** Only run this if you intentionally
+   want to refresh the docs (the `quarto-ghp3` workflow rebuilds and publishes them
+   automatically on every push to `main`/`master`):
+
+   ```bash
+   nbdev-docs           # build docs into ./_docs
+   nbdev-preview        # serve them locally for inspection
+   ```
+
+   Requires quarto. If not installed: `nbdev-install-quarto`.
+
+5. Review the files that have been changed. You can do that with:
 
    ```
    git status
@@ -104,13 +134,13 @@ If you have already set up your environment, you can proceed with the following 
 
    Whenever you change a notebook, you should see at least see changes in its .ipynb and .py corresponding files.
 
-4. Add your code and commit your changes:
+6. Add your code and commit your changes:
 
-   ```pyhon
+   ```python
    git commit -am "add a message here"
    ```
 
-6. You are now ready to create a PR:
+7. You are now ready to create a PR:
 
    ```python
    gh pr create --title "brief PR title"
