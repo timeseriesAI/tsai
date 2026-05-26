@@ -1,3 +1,41 @@
 [build-system]
-requires = ["setuptools>=64.0"]
+requires = ["setuptools>=64"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "tsai"
+dynamic = ["version"]
+description = "Practical Deep Learning for Time Series / Sequential Data library based on fastai & Pytorch"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "Apache-2.0"}
+authors = [{name = "Ignacio Oguiza and contributors", email = "oguiza@timeseriesAI.co"}]
+keywords = ['fastai', 'time-series', 'time-series-classification', 'time-series-regression', 'deep-learning', 'Pytorch']
+classifiers = ["Natural Language :: English", "Intended Audience :: Developers", "Development Status :: 5 - Production/Stable", "Programming Language :: Python :: 3", "Programming Language :: Python :: 3 :: Only"]
+dependencies = ['fastai>=2.8.7', 'fastcore>=1.13.2', 'pyts>=0.13.0', 'imbalanced-learn>=0.14', 'psutil>=6.1.0', 'scikit-learn>=1.7,<1.8', 'torch>=2.12,<3']
+
+[project.urls]
+Repository = "https://github.com/timeseriesAI/tsai/"
+Documentation = "https://timeseriesAI.github.io/tsai/"
+
+[project.entry-points.nbdev]
+tsai = "tsai._modidx:d"
+
+[project.optional-dependencies]
+dev = ['nbdev>=3', 'ipykernel>6']
+extras = ['sktime>=0.38.4', 'tsfresh>=0.21.0', 'PyWavelets>=1.8.0', 'nbformat>=5.10.4']
+
+[project.scripts]
+nb2py = "tsai.export:nb2py"
+
+[tool.setuptools.dynamic]
+version = {attr = "tsai.__version__"}
+
+[tool.setuptools.packages.find]
+include = ["tsai"]
+
+[tool.nbdev]
+tst_flags = 'local slow extras onnx'
+jupyter_hooks = true
+custom_sidebar = true
+ 
