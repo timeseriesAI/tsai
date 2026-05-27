@@ -2,6 +2,17 @@
 
 <!-- do not remove -->
 
+## 1.0.1
+
+### Bugs Squashed
+
+- The 1.0.0 wheel and sdist were missing all subpackages — `from tsai.all import *` failed on a clean PyPI install with `ModuleNotFoundError: No module named 'tsai.data'`. Fixed the `[tool.setuptools.packages.find]` pattern in `pyproject.toml` to `["tsai", "tsai.*"]` so subpackages ship correctly. If you installed 1.0.0 from PyPI, upgrade to 1.0.1. (#962, #963)
+- `tsai.export` failed to import without the `dev` extra installed, because `ipykernel` (a dev-only dependency) was imported at module top. Moved the import inside `_get_kernel_id`, its only caller. (#967, #968)
+
+### New Features
+
+- Added a CI job that builds the wheel and confirms all subpackages are bundled, catching the #962 class of packaging bug on every PR. (#964)
+
 ## 1.0.0
 
 ### Upgrade guide
