@@ -177,3 +177,5 @@ token
 *.pkg
 new.*
 old.*
+
+NEW_RELEASE.md
