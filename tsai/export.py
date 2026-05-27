@@ -81,7 +81,6 @@ import urllib.request
 from itertools import chain
 from pathlib import Path, PurePath
 from typing import Generator, Tuple, Union
-import ipykernel
 from jupyter_core.paths import jupyter_runtime_dir
 from traitlets.config import MultipleInstanceError
 
@@ -106,6 +105,7 @@ def _list_maybe_running_servers(runtime_dir=None) -> Generator[dict, None, None]
 def _get_kernel_id() -> str:
     """ Returns the kernel ID of the ipykernel.
     """
+    import ipykernel
     connection_file = Path(ipykernel.get_connection_file()).stem
     kernel_id = connection_file.split('-', 1)[1]
     return kernel_id
