@@ -69,15 +69,19 @@ If the build's successful you'll see `Output created: _docs/...`. You can previe
 
 ---
 
-## 2. Bump version + update CHANGELOG
+## 2. Verify version + update CHANGELOG
 
-### 2a. Bump version
-Edit `tsai/__init__.py`:
-```python
-__version__ = "X.Y.Z"
+### 2a. Verify version
+The version is **not bumped here**. The post-release `nbdev-bump-version` step from the *previous* release (see §7) already advanced `tsai/__init__.py` to the upcoming patch version. The only version bump in the release flow is §7 — setting up the *next* dev cycle.
+
+Confirm `tsai/__init__.py` matches the target:
+```bash
+grep "__version__" tsai/__init__.py
 ```
 
-`pyproject.toml` reads this dynamically — no other version file to touch.
+If it already says `X.Y.Z`: proceed to §2b.
+
+If it doesn't match (e.g., you're cutting a minor/major like 1.0.2 → 1.1.0 but §7 of the prior release only patch-bumped to 1.0.2): manually edit `tsai/__init__.py` to `X.Y.Z` now, before continuing. `pyproject.toml` reads the version dynamically — no other file to touch.
 
 ### 2b. Update CHANGELOG.md
 Add a new section at the top (after `<!-- do not remove -->`):
