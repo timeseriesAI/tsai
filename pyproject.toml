@@ -32,7 +32,7 @@ nb2py = "tsai.export:nb2py"
 version = {attr = "tsai.__version__"}
 
 [tool.setuptools.packages.find]
-include = ["tsai"]
+include = ["tsai", "tsai.*"]
 
 [tool.nbdev]
 tst_flags = 'local slow extras onnx'
