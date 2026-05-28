@@ -1,0 +1,29 @@
+name: Stale issues
+
+on:
+  schedule:
+    - cron: "30 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  pull-requests: read
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v10
+        with:
+          days-before-issue-stale: 365
+          days-before-issue-close: 7
+          days-before-pr-stale: -1
+          days-before-pr-close: -1
+          stale-issue-label: stale
+          close-issue-label: stale
+          close-issue-reason: not_planned
+          exempt-issue-labels: bug
+          stale-issue-message: ""
+          close-issue-message: ""
+          operations-per-run: 100
+          remove-stale-when-updated: true
