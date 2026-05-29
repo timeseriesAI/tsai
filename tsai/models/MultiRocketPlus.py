@@ -259,7 +259,7 @@ class MultiRocketBackbonePlus(nn.Module):
     def forward(self, x):
         if self.use_diff:
             x_features = self.branch_x(x)
-            x_diff_features = self.branch_x(torch.diff(x))
+            x_diff_features = self.branch_x_diff(torch.diff(x, dim=-1))
             output = torch.cat([x_features, x_diff_features], dim=-1)
             return output
         else:
