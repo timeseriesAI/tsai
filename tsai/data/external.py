@@ -2198,17 +2198,19 @@ def get_UCR_data(dsid, path='.', parent_dir='data/UCR', on_disk=True, mode='c', 
     if force_download or not all([os.path.isfile(f'{full_tgt_dir}/{fn}.npy') for fn in ['X_train', 'X_valid', 'y_train', 'y_valid', 'X', 'y']]):
         # Option A
         src_website = 'http://www.timeseriesclassification.com/aeon-toolkit'
-        decompress_from_url(f'{src_website}/{dsid}.zip', target_dir=full_tgt_dir, verbose=verbose)
+        src_url = f'{src_website}/{dsid}.zip'
+        decompress_from_url(src_url, target_dir=full_tgt_dir, verbose=verbose)
         if dsid == 'DuckDuckGeese':
             with zipfile.ZipFile(Path(f'{full_parent_dir}/DuckDuckGeese/DuckDuckGeese_ts.zip'), 'r') as zip_ref:
                 zip_ref.extractall(Path(parent_dir))
-        if not os.path.exists(full_tgt_dir/f'{dsid}_TRAIN.ts') or not os.path.exists(full_tgt_dir/f'{dsid}_TRAIN.ts') or \
-        Path(full_tgt_dir/f'{dsid}_TRAIN.ts').stat().st_size == 0 or Path(full_tgt_dir/f'{dsid}_TEST.ts').stat().st_size == 0:
-            print('It has not been possible to download the required files')
-            if return_split:
-                return None, None, None, None
-            else:
-                return None, None, None
+        train_file = full_tgt_dir/f'{dsid}_TRAIN.ts'
+        test_file = full_tgt_dir/f'{dsid}_TEST.ts'
+        invalid_files = [file.name for file in (train_file, test_file) if not file.exists() or file.stat().st_size == 0]
+        if invalid_files:
+            raise RuntimeError(
+                f"Failed to download or extract {dsid} from {src_url}. "
+                f"Missing or empty files: {', '.join(invalid_files)}"
+            )
 
         pv('loading ts files to dataframe...', verbose)
         X_train_df, y_train = _ts2df(full_tgt_dir/f'{dsid}_TRAIN.ts')
