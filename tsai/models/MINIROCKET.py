@@ -35,18 +35,18 @@ class MiniRocketClassifier(sklearn.pipeline.Pipeline):
         except ImportError: 
             raise ImportError("You need to install sktime to be able to use MiniRocketClassifier")
             
-        self.steps = [('minirocketmultivariate', MiniRocketMultivariate(num_kernels=num_features, 
-                                                                        max_dilations_per_kernel=max_dilations_per_kernel,
-                                                                        random_state=random_state))]
+        steps = [('minirocketmultivariate', MiniRocketMultivariate(num_kernels=num_features,
+                                                                  max_dilations_per_kernel=max_dilations_per_kernel,
+                                                                  random_state=random_state))]
         if normalize_features:
-            self.steps += [('scalar', StandardScaler(with_mean=False))]
+            steps += [('scalar', StandardScaler(with_mean=False))]
         
-        self.steps += [('ridgeclassifiercv', RidgeClassifierCV(alphas=alphas, 
-                                                              scoring=scoring, 
-                                                              class_weight=class_weight, 
-                                                              **kwargs))]
+        steps += [('ridgeclassifiercv', RidgeClassifierCV(alphas=alphas,
+                                                        scoring=scoring,
+                                                        class_weight=class_weight,
+                                                        **kwargs))]
+        super().__init__(steps, memory=memory, verbose=verbose)
         store_attr()
-        self._validate_steps()
 
     def __repr__(self):
         return f'Pipeline(steps={self.steps.copy()})'
@@ -84,15 +84,15 @@ class MiniRocketRegressor(sklearn.pipeline.Pipeline):
         except ImportError: 
             raise ImportError("You need to install sktime to be able to use MiniRocketRegressor")
             
-        self.steps = [('minirocketmultivariate', MiniRocketMultivariate(num_kernels=num_features,
-                                                                        max_dilations_per_kernel=max_dilations_per_kernel,
-                                                                        random_state=random_state))]
+        steps = [('minirocketmultivariate', MiniRocketMultivariate(num_kernels=num_features,
+                                                                  max_dilations_per_kernel=max_dilations_per_kernel,
+                                                                  random_state=random_state))]
         if normalize_features:
-            self.steps += [('scalar', StandardScaler(with_mean=False))]
+            steps += [('scalar', StandardScaler(with_mean=False))]
         
-        self.steps += [('ridgecv', RidgeCV(alphas=alphas, scoring=scoring, **kwargs))]
+        steps += [('ridgecv', RidgeCV(alphas=alphas, scoring=scoring, **kwargs))]
+        super().__init__(steps, memory=memory, verbose=verbose)
         store_attr()
-        self._validate_steps()
 
     def __repr__(self):
         return f'Pipeline(steps={self.steps.copy()})'

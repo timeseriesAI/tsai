@@ -38,12 +38,12 @@ class RocketClassifier(sklearn.pipeline.Pipeline):
         except ImportError:
             raise("You need to install sktime to be able to use RocketClassifier")
             
-        self.steps = [('rocket', Rocket(num_kernels=num_kernels, normalise=normalize_input, random_state=random_state))]
+        steps = [('rocket', Rocket(num_kernels=num_kernels, normalise=normalize_input, random_state=random_state))]
         if normalize_features:
-            self.steps += [('scalar', StandardScaler(with_mean=False))]
-        self.steps += [('ridgeclassifiercv', RidgeClassifierCV(alphas=alphas, scoring=scoring, class_weight=class_weight, **kwargs))]
+            steps += [('scalar', StandardScaler(with_mean=False))]
+        steps += [('ridgeclassifiercv', RidgeClassifierCV(alphas=alphas, scoring=scoring, class_weight=class_weight, **kwargs))]
+        super().__init__(steps, memory=memory, verbose=verbose)
         store_attr()
-        self._validate_steps()
 
     def __repr__(self):  
         return f'Pipeline(steps={self.steps.copy()})'
@@ -84,12 +84,12 @@ class RocketRegressor(sklearn.pipeline.Pipeline):
         except ImportError:
             raise("You need to install sktime to be able to use RocketRegressor")
             
-        self.steps = [('rocket', Rocket(num_kernels=num_kernels, normalise=normalize_input, random_state=random_state))]
+        steps = [('rocket', Rocket(num_kernels=num_kernels, normalise=normalize_input, random_state=random_state))]
         if normalize_features:
-            self.steps += [('scalar', StandardScaler(with_mean=False))]
-        self.steps += [('ridgecv', RidgeCV(alphas=alphas, scoring=scoring, **kwargs))]
+            steps += [('scalar', StandardScaler(with_mean=False))]
+        steps += [('ridgecv', RidgeCV(alphas=alphas, scoring=scoring, **kwargs))]
+        super().__init__(steps, memory=memory, verbose=verbose)
         store_attr()
-        self._validate_steps()
 
 
     def __repr__(self):  
