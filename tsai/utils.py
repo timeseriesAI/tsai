@@ -1007,6 +1007,8 @@ def assign_in_chunks(a, b, chunksize='auto', inplace=True, verbose=True):
     else:
         shape = a.shape
         dtype = a.dtype
+        rand = isinstance(b, str) and b == 'rand'
+        rng = np.random.default_rng() if rand else None
         if chunksize == "auto":
             chunksize = chunks_calculator(shape, dtype)
             chunksize = shape[0] if not chunksize else  chunksize[0]
@@ -1015,8 +1017,12 @@ def assign_in_chunks(a, b, chunksize='auto', inplace=True, verbose=True):
         for i in progress_bar(range((shape[0] - 1) // chunksize + 1), display=verbose, leave=False):
             start, end = i * chunksize, min(shape[0], (i + 1) * chunksize)
             if start >= shape[0]: break
-            if (isinstance(b, str) and b == 'rand'):
-                a[start:end] = np.random.rand(end - start, *shape[1:])
+            if rand:
+                chunk_shape = (end - start, *shape[1:])
+                try:
+                    a[start:end] = rng.random(chunk_shape, dtype=dtype)
+                except TypeError:
+                    a[start:end] = rng.random(chunk_shape).astype(dtype, copy=False)
             else:
                 if is_dask(b):
                     a[start:end] = b[start:end].compute()
@@ -1041,16 +1047,14 @@ def create_array(shape, fname=None, path='./data', on_disk=True, dtype='float32'
         if not fname.endswith('npy'): fname = f'{fname}.npy'
         filename = path/fname
         filename.parent.mkdir(parents=True, exist_ok=True)
-        # Save a small empty array
-        _temp_fn = path/'temp_X.npy'
-        np.save(_temp_fn, np.empty(0))
-        # Create  & save file
-        arr = np.memmap(_temp_fn, dtype=dtype, mode='w+', shape=shape, **kwargs)
-        np.save(filename, arr)
-        del arr
-        os.remove(_temp_fn)
-        # Open file in selected mode
-        arr = np.load(filename, mmap_mode=mode)
+        memmap_kwargs = kwargs.copy()
+        if 'order' in memmap_kwargs and 'fortran_order' not in memmap_kwargs:
+            memmap_kwargs['fortran_order'] = memmap_kwargs.pop('order') == 'F'
+        arr = np.lib.format.open_memmap(filename, mode='w+', dtype=dtype, shape=shape, **memmap_kwargs)
+        if mode != 'w+':
+            arr.flush()
+            del arr
+            arr = np.load(filename, mmap_mode=mode)
     else:
         arr = np.empty(shape, dtype=dtype, **kwargs)
     if fill_value != 0:
