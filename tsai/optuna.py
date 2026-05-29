@@ -93,7 +93,10 @@ def run_optuna_study(objective, resume=None, study_type=None, multivariate=True,
         except: 
             print(f"joblib.load({resume}) couldn't recover any saved study. Check the path.")
             return
-        _print_best_study_results(study, "Best trial until now:")
+        try:
+            _print_best_study_results(study, "Best trial until now:")
+        except:
+            print("No finished trials yet.")
     else: 
         study_kwargs = dict(sampler=sampler, pruner=pruner, study_name=study_name)
         if is_multi_objective: study_kwargs['directions'] = direction
