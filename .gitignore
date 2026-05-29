@@ -177,3 +177,8 @@ token
 *.pkg
 new.*
 old.*
+
+NEW_RELEASE.md
+nbs/data/TSCategoricalEncoder.joblib
+nbs/data/TSMissingnessEncoder.joblib
+nbs/models/test.pth

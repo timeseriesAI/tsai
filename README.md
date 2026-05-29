@@ -13,8 +13,6 @@
 
 ![CI](https://github.com/timeseriesai/tsai/workflows/CI/badge.svg)
 [![PyPI](https://img.shields.io/pypi/v/tsai?color=blue&label=pypi%20version.png)](https://pypi.org/project/tsai/#description)
-[![Conda (channel
-only)](https://img.shields.io/conda/vn/timeseriesai/tsai?color=brightgreen&label=conda%20version.png)](https://anaconda.org/timeseriesai/tsai)
 [![DOI](https://zenodo.org/badge/211822289.svg)](https://zenodo.org/badge/latestdoi/211822289)
 ![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
 
@@ -53,41 +51,43 @@ additions to `tsai`:
 
 ## Installation
 
-### Pip install
+### Installation
 
-You can install the **latest stable** version from pip using:
+> **Requires Python 3.10 or newer.** As of tsai 1.0.0, support for
+> Python 3.9 has been dropped. See the
+> [CHANGELOG](https://github.com/timeseriesAI/tsai/blob/main/CHANGELOG.md)
+> for full upgrade notes if you’re coming from 0.x.
+
+#### Pip install
+
+Install the **latest stable** version from PyPI:
 
 ``` python
 pip install tsai
 ```
 
-If you plan to develop tsai yourself, or want to be on the cutting edge,
-you can use an editable install. First install PyTorch, and then:
+For an editable install (development or bleeding-edge):
 
 ``` python
 git clone https://github.com/timeseriesAI/tsai
 pip install -e "tsai[dev]"
 ```
 
-Note: starting with tsai 0.3.0 tsai will only install hard dependencies.
-Other soft dependencies (which are only required for selected tasks)
-will not be installed by default (this is the recommended approach. If
-you require any of the dependencies that is not installed, tsai will ask
-you to install it when necessary). If you still want to install tsai
-with all its dependencies you can do it by running:
+tsai installs only hard dependencies by default. Optional dependencies
+(sktime, tsfresh, PyWavelets, nbformat) are only needed for selected
+tasks; tsai will prompt you to install them when required. To install
+everything up front:
 
 ``` python
 pip install tsai[extras]
 ```
 
-### Conda install
+#### Conda install
 
-You can also install tsai using conda (note that if you replace conda
-with mamba the install process will be much faster and more reliable):
-
-``` python
-conda install -c timeseriesai tsai
-```
+As of tsai 1.0.0 the conda channel is no longer updated; tsai is
+distributed via PyPI only. Older releases remain available on the
+[timeseriesai conda channel](https://anaconda.org/timeseriesai/tsai),
+but for new installs please use `pip`.
 
 ## Documentation
 

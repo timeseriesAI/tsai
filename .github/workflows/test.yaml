@@ -1,7 +1,53 @@
 name: CI
-on:  [workflow_dispatch, pull_request, push]
+on: [workflow_dispatch, pull_request, push]
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    steps: [uses: fastai/workflows/nbdev-ci@master]
+    steps: #[uses: fastai/workflows/nbdev3-ci@master]
+      - name: Run nbdev tests
+        uses: fastai/workflows/nbdev3-ci@master
+        with:
+          version: "3.11"
+
+  verify-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install build tooling
+        run: python -m pip install --upgrade pip build
+      - name: Build wheel and sdist
+        run: python -m build
+      - name: Install built wheel in a clean venv (no deps)
+        run: |
+          python -m venv /tmp/verify
+          /tmp/verify/bin/pip install --no-deps dist/*.whl
+      - name: Verify subpackages and core modules are present in the artifact
+        # `cd /tmp` so the source-tree `tsai/` directory doesn't shadow the
+        # installed wheel via cwd-on-sys.path — that would mask a missing
+        # subpackage in the artifact.
+        working-directory: /tmp
+        run: |
+          /tmp/verify/bin/python - <<'PY'
+          import importlib, importlib.util, sys
+
+          # Subpackages — empty __init__.py files, safe to import directly.
+          # These are the ones the 1.0.0 wheel was missing (#962).
+          import tsai
+          import tsai.data
+          import tsai.models
+          import tsai.callback
+
+          # Top-level modules pull in heavy third-party deps at import time,
+          # so just check they exist in the installed artifact.
+          missing = [m for m in ("tsai.all", "tsai.basics", "tsai.inference",
+                                  "tsai.optimizer", "tsai.tslearner")
+                       if importlib.util.find_spec(m) is None]
+          if missing:
+              sys.exit(f"missing from built wheel: {missing}")
+
+          print(f"tsai {tsai.__version__}: all subpackages and core modules present")
+          PY

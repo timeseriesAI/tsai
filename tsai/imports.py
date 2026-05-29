@@ -21,7 +21,6 @@ import random
 import sys
 import time
 import warnings
-from configparser import ConfigParser
 from functools import partial
 from numbers import Integral
 from pathlib import Path
@@ -67,10 +66,7 @@ from numpy.lib.stride_tricks import sliding_window_view
 from torch import Tensor
 from tqdm import tqdm
 
-config = ConfigParser(delimiters=["="])
-config.read("../settings.ini")
-cfg = config["DEFAULT"]
-lib_name = cfg.get("lib_name")
+lib_name = "tsai"
 
 
 def get_gpu_memory():
