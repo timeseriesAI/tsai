@@ -1,0 +1,41 @@
+name: Stale issues
+
+on:
+  schedule:
+    - cron: "30 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  pull-requests: read
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v10
+        with:
+          days-before-issue-stale: 365
+          days-before-issue-close: 7
+          days-before-pr-stale: -1
+          days-before-pr-close: -1
+          stale-issue-label: stale
+          close-issue-label: stale
+          close-issue-reason: not_planned
+          exempt-issue-labels: bug
+          stale-issue-message: >
+            This issue has been marked as stale because it has been open for more
+            than a year without recent activity and is not currently labeled as a
+            confirmed bug. It may be closed if no further activity occurs.
+
+            This was drafted with AI support based on human feedback collected
+            during triage.
+          close-issue-message: >
+            Closing this stale issue as not planned because it remained inactive
+            after being marked stale. Confirmed bugs are exempt from this stale
+            workflow.
+
+            This was drafted with AI support based on human feedback collected
+            during triage.
+          operations-per-run: 100
+          remove-stale-when-updated: true
