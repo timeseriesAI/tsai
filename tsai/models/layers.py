@@ -790,7 +790,7 @@ class RevIN(nn.Module):
 
     def __init__(self,
          c_in:int,    # #features (aka variables or channels)
-         affine:bool=True,  # flag to incidate if RevIN has learnable weight and bias
+         affine:bool=True,  # flag to indicate if RevIN has learnable weight and bias
          subtract_last:bool=False,
          dim:int=2,   # int or tuple of dimensions used to calculate mean and std
          eps:float=1e-5  # epsilon - parameter added for numerical stability
@@ -800,109 +800,35 @@ class RevIN(nn.Module):
         if self.affine:
             self.weight = nn.Parameter(torch.ones(1, c_in, 1))
             self.bias = nn.Parameter(torch.zeros(1, c_in, 1))
+        self.sub, self.std = torch.zeros(1), torch.ones(1)
 
-    def forward(self, x:Tensor, mode:Tensor):
+    def forward(self, x:Tensor, mode:bool):
         """Args:
 
             x: rank 3 tensor with shape [batch size x c_in x sequence length]
-            mode: torch.tensor(True) to normalize data and torch.tensor(False) to reverse normalization
+            mode: True to normalize data and False to reverse normalization
         """
-
-        # Normalize
         if mode: return self.normalize(x)
-
-        # Denormalize
         else: return self.denormalize(x)
 
+    def _normalized_dims(self, x):
+        dims = self.dim if isinstance(self.dim, tuple) else (self.dim,)
+        return tuple(d if d >= 0 else x.ndim + d for d in dims)
+
     def normalize(self, x):
-        if self.subtract_last:
+        dims = self._normalized_dims(x)
+        if self.subtract_last and dims == (x.ndim - 1,):
             self.sub = x[..., -1].unsqueeze(-1).detach()
         else:
-            self.sub = torch.mean(x, dim=-1, keepdim=True).detach()
-        self.std = torch.std(x, dim=-1, keepdim=True, unbiased=False).detach() + self.eps
-        if self.affine:
-            x = x.sub(self.sub)
-            x = x.div(self.std)
-            x = x.mul(self.weight)
-            x = x.add(self.bias)
-            return x
-        else:
-            x = x.sub(self.sub)
-            x = x.div(self.std)
-            return x
+            self.sub = torch.mean(x, dim=self.dim, keepdim=True).detach()
+        self.std = torch.std(x, dim=self.dim, keepdim=True, unbiased=False).detach() + self.eps
+        x = x.sub(self.sub).div(self.std)
+        if self.affine: x = x.mul(self.weight).add(self.bias)
+        return x
 
     def denormalize(self, x):
-        if self.affine:
-            x = x.sub(self.bias)
-            x = x.div(self.weight)
-            x = x.mul(self.std)
-            x = x.add(self.sub)
-            return x
-        else:
-            x = x.mul(self.std)
-            x = x.add(self.sub)
-            return x
-
-# %% ../../nbs/029_models.layers.ipynb #b62245b4
-class RevIN(nn.Module):
-    """ Reversible Instance Normalization layer adapted from
-
-        Kim, T., Kim, J., Tae, Y., Park, C., Choi, J. H., & Choo, J. (2021, September).
-        Reversible instance normalization for accurate time-series forecasting against distribution shift.
-        In International Conference on Learning Representations.
-        Original code: https://github.com/ts-kim/RevIN
-    """
-
-    def __init__(self,
-         c_in:int,    # #features (aka variables or channels)
-         affine:bool=True,  # flag to incidate if RevIN has learnable weight and bias
-         subtract_last:bool=False,
-         dim:int=2,   # int or tuple of dimensions used to calculate mean and std
-         eps:float=1e-5  # epsilon - parameter added for numerical stability
-         ):
-        super().__init__()
-        self.c_in, self.affine, self.subtract_last, self.dim, self.eps = c_in, affine, subtract_last, dim, eps
-        self.weight = nn.Parameter(torch.ones(1, c_in, 1))
-        self.bias = nn.Parameter(torch.zeros(1, c_in, 1))
-        self.sub, self.std, self.mul, self.add = torch.zeros(1), torch.ones(1), torch.ones(1), torch.zeros(1)
-
-    def forward(self, x:Tensor, mode:Tensor):
-        """Args:
-
-            x: rank 3 tensor with shape [batch size x c_in x sequence length]
-            mode: torch.tensor(True) to normalize data and torch.tensor(False) to reverse normalization
-        """
-
-        # Normalize
-        if mode:
-            if self.subtract_last:
-                self.sub = x[..., -1].unsqueeze(-1).detach()
-            else:
-                self.sub = torch.mean(x, dim=-1, keepdim=True).detach()
-            self.std = torch.std(x, dim=-1, keepdim=True, unbiased=False).detach() + self.eps
-            if self.affine:
-                x = x.sub(self.sub)
-                x = x.div(self.std)
-                x = x.mul(self.weight)
-                x = x.add(self.bias)
-                return x
-            else:
-                x = x.sub(self.sub)
-                x = x.div(self.std)
-                return x
-
-        # Denormalize
-        else:
-            if self.affine:
-                x = x.sub(self.bias)
-                x = x.div(self.weight)
-                x = x.mul(self.std)
-                x = x.add(self.sub)
-                return x
-            else:
-                x = x.mul(self.std)
-                x = x.add(self.sub)
-                return x
+        if self.affine: x = x.sub(self.bias).div(self.weight)
+        return x.mul(self.std).add(self.sub)
 
 # %% ../../nbs/029_models.layers.ipynb #d8985b68
 def create_pool_head(n_in, c_out, seq_len=None, concat_pool=False, fc_dropout=0., bn=False, y_range=None, **kwargs):
