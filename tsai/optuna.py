@@ -10,6 +10,7 @@ from .imports import *
 from pathlib import Path
 from fastcore.script import *
 import joblib
+from collections.abc import Sequence
 from importlib import import_module
 import warnings
 warnings.filterwarnings("ignore")
@@ -35,7 +36,7 @@ def run_optuna_study(objective, resume=None, study_type=None, multivariate=True,
         pruner:             A pruner object that decides early stopping of unpromising trials. If None is specified, MedianPruner is used as the default. 
                             See also pruners.
         study_name:         Study’s name. If this argument is set to None, a unique name is generated automatically.
-        direction:          A sequence of directions during multi-objective optimization.
+        direction:          Direction for single-objective optimization, or a sequence of directions during multi-objective optimization.
         n_trials:           The number of trials. If this argument is set to None, there is no limitation on the number of trials. If timeout is also set to 
                             None, the study continues to create trials until it receives a termination signal such as Ctrl+C or SIGTERM.
         timeout:            Stop study after the given number of second(s). If this argument is set to None, the study is executed without time limitation. 
@@ -51,6 +52,28 @@ def run_optuna_study(objective, resume=None, study_type=None, multivariate=True,
     
     try: import optuna
     except ImportError: raise ImportError('You need to install optuna to use run_optuna_study')
+
+    is_multi_objective = isinstance(direction, Sequence) and not isinstance(direction, (str, bytes))
+
+    def _is_multi_objective_study(study):
+        return len(getattr(study, 'directions', [])) > 1
+
+    def _print_best_study_results(study, header):
+        if _is_multi_objective_study(study):
+            trials = study.best_trials
+            if not trials: raise ValueError('No finished trials yet.')
+            print(header.replace('trial', 'trials'))
+            for trial in trials:
+                print(f"  Trial {trial.number}:")
+                print(f"    values          : {trial.values}")
+                print(f"    best_params = {trial.params}")
+        else:
+            trial = study.best_trial
+            print(header)
+            print(" Value: ", trial.value)
+            print(" Params: ")
+            for key, value in trial.params.items():
+                print(f"    {key}: {value}")
 
     # Sampler
     if sampler is None:
@@ -70,13 +93,15 @@ def run_optuna_study(objective, resume=None, study_type=None, multivariate=True,
         except: 
             print(f"joblib.load({resume}) couldn't recover any saved study. Check the path.")
             return
-        print("Best trial until now:")
-        print(" Value: ", study.best_trial.value)
-        print(" Params: ")
-        for key, value in study.best_trial.params.items():
-            print(f"    {key}: {value}")
+        try:
+            _print_best_study_results(study, "Best trial until now:")
+        except:
+            print("No finished trials yet.")
     else: 
-        study = optuna.create_study(sampler=sampler, pruner=pruner, study_name=study_name, direction=direction)
+        study_kwargs = dict(sampler=sampler, pruner=pruner, study_name=study_name)
+        if is_multi_objective: study_kwargs['directions'] = direction
+        else: study_kwargs['direction'] = direction
+        study = optuna.create_study(**study_kwargs)
     if evaluate: study.enqueue_trial(evaluate)
     try:
         study.optimize(objective, n_trials=n_trials, timeout=timeout, gc_after_trial=gc_after_trial, show_progress_bar=show_progress_bar)
@@ -112,10 +137,7 @@ def run_optuna_study(objective, resume=None, study_type=None, multivariate=True,
         print(f"  # pruned trials   : {len(pruned_trials)}")
         print(f"  # complete trials : {len(complete_trials)}")
         
-        print(f"\nBest trial          :")
-        trial = study.best_trial
-        print(f"  value             : {trial.value}")
-        print(f"  best_params = {trial.params}\n")
+        _print_best_study_results(study, "\nBest trial          :")
     except:
         print('\nNo finished trials yet.')
     return study
