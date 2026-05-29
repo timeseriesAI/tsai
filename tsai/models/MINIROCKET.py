@@ -45,6 +45,7 @@ class MiniRocketClassifier(sklearn.pipeline.Pipeline):
                                                               scoring=scoring, 
                                                               class_weight=class_weight, 
                                                               **kwargs))]
+        super().__init__(self.steps, memory=memory, verbose=verbose)
         store_attr()
         self._validate_steps()
 
@@ -91,6 +92,7 @@ class MiniRocketRegressor(sklearn.pipeline.Pipeline):
             self.steps += [('scalar', StandardScaler(with_mean=False))]
         
         self.steps += [('ridgecv', RidgeCV(alphas=alphas, scoring=scoring, **kwargs))]
+        super().__init__(self.steps, memory=memory, verbose=verbose)
         store_attr()
         self._validate_steps()
 
