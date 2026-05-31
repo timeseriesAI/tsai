@@ -168,6 +168,7 @@ def get_minirocket_features(o, model, chunksize=1024, use_cuda=None, to_np=True)
 
 # %% ../../nbs/056_models.MINIROCKET_Pytorch.ipynb #ed23946b
 class MiniRocketHead(nn.Sequential):
+    """Classification/regression head for MiniRocket features."""
     def __init__(self, c_in, c_out, seq_len=1, bn=True, fc_dropout=0.):
         layers = [nn.Flatten()]
         if bn:
@@ -184,6 +185,7 @@ class MiniRocketHead(nn.Sequential):
 
 # %% ../../nbs/056_models.MINIROCKET_Pytorch.ipynb #08a478a3
 class MiniRocket(nn.Sequential):
+    """PyTorch MiniRocket model with online feature extraction and a linear head."""
     def __init__(self, c_in, c_out, seq_len, num_features=10_000, max_dilations_per_kernel=32, random_state=None, bn=True, fc_dropout=0):
         
         # Backbone
