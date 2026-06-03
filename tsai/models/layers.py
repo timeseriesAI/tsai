@@ -428,7 +428,10 @@ class View(Module):
 class Reshape(Module):
     def __init__(self, *shape): self.shape = shape
     def forward(self, x):
-        return x.contiguous().reshape(x.shape[0], -1) if not self.shape else x.contiguous().reshape(-1) if self.shape == (-1,) else x.contiguous().reshape(x.shape[0], *self.shape)
+        x = x.contiguous()
+        if len(self.shape) == 0: return x.reshape(x.shape[0], -1)
+        elif self.shape == (-1,): return x.reshape(-1)
+        else: return x.reshape(x.shape[0], *self.shape)
     def __repr__(self): return f"{self.__class__.__name__}({', '.join(['bs'] + [str(s) for s in self.shape])})"
 
 
