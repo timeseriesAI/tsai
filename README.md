@@ -15,6 +15,7 @@
 [![PyPI](https://img.shields.io/pypi/v/tsai?color=blue&label=pypi%20version.png)](https://pypi.org/project/tsai/#description)
 [![DOI](https://zenodo.org/badge/211822289.svg)](https://zenodo.org/badge/latestdoi/211822289)
 ![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/timeseriesAI/tsai)
 
 ## Description
 
