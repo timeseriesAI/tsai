@@ -23,7 +23,7 @@ def _g(seed):
 
 
 class WMTransform:
-    """The frozen TS-WM patch encoder phi: (B, L) -> (B, 141). Pure closed form over seeded banks."""
+    """The frozen TS-WM patch encoder phi: (B, L) -> (B, 173). Pure closed form over seeded banks."""
 
     def __init__(self, L=L, device="cpu", dtype=torch.float32):
         self.L = L
@@ -35,7 +35,9 @@ class WMTransform:
         self.srf_b = torch.randn(12, 6, generator=_g(22))
         self.srf_u = torch.randn(12, 6, generator=_g(23)) / 2.4495
         self.crf_w = torch.randn(16, 1, 9, generator=_g(31))                           # 16 random conv kernels (size 9)
-        for k in ("trf_mu", "trf_sig", "srf_W", "srf_b", "srf_u", "crf_w"):
+        hk = torch.randn(2, 4, 9, generator=_g(71))
+        self.hydra_w = (hk - hk.mean(-1, keepdim=True)) / (hk.std(-1, keepdim=True) + 1e-8)
+        for k in ("trf_mu", "trf_sig", "srf_W", "srf_b", "srf_u", "crf_w", "hydra_w"):
             setattr(self, k, getattr(self, k).to(device=device, dtype=dtype))
         # the column width and ordered builders of the 18 families
         self._families = [
@@ -43,7 +45,7 @@ class WMTransform:
             ("trf_gausswin", 12), ("crf_ppv", 32), ("hilbert_env", 2), ("crf_max", 32),
             ("morphology_updown", 4), ("fftbands", 6), ("perm_entropy", 3), ("curvature", 3),
             ("conv_position", 3), ("ar_residual", 4), ("acf_first_min", 3), ("histogram_mode", 3),
-            ("ricker_wavelet", 4),
+            ("ricker_wavelet", 4), ("hydra_compete", 32),
         ]
 
     # ----- family 0: stats (12) — also consumed by srf_mlp -----
@@ -191,6 +193,23 @@ class WMTransform:
         return (F.conv1d(w.unsqueeze(1), W, padding=15 // 2) > 0).float().mean(2)
 
     # ----- assemble phi in the discovered order -----
+    # ----- family 18: Hydra-style competing-kernel soft win-counts (32) -----
+    # Per group of 4 kernels (2 groups, dilations {2,4}, raw + first-difference channels): per-timestep
+    # argmax ACROSS the group assigns each window to its best-matching "shape word"; ACCUMULATE the winning
+    # response value (soft counting, clamped >= 0), normalise to a distribution, sqrt-compress.
+    def hydra_compete(self, w):
+        cols = []
+        for x in (w.unsqueeze(1), (w[:, 1:] - w[:, :-1]).unsqueeze(1)):
+            for d in (2, 4):
+                pad = d * (9 // 2)
+                for g in range(self.hydra_w.shape[0]):
+                    r = F.conv1d(x, self.hydra_w[g].unsqueeze(1), padding=pad, dilation=d)   # (B,4,Lout)
+                    maxv, maxi = r.max(1)
+                    soft = torch.zeros(x.shape[0], 4, device=w.device, dtype=w.dtype).scatter_add_(
+                        1, maxi, maxv.clamp(min=0))
+                    cols.append((soft / (soft.sum(1, keepdim=True) + 1e-8)).sqrt())
+        return torch.cat(cols, dim=1)
+
     def phi(self, w):
         st = self.stats(w)
         cols = [
@@ -200,7 +219,7 @@ class WMTransform:
             self.trf_gausswin(w), self.crf_ppv(w), self.hilbert_env(w), self.crf_max(w),
             self.morphology_updown(w), self.fftbands(w), self.perm_entropy(w), self.curvature(w),
             self.conv_position(w), self.ar_residual(w), self.acf_first_min(w), self.histogram_mode(w),
-            self.ricker_wavelet(w),
+            self.ricker_wavelet(w), self.hydra_compete(w),
         ]
         return torch.cat([c if c.dim() == 2 else c.unsqueeze(1) for c in cols], dim=1)
 
@@ -214,30 +233,30 @@ class WMTransform:
     def n_cols(self):
         return sum(c for _, c in self._families)
 
-# per-family (name, width) in phi order, and the discovered selective-pooling map (423 -> 245)
+# per-family (name, width) in phi order, and the discovered selective-pooling map (519 -> 211)
 _FAMILIES = WMTransform()._families
 POOL_MAP = {
-    "stats": ["std", "max"], "turning": ["std", "max"], "trf_gausswin": ["mean", "max"],
-    "crf_ppv": ["mean", "std", "max"], "crf_max": ["mean", "max"], "morphology_updown": ["mean"],
-    "fftbands": ["mean"], "curvature": ["mean", "max"], "conv_position": ["max"], "ar_residual": ["mean"],
-    "histogram_mode": ["std", "max"], "ricker_wavelet": ["std"],
+    "srf_mlp": ["max"], "spectral": ["max"], "trf_gausswin": ["mean"],
+    "crf_ppv": ["mean", "std"], "crf_max": ["mean"], "morphology_updown": ["std"],
+    "perm_entropy": ["max"], "curvature": ["mean"], "conv_position": ["max"],
+    "ar_residual": ["mean", "max"], "ricker_wavelet": ["mean"], "hydra_compete": ["mean", "std"],
 }
 _OPS = ("mean", "std", "max")
-_BANK_NAMES = ("trf_mu", "trf_sig", "srf_W", "srf_b", "srf_u", "crf_w")
+_BANK_NAMES = ("trf_mu", "trf_sig", "srf_W", "srf_b", "srf_u", "crf_w", "hydra_w")
 
 
 class EvoForestTSWMFeatures(nn.Module):
     """Frozen TS-WM encoder as a PyTorch module (no learnable params by default; GPU-ready).
 
     Args:
-        pooling: "full" (423) or "pruned" (245).
+        pooling: "full" (519) or "pruned" (211).
         stride: patch stride (patch length fixed at 64).
         trainable: if True the seeded banks become nn.Parameter (fine-tunable); all banks receive
             gradients. A few feature columns use hard thresholds (crf_ppv > 0, turning/morphology signs)
             and contribute no gradient, but every bank trains via its differentiable uses (e.g. crf_w
             through crf_max). Default False = 0 learnable params (the bit-reproducible discovered encoder).
 
-    Shape: input (batch, n_vars, seq_len) -> output (batch, 423 | 245).
+    Shape: input (batch, n_vars, seq_len) -> output (batch, 519 | 211).
     """
 
     def __init__(self, pooling="full", stride=16, trainable=False):
@@ -300,7 +319,7 @@ class EvoForestTSWMFeatures(nn.Module):
     @property
     def output_dim(self):
         if self.pooling == "full":
-            return 3 * 141
+            return 3 * 173
         return sum(w * sum(o in POOL_MAP.get(nm, []) for o in _OPS) for nm, w in _FAMILIES)
 
 
