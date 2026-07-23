@@ -137,3 +137,13 @@ Project configuration lives in **`pyproject.toml`** (PEP 621). Key sections:
 - `[tool.nbdev]` - nbdev-specific settings (test flags, jupyter hooks, custom sidebar).
 
 > Note: `settings.ini` and `setup.py` were removed in tsai 1.0.0 — `pyproject.toml` is now the single source for both Python packaging and nbdev configuration.
+
+<!-- OPENWIKI:START -->
+
+## OpenWiki
+
+This repository uses OpenWiki for recurring code documentation. Start with `openwiki/quickstart.md`, then follow its links to architecture, workflows, domain concepts, operations, integrations, testing guidance, and source maps.
+
+The scheduled OpenWiki GitHub Actions workflow refreshes the repository wiki. Do not hand-edit generated OpenWiki pages unless explicitly asked; prefer updating source code/docs and letting OpenWiki regenerate.
+
+<!-- OPENWIKI:END -->
