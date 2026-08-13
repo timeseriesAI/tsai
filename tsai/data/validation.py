@@ -544,7 +544,7 @@ def get_forecasting_splits(
         datetime_col = 'index' if df.index.name is None else df.index.name
         df = df.reset_index(drop=False)[feat2list(datetime_col) + feat2list(unique_id_cols)]
     elif datetime_col is not None:
-        df = df[feat2list(datetime_col) + feat2list(unique_id_cols)]
+        df = df.reset_index(drop=True)[feat2list(datetime_col) + feat2list(unique_id_cols)]
     else:
         df = df.reset_index(drop=True)
         if unique_id_cols is not None:
