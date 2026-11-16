@@ -289,7 +289,7 @@ class TSNormalize(Transform):
             if self.by_var and is_listy(self.by_var):
                 shape = torch.mean(o, dim=self.axes, keepdim=self.axes!=()).shape
                 _min = torch.zeros(*shape, device=o.device) + self.range_min
-                _max = torch.ones(*shape, device=o.device) + self.range_max
+                _max = torch.zeros(*shape, device=o.device) + self.range_max
                 for v in self.by_var:
                     if not is_listy(v): v = [v]
                     _min[:, v] = o[:, v].mul_min(self.axes, keepdim=self.axes!=())
