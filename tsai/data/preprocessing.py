@@ -159,7 +159,7 @@ class TSStandardize(Transform):
     def setups(self, dl: DataLoader):
         if self._setup:
             if not self.use_single_batch:
-                o = dl.dataset.__getitem__([slice(None)])[0]
+                o = dl.dataset[:][0]
             else:
                 o, *_ = dl.one_batch()
             if self.by_var and is_listy(self.by_var):
@@ -261,7 +261,7 @@ class TSNormalize(Transform):
     def setups(self, dl: DataLoader):
         if self._setup:
             if not self.use_single_batch:
-                o = dl.dataset.__getitem__([slice(None)])[0]
+                o = dl.dataset[:][0]
             else:
                 o, *_ = dl.one_batch()
             if self.by_var and is_listy(self.by_var):
@@ -436,7 +436,7 @@ class TSClipOutliers(Transform):
     def setups(self, dl: DataLoader):
         if self._setup:
             if not self.use_single_batch:
-                o = dl.dataset.__getitem__([slice(None)])[0]
+                o = dl.dataset[:][0]
             else:
                 o, *_ = dl.one_batch()
             min, max = get_outliers_IQR(o, self.axis)
@@ -505,7 +505,7 @@ class TSRobustScale(Transform):
     def setups(self, dl: DataLoader):
         if self._setup:
             if not self.use_single_batch:
-                o = dl.dataset.__getitem__([slice(None)])[0]
+                o = dl.dataset[:][0]
             else:
                 o, *_ = dl.one_batch()
 
